@@ -77,7 +77,9 @@ defmodule Palee.Infrastructure.Ranks.EctoRankStore do
 
   # Kept ranks first move out of the way of the (ladder, position) index.
   defp replace_ranks(ladder, ranks) do
-    existing = Rank |> where([r], r.ladder_id == ^ladder.id) |> Repo.all() |> Map.new(&{&1.id, &1})
+    existing =
+      Rank |> where([r], r.ladder_id == ^ladder.id) |> Repo.all() |> Map.new(&{&1.id, &1})
+
     kept_ids = ranks |> Enum.map(& &1.id) |> Enum.filter(&Map.has_key?(existing, &1))
     removed = existing |> Map.keys() |> Kernel.--(kept_ids)
 

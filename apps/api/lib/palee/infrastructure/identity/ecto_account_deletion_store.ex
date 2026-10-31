@@ -154,7 +154,10 @@ defmodule Palee.Infrastructure.Identity.EctoAccountDeletionStore do
 
   defp delete_own_device_rows(user_id) do
     id = Ecto.UUID.dump!(user_id)
-    for table <- @own_device_rows, do: Repo.query!("DELETE FROM #{table} WHERE user_id = $1", [id])
+
+    for table <- @own_device_rows,
+        do: Repo.query!("DELETE FROM #{table} WHERE user_id = $1", [id])
+
     :ok
   end
 

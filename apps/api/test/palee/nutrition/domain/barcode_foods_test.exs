@@ -3,7 +3,13 @@ defmodule Palee.Nutrition.Domain.BarcodeFoodsTest do
 
   use ExUnit.Case, async: true
 
-  alias Palee.Nutrition.Domain.{Barcode, FoodCachePolicy, FoodProduct, NutrientDisclosure, PortionHint}
+  alias Palee.Nutrition.Domain.{
+    Barcode,
+    FoodCachePolicy,
+    FoodProduct,
+    NutrientDisclosure,
+    PortionHint
+  }
 
   describe "Barcode.parse/1" do
     test "EAN-13, EAN-8, UPC-A (as EAN-13) and GTIN-14 with a valid check digit" do
@@ -81,13 +87,28 @@ defmodule Palee.Nutrition.Domain.BarcodeFoodsTest do
 
     test "serves fresh rows, refreshes old products, retries old misses" do
       assert FoodCachePolicy.decide(nil, @now) == :lookup
-      assert FoodCachePolicy.decide(%{status: "found", fetched_at: ~U[2026-10-20 12:00:00Z]}, @now) == :serve
 
-      assert FoodCachePolicy.decide(%{status: "found", fetched_at: ~U[2026-09-01 12:00:00Z]}, @now) ==
+      assert FoodCachePolicy.decide(
+               %{status: "found", fetched_at: ~U[2026-10-20 12:00:00Z]},
+               @now
+             ) == :serve
+
+      assert FoodCachePolicy.decide(
+               %{status: "found", fetched_at: ~U[2026-09-01 12:00:00Z]},
+               @now
+             ) ==
                {:serve, :refresh}
 
-      assert FoodCachePolicy.decide(%{status: "not_found", fetched_at: ~U[2026-10-30 12:00:00Z]}, @now) == :serve
-      assert FoodCachePolicy.decide(%{status: "not_found", fetched_at: ~U[2026-10-01 12:00:00Z]}, @now) == :lookup
+      assert FoodCachePolicy.decide(
+               %{status: "not_found", fetched_at: ~U[2026-10-30 12:00:00Z]},
+               @now
+             ) == :serve
+
+      assert FoodCachePolicy.decide(
+               %{status: "not_found", fetched_at: ~U[2026-10-01 12:00:00Z]},
+               @now
+             ) == :lookup
+
       assert FoodCachePolicy.decide(%{status: "pending"}, @now) == :wait
     end
 
@@ -98,10 +119,18 @@ defmodule Palee.Nutrition.Domain.BarcodeFoodsTest do
                FoodCachePolicy.after_lookup({:error, {:transient, :x}}, row, @now)
 
       assert DateTime.diff(next, @now) == 60
-      assert %{status: "failed"} = FoodCachePolicy.after_lookup({:error, :x}, %{row | attempts: 6}, @now)
-      assert %{status: "found"} = FoodCachePolicy.after_lookup({:error, :x}, %{attempts: 6, name: "Y"}, @now)
-      assert %{status: "not_found", attempts: 0} = FoodCachePolicy.after_lookup({:error, :not_found}, row, @now)
-      assert %{status: "found", name: "Y"} = FoodCachePolicy.after_lookup({:ok, %{name: "Y"}}, row, @now)
+
+      assert %{status: "failed"} =
+               FoodCachePolicy.after_lookup({:error, :x}, %{row | attempts: 6}, @now)
+
+      assert %{status: "found"} =
+               FoodCachePolicy.after_lookup({:error, :x}, %{attempts: 6, name: "Y"}, @now)
+
+      assert %{status: "not_found", attempts: 0} =
+               FoodCachePolicy.after_lookup({:error, :not_found}, row, @now)
+
+      assert %{status: "found", name: "Y"} =
+               FoodCachePolicy.after_lookup({:ok, %{name: "Y"}}, row, @now)
     end
 
     test "attribution names the source and its licence" do

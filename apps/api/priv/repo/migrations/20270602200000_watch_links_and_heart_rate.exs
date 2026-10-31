@@ -33,8 +33,9 @@ defmodule Palee.Repo.Migrations.WatchLinksAndHeartRate do
     create table(:execution_heart_rate_batches, primary_key: false) do
       add :id, :binary_id, primary_key: true
 
-      add :execution_id, references(:workout_executions, type: :binary_id, on_delete: :delete_all),
-        null: false
+      add :execution_id,
+          references(:workout_executions, type: :binary_id, on_delete: :delete_all),
+          null: false
 
       add :user_id, references(:users, type: :binary_id, on_delete: :delete_all), null: false
       add :platform, :string, size: 16, null: false

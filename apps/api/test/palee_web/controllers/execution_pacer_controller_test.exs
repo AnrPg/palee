@@ -64,7 +64,10 @@ defmodule PaleeWeb.ExecutionPacerControllerTest do
 
     # Nothing to race on a first attempt.
     assert %{"pacer" => %{"previous" => nil, "checkpoints" => []}} =
-             ctx.conn |> as(ctx.member) |> get("/api/executions/#{first}/pacer") |> json_response(200)
+             ctx.conn
+             |> as(ctx.member)
+             |> get("/api/executions/#{first}/pacer")
+             |> json_response(200)
 
     complete!(ctx.conn, ctx.member, first)
     second = start!(ctx.conn, ctx.member, ctx.workout)
@@ -77,7 +80,10 @@ defmodule PaleeWeb.ExecutionPacerControllerTest do
     |> json_response(200)
 
     assert %{"pacer" => pacer} =
-             ctx.conn |> as(ctx.member) |> get("/api/executions/#{second}/pacer") |> json_response(200)
+             ctx.conn
+             |> as(ctx.member)
+             |> get("/api/executions/#{second}/pacer")
+             |> json_response(200)
 
     assert pacer["previous"]["execution_id"] == first
     assert pacer["previous"]["same_workout"]
@@ -113,7 +119,10 @@ defmodule PaleeWeb.ExecutionPacerControllerTest do
              |> json_response(422)
 
     for path <- ["/pacer", "/watch-plan", "/heart-rate"] do
-      assert ctx.conn |> as(ctx.other) |> get("/api/executions/#{execution}#{path}") |> json_response(404)
+      assert ctx.conn
+             |> as(ctx.other)
+             |> get("/api/executions/#{execution}#{path}")
+             |> json_response(404)
     end
 
     assert ctx.conn
@@ -155,7 +164,14 @@ defmodule PaleeWeb.ExecutionPacerControllerTest do
              |> json_post("/api/executions/#{execution}/heart-rate", body)
              |> json_response(200)
 
-    assert %{"heart_rate" => %{"samples" => 4, "average_bpm" => 135, "max_bpm" => 150, "zones" => []}} =
+    assert %{
+             "heart_rate" => %{
+               "samples" => 4,
+               "average_bpm" => 135,
+               "max_bpm" => 150,
+               "zones" => []
+             }
+           } =
              ctx.conn
              |> as(ctx.member)
              |> get("/api/executions/#{execution}/heart-rate")

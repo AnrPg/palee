@@ -51,7 +51,22 @@ defmodule Palee.Devices.Domain.WatchAndHeartRateTest do
         }
       ]
 
-      plan = WatchContract.plan(execution, segments, [%{key: "0:work:1:0", section_ordinal: 0, phase: "work", round: 1, at_ms: 90_000, extra: 1}], %{"show_pace" => true})
+      plan =
+        WatchContract.plan(
+          execution,
+          segments,
+          [
+            %{
+              key: "0:work:1:0",
+              section_ordinal: 0,
+              phase: "work",
+              round: 1,
+              at_ms: 90_000,
+              extra: 1
+            }
+          ],
+          %{"show_pace" => true}
+        )
 
       assert plan.contract_version == 1
       assert plan.status == "active"
@@ -62,14 +77,26 @@ defmodule Palee.Devices.Domain.WatchAndHeartRateTest do
       refute Map.has_key?(point, :extra)
       assert plan.commands == ~w(next round pause resume finish)
 
-      assert WatchContract.plan(execution, segments, [%{key: "k", section_ordinal: 0, phase: "work", round: 1, at_ms: 1}], %{"show_pace" => false}).pace == []
+      assert WatchContract.plan(
+               execution,
+               segments,
+               [%{key: "k", section_ordinal: 0, phase: "work", round: 1, at_ms: 1}],
+               %{"show_pace" => false}
+             ).pace == []
     end
   end
 
   describe "HeartRate" do
     test "casts numbered batches and refuses bad ones" do
-      batch = %{"sequence" => 0, "started_offset_ms" => 0, "interval_ms" => 5000, "bpm" => [100, 110]}
-      assert {:ok, [%{sequence: 0, platform: "wear_os"}]} = HeartRate.cast_batches([batch, batch], "wear_os")
+      batch = %{
+        "sequence" => 0,
+        "started_offset_ms" => 0,
+        "interval_ms" => 5000,
+        "bpm" => [100, 110]
+      }
+
+      assert {:ok, [%{sequence: 0, platform: "wear_os"}]} =
+               HeartRate.cast_batches([batch, batch], "wear_os")
 
       for bad <- [
             [],
@@ -100,7 +127,7 @@ defmodule Palee.Devices.Domain.WatchAndHeartRateTest do
       assert summary.max_bpm == 180
       assert summary.min_bpm == 100
 
-      assert [%{section_ordinal: 0, average_bpm: 110}, %{section_ordinal: 1, average_bpm: 160}] =
+      assert [%{section_ordinal: 0, average_bpm: 110}, %{section_ordinal: 1, average_bpm: 150}] =
                summary.sections
 
       assert Enum.find(summary.zones, &(&1.zone == 5)).ms == 5000

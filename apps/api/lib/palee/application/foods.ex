@@ -31,9 +31,14 @@ defmodule Palee.Application.Foods do
       {:ok, code} ->
         visible? = macros_visible?(context, user_id)
 
-        case FoodStore.with_context(context, fn -> FoodStore.custom_food_by_barcode(user_id, code) end) do
-          %{} = food -> {:ok, result(code, "found", "custom", present_custom(food, visible?), visible?)}
-          nil -> {:ok, from_cache(code, language, visible?)}
+        case FoodStore.with_context(context, fn ->
+               FoodStore.custom_food_by_barcode(user_id, code)
+             end) do
+          %{} = food ->
+            {:ok, result(code, "found", "custom", present_custom(food, visible?), visible?)}
+
+          nil ->
+            {:ok, from_cache(code, language, visible?)}
         end
     end
   end
@@ -81,7 +86,11 @@ defmodule Palee.Application.Foods do
       case FoodDatabase.lookup(row.barcode, language) do
         {:ok, attrs} ->
           {:ok,
-           Map.put(attrs, :portion_hint, Nutrition.portion_hint(attrs.nutrients, attrs.categories))}
+           Map.put(
+             attrs,
+             :portion_hint,
+             Nutrition.portion_hint(attrs.nutrients, attrs.categories)
+           )}
 
         other ->
           other
@@ -225,7 +234,9 @@ defmodule Palee.Application.Foods do
   end
 
   defp params_map(params) when is_struct(params), do: params |> Map.from_struct() |> params_map()
-  defp params_map(params) when is_map(params), do: Map.new(params, fn {k, v} -> {to_string(k), v} end)
-  defp params_map(_params), do: %{}
 
+  defp params_map(params) when is_map(params),
+    do: Map.new(params, fn {k, v} -> {to_string(k), v} end)
+
+  defp params_map(_params), do: %{}
 end

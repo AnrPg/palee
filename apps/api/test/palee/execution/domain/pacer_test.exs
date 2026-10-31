@@ -8,10 +8,36 @@ defmodule Palee.Execution.Domain.PacerTest do
   # An AMRAP (one countdown), a transition, then a 3-round EMOM.
   @segments [
     %{section_id: "a", section_name: "AMRAP 10", kind: :countdown, phase: "work", round: nil},
-    %{section_id: "a:transition", section_name: "AMRAP 10", kind: :countdown, phase: "transition"},
-    %{section_id: "b", section_name: "EMOM", kind: :countdown, phase: "work", round: 1, total_rounds: 3},
-    %{section_id: "b", section_name: "EMOM", kind: :countdown, phase: "work", round: 2, total_rounds: 3},
-    %{section_id: "b", section_name: "EMOM", kind: :countdown, phase: "work", round: 3, total_rounds: 3}
+    %{
+      section_id: "a:transition",
+      section_name: "AMRAP 10",
+      kind: :countdown,
+      phase: "transition"
+    },
+    %{
+      section_id: "b",
+      section_name: "EMOM",
+      kind: :countdown,
+      phase: "work",
+      round: 1,
+      total_rounds: 3
+    },
+    %{
+      section_id: "b",
+      section_name: "EMOM",
+      kind: :countdown,
+      phase: "work",
+      round: 2,
+      total_rounds: 3
+    },
+    %{
+      section_id: "b",
+      section_name: "EMOM",
+      kind: :countdown,
+      phase: "work",
+      round: 3,
+      total_rounds: 3
+    }
   ]
 
   describe "SplitMarks.cast/2" do
@@ -62,11 +88,41 @@ defmodule Palee.Execution.Domain.PacerTest do
       start = ~U[2026-10-30 10:00:00Z]
 
       candidates = [
-        %{id: "now", key: "benchmark:fran", status: :active, completed_at_utc: nil, scale_level_slug: "rx"},
-        %{id: "old-rx", key: "benchmark:fran", status: :completed, completed_at_utc: ~U[2026-09-01 10:00:00Z], scale_level_slug: "rx"},
-        %{id: "new-scaled", key: "benchmark:fran", status: "completed", completed_at_utc: ~U[2026-10-01 10:00:00Z], scale_level_slug: "scaled"},
-        %{id: "grace", key: "benchmark:grace", status: :completed, completed_at_utc: ~U[2026-10-02 10:00:00Z], scale_level_slug: "rx"},
-        %{id: "later", key: "benchmark:fran", status: :completed, completed_at_utc: ~U[2026-10-31 10:00:00Z], scale_level_slug: "rx"}
+        %{
+          id: "now",
+          key: "benchmark:fran",
+          status: :active,
+          completed_at_utc: nil,
+          scale_level_slug: "rx"
+        },
+        %{
+          id: "old-rx",
+          key: "benchmark:fran",
+          status: :completed,
+          completed_at_utc: ~U[2026-09-01 10:00:00Z],
+          scale_level_slug: "rx"
+        },
+        %{
+          id: "new-scaled",
+          key: "benchmark:fran",
+          status: "completed",
+          completed_at_utc: ~U[2026-10-01 10:00:00Z],
+          scale_level_slug: "scaled"
+        },
+        %{
+          id: "grace",
+          key: "benchmark:grace",
+          status: :completed,
+          completed_at_utc: ~U[2026-10-02 10:00:00Z],
+          scale_level_slug: "rx"
+        },
+        %{
+          id: "later",
+          key: "benchmark:fran",
+          status: :completed,
+          completed_at_utc: ~U[2026-10-31 10:00:00Z],
+          scale_level_slug: "rx"
+        }
       ]
 
       current = %{id: "now", key: "benchmark:fran", started_at_utc: start, scale_level_slug: "rx"}
@@ -110,7 +166,13 @@ defmodule Palee.Execution.Domain.PacerTest do
       assert result.precision == "rounds"
 
       assert [
-               %{round: 1, ghost_at_ms: 100_000, at_ms: 90_000, delta_ms: -10_000, section_name: "AMRAP 10"},
+               %{
+                 round: 1,
+                 ghost_at_ms: 100_000,
+                 at_ms: 90_000,
+                 delta_ms: -10_000,
+                 section_name: "AMRAP 10"
+               },
                %{round: 2, ghost_lap_ms: 100_000, lap_ms: 120_000, delta_ms: 10_000},
                %{section_ordinal: 1, section_name: "EMOM", at_ms: nil, delta_ms: nil}
              ] = result.checkpoints
@@ -133,6 +195,12 @@ defmodule Palee.Execution.Domain.PacerTest do
   end
 
   defp split(ordinal, round, at) do
-    %{section_ordinal: ordinal, phase: "work", round: round, elapsed_ms: at, segment_index: ordinal}
+    %{
+      section_ordinal: ordinal,
+      phase: "work",
+      round: round,
+      elapsed_ms: at,
+      segment_index: ordinal
+    }
   end
 end

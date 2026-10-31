@@ -3419,7 +3419,8 @@ defmodule PaleeWeb.FallbackController do
       {:unprocessable_entity, "Settings are on/off, and the maximum heart rate 120–230"},
     invalid_heart_rate_batch:
       {:unprocessable_entity, "Send up to 30 numbered batches of up to 720 readings"},
-    invalid_barcode: {:unprocessable_entity, "That isn't a product barcode; try again or type it"},
+    invalid_barcode:
+      {:unprocessable_entity, "That isn't a product barcode; try again or type it"},
     invalid_nutrients: {:unprocessable_entity, "Grams per 100 g, from 0 to 100"},
     unknown_rank: {:unprocessable_entity, "Choose one of this ladder's ranks"},
     rank_not_above_current:

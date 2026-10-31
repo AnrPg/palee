@@ -18,7 +18,9 @@ defmodule Palee.Application.RankStanding do
     today = Clock.today()
 
     ladders
-    |> Enum.map(&ladder_standing(&1, Enum.filter(awards, fn a -> a.ladder_id == &1.id end), history, today))
+    |> Enum.map(
+      &ladder_standing(&1, Enum.filter(awards, fn a -> a.ladder_id == &1.id end), history, today)
+    )
   end
 
   defp attendance(_context, _user_id, []), do: []

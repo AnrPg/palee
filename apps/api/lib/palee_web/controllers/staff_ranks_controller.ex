@@ -22,7 +22,12 @@ defmodule PaleeWeb.StaffRanksController do
     required: true,
     schema: %Schema{type: :string, format: :uuid}
   }
-  @id %Parameter{name: :id, in: :path, required: true, schema: %Schema{type: :string, format: :uuid}}
+  @id %Parameter{
+    name: :id,
+    in: :path,
+    required: true,
+    schema: %Schema{type: :string, format: :uuid}
+  }
 
   operation(:client,
     summary: "A client's rank on each ladder, progress to the next and history",

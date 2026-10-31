@@ -19,7 +19,15 @@ defmodule Palee.Infrastructure.Nutrition.EctoFoodStore do
   def request_lookup(barcode, now) do
     Repo.insert_all(
       CachedFood,
-      [%{barcode: barcode, status: "pending", next_attempt_at: now, inserted_at: now, updated_at: now}],
+      [
+        %{
+          barcode: barcode,
+          status: "pending",
+          next_attempt_at: now,
+          inserted_at: now,
+          updated_at: now
+        }
+      ],
       on_conflict: [set: [status: "pending", next_attempt_at: now, attempts: 0, updated_at: now]],
       conflict_target: [:barcode]
     )

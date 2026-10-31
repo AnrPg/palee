@@ -41,7 +41,10 @@ defmodule Palee.Application.WatchCompanion do
           link = WatchStore.get_link(user_id, platform)
 
           with {:ok, settings} <-
-                 Devices.merge_watch_settings(link && link.settings, param(params, "settings") || %{}),
+                 Devices.merge_watch_settings(
+                   link && link.settings,
+                   param(params, "settings") || %{}
+                 ),
                {:ok, saved} <-
                  WatchStore.save_link(link, %{
                    user_id: user_id,
@@ -72,7 +75,8 @@ defmodule Palee.Application.WatchCompanion do
       {workout, segments} = ExecutionTimerSequence.with_workout(execution)
 
       settings =
-        case platform && WatchStore.with_context(context, fn -> WatchStore.get_link(user_id, platform) end) do
+        case platform &&
+               WatchStore.with_context(context, fn -> WatchStore.get_link(user_id, platform) end) do
           %{settings: settings} -> settings
           _none -> %{}
         end
@@ -113,7 +117,8 @@ defmodule Palee.Application.WatchCompanion do
 
       max_hr = Enum.find_value(links, &Map.get(&1.settings || %{}, "max_hr"))
 
-      {:ok, Map.put(Devices.heart_rate_summary(batches, windows, max_hr), :execution_id, execution.id)}
+      {:ok,
+       Map.put(Devices.heart_rate_summary(batches, windows, max_hr), :execution_id, execution.id)}
     end
   end
 

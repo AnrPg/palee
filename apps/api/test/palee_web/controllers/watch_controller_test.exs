@@ -9,10 +9,19 @@ defmodule PaleeWeb.WatchControllerTest do
     member = user_fixture()
     other = user_fixture()
 
-    assert %{"contract" => %{"version" => 1, "platforms" => ["apple_watch", "wear_os"]}, "watches" => []} =
+    assert %{
+             "contract" => %{"version" => 1, "platforms" => ["apple_watch", "wear_os"]},
+             "watches" => []
+           } =
              conn |> as(member) |> get("/api/me/devices/watches") |> json_response(200)
 
-    assert %{"watch" => %{"platform" => "wear_os", "settings" => settings, "needs_upgrade" => false}} =
+    assert %{
+             "watch" => %{
+               "platform" => "wear_os",
+               "settings" => settings,
+               "needs_upgrade" => false
+             }
+           } =
              conn
              |> as(member)
              |> send_json(:put, "/api/me/devices/watches/wear_os", %{
@@ -29,7 +38,10 @@ defmodule PaleeWeb.WatchControllerTest do
     assert %{"watch" => %{"settings" => %{"haptics" => false, "max_hr" => 190}}} =
              conn
              |> as(member)
-             |> send_json(:put, "/api/me/devices/watches/wear_os", %{contract_version: 1, settings: %{max_hr: 190}})
+             |> send_json(:put, "/api/me/devices/watches/wear_os", %{
+               contract_version: 1,
+               settings: %{max_hr: 190}
+             })
              |> json_response(200)
 
     assert %{"code" => "watch_upgrade_required"} =
@@ -38,10 +50,13 @@ defmodule PaleeWeb.WatchControllerTest do
              |> send_json(:put, "/api/me/devices/watches/apple_watch", %{contract_version: 2})
              |> json_response(426)
 
-    assert %{"code" => "invalid_watch_settings"} =
+    assert %{"errors" => [%{"source" => %{"pointer" => "/settings/max_hr"}}]} =
              conn
              |> as(member)
-             |> send_json(:put, "/api/me/devices/watches/apple_watch", %{contract_version: 1, settings: %{max_hr: 100}})
+             |> send_json(:put, "/api/me/devices/watches/apple_watch", %{
+               contract_version: 1,
+               settings: %{max_hr: 100}
+             })
              |> json_response(422)
 
     assert %{"watches" => [%{"platform" => "wear_os"}]} =

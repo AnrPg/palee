@@ -111,7 +111,8 @@ defmodule Palee.Repo.Migrations.RankLadders do
     create index(:rank_awards, [:organization_id, :user_id, :ladder_id])
 
     create constraint(:rank_awards, :rank_awards_check,
-             check: "stripes BETWEEN 0 AND 10 AND (revoked_at IS NULL OR revoke_reason IS NOT NULL)"
+             check:
+               "stripes BETWEEN 0 AND 10 AND (revoked_at IS NULL OR revoke_reason IS NOT NULL)"
            )
 
     for table <- @tables do

@@ -73,7 +73,12 @@ defmodule Palee.Nutrition.Domain.FoodCachePolicy do
     attempts = row.attempts || 1
 
     if attempts >= @max_attempts do
-      %{status: failed_status(row), next_attempt_at: nil, claimed_at: nil, last_error: describe(reason)}
+      %{
+        status: failed_status(row),
+        next_attempt_at: nil,
+        claimed_at: nil,
+        last_error: describe(reason)
+      }
     else
       minutes = Enum.at(@backoff_minutes, attempts - 1, 60)
 

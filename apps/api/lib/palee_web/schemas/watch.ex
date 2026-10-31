@@ -122,7 +122,10 @@ defmodule PaleeWeb.Schemas.Watch do
             type: :object,
             properties: %{
               name: %Schema{type: :string},
-              amount: %Schema{nullable: true, oneOf: [%Schema{type: :number}, %Schema{type: :string}]},
+              amount: %Schema{
+                nullable: true,
+                oneOf: [%Schema{type: :number}, %Schema{type: :string}]
+              },
               unit: @maybe_string
             },
             required: [:name]
@@ -200,7 +203,12 @@ defmodule PaleeWeb.Schemas.Watch do
   end
 
   def plan_response do
-    %Schema{title: "WatchPlanResponse", type: :object, properties: %{plan: plan()}, required: [:plan]}
+    %Schema{
+      title: "WatchPlanResponse",
+      type: :object,
+      properties: %{plan: plan()},
+      required: [:plan]
+    }
   end
 
   def heart_rate_request do
@@ -219,7 +227,12 @@ defmodule PaleeWeb.Schemas.Watch do
               sequence: %Schema{type: :integer, minimum: 0},
               started_offset_ms: %Schema{type: :integer, minimum: 0},
               interval_ms: %Schema{type: :integer, minimum: 1000, maximum: 60_000},
-              bpm: %Schema{type: :array, minItems: 1, maxItems: 720, items: %Schema{type: :integer}}
+              bpm: %Schema{
+                type: :array,
+                minItems: 1,
+                maxItems: 720,
+                items: %Schema{type: :integer}
+              }
             },
             required: [:bpm, :interval_ms, :sequence, :started_offset_ms]
           }

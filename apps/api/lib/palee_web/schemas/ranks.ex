@@ -68,7 +68,12 @@ defmodule PaleeWeb.Schemas.Ranks do
       title: "RankInput",
       type: :object,
       properties: %{
-        id: %Schema{type: :string, format: :uuid, nullable: true, description: "Keep an existing rank"},
+        id: %Schema{
+          type: :string,
+          format: :uuid,
+          nullable: true,
+          description: "Keep an existing rank"
+        },
         name: %Schema{type: :string, maxLength: 60},
         color: @color,
         max_stripes: %Schema{type: :integer, minimum: 0, maximum: 10},
@@ -99,7 +104,12 @@ defmodule PaleeWeb.Schemas.Ranks do
   end
 
   def ladder_response do
-    %Schema{title: "RankLadderResponse", type: :object, properties: %{ladder: ladder()}, required: [:ladder]}
+    %Schema{
+      title: "RankLadderResponse",
+      type: :object,
+      properties: %{ladder: ladder()},
+      required: [:ladder]
+    }
   end
 
   def ladders_response do
@@ -108,7 +118,10 @@ defmodule PaleeWeb.Schemas.Ranks do
       type: :object,
       properties: %{
         ladders: %Schema{type: :array, items: ladder()},
-        templates: %Schema{type: :array, items: %Schema{type: :object, additionalProperties: true}},
+        templates: %Schema{
+          type: :array,
+          items: %Schema{type: :object, additionalProperties: true}
+        },
         colors: %Schema{type: :array, items: %Schema{type: :string}}
       },
       required: [:colors, :ladders, :templates]
@@ -173,7 +186,8 @@ defmodule PaleeWeb.Schemas.Ranks do
         progress: %Schema{
           type: :object,
           nullable: true,
-          description: "Towards the next rank; `ready` only says the counted requirements are met",
+          description:
+            "Towards the next rank; `ready` only says the counted requirements are met",
           properties: %{
             rank_id: @uuid,
             classes: count,
@@ -227,7 +241,12 @@ defmodule PaleeWeb.Schemas.Ranks do
   end
 
   def award_response do
-    %Schema{title: "RankAwardResponse", type: :object, properties: %{award: award()}, required: [:award]}
+    %Schema{
+      title: "RankAwardResponse",
+      type: :object,
+      properties: %{award: award()},
+      required: [:award]
+    }
   end
 
   def pdf, do: %Schema{type: :string, format: :binary}

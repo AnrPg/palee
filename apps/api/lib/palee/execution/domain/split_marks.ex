@@ -27,7 +27,9 @@ defmodule Palee.Execution.Domain.SplitMarks do
   @doc "`{:ok, rows}` ready to store, or `{:error, :invalid_split_marks}`."
   def cast(marks, segments) when is_list(marks) and is_list(segments) do
     ordinals = section_ordinals(segments)
-    indexed = segments |> Enum.with_index() |> Map.new(fn {segment, index} -> {index, segment} end)
+
+    indexed =
+      segments |> Enum.with_index() |> Map.new(fn {segment, index} -> {index, segment} end)
 
     if marks != [] and length(marks) <= @max_marks do
       marks
@@ -38,8 +40,11 @@ defmodule Palee.Execution.Domain.SplitMarks do
         end
       end)
       |> case do
-        {:ok, rows} -> {:ok, rows |> Enum.reverse() |> Enum.uniq_by(&{&1.segment_index, &1.round})}
-        error -> error
+        {:ok, rows} ->
+          {:ok, rows |> Enum.reverse() |> Enum.uniq_by(&{&1.segment_index, &1.round})}
+
+        error ->
+          error
       end
     else
       {:error, :invalid_split_marks}

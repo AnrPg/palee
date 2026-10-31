@@ -15,7 +15,12 @@ defmodule PaleeWeb.WatchController do
 
   plug OpenApiSpex.Plug.CastAndValidate, json_render_error_v2: true
 
-  @id %Parameter{name: :id, in: :path, required: true, schema: %Schema{type: :string, format: :uuid}}
+  @id %Parameter{
+    name: :id,
+    in: :path,
+    required: true,
+    schema: %Schema{type: :string, format: :uuid}
+  }
   @platform %Parameter{name: :platform, in: :path, required: true, schema: S.platform()}
 
   operation(:index,

@@ -37,7 +37,11 @@ defmodule Palee.Application.RankCertificates do
           revoked: not is_nil(award.revoked_at)
         }
 
-        {:ok, %{filename: "diploma-#{award.certificate_number}.pdf", data: Ranks.certificate_pdf(view, Fonts.sans())}}
+        {:ok,
+         %{
+           filename: "diploma-#{award.certificate_number}.pdf",
+           data: Ranks.certificate_pdf(view, Fonts.sans())
+         }}
     end
   end
 

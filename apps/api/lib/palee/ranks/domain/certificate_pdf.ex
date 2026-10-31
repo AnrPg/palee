@@ -46,7 +46,13 @@ defmodule Palee.Ranks.Domain.CertificatePdf do
     |> centered(center, 570, view.ladder, :regular, 14)
     |> centered(center, 535, rank_line(view), :bold, 20)
     |> belt(center, view.color, view.stripes)
-    |> centered(center, 420, "Ημερομηνία: #{Calendar.strftime(view.awarded_on, "%d/%m/%Y")}", :regular, 12)
+    |> centered(
+      center,
+      420,
+      "Ημερομηνία: #{Calendar.strftime(view.awarded_on, "%d/%m/%Y")}",
+      :regular,
+      12
+    )
     |> centered(center, 400, awarded_by(view.awarded_by), :regular, 12)
     |> centered(center, 120, "Αριθμός διπλώματος #{view.number}", :regular, 10)
     |> revoked(center, view.revoked)

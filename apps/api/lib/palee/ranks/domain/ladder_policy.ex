@@ -54,7 +54,8 @@ defmodule Palee.Ranks.Domain.LadderPolicy do
     end
   end
 
-  def cast_ranks(_ranks, _scale_levels), do: {:error, {:invalid_ranks, "send the ranks as a list"}}
+  def cast_ranks(_ranks, _scale_levels),
+    do: {:error, {:invalid_ranks, "send the ranks as a list"}}
 
   defp unique_names(ranks) do
     names = Enum.map(ranks, &String.downcase(&1.name))
@@ -70,10 +71,15 @@ defmodule Palee.Ranks.Domain.LadderPolicy do
     stripes = get(rank, :max_stripes) || 0
     slug = get(rank, :scale_level_slug)
 
-    with :ok <- check(is_binary(name) and name != "" and String.length(name) <= 60, "name each rank (up to 60 characters)"),
+    with :ok <-
+           check(
+             is_binary(name) and name != "" and String.length(name) <= 60,
+             "name each rank (up to 60 characters)"
+           ),
          :ok <- check(is_nil(color) or color in @colors, "choose a colour from the palette"),
          :ok <- check(is_integer(stripes) and stripes in 0..10, "stripes are 0 to 10"),
-         :ok <- check(is_nil(slug) or slug in scale_levels, "choose one of the box's scale levels"),
+         :ok <-
+           check(is_nil(slug) or slug in scale_levels, "choose one of the box's scale levels"),
          {:ok, requirements} <- cast_requirements(get(rank, :requirements)),
          :ok <- check(id_ok?(get(rank, :id)), "a rank id is not valid") do
       {:ok,
@@ -99,16 +105,28 @@ defmodule Palee.Ranks.Domain.LadderPolicy do
     days = get(requirements, :min_days)
     skills = get(requirements, :skills) || []
 
-    with :ok <- check(is_nil(classes) or (is_integer(classes) and classes in 0..2000), "classes are 0 to 2000"),
-         :ok <- check(is_nil(days) or (is_integer(days) and days in 0..3650), "days are 0 to 3650"),
+    with :ok <-
+           check(
+             is_nil(classes) or (is_integer(classes) and classes in 0..2000),
+             "classes are 0 to 2000"
+           ),
+         :ok <-
+           check(is_nil(days) or (is_integer(days) and days in 0..3650), "days are 0 to 3650"),
          :ok <-
            check(
              is_list(skills) and length(skills) <= @max_skills and
-               Enum.all?(skills, &(is_binary(&1) and String.trim(&1) != "" and String.length(&1) <= 120)),
+               Enum.all?(
+                 skills,
+                 &(is_binary(&1) and String.trim(&1) != "" and String.length(&1) <= 120)
+               ),
              "up to #{@max_skills} skills of up to 120 characters"
            ) do
       {:ok,
-       %{"min_classes" => classes, "min_days" => days, "skills" => Enum.map(skills, &String.trim/1)}
+       %{
+         "min_classes" => classes,
+         "min_days" => days,
+         "skills" => Enum.map(skills, &String.trim/1)
+       }
        |> Enum.reject(fn {_key, value} -> value in [nil, []] end)
        |> Map.new()}
     end

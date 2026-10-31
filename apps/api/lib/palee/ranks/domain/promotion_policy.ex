@@ -19,7 +19,10 @@ defmodule Palee.Ranks.Domain.PromotionPolicy do
   def current(awards) do
     awards
     |> Enum.filter(&is_nil(&1.revoked_at))
-    |> Enum.max_by(&{Date.to_gregorian_days(&1.awarded_on), DateTime.to_unix(&1.inserted_at, :microsecond)}, fn -> nil end)
+    |> Enum.max_by(
+      &{Date.to_gregorian_days(&1.awarded_on), DateTime.to_unix(&1.inserted_at, :microsecond)},
+      fn -> nil end
+    )
   end
 
   @doc "The rank after `current_rank` in `ranks` (ordered), or the first one."

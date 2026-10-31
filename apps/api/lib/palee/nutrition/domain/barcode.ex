@@ -47,7 +47,9 @@ defmodule Palee.Nutrition.Domain.Barcode do
       body
       |> Enum.reverse()
       |> Enum.with_index()
-      |> Enum.reduce(0, fn {digit, i}, acc -> acc + if(rem(i, 2) == 0, do: digit * 3, else: digit) end)
+      |> Enum.reduce(0, fn {digit, i}, acc ->
+        acc + if(rem(i, 2) == 0, do: digit * 3, else: digit)
+      end)
 
     rem(10 - rem(sum, 10), 10) == check
   end

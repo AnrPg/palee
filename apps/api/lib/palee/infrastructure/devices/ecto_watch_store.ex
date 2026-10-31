@@ -17,11 +17,14 @@ defmodule Palee.Infrastructure.Devices.EctoWatchStore do
   end
 
   @impl true
-  def get_link(user_id, platform), do: Repo.get_by(WatchLink, user_id: user_id, platform: platform)
+  def get_link(user_id, platform),
+    do: Repo.get_by(WatchLink, user_id: user_id, platform: platform)
 
   @impl true
   def save_link(nil, attrs), do: attrs |> WatchLink.changeset() |> Repo.insert()
-  def save_link(%WatchLink{} = link, attrs), do: link |> WatchLink.changeset(attrs) |> Repo.update()
+
+  def save_link(%WatchLink{} = link, attrs),
+    do: link |> WatchLink.changeset(attrs) |> Repo.update()
 
   @impl true
   def delete_link(user_id, platform) do

@@ -33,7 +33,9 @@ defmodule Palee.Infrastructure.Nutrition.OpenFoodFactsClientTest do
     assert {:error, :not_found} = OpenFoodFactsClient.lookup("5201234500006", "el")
 
     Req.Test.stub(Palee.OpenFoodFacts, &Plug.Conn.send_resp(&1, 503, "busy"))
-    assert {:error, {:transient, {:http, 503}}} = OpenFoodFactsClient.lookup("5201234500006", "el")
+
+    assert {:error, {:transient, {:http, 503}}} =
+             OpenFoodFactsClient.lookup("5201234500006", "el")
 
     Req.Test.stub(Palee.OpenFoodFacts, &Req.Test.json(&1, %{"status" => 1, "product" => %{}}))
     assert {:error, :not_found} = OpenFoodFactsClient.lookup("5201234500006", "el")

@@ -25,7 +25,9 @@ defmodule Palee.Application.ExecutionPacer do
            segments = ExecutionTimerSequence.for_execution(execution),
            {:ok, rows} <- Execution.cast_split_marks(marks, segments),
            {:ok, stored} <- SplitStore.insert_splits(execution.id, user_id, rows, Clock.now()) do
-        total = execution.id |> List.wrap() |> SplitStore.list_splits() |> Map.get(execution.id, [])
+        total =
+          execution.id |> List.wrap() |> SplitStore.list_splits() |> Map.get(execution.id, [])
+
         {:ok, %{stored: stored, total: length(total)}}
       end
     end)
@@ -34,7 +36,9 @@ defmodule Palee.Application.ExecutionPacer do
   @doc "`{:ok, pacer}`; `pacer.previous` is nil when there is nothing to race."
   def show(%{user_id: user_id} = context, execution_id) do
     with {:ok, execution} <-
-           ExecutionStore.with_user_context(context, fn -> own_execution(execution_id, user_id) end),
+           ExecutionStore.with_user_context(context, fn ->
+             own_execution(execution_id, user_id)
+           end),
          {:ok, executions} <- ListWorkoutExecutions.call(context, user_id) do
       candidates = Enum.map(executions, &candidate/1)
       current = Enum.find(candidates, &(&1.id == execution.id)) || candidate(execution)
@@ -75,7 +79,9 @@ defmodule Palee.Application.ExecutionPacer do
 
   defp pacer(context, execution, previous) do
     splits =
-      SplitStore.with_context(context, fn -> SplitStore.list_splits([execution.id, previous.id]) end)
+      SplitStore.with_context(context, fn ->
+        SplitStore.list_splits([execution.id, previous.id])
+      end)
 
     current_segments = ExecutionTimerSequence.for_execution(execution)
 

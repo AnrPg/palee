@@ -15,7 +15,12 @@ defmodule PaleeWeb.AdminRankLaddersController do
 
   plug OpenApiSpex.Plug.CastAndValidate, json_render_error_v2: true
 
-  @id %Parameter{name: :id, in: :path, required: true, schema: %Schema{type: :string, format: :uuid}}
+  @id %Parameter{
+    name: :id,
+    in: :path,
+    required: true,
+    schema: %Schema{type: :string, format: :uuid}
+  }
 
   operation(:index,
     summary: "The box's ladders, the templates and the belt palette",

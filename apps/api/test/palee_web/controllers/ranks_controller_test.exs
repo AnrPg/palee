@@ -30,7 +30,8 @@ defmodule PaleeWeb.RanksControllerTest do
     }
   end
 
-  test "a ladder from a template, promotions, stripes, withdrawal and diplomas", %{conn: conn} = ctx do
+  test "a ladder from a template, promotions, stripes, withdrawal and diplomas",
+       %{conn: conn} = ctx do
     assert %{"ladder" => %{"id" => ladder_id, "ranks" => [white, blue | _]} = ladder} =
              conn
              |> as(ctx.owner)
@@ -50,7 +51,11 @@ defmodule PaleeWeb.RanksControllerTest do
     award = fn body ->
       conn
       |> as(ctx.owner)
-      |> send_json(:post, "#{ctx.staff}/clients/#{ctx.member.id}/ranks", Map.put(body, :ladder_id, ladder_id))
+      |> send_json(
+        :post,
+        "#{ctx.staff}/clients/#{ctx.member.id}/ranks",
+        Map.put(body, :ladder_id, ladder_id)
+      )
     end
 
     assert %{"award" => %{"rank_name" => "Λευκή", "certificate_number" => "R-" <> _}} =
@@ -95,17 +100,24 @@ defmodule PaleeWeb.RanksControllerTest do
     assert %{"award" => %{"revoked" => true}} =
              conn
              |> as(ctx.owner)
-             |> send_json(:post, "#{ctx.staff}/rank-awards/#{blue_award}/revoke", %{reason: "Λάθος καταχώρηση"})
+             |> send_json(:post, "#{ctx.staff}/rank-awards/#{blue_award}/revoke", %{
+               reason: "Λάθος καταχώρηση"
+             })
              |> json_response(200)
 
     assert %{"code" => "award_already_revoked"} =
              conn
              |> as(ctx.owner)
-             |> send_json(:post, "#{ctx.staff}/rank-awards/#{blue_award}/revoke", %{reason: "Ξανά"})
+             |> send_json(:post, "#{ctx.staff}/rank-awards/#{blue_award}/revoke", %{
+               reason: "Ξανά"
+             })
              |> json_response(409)
 
     assert %{"ladders" => [%{"current" => %{"rank" => %{"name" => "Λευκή"}, "stripes" => 2}}]} =
-             conn |> as(ctx.owner) |> get("#{ctx.staff}/clients/#{ctx.member.id}/ranks") |> json_response(200)
+             conn
+             |> as(ctx.owner)
+             |> get("#{ctx.staff}/clients/#{ctx.member.id}/ranks")
+             |> json_response(200)
 
     # A held rank can't be removed from the ladder.
     assert %{"code" => "rank_in_use"} =
@@ -119,7 +131,11 @@ defmodule PaleeWeb.RanksControllerTest do
              |> json_response(409)
 
     # Renaming and reordering keeps ids.
-    assert %{"ladder" => %{"ranks" => [%{"id" => white_id, "name" => "Άσπρη"}, %{"name" => "Μπλε"}]}} =
+    assert %{
+             "ladder" => %{
+               "ranks" => [%{"id" => white_id, "name" => "Άσπρη"}, %{"name" => "Μπλε"}]
+             }
+           } =
              conn
              |> as(ctx.owner)
              |> send_json(:put, "#{ctx.admin}/rank-ladders/#{ladder_id}", %{
@@ -134,14 +150,17 @@ defmodule PaleeWeb.RanksControllerTest do
 
     assert white_id == white["id"]
 
-    assert conn |> as(ctx.owner) |> delete("#{ctx.admin}/rank-ladders/#{ladder_id}") |> response(204)
+    assert conn
+           |> as(ctx.owner)
+           |> delete("#{ctx.admin}/rank-ladders/#{ladder_id}")
+           |> response(204)
 
     assert %{"ladders" => []} =
              conn |> as(ctx.owner) |> get("#{ctx.admin}/rank-ladders") |> json_response(200)
   end
 
   test "invalid ladders and another box's view", %{conn: conn} = ctx do
-    assert %{"code" => "invalid_ranks"} =
+    assert %{"errors" => [%{"source" => %{"pointer" => "/ranks/0/color"}}]} =
              conn
              |> as(ctx.owner)
              |> send_json(:post, "#{ctx.admin}/rank-ladders", %{

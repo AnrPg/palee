@@ -27,7 +27,12 @@ defmodule PaleeWeb.MyRanksController do
   operation(:certificate,
     summary: "My diploma for an award, as a PDF",
     parameters: [
-      %Parameter{name: :id, in: :path, required: true, schema: %Schema{type: :string, format: :uuid}}
+      %Parameter{
+        name: :id,
+        in: :path,
+        required: true,
+        schema: %Schema{type: :string, format: :uuid}
+      }
     ],
     responses: [
       ok: {"PDF", "application/pdf", S.pdf()},

@@ -45,7 +45,7 @@ defmodule Palee.Execution.Domain.Pacer do
     end)
     |> Enum.sort_by(
       &{if(&1.scale_level_slug == current.scale_level_slug, do: 1, else: 0),
-        DateTime.to_unix(&1.completed_at_utc, :microsecond)},
+       DateTime.to_unix(&1.completed_at_utc, :microsecond)},
       :desc
     )
     |> List.first()

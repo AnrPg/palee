@@ -21,23 +21,33 @@ defmodule PaleeWeb.FoodsControllerTest do
     :ok
   end
 
-  test "a scan finds the product, credits Open Food Facts and hides the numbers by default", %{conn: conn} do
+  test "a scan finds the product, credits Open Food Facts and hides the numbers by default", %{
+    conn: conn
+  } do
     member = user_fixture()
 
     assert %{
              "status" => "found",
              "source" => "open_food_facts",
              "macros_visible" => false,
-             "food" => %{"name" => "Γιαούρτι στραγγιστό 2%", "portion_hint" => "protein", "nutrients" => nil},
+             "food" => %{
+               "name" => "Γιαούρτι στραγγιστό 2%",
+               "portion_hint" => "protein",
+               "nutrients" => nil
+             },
              "attribution" => %{"licence" => "ODbL-1.0", "url" => url}
-           } = conn |> as(member) |> get("/api/me/foods/barcode/#{@yoghurt}") |> json_response(200)
+           } =
+             conn |> as(member) |> get("/api/me/foods/barcode/#{@yoghurt}") |> json_response(200)
 
     assert url =~ @yoghurt
     assert %{status: "found"} = Nutrition.FoodStore.get_cached(@yoghurt)
 
     # The cache answers the second scan; who scanned is never stored.
     assert %{"status" => "found"} =
-             conn |> as(user_fixture()) |> get("/api/me/foods/barcode/#{@yoghurt}") |> json_response(200)
+             conn
+             |> as(user_fixture())
+             |> get("/api/me/foods/barcode/#{@yoghurt}")
+             |> json_response(200)
 
     %{columns: columns} = Repo.query!("SELECT * FROM food_products LIMIT 0")
     refute "user_id" in columns
@@ -50,10 +60,16 @@ defmodule PaleeWeb.FoodsControllerTest do
              conn |> as(member) |> get("/api/me/foods/barcode/#{@unknown}") |> json_response(200)
 
     assert %{"status" => "manual", "reason" => "in_store_code"} =
-             conn |> as(member) |> get("/api/me/foods/barcode/2001234000000") |> json_response(200)
+             conn
+             |> as(member)
+             |> get("/api/me/foods/barcode/2001234000000")
+             |> json_response(200)
 
     assert %{"code" => "invalid_barcode"} =
-             conn |> as(member) |> get("/api/me/foods/barcode/5201054014618") |> json_response(422)
+             conn
+             |> as(member)
+             |> get("/api/me/foods/barcode/5201054014618")
+             |> json_response(422)
   end
 
   test "a failed lookup is left to the outbox", %{conn: conn} do
@@ -62,7 +78,9 @@ defmodule PaleeWeb.FoodsControllerTest do
     assert %{"status" => "pending"} =
              conn |> as(member) |> get("/api/me/foods/barcode/#{@down}") |> json_response(200)
 
-    assert %{status: "pending", attempts: 1, last_error: error} = Nutrition.FoodStore.get_cached(@down)
+    assert %{status: "pending", attempts: 1, last_error: error} =
+             Nutrition.FoodStore.get_cached(@down)
+
     assert error =~ "sandbox_down"
 
     # Not due yet: the worker leaves it alone.
@@ -104,10 +122,14 @@ defmodule PaleeWeb.FoodsControllerTest do
              |> send_json(:patch, "/api/me/foods/#{id}", %{name: "Παξιμάδι"})
              |> json_response(200)
 
-    assert conn |> as(other) |> send_json(:patch, "/api/me/foods/#{id}", %{name: "x"}) |> json_response(404)
+    assert conn
+           |> as(other)
+           |> send_json(:patch, "/api/me/foods/#{id}", %{name: "x"})
+           |> json_response(404)
+
     assert conn |> as(other) |> delete("/api/me/foods/#{id}") |> json_response(404)
 
-    assert %{"code" => "invalid_nutrients"} =
+    assert %{"errors" => [%{"source" => %{"pointer" => "/nutrients/fat"}}]} =
              conn
              |> as(member)
              |> send_json(:post, "/api/me/foods", %{name: "X", nutrients: %{fat: 150}})

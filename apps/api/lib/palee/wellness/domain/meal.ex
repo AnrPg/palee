@@ -94,11 +94,17 @@ defmodule Palee.Wellness.Domain.Meal do
     portion = EntryValue.get(item, "portion")
 
     with true <- is_binary(name) and String.trim(name) != "" and String.length(name) <= 120,
-         true <- is_nil(barcode) or (is_binary(barcode) and Regex.match?(~r/^[0-9]{8,14}$/, barcode)),
+         true <-
+           is_nil(barcode) or (is_binary(barcode) and Regex.match?(~r/^[0-9]{8,14}$/, barcode)),
          true <- is_nil(custom_id) or match?({:ok, _id}, Ecto.UUID.cast(custom_id)),
          true <- is_nil(portion) or portion in @portions do
       {:ok,
-       %{"name" => String.trim(name), "barcode" => barcode, "custom_food_id" => custom_id, "portion" => portion}
+       %{
+         "name" => String.trim(name),
+         "barcode" => barcode,
+         "custom_food_id" => custom_id,
+         "portion" => portion
+       }
        |> Enum.reject(fn {_key, value} -> is_nil(value) end)
        |> Map.new()}
     else

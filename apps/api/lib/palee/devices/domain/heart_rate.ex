@@ -24,7 +24,8 @@ defmodule Palee.Devices.Domain.HeartRate do
 
   @doc "`{:ok, rows}` or `{:error, :invalid_heart_rate_batch}`."
   def cast_batches(batches, platform) when is_list(batches) and batches != [] do
-    if length(batches) <= @max_batches and platform in Palee.Devices.Domain.WatchContract.platforms() do
+    if length(batches) <= @max_batches and
+         platform in Palee.Devices.Domain.WatchContract.platforms() do
       batches
       |> Enum.reduce_while({:ok, []}, fn batch, {:ok, rows} ->
         case cast_batch(batch) do

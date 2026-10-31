@@ -87,7 +87,9 @@ defmodule Palee.Nutrition.Domain.FoodProduct do
       key = to_string(key)
 
       cond do
-        is_nil(value) -> {:cont, {:ok, acc}}
+        is_nil(value) ->
+          {:cont, {:ok, acc}}
+
         key in @nutrients and is_number(value) and value >= 0 and value <= 100 ->
           {:cont, {:ok, Map.put(acc, key, value * 1.0)}}
 

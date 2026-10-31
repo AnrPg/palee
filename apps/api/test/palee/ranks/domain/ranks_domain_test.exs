@@ -21,7 +21,11 @@ defmodule Palee.Ranks.Domain.RanksDomainTest do
                      name: "Μπλε",
                      color: "blue",
                      scale_level_slug: "rx",
-                     requirements: %{min_classes: 100, min_days: 730, skills: ["Armbar ", "Triangle"]}
+                     requirements: %{
+                       min_classes: 100,
+                       min_days: 730,
+                       skills: ["Armbar ", "Triangle"]
+                     }
                    }
                  ],
                  ["scaled", "rx"]
@@ -29,7 +33,10 @@ defmodule Palee.Ranks.Domain.RanksDomainTest do
 
       assert %{position: 0, name: "Λευκή", max_stripes: 4, requirements: %{}} = white
 
-      assert %{position: 1, requirements: %{"min_classes" => 100, "skills" => ["Armbar", "Triangle"]}} =
+      assert %{
+               position: 1,
+               requirements: %{"min_classes" => 100, "skills" => ["Armbar", "Triangle"]}
+             } =
                blue
     end
 
@@ -68,16 +75,36 @@ defmodule Palee.Ranks.Domain.RanksDomainTest do
     end
 
     test "progress counts classes and days towards the next rank" do
-      ranks = [rank(0, %{}), rank(1, %{"min_classes" => 3, "min_days" => 100, "skills" => ["Armbar"]})]
+      ranks = [
+        rank(0, %{}),
+        rank(1, %{"min_classes" => 3, "min_days" => 100, "skills" => ["Armbar"]})
+      ]
+
       assert PromotionPolicy.next_rank(ranks, nil).position == 0
       assert PromotionPolicy.next_rank(ranks, hd(ranks)).position == 1
       assert PromotionPolicy.next_rank(ranks, List.last(ranks)) == nil
 
       history = [
-        %{attendance_status: "attended", class_type_id: "bjj", scheduled_at: ~U[2026-09-01 18:00:00Z]},
-        %{attendance_status: "attended", class_type_id: "bjj", scheduled_at: ~U[2026-01-01 18:00:00Z]},
-        %{attendance_status: "missed", class_type_id: "bjj", scheduled_at: ~U[2026-09-02 18:00:00Z]},
-        %{attendance_status: "attended", class_type_id: "yoga", scheduled_at: ~U[2026-09-03 18:00:00Z]}
+        %{
+          attendance_status: "attended",
+          class_type_id: "bjj",
+          scheduled_at: ~U[2026-09-01 18:00:00Z]
+        },
+        %{
+          attendance_status: "attended",
+          class_type_id: "bjj",
+          scheduled_at: ~U[2026-01-01 18:00:00Z]
+        },
+        %{
+          attendance_status: "missed",
+          class_type_id: "bjj",
+          scheduled_at: ~U[2026-09-02 18:00:00Z]
+        },
+        %{
+          attendance_status: "attended",
+          class_type_id: "yoga",
+          scheduled_at: ~U[2026-09-03 18:00:00Z]
+        }
       ]
 
       assert PromotionPolicy.count_attended(history, ["bjj"], ~D[2026-06-01]) == 1
@@ -106,12 +133,14 @@ defmodule Palee.Ranks.Domain.RanksDomainTest do
       assert {:error, :rank_not_above_current} =
                PromotionPolicy.validate_award(white, 0, [], blue, 0, @today, @today)
 
-      assert {:error, :too_many_stripes} = PromotionPolicy.validate_award(white, 5, [], nil, 0, @today, @today)
+      assert {:error, :too_many_stripes} =
+               PromotionPolicy.validate_award(white, 5, [], nil, 0, @today, @today)
 
       assert {:error, :award_in_future} =
                PromotionPolicy.validate_award(white, 0, [], nil, 0, ~D[2026-11-01], @today)
 
-      assert {:error, :unknown_skills} = PromotionPolicy.validate_award(blue, 0, ["Kimura"], nil, 0, @today, @today)
+      assert {:error, :unknown_skills} =
+               PromotionPolicy.validate_award(blue, 0, ["Kimura"], nil, 0, @today, @today)
     end
 
     test "diploma numbers" do
@@ -137,12 +166,26 @@ defmodule Palee.Ranks.Domain.RanksDomainTest do
     fonts = Palee.Pdf.Fonts.sans()
     texts = view |> CertificatePdf.texts(fonts) |> Enum.map(&elem_text/1) |> Enum.join("\n")
 
-    for text <- ["Dojo Αθήνα", "ΔΙΠΛΩΜΑ", "Μαρία", "Μπλε · 2 ρίγες", "31/10/2026", "Απονομή: Νίκος", "R-2026-3F9A1C2B"] do
+    for text <- [
+          "Dojo Αθήνα",
+          "ΔΙΠΛΩΜΑ",
+          "Μαρία",
+          "Μπλε · 2 ρίγες",
+          "31/10/2026",
+          "Απονομή: Νίκος",
+          "R-2026-3F9A1C2B"
+        ] do
       assert texts =~ text
     end
 
     refute texts =~ "Ανακλήθηκε"
-    assert view |> Map.put(:revoked, true) |> CertificatePdf.texts(fonts) |> Enum.map(&elem_text/1) |> Enum.member?("Ανακλήθηκε")
+
+    assert view
+           |> Map.put(:revoked, true)
+           |> CertificatePdf.texts(fonts)
+           |> Enum.map(&elem_text/1)
+           |> Enum.member?("Ανακλήθηκε")
+
     assert "%PDF" <> _rest = CertificatePdf.render(view, fonts)
   end
 

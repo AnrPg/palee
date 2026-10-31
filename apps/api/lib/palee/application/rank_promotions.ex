@@ -119,7 +119,9 @@ defmodule Palee.Application.RankPromotions do
   end
 
   defp params_map(params) when is_struct(params), do: params |> Map.from_struct() |> params_map()
-  defp params_map(params) when is_map(params), do: Map.new(params, fn {k, v} -> {to_string(k), v} end)
+
+  defp params_map(params) when is_map(params),
+    do: Map.new(params, fn {k, v} -> {to_string(k), v} end)
 
   defp get(params, key), do: Map.get(params_map(params), key)
 end

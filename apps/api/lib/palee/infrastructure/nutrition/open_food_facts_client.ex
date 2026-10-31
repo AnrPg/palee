@@ -27,7 +27,8 @@ defmodule Palee.Infrastructure.Nutrition.OpenFoodFactsClient do
       params: [fields: Enum.join(@fields, ",")],
       headers: [{"user-agent", Keyword.fetch!(config, :user_agent)}],
       receive_timeout: Keyword.get(config, :receive_timeout, 4_000),
-      retry: false
+      retry: false,
+      decode_body: false
     ]
     |> Keyword.merge(Keyword.get(config, :req_options, []))
     |> Req.request()
