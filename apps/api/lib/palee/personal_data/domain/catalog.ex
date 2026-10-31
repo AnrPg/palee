@@ -136,6 +136,16 @@ defmodule Palee.PersonalData.Domain.Catalog do
       account("messages", "support_requests", @me),
       account("messages", "support_replies", @me, drop: ~w(buddy_user_id)),
       tenant("messages", "messaging_messages", {:eq, "sender_id"}),
+      # ADR-344..347: how the person came to the box (their lead and its
+      # history), the box's automatic messages to them and their choices
+      # about them, and the box's latest «Σε κίνδυνο» score with its reasons.
+      tenant("messages", "leads", @me, drop: ~w(owner_id)),
+      tenant("messages", "lead_events", {:in, "lead_id", "leads", "id", @me},
+        drop: ~w(actor_id)
+      ),
+      tenant("messages", "automation_deliveries", @me),
+      tenant("messages", "automation_member_preferences", @me),
+      tenant("messages", "retention_risks", @me),
       tenant("messages", "communication_messages", {:eq, "sender_id"},
         drop: ~w(recipient_id recipient_role_snapshot)
       ),

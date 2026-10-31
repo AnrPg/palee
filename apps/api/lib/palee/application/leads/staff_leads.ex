@@ -9,7 +9,7 @@ defmodule Palee.Application.Leads.StaffLeads do
   """
 
   alias Palee.Application.Leads.{CaptureLead, LeadReactions}
-  alias Palee.{Identity, Leads, Organizations}
+  alias Palee.{Automations, DomainEvents, Identity, Leads, Organizations}
   alias Palee.Leads.{Lead, LeadEvent, LeadTask}
 
   # Sources staff may choose when typing a lead in; the others come in by
@@ -209,11 +209,15 @@ defmodule Palee.Application.Leads.StaffLeads do
 
   defp valid_owner(_context, _owner_id), do: {:error, {:invalid_fields, %{"owner_id" => "invalid"}}}
 
-  @doc "Moves a lead to another stage (`lost` needs a `lost_reason`)."
+  @doc """
+  Moves a lead to another stage (`lost` needs a `lost_reason`). Announces
+  `:lead_moved`, so a lead moved to `trial` can get the trial follow-up.
+  """
   def move(context, id, params) do
     now = Leads.now()
 
-    in_lock(context, id, fn lead ->
+    context
+    |> in_lock(id, fn lead ->
       with {:ok, changes} <-
              Leads.move(lead, params["stage"], now, lost_reason: params["lost_reason"]),
            {:ok, moved} <- Leads.update(context, lead, changes),
@@ -227,6 +231,43 @@ defmodule Palee.Application.Leads.StaffLeads do
              ) do
         {:ok, moved}
       end
+    end)
+    |> announce_move(context, now)
+  end
+
+  defp announce_move({:ok, %{lead: %{id: id, stage: stage}}} = ok, context, now) do
+    DomainEvents.publish(:lead_moved, %{
+      organization_id: context.organization_id,
+      lead_id: id,
+      to: stage,
+      at: now
+    })
+
+    ok
+  end
+
+  defp announce_move(other, _context, _now), do: other
+
+  @doc """
+  The person asked for no more marketing messages: recorded on the lead,
+  and any automatic marketing message waiting for them is cancelled.
+  """
+  def opt_out(context, id) do
+    now = Leads.now()
+
+    context
+    |> in_lock(id, fn lead ->
+      with {:ok, updated} <- Leads.update(context, lead, %{marketing_opted_out_at: now}),
+           :ok <- event(context, lead.id, "marketing_opted_out", %{}, now) do
+        {:ok, updated}
+      end
+    end)
+    |> tap(fn
+      {:ok, _detail} ->
+        Automations.cancel_pending(context, %{lead_id: id, reason: "opted_out"})
+
+      _error ->
+        :ok
     end)
   end
 
@@ -289,6 +330,8 @@ defmodule Palee.Application.Leads.StaffLeads do
       end)
     end
   end
+
+  defp due_at(%DateTime{} = at), do: {:ok, at}
 
   defp due_at(value) when is_binary(value) do
     case DateTime.from_iso8601(value) do

@@ -20,7 +20,7 @@ defmodule Palee.Leads do
   def stale_after_days, do: @stale_after_days
 
   @doc "The configured clock (`Leads.Ports.Clock`)."
-  def clock, do: Application.get_env(:palee, :leads_clock, Palee.Infrastructure.Leads.SystemClock)
+  def clock, do: Application.fetch_env!(:palee, :leads_clock)
 
   def now, do: clock().now()
 
@@ -52,6 +52,7 @@ defmodule Palee.Leads do
   defdelegate open_stages(), to: Pipeline
   defdelegate sources(), to: Pipeline
   defdelegate lost_reasons(), to: Pipeline
+  defdelegate event_kinds(), to: Palee.Leads.LeadEvent, as: :kinds
   defdelegate move(lead, to, now, opts), to: Pipeline
   defdelegate convert(lead, user_id, now), to: Pipeline
   defdelegate reenquiry(lead, now), to: Pipeline

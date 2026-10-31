@@ -172,6 +172,7 @@ defmodule Palee.Application.Automations.DispatchAutomations do
       account ->
         %{
           kind: :member,
+          organization_id: context.organization_id,
           user_id: account.id,
           name: account.nickname,
           email: account.email,
@@ -189,6 +190,7 @@ defmodule Palee.Application.Automations.DispatchAutomations do
       lead ->
         %{
           kind: :lead,
+          organization_id: context.organization_id,
           lead_id: lead.id,
           user_id: nil,
           name: lead.name,

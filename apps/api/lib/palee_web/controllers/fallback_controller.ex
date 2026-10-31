@@ -384,6 +384,19 @@ defmodule PaleeWeb.FallbackController do
     withdrawal_period_over: {:conflict, "The 14 days to withdraw have passed"},
     withdrawal_not_available: {:conflict, "This payment cannot be withdrawn from"},
     already_withdrawn: {:conflict, "You have already withdrawn from this package"},
+    # ADR-344/345: leads.
+    lead_converted: {:conflict, "This lead already became a box member"},
+    use_convert: {:unprocessable_entity, "Use «Έγινε μέλος» to convert a lead"},
+    same_stage: {:conflict, "The lead is already at this stage"},
+    invalid_stage: {:unprocessable_entity, "Unknown stage"},
+    invalid_lost_reason: {:unprocessable_entity, "Say why the lead was lost"},
+    lead_task_done: {:conflict, "This task is already done"},
+    lead_person_not_in_box: {:unprocessable_entity, "This person is not a member of the box"},
+    lead_capture_conflict: {:conflict, "This enquiry is being saved; try again"},
+    missing_name_column: {:unprocessable_entity, "The file has no name column"},
+    too_many_rows: {:unprocessable_entity, "The file has too many rows"},
+    # ADR-346: automations.
+    unknown_recipe: {:not_found, "Unknown recipe"},
     # ADR-291: packages waiting to be paid at the front desk.
     package_request_closed: {:conflict, "This request is no longer waiting for payment"},
     package_request_exists: {:conflict, "You have already asked for this package"},

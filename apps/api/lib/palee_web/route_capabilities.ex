@@ -63,7 +63,13 @@ defmodule PaleeWeb.RouteCapabilities do
     # ADR-253: box screens (TVs on the wall), their codes and overrides.
     W.AdminBoxScreenController => [:manage_settings, :manage_locations],
     # ADR-254: CSV imports (owners and admins hold manage_settings).
-    W.AdminImportController => [:manage_settings]
+    W.AdminImportController => [:manage_settings],
+    # ADR-344/345: «Ενδιαφερόμενοι».
+    W.AdminLeadController => [:manage_leads],
+    # ADR-346: the ready recipes (owners and admins).
+    W.AdminAutomationController => [:manage_automations],
+    # ADR-347: «Σε κίνδυνο».
+    W.AdminMemberRiskController => [:view_members_at_risk]
   }
 
   @actions %{

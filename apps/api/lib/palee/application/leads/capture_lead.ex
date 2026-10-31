@@ -73,15 +73,13 @@ defmodule Palee.Application.Leads.CaptureLead do
   end
 
   defp existing(context, source, %{source_ref: ref, email: email}) do
+    same_capture = is_binary(ref) && Leads.get_by_source_ref(context, source, ref)
+    same_person = !same_capture && is_binary(email) && Leads.find_by_email(context, email)
+
     cond do
-      is_binary(ref) and (lead = Leads.get_by_source_ref(context, source, ref)) != nil ->
-        {:same_capture, lead}
-
-      is_binary(email) and (lead = Leads.find_by_email(context, email)) != nil ->
-        {:same_person, lead}
-
-      true ->
-        nil
+      same_capture -> {:same_capture, same_capture}
+      same_person -> {:same_person, same_person}
+      true -> nil
     end
   end
 

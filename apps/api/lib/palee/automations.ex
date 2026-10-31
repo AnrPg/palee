@@ -19,7 +19,7 @@ defmodule Palee.Automations do
 
   @doc "The configured clock (`Automations.Ports.Clock`)."
   def clock,
-    do: Application.get_env(:palee, :automations_clock, Palee.Infrastructure.Automations.SystemClock)
+    do: Application.fetch_env!(:palee, :automations_clock)
 
   def now, do: clock().now()
 
@@ -61,6 +61,7 @@ defmodule Palee.Automations do
   defdelegate render(text, vars), to: RecipeTexts
   defdelegate placeholders(), to: RecipeTexts
   defdelegate decide(facts), to: DeliveryPolicy
+  defdelegate delivery_statuses(), to: DeliveryPolicy, as: :statuses
   defdelegate due_at(at, delay_minutes, settings, time_zone), to: DeliveryPolicy
   defdelegate after_failure(attempts, now), to: DeliveryPolicy
   defdelegate at_local_hour(date, hour, time_zone), to: QuietHours

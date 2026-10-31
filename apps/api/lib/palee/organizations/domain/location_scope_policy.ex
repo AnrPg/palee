@@ -41,6 +41,8 @@ defmodule Palee.Organizations.Domain.LocationScopePolicy do
     :manage_settings,
     :manage_finance_settings,
     :manage_community,
+    # ADR-346: recipes are switched on for the whole box.
+    :manage_automations,
     :create_organization,
     :manage_organization_lifecycle,
     :manage_platform_subscription,

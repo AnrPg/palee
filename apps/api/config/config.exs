@@ -33,6 +33,11 @@ config :palee, Oban,
        {"0 2 * * *", Palee.Workers.MarkOverdueInvoicesJob},
        {"9 * * * *", Palee.Workers.SubscriptionChargesJob},
        {"21 * * * *", Palee.Workers.LapsePackageRequestsJob},
+       # ADR-346: automatic messages (outbox every 5 minutes, daily recipes hourly).
+       {"*/5 * * * *", Palee.Workers.DispatchAutomationsJob},
+       {"7 * * * *", Palee.Workers.DailyAutomationsJob},
+       # ADR-347: «Σε κίνδυνο», scored once a day before the boxes open.
+       {"30 3 * * *", Palee.Workers.RefreshMemberRisksJob},
        {"17 * * * *", Palee.Workers.ReconcileEntitlementReservationsJob},
        {"0 9 * * *", Palee.Workers.PaymentReminderJob},
        {"41 * * * *", Palee.Workers.ExecutionAbandonmentSweepJob},
@@ -343,14 +348,21 @@ config :palee, :domain_event_handlers, %{
   membership_activated: [
     Palee.Application.TrialReactions,
     Palee.Application.EventReactions,
-    Palee.Application.ReferralReactions
+    Palee.Application.ReferralReactions,
+    Palee.Application.Leads.LeadReactions,
+    Palee.Application.Automations.AutomationReactions
   ],
   attendance_recorded: [
     Palee.Application.TrialReactions,
     Palee.Application.ReferralReactions,
     Palee.Application.WalletReactions,
-    Palee.Application.BoxScreenReactions
+    Palee.Application.BoxScreenReactions,
+    Palee.Application.Leads.LeadReactions,
+    Palee.Application.Automations.AutomationReactions
   ],
+  # ADR-344/346/347: leads moved by staff, members whose risk became high.
+  lead_moved: [Palee.Application.Automations.AutomationReactions],
+  member_at_risk: [Palee.Application.Automations.AutomationReactions],
   # ADR-156: the invite funnel follows events, trials, joining and paying.
   event_attendance_recorded: [Palee.Application.ReferralReactions],
   membership_payment_recorded: [Palee.Application.ReferralReactions],
@@ -364,6 +376,26 @@ config :palee, :domain_event_handlers, %{
   # ADR-253: box screens refresh their leaderboards.
   workout_result_recorded: [Palee.Application.BoxScreenReactions]
 }
+
+# ADR-344/345: leads («Ενδιαφερόμενοι»).
+config :palee, :lead_store, Palee.Infrastructure.Leads.EctoLeadStore
+config :palee, :leads_clock, Palee.Infrastructure.Leads.SystemClock
+
+# ADR-346: automations from ready recipes. Channels by name; the SMS channel
+# of CP-C3 joins this map.
+config :palee, :automation_store, Palee.Infrastructure.Automations.EctoAutomationStore
+config :palee, :automation_audience, Palee.Infrastructure.Automations.EctoAudience
+config :palee, :automations_clock, Palee.Infrastructure.Automations.SystemClock
+
+config :palee, :automation_channels, %{
+  "email" => Palee.Infrastructure.Automations.EmailChannel,
+  "in_app" => Palee.Infrastructure.Automations.InAppChannel
+}
+
+# ADR-347: members at risk.
+config :palee, :retention_risk_store, Palee.Infrastructure.Retention.EctoRiskStore
+config :palee, :retention_signal_reader, Palee.Infrastructure.Retention.EctoSignalReader
+config :palee, :retention_clock, Palee.Infrastructure.Retention.SystemClock
 
 # ADR-253: box screens (store and the clock they run on).
 config :palee, :box_screen_store, Palee.Infrastructure.BoxScreens.EctoBoxScreenStore

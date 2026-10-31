@@ -13,8 +13,8 @@ defmodule Palee.Automations.Ports.Channel do
 
     * `organization_id`, `delivery_id` (the idempotency key: a retry must
       not send twice), `recipe`, `purpose` (`:service | :marketing`);
-    * `recipient` - `%{kind: :member | :lead, user_id, lead_id, name,
-      email, phone, locale}`;
+    * `recipient` - `%{kind: :member | :lead, organization_id, user_id,
+      lead_id, name, email, phone, locale}`;
     * `subject`, `body` (rendered, plain text), `url` (in-app link or nil),
       `box_name`.
 
