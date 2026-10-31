@@ -65,6 +65,10 @@ defmodule PaleeWeb.RouteCapabilities do
     W.AdminWorkoutTimerPreviewController => [:manage_workouts],
     W.AdminBrandingController => [:manage_settings],
     W.AdminPublicProfileController => [:manage_settings],
+    # ADR-352..354: the website, its domains and tags.
+    W.AdminSiteController => [:manage_settings],
+    # ADR-355: Google review asks (settings and counts only).
+    W.AdminReviewAsksController => [:manage_settings],
     W.HomeLocationController => [:manage_memberships],
     W.AdminWorkoutFreeTextController => [:manage_workouts],
     W.AdminOnboardingController => [:manage_settings],

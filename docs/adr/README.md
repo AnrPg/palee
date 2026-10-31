@@ -281,3 +281,8 @@ must have an ADR. See `template.md` for the format.
 | ADR-349 | Palee's Brevo account by default (the box's own key under «Προχωρημένα»), estimated and charged cost per message, monthly budget cap per box, quiet hours on the box's clock (21:00–09:00), SMS parts | Accepted |
 | ADR-350 | Consent per contact, channel and purpose (Ενημερώσεις / Προσφορές), never assumed; STOP replies stop every channel; message wording per key and language (box overrides, WhatsApp approved templates) | Accepted |
 | ADR-351 | `SendThroughChannel`: the narrow API automations, staff and system notices use; `AutomationSmsChannel` for W2's automations | Accepted |
+
+| ADR-352 | Box website: section keys filled from the box's own data (no page builder), optional public timetable, `/api/public/sites/:slug`, custom domains with DNS TXT proof and CNAME, TLS by the existing ingress (ops list + Caddy ask endpoint) | Accepted |
+| ADR-353 | Website forms (trial, contact) through an outbox to the `LeadIntake` port W2 implements; idempotent on submission id; personal fields cleared after delivery | Accepted |
+| ADR-354 | Box tags (Meta Pixel, GA4, GTM) load only after consent; equal accept/reject; 6-month choice; insert-only pseudonymous consent log; optional Meta Conversions API with hashed data and an encrypted token | Accepted |
+| ADR-355 | Google review asks at an attendance milestone for every eligible member alike; never gated by a score or rewarded; opt-out; staff see counts only | Accepted |

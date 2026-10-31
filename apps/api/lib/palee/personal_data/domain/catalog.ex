@@ -189,6 +189,9 @@ defmodule Palee.PersonalData.Domain.Catalog do
       tenant("community", "community_posts", {:eq, "author_id"}),
       tenant("community", "community_post_comments", {:eq, "author_id"}),
       tenant("community", "community_post_reactions", @me),
+      # ADR-355: Google review asks shown to the person and their opt-out.
+      tenant("community", "review_asks", @me),
+      tenant("community", "review_ask_opt_outs", @me),
       # ADR-280 verification: the outcome and the person's own request; the
       # phone and selfie never leave, nor who else is named.
       account("community", "partner_verifications", @me, drop: ~w(source_organization_id)),

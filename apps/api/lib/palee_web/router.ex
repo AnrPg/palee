@@ -96,6 +96,11 @@ defmodule PaleeWeb.Router do
     plug(PaleeWeb.Plugs.RateLimit, max: 600, interval: 60_000, bucket: "public-box")
   end
 
+  # ADR-353: website forms; a person sends one, a bot many.
+  pipeline :public_site_form_rate_limited do
+    plug(PaleeWeb.Plugs.RateLimit, max: 10, interval: 60_000, bucket: "public-site-form")
+  end
+
   pipeline :public_invite_rate_limited do
     plug(PaleeWeb.Plugs.RateLimit, max: 60, interval: 60_000, bucket: "buddy-invite")
   end
@@ -346,6 +351,21 @@ defmodule PaleeWeb.Router do
     pipe_through([:api, :public_lead_rate_limited])
 
     post("/:slug/leads", PublicLeadController, :create)
+
+  # ADR-352..354: the box's website, its custom hosts and consent log.
+  scope "/api/public/sites", PaleeWeb do
+    pipe_through([:api, :public_box_rate_limited])
+
+    get("/tls-allowed", PublicSiteController, :tls_allowed)
+    get("/by-host/:host", PublicSiteController, :by_host)
+    get("/:slug", PublicSiteController, :show)
+    post("/:slug/consents", PublicSiteController, :consent)
+  end
+
+  scope "/api/public/sites", PaleeWeb do
+    pipe_through([:api, :public_site_form_rate_limited])
+
+    post("/:slug/forms/:kind", PublicSiteController, :submit_form)
   end
 
   # ADR-272: a walk-in's receipt behind the QR on the staff phone.
@@ -616,6 +636,12 @@ defmodule PaleeWeb.Router do
     # ADR-350: my number and consents for the box's SMS messages.
     get("/channels", MyChannelsController, :show)
     put("/channels", MyChannelsController, :update)
+
+    # ADR-355: a Google review ask at a good moment.
+    get("/review-ask", MyReviewAskController, :show)
+    post("/review-asks/:id/respond", MyReviewAskController, :respond)
+    put("/review-asks/opt-out", MyReviewAskController, :opt_out)
+    delete("/review-asks/opt-out", MyReviewAskController, :opt_in)
     # ADR-246/247: paying invoices online and saved cards.
     get("/invoices/:id/payment-terms", MyPaymentsController, :terms)
     post("/invoices/:id/pay", MyPaymentsController, :pay)
@@ -1393,6 +1419,19 @@ defmodule PaleeWeb.Router do
       :cohost_trial_offer
     )
 
+    # ADR-352..354: the box's website and custom domains.
+    get("/site", AdminSiteController, :show)
+    put("/site", AdminSiteController, :update)
+    get("/site/summary", AdminSiteController, :summary)
+    get("/site/domains", AdminSiteController, :domains)
+    post("/site/domains", AdminSiteController, :add_domain)
+    post("/site/domains/:id/check", AdminSiteController, :check_domain)
+    put("/site/domains/:id/primary", AdminSiteController, :make_primary)
+    delete("/site/domains/:id", AdminSiteController, :remove_domain)
+    # ADR-355: Google review asks.
+    get("/review-asks/settings", AdminReviewAsksController, :show)
+    put("/review-asks/settings", AdminReviewAsksController, :update)
+    get("/review-asks/summary", AdminReviewAsksController, :summary)
     get("/public-profile", AdminPublicProfileController, :show)
     put("/public-profile", AdminPublicProfileController, :update)
     post("/public-profile/publish", AdminPublicProfileController, :publish)
@@ -1828,6 +1867,8 @@ defmodule PaleeWeb.Router do
     ])
 
     get("/tag-suggestions", PlatformTagSuggestionController, :index)
+    # ADR-352 §6: custom domains of box websites waiting for an Ingress.
+    get("/site-domains", PlatformSiteDomainsController, :index)
     # ADR-218 / ADR-277: browser alerts for the installation (keys made by the server).
     get("/push-settings", PlatformPushSettingsController, :show)
     patch("/push-settings", PlatformPushSettingsController, :update)

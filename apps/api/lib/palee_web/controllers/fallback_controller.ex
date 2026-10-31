@@ -496,6 +496,31 @@ defmodule PaleeWeb.FallbackController do
     |> json(%{code: to_string(reason), error: message})
   end
 
+  # ADR-352..355: the box's website and Google review asks.
+  @box_site_errors %{
+    invalid_hostname: {:unprocessable_entity, "Enter a domain such as www.mybox.gr"},
+    platform_hostname: {:unprocessable_entity, "Use your own domain, not a Palee address"},
+    host_taken: {:conflict, "This domain is already used by a box website"},
+    too_many_domains: {:conflict, "A website can have up to 2 domains"},
+    site_domain_not_found: {:not_found, "Domain not found"},
+    invalid_site_domain_status: {:unprocessable_entity, "Unknown domain state"},
+    site_forms_closed: {:conflict, "This box does not take requests on its website"},
+    unknown_form: {:not_found, "Form not found"},
+    review_ask_not_found: {:not_found, "Review ask not found"},
+    review_ask_answered: {:conflict, "This ask was already answered"},
+    invalid_review_action: {:unprocessable_entity, "Choose opened, later or dismissed"},
+    settings_changed_meanwhile:
+      {:conflict, "Someone saved these settings meanwhile; reload and try again"}
+  }
+
+  def call(conn, {:error, reason}) when is_map_key(@box_site_errors, reason) do
+    {status, message} = Map.fetch!(@box_site_errors, reason)
+
+    conn
+    |> put_status(status)
+    |> json(%{code: to_string(reason), error: message})
+  end
+
   # ADR-253: box screens.
   @box_screen_errors %{
     invalid_pairing_code:

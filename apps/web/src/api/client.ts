@@ -137,6 +137,9 @@ const TENANT_SCOPED_PREFIXES = [
   "/me/nutrition-plan",
   "/me/progress",
   "/me/reviews",
+  // ADR-355: Google review asks of the member's box.
+  "/me/review-ask",
+  "/me/review-asks",
   "/me/search/users",
   "/me/seasons",
   "/me/threads",

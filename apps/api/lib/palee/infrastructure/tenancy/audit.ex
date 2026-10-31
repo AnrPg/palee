@@ -82,6 +82,8 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     ai_usage_records organization_ai_settings scaling_suggestions
     data_questions help_desk_conversations help_desk_messages help_desk_tickets
     demo_records
+    box_site_settings box_site_domains box_site_submissions box_site_consents
+    review_ask_settings review_asks review_ask_opt_outs
   )
 
   @transitional_tenant_tables []

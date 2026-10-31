@@ -133,3 +133,10 @@ config :palee, :mydata, req_options: [plug: {Req.Test, Palee.FiscalHttp}, retry:
 # ADR-360..363: deterministic model and database help search in tests.
 config :palee, :llm_provider, Palee.Infrastructure.Llm.SandboxLlmProvider
 config :palee, :help_search_index, Palee.Infrastructure.HelpCentre.DatabaseHelpIndex
+
+# ADR-352..354: sandbox DNS, TLS, leads and conversions in tests.
+config :palee, :box_site_lead_intake, Palee.Infrastructure.BoxSite.SandboxLeadIntake
+config :palee, :box_site_dns, Palee.Infrastructure.BoxSite.SandboxDomainDns
+config :palee, :box_site_tls_probe, Palee.Infrastructure.BoxSite.SandboxTlsProbe
+config :palee, :box_site_conversions_api, Palee.Infrastructure.BoxSite.SandboxConversionsApi
+config :palee, :box_site_http, req_options: [plug: {Req.Test, Palee.BoxSiteHttp}]

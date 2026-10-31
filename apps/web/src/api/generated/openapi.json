@@ -1040,6 +1040,244 @@
         "title": "AdminOnboardingChecklist",
         "type": "object"
       },
+      "AdminSiteResponse": {
+        "properties": {
+          "domains": {
+            "items": {
+              "properties": {
+                "active_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "checked_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "dns_records": {
+                  "items": {
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "enum": [
+                          "TXT",
+                          "CNAME",
+                          "A"
+                        ],
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "type",
+                      "value"
+                    ],
+                    "title": "SiteDnsRecord",
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "host": {
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "last_error": {
+                  "enum": [
+                    "dns_txt_missing",
+                    "dns_not_pointing",
+                    "tls_not_ready",
+                    "tls_failed",
+                    null
+                  ],
+                  "nullable": true,
+                  "type": "string"
+                },
+                "next_check_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "primary": {
+                  "type": "boolean"
+                },
+                "status": {
+                  "enum": [
+                    "pending_dns",
+                    "pending_tls",
+                    "active",
+                    "broken",
+                    "expired"
+                  ],
+                  "type": "string"
+                },
+                "verified_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "active_at",
+                "checked_at",
+                "dns_records",
+                "host",
+                "id",
+                "last_error",
+                "next_check_at",
+                "primary",
+                "status",
+                "verified_at"
+              ],
+              "title": "SiteDomain",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "section_keys": {
+            "items": {
+              "enum": [
+                "hero",
+                "about",
+                "schedule",
+                "packages",
+                "coaches",
+                "location",
+                "reviews",
+                "faq",
+                "trial_form",
+                "contact_form"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "settings": {
+            "properties": {
+              "banner_version": {
+                "type": "integer"
+              },
+              "conversions_api_enabled": {
+                "type": "boolean"
+              },
+              "faq": {
+                "items": {
+                  "properties": {
+                    "answer": {
+                      "maxLength": 1000,
+                      "type": "string"
+                    },
+                    "question": {
+                      "maxLength": 200,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "answer",
+                    "question"
+                  ],
+                  "title": "SiteFaqEntry",
+                  "type": "object"
+                },
+                "maxItems": 12,
+                "type": "array"
+              },
+              "forms_enabled": {
+                "type": "boolean"
+              },
+              "ga4_measurement_id": {
+                "nullable": true,
+                "type": "string"
+              },
+              "gtm_container_id": {
+                "nullable": true,
+                "type": "string"
+              },
+              "has_conversions_api_token": {
+                "description": "A token is saved; the token itself is never returned",
+                "type": "boolean"
+              },
+              "hidden_sections": {
+                "items": {
+                  "enum": [
+                    "hero",
+                    "about",
+                    "schedule",
+                    "packages",
+                    "coaches",
+                    "location",
+                    "reviews",
+                    "faq",
+                    "trial_form",
+                    "contact_form"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "lock_version": {
+                "type": "integer"
+              },
+              "meta_pixel_id": {
+                "nullable": true,
+                "type": "string"
+              },
+              "public_schedule": {
+                "type": "boolean"
+              },
+              "section_order": {
+                "items": {
+                  "enum": [
+                    "hero",
+                    "about",
+                    "schedule",
+                    "packages",
+                    "coaches",
+                    "location",
+                    "reviews",
+                    "faq",
+                    "trial_form",
+                    "contact_form"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "banner_version",
+              "conversions_api_enabled",
+              "faq",
+              "forms_enabled",
+              "ga4_measurement_id",
+              "gtm_container_id",
+              "has_conversions_api_token",
+              "hidden_sections",
+              "lock_version",
+              "meta_pixel_id",
+              "public_schedule",
+              "section_order"
+            ],
+            "title": "SiteSettings",
+            "type": "object"
+          }
+        },
+        "required": [
+          "domains",
+          "section_keys",
+          "settings"
+        ],
+        "title": "AdminSiteResponse",
+        "type": "object"
+      },
       "AnatomyNode": {
         "additionalProperties": false,
         "properties": {
@@ -73189,6 +73427,204 @@
         "title": "PublicBoxScheduleResponse",
         "type": "object"
       },
+      "PublicSiteResponse": {
+        "properties": {
+          "canonical_url": {
+            "type": "string"
+          },
+          "faq": {
+            "items": {
+              "properties": {
+                "answer": {
+                  "maxLength": 1000,
+                  "type": "string"
+                },
+                "question": {
+                  "maxLength": 200,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "answer",
+                "question"
+              ],
+              "title": "SiteFaqEntry",
+              "type": "object"
+            },
+            "maxItems": 12,
+            "type": "array"
+          },
+          "forms": {
+            "properties": {
+              "contact": {
+                "type": "boolean"
+              },
+              "kinds": {
+                "items": {
+                  "enum": [
+                    "trial",
+                    "contact"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "trial": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "contact",
+              "kinds",
+              "trial"
+            ],
+            "type": "object"
+          },
+          "reviews": {
+            "properties": {
+              "google_reviews_url": {
+                "nullable": true,
+                "type": "string"
+              }
+            },
+            "required": [
+              "google_reviews_url"
+            ],
+            "type": "object"
+          },
+          "sections": {
+            "items": {
+              "enum": [
+                "hero",
+                "about",
+                "schedule",
+                "packages",
+                "coaches",
+                "location",
+                "reviews",
+                "faq",
+                "trial_form",
+                "contact_form"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "timetable": {
+            "description": "The next 7 days' classes when the owner shows the timetable (no spots or people)",
+            "items": {
+              "properties": {
+                "class_type_id": {
+                  "format": "uuid",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "duration_minutes": {
+                  "type": "integer"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "location_id": {
+                  "format": "uuid",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "scheduled_at": {
+                  "format": "date-time",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "class_type_id",
+                "duration_minutes",
+                "id",
+                "location_id",
+                "name",
+                "scheduled_at"
+              ],
+              "title": "SiteTimetableClass",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "tracking": {
+            "properties": {
+              "banner_version": {
+                "type": "integer"
+              },
+              "categories": {
+                "items": {
+                  "enum": [
+                    "necessary",
+                    "analytics",
+                    "marketing"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "consent_required": {
+                "type": "boolean"
+              },
+              "tags": {
+                "description": "Public tag ids; none loads before the visitor's consent (ADR-354)",
+                "properties": {
+                  "ga4_measurement_id": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "gtm_container_id": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "meta_pixel_id": {
+                    "nullable": true,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "ga4_measurement_id",
+                  "gtm_container_id",
+                  "meta_pixel_id"
+                ],
+                "title": "SiteTags",
+                "type": "object"
+              },
+              "validity_days": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "banner_version",
+              "categories",
+              "consent_required",
+              "tags",
+              "validity_days"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "canonical_url",
+          "faq",
+          "forms",
+          "reviews",
+          "sections",
+          "slug",
+          "timetable",
+          "tracking"
+        ],
+        "title": "PublicSiteResponse",
+        "type": "object"
+      },
       "ReferralClaim": {
         "properties": {
           "channel": {
@@ -75131,6 +75567,293 @@
           "streams"
         ],
         "title": "RevenueStreams",
+        "type": "object"
+      },
+      "ReviewAsk": {
+        "nullable": true,
+        "properties": {
+          "actions": {
+            "items": {
+              "enum": [
+                "opened",
+                "later",
+                "dismissed"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "google_review_url": {
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "milestone": {
+            "type": "integer"
+          },
+          "shown_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "shown",
+              "opened",
+              "later",
+              "dismissed"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "actions",
+          "google_review_url",
+          "id",
+          "milestone",
+          "shown_at",
+          "status"
+        ],
+        "title": "ReviewAsk",
+        "type": "object"
+      },
+      "ReviewAskOptOutResponse": {
+        "properties": {
+          "opted_out": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "opted_out"
+        ],
+        "title": "ReviewAskOptOutResponse",
+        "type": "object"
+      },
+      "ReviewAskRespondRequest": {
+        "properties": {
+          "action": {
+            "enum": [
+              "opened",
+              "later",
+              "dismissed"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "title": "ReviewAskRespondRequest",
+        "type": "object"
+      },
+      "ReviewAskResponse": {
+        "properties": {
+          "ask": {
+            "nullable": true,
+            "properties": {
+              "actions": {
+                "items": {
+                  "enum": [
+                    "opened",
+                    "later",
+                    "dismissed"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "google_review_url": {
+                "nullable": true,
+                "type": "string"
+              },
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "milestone": {
+                "type": "integer"
+              },
+              "shown_at": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "shown",
+                  "opened",
+                  "later",
+                  "dismissed"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "actions",
+              "google_review_url",
+              "id",
+              "milestone",
+              "shown_at",
+              "status"
+            ],
+            "title": "ReviewAsk",
+            "type": "object"
+          }
+        },
+        "required": [
+          "ask"
+        ],
+        "title": "ReviewAskResponse",
+        "type": "object"
+      },
+      "ReviewAskSettings": {
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "google_place_id": {
+            "nullable": true,
+            "type": "string"
+          },
+          "google_review_url": {
+            "nullable": true,
+            "type": "string"
+          },
+          "lock_version": {
+            "type": "integer"
+          },
+          "milestones": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "enabled",
+          "google_place_id",
+          "google_review_url",
+          "lock_version",
+          "milestones"
+        ],
+        "title": "ReviewAskSettings",
+        "type": "object"
+      },
+      "ReviewAskSettingsResponse": {
+        "properties": {
+          "settings": {
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              },
+              "google_place_id": {
+                "nullable": true,
+                "type": "string"
+              },
+              "google_review_url": {
+                "nullable": true,
+                "type": "string"
+              },
+              "lock_version": {
+                "type": "integer"
+              },
+              "milestones": {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "enabled",
+              "google_place_id",
+              "google_review_url",
+              "lock_version",
+              "milestones"
+            ],
+            "title": "ReviewAskSettings",
+            "type": "object"
+          }
+        },
+        "required": [
+          "settings"
+        ],
+        "title": "ReviewAskSettingsResponse",
+        "type": "object"
+      },
+      "ReviewAskSettingsUpdate": {
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "google_place_id": {
+            "maxLength": 300,
+            "nullable": true,
+            "type": "string"
+          },
+          "lock_version": {
+            "type": "integer"
+          },
+          "milestones": {
+            "items": {
+              "maximum": 1000,
+              "minimum": 3,
+              "type": "integer"
+            },
+            "maxItems": 6,
+            "minItems": 1,
+            "type": "array"
+          }
+        },
+        "required": [
+          "lock_version"
+        ],
+        "title": "ReviewAskSettingsUpdate",
+        "type": "object"
+      },
+      "ReviewAskSummaryResponse": {
+        "properties": {
+          "counts": {
+            "properties": {
+              "asked": {
+                "type": "integer"
+              },
+              "dismissed": {
+                "type": "integer"
+              },
+              "later": {
+                "type": "integer"
+              },
+              "opened": {
+                "type": "integer"
+              },
+              "opted_out": {
+                "type": "integer"
+              },
+              "unanswered": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "asked",
+              "dismissed",
+              "later",
+              "opened",
+              "opted_out",
+              "unanswered"
+            ],
+            "type": "object"
+          },
+          "days": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "counts",
+          "days"
+        ],
+        "title": "ReviewAskSummaryResponse",
         "type": "object"
       },
       "SaveFilterRequest": {
@@ -82112,6 +82835,1094 @@
           "available"
         ],
         "title": "ShopVariantStock",
+        "type": "object"
+      },
+      "SiteByHostResponse": {
+        "properties": {
+          "host": {
+            "type": "string"
+          },
+          "primary": {
+            "type": "boolean"
+          },
+          "primary_host": {
+            "nullable": true,
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "host",
+          "primary",
+          "primary_host",
+          "slug"
+        ],
+        "title": "SiteByHostResponse",
+        "type": "object"
+      },
+      "SiteConsentRequest": {
+        "properties": {
+          "action": {
+            "enum": [
+              "accept_all",
+              "reject_all",
+              "custom",
+              "withdraw"
+            ],
+            "type": "string"
+          },
+          "analytics": {
+            "type": "boolean"
+          },
+          "banner_version": {
+            "type": "integer"
+          },
+          "marketing": {
+            "type": "boolean"
+          },
+          "visitor_id": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action",
+          "banner_version",
+          "visitor_id"
+        ],
+        "title": "SiteConsentRequest",
+        "type": "object"
+      },
+      "SiteConsentResponse": {
+        "properties": {
+          "allowed_tags": {
+            "items": {
+              "enum": [
+                "ga4_measurement_id",
+                "meta_pixel_id",
+                "gtm_container_id"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "analytics": {
+            "type": "boolean"
+          },
+          "banner_version": {
+            "type": "integer"
+          },
+          "expires_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "marketing": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "allowed_tags",
+          "analytics",
+          "banner_version",
+          "expires_at",
+          "marketing"
+        ],
+        "title": "SiteConsentResponse",
+        "type": "object"
+      },
+      "SiteDnsRecord": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "TXT",
+              "CNAME",
+              "A"
+            ],
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "type",
+          "value"
+        ],
+        "title": "SiteDnsRecord",
+        "type": "object"
+      },
+      "SiteDomain": {
+        "properties": {
+          "active_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "checked_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "dns_records": {
+            "items": {
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "type": {
+                  "enum": [
+                    "TXT",
+                    "CNAME",
+                    "A"
+                  ],
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "type",
+                "value"
+              ],
+              "title": "SiteDnsRecord",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "host": {
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "last_error": {
+            "enum": [
+              "dns_txt_missing",
+              "dns_not_pointing",
+              "tls_not_ready",
+              "tls_failed",
+              null
+            ],
+            "nullable": true,
+            "type": "string"
+          },
+          "next_check_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "primary": {
+            "type": "boolean"
+          },
+          "status": {
+            "enum": [
+              "pending_dns",
+              "pending_tls",
+              "active",
+              "broken",
+              "expired"
+            ],
+            "type": "string"
+          },
+          "verified_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "active_at",
+          "checked_at",
+          "dns_records",
+          "host",
+          "id",
+          "last_error",
+          "next_check_at",
+          "primary",
+          "status",
+          "verified_at"
+        ],
+        "title": "SiteDomain",
+        "type": "object"
+      },
+      "SiteDomainRequest": {
+        "properties": {
+          "host": {
+            "maxLength": 260,
+            "type": "string"
+          }
+        },
+        "required": [
+          "host"
+        ],
+        "title": "SiteDomainRequest",
+        "type": "object"
+      },
+      "SiteDomainResponse": {
+        "properties": {
+          "domain": {
+            "properties": {
+              "active_at": {
+                "format": "date-time",
+                "nullable": true,
+                "type": "string"
+              },
+              "checked_at": {
+                "format": "date-time",
+                "nullable": true,
+                "type": "string"
+              },
+              "dns_records": {
+                "items": {
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "enum": [
+                        "TXT",
+                        "CNAME",
+                        "A"
+                      ],
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "type",
+                    "value"
+                  ],
+                  "title": "SiteDnsRecord",
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "host": {
+                "type": "string"
+              },
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "last_error": {
+                "enum": [
+                  "dns_txt_missing",
+                  "dns_not_pointing",
+                  "tls_not_ready",
+                  "tls_failed",
+                  null
+                ],
+                "nullable": true,
+                "type": "string"
+              },
+              "next_check_at": {
+                "format": "date-time",
+                "nullable": true,
+                "type": "string"
+              },
+              "primary": {
+                "type": "boolean"
+              },
+              "status": {
+                "enum": [
+                  "pending_dns",
+                  "pending_tls",
+                  "active",
+                  "broken",
+                  "expired"
+                ],
+                "type": "string"
+              },
+              "verified_at": {
+                "format": "date-time",
+                "nullable": true,
+                "type": "string"
+              }
+            },
+            "required": [
+              "active_at",
+              "checked_at",
+              "dns_records",
+              "host",
+              "id",
+              "last_error",
+              "next_check_at",
+              "primary",
+              "status",
+              "verified_at"
+            ],
+            "title": "SiteDomain",
+            "type": "object"
+          }
+        },
+        "required": [
+          "domain"
+        ],
+        "title": "SiteDomainResponse",
+        "type": "object"
+      },
+      "SiteDomainsResponse": {
+        "properties": {
+          "domains": {
+            "items": {
+              "properties": {
+                "active_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "checked_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "dns_records": {
+                  "items": {
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "enum": [
+                          "TXT",
+                          "CNAME",
+                          "A"
+                        ],
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "type",
+                      "value"
+                    ],
+                    "title": "SiteDnsRecord",
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "host": {
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "last_error": {
+                  "enum": [
+                    "dns_txt_missing",
+                    "dns_not_pointing",
+                    "tls_not_ready",
+                    "tls_failed",
+                    null
+                  ],
+                  "nullable": true,
+                  "type": "string"
+                },
+                "next_check_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "primary": {
+                  "type": "boolean"
+                },
+                "status": {
+                  "enum": [
+                    "pending_dns",
+                    "pending_tls",
+                    "active",
+                    "broken",
+                    "expired"
+                  ],
+                  "type": "string"
+                },
+                "verified_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "active_at",
+                "checked_at",
+                "dns_records",
+                "host",
+                "id",
+                "last_error",
+                "next_check_at",
+                "primary",
+                "status",
+                "verified_at"
+              ],
+              "title": "SiteDomain",
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "domains"
+        ],
+        "title": "SiteDomainsResponse",
+        "type": "object"
+      },
+      "SiteFaqEntry": {
+        "properties": {
+          "answer": {
+            "maxLength": 1000,
+            "type": "string"
+          },
+          "question": {
+            "maxLength": 200,
+            "type": "string"
+          }
+        },
+        "required": [
+          "answer",
+          "question"
+        ],
+        "title": "SiteFaqEntry",
+        "type": "object"
+      },
+      "SiteFormRequest": {
+        "properties": {
+          "attribution": {
+            "properties": {
+              "landing_path": {
+                "maxLength": 500,
+                "type": "string"
+              },
+              "referrer_host": {
+                "maxLength": 500,
+                "type": "string"
+              },
+              "utm_campaign": {
+                "maxLength": 500,
+                "type": "string"
+              },
+              "utm_content": {
+                "maxLength": 500,
+                "type": "string"
+              },
+              "utm_medium": {
+                "maxLength": 500,
+                "type": "string"
+              },
+              "utm_source": {
+                "maxLength": 500,
+                "type": "string"
+              },
+              "utm_term": {
+                "maxLength": 500,
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "class_type_id": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "consent_text_hash": {
+            "maxLength": 80,
+            "nullable": true,
+            "type": "string"
+          },
+          "consent_text_version": {
+            "maxLength": 40,
+            "nullable": true,
+            "type": "string"
+          },
+          "elapsed_ms": {
+            "description": "Time spent on the form",
+            "nullable": true,
+            "type": "integer"
+          },
+          "email": {
+            "maxLength": 320,
+            "nullable": true,
+            "type": "string"
+          },
+          "locale": {
+            "maxLength": 10,
+            "nullable": true,
+            "type": "string"
+          },
+          "marketing_opt_in": {
+            "description": "Separate, unticked opt-in to marketing follow-ups",
+            "type": "boolean"
+          },
+          "message": {
+            "maxLength": 4000,
+            "nullable": true,
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 200,
+            "type": "string"
+          },
+          "phone": {
+            "maxLength": 40,
+            "nullable": true,
+            "type": "string"
+          },
+          "preferred_time": {
+            "maxLength": 200,
+            "nullable": true,
+            "type": "string"
+          },
+          "privacy_ack": {
+            "description": "Must be true",
+            "type": "boolean"
+          },
+          "visitor_id": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "website": {
+            "description": "Honeypot: leave empty",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "privacy_ack"
+        ],
+        "title": "SiteFormRequest",
+        "type": "object"
+      },
+      "SiteFormResponse": {
+        "properties": {
+          "status": {
+            "enum": [
+              "received"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "SiteFormResponse",
+        "type": "object"
+      },
+      "SiteOpsDomainsResponse": {
+        "properties": {
+          "cname_target": {
+            "type": "string"
+          },
+          "domains": {
+            "items": {
+              "properties": {
+                "host": {
+                  "type": "string"
+                },
+                "slug": {
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "pending_dns",
+                    "pending_tls",
+                    "active",
+                    "broken",
+                    "expired"
+                  ],
+                  "type": "string"
+                },
+                "updated_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "verified_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "host",
+                "slug",
+                "status",
+                "updated_at",
+                "verified_at"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "cname_target",
+          "domains"
+        ],
+        "title": "SiteOpsDomainsResponse",
+        "type": "object"
+      },
+      "SiteSettings": {
+        "properties": {
+          "banner_version": {
+            "type": "integer"
+          },
+          "conversions_api_enabled": {
+            "type": "boolean"
+          },
+          "faq": {
+            "items": {
+              "properties": {
+                "answer": {
+                  "maxLength": 1000,
+                  "type": "string"
+                },
+                "question": {
+                  "maxLength": 200,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "answer",
+                "question"
+              ],
+              "title": "SiteFaqEntry",
+              "type": "object"
+            },
+            "maxItems": 12,
+            "type": "array"
+          },
+          "forms_enabled": {
+            "type": "boolean"
+          },
+          "ga4_measurement_id": {
+            "nullable": true,
+            "type": "string"
+          },
+          "gtm_container_id": {
+            "nullable": true,
+            "type": "string"
+          },
+          "has_conversions_api_token": {
+            "description": "A token is saved; the token itself is never returned",
+            "type": "boolean"
+          },
+          "hidden_sections": {
+            "items": {
+              "enum": [
+                "hero",
+                "about",
+                "schedule",
+                "packages",
+                "coaches",
+                "location",
+                "reviews",
+                "faq",
+                "trial_form",
+                "contact_form"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "lock_version": {
+            "type": "integer"
+          },
+          "meta_pixel_id": {
+            "nullable": true,
+            "type": "string"
+          },
+          "public_schedule": {
+            "type": "boolean"
+          },
+          "section_order": {
+            "items": {
+              "enum": [
+                "hero",
+                "about",
+                "schedule",
+                "packages",
+                "coaches",
+                "location",
+                "reviews",
+                "faq",
+                "trial_form",
+                "contact_form"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "banner_version",
+          "conversions_api_enabled",
+          "faq",
+          "forms_enabled",
+          "ga4_measurement_id",
+          "gtm_container_id",
+          "has_conversions_api_token",
+          "hidden_sections",
+          "lock_version",
+          "meta_pixel_id",
+          "public_schedule",
+          "section_order"
+        ],
+        "title": "SiteSettings",
+        "type": "object"
+      },
+      "SiteSettingsResponse": {
+        "properties": {
+          "settings": {
+            "properties": {
+              "banner_version": {
+                "type": "integer"
+              },
+              "conversions_api_enabled": {
+                "type": "boolean"
+              },
+              "faq": {
+                "items": {
+                  "properties": {
+                    "answer": {
+                      "maxLength": 1000,
+                      "type": "string"
+                    },
+                    "question": {
+                      "maxLength": 200,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "answer",
+                    "question"
+                  ],
+                  "title": "SiteFaqEntry",
+                  "type": "object"
+                },
+                "maxItems": 12,
+                "type": "array"
+              },
+              "forms_enabled": {
+                "type": "boolean"
+              },
+              "ga4_measurement_id": {
+                "nullable": true,
+                "type": "string"
+              },
+              "gtm_container_id": {
+                "nullable": true,
+                "type": "string"
+              },
+              "has_conversions_api_token": {
+                "description": "A token is saved; the token itself is never returned",
+                "type": "boolean"
+              },
+              "hidden_sections": {
+                "items": {
+                  "enum": [
+                    "hero",
+                    "about",
+                    "schedule",
+                    "packages",
+                    "coaches",
+                    "location",
+                    "reviews",
+                    "faq",
+                    "trial_form",
+                    "contact_form"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "lock_version": {
+                "type": "integer"
+              },
+              "meta_pixel_id": {
+                "nullable": true,
+                "type": "string"
+              },
+              "public_schedule": {
+                "type": "boolean"
+              },
+              "section_order": {
+                "items": {
+                  "enum": [
+                    "hero",
+                    "about",
+                    "schedule",
+                    "packages",
+                    "coaches",
+                    "location",
+                    "reviews",
+                    "faq",
+                    "trial_form",
+                    "contact_form"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "banner_version",
+              "conversions_api_enabled",
+              "faq",
+              "forms_enabled",
+              "ga4_measurement_id",
+              "gtm_container_id",
+              "has_conversions_api_token",
+              "hidden_sections",
+              "lock_version",
+              "meta_pixel_id",
+              "public_schedule",
+              "section_order"
+            ],
+            "title": "SiteSettings",
+            "type": "object"
+          }
+        },
+        "required": [
+          "settings"
+        ],
+        "title": "SiteSettingsResponse",
+        "type": "object"
+      },
+      "SiteSettingsUpdate": {
+        "properties": {
+          "conversions_api_enabled": {
+            "type": "boolean"
+          },
+          "conversions_api_token": {
+            "description": "Meta Conversions API access token (write-only; empty removes it)",
+            "nullable": true,
+            "type": "string",
+            "writeOnly": true
+          },
+          "faq": {
+            "items": {
+              "properties": {
+                "answer": {
+                  "maxLength": 1000,
+                  "type": "string"
+                },
+                "question": {
+                  "maxLength": 200,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "answer",
+                "question"
+              ],
+              "title": "SiteFaqEntry",
+              "type": "object"
+            },
+            "maxItems": 12,
+            "type": "array"
+          },
+          "forms_enabled": {
+            "type": "boolean"
+          },
+          "ga4_measurement_id": {
+            "nullable": true,
+            "type": "string"
+          },
+          "gtm_container_id": {
+            "nullable": true,
+            "type": "string"
+          },
+          "hidden_sections": {
+            "items": {
+              "enum": [
+                "hero",
+                "about",
+                "schedule",
+                "packages",
+                "coaches",
+                "location",
+                "reviews",
+                "faq",
+                "trial_form",
+                "contact_form"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "lock_version": {
+            "type": "integer"
+          },
+          "meta_pixel_id": {
+            "nullable": true,
+            "type": "string"
+          },
+          "public_schedule": {
+            "type": "boolean"
+          },
+          "section_order": {
+            "items": {
+              "enum": [
+                "hero",
+                "about",
+                "schedule",
+                "packages",
+                "coaches",
+                "location",
+                "reviews",
+                "faq",
+                "trial_form",
+                "contact_form"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "lock_version"
+        ],
+        "title": "SiteSettingsUpdate",
+        "type": "object"
+      },
+      "SiteSummaryResponse": {
+        "properties": {
+          "consents": {
+            "properties": {
+              "accept_all": {
+                "type": "integer"
+              },
+              "custom": {
+                "type": "integer"
+              },
+              "reject_all": {
+                "type": "integer"
+              },
+              "withdraw": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "accept_all",
+              "custom",
+              "reject_all",
+              "withdraw"
+            ],
+            "type": "object"
+          },
+          "days": {
+            "type": "integer"
+          },
+          "submissions": {
+            "properties": {
+              "delivered": {
+                "type": "integer"
+              },
+              "failed": {
+                "type": "integer"
+              },
+              "total": {
+                "type": "integer"
+              },
+              "waiting": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "delivered",
+              "failed",
+              "total",
+              "waiting"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "consents",
+          "days",
+          "submissions"
+        ],
+        "title": "SiteSummaryResponse",
+        "type": "object"
+      },
+      "SiteTags": {
+        "description": "Public tag ids; none loads before the visitor's consent (ADR-354)",
+        "properties": {
+          "ga4_measurement_id": {
+            "nullable": true,
+            "type": "string"
+          },
+          "gtm_container_id": {
+            "nullable": true,
+            "type": "string"
+          },
+          "meta_pixel_id": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "ga4_measurement_id",
+          "gtm_container_id",
+          "meta_pixel_id"
+        ],
+        "title": "SiteTags",
+        "type": "object"
+      },
+      "SiteTimetableClass": {
+        "properties": {
+          "class_type_id": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "duration_minutes": {
+            "type": "integer"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "location_id": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "scheduled_at": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "class_type_id",
+          "duration_minutes",
+          "id",
+          "location_id",
+          "name",
+          "scheduled_at"
+        ],
+        "title": "SiteTimetableClass",
         "type": "object"
       },
       "SocialPrivacy": {
@@ -229741,6 +231552,264 @@
         ]
       }
     },
+    "/api/org/{organization_slug}/admin/review-asks/settings": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminReviewAsksController.show",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "settings": {
+                      "properties": {
+                        "enabled": {
+                          "type": "boolean"
+                        },
+                        "google_place_id": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "google_review_url": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "lock_version": {
+                          "type": "integer"
+                        },
+                        "milestones": {
+                          "items": {
+                            "type": "integer"
+                          },
+                          "type": "array"
+                        }
+                      },
+                      "required": [
+                        "enabled",
+                        "google_place_id",
+                        "google_review_url",
+                        "lock_version",
+                        "milestones"
+                      ],
+                      "title": "ReviewAskSettings",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "settings"
+                  ],
+                  "title": "ReviewAskSettingsResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Settings"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The box's Google Place ID, milestones and whether members are asked",
+        "tags": [
+          "Google reviews"
+        ]
+      },
+      "put": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminReviewAsksController.update",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "enabled": {
+                    "type": "boolean"
+                  },
+                  "google_place_id": {
+                    "maxLength": 300,
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "lock_version": {
+                    "type": "integer"
+                  },
+                  "milestones": {
+                    "items": {
+                      "maximum": 1000,
+                      "minimum": 3,
+                      "type": "integer"
+                    },
+                    "maxItems": 6,
+                    "minItems": 1,
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "lock_version"
+                ],
+                "title": "ReviewAskSettingsUpdate",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "settings": {
+                      "properties": {
+                        "enabled": {
+                          "type": "boolean"
+                        },
+                        "google_place_id": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "google_review_url": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "lock_version": {
+                          "type": "integer"
+                        },
+                        "milestones": {
+                          "items": {
+                            "type": "integer"
+                          },
+                          "type": "array"
+                        }
+                      },
+                      "required": [
+                        "enabled",
+                        "google_place_id",
+                        "google_review_url",
+                        "lock_version",
+                        "milestones"
+                      ],
+                      "title": "ReviewAskSettings",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "settings"
+                  ],
+                  "title": "ReviewAskSettingsResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Settings"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Saved meanwhile"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Invalid"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Set the Google Place ID, milestones and turn asks on or off",
+        "tags": [
+          "Google reviews"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/review-asks/summary": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminReviewAsksController.summary",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "counts": {
+                      "properties": {
+                        "asked": {
+                          "type": "integer"
+                        },
+                        "dismissed": {
+                          "type": "integer"
+                        },
+                        "later": {
+                          "type": "integer"
+                        },
+                        "opened": {
+                          "type": "integer"
+                        },
+                        "opted_out": {
+                          "type": "integer"
+                        },
+                        "unanswered": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "asked",
+                        "dismissed",
+                        "later",
+                        "opened",
+                        "opted_out",
+                        "unanswered"
+                      ],
+                      "type": "object"
+                    },
+                    "days": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "counts",
+                    "days"
+                  ],
+                  "title": "ReviewAskSummaryResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Summary"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "How many members were asked and what they chose (counts only)",
+        "tags": [
+          "Google reviews"
+        ]
+      }
+    },
     "/api/org/{organization_slug}/admin/reviews": {
       "get": {
         "callbacks": {},
@@ -238645,6 +240714,1272 @@
         "summary": "Shop sales per gym-local day: gross, refunds, net, orders and AOV",
         "tags": [
           "Admin Shop Reports"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/site": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminSiteController.show",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "domains": {
+                      "items": {
+                        "properties": {
+                          "active_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "checked_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "dns_records": {
+                            "items": {
+                              "properties": {
+                                "name": {
+                                  "type": "string"
+                                },
+                                "type": {
+                                  "enum": [
+                                    "TXT",
+                                    "CNAME",
+                                    "A"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "name",
+                                "type",
+                                "value"
+                              ],
+                              "title": "SiteDnsRecord",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "host": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "last_error": {
+                            "enum": [
+                              "dns_txt_missing",
+                              "dns_not_pointing",
+                              "tls_not_ready",
+                              "tls_failed",
+                              null
+                            ],
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "next_check_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "primary": {
+                            "type": "boolean"
+                          },
+                          "status": {
+                            "enum": [
+                              "pending_dns",
+                              "pending_tls",
+                              "active",
+                              "broken",
+                              "expired"
+                            ],
+                            "type": "string"
+                          },
+                          "verified_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "active_at",
+                          "checked_at",
+                          "dns_records",
+                          "host",
+                          "id",
+                          "last_error",
+                          "next_check_at",
+                          "primary",
+                          "status",
+                          "verified_at"
+                        ],
+                        "title": "SiteDomain",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "section_keys": {
+                      "items": {
+                        "enum": [
+                          "hero",
+                          "about",
+                          "schedule",
+                          "packages",
+                          "coaches",
+                          "location",
+                          "reviews",
+                          "faq",
+                          "trial_form",
+                          "contact_form"
+                        ],
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "settings": {
+                      "properties": {
+                        "banner_version": {
+                          "type": "integer"
+                        },
+                        "conversions_api_enabled": {
+                          "type": "boolean"
+                        },
+                        "faq": {
+                          "items": {
+                            "properties": {
+                              "answer": {
+                                "maxLength": 1000,
+                                "type": "string"
+                              },
+                              "question": {
+                                "maxLength": 200,
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "answer",
+                              "question"
+                            ],
+                            "title": "SiteFaqEntry",
+                            "type": "object"
+                          },
+                          "maxItems": 12,
+                          "type": "array"
+                        },
+                        "forms_enabled": {
+                          "type": "boolean"
+                        },
+                        "ga4_measurement_id": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "gtm_container_id": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "has_conversions_api_token": {
+                          "description": "A token is saved; the token itself is never returned",
+                          "type": "boolean"
+                        },
+                        "hidden_sections": {
+                          "items": {
+                            "enum": [
+                              "hero",
+                              "about",
+                              "schedule",
+                              "packages",
+                              "coaches",
+                              "location",
+                              "reviews",
+                              "faq",
+                              "trial_form",
+                              "contact_form"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "lock_version": {
+                          "type": "integer"
+                        },
+                        "meta_pixel_id": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "public_schedule": {
+                          "type": "boolean"
+                        },
+                        "section_order": {
+                          "items": {
+                            "enum": [
+                              "hero",
+                              "about",
+                              "schedule",
+                              "packages",
+                              "coaches",
+                              "location",
+                              "reviews",
+                              "faq",
+                              "trial_form",
+                              "contact_form"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
+                        }
+                      },
+                      "required": [
+                        "banner_version",
+                        "conversions_api_enabled",
+                        "faq",
+                        "forms_enabled",
+                        "ga4_measurement_id",
+                        "gtm_container_id",
+                        "has_conversions_api_token",
+                        "hidden_sections",
+                        "lock_version",
+                        "meta_pixel_id",
+                        "public_schedule",
+                        "section_order"
+                      ],
+                      "title": "SiteSettings",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "domains",
+                    "section_keys",
+                    "settings"
+                  ],
+                  "title": "AdminSiteResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Site"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The website's settings, section keys and custom domains",
+        "tags": [
+          "Box website"
+        ]
+      },
+      "put": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminSiteController.update",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "conversions_api_enabled": {
+                    "type": "boolean"
+                  },
+                  "conversions_api_token": {
+                    "description": "Meta Conversions API access token (write-only; empty removes it)",
+                    "nullable": true,
+                    "type": "string",
+                    "writeOnly": true
+                  },
+                  "faq": {
+                    "items": {
+                      "properties": {
+                        "answer": {
+                          "maxLength": 1000,
+                          "type": "string"
+                        },
+                        "question": {
+                          "maxLength": 200,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "answer",
+                        "question"
+                      ],
+                      "title": "SiteFaqEntry",
+                      "type": "object"
+                    },
+                    "maxItems": 12,
+                    "type": "array"
+                  },
+                  "forms_enabled": {
+                    "type": "boolean"
+                  },
+                  "ga4_measurement_id": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "gtm_container_id": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "hidden_sections": {
+                    "items": {
+                      "enum": [
+                        "hero",
+                        "about",
+                        "schedule",
+                        "packages",
+                        "coaches",
+                        "location",
+                        "reviews",
+                        "faq",
+                        "trial_form",
+                        "contact_form"
+                      ],
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "lock_version": {
+                    "type": "integer"
+                  },
+                  "meta_pixel_id": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "public_schedule": {
+                    "type": "boolean"
+                  },
+                  "section_order": {
+                    "items": {
+                      "enum": [
+                        "hero",
+                        "about",
+                        "schedule",
+                        "packages",
+                        "coaches",
+                        "location",
+                        "reviews",
+                        "faq",
+                        "trial_form",
+                        "contact_form"
+                      ],
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "lock_version"
+                ],
+                "title": "SiteSettingsUpdate",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "settings": {
+                      "properties": {
+                        "banner_version": {
+                          "type": "integer"
+                        },
+                        "conversions_api_enabled": {
+                          "type": "boolean"
+                        },
+                        "faq": {
+                          "items": {
+                            "properties": {
+                              "answer": {
+                                "maxLength": 1000,
+                                "type": "string"
+                              },
+                              "question": {
+                                "maxLength": 200,
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "answer",
+                              "question"
+                            ],
+                            "title": "SiteFaqEntry",
+                            "type": "object"
+                          },
+                          "maxItems": 12,
+                          "type": "array"
+                        },
+                        "forms_enabled": {
+                          "type": "boolean"
+                        },
+                        "ga4_measurement_id": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "gtm_container_id": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "has_conversions_api_token": {
+                          "description": "A token is saved; the token itself is never returned",
+                          "type": "boolean"
+                        },
+                        "hidden_sections": {
+                          "items": {
+                            "enum": [
+                              "hero",
+                              "about",
+                              "schedule",
+                              "packages",
+                              "coaches",
+                              "location",
+                              "reviews",
+                              "faq",
+                              "trial_form",
+                              "contact_form"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "lock_version": {
+                          "type": "integer"
+                        },
+                        "meta_pixel_id": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "public_schedule": {
+                          "type": "boolean"
+                        },
+                        "section_order": {
+                          "items": {
+                            "enum": [
+                              "hero",
+                              "about",
+                              "schedule",
+                              "packages",
+                              "coaches",
+                              "location",
+                              "reviews",
+                              "faq",
+                              "trial_form",
+                              "contact_form"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
+                        }
+                      },
+                      "required": [
+                        "banner_version",
+                        "conversions_api_enabled",
+                        "faq",
+                        "forms_enabled",
+                        "ga4_measurement_id",
+                        "gtm_container_id",
+                        "has_conversions_api_token",
+                        "hidden_sections",
+                        "lock_version",
+                        "meta_pixel_id",
+                        "public_schedule",
+                        "section_order"
+                      ],
+                      "title": "SiteSettings",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "settings"
+                  ],
+                  "title": "SiteSettingsResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Settings"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Saved meanwhile"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Change the website's sections, FAQ, forms and tags; live at once",
+        "tags": [
+          "Box website"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/site/domains": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminSiteController.domains",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "domains": {
+                      "items": {
+                        "properties": {
+                          "active_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "checked_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "dns_records": {
+                            "items": {
+                              "properties": {
+                                "name": {
+                                  "type": "string"
+                                },
+                                "type": {
+                                  "enum": [
+                                    "TXT",
+                                    "CNAME",
+                                    "A"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "name",
+                                "type",
+                                "value"
+                              ],
+                              "title": "SiteDnsRecord",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "host": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "last_error": {
+                            "enum": [
+                              "dns_txt_missing",
+                              "dns_not_pointing",
+                              "tls_not_ready",
+                              "tls_failed",
+                              null
+                            ],
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "next_check_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "primary": {
+                            "type": "boolean"
+                          },
+                          "status": {
+                            "enum": [
+                              "pending_dns",
+                              "pending_tls",
+                              "active",
+                              "broken",
+                              "expired"
+                            ],
+                            "type": "string"
+                          },
+                          "verified_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "active_at",
+                          "checked_at",
+                          "dns_records",
+                          "host",
+                          "id",
+                          "last_error",
+                          "next_check_at",
+                          "primary",
+                          "status",
+                          "verified_at"
+                        ],
+                        "title": "SiteDomain",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "domains"
+                  ],
+                  "title": "SiteDomainsResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Domains"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The website's custom domains with the DNS records to add",
+        "tags": [
+          "Box website"
+        ]
+      },
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminSiteController.add_domain",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "host": {
+                    "maxLength": 260,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "host"
+                ],
+                "title": "SiteDomainRequest",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "domain": {
+                      "properties": {
+                        "active_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "checked_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "dns_records": {
+                          "items": {
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "type": {
+                                "enum": [
+                                  "TXT",
+                                  "CNAME",
+                                  "A"
+                                ],
+                                "type": "string"
+                              },
+                              "value": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "name",
+                              "type",
+                              "value"
+                            ],
+                            "title": "SiteDnsRecord",
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
+                        "host": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "last_error": {
+                          "enum": [
+                            "dns_txt_missing",
+                            "dns_not_pointing",
+                            "tls_not_ready",
+                            "tls_failed",
+                            null
+                          ],
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "next_check_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "status": {
+                          "enum": [
+                            "pending_dns",
+                            "pending_tls",
+                            "active",
+                            "broken",
+                            "expired"
+                          ],
+                          "type": "string"
+                        },
+                        "verified_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "active_at",
+                        "checked_at",
+                        "dns_records",
+                        "host",
+                        "id",
+                        "last_error",
+                        "next_check_at",
+                        "primary",
+                        "status",
+                        "verified_at"
+                      ],
+                      "title": "SiteDomain",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "domain"
+                  ],
+                  "title": "SiteDomainResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Domain"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Error"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Add a custom domain (up to 2); it is checked at once",
+        "tags": [
+          "Box website"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/site/domains/{id}": {
+      "delete": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminSiteController.remove_domain",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Removed"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Remove a custom domain; the site stays at its Palee address",
+        "tags": [
+          "Box website"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/site/domains/{id}/check": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminSiteController.check_domain",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "domain": {
+                      "properties": {
+                        "active_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "checked_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "dns_records": {
+                          "items": {
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "type": {
+                                "enum": [
+                                  "TXT",
+                                  "CNAME",
+                                  "A"
+                                ],
+                                "type": "string"
+                              },
+                              "value": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "name",
+                              "type",
+                              "value"
+                            ],
+                            "title": "SiteDnsRecord",
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
+                        "host": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "last_error": {
+                          "enum": [
+                            "dns_txt_missing",
+                            "dns_not_pointing",
+                            "tls_not_ready",
+                            "tls_failed",
+                            null
+                          ],
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "next_check_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "status": {
+                          "enum": [
+                            "pending_dns",
+                            "pending_tls",
+                            "active",
+                            "broken",
+                            "expired"
+                          ],
+                          "type": "string"
+                        },
+                        "verified_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "active_at",
+                        "checked_at",
+                        "dns_records",
+                        "host",
+                        "id",
+                        "last_error",
+                        "next_check_at",
+                        "primary",
+                        "status",
+                        "verified_at"
+                      ],
+                      "title": "SiteDomain",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "domain"
+                  ],
+                  "title": "SiteDomainResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Domain"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "«Έλεγχος τώρα»: check a custom domain's DNS and HTTPS now",
+        "tags": [
+          "Box website"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/site/domains/{id}/primary": {
+      "put": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminSiteController.make_primary",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "domain": {
+                      "properties": {
+                        "active_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "checked_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "dns_records": {
+                          "items": {
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "type": {
+                                "enum": [
+                                  "TXT",
+                                  "CNAME",
+                                  "A"
+                                ],
+                                "type": "string"
+                              },
+                              "value": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "name",
+                              "type",
+                              "value"
+                            ],
+                            "title": "SiteDnsRecord",
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
+                        "host": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "last_error": {
+                          "enum": [
+                            "dns_txt_missing",
+                            "dns_not_pointing",
+                            "tls_not_ready",
+                            "tls_failed",
+                            null
+                          ],
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "next_check_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "primary": {
+                          "type": "boolean"
+                        },
+                        "status": {
+                          "enum": [
+                            "pending_dns",
+                            "pending_tls",
+                            "active",
+                            "broken",
+                            "expired"
+                          ],
+                          "type": "string"
+                        },
+                        "verified_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "active_at",
+                        "checked_at",
+                        "dns_records",
+                        "host",
+                        "id",
+                        "last_error",
+                        "next_check_at",
+                        "primary",
+                        "status",
+                        "verified_at"
+                      ],
+                      "title": "SiteDomain",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "domain"
+                  ],
+                  "title": "SiteDomainResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Domain"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Make a custom domain the site's main address",
+        "tags": [
+          "Box website"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/site/summary": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminSiteController.summary",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "consents": {
+                      "properties": {
+                        "accept_all": {
+                          "type": "integer"
+                        },
+                        "custom": {
+                          "type": "integer"
+                        },
+                        "reject_all": {
+                          "type": "integer"
+                        },
+                        "withdraw": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "accept_all",
+                        "custom",
+                        "reject_all",
+                        "withdraw"
+                      ],
+                      "type": "object"
+                    },
+                    "days": {
+                      "type": "integer"
+                    },
+                    "submissions": {
+                      "properties": {
+                        "delivered": {
+                          "type": "integer"
+                        },
+                        "failed": {
+                          "type": "integer"
+                        },
+                        "total": {
+                          "type": "integer"
+                        },
+                        "waiting": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "delivered",
+                        "failed",
+                        "total",
+                        "waiting"
+                      ],
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "consents",
+                    "days",
+                    "submissions"
+                  ],
+                  "title": "SiteSummaryResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Summary"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "What the website brought in over the last 30 days (counts only)",
+        "tags": [
+          "Box website"
         ]
       }
     },
@@ -285999,6 +289334,300 @@
         "summary": "Printable HTML version of one of the current member's refund receipts",
         "tags": [
           "Member Finance"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/me/review-ask": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.MyReviewAskController.show",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "ask": {
+                      "nullable": true,
+                      "properties": {
+                        "actions": {
+                          "items": {
+                            "enum": [
+                              "opened",
+                              "later",
+                              "dismissed"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "google_review_url": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "milestone": {
+                          "type": "integer"
+                        },
+                        "shown_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "shown",
+                            "opened",
+                            "later",
+                            "dismissed"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "actions",
+                        "google_review_url",
+                        "id",
+                        "milestone",
+                        "shown_at",
+                        "status"
+                      ],
+                      "title": "ReviewAsk",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "ask"
+                  ],
+                  "title": "ReviewAskResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Ask"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The review ask to show now, or null",
+        "tags": [
+          "Google reviews"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/me/review-asks/opt-out": {
+      "delete": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.MyReviewAskController.opt_in",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "opted_out": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "opted_out"
+                  ],
+                  "title": "ReviewAskOptOutResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Opted in"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Allow review asks at this box again",
+        "tags": [
+          "Google reviews"
+        ]
+      },
+      "put": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.MyReviewAskController.opt_out",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "opted_out": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "opted_out"
+                  ],
+                  "title": "ReviewAskOptOutResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Opted out"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Never ask me for a review at this box again",
+        "tags": [
+          "Google reviews"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/me/review-asks/{id}/respond": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.MyReviewAskController.respond",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "action": {
+                    "enum": [
+                      "opened",
+                      "later",
+                      "dismissed"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "action"
+                ],
+                "title": "ReviewAskRespondRequest",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "ask": {
+                      "nullable": true,
+                      "properties": {
+                        "actions": {
+                          "items": {
+                            "enum": [
+                              "opened",
+                              "later",
+                              "dismissed"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "google_review_url": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "milestone": {
+                          "type": "integer"
+                        },
+                        "shown_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "shown",
+                            "opened",
+                            "later",
+                            "dismissed"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "actions",
+                        "google_review_url",
+                        "id",
+                        "milestone",
+                        "shown_at",
+                        "status"
+                      ],
+                      "title": "ReviewAsk",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "ask"
+                  ],
+                  "title": "ReviewAskResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Ask"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No such ask"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Already answered"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Record what the member chose: opened Google, later or dismissed",
+        "tags": [
+          "Google reviews"
         ]
       }
     },
@@ -346316,6 +349945,111 @@
         ]
       }
     },
+    "/api/platform/site-domains": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformSiteDomainsController.index",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "enum": [
+                "pending_dns",
+                "pending_tls",
+                "active",
+                "broken",
+                "expired"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "cname_target": {
+                      "type": "string"
+                    },
+                    "domains": {
+                      "items": {
+                        "properties": {
+                          "host": {
+                            "type": "string"
+                          },
+                          "slug": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "pending_dns",
+                              "pending_tls",
+                              "active",
+                              "broken",
+                              "expired"
+                            ],
+                            "type": "string"
+                          },
+                          "updated_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "verified_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "host",
+                          "slug",
+                          "status",
+                          "updated_at",
+                          "verified_at"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "cname_target",
+                    "domains"
+                  ],
+                  "title": "SiteOpsDomainsResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Domains"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Custom domains in a state (default pending_tls: they need an Ingress)",
+        "tags": [
+          "Platform"
+        ]
+      }
+    },
     "/api/platform/subscriptions": {
       "get": {
         "callbacks": {},
@@ -352030,6 +355764,686 @@
         "summary": "What an invite link shows: the box, who invites and the friend's gift (no sign-in)",
         "tags": [
           "Referrals"
+        ]
+      }
+    },
+    "/api/public/sites/by-host/{host}": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PublicSiteController.by_host",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "host",
+            "required": true,
+            "schema": {
+              "maxLength": 253,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "host": {
+                      "type": "string"
+                    },
+                    "primary": {
+                      "type": "boolean"
+                    },
+                    "primary_host": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "slug": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "host",
+                    "primary",
+                    "primary_host",
+                    "slug"
+                  ],
+                  "title": "SiteByHostResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Site"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No published box"
+          }
+        },
+        "summary": "The box behind a custom domain (the web's host rewrite and the TLS probe)",
+        "tags": [
+          "Box website"
+        ]
+      }
+    },
+    "/api/public/sites/tls-allowed": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PublicSiteController.tls_allowed",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "domain",
+            "required": true,
+            "schema": {
+              "maxLength": 253,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Allowed"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No published box"
+          }
+        },
+        "summary": "On-demand TLS `ask`: 200 only for a verified custom domain",
+        "tags": [
+          "Box website"
+        ]
+      }
+    },
+    "/api/public/sites/{slug}": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PublicSiteController.show",
+        "parameters": [
+          {
+            "description": "The box's slug or one of its former slugs",
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "maxLength": 120,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "canonical_url": {
+                      "type": "string"
+                    },
+                    "faq": {
+                      "items": {
+                        "properties": {
+                          "answer": {
+                            "maxLength": 1000,
+                            "type": "string"
+                          },
+                          "question": {
+                            "maxLength": 200,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "answer",
+                          "question"
+                        ],
+                        "title": "SiteFaqEntry",
+                        "type": "object"
+                      },
+                      "maxItems": 12,
+                      "type": "array"
+                    },
+                    "forms": {
+                      "properties": {
+                        "contact": {
+                          "type": "boolean"
+                        },
+                        "kinds": {
+                          "items": {
+                            "enum": [
+                              "trial",
+                              "contact"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "trial": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "contact",
+                        "kinds",
+                        "trial"
+                      ],
+                      "type": "object"
+                    },
+                    "reviews": {
+                      "properties": {
+                        "google_reviews_url": {
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "google_reviews_url"
+                      ],
+                      "type": "object"
+                    },
+                    "sections": {
+                      "items": {
+                        "enum": [
+                          "hero",
+                          "about",
+                          "schedule",
+                          "packages",
+                          "coaches",
+                          "location",
+                          "reviews",
+                          "faq",
+                          "trial_form",
+                          "contact_form"
+                        ],
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "slug": {
+                      "type": "string"
+                    },
+                    "timetable": {
+                      "description": "The next 7 days' classes when the owner shows the timetable (no spots or people)",
+                      "items": {
+                        "properties": {
+                          "class_type_id": {
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "duration_minutes": {
+                            "type": "integer"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "location_id": {
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "scheduled_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "class_type_id",
+                          "duration_minutes",
+                          "id",
+                          "location_id",
+                          "name",
+                          "scheduled_at"
+                        ],
+                        "title": "SiteTimetableClass",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "tracking": {
+                      "properties": {
+                        "banner_version": {
+                          "type": "integer"
+                        },
+                        "categories": {
+                          "items": {
+                            "enum": [
+                              "necessary",
+                              "analytics",
+                              "marketing"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "consent_required": {
+                          "type": "boolean"
+                        },
+                        "tags": {
+                          "description": "Public tag ids; none loads before the visitor's consent (ADR-354)",
+                          "properties": {
+                            "ga4_measurement_id": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "gtm_container_id": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "meta_pixel_id": {
+                              "nullable": true,
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "ga4_measurement_id",
+                            "gtm_container_id",
+                            "meta_pixel_id"
+                          ],
+                          "title": "SiteTags",
+                          "type": "object"
+                        },
+                        "validity_days": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "banner_version",
+                        "categories",
+                        "consent_required",
+                        "tags",
+                        "validity_days"
+                      ],
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "canonical_url",
+                    "faq",
+                    "forms",
+                    "reviews",
+                    "sections",
+                    "slug",
+                    "timetable",
+                    "tracking"
+                  ],
+                  "title": "PublicSiteResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Site"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No published box"
+          }
+        },
+        "summary": "A published box's website: sections, FAQ, forms, tags and timetable",
+        "tags": [
+          "Box website"
+        ]
+      }
+    },
+    "/api/public/sites/{slug}/consents": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PublicSiteController.consent",
+        "parameters": [
+          {
+            "description": "The box's slug or one of its former slugs",
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "maxLength": 120,
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "action": {
+                    "enum": [
+                      "accept_all",
+                      "reject_all",
+                      "custom",
+                      "withdraw"
+                    ],
+                    "type": "string"
+                  },
+                  "analytics": {
+                    "type": "boolean"
+                  },
+                  "banner_version": {
+                    "type": "integer"
+                  },
+                  "marketing": {
+                    "type": "boolean"
+                  },
+                  "visitor_id": {
+                    "format": "uuid",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "action",
+                  "banner_version",
+                  "visitor_id"
+                ],
+                "title": "SiteConsentRequest",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "allowed_tags": {
+                      "items": {
+                        "enum": [
+                          "ga4_measurement_id",
+                          "meta_pixel_id",
+                          "gtm_container_id"
+                        ],
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "analytics": {
+                      "type": "boolean"
+                    },
+                    "banner_version": {
+                      "type": "integer"
+                    },
+                    "expires_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "marketing": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "allowed_tags",
+                    "analytics",
+                    "banner_version",
+                    "expires_at",
+                    "marketing"
+                  ],
+                  "title": "SiteConsentResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Recorded"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No published box"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Record a visitor's cookie choice; answers which tags may load",
+        "tags": [
+          "Box website"
+        ]
+      }
+    },
+    "/api/public/sites/{slug}/forms/{kind}": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PublicSiteController.submit_form",
+        "parameters": [
+          {
+            "description": "The box's slug or one of its former slugs",
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "maxLength": 120,
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "kind",
+            "required": true,
+            "schema": {
+              "enum": [
+                "trial",
+                "contact"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "attribution": {
+                    "properties": {
+                      "landing_path": {
+                        "maxLength": 500,
+                        "type": "string"
+                      },
+                      "referrer_host": {
+                        "maxLength": 500,
+                        "type": "string"
+                      },
+                      "utm_campaign": {
+                        "maxLength": 500,
+                        "type": "string"
+                      },
+                      "utm_content": {
+                        "maxLength": 500,
+                        "type": "string"
+                      },
+                      "utm_medium": {
+                        "maxLength": 500,
+                        "type": "string"
+                      },
+                      "utm_source": {
+                        "maxLength": 500,
+                        "type": "string"
+                      },
+                      "utm_term": {
+                        "maxLength": 500,
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "class_type_id": {
+                    "format": "uuid",
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "consent_text_hash": {
+                    "maxLength": 80,
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "consent_text_version": {
+                    "maxLength": 40,
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "elapsed_ms": {
+                    "description": "Time spent on the form",
+                    "nullable": true,
+                    "type": "integer"
+                  },
+                  "email": {
+                    "maxLength": 320,
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "locale": {
+                    "maxLength": 10,
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "marketing_opt_in": {
+                    "description": "Separate, unticked opt-in to marketing follow-ups",
+                    "type": "boolean"
+                  },
+                  "message": {
+                    "maxLength": 4000,
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "name": {
+                    "maxLength": 200,
+                    "type": "string"
+                  },
+                  "phone": {
+                    "maxLength": 40,
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "preferred_time": {
+                    "maxLength": 200,
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "privacy_ack": {
+                    "description": "Must be true",
+                    "type": "boolean"
+                  },
+                  "visitor_id": {
+                    "format": "uuid",
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "website": {
+                    "description": "Honeypot: leave empty",
+                    "nullable": true,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "privacy_ack"
+                ],
+                "title": "SiteFormRequest",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "enum": [
+                        "received"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "status"
+                  ],
+                  "title": "SiteFormResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Received"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No published box"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Error"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Send the trial or contact form; it reaches the box as a lead",
+        "tags": [
+          "Box website"
         ]
       }
     },

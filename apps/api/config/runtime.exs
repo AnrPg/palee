@@ -468,3 +468,15 @@ if config_env() == :prod do
     check_origin: ["https://#{host}", "http://#{host}"],
     secret_key_base: secret_key_base
 end
+
+# ADR-352 §5: where custom hosts of box websites must point.
+if config_env() == :prod do
+  config :palee, :box_site,
+    cname_target: System.get_env("BOX_SITE_CNAME_TARGET", "sites.palee.app"),
+    a_records:
+      "BOX_SITE_A_RECORDS"
+      |> System.get_env("")
+      |> String.split(",", trim: true)
+      |> Enum.map(&String.trim/1),
+    refused_suffixes: ["palee.app", "4kq.net", "localhost", "localdomain", "invalid", "local"]
+end
