@@ -17,7 +17,11 @@ defmodule Palee.Scheduling.Domain.DayAssignmentTag do
   def tags, do: @tags
 
   @doc "The tag of one day's classes, with the counts it was read from."
-  @spec tag([map()]) :: %{tag: String.t(), classes: non_neg_integer(), with_wod: non_neg_integer()}
+  @spec tag([map()]) :: %{
+          tag: String.t(),
+          classes: non_neg_integer(),
+          with_wod: non_neg_integer()
+        }
   def tag(classes) when is_list(classes) do
     live = Enum.reject(classes, &Map.get(&1, :cancelled_at))
     with_wod = Enum.count(live, &Map.get(&1, :master_workout_id))

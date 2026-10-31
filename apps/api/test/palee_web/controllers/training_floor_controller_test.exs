@@ -157,8 +157,16 @@ defmodule PaleeWeb.TrainingFloorControllerTest do
         Ecto.UUID.dump!(workout.id)
       ])
 
-      assert %{"snapshot" => %{"title" => "Fran", "workout_id" => workout_id, "content" => content}} =
-               as.(member) |> get("#{base}/workout-snapshots/#{snapshot_id}") |> json_response(200)
+      assert %{
+               "snapshot" => %{
+                 "title" => "Fran",
+                 "workout_id" => workout_id,
+                 "content" => content
+               }
+             } =
+               as.(member)
+               |> get("#{base}/workout-snapshots/#{snapshot_id}")
+               |> json_response(200)
 
       assert workout_id == workout.id
       assert [%{"name" => "For time"}] = content["sections"]
@@ -217,9 +225,12 @@ defmodule PaleeWeb.TrainingFloorControllerTest do
         [Ecto.UUID.dump!(past.id)]
       )
 
-      Repo.query!("UPDATE scheduled_classes SET scheduled_at = now() - interval '2 days' WHERE id = $1", [
-        Ecto.UUID.dump!(past.id)
-      ])
+      Repo.query!(
+        "UPDATE scheduled_classes SET scheduled_at = now() - interval '2 days' WHERE id = $1",
+        [
+          Ecto.UUID.dump!(past.id)
+        ]
+      )
 
       slot = slot_fixture(workout)
 
@@ -265,7 +276,9 @@ defmodule PaleeWeb.TrainingFloorControllerTest do
         [Ecto.UUID.dump!(booking.id)]
       )
 
-      cancelled = as.(member) |> get("#{base}/bookings/#{booking.id}/calendar.ics") |> response(200)
+      cancelled =
+        as.(member) |> get("#{base}/bookings/#{booking.id}/calendar.ics") |> response(200)
+
       assert cancelled =~ "METHOD:CANCEL"
       assert cancelled =~ "STATUS:CANCELLED"
       assert cancelled =~ "UID:class-#{slot.id}@palee"
@@ -274,7 +287,10 @@ defmodule PaleeWeb.TrainingFloorControllerTest do
 
       # The feed keeps the cancelled seat as CANCELLED so calendars drop it.
       links = as.(member) |> get("/api/calendar/export-links") |> json_response(200)
-      feed = build_conn() |> get("/api/calendar/feed.ics", %{token: links["token"]}) |> response(200)
+
+      feed =
+        build_conn() |> get("/api/calendar/feed.ics", %{token: links["token"]}) |> response(200)
+
       assert feed =~ "UID:class-#{slot.id}@palee"
       assert feed =~ "STATUS:CANCELLED"
 
@@ -307,7 +323,9 @@ defmodule PaleeWeb.TrainingFloorControllerTest do
       assert %{"score" => 63, "domains_scored" => 2} = profile["overall"]
 
       strength = Enum.find(profile["domains"], &(&1["domain"] == "strength"))
-      assert %{"score" => 75, "reasons" => [%{"benchmark" => "back_squat", "points" => 75.0}]} = strength
+
+      assert %{"score" => 75, "reasons" => [%{"benchmark" => "back_squat", "points" => 75.0}]} =
+               strength
 
       assert as.(member) |> get("/api/me/fitness-profile?division=x") |> json_response(422)
     end

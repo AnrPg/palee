@@ -58,7 +58,10 @@ defmodule Palee.Pantheon.Domain.FitnessProfileTest do
     strength = Enum.find(profile.domains, &(&1.domain == "strength"))
     assert %{score: score, confidence: "medium", reasons: reasons} = strength
     assert score == 58
-    assert %{benchmark: "deadlift", estimated: true, value: value} = Enum.find(reasons, &(&1.benchmark == "deadlift"))
+
+    assert %{benchmark: "deadlift", estimated: true, value: value} =
+             Enum.find(reasons, &(&1.benchmark == "deadlift"))
+
     assert value == 116.5
 
     assert %{score: 50, confidence: "low"} = Enum.find(profile.domains, &(&1.domain == "metcon"))
@@ -119,7 +122,10 @@ defmodule Palee.Pantheon.Domain.FitnessProfileTest do
 
     assert Enum.any?(
              profile.focus,
-             &match?(%{domain: "gymnastics", kind: "undertrained_quality", quality: "coordination"}, &1)
+             &match?(
+               %{domain: "gymnastics", kind: "undertrained_quality", quality: "coordination"},
+               &1
+             )
            )
   end
 end

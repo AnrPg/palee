@@ -8,14 +8,21 @@ defmodule Palee.Scheduling.Domain.VisitBadgesAndCalendarTest do
     test "a first visit, and how the person came" do
       assert VisitBadges.badges(%{box_visits: 0, roles: ["member"]}) == ["first_visit"]
 
-      assert VisitBadges.badges(%{box_visits: 0, referral: %{event_id: "e", referrer_user_id: nil}}) ==
+      assert VisitBadges.badges(%{
+               box_visits: 0,
+               referral: %{event_id: "e", referrer_user_id: nil}
+             }) ==
                ["first_visit", "came_via_event"]
 
-      assert VisitBadges.badges(%{box_visits: 0, referral: %{event_id: nil, referrer_user_id: "u"}}) ==
+      assert VisitBadges.badges(%{
+               box_visits: 0,
+               referral: %{event_id: nil, referrer_user_id: "u"}
+             }) ==
                ["first_visit", "came_via_referral"]
 
       # How someone came only matters on their first visit.
-      assert VisitBadges.badges(%{box_visits: 3, type_visits: 1, referral: %{event_id: "e"}}) == []
+      assert VisitBadges.badges(%{box_visits: 3, type_visits: 1, referral: %{event_id: "e"}}) ==
+               []
     end
 
     test "first time in this kind of class, guest, trial and guest passes" do
@@ -26,7 +33,11 @@ defmodule Palee.Scheduling.Domain.VisitBadgesAndCalendarTest do
       # A member who is also a guest elsewhere is a member here.
       assert VisitBadges.badges(%{box_visits: 2, roles: ["member", "guest"]}) == []
 
-      assert VisitBadges.badges(%{box_visits: 0, booking_kind: "trial"}) == ["first_visit", "trial"]
+      assert VisitBadges.badges(%{box_visits: 0, booking_kind: "trial"}) == [
+               "first_visit",
+               "trial"
+             ]
+
       assert "brought_by_member" in VisitBadges.badges(%{box_visits: 9, guest_name: "Νίκος"})
     end
   end

@@ -190,7 +190,7 @@ defmodule Palee.Scheduling.Domain.ICalendar do
       if byte_size(current) + byte_size(grapheme) > limit,
         do: {[current | done], grapheme, 74},
         else: {done, current <> grapheme, limit}
-      end)
+    end)
     |> then(fn {done, current, _limit} -> Enum.reverse([current | done]) end)
     |> Enum.join("\r\n ")
   end

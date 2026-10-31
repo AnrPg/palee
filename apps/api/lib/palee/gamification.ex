@@ -81,7 +81,9 @@ defmodule Palee.Gamification do
     }
   end
 
-  defdelegate annotate_percentiles(rows), to: Palee.Gamification.Domain.ScorePercentile, as: :annotate
+  defdelegate annotate_percentiles(rows),
+    to: Palee.Gamification.Domain.ScorePercentile,
+    as: :annotate
 
   defdelegate refresh_leaderboard(), to: RefreshLeaderboard, as: :call
   defdelegate get_training_quote(date, subject_id), to: GetTrainingQuote, as: :for_subject

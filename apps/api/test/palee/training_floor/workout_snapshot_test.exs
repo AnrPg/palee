@@ -41,7 +41,11 @@ defmodule Palee.Workouts.Domain.WorkoutSnapshotTest do
 
   test "the hash ignores bookkeeping and changes with the content" do
     moved = %{@workout | folder_id: "f2", updated_at: ~U[2026-10-30 10:00:00Z]}
-    edited = put_in(@workout, [:sections, Access.at(0), :exercises], [%{name: "Thrusters", prescription_value: 15}])
+
+    edited =
+      put_in(@workout, [:sections, Access.at(0), :exercises], [
+        %{name: "Thrusters", prescription_value: 15}
+      ])
 
     base = @workout |> WorkoutSnapshot.content() |> WorkoutSnapshot.hash()
 

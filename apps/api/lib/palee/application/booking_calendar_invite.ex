@@ -20,7 +20,8 @@ defmodule Palee.Application.BookingCalendarInvite do
       when is_binary(org) and is_binary(user_id) do
     now = now || DateTime.utc_now()
 
-    with %{} = booking <- Scheduling.get_booking(context, booking_id) || {:error, :booking_not_found},
+    with %{} = booking <-
+           Scheduling.get_booking(context, booking_id) || {:error, :booking_not_found},
          true <- booking.user_id == user_id || {:error, :booking_not_found},
          %{} = slot <- booking.scheduled_class || {:error, :booking_not_found},
          %{} = user <- Identity.find_by_id(user_id) || {:error, :booking_not_found} do

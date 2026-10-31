@@ -199,9 +199,9 @@ defmodule Palee.Application.GetWorkoutLeaderboard do
     Gamification.leaderboard_filter_options()
     |> Map.put(
       :scales,
-        context
-        |> Workouts.list_scale_levels()
-        |> Enum.map(&%{slug: &1.slug, label: &1.label})
+      context
+      |> Workouts.list_scale_levels()
+      |> Enum.map(&%{slug: &1.slug, label: &1.label})
     )
   end
 

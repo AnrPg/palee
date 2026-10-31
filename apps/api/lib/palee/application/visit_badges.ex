@@ -66,7 +66,10 @@ defmodule Palee.Application.VisitBadges do
     facts = context |> facts([user_id], now, class_type_id, exclude) |> Map.get(user_id, %{})
 
     %{
-      badges: facts |> Map.put(:booking_kind, Keyword.get(opts, :booking_kind)) |> Scheduling.visit_badges(),
+      badges:
+        facts
+        |> Map.put(:booking_kind, Keyword.get(opts, :booking_kind))
+        |> Scheduling.visit_badges(),
       via: via(facts, people(referrer_ids([facts])))
     }
   end

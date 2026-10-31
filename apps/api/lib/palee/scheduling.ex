@@ -44,6 +44,7 @@ defmodule Palee.Scheduling do
   defdelegate day_assignment_tags(dates, classes),
     to: Palee.Scheduling.Domain.DayAssignmentTag,
     as: :by_day
+
   @doc "The class levels a class type can have (ADR-197 reads them for Γύρω μου)."
   defdelegate class_levels(), to: Palee.Scheduling.ClassType, as: :levels
   defdelegate create_slot(context, params), to: CreateSlot, as: :call

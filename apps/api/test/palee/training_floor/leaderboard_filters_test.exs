@@ -5,7 +5,8 @@ defmodule Palee.Gamification.Domain.LeaderboardFiltersTest do
 
   describe "parse/1" do
     test "blank means all, defaults to the box and the day" do
-      assert {:ok, %LeaderboardFilters{scope: "box", window: "day", division: nil, buddies: false}} =
+      assert {:ok,
+              %LeaderboardFilters{scope: "box", window: "day", division: nil, buddies: false}} =
                LeaderboardFilters.parse(%{"division" => "", "scale" => " "})
     end
 
