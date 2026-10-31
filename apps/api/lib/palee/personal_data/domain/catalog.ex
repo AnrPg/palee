@@ -223,6 +223,16 @@ defmodule Palee.PersonalData.Domain.Catalog do
       tenant("payments", "shop_orders", @me),
       tenant("payments", "perk_claims", @me),
       tenant("payments", "wallet_passes", @me, drop: ~w(serial)),
+      # ADR-341: a coach's own pay rules and statements (the sources of
+      # commission lines are other people's payments: left out).
+      tenant("payments", "coach_pay_rules", {:eq, "coach_user_id"}),
+      tenant("payments", "coach_pay_statements", {:eq, "coach_user_id"}),
+      tenant(
+        "payments",
+        "coach_pay_lines",
+        {:in, "statement_id", "coach_pay_statements", "id", {:eq, "coach_user_id"}},
+        drop: ~w(source_id)
+      ),
 
       # -- fiscal documents addressed to the person ------------------------------
       tenant("fiscal_documents", "fiscal_documents", fiscal_documents(),

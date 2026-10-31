@@ -142,7 +142,8 @@ defmodule Palee.Application.OrganizationPurgeTest do
     retained = unzip(:documents, purge.retained_archive_key)
 
     assert Map.keys(retained) |> Enum.sort() ==
-             ~w(contexts/analytics.json contexts/documents.json contexts/finance.json contexts/fiscal.json contexts/payments.json contexts/shop.json retention-manifest.json)
+             ~w(contexts/analytics.json contexts/coach_pay.json contexts/documents.json contexts/finance.json
+                 contexts/fiscal.json contexts/payments.json contexts/shop.json retention-manifest.json)
 
     assert [_invoice] = retained["contexts/finance.json"]["tables"]["finance_invoices"]
   end

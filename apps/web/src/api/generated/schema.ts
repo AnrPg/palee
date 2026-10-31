@@ -5629,6 +5629,215 @@ export interface paths {
         patch: operations["PaleeWeb.AdminClassTypeController.update"];
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/coach-pay/mine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My pay statements (approved periods only), newest first */
+        get: operations["PaleeWeb.MyCoachPayController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/periods": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Pay periods, newest first */
+        get: operations["PaleeWeb.AdminCoachPayController.periods"];
+        put?: never;
+        /** Open a pay period (gym-local dates, at most 92 days, no overlap) */
+        post: operations["PaleeWeb.AdminCoachPayController.create_period"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A pay period with each coach's statement and its lines */
+        get: operations["PaleeWeb.AdminCoachPayController.period"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/adjustments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add a bonus or correction to a coach's statement (draft periods only) */
+        post: operations["PaleeWeb.AdminCoachPayController.add_adjustment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/adjustments/{line_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove an adjustment (draft periods only) */
+        delete: operations["PaleeWeb.AdminCoachPayController.delete_adjustment"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Approve a period: its statements are locked and shown to the coaches */
+        post: operations["PaleeWeb.AdminCoachPayController.approve"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/calculate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Calculate a draft period from the classes, sessions and sales (adjustments stay) */
+        post: operations["PaleeWeb.AdminCoachPayController.calculate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The approved period as CSV for the accountant (marks it exported) */
+        get: operations["PaleeWeb.AdminCoachPayController.export"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/reopen": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reopen an approved period, with a reason (an exported one stays as it is) */
+        post: operations["PaleeWeb.AdminCoachPayController.reopen"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/rules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Coach pay rules (active ones unless `include_archived`) */
+        get: operations["PaleeWeb.AdminCoachPayController.rules"];
+        put?: never;
+        /**
+         * Add a pay rule for a coach
+         * @description Per class, per attendee, per personal-training session, or a percent of the sales attributed to the coach (`personal_training`: packages they train; `sold_by`: sales they recorded). The currency defaults to the business's.
+         */
+        post: operations["PaleeWeb.AdminCoachPayController.create_rule"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/rules/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Change a pay rule (approved periods keep what they paid) */
+        patch: operations["PaleeWeb.AdminCoachPayController.update_rule"];
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/rules/{id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Stop a pay rule: it pays nothing after today */
+        post: operations["PaleeWeb.AdminCoachPayController.archive_rule"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/community/clubs": {
         parameters: {
             query?: never;
@@ -9060,6 +9269,47 @@ export interface paths {
         get: operations["PaleeWeb.AdminDeskBuyersController.people"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/payments/surcharge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The box's card surcharge and what the law of its country allows
+         * @description Off until the owner turns it on. `law` says which cards may carry a surcharge in the box's country (EU/EEA: commercial or non-EEA cards only; UK: commercial only; US/Canada: credit only, capped; elsewhere: none).
+         */
+        get: operations["PaleeWeb.AdminCardSurchargeController.show"];
+        /**
+         * Choose whether and where the card fee is passed on
+         * @description Refused with `card_surcharge_not_allowed` where the law forbids it or above its cap.
+         */
+        put: operations["PaleeWeb.AdminCardSurchargeController.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/payments/surcharge/quote": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** What a payment would carry, as shown before paying */
+        post: operations["PaleeWeb.AdminCardSurchargeController.quote"];
         delete?: never;
         options?: never;
         head?: never;
@@ -13131,6 +13381,26 @@ export interface paths {
         put?: never;
         /** Dev and test only: finish a sandbox checkout as the provider's page would */
         post: operations["PaleeWeb.MyPaymentsController.sandbox_complete"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/payments/surcharge-quote": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The card surcharge I would pay, shown before paying (ADR-340)
+         * @description With `payment_method_id`, for one of my saved cards; without, for a new card (which never carries one: Palee does not know yet whether the law allows it).
+         */
+        get: operations["PaleeWeb.MyPaymentsController.surcharge_quote"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -74900,6 +75170,931 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.MyCoachPayController.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Statements */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        statements: {
+                            coach_name?: string | null;
+                            /** Format: uuid */
+                            coach_user_id: string;
+                            /** Format: uuid */
+                            id: string;
+                            line_count: number;
+                            lines: {
+                                amount_cents: number;
+                                base_cents?: number | null;
+                                description: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** @enum {string} */
+                                kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "clawback" | "adjustment";
+                                /** Format: date */
+                                occurred_on: string;
+                                percent_bps?: number | null;
+                                quantity: number;
+                                /** Format: uuid */
+                                rule_id?: string | null;
+                                /** Format: uuid */
+                                source_id?: string | null;
+                                /** @enum {string} */
+                                source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual";
+                                unit_cents?: number | null;
+                            }[];
+                            period?: Record<string, never> | null;
+                            total_cents: number;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.periods": {
+        parameters: {
+            query?: {
+                status?: "draft" | "approved" | "exported";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Periods */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        periods: {
+                            /** Format: date-time */
+                            approved_at?: string | null;
+                            /** Format: uuid */
+                            approved_by_id?: string | null;
+                            /** Format: date-time */
+                            calculated_at?: string | null;
+                            currency: string;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: date-time */
+                            exported_at?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            reopen_reason?: string | null;
+                            /** Format: date */
+                            starts_on: string;
+                            statements?: {
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                coach_user_id: string;
+                                /** Format: uuid */
+                                id: string;
+                                line_count: number;
+                                lines: {
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    description: string;
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "clawback" | "adjustment";
+                                    /** Format: date */
+                                    occurred_on: string;
+                                    percent_bps?: number | null;
+                                    quantity: number;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** Format: uuid */
+                                    source_id?: string | null;
+                                    /** @enum {string} */
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual";
+                                    unit_cents?: number | null;
+                                }[];
+                                period?: Record<string, never> | null;
+                                total_cents: number;
+                            }[];
+                            /** @enum {string} */
+                            status: "draft" | "approved" | "exported";
+                            total_cents: number;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.create_period": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: date */
+                    ends_on: string;
+                    /** Format: date */
+                    starts_on: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Period */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        period: {
+                            /** Format: date-time */
+                            approved_at?: string | null;
+                            /** Format: uuid */
+                            approved_by_id?: string | null;
+                            /** Format: date-time */
+                            calculated_at?: string | null;
+                            currency: string;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: date-time */
+                            exported_at?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            reopen_reason?: string | null;
+                            /** Format: date */
+                            starts_on: string;
+                            statements?: {
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                coach_user_id: string;
+                                /** Format: uuid */
+                                id: string;
+                                line_count: number;
+                                lines: {
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    description: string;
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "clawback" | "adjustment";
+                                    /** Format: date */
+                                    occurred_on: string;
+                                    percent_bps?: number | null;
+                                    quantity: number;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** Format: uuid */
+                                    source_id?: string | null;
+                                    /** @enum {string} */
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual";
+                                    unit_cents?: number | null;
+                                }[];
+                                period?: Record<string, never> | null;
+                                total_cents: number;
+                            }[];
+                            /** @enum {string} */
+                            status: "draft" | "approved" | "exported";
+                            total_cents: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.period": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Period */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        period: {
+                            /** Format: date-time */
+                            approved_at?: string | null;
+                            /** Format: uuid */
+                            approved_by_id?: string | null;
+                            /** Format: date-time */
+                            calculated_at?: string | null;
+                            currency: string;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: date-time */
+                            exported_at?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            reopen_reason?: string | null;
+                            /** Format: date */
+                            starts_on: string;
+                            statements?: {
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                coach_user_id: string;
+                                /** Format: uuid */
+                                id: string;
+                                line_count: number;
+                                lines: {
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    description: string;
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "clawback" | "adjustment";
+                                    /** Format: date */
+                                    occurred_on: string;
+                                    percent_bps?: number | null;
+                                    quantity: number;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** Format: uuid */
+                                    source_id?: string | null;
+                                    /** @enum {string} */
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual";
+                                    unit_cents?: number | null;
+                                }[];
+                                period?: Record<string, never> | null;
+                                total_cents: number;
+                            }[];
+                            /** @enum {string} */
+                            status: "draft" | "approved" | "exported";
+                            total_cents: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.add_adjustment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    amount_cents: number;
+                    /** Format: uuid */
+                    coach_user_id: string;
+                    description: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Period */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        period: {
+                            /** Format: date-time */
+                            approved_at?: string | null;
+                            /** Format: uuid */
+                            approved_by_id?: string | null;
+                            /** Format: date-time */
+                            calculated_at?: string | null;
+                            currency: string;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: date-time */
+                            exported_at?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            reopen_reason?: string | null;
+                            /** Format: date */
+                            starts_on: string;
+                            statements?: {
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                coach_user_id: string;
+                                /** Format: uuid */
+                                id: string;
+                                line_count: number;
+                                lines: {
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    description: string;
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "clawback" | "adjustment";
+                                    /** Format: date */
+                                    occurred_on: string;
+                                    percent_bps?: number | null;
+                                    quantity: number;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** Format: uuid */
+                                    source_id?: string | null;
+                                    /** @enum {string} */
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual";
+                                    unit_cents?: number | null;
+                                }[];
+                                period?: Record<string, never> | null;
+                                total_cents: number;
+                            }[];
+                            /** @enum {string} */
+                            status: "draft" | "approved" | "exported";
+                            total_cents: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.delete_adjustment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                line_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Period */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        period: {
+                            /** Format: date-time */
+                            approved_at?: string | null;
+                            /** Format: uuid */
+                            approved_by_id?: string | null;
+                            /** Format: date-time */
+                            calculated_at?: string | null;
+                            currency: string;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: date-time */
+                            exported_at?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            reopen_reason?: string | null;
+                            /** Format: date */
+                            starts_on: string;
+                            statements?: {
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                coach_user_id: string;
+                                /** Format: uuid */
+                                id: string;
+                                line_count: number;
+                                lines: {
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    description: string;
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "clawback" | "adjustment";
+                                    /** Format: date */
+                                    occurred_on: string;
+                                    percent_bps?: number | null;
+                                    quantity: number;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** Format: uuid */
+                                    source_id?: string | null;
+                                    /** @enum {string} */
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual";
+                                    unit_cents?: number | null;
+                                }[];
+                                period?: Record<string, never> | null;
+                                total_cents: number;
+                            }[];
+                            /** @enum {string} */
+                            status: "draft" | "approved" | "exported";
+                            total_cents: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Period */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        period: {
+                            /** Format: date-time */
+                            approved_at?: string | null;
+                            /** Format: uuid */
+                            approved_by_id?: string | null;
+                            /** Format: date-time */
+                            calculated_at?: string | null;
+                            currency: string;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: date-time */
+                            exported_at?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            reopen_reason?: string | null;
+                            /** Format: date */
+                            starts_on: string;
+                            statements?: {
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                coach_user_id: string;
+                                /** Format: uuid */
+                                id: string;
+                                line_count: number;
+                                lines: {
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    description: string;
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "clawback" | "adjustment";
+                                    /** Format: date */
+                                    occurred_on: string;
+                                    percent_bps?: number | null;
+                                    quantity: number;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** Format: uuid */
+                                    source_id?: string | null;
+                                    /** @enum {string} */
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual";
+                                    unit_cents?: number | null;
+                                }[];
+                                period?: Record<string, never> | null;
+                                total_cents: number;
+                            }[];
+                            /** @enum {string} */
+                            status: "draft" | "approved" | "exported";
+                            total_cents: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.calculate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Period */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        period: {
+                            /** Format: date-time */
+                            approved_at?: string | null;
+                            /** Format: uuid */
+                            approved_by_id?: string | null;
+                            /** Format: date-time */
+                            calculated_at?: string | null;
+                            currency: string;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: date-time */
+                            exported_at?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            reopen_reason?: string | null;
+                            /** Format: date */
+                            starts_on: string;
+                            statements?: {
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                coach_user_id: string;
+                                /** Format: uuid */
+                                id: string;
+                                line_count: number;
+                                lines: {
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    description: string;
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "clawback" | "adjustment";
+                                    /** Format: date */
+                                    occurred_on: string;
+                                    percent_bps?: number | null;
+                                    quantity: number;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** Format: uuid */
+                                    source_id?: string | null;
+                                    /** @enum {string} */
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual";
+                                    unit_cents?: number | null;
+                                }[];
+                                period?: Record<string, never> | null;
+                                total_cents: number;
+                            }[];
+                            /** @enum {string} */
+                            status: "draft" | "approved" | "exported";
+                            total_cents: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description CSV */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/csv": string;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.reopen": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    reason: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Period */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        period: {
+                            /** Format: date-time */
+                            approved_at?: string | null;
+                            /** Format: uuid */
+                            approved_by_id?: string | null;
+                            /** Format: date-time */
+                            calculated_at?: string | null;
+                            currency: string;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: date-time */
+                            exported_at?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            reopen_reason?: string | null;
+                            /** Format: date */
+                            starts_on: string;
+                            statements?: {
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                coach_user_id: string;
+                                /** Format: uuid */
+                                id: string;
+                                line_count: number;
+                                lines: {
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    description: string;
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "clawback" | "adjustment";
+                                    /** Format: date */
+                                    occurred_on: string;
+                                    percent_bps?: number | null;
+                                    quantity: number;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** Format: uuid */
+                                    source_id?: string | null;
+                                    /** @enum {string} */
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual";
+                                    unit_cents?: number | null;
+                                }[];
+                                period?: Record<string, never> | null;
+                                total_cents: number;
+                            }[];
+                            /** @enum {string} */
+                            status: "draft" | "approved" | "exported";
+                            total_cents: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.rules": {
+        parameters: {
+            query?: {
+                coach_user_id?: string;
+                include_archived?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Rules */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        rules: {
+                            amount_cents?: number | null;
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            class_type_ids: string[];
+                            coach_name?: string | null;
+                            /** Format: uuid */
+                            coach_user_id: string;
+                            count_statuses: ("attended" | "late_cancel" | "no_show")[];
+                            currency: string;
+                            /** Format: date */
+                            ends_on?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales";
+                            max_attendees?: number | null;
+                            min_attendees: number;
+                            note?: string | null;
+                            percent_bps?: number | null;
+                            /** @enum {string|null} */
+                            sales_scope?: "personal_training" | "sold_by" | null;
+                            /** Format: date */
+                            starts_on: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.create_rule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    amount_cents?: number | null;
+                    class_type_ids?: string[];
+                    /** Format: uuid */
+                    coach_user_id: string;
+                    count_statuses?: ("attended" | "late_cancel" | "no_show")[];
+                    currency?: string;
+                    /** Format: date */
+                    ends_on?: string | null;
+                    /** @enum {string} */
+                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales";
+                    max_attendees?: number | null;
+                    min_attendees?: number;
+                    note?: string | null;
+                    percent_bps?: number | null;
+                    /** @enum {string|null} */
+                    sales_scope?: "personal_training" | "sold_by" | null;
+                    /** Format: date */
+                    starts_on: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Rule */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        rule: {
+                            amount_cents?: number | null;
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            class_type_ids: string[];
+                            coach_name?: string | null;
+                            /** Format: uuid */
+                            coach_user_id: string;
+                            count_statuses: ("attended" | "late_cancel" | "no_show")[];
+                            currency: string;
+                            /** Format: date */
+                            ends_on?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales";
+                            max_attendees?: number | null;
+                            min_attendees: number;
+                            note?: string | null;
+                            percent_bps?: number | null;
+                            /** @enum {string|null} */
+                            sales_scope?: "personal_training" | "sold_by" | null;
+                            /** Format: date */
+                            starts_on: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.update_rule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    amount_cents?: number | null;
+                    class_type_ids?: string[];
+                    /** Format: uuid */
+                    coach_user_id?: string;
+                    count_statuses?: ("attended" | "late_cancel" | "no_show")[];
+                    currency?: string;
+                    /** Format: date */
+                    ends_on?: string | null;
+                    /** @enum {string} */
+                    kind?: "per_class" | "per_attendee" | "per_session" | "percent_of_sales";
+                    max_attendees?: number | null;
+                    min_attendees?: number;
+                    note?: string | null;
+                    percent_bps?: number | null;
+                    /** @enum {string|null} */
+                    sales_scope?: "personal_training" | "sold_by" | null;
+                    /** Format: date */
+                    starts_on?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Rule */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        rule: {
+                            amount_cents?: number | null;
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            class_type_ids: string[];
+                            coach_name?: string | null;
+                            /** Format: uuid */
+                            coach_user_id: string;
+                            count_statuses: ("attended" | "late_cancel" | "no_show")[];
+                            currency: string;
+                            /** Format: date */
+                            ends_on?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales";
+                            max_attendees?: number | null;
+                            min_attendees: number;
+                            note?: string | null;
+                            percent_bps?: number | null;
+                            /** @enum {string|null} */
+                            sales_scope?: "personal_training" | "sold_by" | null;
+                            /** Format: date */
+                            starts_on: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.archive_rule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Rule */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        rule: {
+                            amount_cents?: number | null;
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            class_type_ids: string[];
+                            coach_name?: string | null;
+                            /** Format: uuid */
+                            coach_user_id: string;
+                            count_statuses: ("attended" | "late_cancel" | "no_show")[];
+                            currency: string;
+                            /** Format: date */
+                            ends_on?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales";
+                            max_attendees?: number | null;
+                            min_attendees: number;
+                            note?: string | null;
+                            percent_bps?: number | null;
+                            /** @enum {string|null} */
+                            sales_scope?: "personal_training" | "sold_by" | null;
+                            /** Format: date */
+                            starts_on: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminCommunityController.clubs": {
         parameters: {
             query?: never;
@@ -83271,6 +84466,12 @@ export interface operations {
             content: {
                 "application/json": {
                     amount_cents: number;
+                    card?: {
+                        commercial?: boolean | null;
+                        country?: string | null;
+                        /** @enum {string|null} */
+                        funding?: "credit" | "debit" | "prepaid" | null;
+                    } | null;
                     /** @enum {string|null} */
                     charge_category?: "product" | "personal_training" | "event" | "other" | null;
                     currency?: string | null;
@@ -83285,6 +84486,7 @@ export interface operations {
                     paid_on?: string | null;
                     /** @enum {string} */
                     payment_method: "cash" | "card_manual" | "bank_transfer" | "other";
+                    surcharge_cents?: number | null;
                 };
             };
         };
@@ -83693,8 +84895,11 @@ export interface operations {
                     /** @description Entitlement catalog v2 field values keyed by catalog field key (ADR-096) */
                     fields?: {
                         "booking.cancellation_cutoff_hours"?: number | null;
+                        "booking.daily_limit"?: number | null;
                         "booking.no_show_penalty_waived"?: boolean;
+                        "booking.open_bookings_limit"?: number | null;
                         "booking.waitlist_priority"?: string;
+                        "booking.weekly_limit"?: number | null;
                         "booking.window_days"?: number | null;
                         "content.advanced_analytics"?: boolean;
                         "content.on_demand_video"?: boolean;
@@ -83772,6 +84977,7 @@ export interface operations {
                         "terms.allow_minor_beneficiaries"?: boolean;
                         "terms.auto_renew"?: boolean;
                         "terms.beneficiaries"?: number;
+                        "terms.buyers"?: string;
                         "terms.compatible_package_ids"?: "all" | string[];
                         /** Format: uuid */
                         "terms.conversion_package_id"?: string | null;
@@ -83779,9 +84985,11 @@ export interface operations {
                         "terms.enrollment_domain"?: string | null;
                         "terms.expiry_reminder_days"?: number;
                         "terms.joining_fee_cents"?: number;
+                        "terms.max_purchases_per_person"?: number | null;
                         "terms.minimum_commitment_months"?: number;
                         "terms.new_members_only"?: boolean;
                         "terms.once_per_person"?: boolean;
+                        "terms.prerequisite_package_ids"?: string[];
                         "terms.quota_sharing"?: string;
                         "terms.seat_billing"?: string;
                         "terms.seats"?: number;
@@ -83890,8 +85098,11 @@ export interface operations {
                     /** @description Entitlement catalog v2 field values keyed by catalog field key (ADR-096) */
                     fields?: {
                         "booking.cancellation_cutoff_hours"?: number | null;
+                        "booking.daily_limit"?: number | null;
                         "booking.no_show_penalty_waived"?: boolean;
+                        "booking.open_bookings_limit"?: number | null;
                         "booking.waitlist_priority"?: string;
+                        "booking.weekly_limit"?: number | null;
                         "booking.window_days"?: number | null;
                         "content.advanced_analytics"?: boolean;
                         "content.on_demand_video"?: boolean;
@@ -83969,6 +85180,7 @@ export interface operations {
                         "terms.allow_minor_beneficiaries"?: boolean;
                         "terms.auto_renew"?: boolean;
                         "terms.beneficiaries"?: number;
+                        "terms.buyers"?: string;
                         "terms.compatible_package_ids"?: "all" | string[];
                         /** Format: uuid */
                         "terms.conversion_package_id"?: string | null;
@@ -83976,9 +85188,11 @@ export interface operations {
                         "terms.enrollment_domain"?: string | null;
                         "terms.expiry_reminder_days"?: number;
                         "terms.joining_fee_cents"?: number;
+                        "terms.max_purchases_per_person"?: number | null;
                         "terms.minimum_commitment_months"?: number;
                         "terms.new_members_only"?: boolean;
                         "terms.once_per_person"?: boolean;
+                        "terms.prerequisite_package_ids"?: string[];
                         "terms.quota_sharing"?: string;
                         "terms.seat_billing"?: string;
                         "terms.seats"?: number;
@@ -91991,6 +93205,8 @@ export interface operations {
                             status: "scheduled" | "awaiting_payer" | "processing" | "succeeded" | "failed" | "cancelled" | "expired";
                             /** Format: date-time */
                             succeeded_at?: string | null;
+                            /** @description ADR-340: the card surcharge charged on top of `amount_cents` */
+                            surcharge_cents?: number | null;
                             /** Format: uuid */
                             user_id?: string | null;
                         }[];
@@ -92440,6 +93656,8 @@ export interface operations {
                             status: "scheduled" | "awaiting_payer" | "processing" | "succeeded" | "failed" | "cancelled" | "expired";
                             /** Format: date-time */
                             succeeded_at?: string | null;
+                            /** @description ADR-340: the card surcharge charged on top of `amount_cents` */
+                            surcharge_cents?: number | null;
                             /** Format: uuid */
                             user_id?: string | null;
                         } & {
@@ -92652,6 +93870,150 @@ export interface operations {
                             /** Format: uuid */
                             user_id: string;
                         }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCardSurchargeController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Card surcharge */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Whether the law allows any surcharge here */
+                        allowed: boolean;
+                        country_code: string | null;
+                        law: {
+                            at_cost: boolean;
+                            cap_bps: number | null;
+                            regime: string;
+                            region_required: boolean;
+                            /** @enum {string} */
+                            rule: "eea_non_consumer" | "commercial_only" | "credit_only" | "any" | "none";
+                            sources: string[];
+                        };
+                        saved: boolean;
+                        settings: {
+                            at_cost_confirmed: boolean;
+                            channels: ("online" | "terminal" | "desk")[];
+                            enabled: boolean;
+                            fixed_cents: number;
+                            percent_bps: number;
+                            region_code: string | null;
+                        };
+                        /** Format: date-time */
+                        updated_at?: string | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCardSurchargeController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    at_cost_confirmed?: boolean;
+                    channels?: ("online" | "terminal" | "desk")[];
+                    enabled?: boolean;
+                    fixed_cents?: number;
+                    percent_bps?: number;
+                    region_code?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Card surcharge */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Whether the law allows any surcharge here */
+                        allowed: boolean;
+                        country_code: string | null;
+                        law: {
+                            at_cost: boolean;
+                            cap_bps: number | null;
+                            regime: string;
+                            region_required: boolean;
+                            /** @enum {string} */
+                            rule: "eea_non_consumer" | "commercial_only" | "credit_only" | "any" | "none";
+                            sources: string[];
+                        };
+                        saved: boolean;
+                        settings: {
+                            at_cost_confirmed: boolean;
+                            channels: ("online" | "terminal" | "desk")[];
+                            enabled: boolean;
+                            fixed_cents: number;
+                            percent_bps: number;
+                            region_code: string | null;
+                        };
+                        /** Format: date-time */
+                        updated_at?: string | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCardSurchargeController.quote": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    amount_cents: number;
+                    /** @description What the law reads about a card: credit or debit, issuing country, commercial. Unknown values count against a surcharge. */
+                    card?: {
+                        commercial?: boolean | null;
+                        country?: string | null;
+                        /** @enum {string|null} */
+                        funding?: "credit" | "debit" | "prepaid" | null;
+                    } | null;
+                    /** @enum {string} */
+                    channel: "online" | "desk";
+                };
+            };
+        };
+        responses: {
+            /** @description Quote */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        applies: boolean;
+                        fixed_cents: number;
+                        percent_bps: number;
+                        /** @enum {string|null} */
+                        reason: "off" | "channel_off" | "not_allowed_here" | "card_unknown" | "card_not_surchargeable" | "zero" | null;
+                        /** @enum {string} */
+                        rule: "eea_non_consumer" | "commercial_only" | "credit_only" | "any" | "none";
+                        surcharge_cents: number;
+                        total_cents: number;
                     };
                 };
             };
@@ -93456,6 +94818,8 @@ export interface operations {
                             status: "scheduled" | "awaiting_payer" | "processing" | "succeeded" | "failed" | "cancelled" | "expired";
                             /** Format: date-time */
                             succeeded_at?: string | null;
+                            /** @description ADR-340: the card surcharge charged on top of `amount_cents` */
+                            surcharge_cents?: number | null;
                             /** Format: uuid */
                             user_id?: string | null;
                         } & {
@@ -93539,6 +94903,8 @@ export interface operations {
                             status: "scheduled" | "awaiting_payer" | "processing" | "succeeded" | "failed" | "cancelled" | "expired";
                             /** Format: date-time */
                             succeeded_at?: string | null;
+                            /** @description ADR-340: the card surcharge charged on top of `amount_cents` */
+                            surcharge_cents?: number | null;
                             /** Format: uuid */
                             user_id?: string | null;
                         };
@@ -93605,6 +94971,8 @@ export interface operations {
                             status: "scheduled" | "awaiting_payer" | "processing" | "succeeded" | "failed" | "cancelled" | "expired";
                             /** Format: date-time */
                             succeeded_at?: string | null;
+                            /** @description ADR-340: the card surcharge charged on top of `amount_cents` */
+                            surcharge_cents?: number | null;
                             /** Format: uuid */
                             user_id?: string | null;
                         };
@@ -93718,6 +95086,8 @@ export interface operations {
                             status: "scheduled" | "awaiting_payer" | "processing" | "succeeded" | "failed" | "cancelled" | "expired";
                             /** Format: date-time */
                             succeeded_at?: string | null;
+                            /** @description ADR-340: the card surcharge charged on top of `amount_cents` */
+                            surcharge_cents?: number | null;
                             /** Format: uuid */
                             user_id?: string | null;
                         };
@@ -93784,6 +95154,8 @@ export interface operations {
                             status: "scheduled" | "awaiting_payer" | "processing" | "succeeded" | "failed" | "cancelled" | "expired";
                             /** Format: date-time */
                             succeeded_at?: string | null;
+                            /** @description ADR-340: the card surcharge charged on top of `amount_cents` */
+                            surcharge_cents?: number | null;
                             /** Format: uuid */
                             user_id?: string | null;
                         };
@@ -115099,6 +116471,8 @@ export interface operations {
                             status: "scheduled" | "awaiting_payer" | "processing" | "succeeded" | "failed" | "cancelled" | "expired";
                             /** Format: date-time */
                             succeeded_at?: string | null;
+                            /** @description ADR-340: the card surcharge charged on top of `amount_cents` */
+                            surcharge_cents?: number | null;
                             /** Format: uuid */
                             user_id?: string | null;
                         };
@@ -115134,6 +116508,17 @@ export interface operations {
                         currency: string;
                         /** @description The provider members pay through, or null when online payment is off */
                         provider: string | null;
+                        surcharge?: {
+                            applies: boolean;
+                            fixed_cents: number;
+                            percent_bps: number;
+                            /** @enum {string|null} */
+                            reason: "off" | "channel_off" | "not_allowed_here" | "card_unknown" | "card_not_surchargeable" | "zero" | null;
+                            /** @enum {string} */
+                            rule: "eea_non_consumer" | "commercial_only" | "credit_only" | "any" | "none";
+                            surcharge_cents: number;
+                            total_cents: number;
+                        };
                     };
                 };
             };
@@ -115509,6 +116894,8 @@ export interface operations {
                             status: "scheduled" | "awaiting_payer" | "processing" | "succeeded" | "failed" | "cancelled" | "expired";
                             /** Format: date-time */
                             succeeded_at?: string | null;
+                            /** @description ADR-340: the card surcharge charged on top of `amount_cents` */
+                            surcharge_cents?: number | null;
                             /** Format: uuid */
                             user_id?: string | null;
                         };
@@ -115542,6 +116929,8 @@ export interface operations {
                         available: boolean;
                         consent_text: string;
                         consent_version: string;
+                        /** @enum {string|null} */
+                        eligibility?: "package_staff_only" | "package_already_used" | "package_purchase_limit_reached" | "package_new_members_only" | "package_prerequisite_missing" | "package_active_members_only" | null;
                         package: {
                             base_price_cents: number;
                             billing_period: string;
@@ -115559,6 +116948,17 @@ export interface operations {
                         /** @description The provider members pay through, or null when online payment is off */
                         provider: string | null;
                         start_now_text: string | null;
+                        surcharge?: {
+                            applies: boolean;
+                            fixed_cents: number;
+                            percent_bps: number;
+                            /** @enum {string|null} */
+                            reason: "off" | "channel_off" | "not_allowed_here" | "card_unknown" | "card_not_surchargeable" | "zero" | null;
+                            /** @enum {string} */
+                            rule: "eea_non_consumer" | "commercial_only" | "credit_only" | "any" | "none";
+                            surcharge_cents: number;
+                            total_cents: number;
+                        } | null;
                         withdrawal_days: number | null;
                     };
                 };
@@ -115683,6 +117083,11 @@ export interface operations {
                         payment_methods: {
                             autopay: boolean;
                             brand?: string | null;
+                            /**
+                             * @description ADR-340: what the provider told; decides a lawful card surcharge
+                             * @enum {string|null}
+                             */
+                            card_funding?: "credit" | "debit" | "prepaid" | null;
                             consent_version?: string | null;
                             /** Format: date-time */
                             consented_at?: string | null;
@@ -115723,6 +117128,11 @@ export interface operations {
                         payment_method: {
                             autopay: boolean;
                             brand?: string | null;
+                            /**
+                             * @description ADR-340: what the provider told; decides a lawful card surcharge
+                             * @enum {string|null}
+                             */
+                            card_funding?: "credit" | "debit" | "prepaid" | null;
                             consent_version?: string | null;
                             /** Format: date-time */
                             consented_at?: string | null;
@@ -115769,6 +117179,11 @@ export interface operations {
                         payment_method: {
                             autopay: boolean;
                             brand?: string | null;
+                            /**
+                             * @description ADR-340: what the provider told; decides a lawful card surcharge
+                             * @enum {string|null}
+                             */
+                            card_funding?: "credit" | "debit" | "prepaid" | null;
                             consent_version?: string | null;
                             /** Format: date-time */
                             consented_at?: string | null;
@@ -115853,6 +117268,8 @@ export interface operations {
                             status: "scheduled" | "awaiting_payer" | "processing" | "succeeded" | "failed" | "cancelled" | "expired";
                             /** Format: date-time */
                             succeeded_at?: string | null;
+                            /** @description ADR-340: the card surcharge charged on top of `amount_cents` */
+                            surcharge_cents?: number | null;
                             /** Format: uuid */
                             user_id?: string | null;
                         };
@@ -115926,9 +117343,44 @@ export interface operations {
                             status: "scheduled" | "awaiting_payer" | "processing" | "succeeded" | "failed" | "cancelled" | "expired";
                             /** Format: date-time */
                             succeeded_at?: string | null;
+                            /** @description ADR-340: the card surcharge charged on top of `amount_cents` */
+                            surcharge_cents?: number | null;
                             /** Format: uuid */
                             user_id?: string | null;
                         };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyPaymentsController.surcharge_quote": {
+        parameters: {
+            query: {
+                amount_cents: number;
+                payment_method_id?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Quote */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        applies: boolean;
+                        fixed_cents: number;
+                        percent_bps: number;
+                        /** @enum {string|null} */
+                        reason: "off" | "channel_off" | "not_allowed_here" | "card_unknown" | "card_not_surchargeable" | "zero" | null;
+                        /** @enum {string} */
+                        rule: "eea_non_consumer" | "commercial_only" | "credit_only" | "any" | "none";
+                        surcharge_cents: number;
+                        total_cents: number;
                     };
                 };
             };
@@ -115992,6 +117444,8 @@ export interface operations {
                             status: "scheduled" | "awaiting_payer" | "processing" | "succeeded" | "failed" | "cancelled" | "expired";
                             /** Format: date-time */
                             succeeded_at?: string | null;
+                            /** @description ADR-340: the card surcharge charged on top of `amount_cents` */
+                            surcharge_cents?: number | null;
                             /** Format: uuid */
                             user_id?: string | null;
                         };
@@ -117766,6 +119220,8 @@ export interface operations {
                             status: "scheduled" | "awaiting_payer" | "processing" | "succeeded" | "failed" | "cancelled" | "expired";
                             /** Format: date-time */
                             succeeded_at?: string | null;
+                            /** @description ADR-340: the card surcharge charged on top of `amount_cents` */
+                            surcharge_cents?: number | null;
                             /** Format: uuid */
                             user_id?: string | null;
                         };

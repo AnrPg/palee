@@ -356,6 +356,8 @@ defmodule Palee.Payments.Terminal do
           amount_cents: intent.amount_cents,
           currency: intent.currency,
           description: intent.description,
+          # ADR-340: the owner turned the card surcharge off.
+          skip_surcharge: (intent.metadata || %{})["skip_surcharge"] == true,
           app_id: Keyword.get(settings, :app_id, "app.palee.member"),
           callback: Keyword.get(settings, :callback, "palee-terminal://result")
         })

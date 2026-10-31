@@ -52,6 +52,12 @@ defmodule Palee.Payments.Domain.IntentPolicy do
       request[:currency] not in @currencies ->
         {:error, :unsupported_currency}
 
+      # ADR-340: a card surcharge on top of the price, within the same ceiling.
+      not (is_nil(request[:surcharge_cents]) or
+               (is_integer(request[:surcharge_cents]) and request[:surcharge_cents] >= 0 and
+                  request[:amount_cents] + request[:surcharge_cents] <= @max_amount_cents)) ->
+        {:error, :invalid_payment_amount}
+
       not (is_binary(request[:idempotency_key]) and
                byte_size(request[:idempotency_key]) in 8..200) ->
         {:error, :idempotency_key_required}
@@ -219,13 +225,20 @@ defmodule Palee.Payments.Domain.IntentPolicy do
     }
   end
 
+  @doc """
+  What the card is asked for: the price plus the card surcharge the payer
+  was shown (ADR-340; a terminal's surcharge is the provider's, ADR-264).
+  """
+  def total_cents(%{initiation: "terminal"} = intent), do: intent.amount_cents
+  def total_cents(intent), do: intent.amount_cents + (Map.get(intent, :surcharge_cents) || 0)
+
   @doc "Whether a provider reported an amount or currency different from the intent."
   def amount_mismatch?(intent, %{amount_cents: cents, currency: currency})
       when is_integer(cents) and is_binary(currency),
-      do: cents != intent.amount_cents or String.upcase(currency) != intent.currency
+      do: cents != total_cents(intent) or String.upcase(currency) != intent.currency
 
   def amount_mismatch?(intent, %{amount_cents: cents}) when is_integer(cents),
-    do: cents != intent.amount_cents
+    do: cents != total_cents(intent)
 
   def amount_mismatch?(_intent, _payment), do: false
 

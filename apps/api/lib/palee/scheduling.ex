@@ -45,6 +45,11 @@ defmodule Palee.Scheduling do
     to: Palee.Scheduling.Domain.DayAssignmentTag,
     as: :by_day
 
+  @doc "ADR-342: start times of the member's live bookings from `from` on."
+  defdelegate member_booking_times(context, user_id, from), to: Palee.Scheduling.SchedulingStore
+
+  @doc "ADR-341: classes held in `[from, to)` with coach and attendance counts."
+  defdelegate coach_classes(context, from, to), to: Palee.Scheduling.SchedulingStore
   @doc "The class levels a class type can have (ADR-197 reads them for Γύρω μου)."
   defdelegate class_levels(), to: Palee.Scheduling.ClassType, as: :levels
   defdelegate create_slot(context, params), to: CreateSlot, as: :call

@@ -13,6 +13,9 @@ defmodule Palee.Appointments do
   def transaction(context, fun), do: AppointmentStore.transaction(context, fun)
   def get_slot(context, id), do: AppointmentStore.get_slot(context, id)
   def list_slots(context, filters \\ %{}), do: AppointmentStore.list_slots(context, filters)
+
+  @doc "ADR-341: sessions held in `[from, to)` with coach and bookings by status."
+  def coach_sessions(context, from, to), do: AppointmentStore.coach_sessions(context, from, to)
   def cancel_slot(context, id), do: AppointmentStore.cancel_slot(context, id)
 
   def create_booking(context, attrs, check),

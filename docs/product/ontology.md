@@ -320,6 +320,11 @@ push is not enough.
 | Bookings open | Άνοιγμα κρατήσεων | `booking_window_days` | The earliest a member can book, in days before the class. Bookings stay open until the start. | Time to answer a request. |
 | Late cancellation | Καθυστερημένη ακύρωση | `default_cancellation_cutoff_minutes` | Cancelling later than this before the class still uses the visit. Entered as hours + minutes. | Cancelling a class (staff). |
 | Automatic confirmation | Αυτόματη επιβεβαίωση κρατήσεων | `auto_approve` | A booking is confirmed at once instead of waiting for staff. | Booking request. |
+| Bookings per day / week | Κρατήσεις ανά ημέρα / εβδομάδα | `booking.daily_limit`, `booking.weekly_limit` (package) | The most classes a member may book with a package on one day or one week (Monday to Sunday, in the box's time). Checked at booking. (ADR-342) | Visits of the package (what a booking uses). |
+| Open bookings | Ανοιχτές κρατήσεις | `booking.open_bookings_limit` (package) | The most future bookings a member may hold at once with a package. (ADR-342) | Waiting list. |
+| Who may buy | Ποιος μπορεί να αγοράσει | `terms.buyers` (`anyone`, `active_members`, `staff_only`) | Whether a package is sold to anyone, only to members with an active package, or only by staff. Checked when buying and when asking for it. (ADR-342) | Visibility of the package. |
+| Purchases per person | Αγορές ανά άτομο | `terms.max_purchases_per_person` | How many times one person may buy the package. (ADR-342) | Intro-only (once, for new members). |
+| Needed first | Προαπαιτούμενο | `terms.prerequisite_package_ids` | Packages a member must have bought before buying this one (e.g. an on-ramp). (ADR-342) | Add-on. |
 
 ### 4.7 Outside parties
 
@@ -479,7 +484,9 @@ timeline and every "work time" compound; HR is heart rate («παλμοί», FC,
 | Tip owner | Για ποιον είναι το φιλοδώρημα | `payment_intents.tip_attribution`, `tip_recipient_user_id`, `tip_recipient_role` | Whose a tip is, written once when the payment succeeds: the staff member who started it on their phone, else the box's only front desk person, else the front desk role unpersonalised. Owners and admins never. Shown on «Αποτέλεσμα» («για σένα», «για την υποδοχή») and in Finance › Accounting. (ADR-272) | Revenue. |
 | Collect | Είσπραξη | `/admin/collect` | Taking a payment with Tap to Pay on the staff phone, step by step: Ποιος › Τι › Έλεγχος › Viva.com Terminal › Αποτέλεσμα. (ADR-272) | Desk payment recorded by hand («Πληρωμή στην υποδοχή»). |
 | Receipt QR | QR απόδειξης | `document.receipt_url`, `/api/public/receipts/:token` | A walk-in's receipt as a signed link (90 days) shown as a QR on the staff phone; the customer scans it and keeps the receipt. | Check-in QR. |
-| Card surcharge | Επιβάρυνση κάρτας | `payment_intents.surcharge_cents`, `source_type = card_surcharge` | A fee the card provider adds for some cards (business or non-EU cards). Part of the sale's price: revenue, on the same receipt as the sale. | Tip; Palee's own fees. |
+| Card surcharge | Επιβάρυνση κάρτας | `payment_intents.surcharge_cents`, `source_type = card_surcharge`, `payment_surcharge_settings` | A fee added to a card payment, only for cards the law of the box's country allows (in the EU/EEA and UK: business or non-EEA cards; in the US and Canada: credit cards). Per box and per channel (online, Tap to Pay, card at the terminal), shown to the payer before paying. Part of the sale's price: revenue, on the same receipt as the sale. (ADR-264, ADR-340) | Tip; Palee's own fees. |
+| Surcharge rules of the country | Κανόνες επιβάρυνσης της χώρας | `SurchargeLaw.regime/3` | What the box's country allows: no surcharge, only some cards, and the highest percent. Palee refuses a setting the law does not allow. (ADR-340) | Tax rules (VAT). |
+| At cost | Έως το πραγματικό κόστος | `at_cost_confirmed` | Where the law says a surcharge may not exceed what the card costs the box; the owner confirms it before turning it on. | Cap (the highest percent). |
 
 ### 4.16 E-invoicing and till security (ADR-250, ADR-251, ADR-266)
 
@@ -656,6 +663,19 @@ Leaderboard filters, WOD snapshots, the fitness profile, visit badges, calendar 
 | Planned maintenance | Προγραμματισμένη συντήρηση | `status_incidents.kind: maintenance` | Work announced ahead with a window: Προγραμματισμένη → Σε εξέλιξη → Ολοκληρώθηκε. | Cleaning («Καθαριότητα»), machine maintenance in Inventory. |
 | Uptime | Διαθεσιμότητα | `status_daily_samples` | The share of checks that found a component working, per day and over 90 days. | |
 | Status emails | Email κατάστασης | `status_subscribers` | Emails about incidents and maintenance to anyone who asked for them on the status page (confirmed by email first; one link stops them). | Notifications of the app; marketing emails. |
+
+### 4.26 Coach pay (ADR-341)
+
+Staff screens only. Never part of a fiscal document: a pay statement is an internal record for paying coaches.
+
+| English | Ελληνικά | Code | What it is | Not to be confused with |
+|---|---|---|---|---|
+| Coach pay | Αμοιβές coaches | `/admin/coach-pay`, `Palee.CoachPay` | What the box owes its coaches for a period, worked out from classes, sessions and sales. | Payroll (salaries, taxes; outside Palee); tips. |
+| Pay rule | Κανόνας αμοιβής | `coach_pay_rules` (`per_class`, `per_attendee`, `per_session`, `percent_of_sales`) | How one coach earns: an amount per class, per attendee, per personal session, or a percent of the package/PT sales they made. Archived, never deleted. | Package price. |
+| Pay period | Περίοδος αμοιβών | `coach_pay_periods` (`draft`, `approved`, `exported`) | The dates one calculation covers (up to 92 days). Approved periods are locked; reopening needs a reason. | Fiscal day closing. |
+| Pay statement | Κατάσταση αμοιβής | `coach_pay_statements`, `coach_pay_lines` | One coach's lines and total for a period; the coach sees their own under «Οι αμοιβές μου». | Receipt, invoice (fiscal documents). |
+| Adjustment | Διόρθωση | line kind `adjustment` | An amount staff add by hand to a statement (bonus, deduction), with a note. | Refund. |
+| Clawback | Αφαίρεση λόγω επιστροφής | line kind `clawback` | A negative line when a sale a commission was paid on is refunded. | Adjustment. |
 
 ## 5. Name clashes found, and proposals
 

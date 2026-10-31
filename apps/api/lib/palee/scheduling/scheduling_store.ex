@@ -17,6 +17,13 @@ defmodule Palee.Scheduling.SchedulingStore do
     do: tenant_call(context, :transaction, [fun])
 
   @impl true
+  def member_booking_times(context, user_id, from),
+    do: tenant_call(context, :member_booking_times, [user_id, from])
+
+  @impl true
+  def coach_classes(context, from, to), do: tenant_call(context, :coach_classes, [from, to])
+
+  @impl true
   def create_class_type(context, params), do: tenant_call(context, :create_class_type, [params])
 
   def create_class_type(_params), do: missing_tenant()

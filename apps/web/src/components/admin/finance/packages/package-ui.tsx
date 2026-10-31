@@ -1032,6 +1032,14 @@ function phaseBFieldVisible(key: string, draft: PackageDraft, catalog: PackageCa
   const on = (field: string) => draft.fields[field] === true;
   const enabled = (module: string) => catalog.modules.some((candidate) => candidate.key === module && candidate.enabled);
   switch (key) {
+    // ADR-342: purchase and booking rules stay hidden until their screen is approved.
+    case "terms.buyers":
+    case "terms.max_purchases_per_person":
+    case "terms.prerequisite_package_ids":
+    case "booking.daily_limit":
+    case "booking.weekly_limit":
+    case "booking.open_bookings_limit":
+      return false;
     case "facility.open_gym":
       return enabled("open_gym") || on(key);
     case "facility.open_gym_visits":

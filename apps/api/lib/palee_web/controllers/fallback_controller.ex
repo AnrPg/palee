@@ -3222,6 +3222,23 @@ defmodule PaleeWeb.FallbackController do
 
   # ADR-097 Phase B: booking rules, perks, freezes and facility.
   @phase_b_errors %{
+    # ADR-341 (CP-A6): coach pay periods.
+    coach_pay_period_overlaps: {:conflict, "This pay period overlaps another one"},
+    coach_pay_period_locked: {:conflict, "This pay period is approved; reopen it to change it"},
+    coach_pay_period_exported: {:conflict, "This pay period was handed to the accountant"},
+    coach_pay_period_not_approved: {:conflict, "Approve the pay period first"},
+    coach_pay_rule_archived: {:conflict, "This pay rule has stopped"},
+    # ADR-342 (CP-A8): purchase and booking rules of a package.
+    package_staff_only: {:forbidden, "Only the box's staff can give this package"},
+    package_purchase_limit_reached:
+      {:conflict, "You have bought this package as many times as it allows"},
+    package_prerequisite_missing:
+      {:conflict, "This package needs another package of the box first"},
+    package_active_members_only:
+      {:conflict, "This package is for members with an active package"},
+    booking_daily_limit_reached: {:conflict, "Your package allows no more classes that day"},
+    booking_weekly_limit_reached: {:conflict, "Your package allows no more classes that week"},
+    booking_open_limit_reached: {:conflict, "Your package allows no more upcoming bookings"},
     finance_membership_frozen: {:forbidden, "The membership is frozen"},
     finance_time_window_not_included: {:forbidden, "This time is outside the package's hours"},
     finance_location_not_included: {:forbidden, "This location is not included in the package"},
@@ -3550,6 +3567,17 @@ defmodule PaleeWeb.FallbackController do
   def call(conn, {:error, reason, details}) when is_map_key(@phase_b_errors, reason) do
     {status, message} = Map.fetch!(@phase_b_errors, reason)
     package_contract_error(conn, status, to_string(reason), message, details)
+  end
+
+  # ADR-340: the law of the box's country forbids this card surcharge.
+  def call(conn, {:error, :card_surcharge_not_allowed, details}) do
+    package_contract_error(
+      conn,
+      :unprocessable_entity,
+      "card_surcharge_not_allowed",
+      "The law here does not allow this card surcharge",
+      details
+    )
   end
 
   def call(conn, {:error, :booking_window_closed, details}) do

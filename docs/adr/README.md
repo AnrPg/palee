@@ -275,6 +275,10 @@ must have an ADR. See `template.md` for the format.
 | ADR-357 | Content-addressed WOD snapshots on assignment, run completion and logged score; day tags Χωρίς WOD / Μικτό / Όλα με WOD in day-workouts | Accepted |
 | ADR-358 | Explainable fitness profile v1: benchmark PRs → points per domain with reasons, overall from ≥ 2 domains, «Τι να δουλέψεις», own data only | Accepted |
 | ADR-359 | Visit badges on class lists and check-in; calendar feed with stable UIDs, SEQUENCE, CANCELLED seats and a per-booking invite; staff notes the front desk reads | Accepted |
+
+| ADR-340 | Card surcharge on online and desk card payments, per box, only where the law of the box's country allows it (EEA/UK non-consumer cards, US/CA credit cards with caps, none elsewhere); quoted before paying, recorded as revenue on the receipt | Accepted |
+| ADR-341 | Coach pay and commissions: own context with rules (per class, attendee, session, % of sales), periods, statements, approval and CSV export; reads Scheduling, Appointments and Finance through a port; never a fiscal document | Accepted |
+| ADR-342 | Purchase and booking rules per package (who may buy, purchases per person, prerequisites, bookings per day/week/open) enforced by the API at purchase and booking | Accepted |
 | ADR-300 | Operation registry: one spec per use case generates REST, MCP and LLM tools; previewable commands, problem details, idempotency keys, ETags (v4) | Proposed |
 | ADR-301 | AI agents as delegated principals: rights intersected on every call, durable runs, Rule-of-Two policy, approvals, one LLM provider port, multi-agent via delegation (v4) | Proposed |
 | ADR-360 | One LLM provider port (Gemini now, Claude drop-in later; sandbox for tests), a bounded read-only tool loop, tool results and documents as untrusted data, per-feature monthly budget per box and daily count per person | Accepted |

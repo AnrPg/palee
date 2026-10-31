@@ -664,6 +664,25 @@ defmodule Palee.Finance do
     do: scoped(context, fn -> booking_terms(user_id, occurred_on) end)
 
   @doc """
+  ADR-341: money received and refunded between `from` and `to` (inclusive,
+  gym-local dates) with its attribution to coaches, for coach pay. Read
+  only: coach pay never writes Finance or fiscal documents.
+  """
+  def coach_sales(context, %Date{} = from, %Date{} = to),
+    do: scoped(context, fn -> FinanceStore.coach_sales(from, to) end)
+
+  @doc """
+  ADR-342: whether `user_id` may take `package_id` now, before any money
+  is taken: who may buy it, how many times, intro-only and prerequisites.
+  `channel` is `:member` (the member buys or asks) or `:staff`.
+  """
+  def purchase_eligibility(context, user_id, package_id, channel, %Date{} = today),
+    do:
+      scoped(context, fn ->
+        FinanceStore.purchase_eligibility(user_id, package_id, channel, today)
+      end)
+
+  @doc """
   Terms of the package that would pay for `allowance` on that day (ADR-098),
   or nil when no held package includes it.
   """

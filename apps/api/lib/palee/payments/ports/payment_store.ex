@@ -20,6 +20,10 @@ defmodule Palee.Payments.Ports.PaymentStore do
   @callback set_account_status(context(), id(), String.t(), String.t() | nil, DateTime.t()) ::
               :ok
 
+  # ADR-340: the box's card surcharge settings (nil until first saved).
+  @callback get_surcharge_settings(context()) :: map() | nil
+  @callback save_surcharge_settings(context(), map()) :: {:ok, map()} | {:error, term()}
+
   # Intents
   @callback insert_intent(context(), map()) :: {:ok, map()} | {:error, term()}
   @callback get_intent(context(), id()) :: map() | nil

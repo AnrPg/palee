@@ -170055,6 +170055,2792 @@
         ]
       }
     },
+    "/api/org/{organization_slug}/admin/coach-pay/mine": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.MyCoachPayController.index",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "statements": {
+                      "items": {
+                        "properties": {
+                          "coach_name": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "coach_user_id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "line_count": {
+                            "type": "integer"
+                          },
+                          "lines": {
+                            "items": {
+                              "properties": {
+                                "amount_cents": {
+                                  "type": "integer"
+                                },
+                                "base_cents": {
+                                  "nullable": true,
+                                  "type": "integer"
+                                },
+                                "description": {
+                                  "type": "string"
+                                },
+                                "id": {
+                                  "format": "uuid",
+                                  "type": "string"
+                                },
+                                "kind": {
+                                  "enum": [
+                                    "per_class",
+                                    "per_attendee",
+                                    "per_session",
+                                    "percent_of_sales",
+                                    "clawback",
+                                    "adjustment"
+                                  ],
+                                  "type": "string"
+                                },
+                                "occurred_on": {
+                                  "format": "date",
+                                  "type": "string"
+                                },
+                                "percent_bps": {
+                                  "nullable": true,
+                                  "type": "integer"
+                                },
+                                "quantity": {
+                                  "type": "integer"
+                                },
+                                "rule_id": {
+                                  "format": "uuid",
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "source_id": {
+                                  "format": "uuid",
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "source_type": {
+                                  "enum": [
+                                    "scheduled_class",
+                                    "appointment_slot",
+                                    "finance_payment",
+                                    "finance_reversal",
+                                    "manual"
+                                  ],
+                                  "type": "string"
+                                },
+                                "unit_cents": {
+                                  "nullable": true,
+                                  "type": "integer"
+                                }
+                              },
+                              "required": [
+                                "amount_cents",
+                                "description",
+                                "id",
+                                "kind",
+                                "occurred_on",
+                                "quantity",
+                                "source_type"
+                              ],
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "period": {
+                            "nullable": true,
+                            "type": "object"
+                          },
+                          "total_cents": {
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "coach_user_id",
+                          "id",
+                          "line_count",
+                          "lines",
+                          "total_cents"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "statements"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Statements"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "My pay statements (approved periods only), newest first",
+        "tags": [
+          "Coach pay"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/coach-pay/periods": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminCoachPayController.periods",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "enum": [
+                "draft",
+                "approved",
+                "exported"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "periods": {
+                      "items": {
+                        "properties": {
+                          "approved_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "approved_by_id": {
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "calculated_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "currency": {
+                            "type": "string"
+                          },
+                          "ends_on": {
+                            "format": "date",
+                            "type": "string"
+                          },
+                          "exported_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "reopen_reason": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "starts_on": {
+                            "format": "date",
+                            "type": "string"
+                          },
+                          "statements": {
+                            "items": {
+                              "properties": {
+                                "coach_name": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "coach_user_id": {
+                                  "format": "uuid",
+                                  "type": "string"
+                                },
+                                "id": {
+                                  "format": "uuid",
+                                  "type": "string"
+                                },
+                                "line_count": {
+                                  "type": "integer"
+                                },
+                                "lines": {
+                                  "items": {
+                                    "properties": {
+                                      "amount_cents": {
+                                        "type": "integer"
+                                      },
+                                      "base_cents": {
+                                        "nullable": true,
+                                        "type": "integer"
+                                      },
+                                      "description": {
+                                        "type": "string"
+                                      },
+                                      "id": {
+                                        "format": "uuid",
+                                        "type": "string"
+                                      },
+                                      "kind": {
+                                        "enum": [
+                                          "per_class",
+                                          "per_attendee",
+                                          "per_session",
+                                          "percent_of_sales",
+                                          "clawback",
+                                          "adjustment"
+                                        ],
+                                        "type": "string"
+                                      },
+                                      "occurred_on": {
+                                        "format": "date",
+                                        "type": "string"
+                                      },
+                                      "percent_bps": {
+                                        "nullable": true,
+                                        "type": "integer"
+                                      },
+                                      "quantity": {
+                                        "type": "integer"
+                                      },
+                                      "rule_id": {
+                                        "format": "uuid",
+                                        "nullable": true,
+                                        "type": "string"
+                                      },
+                                      "source_id": {
+                                        "format": "uuid",
+                                        "nullable": true,
+                                        "type": "string"
+                                      },
+                                      "source_type": {
+                                        "enum": [
+                                          "scheduled_class",
+                                          "appointment_slot",
+                                          "finance_payment",
+                                          "finance_reversal",
+                                          "manual"
+                                        ],
+                                        "type": "string"
+                                      },
+                                      "unit_cents": {
+                                        "nullable": true,
+                                        "type": "integer"
+                                      }
+                                    },
+                                    "required": [
+                                      "amount_cents",
+                                      "description",
+                                      "id",
+                                      "kind",
+                                      "occurred_on",
+                                      "quantity",
+                                      "source_type"
+                                    ],
+                                    "type": "object"
+                                  },
+                                  "type": "array"
+                                },
+                                "period": {
+                                  "nullable": true,
+                                  "type": "object"
+                                },
+                                "total_cents": {
+                                  "type": "integer"
+                                }
+                              },
+                              "required": [
+                                "coach_user_id",
+                                "id",
+                                "line_count",
+                                "lines",
+                                "total_cents"
+                              ],
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "status": {
+                            "enum": [
+                              "draft",
+                              "approved",
+                              "exported"
+                            ],
+                            "type": "string"
+                          },
+                          "total_cents": {
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "currency",
+                          "ends_on",
+                          "id",
+                          "starts_on",
+                          "status",
+                          "total_cents"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "periods"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Periods"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Pay periods, newest first",
+        "tags": [
+          "Coach pay"
+        ]
+      },
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminCoachPayController.create_period",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "ends_on": {
+                    "format": "date",
+                    "type": "string"
+                  },
+                  "starts_on": {
+                    "format": "date",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "ends_on",
+                  "starts_on"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "period": {
+                      "properties": {
+                        "approved_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "approved_by_id": {
+                          "format": "uuid",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "calculated_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "currency": {
+                          "type": "string"
+                        },
+                        "ends_on": {
+                          "format": "date",
+                          "type": "string"
+                        },
+                        "exported_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "reopen_reason": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "starts_on": {
+                          "format": "date",
+                          "type": "string"
+                        },
+                        "statements": {
+                          "items": {
+                            "properties": {
+                              "coach_name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "coach_user_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "line_count": {
+                                "type": "integer"
+                              },
+                              "lines": {
+                                "items": {
+                                  "properties": {
+                                    "amount_cents": {
+                                      "type": "integer"
+                                    },
+                                    "base_cents": {
+                                      "nullable": true,
+                                      "type": "integer"
+                                    },
+                                    "description": {
+                                      "type": "string"
+                                    },
+                                    "id": {
+                                      "format": "uuid",
+                                      "type": "string"
+                                    },
+                                    "kind": {
+                                      "enum": [
+                                        "per_class",
+                                        "per_attendee",
+                                        "per_session",
+                                        "percent_of_sales",
+                                        "clawback",
+                                        "adjustment"
+                                      ],
+                                      "type": "string"
+                                    },
+                                    "occurred_on": {
+                                      "format": "date",
+                                      "type": "string"
+                                    },
+                                    "percent_bps": {
+                                      "nullable": true,
+                                      "type": "integer"
+                                    },
+                                    "quantity": {
+                                      "type": "integer"
+                                    },
+                                    "rule_id": {
+                                      "format": "uuid",
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "source_id": {
+                                      "format": "uuid",
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "source_type": {
+                                      "enum": [
+                                        "scheduled_class",
+                                        "appointment_slot",
+                                        "finance_payment",
+                                        "finance_reversal",
+                                        "manual"
+                                      ],
+                                      "type": "string"
+                                    },
+                                    "unit_cents": {
+                                      "nullable": true,
+                                      "type": "integer"
+                                    }
+                                  },
+                                  "required": [
+                                    "amount_cents",
+                                    "description",
+                                    "id",
+                                    "kind",
+                                    "occurred_on",
+                                    "quantity",
+                                    "source_type"
+                                  ],
+                                  "type": "object"
+                                },
+                                "type": "array"
+                              },
+                              "period": {
+                                "nullable": true,
+                                "type": "object"
+                              },
+                              "total_cents": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "coach_user_id",
+                              "id",
+                              "line_count",
+                              "lines",
+                              "total_cents"
+                            ],
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
+                        "status": {
+                          "enum": [
+                            "draft",
+                            "approved",
+                            "exported"
+                          ],
+                          "type": "string"
+                        },
+                        "total_cents": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "currency",
+                        "ends_on",
+                        "id",
+                        "starts_on",
+                        "status",
+                        "total_cents"
+                      ],
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "period"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Period"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Open a pay period (gym-local dates, at most 92 days, no overlap)",
+        "tags": [
+          "Coach pay"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminCoachPayController.period",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "period": {
+                      "properties": {
+                        "approved_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "approved_by_id": {
+                          "format": "uuid",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "calculated_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "currency": {
+                          "type": "string"
+                        },
+                        "ends_on": {
+                          "format": "date",
+                          "type": "string"
+                        },
+                        "exported_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "reopen_reason": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "starts_on": {
+                          "format": "date",
+                          "type": "string"
+                        },
+                        "statements": {
+                          "items": {
+                            "properties": {
+                              "coach_name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "coach_user_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "line_count": {
+                                "type": "integer"
+                              },
+                              "lines": {
+                                "items": {
+                                  "properties": {
+                                    "amount_cents": {
+                                      "type": "integer"
+                                    },
+                                    "base_cents": {
+                                      "nullable": true,
+                                      "type": "integer"
+                                    },
+                                    "description": {
+                                      "type": "string"
+                                    },
+                                    "id": {
+                                      "format": "uuid",
+                                      "type": "string"
+                                    },
+                                    "kind": {
+                                      "enum": [
+                                        "per_class",
+                                        "per_attendee",
+                                        "per_session",
+                                        "percent_of_sales",
+                                        "clawback",
+                                        "adjustment"
+                                      ],
+                                      "type": "string"
+                                    },
+                                    "occurred_on": {
+                                      "format": "date",
+                                      "type": "string"
+                                    },
+                                    "percent_bps": {
+                                      "nullable": true,
+                                      "type": "integer"
+                                    },
+                                    "quantity": {
+                                      "type": "integer"
+                                    },
+                                    "rule_id": {
+                                      "format": "uuid",
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "source_id": {
+                                      "format": "uuid",
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "source_type": {
+                                      "enum": [
+                                        "scheduled_class",
+                                        "appointment_slot",
+                                        "finance_payment",
+                                        "finance_reversal",
+                                        "manual"
+                                      ],
+                                      "type": "string"
+                                    },
+                                    "unit_cents": {
+                                      "nullable": true,
+                                      "type": "integer"
+                                    }
+                                  },
+                                  "required": [
+                                    "amount_cents",
+                                    "description",
+                                    "id",
+                                    "kind",
+                                    "occurred_on",
+                                    "quantity",
+                                    "source_type"
+                                  ],
+                                  "type": "object"
+                                },
+                                "type": "array"
+                              },
+                              "period": {
+                                "nullable": true,
+                                "type": "object"
+                              },
+                              "total_cents": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "coach_user_id",
+                              "id",
+                              "line_count",
+                              "lines",
+                              "total_cents"
+                            ],
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
+                        "status": {
+                          "enum": [
+                            "draft",
+                            "approved",
+                            "exported"
+                          ],
+                          "type": "string"
+                        },
+                        "total_cents": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "currency",
+                        "ends_on",
+                        "id",
+                        "starts_on",
+                        "status",
+                        "total_cents"
+                      ],
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "period"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Period"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "A pay period with each coach's statement and its lines",
+        "tags": [
+          "Coach pay"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/adjustments": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminCoachPayController.add_adjustment",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "amount_cents": {
+                    "maximum": 10000000,
+                    "minimum": -10000000,
+                    "type": "integer"
+                  },
+                  "coach_user_id": {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "description": {
+                    "maxLength": 250,
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "amount_cents",
+                  "coach_user_id",
+                  "description"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "period": {
+                      "properties": {
+                        "approved_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "approved_by_id": {
+                          "format": "uuid",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "calculated_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "currency": {
+                          "type": "string"
+                        },
+                        "ends_on": {
+                          "format": "date",
+                          "type": "string"
+                        },
+                        "exported_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "reopen_reason": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "starts_on": {
+                          "format": "date",
+                          "type": "string"
+                        },
+                        "statements": {
+                          "items": {
+                            "properties": {
+                              "coach_name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "coach_user_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "line_count": {
+                                "type": "integer"
+                              },
+                              "lines": {
+                                "items": {
+                                  "properties": {
+                                    "amount_cents": {
+                                      "type": "integer"
+                                    },
+                                    "base_cents": {
+                                      "nullable": true,
+                                      "type": "integer"
+                                    },
+                                    "description": {
+                                      "type": "string"
+                                    },
+                                    "id": {
+                                      "format": "uuid",
+                                      "type": "string"
+                                    },
+                                    "kind": {
+                                      "enum": [
+                                        "per_class",
+                                        "per_attendee",
+                                        "per_session",
+                                        "percent_of_sales",
+                                        "clawback",
+                                        "adjustment"
+                                      ],
+                                      "type": "string"
+                                    },
+                                    "occurred_on": {
+                                      "format": "date",
+                                      "type": "string"
+                                    },
+                                    "percent_bps": {
+                                      "nullable": true,
+                                      "type": "integer"
+                                    },
+                                    "quantity": {
+                                      "type": "integer"
+                                    },
+                                    "rule_id": {
+                                      "format": "uuid",
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "source_id": {
+                                      "format": "uuid",
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "source_type": {
+                                      "enum": [
+                                        "scheduled_class",
+                                        "appointment_slot",
+                                        "finance_payment",
+                                        "finance_reversal",
+                                        "manual"
+                                      ],
+                                      "type": "string"
+                                    },
+                                    "unit_cents": {
+                                      "nullable": true,
+                                      "type": "integer"
+                                    }
+                                  },
+                                  "required": [
+                                    "amount_cents",
+                                    "description",
+                                    "id",
+                                    "kind",
+                                    "occurred_on",
+                                    "quantity",
+                                    "source_type"
+                                  ],
+                                  "type": "object"
+                                },
+                                "type": "array"
+                              },
+                              "period": {
+                                "nullable": true,
+                                "type": "object"
+                              },
+                              "total_cents": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "coach_user_id",
+                              "id",
+                              "line_count",
+                              "lines",
+                              "total_cents"
+                            ],
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
+                        "status": {
+                          "enum": [
+                            "draft",
+                            "approved",
+                            "exported"
+                          ],
+                          "type": "string"
+                        },
+                        "total_cents": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "currency",
+                        "ends_on",
+                        "id",
+                        "starts_on",
+                        "status",
+                        "total_cents"
+                      ],
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "period"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Period"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Add a bonus or correction to a coach's statement (draft periods only)",
+        "tags": [
+          "Coach pay"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/adjustments/{line_id}": {
+      "delete": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminCoachPayController.delete_adjustment",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "line_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "period": {
+                      "properties": {
+                        "approved_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "approved_by_id": {
+                          "format": "uuid",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "calculated_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "currency": {
+                          "type": "string"
+                        },
+                        "ends_on": {
+                          "format": "date",
+                          "type": "string"
+                        },
+                        "exported_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "reopen_reason": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "starts_on": {
+                          "format": "date",
+                          "type": "string"
+                        },
+                        "statements": {
+                          "items": {
+                            "properties": {
+                              "coach_name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "coach_user_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "line_count": {
+                                "type": "integer"
+                              },
+                              "lines": {
+                                "items": {
+                                  "properties": {
+                                    "amount_cents": {
+                                      "type": "integer"
+                                    },
+                                    "base_cents": {
+                                      "nullable": true,
+                                      "type": "integer"
+                                    },
+                                    "description": {
+                                      "type": "string"
+                                    },
+                                    "id": {
+                                      "format": "uuid",
+                                      "type": "string"
+                                    },
+                                    "kind": {
+                                      "enum": [
+                                        "per_class",
+                                        "per_attendee",
+                                        "per_session",
+                                        "percent_of_sales",
+                                        "clawback",
+                                        "adjustment"
+                                      ],
+                                      "type": "string"
+                                    },
+                                    "occurred_on": {
+                                      "format": "date",
+                                      "type": "string"
+                                    },
+                                    "percent_bps": {
+                                      "nullable": true,
+                                      "type": "integer"
+                                    },
+                                    "quantity": {
+                                      "type": "integer"
+                                    },
+                                    "rule_id": {
+                                      "format": "uuid",
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "source_id": {
+                                      "format": "uuid",
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "source_type": {
+                                      "enum": [
+                                        "scheduled_class",
+                                        "appointment_slot",
+                                        "finance_payment",
+                                        "finance_reversal",
+                                        "manual"
+                                      ],
+                                      "type": "string"
+                                    },
+                                    "unit_cents": {
+                                      "nullable": true,
+                                      "type": "integer"
+                                    }
+                                  },
+                                  "required": [
+                                    "amount_cents",
+                                    "description",
+                                    "id",
+                                    "kind",
+                                    "occurred_on",
+                                    "quantity",
+                                    "source_type"
+                                  ],
+                                  "type": "object"
+                                },
+                                "type": "array"
+                              },
+                              "period": {
+                                "nullable": true,
+                                "type": "object"
+                              },
+                              "total_cents": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "coach_user_id",
+                              "id",
+                              "line_count",
+                              "lines",
+                              "total_cents"
+                            ],
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
+                        "status": {
+                          "enum": [
+                            "draft",
+                            "approved",
+                            "exported"
+                          ],
+                          "type": "string"
+                        },
+                        "total_cents": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "currency",
+                        "ends_on",
+                        "id",
+                        "starts_on",
+                        "status",
+                        "total_cents"
+                      ],
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "period"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Period"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Remove an adjustment (draft periods only)",
+        "tags": [
+          "Coach pay"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/approve": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminCoachPayController.approve",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "period": {
+                      "properties": {
+                        "approved_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "approved_by_id": {
+                          "format": "uuid",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "calculated_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "currency": {
+                          "type": "string"
+                        },
+                        "ends_on": {
+                          "format": "date",
+                          "type": "string"
+                        },
+                        "exported_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "reopen_reason": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "starts_on": {
+                          "format": "date",
+                          "type": "string"
+                        },
+                        "statements": {
+                          "items": {
+                            "properties": {
+                              "coach_name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "coach_user_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "line_count": {
+                                "type": "integer"
+                              },
+                              "lines": {
+                                "items": {
+                                  "properties": {
+                                    "amount_cents": {
+                                      "type": "integer"
+                                    },
+                                    "base_cents": {
+                                      "nullable": true,
+                                      "type": "integer"
+                                    },
+                                    "description": {
+                                      "type": "string"
+                                    },
+                                    "id": {
+                                      "format": "uuid",
+                                      "type": "string"
+                                    },
+                                    "kind": {
+                                      "enum": [
+                                        "per_class",
+                                        "per_attendee",
+                                        "per_session",
+                                        "percent_of_sales",
+                                        "clawback",
+                                        "adjustment"
+                                      ],
+                                      "type": "string"
+                                    },
+                                    "occurred_on": {
+                                      "format": "date",
+                                      "type": "string"
+                                    },
+                                    "percent_bps": {
+                                      "nullable": true,
+                                      "type": "integer"
+                                    },
+                                    "quantity": {
+                                      "type": "integer"
+                                    },
+                                    "rule_id": {
+                                      "format": "uuid",
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "source_id": {
+                                      "format": "uuid",
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "source_type": {
+                                      "enum": [
+                                        "scheduled_class",
+                                        "appointment_slot",
+                                        "finance_payment",
+                                        "finance_reversal",
+                                        "manual"
+                                      ],
+                                      "type": "string"
+                                    },
+                                    "unit_cents": {
+                                      "nullable": true,
+                                      "type": "integer"
+                                    }
+                                  },
+                                  "required": [
+                                    "amount_cents",
+                                    "description",
+                                    "id",
+                                    "kind",
+                                    "occurred_on",
+                                    "quantity",
+                                    "source_type"
+                                  ],
+                                  "type": "object"
+                                },
+                                "type": "array"
+                              },
+                              "period": {
+                                "nullable": true,
+                                "type": "object"
+                              },
+                              "total_cents": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "coach_user_id",
+                              "id",
+                              "line_count",
+                              "lines",
+                              "total_cents"
+                            ],
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
+                        "status": {
+                          "enum": [
+                            "draft",
+                            "approved",
+                            "exported"
+                          ],
+                          "type": "string"
+                        },
+                        "total_cents": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "currency",
+                        "ends_on",
+                        "id",
+                        "starts_on",
+                        "status",
+                        "total_cents"
+                      ],
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "period"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Period"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Approve a period: its statements are locked and shown to the coaches",
+        "tags": [
+          "Coach pay"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/calculate": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminCoachPayController.calculate",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "period": {
+                      "properties": {
+                        "approved_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "approved_by_id": {
+                          "format": "uuid",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "calculated_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "currency": {
+                          "type": "string"
+                        },
+                        "ends_on": {
+                          "format": "date",
+                          "type": "string"
+                        },
+                        "exported_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "reopen_reason": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "starts_on": {
+                          "format": "date",
+                          "type": "string"
+                        },
+                        "statements": {
+                          "items": {
+                            "properties": {
+                              "coach_name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "coach_user_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "line_count": {
+                                "type": "integer"
+                              },
+                              "lines": {
+                                "items": {
+                                  "properties": {
+                                    "amount_cents": {
+                                      "type": "integer"
+                                    },
+                                    "base_cents": {
+                                      "nullable": true,
+                                      "type": "integer"
+                                    },
+                                    "description": {
+                                      "type": "string"
+                                    },
+                                    "id": {
+                                      "format": "uuid",
+                                      "type": "string"
+                                    },
+                                    "kind": {
+                                      "enum": [
+                                        "per_class",
+                                        "per_attendee",
+                                        "per_session",
+                                        "percent_of_sales",
+                                        "clawback",
+                                        "adjustment"
+                                      ],
+                                      "type": "string"
+                                    },
+                                    "occurred_on": {
+                                      "format": "date",
+                                      "type": "string"
+                                    },
+                                    "percent_bps": {
+                                      "nullable": true,
+                                      "type": "integer"
+                                    },
+                                    "quantity": {
+                                      "type": "integer"
+                                    },
+                                    "rule_id": {
+                                      "format": "uuid",
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "source_id": {
+                                      "format": "uuid",
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "source_type": {
+                                      "enum": [
+                                        "scheduled_class",
+                                        "appointment_slot",
+                                        "finance_payment",
+                                        "finance_reversal",
+                                        "manual"
+                                      ],
+                                      "type": "string"
+                                    },
+                                    "unit_cents": {
+                                      "nullable": true,
+                                      "type": "integer"
+                                    }
+                                  },
+                                  "required": [
+                                    "amount_cents",
+                                    "description",
+                                    "id",
+                                    "kind",
+                                    "occurred_on",
+                                    "quantity",
+                                    "source_type"
+                                  ],
+                                  "type": "object"
+                                },
+                                "type": "array"
+                              },
+                              "period": {
+                                "nullable": true,
+                                "type": "object"
+                              },
+                              "total_cents": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "coach_user_id",
+                              "id",
+                              "line_count",
+                              "lines",
+                              "total_cents"
+                            ],
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
+                        "status": {
+                          "enum": [
+                            "draft",
+                            "approved",
+                            "exported"
+                          ],
+                          "type": "string"
+                        },
+                        "total_cents": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "currency",
+                        "ends_on",
+                        "id",
+                        "starts_on",
+                        "status",
+                        "total_cents"
+                      ],
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "period"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Period"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Calculate a draft period from the classes, sessions and sales (adjustments stay)",
+        "tags": [
+          "Coach pay"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/export": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminCoachPayController.export",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "CSV"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The approved period as CSV for the accountant (marks it exported)",
+        "tags": [
+          "Coach pay"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/reopen": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminCoachPayController.reopen",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "reason": {
+                    "maxLength": 200,
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "reason"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "period": {
+                      "properties": {
+                        "approved_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "approved_by_id": {
+                          "format": "uuid",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "calculated_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "currency": {
+                          "type": "string"
+                        },
+                        "ends_on": {
+                          "format": "date",
+                          "type": "string"
+                        },
+                        "exported_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "reopen_reason": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "starts_on": {
+                          "format": "date",
+                          "type": "string"
+                        },
+                        "statements": {
+                          "items": {
+                            "properties": {
+                              "coach_name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "coach_user_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "line_count": {
+                                "type": "integer"
+                              },
+                              "lines": {
+                                "items": {
+                                  "properties": {
+                                    "amount_cents": {
+                                      "type": "integer"
+                                    },
+                                    "base_cents": {
+                                      "nullable": true,
+                                      "type": "integer"
+                                    },
+                                    "description": {
+                                      "type": "string"
+                                    },
+                                    "id": {
+                                      "format": "uuid",
+                                      "type": "string"
+                                    },
+                                    "kind": {
+                                      "enum": [
+                                        "per_class",
+                                        "per_attendee",
+                                        "per_session",
+                                        "percent_of_sales",
+                                        "clawback",
+                                        "adjustment"
+                                      ],
+                                      "type": "string"
+                                    },
+                                    "occurred_on": {
+                                      "format": "date",
+                                      "type": "string"
+                                    },
+                                    "percent_bps": {
+                                      "nullable": true,
+                                      "type": "integer"
+                                    },
+                                    "quantity": {
+                                      "type": "integer"
+                                    },
+                                    "rule_id": {
+                                      "format": "uuid",
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "source_id": {
+                                      "format": "uuid",
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "source_type": {
+                                      "enum": [
+                                        "scheduled_class",
+                                        "appointment_slot",
+                                        "finance_payment",
+                                        "finance_reversal",
+                                        "manual"
+                                      ],
+                                      "type": "string"
+                                    },
+                                    "unit_cents": {
+                                      "nullable": true,
+                                      "type": "integer"
+                                    }
+                                  },
+                                  "required": [
+                                    "amount_cents",
+                                    "description",
+                                    "id",
+                                    "kind",
+                                    "occurred_on",
+                                    "quantity",
+                                    "source_type"
+                                  ],
+                                  "type": "object"
+                                },
+                                "type": "array"
+                              },
+                              "period": {
+                                "nullable": true,
+                                "type": "object"
+                              },
+                              "total_cents": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "coach_user_id",
+                              "id",
+                              "line_count",
+                              "lines",
+                              "total_cents"
+                            ],
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
+                        "status": {
+                          "enum": [
+                            "draft",
+                            "approved",
+                            "exported"
+                          ],
+                          "type": "string"
+                        },
+                        "total_cents": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "currency",
+                        "ends_on",
+                        "id",
+                        "starts_on",
+                        "status",
+                        "total_cents"
+                      ],
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "period"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Period"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Reopen an approved period, with a reason (an exported one stays as it is)",
+        "tags": [
+          "Coach pay"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/coach-pay/rules": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminCoachPayController.rules",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "coach_user_id",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "include_archived",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "rules": {
+                      "items": {
+                        "properties": {
+                          "amount_cents": {
+                            "nullable": true,
+                            "type": "integer"
+                          },
+                          "archived_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "class_type_ids": {
+                            "items": {
+                              "format": "uuid",
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "coach_name": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "coach_user_id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "count_statuses": {
+                            "items": {
+                              "enum": [
+                                "attended",
+                                "late_cancel",
+                                "no_show"
+                              ],
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "currency": {
+                            "type": "string"
+                          },
+                          "ends_on": {
+                            "format": "date",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "kind": {
+                            "enum": [
+                              "per_class",
+                              "per_attendee",
+                              "per_session",
+                              "percent_of_sales"
+                            ],
+                            "type": "string"
+                          },
+                          "max_attendees": {
+                            "nullable": true,
+                            "type": "integer"
+                          },
+                          "min_attendees": {
+                            "type": "integer"
+                          },
+                          "note": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "percent_bps": {
+                            "nullable": true,
+                            "type": "integer"
+                          },
+                          "sales_scope": {
+                            "enum": [
+                              "personal_training",
+                              "sold_by"
+                            ],
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "starts_on": {
+                            "format": "date",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "class_type_ids",
+                          "coach_user_id",
+                          "count_statuses",
+                          "currency",
+                          "id",
+                          "kind",
+                          "min_attendees",
+                          "starts_on"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "rules"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Rules"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Coach pay rules (active ones unless `include_archived`)",
+        "tags": [
+          "Coach pay"
+        ]
+      },
+      "post": {
+        "callbacks": {},
+        "description": "Per class, per attendee, per personal-training session, or a percent of the sales attributed to the coach (`personal_training`: packages they train; `sold_by`: sales they recorded). The currency defaults to the business's.",
+        "operationId": "PaleeWeb.AdminCoachPayController.create_rule",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "amount_cents": {
+                    "maximum": 10000000,
+                    "minimum": 1,
+                    "nullable": true,
+                    "type": "integer"
+                  },
+                  "class_type_ids": {
+                    "items": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "coach_user_id": {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "count_statuses": {
+                    "items": {
+                      "enum": [
+                        "attended",
+                        "late_cancel",
+                        "no_show"
+                      ],
+                      "type": "string"
+                    },
+                    "minItems": 1,
+                    "type": "array"
+                  },
+                  "currency": {
+                    "maxLength": 3,
+                    "minLength": 3,
+                    "type": "string"
+                  },
+                  "ends_on": {
+                    "format": "date",
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "kind": {
+                    "enum": [
+                      "per_class",
+                      "per_attendee",
+                      "per_session",
+                      "percent_of_sales"
+                    ],
+                    "type": "string"
+                  },
+                  "max_attendees": {
+                    "maximum": 1000,
+                    "minimum": 1,
+                    "nullable": true,
+                    "type": "integer"
+                  },
+                  "min_attendees": {
+                    "maximum": 1000,
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "note": {
+                    "maxLength": 200,
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "percent_bps": {
+                    "maximum": 10000,
+                    "minimum": 1,
+                    "nullable": true,
+                    "type": "integer"
+                  },
+                  "sales_scope": {
+                    "enum": [
+                      "personal_training",
+                      "sold_by"
+                    ],
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "starts_on": {
+                    "format": "date",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "coach_user_id",
+                  "kind",
+                  "starts_on"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "rule": {
+                      "properties": {
+                        "amount_cents": {
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "archived_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "class_type_ids": {
+                          "items": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "coach_name": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "coach_user_id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "count_statuses": {
+                          "items": {
+                            "enum": [
+                              "attended",
+                              "late_cancel",
+                              "no_show"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "currency": {
+                          "type": "string"
+                        },
+                        "ends_on": {
+                          "format": "date",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "kind": {
+                          "enum": [
+                            "per_class",
+                            "per_attendee",
+                            "per_session",
+                            "percent_of_sales"
+                          ],
+                          "type": "string"
+                        },
+                        "max_attendees": {
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "min_attendees": {
+                          "type": "integer"
+                        },
+                        "note": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "percent_bps": {
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "sales_scope": {
+                          "enum": [
+                            "personal_training",
+                            "sold_by"
+                          ],
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "starts_on": {
+                          "format": "date",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "class_type_ids",
+                        "coach_user_id",
+                        "count_statuses",
+                        "currency",
+                        "id",
+                        "kind",
+                        "min_attendees",
+                        "starts_on"
+                      ],
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "rule"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Rule"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Add a pay rule for a coach",
+        "tags": [
+          "Coach pay"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/coach-pay/rules/{id}": {
+      "patch": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminCoachPayController.update_rule",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "amount_cents": {
+                    "maximum": 10000000,
+                    "minimum": 1,
+                    "nullable": true,
+                    "type": "integer"
+                  },
+                  "class_type_ids": {
+                    "items": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "coach_user_id": {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "count_statuses": {
+                    "items": {
+                      "enum": [
+                        "attended",
+                        "late_cancel",
+                        "no_show"
+                      ],
+                      "type": "string"
+                    },
+                    "minItems": 1,
+                    "type": "array"
+                  },
+                  "currency": {
+                    "maxLength": 3,
+                    "minLength": 3,
+                    "type": "string"
+                  },
+                  "ends_on": {
+                    "format": "date",
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "kind": {
+                    "enum": [
+                      "per_class",
+                      "per_attendee",
+                      "per_session",
+                      "percent_of_sales"
+                    ],
+                    "type": "string"
+                  },
+                  "max_attendees": {
+                    "maximum": 1000,
+                    "minimum": 1,
+                    "nullable": true,
+                    "type": "integer"
+                  },
+                  "min_attendees": {
+                    "maximum": 1000,
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "note": {
+                    "maxLength": 200,
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "percent_bps": {
+                    "maximum": 10000,
+                    "minimum": 1,
+                    "nullable": true,
+                    "type": "integer"
+                  },
+                  "sales_scope": {
+                    "enum": [
+                      "personal_training",
+                      "sold_by"
+                    ],
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "starts_on": {
+                    "format": "date",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "rule": {
+                      "properties": {
+                        "amount_cents": {
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "archived_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "class_type_ids": {
+                          "items": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "coach_name": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "coach_user_id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "count_statuses": {
+                          "items": {
+                            "enum": [
+                              "attended",
+                              "late_cancel",
+                              "no_show"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "currency": {
+                          "type": "string"
+                        },
+                        "ends_on": {
+                          "format": "date",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "kind": {
+                          "enum": [
+                            "per_class",
+                            "per_attendee",
+                            "per_session",
+                            "percent_of_sales"
+                          ],
+                          "type": "string"
+                        },
+                        "max_attendees": {
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "min_attendees": {
+                          "type": "integer"
+                        },
+                        "note": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "percent_bps": {
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "sales_scope": {
+                          "enum": [
+                            "personal_training",
+                            "sold_by"
+                          ],
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "starts_on": {
+                          "format": "date",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "class_type_ids",
+                        "coach_user_id",
+                        "count_statuses",
+                        "currency",
+                        "id",
+                        "kind",
+                        "min_attendees",
+                        "starts_on"
+                      ],
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "rule"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Rule"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Change a pay rule (approved periods keep what they paid)",
+        "tags": [
+          "Coach pay"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/coach-pay/rules/{id}/archive": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminCoachPayController.archive_rule",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "rule": {
+                      "properties": {
+                        "amount_cents": {
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "archived_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "class_type_ids": {
+                          "items": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "coach_name": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "coach_user_id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "count_statuses": {
+                          "items": {
+                            "enum": [
+                              "attended",
+                              "late_cancel",
+                              "no_show"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "currency": {
+                          "type": "string"
+                        },
+                        "ends_on": {
+                          "format": "date",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "kind": {
+                          "enum": [
+                            "per_class",
+                            "per_attendee",
+                            "per_session",
+                            "percent_of_sales"
+                          ],
+                          "type": "string"
+                        },
+                        "max_attendees": {
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "min_attendees": {
+                          "type": "integer"
+                        },
+                        "note": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "percent_bps": {
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "sales_scope": {
+                          "enum": [
+                            "personal_training",
+                            "sold_by"
+                          ],
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "starts_on": {
+                          "format": "date",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "class_type_ids",
+                        "coach_user_id",
+                        "count_statuses",
+                        "currency",
+                        "id",
+                        "kind",
+                        "min_attendees",
+                        "starts_on"
+                      ],
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "rule"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Rule"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Stop a pay rule: it pays nothing after today",
+        "tags": [
+          "Coach pay"
+        ]
+      }
+    },
     "/api/org/{organization_slug}/admin/community/clubs": {
       "get": {
         "callbacks": {},
@@ -192826,6 +195612,32 @@
                     "minimum": 1,
                     "type": "integer"
                   },
+                  "card": {
+                    "additionalProperties": false,
+                    "nullable": true,
+                    "properties": {
+                      "commercial": {
+                        "nullable": true,
+                        "type": "boolean"
+                      },
+                      "country": {
+                        "maxLength": 2,
+                        "minLength": 2,
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "funding": {
+                        "enum": [
+                          "credit",
+                          "debit",
+                          "prepaid"
+                        ],
+                        "nullable": true,
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
                   "charge_category": {
                     "enum": [
                       "product",
@@ -192879,6 +195691,11 @@
                       "other"
                     ],
                     "type": "string"
+                  },
+                  "surcharge_cents": {
+                    "minimum": 0,
+                    "nullable": true,
+                    "type": "integer"
                   }
                 },
                 "required": [
@@ -193799,11 +196616,23 @@
                         "nullable": true,
                         "type": "integer"
                       },
+                      "booking.daily_limit": {
+                        "nullable": true,
+                        "type": "integer"
+                      },
                       "booking.no_show_penalty_waived": {
                         "type": "boolean"
                       },
+                      "booking.open_bookings_limit": {
+                        "nullable": true,
+                        "type": "integer"
+                      },
                       "booking.waitlist_priority": {
                         "type": "string"
+                      },
+                      "booking.weekly_limit": {
+                        "nullable": true,
+                        "type": "integer"
                       },
                       "booking.window_days": {
                         "nullable": true,
@@ -194213,6 +197042,9 @@
                       "terms.beneficiaries": {
                         "type": "integer"
                       },
+                      "terms.buyers": {
+                        "type": "string"
+                      },
                       "terms.compatible_package_ids": {
                         "oneOf": [
                           {
@@ -194248,6 +197080,10 @@
                       "terms.joining_fee_cents": {
                         "type": "integer"
                       },
+                      "terms.max_purchases_per_person": {
+                        "nullable": true,
+                        "type": "integer"
+                      },
                       "terms.minimum_commitment_months": {
                         "type": "integer"
                       },
@@ -194256,6 +197092,13 @@
                       },
                       "terms.once_per_person": {
                         "type": "boolean"
+                      },
+                      "terms.prerequisite_package_ids": {
+                        "items": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "type": "array"
                       },
                       "terms.quota_sharing": {
                         "type": "string"
@@ -194543,11 +197386,23 @@
                         "nullable": true,
                         "type": "integer"
                       },
+                      "booking.daily_limit": {
+                        "nullable": true,
+                        "type": "integer"
+                      },
                       "booking.no_show_penalty_waived": {
                         "type": "boolean"
                       },
+                      "booking.open_bookings_limit": {
+                        "nullable": true,
+                        "type": "integer"
+                      },
                       "booking.waitlist_priority": {
                         "type": "string"
+                      },
+                      "booking.weekly_limit": {
+                        "nullable": true,
+                        "type": "integer"
                       },
                       "booking.window_days": {
                         "nullable": true,
@@ -194957,6 +197812,9 @@
                       "terms.beneficiaries": {
                         "type": "integer"
                       },
+                      "terms.buyers": {
+                        "type": "string"
+                      },
                       "terms.compatible_package_ids": {
                         "oneOf": [
                           {
@@ -194992,6 +197850,10 @@
                       "terms.joining_fee_cents": {
                         "type": "integer"
                       },
+                      "terms.max_purchases_per_person": {
+                        "nullable": true,
+                        "type": "integer"
+                      },
                       "terms.minimum_commitment_months": {
                         "type": "integer"
                       },
@@ -195000,6 +197862,13 @@
                       },
                       "terms.once_per_person": {
                         "type": "boolean"
+                      },
+                      "terms.prerequisite_package_ids": {
+                        "items": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "type": "array"
                       },
                       "terms.quota_sharing": {
                         "type": "string"
@@ -219087,6 +221956,11 @@
                             "nullable": true,
                             "type": "string"
                           },
+                          "surcharge_cents": {
+                            "description": "ADR-340: the card surcharge charged on top of `amount_cents`",
+                            "nullable": true,
+                            "type": "integer"
+                          },
                           "user_id": {
                             "format": "uuid",
                             "nullable": true,
@@ -220439,6 +223313,11 @@
                                 "nullable": true,
                                 "type": "string"
                               },
+                              "surcharge_cents": {
+                                "description": "ADR-340: the card surcharge charged on top of `amount_cents`",
+                                "nullable": true,
+                                "type": "integer"
+                              },
                               "user_id": {
                                 "format": "uuid",
                                 "nullable": true,
@@ -221026,6 +223905,462 @@
           }
         ],
         "summary": "Who can pay at the desk",
+        "tags": [
+          "Payments"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/payments/surcharge": {
+      "get": {
+        "callbacks": {},
+        "description": "Off until the owner turns it on. `law` says which cards may carry a surcharge in the box's country (EU/EEA: commercial or non-EEA cards only; UK: commercial only; US/Canada: credit only, capped; elsewhere: none).",
+        "operationId": "PaleeWeb.AdminCardSurchargeController.show",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "allowed": {
+                      "description": "Whether the law allows any surcharge here",
+                      "type": "boolean"
+                    },
+                    "country_code": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "law": {
+                      "properties": {
+                        "at_cost": {
+                          "type": "boolean"
+                        },
+                        "cap_bps": {
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "regime": {
+                          "type": "string"
+                        },
+                        "region_required": {
+                          "type": "boolean"
+                        },
+                        "rule": {
+                          "enum": [
+                            "eea_non_consumer",
+                            "commercial_only",
+                            "credit_only",
+                            "any",
+                            "none"
+                          ],
+                          "type": "string"
+                        },
+                        "sources": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        }
+                      },
+                      "required": [
+                        "at_cost",
+                        "cap_bps",
+                        "regime",
+                        "region_required",
+                        "rule",
+                        "sources"
+                      ],
+                      "type": "object"
+                    },
+                    "saved": {
+                      "type": "boolean"
+                    },
+                    "settings": {
+                      "properties": {
+                        "at_cost_confirmed": {
+                          "type": "boolean"
+                        },
+                        "channels": {
+                          "items": {
+                            "enum": [
+                              "online",
+                              "terminal",
+                              "desk"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "enabled": {
+                          "type": "boolean"
+                        },
+                        "fixed_cents": {
+                          "maximum": 10000,
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "percent_bps": {
+                          "maximum": 1000,
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "region_code": {
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "at_cost_confirmed",
+                        "channels",
+                        "enabled",
+                        "fixed_cents",
+                        "percent_bps",
+                        "region_code"
+                      ],
+                      "type": "object"
+                    },
+                    "updated_at": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "allowed",
+                    "country_code",
+                    "law",
+                    "saved",
+                    "settings"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Card surcharge"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The box's card surcharge and what the law of its country allows",
+        "tags": [
+          "Payments"
+        ]
+      },
+      "put": {
+        "callbacks": {},
+        "description": "Refused with `card_surcharge_not_allowed` where the law forbids it or above its cap.",
+        "operationId": "PaleeWeb.AdminCardSurchargeController.update",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "description": "Keys left out keep their value.",
+                "properties": {
+                  "at_cost_confirmed": {
+                    "type": "boolean"
+                  },
+                  "channels": {
+                    "items": {
+                      "enum": [
+                        "online",
+                        "terminal",
+                        "desk"
+                      ],
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "enabled": {
+                    "type": "boolean"
+                  },
+                  "fixed_cents": {
+                    "maximum": 10000,
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "percent_bps": {
+                    "maximum": 1000,
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "region_code": {
+                    "maxLength": 10,
+                    "nullable": true,
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "allowed": {
+                      "description": "Whether the law allows any surcharge here",
+                      "type": "boolean"
+                    },
+                    "country_code": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "law": {
+                      "properties": {
+                        "at_cost": {
+                          "type": "boolean"
+                        },
+                        "cap_bps": {
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "regime": {
+                          "type": "string"
+                        },
+                        "region_required": {
+                          "type": "boolean"
+                        },
+                        "rule": {
+                          "enum": [
+                            "eea_non_consumer",
+                            "commercial_only",
+                            "credit_only",
+                            "any",
+                            "none"
+                          ],
+                          "type": "string"
+                        },
+                        "sources": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        }
+                      },
+                      "required": [
+                        "at_cost",
+                        "cap_bps",
+                        "regime",
+                        "region_required",
+                        "rule",
+                        "sources"
+                      ],
+                      "type": "object"
+                    },
+                    "saved": {
+                      "type": "boolean"
+                    },
+                    "settings": {
+                      "properties": {
+                        "at_cost_confirmed": {
+                          "type": "boolean"
+                        },
+                        "channels": {
+                          "items": {
+                            "enum": [
+                              "online",
+                              "terminal",
+                              "desk"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "enabled": {
+                          "type": "boolean"
+                        },
+                        "fixed_cents": {
+                          "maximum": 10000,
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "percent_bps": {
+                          "maximum": 1000,
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "region_code": {
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "at_cost_confirmed",
+                        "channels",
+                        "enabled",
+                        "fixed_cents",
+                        "percent_bps",
+                        "region_code"
+                      ],
+                      "type": "object"
+                    },
+                    "updated_at": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "allowed",
+                    "country_code",
+                    "law",
+                    "saved",
+                    "settings"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Card surcharge"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Choose whether and where the card fee is passed on",
+        "tags": [
+          "Payments"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/payments/surcharge/quote": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminCardSurchargeController.quote",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "amount_cents": {
+                    "maximum": 10000000,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  "card": {
+                    "additionalProperties": false,
+                    "description": "What the law reads about a card: credit or debit, issuing country, commercial. Unknown values count against a surcharge.",
+                    "nullable": true,
+                    "properties": {
+                      "commercial": {
+                        "nullable": true,
+                        "type": "boolean"
+                      },
+                      "country": {
+                        "maxLength": 2,
+                        "minLength": 2,
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "funding": {
+                        "enum": [
+                          "credit",
+                          "debit",
+                          "prepaid"
+                        ],
+                        "nullable": true,
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "channel": {
+                    "enum": [
+                      "online",
+                      "desk"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "amount_cents",
+                  "channel"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "applies": {
+                      "type": "boolean"
+                    },
+                    "fixed_cents": {
+                      "type": "integer"
+                    },
+                    "percent_bps": {
+                      "type": "integer"
+                    },
+                    "reason": {
+                      "enum": [
+                        "off",
+                        "channel_off",
+                        "not_allowed_here",
+                        "card_unknown",
+                        "card_not_surchargeable",
+                        "zero"
+                      ],
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "rule": {
+                      "enum": [
+                        "eea_non_consumer",
+                        "commercial_only",
+                        "credit_only",
+                        "any",
+                        "none"
+                      ],
+                      "type": "string"
+                    },
+                    "surcharge_cents": {
+                      "type": "integer"
+                    },
+                    "total_cents": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "applies",
+                    "fixed_cents",
+                    "percent_bps",
+                    "reason",
+                    "rule",
+                    "surcharge_cents",
+                    "total_cents"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Quote"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "What a payment would carry, as shown before paying",
         "tags": [
           "Payments"
         ]
@@ -223292,6 +226627,11 @@
                               "nullable": true,
                               "type": "string"
                             },
+                            "surcharge_cents": {
+                              "description": "ADR-340: the card surcharge charged on top of `amount_cents`",
+                              "nullable": true,
+                              "type": "integer"
+                            },
                             "user_id": {
                               "format": "uuid",
                               "nullable": true,
@@ -223542,6 +226882,11 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "surcharge_cents": {
+                          "description": "ADR-340: the card surcharge charged on top of `amount_cents`",
+                          "nullable": true,
+                          "type": "integer"
+                        },
                         "user_id": {
                           "format": "uuid",
                           "nullable": true,
@@ -223726,6 +227071,11 @@
                           "format": "date-time",
                           "nullable": true,
                           "type": "string"
+                        },
+                        "surcharge_cents": {
+                          "description": "ADR-340: the card surcharge charged on top of `amount_cents`",
+                          "nullable": true,
+                          "type": "integer"
                         },
                         "user_id": {
                           "format": "uuid",
@@ -224036,6 +227386,11 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "surcharge_cents": {
+                          "description": "ADR-340: the card surcharge charged on top of `amount_cents`",
+                          "nullable": true,
+                          "type": "integer"
+                        },
                         "user_id": {
                           "format": "uuid",
                           "nullable": true,
@@ -224220,6 +227575,11 @@
                           "format": "date-time",
                           "nullable": true,
                           "type": "string"
+                        },
+                        "surcharge_cents": {
+                          "description": "ADR-340: the card surcharge charged on top of `amount_cents`",
+                          "nullable": true,
+                          "type": "integer"
                         },
                         "user_id": {
                           "format": "uuid",
@@ -285910,6 +289270,11 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "surcharge_cents": {
+                          "description": "ADR-340: the card surcharge charged on top of `amount_cents`",
+                          "nullable": true,
+                          "type": "integer"
+                        },
                         "user_id": {
                           "format": "uuid",
                           "nullable": true,
@@ -286008,6 +289373,57 @@
                       "description": "The provider members pay through, or null when online payment is off",
                       "nullable": true,
                       "type": "string"
+                    },
+                    "surcharge": {
+                      "properties": {
+                        "applies": {
+                          "type": "boolean"
+                        },
+                        "fixed_cents": {
+                          "type": "integer"
+                        },
+                        "percent_bps": {
+                          "type": "integer"
+                        },
+                        "reason": {
+                          "enum": [
+                            "off",
+                            "channel_off",
+                            "not_allowed_here",
+                            "card_unknown",
+                            "card_not_surchargeable",
+                            "zero"
+                          ],
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "rule": {
+                          "enum": [
+                            "eea_non_consumer",
+                            "commercial_only",
+                            "credit_only",
+                            "any",
+                            "none"
+                          ],
+                          "type": "string"
+                        },
+                        "surcharge_cents": {
+                          "type": "integer"
+                        },
+                        "total_cents": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "applies",
+                        "fixed_cents",
+                        "percent_bps",
+                        "reason",
+                        "rule",
+                        "surcharge_cents",
+                        "total_cents"
+                      ],
+                      "type": "object"
                     }
                   },
                   "required": [
@@ -286837,6 +290253,11 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "surcharge_cents": {
+                          "description": "ADR-340: the card surcharge charged on top of `amount_cents`",
+                          "nullable": true,
+                          "type": "integer"
+                        },
                         "user_id": {
                           "format": "uuid",
                           "nullable": true,
@@ -286935,6 +290356,18 @@
                     "consent_version": {
                       "type": "string"
                     },
+                    "eligibility": {
+                      "enum": [
+                        "package_staff_only",
+                        "package_already_used",
+                        "package_purchase_limit_reached",
+                        "package_new_members_only",
+                        "package_prerequisite_missing",
+                        "package_active_members_only"
+                      ],
+                      "nullable": true,
+                      "type": "string"
+                    },
                     "package": {
                       "properties": {
                         "base_price_cents": {
@@ -286985,6 +290418,58 @@
                     "start_now_text": {
                       "nullable": true,
                       "type": "string"
+                    },
+                    "surcharge": {
+                      "nullable": true,
+                      "properties": {
+                        "applies": {
+                          "type": "boolean"
+                        },
+                        "fixed_cents": {
+                          "type": "integer"
+                        },
+                        "percent_bps": {
+                          "type": "integer"
+                        },
+                        "reason": {
+                          "enum": [
+                            "off",
+                            "channel_off",
+                            "not_allowed_here",
+                            "card_unknown",
+                            "card_not_surchargeable",
+                            "zero"
+                          ],
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "rule": {
+                          "enum": [
+                            "eea_non_consumer",
+                            "commercial_only",
+                            "credit_only",
+                            "any",
+                            "none"
+                          ],
+                          "type": "string"
+                        },
+                        "surcharge_cents": {
+                          "type": "integer"
+                        },
+                        "total_cents": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "applies",
+                        "fixed_cents",
+                        "percent_bps",
+                        "reason",
+                        "rule",
+                        "surcharge_cents",
+                        "total_cents"
+                      ],
+                      "type": "object"
                     },
                     "withdrawal_days": {
                       "nullable": true,
@@ -287294,6 +290779,16 @@
                             "nullable": true,
                             "type": "string"
                           },
+                          "card_funding": {
+                            "description": "ADR-340: what the provider told; decides a lawful card surcharge",
+                            "enum": [
+                              "credit",
+                              "debit",
+                              "prepaid"
+                            ],
+                            "nullable": true,
+                            "type": "string"
+                          },
                           "consent_version": {
                             "nullable": true,
                             "type": "string"
@@ -287397,6 +290892,16 @@
                           "type": "boolean"
                         },
                         "brand": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "card_funding": {
+                          "description": "ADR-340: what the provider told; decides a lawful card surcharge",
+                          "enum": [
+                            "credit",
+                            "debit",
+                            "prepaid"
+                          ],
                           "nullable": true,
                           "type": "string"
                         },
@@ -287519,6 +291024,16 @@
                           "type": "boolean"
                         },
                         "brand": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "card_funding": {
+                          "description": "ADR-340: what the provider told; decides a lawful card surcharge",
+                          "enum": [
+                            "credit",
+                            "debit",
+                            "prepaid"
+                          ],
                           "nullable": true,
                           "type": "string"
                         },
@@ -287749,6 +291264,11 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "surcharge_cents": {
+                          "description": "ADR-340: the card surcharge charged on top of `amount_cents`",
+                          "nullable": true,
+                          "type": "integer"
+                        },
                         "user_id": {
                           "format": "uuid",
                           "nullable": true,
@@ -287955,6 +291475,11 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "surcharge_cents": {
+                          "description": "ADR-340: the card surcharge charged on top of `amount_cents`",
+                          "nullable": true,
+                          "type": "integer"
+                        },
                         "user_id": {
                           "format": "uuid",
                           "nullable": true,
@@ -287996,6 +291521,103 @@
           }
         ],
         "summary": "Dev and test only: finish a sandbox checkout as the provider's page would",
+        "tags": [
+          "Member Finance"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/me/payments/surcharge-quote": {
+      "get": {
+        "callbacks": {},
+        "description": "With `payment_method_id`, for one of my saved cards; without, for a new card (which never carries one: Palee does not know yet whether the law allows it).",
+        "operationId": "PaleeWeb.MyPaymentsController.surcharge_quote",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "amount_cents",
+            "required": true,
+            "schema": {
+              "maximum": 10000000,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "payment_method_id",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "applies": {
+                      "type": "boolean"
+                    },
+                    "fixed_cents": {
+                      "type": "integer"
+                    },
+                    "percent_bps": {
+                      "type": "integer"
+                    },
+                    "reason": {
+                      "enum": [
+                        "off",
+                        "channel_off",
+                        "not_allowed_here",
+                        "card_unknown",
+                        "card_not_surchargeable",
+                        "zero"
+                      ],
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "rule": {
+                      "enum": [
+                        "eea_non_consumer",
+                        "commercial_only",
+                        "credit_only",
+                        "any",
+                        "none"
+                      ],
+                      "type": "string"
+                    },
+                    "surcharge_cents": {
+                      "type": "integer"
+                    },
+                    "total_cents": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "applies",
+                    "fixed_cents",
+                    "percent_bps",
+                    "reason",
+                    "rule",
+                    "surcharge_cents",
+                    "total_cents"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Quote"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The card surcharge I would pay, shown before paying (ADR-340)",
         "tags": [
           "Member Finance"
         ]
@@ -288139,6 +291761,11 @@
                           "format": "date-time",
                           "nullable": true,
                           "type": "string"
+                        },
+                        "surcharge_cents": {
+                          "description": "ADR-340: the card surcharge charged on top of `amount_cents`",
+                          "nullable": true,
+                          "type": "integer"
                         },
                         "user_id": {
                           "format": "uuid",
@@ -292998,6 +296625,11 @@
                           "format": "date-time",
                           "nullable": true,
                           "type": "string"
+                        },
+                        "surcharge_cents": {
+                          "description": "ADR-340: the card surcharge charged on top of `amount_cents`",
+                          "nullable": true,
+                          "type": "integer"
                         },
                         "user_id": {
                           "format": "uuid",

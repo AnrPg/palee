@@ -24,6 +24,12 @@ defmodule Palee.Payments.PaymentStore do
     do: tenant_call(context, :set_account_status, [id, status, error, now])
 
   @impl true
+  def get_surcharge_settings(context), do: tenant_call(context, :get_surcharge_settings, [])
+  @impl true
+  def save_surcharge_settings(context, attrs),
+    do: tenant_call(context, :save_surcharge_settings, [attrs])
+
+  @impl true
   def insert_intent(context, attrs), do: tenant_call(context, :insert_intent, [attrs])
   @impl true
   def get_intent(context, id), do: tenant_call(context, :get_intent, [id])

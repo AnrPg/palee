@@ -137,6 +137,8 @@ defmodule Mix.Tasks.Palee.Architecture do
     automations/audience_reader
     retention/risk_store
     retention/signal_reader
+
+    coach_pay/coach_pay_store
     box_screens/box_screen_store
     documents/document_store
     setup/recipe_application_store

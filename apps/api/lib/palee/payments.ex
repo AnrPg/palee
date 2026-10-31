@@ -401,6 +401,8 @@ defmodule Palee.Payments do
              purpose_type: request.purpose_type,
              purpose_id: request.purpose_id,
              amount_cents: request.amount_cents,
+             # ADR-340: a card surcharge shown before payment, on top of the price.
+             surcharge_cents: request[:surcharge_cents] || 0,
              currency: request.currency,
              description: IntentPolicy.description(request[:description]),
              status: "awaiting_payer",
@@ -439,7 +441,7 @@ defmodule Palee.Payments do
 
     checkout = %{
       reference: intent.id,
-      amount_cents: intent.amount_cents,
+      amount_cents: IntentPolicy.total_cents(intent),
       currency: intent.currency,
       description: intent.description,
       customer: request[:customer] || %{},
@@ -501,7 +503,12 @@ defmodule Palee.Payments do
            PaymentStore.get_method(context, request.payment_method_id) || {:error, :not_found},
          true <- method.account_id == account.id || {:error, :payment_method_inactive},
          :ok <-
-           Consent.allows?(method, request.amount_cents, request.currency, DateTime.to_date(now)),
+           Consent.allows?(
+             method,
+             request.amount_cents + (request[:surcharge_cents] || 0),
+             request.currency,
+             DateTime.to_date(now)
+           ),
          {:ok, intent} <-
            PaymentStore.insert_intent(context, %{
              organization_id: context.organization_id,
@@ -513,6 +520,7 @@ defmodule Palee.Payments do
              purpose_type: request.purpose_type,
              purpose_id: request.purpose_id,
              amount_cents: request.amount_cents,
+             surcharge_cents: request[:surcharge_cents] || 0,
              currency: request.currency,
              description: IntentPolicy.description(request[:description]),
              status: "scheduled",
@@ -632,7 +640,7 @@ defmodule Palee.Payments do
         result =
           gateway(account.provider).charge_saved(account, token, %{
             reference: intent.id,
-            amount_cents: intent.amount_cents,
+            amount_cents: IntentPolicy.total_cents(intent),
             currency: intent.currency,
             description: intent.description,
             idempotency_key: "palee-charge-#{intent.id}-#{intent.attempts}"
@@ -738,7 +746,10 @@ defmodule Palee.Payments do
           consent_ip: consent["ip"],
           consent_user_agent: consent["user_agent"],
           max_amount_cents: consent["max_amount_cents"],
-          currency: consent["currency"] || intent.currency
+          currency: consent["currency"] || intent.currency,
+          card_funding: card[:funding],
+          card_country: card[:country],
+          card_commercial: card[:commercial]
         })
 
       # The payer chose to pay what falls due with this card (one card at a time).
@@ -994,6 +1005,39 @@ defmodule Palee.Payments do
     end
   end
 
+  # ── Card surcharge settings (ADR-340) ──────────────────────────────────
+
+  @doc "The box's card surcharge settings as stored, or nil before the owner chose."
+  def surcharge_settings(context), do: PaymentStore.get_surcharge_settings(context)
+
+  @doc """
+  Saves settings already checked against the law (`SurchargePolicy.change/4`,
+  called by the application, which knows the box's country).
+  """
+  def save_surcharge_settings(context, settings, actor_id) when is_map(settings) do
+    PaymentStore.save_surcharge_settings(
+      context,
+      settings
+      |> Map.take([
+        :enabled,
+        :channels,
+        :percent_bps,
+        :fixed_cents,
+        :region_code,
+        :at_cost_confirmed
+      ])
+      |> Map.put(:updated_by_id, actor_id)
+    )
+  end
+
+  @doc "A saved card of the member, with what the provider told about it (ADR-340)."
+  def member_method(context, user_id, method_id) do
+    case PaymentStore.get_method(context, method_id) do
+      %{user_id: ^user_id, status: "active"} = method -> {:ok, method}
+      _other -> {:error, :not_found}
+    end
+  end
+
   # ── Saved cards ─────────────────────────────────────────────────────────
 
   def methods(context, user_id),
@@ -1013,7 +1057,8 @@ defmodule Palee.Payments do
       :max_amount_cents,
       :currency,
       :consented_at,
-      :consent_version
+      :consent_version,
+      :card_funding
     ])
   end
 
@@ -1203,7 +1248,8 @@ defmodule Palee.Payments do
       :inserted_at,
       :metadata,
       :attention_resolved_at,
-      :attention_resolution
+      :attention_resolution,
+      :surcharge_cents
     ])
     |> Map.put(:declines, declines(intent))
     |> Map.put(:retries, length(IntentPolicy.dunning_days()))

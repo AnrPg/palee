@@ -78,6 +78,7 @@ defmodule Palee.Application.SubmitBooking do
          :ok <- BookingPolicy.can_book?(slot, user_id: user_id, now: now),
          :ok <- documents_gate(Keyword.get(opts, :documents_gate, true), context, user_id, now),
          :ok <- check_booking_window(context, user_id, slot, now, opts),
+         :ok <- check_booking_limits(context, user_id, slot, now, opts),
          request = BookingPolicy.entitlement_request(slot),
          {:ok, reservation} <- reserve_visit(context, actor, slot, request) do
       attrs = %{
@@ -134,6 +135,16 @@ defmodule Palee.Application.SubmitBooking do
     else
       :ok
     end
+  end
+
+  # ADR-342: the package's daily, weekly and open-bookings limits. Staff
+  # placing a member (`booking_window: false`) decide for themselves.
+  defp check_booking_limits(nil, _user_id, _slot, _now, _opts), do: :ok
+
+  defp check_booking_limits(context, user_id, slot, now, opts) do
+    if Keyword.get(opts, :booking_limits, Keyword.get(opts, :booking_window, true)),
+      do: BookingTerms.check_limits(context, user_id, slot, now),
+      else: :ok
   end
 
   defp documents_gate(false, _context, _user_id, _now), do: :ok
