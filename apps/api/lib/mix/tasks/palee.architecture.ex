@@ -111,6 +111,9 @@ defmodule Mix.Tasks.Palee.Architecture do
     organizations/public_profile_store
     organizations/location_scope_store
     ai_usage/ai_usage_store
+    data_questions/question_store
+    data_questions/box_data_reader
+    help_desk/help_desk_store
     places/discovery_store
     places/home_area_store
     partners/suggestion_store
