@@ -1224,6 +1224,9 @@ defmodule PaleeWeb.Router do
     get("/settings", AdminSettingsController, :show)
     get("/onboarding", AdminOnboardingController, :show)
     get("/plan", AdminPlanController, :show)
+    # ADR-365 (CP-G5): the box's own data export, for owners.
+    get("/data-exports", AdminDataExportController, :index)
+    post("/data-exports", AdminDataExportController, :create)
     patch("/onboarding", AdminOnboardingController, :update)
     patch("/settings", AdminSettingsController, :update)
     put("/settings/time-zone", AdminSettingsController, :update_time_zone)

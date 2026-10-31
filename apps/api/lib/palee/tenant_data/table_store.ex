@@ -12,16 +12,21 @@ defmodule Palee.TenantData.TableStore do
     admit the owning user.
 
   Anything other than a `%PurgeContext{}` fails closed with
-  `{:error, :organization_context_required}` (ADR-091).
+  `{:error, :organization_context_required}` (ADR-091). ADR-365: a
+  `%BoxExportContext{}` (an owner's own export) may count and export, never
+  purge; it has no subject accounts, so personal tables export nothing.
   """
 
   alias Palee.Infrastructure.Tenancy.RepoContext
   alias Palee.TenantData.Domain.RetentionReview
-  alias Palee.TenantData.PurgeContext
+  alias Palee.TenantData.{BoxExportContext, PurgeContext}
+
+  defguardp readable?(context)
+            when is_struct(context, PurgeContext) or is_struct(context, BoxExportContext)
 
   @doc "Record counts per declared table."
-  def inventory(policy, %PurgeContext{organization_id: organization_id} = context)
-      when is_binary(organization_id) do
+  def inventory(policy, %{organization_id: organization_id} = context)
+      when readable?(context) and is_binary(organization_id) do
     tenant_session(context, fn ->
       {:ok,
        Enum.map(policy.tables, fn spec ->
@@ -39,8 +44,8 @@ defmodule Palee.TenantData.TableStore do
   """
   def export(policy, context, mode \\ :full)
 
-  def export(policy, %PurgeContext{organization_id: organization_id} = context, mode)
-      when is_binary(organization_id) and mode in [:full, :retained] do
+  def export(policy, %{organization_id: organization_id} = context, mode)
+      when readable?(context) and is_binary(organization_id) and mode in [:full, :retained] do
     {specs, dropped} = export_plan(policy, mode)
 
     tenant_session(context, fn ->
@@ -91,7 +96,7 @@ defmodule Palee.TenantData.TableStore do
     {specs, dropped}
   end
 
-  defp per_scope(spec, %PurgeContext{} = context, operation, combine, initial) do
+  defp per_scope(spec, context, operation, combine, initial) when readable?(context) do
     case Map.get(spec, :rls, :organization) do
       :organization ->
         operation.(spec, context.organization_id, nil)
@@ -108,7 +113,7 @@ defmodule Palee.TenantData.TableStore do
     end
   end
 
-  defp tenant_session(%PurgeContext{} = context, fun) do
+  defp tenant_session(context, fun) when readable?(context) do
     RepoContext.run(%{organization_id: context.organization_id, user_id: context.user_id}, fun)
   end
 

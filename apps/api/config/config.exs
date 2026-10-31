@@ -136,6 +136,9 @@ config :palee, :readiness_checker, Palee.Infrastructure.Readiness.Live
 
 # ADR-364: the public status page. Payments and fiscal are probed by reaching
 # the providers' APIs (no credentials are sent; any answer below 500 counts).
+# ADR-365: the box's own data export.
+config :palee, :box_data_export_store, Palee.Infrastructure.BoxData.EctoExportStore
+
 config :palee, :status_store, Palee.Infrastructure.Status.EctoStatusStore
 config :palee, :status_probe, Palee.Infrastructure.Status.LiveProbe
 config :palee, :status_clock, Palee.Infrastructure.Status.SystemClock

@@ -13,6 +13,7 @@ defmodule Palee.Application.TenantDataContexts do
     Analytics,
     Appointments,
     Body,
+    BoxData,
     BoxScreens,
     Buddies,
     Coaching,
@@ -54,6 +55,7 @@ defmodule Palee.Application.TenantDataContexts do
   alias Palee.TenantData.Domain.RetentionReview
 
   @purgeable [
+    BoxData,
     BoxScreens,
     AiUsage,
     Imports,

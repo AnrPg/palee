@@ -132,6 +132,7 @@ defmodule Mix.Tasks.Palee.Architecture do
     imports/import_store
     personal_data/export_store
     personal_data/record_source
+    box_data/export_store
   )
 
   defp tenant_scope_violations do
