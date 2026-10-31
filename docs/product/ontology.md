@@ -542,6 +542,21 @@ never mix (flow, set structure, add-ons); presets only fill them in. Code names 
 | Per round | Ανά γύρο | `PlanRow.perRound` | Values that change round by round (Alt+V) in every flow other than Σετ, where they change per set («ανά σετ»). «Ίδιες τιμές σε κάθε γύρο» turns it off. | Different round (other exercises, not other values). |
 | Rest row | Ξεκούραση | `PlanRow.kind: "rest"` | A rest written as a row between exercises (e.g. inside a superset). | The flow Ξεκούραση (a whole rest section). |
 
+### 4.21 Box website and Google reviews (ADR-352..355)
+
+| English | Ελληνικά | Code | What it is | Not to be confused with |
+|---|---|---|---|---|
+| Website | Ιστοσελίδα | `box_site_settings`, `/api/public/sites/:slug` | The box's own small site, filled by itself from Palee's data (Σχετικά, πακέτα, coaches, τοποθεσία, πρόγραμμα, FAQ, φόρμες). The owner only orders and hides sections. | Public box page (`/b/<slug>`, inside Palee); Sales page. |
+| Section | Ενότητα | `SiteSections` keys | One part of the website (Αρχή, Σχετικά, Πρόγραμμα, Πακέτα, Coaches, Τοποθεσία, Κριτικές, Συχνές ερωτήσεις, Φόρμα δοκιμαστικού, Φόρμα επικοινωνίας). | A WOD section («ενότητα» of a structured WOD). |
+| Timetable | Ωρολόγιο πρόγραμμα | `public_schedule` | The week's classes on the website (type, day, time, length), without spots, bookings or people. Off until the owner turns it on. | The schedule members book from (needs sign-in). |
+| Custom domain | Δικό σου domain | `box_site_domains` | The box's own address (e.g. www.mybox.gr) for its website, proved with a TXT record. States: «Περιμένει DNS», «Περιμένει πιστοποιητικό», «Ενεργό», «Δεν απαντά», «Έληξε». | Palee's address. |
+| Trial request | Αίτημα δοκιμαστικού | form `trial` | A visitor's request for a trial class from the website; it becomes a lead (Ενδιαφερόμενος). | Trial class booked in the app (ADR-144). |
+| Contact form | Φόρμα επικοινωνίας | form `contact` | A visitor's question from the website; it becomes a lead. | Box inbox (members' messages). |
+| Cookie consent | Συναίνεση cookies | `box_site_consents` | A visitor's choice for Στατιστικά (analytics) and Marketing; nothing of the box's tags loads before it. «Αποδοχή όλων», «Απόρριψη όλων», «Ρυθμίσεις» are equal. | Privacy acknowledgement on a form; marketing opt-in. |
+| Tags | Κωδικοί μέτρησης | `meta_pixel_id`, `ga4_measurement_id`, `gtm_container_id` | The box's own Meta Pixel, Google Analytics and Google Tag ids. Under «Προχωρημένα». | |
+| Google review ask | Αίτημα κριτικής Google | `review_asks` | At an attendance milestone, right after a class, every member alike sees «Γράψε κριτική στο Google» and «Πες κάτι στο box». Never depends on their opinion, never rewarded. «Να μη ρωτηθώ ξανά» stops it. | Box feedback questionnaires (Αξιολογήσεις, ADR-015). |
+| Place ID | Place ID | `google_place_id` | Google's id of the box's listing; it builds the review link. | |
+
 ## 5. Name clashes found, and proposals
 
 Each needs ANR's choice before the UI changes. The recommended option is first.
