@@ -164,6 +164,124 @@ defmodule PaleeWeb.Schemas.TrainingFloor do
     }
   end
 
+  # -- CP-D6: fitness profile ---------------------------------------------------
+
+  @domains ~w(strength power gymnastics monostructural metcon)
+
+  def fitness_reason do
+    %Schema{
+      title: "FitnessReason",
+      type: :object,
+      description: "One benchmark PR and the points it gave",
+      properties: %{
+        benchmark: %Schema{type: :string},
+        domain: %Schema{type: :string, enum: @domains},
+        name: %Schema{type: :string, description: "The PR as the person named it"},
+        value: %Schema{type: :number, description: "kg (1RM), reps or seconds"},
+        unit: %Schema{type: :string, enum: ~w(kg reps mins_secs)},
+        estimated: %Schema{type: :boolean, description: "1RM estimated from a multi-rep set"},
+        points: %Schema{type: :number},
+        anchors: %Schema{
+          type: :array,
+          items: %Schema{
+            type: :object,
+            properties: %{value: %Schema{type: :number}, points: %Schema{type: :integer}},
+            required: [:points, :value]
+          }
+        },
+        beaten_on: @date,
+        age_days: %Schema{type: :integer},
+        stale: %Schema{type: :boolean}
+      },
+      required: [
+        :age_days,
+        :anchors,
+        :beaten_on,
+        :benchmark,
+        :domain,
+        :estimated,
+        :name,
+        :points,
+        :stale,
+        :unit,
+        :value
+      ]
+    }
+  end
+
+  def fitness_profile do
+    %Schema{
+      title: "FitnessProfile",
+      type: :object,
+      properties: %{
+        algorithm: %Schema{
+          type: :object,
+          properties: %{id: %Schema{type: :string}, version: %Schema{type: :integer}},
+          required: [:id, :version]
+        },
+        division: %Schema{type: :string, enum: ["women", "men", nil], nullable: true},
+        neutral_standards: %Schema{type: :boolean},
+        overall: %Schema{
+          type: :object,
+          nullable: true,
+          properties: %{
+            score: %Schema{type: :integer},
+            domains_scored: %Schema{type: :integer},
+            reason: %Schema{type: :string}
+          },
+          required: [:domains_scored, :reason, :score]
+        },
+        domains: %Schema{
+          type: :array,
+          items: %Schema{
+            title: "FitnessDomain",
+            type: :object,
+            properties: %{
+              domain: %Schema{type: :string, enum: @domains},
+              score: @maybe_integer,
+              confidence: %Schema{
+                type: :string,
+                enum: ["low", "medium", "high", nil],
+                nullable: true
+              },
+              stale: %Schema{type: :boolean},
+              reasons: %Schema{type: :array, items: fitness_reason()}
+            },
+            required: [:confidence, :domain, :reasons, :score, :stale]
+          }
+        },
+        focus: %Schema{
+          type: :array,
+          items: %Schema{
+            title: "FitnessFocus",
+            type: :object,
+            additionalProperties: true,
+            properties: %{
+              domain: %Schema{type: :string, enum: @domains},
+              kind: %Schema{
+                type: :string,
+                enum: ~w(weakest_domain undertrained_quality stale_benchmark untested_domain)
+              }
+            },
+            required: [:domain, :kind]
+          }
+        },
+        injury_caution: %Schema{type: :boolean},
+        benchmarks_known: %Schema{type: :integer}
+      },
+      required: [
+        :algorithm,
+        :benchmarks_known,
+        :division,
+        :domains,
+        :focus,
+        :injury_caution,
+        :neutral_standards,
+        :overall
+      ]
+    }
+  end
+
   @doc false
   def shared, do: %{uuid: @uuid, date: @date, maybe_date: @maybe_date, datetime: @datetime}
 end
