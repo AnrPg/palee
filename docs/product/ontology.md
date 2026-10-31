@@ -519,6 +519,7 @@ Staff screens only (Fiscal). The German and Austrian texts a receipt prints are 
 | Your data | Τα δεδομένα σου | `/me/settings#your-data` | The Settings section with «Λήψη των δεδομένων μου» and the links to the privacy policy and the terms. | Delete profile or account. |
 | Download my data | Λήψη των δεδομένων μου | `POST /me/data-exports` | One request for a copy of all of the person's own data; ready in the background, with an email when it is. | Journal export («Εξαγωγή», only the journal); accounting export. |
 | Data file | Αρχείο δεδομένων | `personal_data_exports` | The ZIP (JSON files) «Λήψη των δεδομένων μου» makes; downloadable for 7 days, one a day. | Audit archive; a box's tenant export (ADR-117). |
+| Download the box's data | Λήψη των δεδομένων του box | `POST /api/org/:slug/admin/data-exports` | For owners: one copy of all the box's own data (every table the owner may read), as a ZIP of CSV files, at any time, one a day, kept 7 days. (ADR-365) | Download my data (a person's own data); the Palee team's tenant export before a purge (ADR-117); accounting export. |
 | Sub-processor | Εκτελών την επεξεργασία | `lib/legal/sub-processors.ts` | A company that processes personal data for Palee (email, hosting, maps, payments…), listed on the privacy policy. | Payment provider (the box's own choice). |
 
 ### 4.20 Structured WOD (ADR-270)
@@ -541,6 +542,18 @@ never mix (flow, set structure, add-ons); presets only fill them in. Code names 
 | Different round | Διαφορετικός γύρος | `blocks` | A block of other exercises; blocks alternate (rounds 1, 3, 5… / 2, 4, 6…). Added with Alt+S. | Per round. |
 | Per round | Ανά γύρο | `PlanRow.perRound` | Values that change round by round (Alt+V) in every flow other than Σετ, where they change per set («ανά σετ»). «Ίδιες τιμές σε κάθε γύρο» turns it off. | Different round (other exercises, not other values). |
 | Rest row | Ξεκούραση | `PlanRow.kind: "rest"` | A rest written as a row between exercises (e.g. inside a superset). | The flow Ξεκούραση (a whole rest section). |
+
+### 4.21 Service status (ADR-364)
+
+| English | Ελληνικά | Code | What it is | Not to be confused with |
+|---|---|---|---|---|
+| Status page | Σελίδα κατάστασης | `/status`, `GET /api/public/status` | The public page that says whether Palee works now, what is wrong, what maintenance is planned, and the uptime of the last 90 days. No sign-in. | Box status, the business's demo/active status. |
+| Component | Υπηρεσία | `status_component_states.component` | One part of Palee on the status page: Η εφαρμογή (app), Αναζήτηση (search), Αρχεία και φωτογραφίες (files), Email, Online πληρωμές (payments), Διαβίβαση παραστατικών (fiscal). | Bounded context (code). |
+| Operational / Degraded / Down | Λειτουργεί / Με καθυστερήσεις / Εκτός λειτουργίας | `operational`, `degraded`, `down` | A component's state. Plus «Συντήρηση» during planned maintenance and «Άγνωστο» when no check ran recently. | |
+| Incident | Πρόβλημα | `status_incidents.kind: incident` | Something wrong the Palee team tells everyone about, with steps: Διερευνάται → Εντοπίστηκε → Παρακολουθείται → Επιλύθηκε. | «Αναφορά» (a member's report); injury («Τραυματισμός»). Never «Συμβάν» in member screens. |
+| Planned maintenance | Προγραμματισμένη συντήρηση | `status_incidents.kind: maintenance` | Work announced ahead with a window: Προγραμματισμένη → Σε εξέλιξη → Ολοκληρώθηκε. | Cleaning («Καθαριότητα»), machine maintenance in Inventory. |
+| Uptime | Διαθεσιμότητα | `status_daily_samples` | The share of checks that found a component working, per day and over 90 days. | |
+| Status emails | Email κατάστασης | `status_subscribers` | Emails about incidents and maintenance to anyone who asked for them on the status page (confirmed by email first; one link stops them). | Notifications of the app; marketing emails. |
 
 ## 5. Name clashes found, and proposals
 
