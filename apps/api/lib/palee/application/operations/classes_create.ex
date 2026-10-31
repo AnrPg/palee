@@ -64,14 +64,14 @@ defmodule Palee.Application.Operations.ClassesCreate do
     with %{} = class_type <- Scheduling.get_class_type(context, input["class_type_id"]) || {:error, :not_found},
          {:ok, slot} <-
            CreateScheduledSlot.call(context, %{
-             "class_type_id" => class_type.id,
-             "name" => input["name"] || class_type.name,
-             "scheduled_at" => input["starts_at"],
-             "duration_minutes" => input["duration_minutes"],
-             "capacity" => input["capacity"],
-             "location_id" => input["location_id"],
-             "coach_user_id" => input["coach_id"],
-             "auto_approve" => true
+             class_type_id: class_type.id,
+             name: input["name"] || class_type.name,
+             scheduled_at: input["starts_at"],
+             duration_minutes: input["duration_minutes"],
+             capacity: input["capacity"],
+             location_id: input["location_id"],
+             coach_user_id: input["coach_id"],
+             auto_approve: true
            }) do
       {:ok, Views.class(slot)}
     end

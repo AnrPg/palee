@@ -17,7 +17,9 @@ defmodule PaleeWeb.DoorAccessController do
 
   tags(["Doors"])
 
-  plug OpenApiSpex.Plug.CastAndValidate, json_render_error_v2: true
+  # A controller's notification carries the provider's own fields: read as
+  # sent, not cast.
+  plug OpenApiSpex.Plug.CastAndValidate, [json_render_error_v2: true] when action in [:open]
 
   operation(:open,
     summary: "Open the door: proof of presence, then the box's entry rules",
@@ -67,11 +69,10 @@ defmodule PaleeWeb.DoorAccessController do
 
   # A Shelly action calls a URL with GET and query parameters (`event=…`);
   # Kisi posts JSON. Both arrive here.
-  def ingest(conn, %{id: id, token: token}) do
-    params = conn.query_params |> Map.delete("token") |> Map.merge(raw_body(conn.body_params))
-    with {:ok, result} <- DoorAccess.ingest(id, token, params), do: json(conn, result)
-  end
+  def ingest(conn, %{"id" => id} = params) do
+    token = params["token"]
+    fields = conn.query_params |> Map.delete("token") |> Map.merge(conn.body_params)
 
-  defp raw_body(params) when is_map(params),
-    do: Map.new(params, fn {key, value} -> {to_string(key), value} end)
+    with {:ok, result} <- DoorAccess.ingest(id, token, fields), do: json(conn, result)
+  end
 end

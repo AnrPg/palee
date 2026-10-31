@@ -94,29 +94,53 @@ defmodule Palee.Infrastructure.Integrations.EctoIntegrationStore do
   # ── Idempotency ─────────────────────────────────────────────────────────
 
   @impl true
-  def start_idempotent(%{organization_id: organization_id}, attrs) do
+  def start_idempotent(%{organization_id: organization_id} = context, attrs) do
     changeset = IdempotencyRecord.changeset(%IdempotencyRecord{}, attrs)
 
-    case Repo.insert(changeset, on_conflict: :nothing) do
-      {:ok, %IdempotencyRecord{id: id} = record} when not is_nil(id) ->
-        {:ok, plain(record)}
+    if changeset.valid? do
+      now = DateTime.utc_now()
 
-      {:ok, _conflict} ->
-        existing =
-          Repo.one(
-            from r in IdempotencyRecord,
-              where:
-                r.organization_id == ^organization_id and r.principal == ^attrs.principal and
-                  r.key == ^attrs.key
-          )
+      row =
+        changeset
+        |> Ecto.Changeset.apply_changes()
+        |> Map.take([:principal, :key, :operation, :request_hash, :state, :expires_at])
+        |> Map.merge(%{
+          id: Ecto.UUID.generate(),
+          organization_id: organization_id,
+          inserted_at: now,
+          updated_at: now
+        })
 
-        case existing do
-          nil -> {:error, :idempotency_key_in_use}
-          record -> {:exists, plain(record)}
-        end
+      # A conflict inserts nothing (and returns no row): the key is known.
+      case Repo.insert_all(IdempotencyRecord, [row], on_conflict: :nothing, returning: [:id]) do
+        {1, [%{id: id}]} -> {:ok, %{id: id}}
+        {0, []} -> existing_idempotent(context, attrs, now)
+      end
+    else
+      {:error, changeset}
+    end
+  end
 
-      {:error, changeset} ->
-        {:error, changeset}
+  # An expired record (not swept yet) no longer counts: it is replaced.
+  defp existing_idempotent(%{organization_id: organization_id} = context, attrs, now) do
+    existing =
+      Repo.one(
+        from r in IdempotencyRecord,
+          where:
+            r.organization_id == ^organization_id and r.principal == ^attrs.principal and
+              r.key == ^attrs.key
+      )
+
+    cond do
+      is_nil(existing) ->
+        {:error, :idempotency_key_in_use}
+
+      DateTime.compare(existing.expires_at, now) == :lt ->
+        Repo.delete(existing)
+        start_idempotent(context, attrs)
+
+      true ->
+        {:exists, plain(existing)}
     end
   end
 

@@ -1,8 +1,10 @@
 defmodule Palee.Infrastructure.Access.SandboxDoorController do
   @moduledoc """
   The door controller of development, tests and demos (ADR-381): no
-  hardware. `settings.simulate` = `offline` answers as an unreachable
-  controller, so the fail-secure path can be tried without a real door.
+  hardware. `settings.simulate` = `offline` answers every opening as an
+  unreachable controller (saving still works, as for a controller that went
+  offline after it was set up), so the fail-secure path can be tried
+  without a real door.
   Events are given as `%{"event" => "door_opened" | "door_forced" | ...}`.
   """
 
@@ -15,7 +17,6 @@ defmodule Palee.Infrastructure.Access.SandboxDoorController do
   def unlock(_controller, seconds) when is_integer(seconds) and seconds > 0, do: :ok
 
   @impl true
-  def check(%{settings: %{"simulate" => "offline"}}), do: {:error, {:offline, :simulated}}
   def check(_controller), do: :ok
 
   @impl true
