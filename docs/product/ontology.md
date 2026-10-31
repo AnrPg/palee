@@ -291,6 +291,27 @@ Terms marked **(proposed)** change today's wording; see §5. Everything else mat
 | Bring in a coach | Φέρε τον coach | `joined_as: coach` | The inbox adds a coach of the box to one conversation; the topic «Προπόνηση» adds the person's coaches by itself. |
 | Topic | Θέμα | `messaging_messages.topic` | Κράτηση, Πληρωμή, Συνδρομή, Προπόνηση, Χώρος. |
 
+### 4.6b Text messages from the box (ADR-348..351)
+
+Outside the app: SMS today, Viber and WhatsApp later. Push stays first; these go only where
+push is not enough.
+
+| English | Ελληνικά | Code | What it is | Not to be confused with |
+|---|---|---|---|---|
+| Text message (SMS) | Μήνυμα SMS | `channel_messages` channel `sms` | A message the box sends to a person's mobile, outside the app. | Message («Μήνυμα») in Μηνύματα, which stays in the app; push notification. |
+| Messaging channel | Κανάλι μηνυμάτων | `channel` (`sms`, `viber`, `whatsapp`) | How a text message travels. Only SMS is switched on today. | Club channel (§4.4). |
+| SMS provider | Πάροχος SMS | `channel_connections.provider` | The company that delivers the box's SMS (Brevo). | Payment provider, fiscal provider. |
+| Palee's account | Λογαριασμός Palee | `account_mode: palee` | The box sends through Palee's Brevo account; Palee counts what each box spends. The default. | The box's own account. |
+| The box's own account | Δικός σας λογαριασμός | `account_mode: own` | The box's own Brevo account and key; Brevo bills the box. Under «Προχωρημένα». | |
+| Mobile for messages | Κινητό για μηνύματα | `channel_contacts` | The person's mobile number for this box, with the language of the messages. | Contact details of the account. |
+| Consent to messages | Συγκατάθεση για μηνύματα | `channel_consents` | Per channel and purpose: «Ενημερώσεις» (service) and «Προσφορές» (marketing). Never assumed. | Privacy terms acceptance (§4.19). |
+| Updates (purpose) | Ενημερώσεις | `purpose: service` | About the person's own bookings, classes and payments. | Offers. |
+| Offers (purpose) | Προσφορές | `purpose: marketing` | Offers, win-back, follow-ups to leads. Always ends with how to stop. | Updates. |
+| STOP | STOP / ΣΤΟΠ | `opted_out_at` | A reply that stops every text message from the box to that number. | Unsubscribe from email. |
+| Quiet hours | Ώρες ησυχίας | `quiet_start_minute`, `quiet_end_minute` | Hours on the box's clock when messages wait (21:00–09:00 by default). An urgent update goes at once. | Opening hours. |
+| Monthly message budget | Μηνιαίο όριο κόστους | `monthly_budget_cents` | The most the box spends on text messages in a month; past it, messages are refused. | Platform plan. |
+| Message wording | Κείμενο μηνύματος | `channel_templates` | Palee's wording of each message, which the box may rewrite per language. | WhatsApp template (approved by Meta). |
+
 ### 4.6a Class booking rules (ADR-226)
 
 | English | Ελληνικά | Code | What it is | Not to be confused with |

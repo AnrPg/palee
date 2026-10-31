@@ -444,6 +444,13 @@ defmodule PaleeWeb.Router do
     post("/:organization_id/:token", PeppolWebhookController, :create)
   end
 
+  # ADR-348: the messaging provider's receipts and replies (one secret URL per box).
+  scope "/api/webhooks/channels", PaleeWeb do
+    pipe_through([:payment_provider_webhook])
+
+    post("/:organization_id/:token", ChannelWebhookController, :create)
+  end
+
   scope "/api/email/unsubscribe", PaleeWeb do
     pipe_through([:email_unsubscribe])
 
@@ -605,6 +612,10 @@ defmodule PaleeWeb.Router do
     # ADR-346: my choices about the box's automatic messages.
     get("/automatic-messages", MyAutomationPreferencesController, :show)
     put("/automatic-messages", MyAutomationPreferencesController, :update)
+
+    # ADR-350: my number and consents for the box's SMS messages.
+    get("/channels", MyChannelsController, :show)
+    put("/channels", MyChannelsController, :update)
     # ADR-246/247: paying invoices online and saved cards.
     get("/invoices/:id/payment-terms", MyPaymentsController, :terms)
     post("/invoices/:id/pay", MyPaymentsController, :pay)
@@ -1448,6 +1459,25 @@ defmodule PaleeWeb.Router do
     get("/fiscal/exports/formats", AdminFiscalTaxController, :export_formats)
     put("/fiscal/exports/settings/:format", AdminFiscalTaxController, :save_export_settings)
     get("/fiscal/exports/:format", AdminFiscalTaxController, :export)
+    # ADR-348..351: SMS (Viber, WhatsApp later) from the box to members and leads.
+    get("/channels/settings", AdminChannelSettingsController, :show)
+    put("/channels/settings", AdminChannelSettingsController, :save)
+    post("/channels/settings/check", AdminChannelSettingsController, :check)
+    get("/channels/usage", AdminChannelSettingsController, :usage)
+    get("/channels/templates", AdminChannelSettingsController, :templates)
+    put("/channels/templates/:key", AdminChannelSettingsController, :save_template)
+    delete("/channels/templates/:key", AdminChannelSettingsController, :delete_template)
+    get("/channels/contacts", AdminChannelContactsController, :index)
+    get("/channels/contacts/lookup", AdminChannelContactsController, :lookup)
+    put("/channels/contacts", AdminChannelContactsController, :save)
+    put("/channels/contacts/:id/consents", AdminChannelContactsController, :consent)
+    delete("/channels/contacts/:id", AdminChannelContactsController, :delete)
+    get("/channels/messages", AdminChannelMessagesController, :index)
+    post("/channels/messages/preview", AdminChannelMessagesController, :preview)
+    post("/channels/messages", AdminChannelMessagesController, :create)
+    get("/channels/messages/:id", AdminChannelMessagesController, :show)
+    post("/channels/messages/:id/retry", AdminChannelMessagesController, :retry)
+    post("/channels/messages/:id/cancel", AdminChannelMessagesController, :cancel)
     # ADR-243: reporting to the tax authority (myDATA).
     get("/fiscal/authority-connection", AdminFiscalReportingController, :connection)
     put("/fiscal/authority-connection", AdminFiscalReportingController, :save_connection)

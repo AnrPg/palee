@@ -276,3 +276,8 @@ must have an ADR. See `template.md` for the format.
 | ADR-361 | Questions over a box's data: the model picks from a catalogue of typed, permission-checked read queries (no SQL), sees people only as refs, answers cite and are checked against the figures, every question audited; off until the box turns it on | Accepted |
 | ADR-362 | Help centre: articles per slug and locale in 12 languages seeded from the feature catalogue and guides, Meilisearch search with a database fallback, linked from screens, edited by the Palee team | Accepted |
 | ADR-363 | In-app support: an AI first line answering only from help articles with citations, hand-off to a Palee-team ticket with screen, articles tried and app facts; per-person conversations; audited vendor queue | Accepted |
+
+| ADR-348 | SMS (Viber, WhatsApp later) from the box through one `MessagingChannel` port: sandbox and Brevo SMS adapters (ANR's choice), an idempotent outbox with row-locked claims, retries and receipts, one tokened webhook URL per box, E.164 numbers; provider comparison with prices | Accepted |
+| ADR-349 | Palee's Brevo account by default (the box's own key under «Προχωρημένα»), estimated and charged cost per message, monthly budget cap per box, quiet hours on the box's clock (21:00–09:00), SMS parts | Accepted |
+| ADR-350 | Consent per contact, channel and purpose (Ενημερώσεις / Προσφορές), never assumed; STOP replies stop every channel; message wording per key and language (box overrides, WhatsApp approved templates) | Accepted |
+| ADR-351 | `SendThroughChannel`: the narrow API automations, staff and system notices use; `AutomationSmsChannel` for W2's automations | Accepted |

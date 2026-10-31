@@ -52,6 +52,11 @@ defmodule PaleeWeb.RouteCapabilities do
     W.AppointmentsController => [:manage_appointments],
     W.StaffController => [:manage_coaching, :manage_appointments, :manage_schedule],
     W.PaymentModelsController => [:manage_billing],
+    # ADR-348..351: the provider, budget and wording are settings; numbers,
+    # consents and sending belong to whoever messages from the box.
+    W.AdminChannelSettingsController => [:manage_settings],
+    W.AdminChannelContactsController => [:message_from_box],
+    W.AdminChannelMessagesController => [:message_from_box],
     W.CoachingRelationshipsController => [:assign_coaches, :manage_coaching],
     W.RoleAccessController => [:manage_settings],
     W.InventoryController => [:manage_inventory],

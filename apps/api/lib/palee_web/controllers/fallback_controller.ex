@@ -320,6 +320,35 @@ defmodule PaleeWeb.FallbackController do
     })
   end
 
+  # ADR-348..351: SMS, Viber and WhatsApp from the box.
+  @channel_errors %{
+    channels_not_connected: {:conflict, "Connect an SMS provider in the box's settings first"},
+    channels_connection_invalid:
+      {:conflict, "The SMS provider refused the box's credentials. Check them in the settings"},
+    channel_person_required: {:unprocessable_entity, "Choose a member or a lead"},
+    channel_contact_missing: {:unprocessable_entity, "Add the person's mobile number first"},
+    channel_not_enabled: {:conflict, "This channel is not switched on for the box"},
+    channel_consent_missing:
+      {:conflict, "The person has not agreed to receive these messages on this channel"},
+    channel_opted_out: {:conflict, "The person replied STOP; they receive no more messages"},
+    whatsapp_template_missing:
+      {:conflict, "WhatsApp needs a template approved by Meta for this message and language"},
+    channel_template_missing: {:unprocessable_entity, "There is no such message template"},
+    channel_budget_exceeded:
+      {:conflict, "This month's message budget is used up. Raise it in the settings"},
+    not_cancellable: {:conflict, "Only a message that has not left yet can be stopped"},
+    channel_not_retryable: {:conflict, "Only a failed message can be sent again"},
+    invalid_month: {:unprocessable_entity, "Choose a month as YYYY-MM"}
+  }
+
+  def call(conn, {:error, reason}) when is_map_key(@channel_errors, reason) do
+    {status, message} = Map.fetch!(@channel_errors, reason)
+
+    conn
+    |> put_status(status)
+    |> json(%{code: to_string(reason), error: message})
+  end
+
   def call(conn, {:error, reason}) when is_map_key(@fiscal_errors, reason) do
     {status, message} = Map.fetch!(@fiscal_errors, reason)
 

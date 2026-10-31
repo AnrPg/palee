@@ -386,6 +386,35 @@ if config_env() == :prod do
       config :palee, :sms_sender, Palee.Infrastructure.Sms.UnavailableSmsSender
   end
 
+  # ADR-348/349: SMS through Brevo. The webhook URLs' tokens are keyed with
+  # CHANNELS_WEBHOOK_KEY (else the secret key base). Palee's own Brevo
+  # account (the email one, BREVO_API_KEY) sends for boxes on the managed
+  # mode; CHANNELS_BREVO_CREDIT_CENTS turns SMS credits into cents.
+  config :palee,
+         :channels_webhook_key,
+         System.get_env("CHANNELS_WEBHOOK_KEY") || secret_key_base
+
+  config :palee,
+         :channel_managed_accounts,
+         %{
+           "brevo" => [
+             secret: System.get_env("CHANNELS_BREVO_API_KEY") || System.get_env("BREVO_API_KEY"),
+             sms_sender: System.get_env("CHANNELS_BREVO_SMS_SENDER") || "Palee"
+           ]
+         }
+         |> Map.filter(fn {_provider, account} ->
+           is_binary(account[:secret]) and account[:secret] != ""
+         end)
+
+  case System.get_env("CHANNELS_BREVO_CREDIT_CENTS") do
+    cents when is_binary(cents) and cents != "" ->
+      {credit_cents, ""} = Float.parse(cents)
+      config :palee, Palee.Infrastructure.Channels.BrevoChannel, credit_cents: credit_cents
+
+    _unset ->
+      :ok
+  end
+
   # ADR-212: the SMTP key's expiry date (YYYY-MM-DD). A daily check alerts
   # vendors from 30 days before; mail stops when the key expires.
   smtp_key_expires_on =

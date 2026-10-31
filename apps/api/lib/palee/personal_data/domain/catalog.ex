@@ -42,6 +42,8 @@ defmodule Palee.PersonalData.Domain.Catalog do
 
   defp memberships, do: {:in, "membership_id", "memberships", "id", @me}
 
+  defp channel_contacts, do: {:in, "contact_id", "channel_contacts", "id", @me}
+
   defp fiscal_documents do
     {:any,
      [
@@ -161,6 +163,13 @@ defmodule Palee.PersonalData.Domain.Catalog do
       tenant("messages", "help_desk_tickets", {:eq, "requester_id"}, drop: ~w(assignee_id)),
       # ADR-361: the questions the person asked over the box's data.
       tenant("messages", "data_questions", @me),
+
+      # ADR-348..350: the person's number, consents and the SMS the box sent them.
+      tenant("messages", "channel_contacts", @me, drop: ~w(lead_id)),
+      tenant("messages", "channel_consents", channel_contacts()),
+      tenant("messages", "channel_messages", channel_contacts(),
+        drop: ~w(idempotency_key provider_message_id claimed_at source_ref)
+      ),
 
       # -- community -------------------------------------------------------------
       account("community", "community_profile_posts", @me),
