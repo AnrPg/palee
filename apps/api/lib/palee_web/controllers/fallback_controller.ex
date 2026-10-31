@@ -3409,8 +3409,7 @@ defmodule PaleeWeb.FallbackController do
     # ADR-360..363: AI questions over the box's data, the help centre and support.
     data_questions_disabled:
       {:forbidden, "Questions over the box's data are switched off in Settings › AI"},
-    ai_budget_exhausted:
-      {:too_many_requests, "This month's AI allowance for the box is used up"},
+    ai_budget_exhausted: {:too_many_requests, "This month's AI allowance for the box is used up"},
     ai_daily_limit_reached: {:too_many_requests, "You've reached today's limit; try tomorrow"},
     llm_not_configured: {:service_unavailable, "The AI assistant isn't set up on this server"},
     llm_quota_exhausted: {:failed_dependency, "The AI assistant has run out of credits"},

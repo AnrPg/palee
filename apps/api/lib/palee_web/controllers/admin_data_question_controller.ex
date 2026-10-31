@@ -19,7 +19,12 @@ defmodule PaleeWeb.AdminDataQuestionController do
 
   plug OpenApiSpex.Plug.CastAndValidate, json_render_error_v2: true
 
-  @slug %Parameter{name: :organization_slug, in: :path, required: false, schema: %Schema{type: :string}}
+  @slug %Parameter{
+    name: :organization_slug,
+    in: :path,
+    required: false,
+    schema: %Schema{type: :string}
+  }
 
   operation(:catalogue,
     summary: "What this person can ask: the switch, the read queries and the daily limit",
@@ -53,7 +58,12 @@ defmodule PaleeWeb.AdminDataQuestionController do
     summary: "My questions, newest first; scope=all lists the box's audit log (owner, admin)",
     parameters: [
       @slug,
-      %Parameter{name: :scope, in: :query, required: false, schema: %Schema{type: :string, enum: ["mine", "all"]}}
+      %Parameter{
+        name: :scope,
+        in: :query,
+        required: false,
+        schema: %Schema{type: :string, enum: ["mine", "all"]}
+      }
     ],
     responses: [ok: {"Questions", "application/json", S.data_questions()}]
   )

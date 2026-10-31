@@ -222,8 +222,11 @@ defmodule Palee.Application.HelpDesk.HelpDesk do
     case Ecto.UUID.cast(id) do
       {:ok, id} ->
         case HelpDesk.get_conversation(context, id) do
-          %{user_id: user_id} = conversation when user_id == context.user_id -> {:ok, conversation}
-          _other -> {:error, :not_found}
+          %{user_id: user_id} = conversation when user_id == context.user_id ->
+            {:ok, conversation}
+
+          _other ->
+            {:error, :not_found}
         end
 
       :error ->

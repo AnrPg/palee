@@ -7,9 +7,15 @@ defmodule Palee.Llm.DomainTest do
   alias Palee.Llm.Domain.{Budget, Request, Response, Tool, ToolLoop, Untrusted}
 
   defp usage(input, output),
-    do: %TokenUsage{input_tokens: input, cached_input_tokens: 0, output_tokens: output, thinking_tokens: 0}
+    do: %TokenUsage{
+      input_tokens: input,
+      cached_input_tokens: 0,
+      output_tokens: output,
+      thinking_tokens: 0
+    }
 
-  defp tool(name), do: Tool.new(%{name: name, description: "d", input_schema: %{"type" => "object"}})
+  defp tool(name),
+    do: Tool.new(%{name: name, description: "d", input_schema: %{"type" => "object"}})
 
   describe "ToolLoop" do
     test "runs tool calls, sends results back and returns the final answer with steps and usage" do
@@ -17,14 +23,20 @@ defmodule Palee.Llm.DomainTest do
 
       generate = fn
         %Request{messages: [_user]} ->
-          {:ok, %Response{tool_calls: [%{id: "a", name: "count", args: %{"n" => 2}}], usage: usage(10, 2)}}
+          {:ok,
+           %Response{
+             tool_calls: [%{id: "a", name: "count", args: %{"n" => 2}}],
+             usage: usage(10, 2)
+           }}
 
         %Request{messages: [_user, %{role: :assistant}, %{role: :tool, results: [result]}]} ->
           assert result.content == %{"value" => 4}
           {:ok, %Response{text: ~s({"answer":"4"}), usage: usage(20, 3)}}
       end
 
-      execute = fn "count", %{"n" => n}, step -> {:ok, %{"value" => n * 2}, %{ref: "q#{step}"}} end
+      execute = fn "count", %{"n" => n}, step ->
+        {:ok, %{"value" => n * 2}, %{ref: "q#{step}"}}
+      end
 
       assert {:ok, run} = ToolLoop.run(request, generate, execute)
       assert run.response.text == ~s({"answer":"4"})
@@ -37,7 +49,9 @@ defmodule Palee.Llm.DomainTest do
       request = %Request{messages: [%{role: :user, text: "q"}], tools: [tool("xx")]}
 
       generate = fn
-        %Request{messages: [_]} -> {:ok, %Response{tool_calls: [%{id: "a", name: "xx", args: %{}}]}}
+        %Request{messages: [_]} ->
+          {:ok, %Response{tool_calls: [%{id: "a", name: "xx", args: %{}}]}}
+
         %Request{messages: [_, _, %{results: [%{content: content}]}]} ->
           assert content == %{"error" => "forbidden"}
           {:ok, %Response{text: "{}"}}
@@ -82,7 +96,9 @@ defmodule Palee.Llm.DomainTest do
 
     test "provider errors stop the loop" do
       assert {:error, :llm_unavailable} =
-               ToolLoop.run(%Request{}, fn _ -> {:error, :llm_unavailable} end, fn _, _, _ -> :ok end)
+               ToolLoop.run(%Request{}, fn _ -> {:error, :llm_unavailable} end, fn _, _, _ ->
+                 :ok
+               end)
     end
   end
 
@@ -91,9 +107,16 @@ defmodule Palee.Llm.DomainTest do
       limits = Budget.limits(monthly_budget_nano_usd: 100, daily_per_person: 3)
 
       assert :ok = Budget.check(limits, %{spent_nano_usd: 99, used_today: 2})
-      assert {:error, :ai_budget_exhausted} = Budget.check(limits, %{spent_nano_usd: 100, used_today: 0})
-      assert {:error, :ai_daily_limit_reached} = Budget.check(limits, %{spent_nano_usd: 0, used_today: 3})
-      assert :ok = Budget.check(Budget.limits([]), %{spent_nano_usd: 10**12, used_today: 10**6})
+
+      assert {:error, :ai_budget_exhausted} =
+               Budget.check(limits, %{spent_nano_usd: 100, used_today: 0})
+
+      assert {:error, :ai_daily_limit_reached} =
+               Budget.check(limits, %{spent_nano_usd: 0, used_today: 3})
+
+      assert :ok =
+               Budget.check(Budget.limits([]), %{spent_nano_usd: 10 ** 12, used_today: 10 ** 6})
+
       assert Budget.remaining(limits, 130) == 0
     end
 
@@ -108,6 +131,7 @@ defmodule Palee.Llm.DomainTest do
     test "removes control and bidi characters, collapses whitespace and caps length" do
       assert Untrusted.text("a" <> <<0x202E::utf8>> <> "b\u0000c \n\n d", 100) == "abc d"
       assert Untrusted.text(String.duplicate("x", 20), 10) == String.duplicate("x", 9) <> "…"
+
       assert Untrusted.data(%{"n" => "x​y", "d" => ~D[2026-01-02], "list" => [1, "a\tb"]}) ==
                %{"n" => "xy", "d" => "2026-01-02", "list" => [1, "a b"]}
     end

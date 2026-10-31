@@ -22,7 +22,11 @@ defmodule Palee.Infrastructure.HelpCentre.MeilisearchHelpIndex do
       ]
       |> Enum.reject(&is_nil/1)
 
-    body = %{q: Map.get(params, :q) || "", limit: Map.get(params, :limit, 10) * 2, filter: filters}
+    body = %{
+      q: Map.get(params, :q) || "",
+      limit: Map.get(params, :limit, 10) * 2,
+      filter: filters
+    }
 
     case request(:post, "/indexes/#{index()}/search", json: body) do
       {:ok, %Req.Response{status: status, body: %{"hits" => hits}}} when status in 200..299 ->

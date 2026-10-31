@@ -14,7 +14,8 @@ defmodule Palee.HelpCentre.Ports.ArticleStore do
   @callback get(context(), slug :: String.t(), locale :: String.t()) :: map() | nil
   @callback upsert(context(), slug :: String.t(), locale :: String.t(), map()) ::
               {:ok, map()} | {:error, term()}
-  @callback delete(context(), slug :: String.t(), locale :: String.t()) :: :ok | {:error, :not_found}
+  @callback delete(context(), slug :: String.t(), locale :: String.t()) ::
+              :ok | {:error, :not_found}
   @doc "Seeds rows: inserts new ones, updates `source = seed` rows of a lower version."
   @callback seed(context(), [map()]) :: %{inserted: non_neg_integer(), updated: non_neg_integer()}
 end

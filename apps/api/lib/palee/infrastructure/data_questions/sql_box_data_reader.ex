@@ -59,7 +59,11 @@ defmodule Palee.Infrastructure.DataQuestions.SqlBoxDataReader do
       )
 
     %{
-      summary: %{"members" => total(rows), "days" => days, "never_came" => Enum.count(rows, &is_nil(Enum.at(&1, 2)))},
+      summary: %{
+        "members" => total(rows),
+        "days" => days,
+        "never_came" => Enum.count(rows, &is_nil(Enum.at(&1, 2)))
+      },
       rows:
         Enum.map(rows, fn [user_id, name, last_on, _total] ->
           %{
@@ -149,7 +153,12 @@ defmodule Palee.Infrastructure.DataQuestions.SqlBoxDataReader do
 
     rows =
       Enum.map(rows, fn [package, currency, count, cents] ->
-        %{"package" => package, "currency" => currency, "payments" => count, "amount_cents" => cents}
+        %{
+          "package" => package,
+          "currency" => currency,
+          "payments" => count,
+          "amount_cents" => cents
+        }
       end)
 
     %{summary: money_summary(rows), rows: rows}

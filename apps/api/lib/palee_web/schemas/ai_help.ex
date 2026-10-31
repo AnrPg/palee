@@ -56,7 +56,10 @@ defmodule PaleeWeb.Schemas.AiHelp do
         name: enum(DataQuestions.query_names()),
         version: %Schema{type: :integer},
         summary: %Schema{type: :string},
-        people: %Schema{type: :boolean, description: "Its results list people (names shown only to staff)"},
+        people: %Schema{
+          type: :boolean,
+          description: "Its results list people (names shown only to staff)"
+        },
         arguments: %{@any_object | description: "JSON Schema of the arguments"}
       },
       [:arguments, :name, :people, :summary, :version]
@@ -273,7 +276,11 @@ defmodule PaleeWeb.Schemas.AiHelp do
       "HelpDeskStart",
       %{
         message: %Schema{type: :string, minLength: 1, maxLength: 2_000},
-        screen_path: %Schema{type: :string, maxLength: 300, description: "The app path asked from"},
+        screen_path: %Schema{
+          type: :string,
+          maxLength: 300,
+          description: "The app path asked from"
+        },
         locale: %Schema{type: :string, maxLength: 10}
       },
       [:message]
@@ -303,7 +310,11 @@ defmodule PaleeWeb.Schemas.AiHelp do
   defp article_citation do
     object(
       "HelpDeskCitation",
-      %{slug: %Schema{type: :string}, title: %Schema{type: :string}, locale: %Schema{type: :string}},
+      %{
+        slug: %Schema{type: :string},
+        title: %Schema{type: :string},
+        locale: %Schema{type: :string}
+      },
       [:locale, :slug, :title]
     )
   end
@@ -336,7 +347,15 @@ defmodule PaleeWeb.Schemas.AiHelp do
     }
   end
 
-  @conversation_required [:id, :last_message_at, :locale, :screen_path, :started_at, :status, :subject]
+  @conversation_required [
+    :id,
+    :last_message_at,
+    :locale,
+    :screen_path,
+    :started_at,
+    :status,
+    :subject
+  ]
 
   def conversation_summary,
     do: object("HelpDeskConversationSummary", conversation_properties(), @conversation_required)

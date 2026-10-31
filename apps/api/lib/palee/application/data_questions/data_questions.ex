@@ -95,9 +95,14 @@ defmodule Palee.Application.DataQuestions.DataQuestions do
 
   def show(context, id) do
     case DataQuestions.get(context, id) do
-      %{user_id: user_id} = question when user_id == context.user_id -> {:ok, view(question, [], [])}
-      %{} = question -> if auditor?(context), do: {:ok, view(question, [], [])}, else: {:error, :not_found}
-      nil -> {:error, :not_found}
+      %{user_id: user_id} = question when user_id == context.user_id ->
+        {:ok, view(question, [], [])}
+
+      %{} = question ->
+        if auditor?(context), do: {:ok, view(question, [], [])}, else: {:error, :not_found}
+
+      nil ->
+        {:error, :not_found}
     end
   end
 
@@ -192,7 +197,13 @@ defmodule Palee.Application.DataQuestions.DataQuestions do
       end
     else
       {:error, reason} ->
-        record_failure(context, Map.put(base, :steps, steps |> Enum.take(20) |> Enum.map(&audit_step/1)), reason, started)
+        record_failure(
+          context,
+          Map.put(base, :steps, steps |> Enum.take(20) |> Enum.map(&audit_step/1)),
+          reason,
+          started
+        )
+
         {:error, failure(reason)}
     end
   end
@@ -315,7 +326,12 @@ defmodule Palee.Application.DataQuestions.DataQuestions do
       results
       |> Enum.filter(&(&1.people != []))
       |> Enum.map(fn step ->
-        %{kind: "message_people", ref: step.ref, user_ids: step.people, count: length(step.people)}
+        %{
+          kind: "message_people",
+          ref: step.ref,
+          user_ids: step.people,
+          count: length(step.people)
+        }
       end)
     else
       []

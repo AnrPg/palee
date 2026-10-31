@@ -18,7 +18,8 @@ defmodule Palee.Application.HelpDesk.PlatformHelpDesk do
     status = Map.get(params, "status") || Map.get(params, :status)
 
     if is_nil(status) or status in HelpDesk.ticket_statuses() do
-      {:ok, %{tickets: platform |> HelpDesk.list_tickets(%{status: status}) |> Enum.map(&ticket/1)}}
+      {:ok,
+       %{tickets: platform |> HelpDesk.list_tickets(%{status: status}) |> Enum.map(&ticket/1)}}
     else
       {:error, {:invalid_fields, %{status: ["invalid"]}}}
     end
@@ -168,10 +169,17 @@ defmodule Palee.Application.HelpDesk.PlatformHelpDesk do
 
   defp valid_reply(body, status) do
     cond do
-      body == "" -> {:error, {:invalid_fields, %{body: ["required"]}}}
-      String.length(body) > @max_reply -> {:error, {:invalid_fields, %{body: ["too_long"]}}}
-      status not in ["waiting_on_box", "solved"] -> {:error, {:invalid_fields, %{status: ["invalid"]}}}
-      true -> :ok
+      body == "" ->
+        {:error, {:invalid_fields, %{body: ["required"]}}}
+
+      String.length(body) > @max_reply ->
+        {:error, {:invalid_fields, %{body: ["too_long"]}}}
+
+      status not in ["waiting_on_box", "solved"] ->
+        {:error, {:invalid_fields, %{status: ["invalid"]}}}
+
+      true ->
+        :ok
     end
   end
 

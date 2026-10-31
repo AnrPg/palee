@@ -19,7 +19,12 @@ defmodule PaleeWeb.AdminHelpDeskController do
 
   plug OpenApiSpex.Plug.CastAndValidate, json_render_error_v2: true
 
-  @slug %Parameter{name: :organization_slug, in: :path, required: false, schema: %Schema{type: :string}}
+  @slug %Parameter{
+    name: :organization_slug,
+    in: :path,
+    required: false,
+    schema: %Schema{type: :string}
+  }
   @id %Parameter{name: :id, in: :path, required: true, schema: S.uuid()}
 
   operation(:index,
@@ -86,6 +91,7 @@ defmodule PaleeWeb.AdminHelpDeskController do
   )
 
   def resolve(conn, %{id: id}) do
-    with {:ok, result} <- HelpDesk.resolve(conn.assigns.tenant_context, id), do: json(conn, result)
+    with {:ok, result} <- HelpDesk.resolve(conn.assigns.tenant_context, id),
+         do: json(conn, result)
   end
 end

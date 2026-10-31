@@ -23,7 +23,9 @@ defmodule Palee.HelpCentre.Domain.Ranking do
     articles
     |> Enum.map(fn article -> {score(article, terms, screen), article} end)
     |> Enum.filter(fn {score, _article} -> terms == [] or score > 0 end)
-    |> Enum.sort_by(fn {score, article} -> {-score, Map.get(article, :position, 100), article.slug} end)
+    |> Enum.sort_by(fn {score, article} ->
+      {-score, Map.get(article, :position, 100), article.slug}
+    end)
     |> Enum.take(limit)
     |> Enum.map(&elem(&1, 1))
   end
@@ -60,7 +62,9 @@ defmodule Palee.HelpCentre.Domain.Ranking do
     matches =
       Enum.map(terms, fn term ->
         fields
-        |> Enum.filter(fn {words, _weight} -> Enum.any?(words, &String.starts_with?(&1, term)) end)
+        |> Enum.filter(fn {words, _weight} ->
+          Enum.any?(words, &String.starts_with?(&1, term))
+        end)
         |> Enum.map(&elem(&1, 1))
         |> Enum.sum()
       end)

@@ -26,7 +26,12 @@ defmodule PaleeWeb.AiHelpControllerTest do
 
   describe "data questions" do
     test "catalogue, ask, list and show", %{conn: conn, owner: owner, base: base, member: member} do
-      catalogue = conn |> put_bearer_token(owner) |> get("#{base}/data-questions/catalogue") |> json_response(200)
+      catalogue =
+        conn
+        |> put_bearer_token(owner)
+        |> get("#{base}/data-questions/catalogue")
+        |> json_response(200)
+
       assert catalogue["enabled"]
       assert "members_absent" in Enum.map(catalogue["queries"], & &1["name"])
 
@@ -34,7 +39,10 @@ defmodule PaleeWeb.AiHelpControllerTest do
         conn
         |> recycle()
         |> put_bearer_token(owner)
-        |> post("#{base}/data-questions", %{question: "Who hasn't come for 3 weeks?", locale: "en"})
+        |> post("#{base}/data-questions", %{
+          question: "Who hasn't come for 3 weeks?",
+          locale: "en"
+        })
         |> json_response(200)
 
       assert answer["status"] == "answered"
@@ -42,11 +50,23 @@ defmodule PaleeWeb.AiHelpControllerTest do
       assert [%{"rows" => [%{"name" => name}]}] = answer["tables"]
       assert name == member.nickname
 
-      listed = conn |> recycle() |> put_bearer_token(owner) |> get("#{base}/data-questions") |> json_response(200)
+      listed =
+        conn
+        |> recycle()
+        |> put_bearer_token(owner)
+        |> get("#{base}/data-questions")
+        |> json_response(200)
+
       assert [%{"id" => id}] = listed["questions"]
       assert id == answer["id"]
 
-      shown = conn |> recycle() |> put_bearer_token(owner) |> get("#{base}/data-questions/#{id}") |> json_response(200)
+      shown =
+        conn
+        |> recycle()
+        |> put_bearer_token(owner)
+        |> get("#{base}/data-questions/#{id}")
+        |> json_response(200)
+
       assert shown["queries"] == ["members_absent"]
     end
 
@@ -56,13 +76,19 @@ defmodule PaleeWeb.AiHelpControllerTest do
       response =
         conn
         |> put_bearer_token(box.owner)
-        |> post("/api/org/#{box.organization.slug}/admin/data-questions", %{question: "Revenue last month?"})
+        |> post("/api/org/#{box.organization.slug}/admin/data-questions", %{
+          question: "Revenue last month?"
+        })
 
       assert %{"code" => "data_questions_disabled"} = json_response(response, 403)
     end
 
     test "someone outside the box's staff cannot ask", %{conn: conn, member: member, base: base} do
-      response = conn |> put_bearer_token(member) |> post("#{base}/data-questions", %{question: "Revenue?"})
+      response =
+        conn
+        |> put_bearer_token(member)
+        |> post("#{base}/data-questions", %{question: "Revenue?"})
+
       assert response.status in [403, 404]
     end
   end
@@ -90,7 +116,10 @@ defmodule PaleeWeb.AiHelpControllerTest do
 
       assert started["assistant"] == "answered"
       assert started["can_hand_off"]
-      assert [_person, %{"author" => "assistant", "citations" => [cited | _]}] = started["messages"]
+
+      assert [_person, %{"author" => "assistant", "citations" => [cited | _]}] =
+               started["messages"]
+
       assert cited["slug"] == "guide-finance-offers"
       id = started["id"]
 
@@ -110,10 +139,22 @@ defmodule PaleeWeb.AiHelpControllerTest do
       assert %{"status" => "open", "priority" => "urgent", "id" => ticket_id} = handed["ticket"]
 
       # The Palee team works the queue; reading a ticket is audited.
-      queue = conn |> recycle() |> put_bearer_token(vendor) |> get("/api/platform/help-desk/tickets", %{status: "open"}) |> json_response(200)
+      queue =
+        conn
+        |> recycle()
+        |> put_bearer_token(vendor)
+        |> get("/api/platform/help-desk/tickets", %{status: "open"})
+        |> json_response(200)
+
       assert ticket_id in Enum.map(queue["tickets"], & &1["id"])
 
-      ticket = conn |> recycle() |> put_bearer_token(vendor) |> get("/api/platform/help-desk/tickets/#{ticket_id}") |> json_response(200)
+      ticket =
+        conn
+        |> recycle()
+        |> put_bearer_token(vendor)
+        |> get("/api/platform/help-desk/tickets/#{ticket_id}")
+        |> json_response(200)
+
       assert ticket["client_context"] == %{"app_version" => "3.1.0", "platform" => "web"}
       assert ticket["articles_tried"] != []
       assert length(ticket["messages"]) == 2
@@ -122,7 +163,9 @@ defmodule PaleeWeb.AiHelpControllerTest do
         conn
         |> recycle()
         |> put_bearer_token(vendor)
-        |> post("/api/platform/help-desk/tickets/#{ticket_id}/replies", %{body: "Fixed on our side, try again."})
+        |> post("/api/platform/help-desk/tickets/#{ticket_id}/replies", %{
+          body: "Fixed on our side, try again."
+        })
         |> json_response(200)
 
       assert replied["status"] == "waiting_on_box"
@@ -148,17 +191,29 @@ defmodule PaleeWeb.AiHelpControllerTest do
       assert followed["ticket"]["status"] == "open"
 
       resolved =
-        conn |> recycle() |> put_bearer_token(owner) |> post("#{base}/help-desk/conversations/#{id}/resolve") |> json_response(200)
+        conn
+        |> recycle()
+        |> put_bearer_token(owner)
+        |> post("#{base}/help-desk/conversations/#{id}/resolve")
+        |> json_response(200)
 
       assert resolved["status"] == "resolved"
       assert resolved["ticket"]["status"] == "solved"
     end
 
-    test "conversations are the person's own", %{conn: conn, owner: owner, base: base, organization: organization} do
+    test "conversations are the person's own", %{
+      conn: conn,
+      owner: owner,
+      base: base,
+      organization: organization
+    } do
       started =
         conn
         |> put_bearer_token(owner)
-        |> post("#{base}/help-desk/conversations", %{message: "zzqx unrelated words", locale: "en"})
+        |> post("#{base}/help-desk/conversations", %{
+          message: "zzqx unrelated words",
+          locale: "en"
+        })
         |> json_response(200)
 
       assert started["assistant"] == "no_articles"
@@ -174,16 +229,46 @@ defmodule PaleeWeb.AiHelpControllerTest do
           joined_at: DateTime.utc_now()
         })
 
-      assert conn |> recycle() |> put_bearer_token(colleague) |> get("#{base}/help-desk/conversations/#{started["id"]}") |> json_response(404)
-      assert %{"conversations" => []} = conn |> recycle() |> put_bearer_token(colleague) |> get("#{base}/help-desk/conversations") |> json_response(200)
-      assert %{"conversations" => [_]} = conn |> recycle() |> put_bearer_token(owner) |> get("#{base}/help-desk/conversations") |> json_response(200)
+      assert conn
+             |> recycle()
+             |> put_bearer_token(colleague)
+             |> get("#{base}/help-desk/conversations/#{started["id"]}")
+             |> json_response(404)
+
+      assert %{"conversations" => []} =
+               conn
+               |> recycle()
+               |> put_bearer_token(colleague)
+               |> get("#{base}/help-desk/conversations")
+               |> json_response(200)
+
+      assert %{"conversations" => [_]} =
+               conn
+               |> recycle()
+               |> put_bearer_token(owner)
+               |> get("#{base}/help-desk/conversations")
+               |> json_response(200)
     end
 
-    test "provider down or past the daily limit: the hand-off is offered", %{conn: conn, owner: owner, base: base} do
+    test "provider down or past the daily limit: the hand-off is offered", %{
+      conn: conn,
+      owner: owner,
+      base: base
+    } do
       SandboxLlmProvider.script(fn _request -> {:error, :llm_unavailable} end)
-      ask = %{message: "How do I start a campaign with coupons?", screen_path: "/admin/finance", locale: "en"}
 
-      down = conn |> put_bearer_token(owner) |> post("#{base}/help-desk/conversations", ask) |> json_response(200)
+      ask = %{
+        message: "How do I start a campaign with coupons?",
+        screen_path: "/admin/finance",
+        locale: "en"
+      }
+
+      down =
+        conn
+        |> put_bearer_token(owner)
+        |> post("#{base}/help-desk/conversations", ask)
+        |> json_response(200)
+
       assert down["assistant"] == "unavailable"
       assert down["can_hand_off"]
       assert Enum.map(down["messages"], & &1["author"]) == ["person"]
@@ -192,17 +277,31 @@ defmodule PaleeWeb.AiHelpControllerTest do
       previous = Application.get_env(:palee, :ai_features)
       on_exit(fn -> Application.put_env(:palee, :ai_features, previous) end)
 
-      Application.put_env(:palee, :ai_features,
-        Keyword.put(previous, :help_desk, monthly_budget_nano_usd: 3_000_000_000, daily_per_person: 1)
+      Application.put_env(
+        :palee,
+        :ai_features,
+        Keyword.put(previous, :help_desk,
+          monthly_budget_nano_usd: 3_000_000_000,
+          daily_per_person: 1
+        )
       )
 
-      limited = conn |> recycle() |> put_bearer_token(owner) |> post("#{base}/help-desk/conversations", ask) |> json_response(200)
+      limited =
+        conn
+        |> recycle()
+        |> put_bearer_token(owner)
+        |> post("#{base}/help-desk/conversations", ask)
+        |> json_response(200)
+
       assert limited["assistant"] == "limit_reached"
     end
 
     test "only vendors see the queue", %{conn: conn, owner: owner} do
       assert %{"code" => "vendor_required"} =
-               conn |> put_bearer_token(owner) |> get("/api/platform/help-desk/tickets") |> json_response(403)
+               conn
+               |> put_bearer_token(owner)
+               |> get("/api/platform/help-desk/tickets")
+               |> json_response(403)
     end
   end
 end

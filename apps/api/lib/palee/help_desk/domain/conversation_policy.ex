@@ -34,9 +34,14 @@ defmodule Palee.HelpDesk.Domain.ConversationPolicy do
     cleaned = String.trim(text)
 
     cond do
-      cleaned == "" -> {:error, {:invalid_fields, %{message: ["required"]}}}
-      String.length(cleaned) > @max_message -> {:error, {:invalid_fields, %{message: ["too_long"]}}}
-      true -> {:ok, cleaned}
+      cleaned == "" ->
+        {:error, {:invalid_fields, %{message: ["required"]}}}
+
+      String.length(cleaned) > @max_message ->
+        {:error, {:invalid_fields, %{message: ["too_long"]}}}
+
+      true ->
+        {:ok, cleaned}
     end
   end
 

@@ -18,9 +18,14 @@ defmodule Palee.DataQuestions.Domain.AnswerPolicy do
     cleaned = Untrusted.text(text, @max_question + 1)
 
     cond do
-      cleaned == "" -> {:error, {:invalid_fields, %{question: ["required"]}}}
-      String.length(cleaned) > @max_question -> {:error, {:invalid_fields, %{question: ["too_long"]}}}
-      true -> {:ok, cleaned}
+      cleaned == "" ->
+        {:error, {:invalid_fields, %{question: ["required"]}}}
+
+      String.length(cleaned) > @max_question ->
+        {:error, {:invalid_fields, %{question: ["too_long"]}}}
+
+      true ->
+        {:ok, cleaned}
     end
   end
 

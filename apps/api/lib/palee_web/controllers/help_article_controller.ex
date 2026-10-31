@@ -44,7 +44,12 @@ defmodule PaleeWeb.HelpArticleController do
     summary: "Search the help centre",
     security: [],
     parameters: [
-      %Parameter{name: :q, in: :query, required: false, schema: %Schema{type: :string, maxLength: 200}},
+      %Parameter{
+        name: :q,
+        in: :query,
+        required: false,
+        schema: %Schema{type: :string, maxLength: 200}
+      },
       @locale,
       @audience,
       %Parameter{
@@ -54,7 +59,12 @@ defmodule PaleeWeb.HelpArticleController do
         description: "The app path the reader is on; its articles rank first",
         schema: %Schema{type: :string, maxLength: 300}
       },
-      %Parameter{name: :feature, in: :query, required: false, schema: %Schema{type: :string, maxLength: 48}},
+      %Parameter{
+        name: :feature,
+        in: :query,
+        required: false,
+        schema: %Schema{type: :string, maxLength: 48}
+      },
       @limit
     ],
     responses: [ok: {"Articles", "application/json", S.help_articles()}]
@@ -68,7 +78,12 @@ defmodule PaleeWeb.HelpArticleController do
     summary: "The help articles linked from one app screen",
     security: [],
     parameters: [
-      %Parameter{name: :path, in: :query, required: true, schema: %Schema{type: :string, maxLength: 300}},
+      %Parameter{
+        name: :path,
+        in: :query,
+        required: true,
+        schema: %Schema{type: :string, maxLength: 300}
+      },
       @locale,
       @audience,
       @limit
@@ -85,7 +100,12 @@ defmodule PaleeWeb.HelpArticleController do
     summary: "One help article, in the locale or else in English",
     security: [],
     parameters: [
-      %Parameter{name: :slug, in: :path, required: true, schema: %Schema{type: :string, maxLength: 80}},
+      %Parameter{
+        name: :slug,
+        in: :path,
+        required: true,
+        schema: %Schema{type: :string, maxLength: 80}
+      },
       @locale
     ],
     responses: [ok: {"Article", "application/json", S.help_article()}]

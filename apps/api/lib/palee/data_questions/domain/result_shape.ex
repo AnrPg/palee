@@ -48,7 +48,8 @@ defmodule Palee.DataQuestions.Domain.ResultShape do
     |> Untrusted.data(80)
   end
 
-  defp model_row(row, _index, _query), do: row |> Map.drop(@hidden) |> money() |> Untrusted.data(80)
+  defp model_row(row, _index, _query),
+    do: row |> Map.drop(@hidden) |> money() |> Untrusted.data(80)
 
   @doc "The table the asker sees for one result (names included for people queries)."
   def table(ref, query, %{rows: rows}) do

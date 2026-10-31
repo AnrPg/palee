@@ -38,7 +38,9 @@ defmodule Palee.HelpDesk.HelpDeskStore do
   @impl true
   def create_ticket(context, attrs), do: tenant_call(context, :create_ticket, [attrs])
   @impl true
-  def ticket_for_conversation(context, id), do: tenant_call(context, :ticket_for_conversation, [id])
+  def ticket_for_conversation(context, id),
+    do: tenant_call(context, :ticket_for_conversation, [id])
+
   @impl true
   def update_ticket(context, id, changes), do: tenant_call(context, :update_ticket, [id, changes])
   @impl true

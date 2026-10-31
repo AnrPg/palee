@@ -10,7 +10,9 @@ defmodule Palee.Infrastructure.HelpDesk.EctoHelpDeskStore do
 
   @impl true
   def create_conversation(%{organization_id: organization_id}, attrs) do
-    %Conversation{organization_id: organization_id} |> Conversation.changeset(attrs) |> Repo.insert()
+    %Conversation{organization_id: organization_id}
+    |> Conversation.changeset(attrs)
+    |> Repo.insert()
   end
 
   @impl true

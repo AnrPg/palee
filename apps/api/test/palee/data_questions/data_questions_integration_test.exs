@@ -27,11 +27,18 @@ defmodule Palee.DataQuestions.IntegrationTest do
   end
 
   test "who hasn't come for 3 weeks: counted, grounded, cited; names only in the table", ctx do
-    assert {:ok, answer} = DataQuestions.ask(ctx.context, %{"question" => "Who hasn't come for 3 weeks?", "locale" => "en"})
+    assert {:ok, answer} =
+             DataQuestions.ask(ctx.context, %{
+               "question" => "Who hasn't come for 3 weeks?",
+               "locale" => "en"
+             })
 
     assert answer.status == "answered"
     assert answer.grounded
-    assert [%{"ref" => "q1", "query" => "members_absent", "summary" => %{"members" => 2}}] = answer.citations
+
+    assert [%{"ref" => "q1", "query" => "members_absent", "summary" => %{"members" => 2}}] =
+             answer.citations
+
     assert answer.answer =~ "[q1]"
 
     [table] = answer.tables
@@ -52,15 +59,28 @@ defmodule Palee.DataQuestions.IntegrationTest do
   end
 
   test "revenue by package last month and attendance by class type", ctx do
-    last_month = Date.utc_today() |> Date.beginning_of_month() |> Date.add(-1) |> Date.beginning_of_month()
-    package_fixture(ctx, ctx.recent, "Unlimited", [{5_000, last_month}, {4_550, Date.add(last_month, 3)}])
+    last_month =
+      Date.utc_today() |> Date.beginning_of_month() |> Date.add(-1) |> Date.beginning_of_month()
 
-    assert {:ok, revenue} = DataQuestions.ask(ctx.context, %{"question" => "Revenue by package last month"})
-    assert [%{"query" => "revenue_by_package", "summary" => %{"amount" => 95.5, "payments" => 2}}] = revenue.citations
+    package_fixture(ctx, ctx.recent, "Unlimited", [
+      {5_000, last_month},
+      {4_550, Date.add(last_month, 3)}
+    ])
+
+    assert {:ok, revenue} =
+             DataQuestions.ask(ctx.context, %{"question" => "Revenue by package last month"})
+
+    assert [%{"query" => "revenue_by_package", "summary" => %{"amount" => 95.5, "payments" => 2}}] =
+             revenue.citations
+
     assert revenue.grounded
     assert [%{rows: [%{"package" => "Unlimited", "amount_cents" => 9_550}]}] = revenue.tables
 
-    assert {:ok, attendance} = DataQuestions.ask(ctx.context, %{"question" => "Which classes are the busiest? attendance"})
+    assert {:ok, attendance} =
+             DataQuestions.ask(ctx.context, %{
+               "question" => "Which classes are the busiest? attendance"
+             })
+
     [table] = attendance.tables
     yoga = Enum.find(table.rows, &(&1["class_type"] == "Yoga"))
     assert yoga["attendances"] == 2 and yoga["fill_percent"] == 50
@@ -69,8 +89,17 @@ defmodule Palee.DataQuestions.IntegrationTest do
   test "an answer with numbers the data does not hold is flagged, not hidden", ctx do
     SandboxLlmProvider.script(fn request ->
       case Palee.Llm.Domain.Request.tool_results(request) do
-        [] -> %Response{tool_calls: [%{id: "1", name: "member_counts", args: %{"period" => "this_month"}}]}
-        _results -> %{"answer" => "You have 999 active members [q1]", "citations" => ["q1"], "confident" => true}
+        [] ->
+          %Response{
+            tool_calls: [%{id: "1", name: "member_counts", args: %{"period" => "this_month"}}]
+          }
+
+        _results ->
+          %{
+            "answer" => "You have 999 active members [q1]",
+            "citations" => ["q1"],
+            "confident" => true
+          }
       end
     end)
 
@@ -112,7 +141,9 @@ defmodule Palee.DataQuestions.IntegrationTest do
   test "switched off until the owner turns it on" do
     box = box_fixture(enabled: false)
     assert {:ok, %{enabled: false}} = DataQuestions.catalogue(box.context)
-    assert {:error, :data_questions_disabled} = DataQuestions.ask(box.context, %{"question" => "who?"})
+
+    assert {:error, :data_questions_disabled} =
+             DataQuestions.ask(box.context, %{"question" => "who?"})
   end
 
   test "the daily limit refuses and audits the refusal", ctx do
@@ -121,7 +152,9 @@ defmodule Palee.DataQuestions.IntegrationTest do
     on_exit(fn -> Application.put_env(:palee, :ai_features, previous) end)
 
     assert {:ok, _first} = DataQuestions.ask(ctx.context, %{"question" => "who hasn't come?"})
-    assert {:error, :ai_daily_limit_reached} = DataQuestions.ask(ctx.context, %{"question" => "again?"})
+
+    assert {:error, :ai_daily_limit_reached} =
+             DataQuestions.ask(ctx.context, %{"question" => "again?"})
 
     assert {:ok, %{questions: [refused, _first]}} = DataQuestions.list(ctx.context, %{})
     assert refused.status == "refused" and refused.error_code == "ai_daily_limit_reached"
@@ -134,7 +167,12 @@ defmodule Palee.DataQuestions.IntegrationTest do
 
     {:ok, _} =
       Palee.AiUsage.record_usage(ctx.context, %{
-        usage: %Palee.AiUsage.Domain.TokenUsage{input_tokens: 1000, cached_input_tokens: 0, output_tokens: 100, thinking_tokens: 0},
+        usage: %Palee.AiUsage.Domain.TokenUsage{
+          input_tokens: 1000,
+          cached_input_tokens: 0,
+          output_tokens: 100,
+          thinking_tokens: 0
+        },
         operation_id: Ecto.UUID.generate(),
         feature: "data_questions",
         provider: "gemini",
@@ -142,13 +180,18 @@ defmodule Palee.DataQuestions.IntegrationTest do
         occurred_at: DateTime.utc_now()
       })
 
-    assert {:error, :ai_budget_exhausted} = DataQuestions.ask(ctx.context, %{"question" => "who?"})
+    assert {:error, :ai_budget_exhausted} =
+             DataQuestions.ask(ctx.context, %{"question" => "who?"})
   end
 
   test "provider failures are audited as failed", ctx do
     SandboxLlmProvider.script(fn _request -> {:error, :llm_quota_exhausted} end)
-    assert {:error, :llm_quota_exhausted} = DataQuestions.ask(ctx.context, %{"question" => "who?"})
-    assert {:ok, %{questions: [%{status: "failed", error_code: "llm_quota_exhausted"}]}} = DataQuestions.list(ctx.context, %{})
+
+    assert {:error, :llm_quota_exhausted} =
+             DataQuestions.ask(ctx.context, %{"question" => "who?"})
+
+    assert {:ok, %{questions: [%{status: "failed", error_code: "llm_quota_exhausted"}]}} =
+             DataQuestions.list(ctx.context, %{})
   end
 
   test "the box's audit log is for owners and admins", ctx do

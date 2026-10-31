@@ -7,7 +7,19 @@ defmodule Palee.HelpCentre.DomainTest do
 
   defp article(attrs) do
     Map.merge(
-      %{slug: "a", locale: "en", title: "T", summary: "S", body: "", keywords: [], screens: [], audience: "staff", position: 100, guide_id: nil, feature_key: nil},
+      %{
+        slug: "a",
+        locale: "en",
+        title: "T",
+        summary: "S",
+        body: "",
+        keywords: [],
+        screens: [],
+        audience: "staff",
+        position: 100,
+        guide_id: nil,
+        feature_key: nil
+      },
       attrs
     )
   end
@@ -21,9 +33,16 @@ defmodule Palee.HelpCentre.DomainTest do
   end
 
   test "localize keeps the reader's locale and falls back to English" do
-    rows = [article(%{slug: "a", locale: "en"}), article(%{slug: "a", locale: "el"}), article(%{slug: "b", locale: "en"})]
+    rows = [
+      article(%{slug: "a", locale: "en"}),
+      article(%{slug: "a", locale: "el"}),
+      article(%{slug: "b", locale: "en"})
+    ]
 
-    assert [%{slug: "a", locale: "el", fallback: false}, %{slug: "b", locale: "en", fallback: true}] =
+    assert [
+             %{slug: "a", locale: "el", fallback: false},
+             %{slug: "b", locale: "en", fallback: true}
+           ] =
              rows |> ArticlePolicy.localize("el") |> Enum.sort_by(& &1.slug)
   end
 
@@ -38,15 +57,35 @@ defmodule Palee.HelpCentre.DomainTest do
     now = ~U[2026-10-31 10:00:00Z]
 
     assert {:ok, attrs} =
-             ArticlePolicy.write_attrs(nil, %{"title" => "Τιμές", "summary" => "Πώς", "status" => "published", "screens" => ["/admin/finance"]}, "v", now)
+             ArticlePolicy.write_attrs(
+               nil,
+               %{
+                 "title" => "Τιμές",
+                 "summary" => "Πώς",
+                 "status" => "published",
+                 "screens" => ["/admin/finance"]
+               },
+               "v",
+               now
+             )
 
     assert attrs.published_at == now and attrs.version == 1 and attrs.source == "palee"
 
     assert {:error, {:invalid_fields, %{body: ["invalid"]}}} =
-             ArticlePolicy.write_attrs(nil, %{"title" => "x", "summary" => "y", "body" => "<script>x</script>"}, "v", now)
+             ArticlePolicy.write_attrs(
+               nil,
+               %{"title" => "x", "summary" => "y", "body" => "<script>x</script>"},
+               "v",
+               now
+             )
 
     assert {:error, {:invalid_fields, errors}} =
-             ArticlePolicy.write_attrs(nil, %{"title" => "", "summary" => "y", "screens" => ["no-slash"], "guide_id" => "Bad"}, "v", now)
+             ArticlePolicy.write_attrs(
+               nil,
+               %{"title" => "", "summary" => "y", "screens" => ["no-slash"], "guide_id" => "Bad"},
+               "v",
+               now
+             )
 
     assert Map.keys(errors) |> Enum.sort() == [:guide_id, :screens, :title]
   end
@@ -54,26 +93,52 @@ defmodule Palee.HelpCentre.DomainTest do
   test "ranking ignores accents and case, weights titles and boosts the reader's screen" do
     rows = [
       article(%{slug: "pkg", title: "Πακέτα συνδρομής", body: "Δημιούργησε πακέτο"}),
-      article(%{slug: "shop", title: "Κατάστημα", body: "Πούλα πακέτα πρωτεΐνης", screens: ["/admin/shop"]}),
+      article(%{
+        slug: "shop",
+        title: "Κατάστημα",
+        body: "Πούλα πακέτα πρωτεΐνης",
+        screens: ["/admin/shop"]
+      }),
       article(%{slug: "other", title: "Άλλο", body: "τίποτα"})
     ]
 
     assert ["pkg", "shop"] = rows |> Ranking.rank("ΠΑΚΕΤΑ") |> Enum.map(& &1.slug)
-    assert ["shop", "pkg"] = rows |> Ranking.rank("πακετα", screen: "/admin/shop") |> Enum.map(& &1.slug)
+
+    assert ["shop", "pkg"] =
+             rows |> Ranking.rank("πακετα", screen: "/admin/shop") |> Enum.map(& &1.slug)
+
     assert [] = Ranking.rank(rows, "ανύπαρκτο")
-    assert ["shop", "other", "pkg"] |> length() == rows |> Ranking.rank("", screen: "/admin/shop") |> length()
+
+    assert ["shop", "other", "pkg"] |> length() ==
+             rows |> Ranking.rank("", screen: "/admin/shop") |> length()
   end
 
   test "the seed file becomes published seed rows" do
     file = %{
       "version" => 2,
       "articles" => [
-        %{"slug" => "guide-shop-staff", "guide_id" => "shop_staff", "screens" => ["/admin/shop"], "locales" => %{"el" => %{"title" => "Κατάστημα", "summary" => "Σ"}, "xx" => %{"title" => "?", "summary" => "?"}}}
+        %{
+          "slug" => "guide-shop-staff",
+          "guide_id" => "shop_staff",
+          "screens" => ["/admin/shop"],
+          "locales" => %{
+            "el" => %{"title" => "Κατάστημα", "summary" => "Σ"},
+            "xx" => %{"title" => "?", "summary" => "?"}
+          }
+        }
       ]
     }
 
     assert {:ok, [row]} = Seed.rows(file, ~U[2026-10-31 10:00:00Z])
-    assert %{slug: "guide-shop-staff", locale: "el", status: "published", source: "seed", version: 2} = row
+
+    assert %{
+             slug: "guide-shop-staff",
+             locale: "el",
+             status: "published",
+             source: "seed",
+             version: 2
+           } = row
+
     assert {:error, :invalid_seed} = Seed.rows(%{"articles" => []}, ~U[2026-10-31 10:00:00Z])
   end
 

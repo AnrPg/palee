@@ -78,7 +78,9 @@ defmodule Palee.Repo.Migrations.CreateHelpArticles do
               "WITH CHECK (#{@acting_user} IS NULL OR palee_acting_user_is_vendor())",
           else: "#{clause} (#{@acting_user} IS NULL OR palee_acting_user_is_vendor())"
 
-      execute("CREATE POLICY help_articles_#{name}_policy ON help_articles FOR #{command} #{check}")
+      execute(
+        "CREATE POLICY help_articles_#{name}_policy ON help_articles FOR #{command} #{check}"
+      )
     end
 
     execute("ALTER TABLE help_articles ENABLE ROW LEVEL SECURITY")

@@ -17,5 +17,6 @@ defmodule Palee.DataQuestions.QuestionStore do
   @impl true
   def list(context, filters), do: tenant_call(context, :list, [filters])
   @impl true
-  def count_since(context, user_id, since), do: tenant_call(context, :count_since, [user_id, since])
+  def count_since(context, user_id, since),
+    do: tenant_call(context, :count_since, [user_id, since])
 end

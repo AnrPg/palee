@@ -26,7 +26,10 @@ defmodule Palee.DataQuestions.Domain.Catalogue do
     "description" =>
       "Gym-local period. Use custom with from and to for any other range. Default last_30_days."
   }
-  @date_schema %{"type" => "string", "description" => "ISO date YYYY-MM-DD (only with period custom)"}
+  @date_schema %{
+    "type" => "string",
+    "description" => "ISO date YYYY-MM-DD (only with period custom)"
+  }
 
   @queries [
     %{
@@ -195,9 +198,14 @@ defmodule Palee.DataQuestions.Domain.Catalogue do
 
   defp resolve_param(name, {:integer, min, max, default}, args, _today) do
     case Map.get(args, name, default) do
-      value when is_integer(value) and value >= min and value <= max -> {:ok, %{name => value}}
-      value when is_float(value) and value == trunc(value) -> resolve_int(name, trunc(value), min, max)
-      _invalid -> {:error, {:invalid_argument, name}}
+      value when is_integer(value) and value >= min and value <= max ->
+        {:ok, %{name => value}}
+
+      value when is_float(value) and value == trunc(value) ->
+        resolve_int(name, trunc(value), min, max)
+
+      _invalid ->
+        {:error, {:invalid_argument, name}}
     end
   end
 

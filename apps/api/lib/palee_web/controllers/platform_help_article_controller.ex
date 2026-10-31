@@ -19,7 +19,12 @@ defmodule PaleeWeb.PlatformHelpArticleController do
 
   plug OpenApiSpex.Plug.CastAndValidate, json_render_error_v2: true
 
-  @slug %Parameter{name: :slug, in: :path, required: true, schema: %Schema{type: :string, maxLength: 80}}
+  @slug %Parameter{
+    name: :slug,
+    in: :path,
+    required: true,
+    schema: %Schema{type: :string, maxLength: 80}
+  }
   @locale %Parameter{
     name: :locale,
     in: :path,
@@ -30,9 +35,24 @@ defmodule PaleeWeb.PlatformHelpArticleController do
   operation(:index,
     summary: "Every help article in every locale, drafts too (vendors)",
     parameters: [
-      %Parameter{name: :locale, in: :query, required: false, schema: %Schema{type: :string, enum: Palee.HelpCentre.locales()}},
-      %Parameter{name: :status, in: :query, required: false, schema: %Schema{type: :string, enum: Palee.HelpCentre.statuses()}},
-      %Parameter{name: :slug, in: :query, required: false, schema: %Schema{type: :string, maxLength: 80}}
+      %Parameter{
+        name: :locale,
+        in: :query,
+        required: false,
+        schema: %Schema{type: :string, enum: Palee.HelpCentre.locales()}
+      },
+      %Parameter{
+        name: :status,
+        in: :query,
+        required: false,
+        schema: %Schema{type: :string, enum: Palee.HelpCentre.statuses()}
+      },
+      %Parameter{
+        name: :slug,
+        in: :query,
+        required: false,
+        schema: %Schema{type: :string, maxLength: 80}
+      }
     ],
     responses: [ok: {"Articles", "application/json", S.console_articles()}]
   )
@@ -51,7 +71,12 @@ defmodule PaleeWeb.PlatformHelpArticleController do
 
   def save(conn, %{slug: slug, locale: locale}) do
     with {:ok, article} <-
-           PlatformHelpArticles.save(conn.assigns.platform_context, slug, locale, conn.body_params),
+           PlatformHelpArticles.save(
+             conn.assigns.platform_context,
+             slug,
+             locale,
+             conn.body_params
+           ),
          do: json(conn, article)
   end
 
@@ -62,13 +87,16 @@ defmodule PaleeWeb.PlatformHelpArticleController do
   )
 
   def delete(conn, %{slug: slug, locale: locale}) do
-    with {:ok, result} <- PlatformHelpArticles.delete(conn.assigns.platform_context, slug, locale),
+    with {:ok, result} <-
+           PlatformHelpArticles.delete(conn.assigns.platform_context, slug, locale),
          do: json(conn, result)
   end
 
   operation(:reindex,
     summary: "Rebuild the help search index from the published articles",
-    responses: [ok: {"Reindexed", "application/json", S.flag("HelpArticlesReindexed", :reindexed)}]
+    responses: [
+      ok: {"Reindexed", "application/json", S.flag("HelpArticlesReindexed", :reindexed)}
+    ]
   )
 
   def reindex(conn, _params) do

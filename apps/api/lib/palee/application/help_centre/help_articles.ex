@@ -22,7 +22,8 @@ defmodule Palee.Application.HelpCentre.HelpArticles do
 
   def search(params) when is_map(params) do
     with {:ok, query} <- query(params) do
-      {:ok, %{locale: query.locale, articles: Enum.map(find(query), &HelpCentre.public_article/1)}}
+      {:ok,
+       %{locale: query.locale, articles: Enum.map(find(query), &HelpCentre.public_article/1)}}
     end
   end
 

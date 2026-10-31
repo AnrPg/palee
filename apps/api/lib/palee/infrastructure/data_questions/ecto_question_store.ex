@@ -44,9 +44,14 @@ defmodule Palee.Infrastructure.DataQuestions.EctoQuestionStore do
 
   defp filter(query, filters) do
     Enum.reduce(filters, query, fn
-      {:user_id, user_id}, query when is_binary(user_id) -> where(query, [q], q.user_id == ^user_id)
-      {:before, %DateTime{} = before}, query -> where(query, [q], q.inserted_at < ^before)
-      _other, query -> query
+      {:user_id, user_id}, query when is_binary(user_id) ->
+        where(query, [q], q.user_id == ^user_id)
+
+      {:before, %DateTime{} = before}, query ->
+        where(query, [q], q.inserted_at < ^before)
+
+      _other, query ->
+        query
     end)
   end
 end

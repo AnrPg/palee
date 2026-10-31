@@ -38,6 +38,7 @@ defmodule Palee.Infrastructure.Llm.GeminiLlmProvider do
         [Keyword.get(config, :assistant_model), Keyword.get(config, :model)]
         |> Enum.reject(&blank?/1)
         |> List.first(@default_model)
+
       post(body(request, config), model, config, options)
     end
   end

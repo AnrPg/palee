@@ -28,9 +28,14 @@ defmodule Palee.Llm.AdaptersTest do
     handler = "llm-adapter-test-#{System.unique_integer([:positive])}"
     parent = self()
 
-    :telemetry.attach(handler, [:palee, :ai, :generation], fn _event, measurements, metadata, _ ->
-      send(parent, {:metered, measurements, metadata})
-    end, nil)
+    :telemetry.attach(
+      handler,
+      [:palee, :ai, :generation],
+      fn _event, measurements, metadata, _ ->
+        send(parent, {:metered, measurements, metadata})
+      end,
+      nil
+    )
 
     on_exit(fn ->
       :telemetry.detach(handler)
@@ -44,14 +49,25 @@ defmodule Palee.Llm.AdaptersTest do
     Req.Test.stub(__MODULE__, fn conn ->
       {:ok, body, conn} = Plug.Conn.read_body(conn)
       body = Jason.decode!(body)
-      send(self_pid(), {:sent, conn.request_path, Plug.Conn.get_req_header(conn, "x-goog-api-key"), body})
+
+      send(
+        self_pid(),
+        {:sent, conn.request_path, Plug.Conn.get_req_header(conn, "x-goog-api-key"), body}
+      )
 
       Req.Test.json(conn, %{
         "candidates" => [
           %{
             "content" => %{
               "role" => "model",
-              "parts" => [%{"functionCall" => %{"name" => "member_counts", "args" => %{"period" => "this_month"}}}]
+              "parts" => [
+                %{
+                  "functionCall" => %{
+                    "name" => "member_counts",
+                    "args" => %{"period" => "this_month"}
+                  }
+                }
+              ]
             }
           }
         ],
@@ -83,7 +99,10 @@ defmodule Palee.Llm.AdaptersTest do
     assert path =~ "gemini-3.8-flash:generateContent"
     assert [%{"text" => system}] = body["systemInstruction"]["parts"]
     assert system =~ "JSON Schema"
-    [%{"parts" => [%{"text" => docs}]}, _ack, %{"parts" => [%{"text" => "How many members?"}]}] = body["contents"]
+
+    [%{"parts" => [%{"text" => docs}]}, _ack, %{"parts" => [%{"text" => "How many members?"}]}] =
+      body["contents"]
+
     assert docs =~ ~s({"documents":[{"id":"a")
     assert [%{"functionDeclarations" => [%{"name" => "member_counts"}]}] = body["tools"]
     assert body["toolConfig"]["functionCallingConfig"]["mode"] == "AUTO"
@@ -94,14 +113,30 @@ defmodule Palee.Llm.AdaptersTest do
   end
 
   test "Gemini: no key, quota and outage map to stable errors" do
-    Application.put_env(:palee, :gemini, Keyword.put(Application.get_env(:palee, :gemini), :api_key, ""))
+    Application.put_env(
+      :palee,
+      :gemini,
+      Keyword.put(Application.get_env(:palee, :gemini), :api_key, "")
+    )
+
     assert {:error, :llm_not_configured} = GeminiLlmProvider.generate(%Request{}, %{})
 
-    Application.put_env(:palee, :gemini, Keyword.put(Application.get_env(:palee, :gemini), :api_key, "k"))
-    Req.Test.stub(__MODULE__, fn conn -> conn |> Plug.Conn.put_status(429) |> Req.Test.json(%{}) end)
+    Application.put_env(
+      :palee,
+      :gemini,
+      Keyword.put(Application.get_env(:palee, :gemini), :api_key, "k")
+    )
+
+    Req.Test.stub(__MODULE__, fn conn ->
+      conn |> Plug.Conn.put_status(429) |> Req.Test.json(%{})
+    end)
+
     assert {:error, :llm_quota_exhausted} = GeminiLlmProvider.generate(%Request{}, %{})
 
-    Req.Test.stub(__MODULE__, fn conn -> conn |> Plug.Conn.put_status(500) |> Req.Test.json(%{}) end)
+    Req.Test.stub(__MODULE__, fn conn ->
+      conn |> Plug.Conn.put_status(500) |> Req.Test.json(%{})
+    end)
+
     assert {:error, :llm_unavailable} = GeminiLlmProvider.generate(%Request{}, %{})
   end
 
@@ -109,7 +144,12 @@ defmodule Palee.Llm.AdaptersTest do
     request = %Request{
       messages: [
         %{role: :user, text: "q"},
-        %{role: :assistant, text: nil, tool_calls: [], turn: %{"role" => "model", "parts" => [%{"thoughtSignature" => "s"}]}},
+        %{
+          role: :assistant,
+          text: nil,
+          tool_calls: [],
+          turn: %{"role" => "model", "parts" => [%{"thoughtSignature" => "s"}]}
+        },
         %{role: :tool, results: [%{id: "1", name: "member_counts", content: %{"ref" => "q1"}}]}
       ],
       tools: [@tool],
@@ -117,14 +157,25 @@ defmodule Palee.Llm.AdaptersTest do
     }
 
     body = GeminiLlmProvider.body(request)
-    [_, %{"role" => "model", "parts" => [%{"thoughtSignature" => "s"}]}, %{role: "user", parts: [part]}] = body.contents
+
+    [
+      _,
+      %{"role" => "model", "parts" => [%{"thoughtSignature" => "s"}]},
+      %{role: "user", parts: [part]}
+    ] = body.contents
+
     assert part.functionResponse.response == %{"ref" => "q1"}
     assert body.toolConfig.functionCallingConfig.mode == "NONE"
   end
 
   test "sandbox: picks the matching tool, then answers from results citing their refs" do
-    request = %Request{messages: [%{role: :user, text: "How many members joined?"}], tools: [@tool]}
-    assert {:ok, %Response{tool_calls: [%{name: "member_counts"}]}} = SandboxLlmProvider.generate(request, %{})
+    request = %Request{
+      messages: [%{role: :user, text: "How many members joined?"}],
+      tools: [@tool]
+    }
+
+    assert {:ok, %Response{tool_calls: [%{name: "member_counts"}]}} =
+             SandboxLlmProvider.generate(request, %{})
 
     request = %{
       request
@@ -132,32 +183,52 @@ defmodule Palee.Llm.AdaptersTest do
           request.messages ++
             [
               %{role: :assistant, text: nil, tool_calls: [], turn: nil},
-              %{role: :tool, results: [%{id: "1", name: "member_counts", content: %{"ref" => "q1", "summary" => %{"joined" => 4}}}]}
+              %{
+                role: :tool,
+                results: [
+                  %{
+                    id: "1",
+                    name: "member_counts",
+                    content: %{"ref" => "q1", "summary" => %{"joined" => 4}}
+                  }
+                ]
+              }
             ]
     }
 
     assert {:ok, response} = SandboxLlmProvider.generate(request, %{})
-    assert {:ok, %{"answer" => answer, "citations" => ["q1"], "confident" => true}} = Response.json(response)
+
+    assert {:ok, %{"answer" => answer, "citations" => ["q1"], "confident" => true}} =
+             Response.json(response)
+
     assert answer =~ "joined 4 [q1]"
   end
 
   test "sandbox: answers from the document sharing words with the question, else not confident" do
     request = %Request{
       messages: [%{role: :user, text: "How do I add a product to the shop?"}],
-      documents: [%{id: "guide-shop", title: "Run your shop", text: "Add a product with New product."}]
+      documents: [
+        %{id: "guide-shop", title: "Run your shop", text: "Add a product with New product."}
+      ]
     }
 
     assert {:ok, response} = SandboxLlmProvider.generate(request, %{})
     assert {:ok, %{"citations" => ["guide-shop"], "confident" => true}} = Response.json(response)
 
     assert {:ok, response} =
-             SandboxLlmProvider.generate(%{request | messages: [%{role: :user, text: "xyz?"}]}, %{})
+             SandboxLlmProvider.generate(
+               %{request | messages: [%{role: :user, text: "xyz?"}]},
+               %{}
+             )
 
     assert {:ok, %{"citations" => [], "confident" => false}} = Response.json(response)
   end
 
   test "sandbox: scripted answers per process" do
-    SandboxLlmProvider.script(fn _request -> %{"answer" => "scripted", "citations" => [], "confident" => false} end)
+    SandboxLlmProvider.script(fn _request ->
+      %{"answer" => "scripted", "citations" => [], "confident" => false}
+    end)
+
     on_exit(fn -> SandboxLlmProvider.script(nil) end)
 
     assert {:ok, response} = SandboxLlmProvider.generate(%Request{}, %{})

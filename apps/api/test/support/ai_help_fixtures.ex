@@ -66,7 +66,12 @@ defmodule Palee.AiHelpFixtures do
 
     sql!(
       "INSERT INTO class_types (id, organization_id, name, slug, inserted_at, updated_at) VALUES ($1, $2, $3, $4, now(), now()) ON CONFLICT DO NOTHING",
-      [uuid(type_id), uuid(organization.id), type_name, "#{String.downcase(type_name)}-#{System.unique_integer([:positive])}"]
+      [
+        uuid(type_id),
+        uuid(organization.id),
+        type_name,
+        "#{String.downcase(type_name)}-#{System.unique_integer([:positive])}"
+      ]
     )
 
     sql!(
@@ -107,7 +112,14 @@ defmodule Palee.AiHelpFixtures do
         auto_renew, inserted_at, updated_at)
       VALUES ($1, $2, $3, $4, 'active', $5, $6, 'pkg', 'membership', 'monthly', false, now(), now())
       """,
-      [uuid(subscription_id), uuid(organization.id), membership_id, uuid(package_id), Date.add(Date.utc_today(), -25), Date.add(Date.utc_today(), ends_in)]
+      [
+        uuid(subscription_id),
+        uuid(organization.id),
+        membership_id,
+        uuid(package_id),
+        Date.add(Date.utc_today(), -25),
+        Date.add(Date.utc_today(), ends_in)
+      ]
     )
 
     for {cents, paid_on} <- payments do
