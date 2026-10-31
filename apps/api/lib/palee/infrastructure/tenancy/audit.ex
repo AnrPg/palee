@@ -10,6 +10,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     class_attendance_records class_timers
     master_workouts workout_folders workout_sections workout_exercises
     exercise_variations assigned_workouts assigned_workout_athletes scale_levels
+    workout_snapshots
     workout_goals
     membership_packages memberships membership_package_subscriptions
     membership_payments promotion_campaigns promotion_codes promotion_redemptions

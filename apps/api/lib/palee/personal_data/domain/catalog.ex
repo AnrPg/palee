@@ -108,6 +108,8 @@ defmodule Palee.PersonalData.Domain.Catalog do
       account("training", "training_goals", @me),
       account("training", "injury_reports", @me),
       tenant("training", "nutrition_plans", @me),
+      # ADR-356: the leaderboard opt-in with its division and birth year.
+      tenant("training", "leaderboard_opt_ins", @me),
       tenant("training", "reviews", @me),
 
       # -- wellness and body -----------------------------------------------------
