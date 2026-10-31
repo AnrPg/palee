@@ -123,7 +123,7 @@ defmodule Palee.Payments.Domain.TerminalSale do
       "amount_cents" => cents,
       "currency" => intent.currency,
       "paid_on" => today,
-      "payment_method" => "card_terminal",
+      "payment_method" => payment_method(intent),
       "payment_status" => "paid",
       "notes" => intent.description,
       "params" =>
@@ -135,6 +135,13 @@ defmodule Palee.Payments.Domain.TerminalSale do
         })
     }
   end
+
+  # ADR-340: the same surcharge row for a card online or at the desk's own machine.
+  defp payment_method(%{initiation: "desk"}), do: "card_manual"
+  defp payment_method(%{initiation: initiation}) when initiation in ["payer", "merchant"],
+    do: "online"
+
+  defp payment_method(_intent), do: "card_terminal"
 
   defp params(intent) do
     %{

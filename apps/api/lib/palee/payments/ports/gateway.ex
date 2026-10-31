@@ -32,10 +32,14 @@ defmodule Palee.Payments.Ports.Gateway do
           | {:transient, term()}
           | {:uncertain, term()}
   @type card :: %{
-          brand: String.t() | nil,
-          last4: String.t() | nil,
-          exp_month: integer() | nil,
-          exp_year: integer() | nil
+          required(:brand) => String.t() | nil,
+          required(:last4) => String.t() | nil,
+          required(:exp_month) => integer() | nil,
+          required(:exp_year) => integer() | nil,
+          # ADR-340: what decides a lawful card surcharge, when the provider tells.
+          optional(:funding) => String.t() | nil,
+          optional(:country) => String.t() | nil,
+          optional(:commercial) => boolean() | nil
         }
   @type payment :: %{
           required(:status) => :succeeded | :pending | :failed | :cancelled,

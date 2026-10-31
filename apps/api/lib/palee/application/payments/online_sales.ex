@@ -17,6 +17,7 @@ defmodule Palee.Application.Payments.OnlineSales do
   require Logger
 
   alias Palee.Application.{PublicBox, PublicURL, SubmitBooking}
+  alias Palee.Application.Payments.CardSurcharges
   alias Palee.Application.Shop.Checkout
   alias Palee.{Finance, Fiscal, Identity, Organizations, Payments, Shop}
   alias Palee.Payments.Domain.{Consent, PackageSale, Withdrawal}
@@ -153,6 +154,8 @@ defmodule Palee.Application.Payments.OnlineSales do
          package: public_package(package),
          # ADR-342: why this member may not buy it (nil: they may).
          eligibility: eligibility_code(context, package),
+         # ADR-340: the card surcharge, shown before paying (none on a new card).
+         surcharge: surcharge_quote(context, package),
          available: Payments.available?(context, online_purpose(package)),
          provider: Payments.provider(context),
          withdrawal_days: if(applies, do: Withdrawal.days()),
@@ -239,6 +242,13 @@ defmodule Palee.Application.Payments.OnlineSales do
   end
 
   defp eligibility_code(_context, _package), do: nil
+
+  defp surcharge_quote(context, package) do
+    case CardSurcharges.quote(context, "online", package.base_price_cents) do
+      {:ok, quote} -> quote
+      _error -> nil
+    end
+  end
 
   defp package_for_sale(context, package_id) do
     case Ecto.UUID.cast(package_id) do

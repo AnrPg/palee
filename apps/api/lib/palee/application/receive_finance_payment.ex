@@ -7,6 +7,7 @@ defmodule Palee.Application.ReceiveFinancePayment do
 
   alias Palee.Application.{GoLive, RecordAnalyticsEvent, RecordFinancePayment}
   alias Palee.Application.Fiscal.PaymentDocuments
+  alias Palee.Application.Payments.CardSurcharges
   alias Palee.Finance
 
   @doc """
@@ -14,13 +15,83 @@ defmodule Palee.Application.ReceiveFinancePayment do
   mode would take money from anyone but one of its mock people.
   """
   def call(context, user_id, admin_id, params) do
+    {surcharge, params} = desk_surcharge(params)
+
     with :ok <- desk_method(params),
+         :ok <- check_desk_surcharge(context, surcharge, params),
          :ok <- GoLive.check_payment(context, user_id),
-         {:ok, received} <- call(user_id, admin_id, params) do
+         {:ok, received} <- call(user_id, admin_id, params),
+         {:ok, received} <- record_desk_surcharge(context, user_id, admin_id, surcharge, received) do
       # ADR-262: the legal document of the money received.
       {:ok, PaymentDocuments.attach(context, received, admin_id)}
     end
   end
+
+  # ADR-340: a card surcharge added by the box's own card machine.
+  defp desk_surcharge(params) do
+    params = Map.new(params, fn {key, value} -> {to_string(key), value} end)
+    {cents, params} = Map.pop(params, "surcharge_cents")
+    {card, params} = Map.pop(params, "card")
+
+    case cents do
+      cents when is_integer(cents) and cents > 0 -> {%{cents: cents, card: card || %{}}, params}
+      _none -> {nil, params}
+    end
+  end
+
+  defp check_desk_surcharge(_context, nil, _params), do: :ok
+
+  defp check_desk_surcharge(context, surcharge, %{"payment_method" => "card_manual"} = params),
+    do:
+      CardSurcharges.check_desk(
+        context,
+        params["amount_cents"],
+        surcharge.cents,
+        atomize_card(surcharge.card)
+      )
+
+  defp check_desk_surcharge(_context, _surcharge, _params),
+    do: {:error, {:invalid_fields, %{"surcharge_cents" => "card_manual_only"}}}
+
+  defp record_desk_surcharge(_context, _user_id, _admin_id, nil, received), do: {:ok, received}
+
+  defp record_desk_surcharge(context, user_id, admin_id, surcharge, received) do
+    payment = received.payment
+
+    sale = %{
+      id: payment.id,
+      initiation: "desk",
+      currency: payment.currency,
+      description: received[:description] || payment.notes,
+      provider: nil,
+      provider_transaction_id: nil,
+      purpose_type: "desk_card",
+      created_by_id: admin_id,
+      tip_cents: 0,
+      surcharge_cents: surcharge.cents,
+      metadata: %{}
+    }
+
+    labels = CardSurcharges.labels(context)
+
+    with :ok <- CardSurcharges.record(context, sale, user_id) do
+      {:ok,
+       Map.merge(received, %{
+         surcharge_cents: surcharge.cents,
+         surcharge_description: labels.surcharge
+       })}
+    end
+  end
+
+  defp atomize_card(card) when is_map(card) do
+    %{
+      funding: card["funding"] || card[:funding],
+      country: card["country"] || card[:country],
+      commercial: Map.get(card, "commercial", card[:commercial])
+    }
+  end
+
+  defp atomize_card(_card), do: %{}
 
   @doc """
   ADR-246: records money a payment provider confirmed (an online payment
@@ -30,9 +101,18 @@ defmodule Palee.Application.ReceiveFinancePayment do
     with :ok <- GoLive.check_payment(context, user_id),
          {:ok, received} <-
            Finance.with_tenant_context(context, fn ->
-             call(user_id, nil, Map.put(params, "payment_method", "online"))
+             call(
+               user_id,
+               nil,
+               params
+               |> Map.delete("surcharge_description")
+               |> Map.put("payment_method", "online")
+             )
            end) do
-      with_fiscal_document(context, received, nil)
+      # ADR-340: the card surcharge the member was shown, on the same receipt.
+      received
+      |> Map.merge(surcharge(params))
+      |> then(&with_fiscal_document(context, &1, nil))
     end
   end
 

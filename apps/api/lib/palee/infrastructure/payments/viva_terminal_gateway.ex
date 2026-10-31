@@ -31,7 +31,7 @@ defmodule Palee.Infrastructure.Payments.VivaTerminalGateway do
   def app_request(_account, sale) do
     %{
       scheme: @scheme,
-      params: %{
+      params: skip_surcharge(sale, %{
         "appId" => sale.app_id,
         "action" => "sale",
         "clientTransactionId" => sale.reference,
@@ -44,9 +44,15 @@ defmodule Palee.Infrastructure.Payments.VivaTerminalGateway do
         "show_rating" => "false",
         # iOS: deprecated, any value is accepted.
         "merchantKey" => "palee"
-      }
+      })
     }
   end
+
+  # ADR-340: Viva's `skipSurcharge` turns its surcharge off for this sale.
+  defp skip_surcharge(%{skip_surcharge: true}, params),
+    do: Map.put(params, "skipSurcharge", "true")
+
+  defp skip_surcharge(_sale, params), do: params
 
   @impl true
   def confirm(account, transaction_id) when is_binary(transaction_id) do

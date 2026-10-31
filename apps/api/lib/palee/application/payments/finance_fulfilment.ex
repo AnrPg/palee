@@ -13,7 +13,7 @@ defmodule Palee.Application.Payments.FinanceFulfilment do
   @behaviour Palee.Payments.Ports.Fulfilment
 
   alias Palee.Application.Fiscal.PaymentDocuments
-  alias Palee.Application.Payments.{OnlineSales, TerminalFulfilment}
+  alias Palee.Application.Payments.{CardSurcharges, OnlineSales, TerminalFulfilment}
   alias Palee.Application.ReceiveFinancePayment
   alias Palee.Finance
   alias Palee.Organizations
@@ -23,7 +23,16 @@ defmodule Palee.Application.Payments.FinanceFulfilment do
   def fulfil(context, %{initiation: "terminal"} = intent),
     do: TerminalFulfilment.fulfil(context, intent)
 
-  def fulfil(context, %{purpose_type: "finance_invoice"} = intent) do
+  # ADR-340: a card surcharge the member was shown is revenue of the sale:
+  # its own Finance row and a line of the sale's receipt.
+  def fulfil(context, intent) do
+    with {:ok, result} <- fulfil_sale(context, intent),
+         :ok <- CardSurcharges.record(context, intent, intent.user_id) do
+      {:ok, result}
+    end
+  end
+
+  defp fulfil_sale(context, %{purpose_type: "finance_invoice"} = intent) do
     with {:ok, invoice} <- Finance.get_invoice(context, intent.purpose_id),
          {:ok, received} <-
            ReceiveFinancePayment.record_online(context, invoice.user_id, %{
@@ -38,19 +47,27 @@ defmodule Palee.Application.Payments.FinanceFulfilment do
              "payment_intent_id" => intent.id,
              "provider" => intent.provider,
              "provider_transaction_id" => intent.provider_transaction_id
-           }) do
+           }
+           |> Map.merge(CardSurcharges.receipt_params(context, intent))) do
       {:ok, fulfilled(received)}
     end
   end
 
   # ADR-248: a package bought online, then the class asked for.
-  def fulfil(context, %{purpose_type: "membership_package"} = intent),
-    do: OnlineSales.fulfil_package(context, intent, &ReceiveFinancePayment.record_online/3)
+  defp fulfil_sale(context, %{purpose_type: "membership_package"} = intent) do
+    OnlineSales.fulfil_package(context, intent, fn context, user_id, params ->
+      ReceiveFinancePayment.record_online(
+        context,
+        user_id,
+        Map.merge(params, CardSurcharges.receipt_params(context, intent))
+      )
+    end)
+  end
 
-  def fulfil(context, %{purpose_type: "shop_order"} = intent),
+  defp fulfil_sale(context, %{purpose_type: "shop_order"} = intent),
     do: OnlineSales.fulfil_shop_order(context, intent)
 
-  def fulfil(_context, intent), do: {:error, {:purpose_not_supported, intent.purpose_type}}
+  defp fulfil_sale(_context, intent), do: {:error, {:purpose_not_supported, intent.purpose_type}}
 
   @doc false
   def fulfilled(received) do

@@ -17,11 +17,10 @@ defmodule Palee.Application.Payments.TerminalFulfilment do
   """
 
   alias Palee.Application.Fiscal.PaymentDocuments
-  alias Palee.Application.Payments.{FinanceFulfilment, OnlineSales}
+  alias Palee.Application.Payments.{CardSurcharges, FinanceFulfilment, OnlineSales}
   alias Palee.Application.ReceiveFinancePayment
   alias Palee.Application.Shop.Checkout
   alias Palee.Finance
-  alias Palee.Fiscal
   alias Palee.Organizations
   alias Palee.Payments.Domain.{TerminalSale, TipAttribution}
   alias Palee.Shop
@@ -106,51 +105,13 @@ defmodule Palee.Application.Payments.TerminalFulfilment do
   # (a walk-in's sale has it on its own invoice).
   defp record_surcharge(_context, %{purpose_type: "free_sale", user_id: nil}), do: :ok
 
-  defp record_surcharge(context, intent) do
-    if TerminalSale.surcharge?(intent) do
-      sale =
-        TerminalSale.surcharge(
-          intent,
-          membership(context, intent.user_id),
-          paid_on_date(context, intent),
-          labels(context)
-        )
-
-      case Finance.record_stream_sale(context, sale) do
-        {:ok, _recorded} -> :ok
-        {:error, _reason} = error -> error
-      end
-    else
-      :ok
-    end
-  end
-
-  defp membership(_context, nil), do: nil
-
-  defp membership(context, user_id) do
-    case Finance.get_member_profile(context, user_id) do
-      %{membership: %{id: id}} -> %{membership_id: id, user_id: user_id}
-      _none -> nil
-    end
-  end
+  defp record_surcharge(context, intent),
+    do: CardSurcharges.record(context, intent, intent.user_id)
 
   # The surcharge goes on the sale's receipt (shop orders have none in Palee yet).
-  defp surcharge_params(context, intent) do
-    if TerminalSale.surcharge?(intent),
-      do: %{
-        "surcharge_cents" => intent.surcharge_cents,
-        "surcharge_description" => labels(context).surcharge
-      },
-      else: %{}
-  end
+  defp surcharge_params(context, intent), do: CardSurcharges.receipt_params(context, intent)
 
-  # Names printed on the business's documents, in its language.
-  defp labels(context) do
-    case Fiscal.identity_status(context) do
-      %{identity: %{country_code: "GR"}} -> %{surcharge: "Επιβάρυνση κάρτας"}
-      _other -> %{surcharge: "Card surcharge"}
-    end
-  end
+  defp labels(context), do: CardSurcharges.labels(context)
 
   # The Finance payment the shop recorded for the order (its revenue lineage).
   defp shop_payment_id(context, order) do

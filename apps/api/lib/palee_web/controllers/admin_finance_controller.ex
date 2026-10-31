@@ -101,6 +101,9 @@ defmodule PaleeWeb.AdminFinanceController do
     "boolean" => %Schema{type: :boolean},
     "integer" => %Schema{type: :integer},
     "gym_default_integer" => %Schema{type: :integer, nullable: true},
+    # ADR-342: a limit that may be absent, and a list of ids that may be empty.
+    "integer_or_null" => %Schema{type: :integer, nullable: true},
+    "id_list" => %Schema{type: :array, items: %Schema{type: :string, format: :uuid}},
     "integer_option" => %Schema{type: :integer},
     "integer_option_or_null" => %Schema{type: :integer, nullable: true},
     "enum" => %Schema{type: :string},
@@ -630,7 +633,20 @@ defmodule PaleeWeb.AdminFinanceController do
               nullable: true
             },
             notes: %Schema{type: :string, nullable: true},
-            idempotency_key: %Schema{type: :string, minLength: 1, maxLength: 200}
+            idempotency_key: %Schema{type: :string, minLength: 1, maxLength: 200},
+            # ADR-340: the card surcharge the box's own card machine added
+            # (card_manual only), and the card facts the law reads.
+            surcharge_cents: %Schema{type: :integer, minimum: 0, nullable: true},
+            card: %Schema{
+              type: :object,
+              nullable: true,
+              additionalProperties: false,
+              properties: %{
+                funding: %Schema{type: :string, enum: ["credit", "debit", "prepaid"], nullable: true},
+                country: %Schema{type: :string, minLength: 2, maxLength: 2, nullable: true},
+                commercial: %Schema{type: :boolean, nullable: true}
+              }
+            }
           }
         }
       }

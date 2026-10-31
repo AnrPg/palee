@@ -6,7 +6,7 @@ defmodule Palee.Application.Payments.OnlinePayments do
   later invoices, and manage their saved cards.
   """
 
-  alias Palee.Application.Payments.{OnlineSales, Webhooks}
+  alias Palee.Application.Payments.{CardSurcharges, OnlineSales, Webhooks}
   alias Palee.Application.{PublicURL, SignedToken}
   alias Palee.Identity
   alias Palee.Organizations
@@ -218,11 +218,15 @@ defmodule Palee.Application.Payments.OnlinePayments do
     with {:ok, invoice} <- member_invoice(context, invoice_id) do
       terms = consent_terms(context, invoice, language)
 
+      {:ok, surcharge} = CardSurcharges.quote(context, "online", invoice.balance_due_cents)
+
       {:ok,
        %{
          available: Payments.available?(context),
          provider: Payments.provider(context),
          amount_cents: invoice.balance_due_cents,
+         # ADR-340: shown before paying; a new card never carries one.
+         surcharge: surcharge,
          currency: invoice.currency,
          consent_text: Consent.text(language(language), terms),
          consent_version: Consent.version()
@@ -350,6 +354,13 @@ defmodule Palee.Application.Payments.OnlinePayments do
 
   def my_methods(context), do: Payments.methods(context, context.user_id)
 
+  @doc """
+  ADR-340: the card surcharge the member would pay on `amount_cents` with
+  one of their saved cards (`payment_method_id`) or a new card (nil).
+  """
+  def surcharge_quote(context, amount_cents, payment_method_id),
+    do: CardSurcharges.member_quote(context, amount_cents, payment_method_id)
+
   def revoke_my_method(context, id),
     do: Payments.revoke_method(context, context.user_id, id, context.user_id, now())
 
@@ -409,6 +420,7 @@ defmodule Palee.Application.Payments.OnlinePayments do
               purpose_type: "finance_invoice",
               purpose_id: invoice.id,
               amount_cents: invoice.balance_due_cents,
+              surcharge_cents: autopay_surcharge(context, method, invoice.balance_due_cents),
               currency: invoice.currency,
               description: invoice_description(invoice),
               idempotency_key: "autopay:#{invoice.id}:#{invoice.balance_due_cents}"
@@ -421,6 +433,16 @@ defmodule Palee.Application.Payments.OnlinePayments do
     else
       0
     end
+  end
+
+  # ADR-340: a lawful card surcharge on a saved card, never beyond what the
+  # member agreed the card may be charged.
+  defp autopay_surcharge(context, method, amount_cents) do
+    surcharge = CardSurcharges.for_saved_card(context, method, amount_cents)
+
+    if is_integer(method[:max_amount_cents]) and amount_cents + surcharge > method.max_amount_cents,
+      do: 0,
+      else: surcharge
   end
 
   defp due_invoices(context, today) do

@@ -74,7 +74,16 @@ defmodule Palee.Infrastructure.Payments.SandboxGateway do
       transaction_id: transaction_id,
       amount_cents: nil,
       currency: nil,
-      card: %{brand: "visa", last4: "4242", exp_month: 12, exp_year: 2099},
+      # ADR-340: a consumer credit card issued in Greece.
+      card: %{
+        brand: "visa",
+        last4: "4242",
+        exp_month: 12,
+        exp_year: 2099,
+        funding: "credit",
+        country: "GR",
+        commercial: false
+      },
       method_token: "sbxm_" <> card <> "_" <> binary_part(sign(transaction_id), 0, 16),
       failure:
         if(outcome == "succeeded",
