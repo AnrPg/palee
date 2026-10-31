@@ -542,6 +542,30 @@ never mix (flow, set structure, add-ons); presets only fill them in. Code names 
 | Per round | Ανά γύρο | `PlanRow.perRound` | Values that change round by round (Alt+V) in every flow other than Σετ, where they change per set («ανά σετ»). «Ίδιες τιμές σε κάθε γύρο» turns it off. | Different round (other exercises, not other values). |
 | Rest row | Ξεκούραση | `PlanRow.kind: "rest"` | A rest written as a row between exercises (e.g. inside a superset). | The flow Ξεκούραση (a whole rest section). |
 
+### 4.21 Leads, automatic messages and members at risk (ADR-344..347)
+
+How a box looks after people who asked about it, the messages Palee sends for the box on its own,
+and the box members who may be leaving. A lead is never called a «μέλος» until they become a box member.
+
+| English | Ελληνικά | Code | What it is | Not to be confused with |
+|---|---|---|---|---|
+| Lead | Ενδιαφερόμενος / Ενδιαφερόμενη | `leads` | A person who asked about the box and is not a box member yet; staff list «Ενδιαφερόμενοι». | Prospect (W8, Palee-wide); guest; box member. |
+| Lead stage | Στάδιο | `leads.stage` | Νέος (`new`), Δοκιμή (`trial`), Προσφορά (`offer`), Έγινε μέλος (`converted`), Χάθηκε (`lost`). Fixed list. | Package status; booking status. |
+| Lost reason | Λόγος | `leads.lost_reason` | Why a lead was lost: Τιμή, Ωράριο, Τοποθεσία, Δεν απάντησε, Επέλεξε άλλο, Δεν ενδιαφέρεται, Άλλο. | — |
+| Lead owner | Υπεύθυνος | `leads.owner_id` | The staff member who follows a lead up. | Box owner («Ιδιοκτήτης»). |
+| Next step | Επόμενη ενέργεια | `lead_tasks` | A dated to-do on a lead («Κλήση την Πέμπτη»); the staff list «Επόμενες ενέργειες». | Tasks of the setup checklist. |
+| Lead history | Ιστορικό | `lead_events` | Everything that happened to a lead, kept after it becomes a box member. | Audit log. |
+| Became a box member | Έγινε μέλος | `convert`, `converted_at` | The lead's person joined the box (automatic on activation, or by staff). | «Εγγραφή» (sign-up to Palee). |
+| Enquiry form | Φόρμα ενδιαφέροντος («Ενδιαφέρομαι») | `POST /public/boxes/:slug/leads` | The public form on the box page and join links. | Contact message to the box (ADR-282). |
+| Automations | Αυτοματισμοί | `box_automations` | Staff settings page of the ready recipes a box switches on. Never «ροές» or «workflows». | Automatic notices of Palee (ADR-112, ADR-144). |
+| Recipe | Έτοιμο σενάριο | `RecipeCatalog` | One automation: Καλωσόρισμα, Μετά τη δοκιμή, Μας έλειψες, Υπενθύμιση ανανέωσης, Γενέθλια, Επιστροφή. | Preset («Έτοιμη μορφή», WOD). |
+| Automatic message | Αυτόματο μήνυμα | `automation_deliveries` | One message a recipe sent or will send; staff list «Απεσταλμένα». Member settings «Αυτόματα μηνύματα». | A message staff write in Μηνύματα. |
+| Quiet hours | Ώρες ησυχίας | `QuietHours` | 21:00–09:00 on the box's clock; nothing is sent then. | Push «Μην ενοχλείτε» of the phone. |
+| Members at risk | Σε κίνδυνο | `retention_risks` | Box members who may be leaving, with the reasons («Γιατί»). Staff only, never shown to the member. | Health risk; injuries. |
+| Risk level | Επίπεδο | `retention_risks.level` | Υψηλό, Μεσαίο, Χαμηλό. | Training level («Επίπεδο», ADR-285): always say «Επίπεδο κινδύνου» when both could appear. |
+| Contacted | Επικοινώνησα | `contacted_at` | Staff noted they reached out. | Lead «Επικοινωνία» event. |
+| Snooze | Αργότερα | `snoozed_until` | Hide a box member from «Σε κίνδυνο» for some days. | — |
+
 ## 5. Name clashes found, and proposals
 
 Each needs ANR's choice before the UI changes. The recommended option is first.
