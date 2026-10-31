@@ -14,7 +14,9 @@ defmodule Palee.Application.BookingCalendarInvite do
   alias Palee.{Identity, Scheduling}
   alias Palee.Scheduling.Domain.ICalendar
 
-  def call(%{organization_id: org, user_id: user_id} = context, booking_id, now \\ nil)
+  def call(context, booking_id, now \\ nil)
+
+  def call(%{organization_id: org, user_id: user_id} = context, booking_id, now)
       when is_binary(org) and is_binary(user_id) do
     now = now || DateTime.utc_now()
 

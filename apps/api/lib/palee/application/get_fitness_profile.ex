@@ -17,8 +17,9 @@ defmodule Palee.Application.GetFitnessProfile do
 
   @divisions ~w(women men)
 
-  def call(%{user_id: user_id} = context, params, today \\ Date.utc_today())
-      when is_binary(user_id) do
+  def call(context, params, today \\ Date.utc_today())
+
+  def call(%{user_id: user_id} = context, params, today) when is_binary(user_id) do
     with {:ok, division} <- division(param(params, :division)) do
       prs =
         case Pantheon.with_user_context(context, fn -> Pantheon.list_records(user_id) end) do
