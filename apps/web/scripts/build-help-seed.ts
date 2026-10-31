@@ -70,7 +70,17 @@ function message(locale: string, path: string): string {
 
 const slugOf = (id: string) => id.replace(/_/g, "-");
 
-const articles = [];
+type SeedArticle = {
+  slug: string;
+  feature_key: string | null;
+  guide_id: string | null;
+  audience: string;
+  screens: string[];
+  position: number;
+  locales: Record<string, unknown>;
+};
+
+const articles: SeedArticle[] = [];
 
 FEATURE_SECTIONS.forEach((section, index) => {
   const links = FEATURE_LINKS[section.id] ?? { audience: "all", screens: [] };

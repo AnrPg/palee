@@ -40521,6 +40521,577 @@
         "title": "DailyStats",
         "type": "object"
       },
+      "DataQuery": {
+        "properties": {
+          "arguments": {
+            "additionalProperties": true,
+            "description": "JSON Schema of the arguments",
+            "type": "object"
+          },
+          "name": {
+            "enum": [
+              "attendance_by_class_type",
+              "expiring_subscriptions",
+              "member_counts",
+              "members_absent",
+              "revenue_by_month",
+              "revenue_by_package"
+            ],
+            "type": "string"
+          },
+          "people": {
+            "description": "Its results list people (names shown only to staff)",
+            "type": "boolean"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "version": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "arguments",
+          "name",
+          "people",
+          "summary",
+          "version"
+        ],
+        "title": "DataQuery",
+        "type": "object"
+      },
+      "DataQuestion": {
+        "properties": {
+          "actions": {
+            "items": {
+              "properties": {
+                "count": {
+                  "type": "integer"
+                },
+                "kind": {
+                  "enum": [
+                    "message_people"
+                  ],
+                  "type": "string"
+                },
+                "ref": {
+                  "type": "string"
+                },
+                "user_ids": {
+                  "items": {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "type": "array"
+                }
+              },
+              "required": [
+                "count",
+                "kind",
+                "ref",
+                "user_ids"
+              ],
+              "title": "DataQuestionAction",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "answer": {
+            "nullable": true,
+            "type": "string"
+          },
+          "asked_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "asked_by_id": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "citations": {
+            "items": {
+              "properties": {
+                "arguments": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "query": {
+                  "type": "string"
+                },
+                "ref": {
+                  "description": "q1, q2… as written in the answer",
+                  "type": "string"
+                },
+                "summary": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              },
+              "required": [
+                "arguments",
+                "query",
+                "ref",
+                "summary"
+              ],
+              "title": "DataQuestionCitation",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "error_code": {
+            "nullable": true,
+            "type": "string"
+          },
+          "grounded": {
+            "description": "Every number in the answer was found in the cited data",
+            "type": "boolean"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "queries": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "question": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "answered",
+              "unanswerable",
+              "failed",
+              "refused"
+            ],
+            "type": "string"
+          },
+          "tables": {
+            "description": "Built by the server, only in the answer to the question (never stored)",
+            "items": {
+              "properties": {
+                "columns": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "query": {
+                  "type": "string"
+                },
+                "ref": {
+                  "type": "string"
+                },
+                "rows": {
+                  "items": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "required": [
+                "columns",
+                "query",
+                "ref",
+                "rows"
+              ],
+              "title": "DataQuestionTable",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "unsupported_numbers": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "actions",
+          "answer",
+          "asked_at",
+          "asked_by_id",
+          "citations",
+          "error_code",
+          "grounded",
+          "id",
+          "locale",
+          "queries",
+          "question",
+          "status",
+          "tables",
+          "unsupported_numbers"
+        ],
+        "title": "DataQuestion",
+        "type": "object"
+      },
+      "DataQuestionAction": {
+        "properties": {
+          "count": {
+            "type": "integer"
+          },
+          "kind": {
+            "enum": [
+              "message_people"
+            ],
+            "type": "string"
+          },
+          "ref": {
+            "type": "string"
+          },
+          "user_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "count",
+          "kind",
+          "ref",
+          "user_ids"
+        ],
+        "title": "DataQuestionAction",
+        "type": "object"
+      },
+      "DataQuestionCatalogue": {
+        "properties": {
+          "asked_today": {
+            "type": "integer"
+          },
+          "daily_limit": {
+            "nullable": true,
+            "type": "integer"
+          },
+          "enabled": {
+            "description": "Settings › AI switch (owner)",
+            "type": "boolean"
+          },
+          "queries": {
+            "items": {
+              "properties": {
+                "arguments": {
+                  "additionalProperties": true,
+                  "description": "JSON Schema of the arguments",
+                  "type": "object"
+                },
+                "name": {
+                  "enum": [
+                    "attendance_by_class_type",
+                    "expiring_subscriptions",
+                    "member_counts",
+                    "members_absent",
+                    "revenue_by_month",
+                    "revenue_by_package"
+                  ],
+                  "type": "string"
+                },
+                "people": {
+                  "description": "Its results list people (names shown only to staff)",
+                  "type": "boolean"
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "version": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "arguments",
+                "name",
+                "people",
+                "summary",
+                "version"
+              ],
+              "title": "DataQuery",
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "asked_today",
+          "daily_limit",
+          "enabled",
+          "queries"
+        ],
+        "title": "DataQuestionCatalogue",
+        "type": "object"
+      },
+      "DataQuestionCitation": {
+        "properties": {
+          "arguments": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "query": {
+            "type": "string"
+          },
+          "ref": {
+            "description": "q1, q2… as written in the answer",
+            "type": "string"
+          },
+          "summary": {
+            "additionalProperties": true,
+            "type": "object"
+          }
+        },
+        "required": [
+          "arguments",
+          "query",
+          "ref",
+          "summary"
+        ],
+        "title": "DataQuestionCitation",
+        "type": "object"
+      },
+      "DataQuestionList": {
+        "properties": {
+          "questions": {
+            "items": {
+              "properties": {
+                "actions": {
+                  "items": {
+                    "properties": {
+                      "count": {
+                        "type": "integer"
+                      },
+                      "kind": {
+                        "enum": [
+                          "message_people"
+                        ],
+                        "type": "string"
+                      },
+                      "ref": {
+                        "type": "string"
+                      },
+                      "user_ids": {
+                        "items": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "count",
+                      "kind",
+                      "ref",
+                      "user_ids"
+                    ],
+                    "title": "DataQuestionAction",
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "answer": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "asked_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "asked_by_id": {
+                  "format": "uuid",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "citations": {
+                  "items": {
+                    "properties": {
+                      "arguments": {
+                        "additionalProperties": true,
+                        "type": "object"
+                      },
+                      "query": {
+                        "type": "string"
+                      },
+                      "ref": {
+                        "description": "q1, q2… as written in the answer",
+                        "type": "string"
+                      },
+                      "summary": {
+                        "additionalProperties": true,
+                        "type": "object"
+                      }
+                    },
+                    "required": [
+                      "arguments",
+                      "query",
+                      "ref",
+                      "summary"
+                    ],
+                    "title": "DataQuestionCitation",
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "error_code": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "grounded": {
+                  "description": "Every number in the answer was found in the cited data",
+                  "type": "boolean"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "locale": {
+                  "type": "string"
+                },
+                "queries": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "question": {
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "answered",
+                    "unanswerable",
+                    "failed",
+                    "refused"
+                  ],
+                  "type": "string"
+                },
+                "tables": {
+                  "description": "Built by the server, only in the answer to the question (never stored)",
+                  "items": {
+                    "properties": {
+                      "columns": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      "query": {
+                        "type": "string"
+                      },
+                      "ref": {
+                        "type": "string"
+                      },
+                      "rows": {
+                        "items": {
+                          "additionalProperties": true,
+                          "type": "object"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "columns",
+                      "query",
+                      "ref",
+                      "rows"
+                    ],
+                    "title": "DataQuestionTable",
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "unsupported_numbers": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                }
+              },
+              "required": [
+                "actions",
+                "answer",
+                "asked_at",
+                "asked_by_id",
+                "citations",
+                "error_code",
+                "grounded",
+                "id",
+                "locale",
+                "queries",
+                "question",
+                "status",
+                "tables",
+                "unsupported_numbers"
+              ],
+              "title": "DataQuestion",
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "questions"
+        ],
+        "title": "DataQuestionList",
+        "type": "object"
+      },
+      "DataQuestionRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "locale": {
+            "description": "Answer language (12 locales)",
+            "maxLength": 10,
+            "type": "string"
+          },
+          "question": {
+            "maxLength": 500,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "question"
+        ],
+        "title": "DataQuestionRequest",
+        "type": "object"
+      },
+      "DataQuestionTable": {
+        "properties": {
+          "columns": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "query": {
+            "type": "string"
+          },
+          "ref": {
+            "type": "string"
+          },
+          "rows": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "columns",
+          "query",
+          "ref",
+          "rows"
+        ],
+        "title": "DataQuestionTable",
+        "type": "object"
+      },
       "DepthBalance": {
         "description": "Exercise sets by primary muscles; a ratio only once both sides have sets and reach 4 together",
         "properties": {
@@ -46328,6 +46899,10 @@
       },
       "GymAiSettings": {
         "properties": {
+          "data_questions_enabled": {
+            "description": "ADR-361: staff may ask questions over the box's data (platform AI)",
+            "type": "boolean"
+          },
           "default_model": {
             "type": "string"
           },
@@ -46385,6 +46960,7 @@
           }
         },
         "required": [
+          "data_questions_enabled",
           "scaling_enabled",
           "voice_enabled",
           "key_configured",
@@ -46399,6 +46975,10 @@
         "properties": {
           "ai_settings": {
             "properties": {
+              "data_questions_enabled": {
+                "description": "ADR-361: staff may ask questions over the box's data (platform AI)",
+                "type": "boolean"
+              },
               "default_model": {
                 "type": "string"
               },
@@ -46456,6 +47036,7 @@
               }
             },
             "required": [
+              "data_questions_enabled",
               "scaling_enabled",
               "voice_enabled",
               "key_configured",
@@ -46481,6 +47062,9 @@
             "minLength": 20,
             "type": "string",
             "writeOnly": true
+          },
+          "data_questions_enabled": {
+            "type": "boolean"
           },
           "model": {
             "maxLength": 80,
@@ -46560,6 +47144,1529 @@
           "consents"
         ],
         "title": "HealthConsents",
+        "type": "object"
+      },
+      "HelpArticle": {
+        "properties": {
+          "audience": {
+            "enum": [
+              "staff",
+              "member",
+              "all"
+            ],
+            "type": "string"
+          },
+          "body": {
+            "description": "Markdown without HTML",
+            "type": "string"
+          },
+          "complete": {
+            "description": "Fully translated",
+            "type": "boolean"
+          },
+          "fallback": {
+            "description": "Shown in English: no translation yet",
+            "type": "boolean"
+          },
+          "feature_key": {
+            "nullable": true,
+            "type": "string"
+          },
+          "guide_id": {
+            "description": "In-app guide it can start (ADR-193)",
+            "nullable": true,
+            "type": "string"
+          },
+          "locale": {
+            "enum": [
+              "en",
+              "el",
+              "ar",
+              "ru",
+              "de",
+              "es",
+              "pt-PT",
+              "he",
+              "it",
+              "bg",
+              "nl",
+              "fr"
+            ],
+            "type": "string"
+          },
+          "screens": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "audience",
+          "body",
+          "complete",
+          "fallback",
+          "feature_key",
+          "guide_id",
+          "locale",
+          "screens",
+          "slug",
+          "summary",
+          "title",
+          "updated_at"
+        ],
+        "title": "HelpArticle",
+        "type": "object"
+      },
+      "HelpArticleConsole": {
+        "properties": {
+          "audience": {
+            "enum": [
+              "staff",
+              "member",
+              "all"
+            ],
+            "type": "string"
+          },
+          "body": {
+            "description": "Markdown without HTML",
+            "type": "string"
+          },
+          "complete": {
+            "description": "Fully translated",
+            "type": "boolean"
+          },
+          "fallback": {
+            "description": "Shown in English: no translation yet",
+            "type": "boolean"
+          },
+          "feature_key": {
+            "nullable": true,
+            "type": "string"
+          },
+          "guide_id": {
+            "description": "In-app guide it can start (ADR-193)",
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "keywords": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "locale": {
+            "enum": [
+              "en",
+              "el",
+              "ar",
+              "ru",
+              "de",
+              "es",
+              "pt-PT",
+              "he",
+              "it",
+              "bg",
+              "nl",
+              "fr"
+            ],
+            "type": "string"
+          },
+          "position": {
+            "type": "integer"
+          },
+          "published_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "screens": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "source": {
+            "enum": [
+              "seed",
+              "palee"
+            ],
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "draft",
+              "published"
+            ],
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "version": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "audience",
+          "body",
+          "complete",
+          "fallback",
+          "feature_key",
+          "guide_id",
+          "id",
+          "keywords",
+          "locale",
+          "position",
+          "published_at",
+          "screens",
+          "slug",
+          "source",
+          "status",
+          "summary",
+          "title",
+          "updated_at",
+          "version"
+        ],
+        "title": "HelpArticleConsole",
+        "type": "object"
+      },
+      "HelpArticleConsoleList": {
+        "properties": {
+          "articles": {
+            "items": {
+              "properties": {
+                "audience": {
+                  "enum": [
+                    "staff",
+                    "member",
+                    "all"
+                  ],
+                  "type": "string"
+                },
+                "body": {
+                  "description": "Markdown without HTML",
+                  "type": "string"
+                },
+                "complete": {
+                  "description": "Fully translated",
+                  "type": "boolean"
+                },
+                "fallback": {
+                  "description": "Shown in English: no translation yet",
+                  "type": "boolean"
+                },
+                "feature_key": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "guide_id": {
+                  "description": "In-app guide it can start (ADR-193)",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "keywords": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "locale": {
+                  "enum": [
+                    "en",
+                    "el",
+                    "ar",
+                    "ru",
+                    "de",
+                    "es",
+                    "pt-PT",
+                    "he",
+                    "it",
+                    "bg",
+                    "nl",
+                    "fr"
+                  ],
+                  "type": "string"
+                },
+                "position": {
+                  "type": "integer"
+                },
+                "published_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "screens": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "slug": {
+                  "type": "string"
+                },
+                "source": {
+                  "enum": [
+                    "seed",
+                    "palee"
+                  ],
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "draft",
+                    "published"
+                  ],
+                  "type": "string"
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "updated_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "version": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "audience",
+                "body",
+                "complete",
+                "fallback",
+                "feature_key",
+                "guide_id",
+                "id",
+                "keywords",
+                "locale",
+                "position",
+                "published_at",
+                "screens",
+                "slug",
+                "source",
+                "status",
+                "summary",
+                "title",
+                "updated_at",
+                "version"
+              ],
+              "title": "HelpArticleConsole",
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "articles"
+        ],
+        "title": "HelpArticleConsoleList",
+        "type": "object"
+      },
+      "HelpArticleDeleted": {
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "deleted"
+        ],
+        "title": "HelpArticleDeleted",
+        "type": "object"
+      },
+      "HelpArticleList": {
+        "properties": {
+          "articles": {
+            "items": {
+              "properties": {
+                "audience": {
+                  "enum": [
+                    "staff",
+                    "member",
+                    "all"
+                  ],
+                  "type": "string"
+                },
+                "body": {
+                  "description": "Markdown without HTML",
+                  "type": "string"
+                },
+                "complete": {
+                  "description": "Fully translated",
+                  "type": "boolean"
+                },
+                "fallback": {
+                  "description": "Shown in English: no translation yet",
+                  "type": "boolean"
+                },
+                "feature_key": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "guide_id": {
+                  "description": "In-app guide it can start (ADR-193)",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "locale": {
+                  "enum": [
+                    "en",
+                    "el",
+                    "ar",
+                    "ru",
+                    "de",
+                    "es",
+                    "pt-PT",
+                    "he",
+                    "it",
+                    "bg",
+                    "nl",
+                    "fr"
+                  ],
+                  "type": "string"
+                },
+                "screens": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "slug": {
+                  "type": "string"
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "updated_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "audience",
+                "body",
+                "complete",
+                "fallback",
+                "feature_key",
+                "guide_id",
+                "locale",
+                "screens",
+                "slug",
+                "summary",
+                "title",
+                "updated_at"
+              ],
+              "title": "HelpArticle",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "locale": {
+            "enum": [
+              "en",
+              "el",
+              "ar",
+              "ru",
+              "de",
+              "es",
+              "pt-PT",
+              "he",
+              "it",
+              "bg",
+              "nl",
+              "fr"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "articles",
+          "locale"
+        ],
+        "title": "HelpArticleList",
+        "type": "object"
+      },
+      "HelpArticleWrite": {
+        "additionalProperties": false,
+        "properties": {
+          "audience": {
+            "enum": [
+              "staff",
+              "member",
+              "all"
+            ],
+            "type": "string"
+          },
+          "body": {
+            "maxLength": 20000,
+            "type": "string"
+          },
+          "feature_key": {
+            "nullable": true,
+            "type": "string"
+          },
+          "guide_id": {
+            "nullable": true,
+            "type": "string"
+          },
+          "keywords": {
+            "items": {
+              "maxLength": 60,
+              "type": "string"
+            },
+            "maxItems": 30,
+            "type": "array"
+          },
+          "position": {
+            "maximum": 10000,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "screens": {
+            "items": {
+              "maxLength": 200,
+              "type": "string"
+            },
+            "maxItems": 20,
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "draft",
+              "published"
+            ],
+            "type": "string"
+          },
+          "summary": {
+            "maxLength": 500,
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 160,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "title": "HelpArticleWrite",
+        "type": "object"
+      },
+      "HelpArticlesReindexed": {
+        "properties": {
+          "reindexed": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "reindexed"
+        ],
+        "title": "HelpArticlesReindexed",
+        "type": "object"
+      },
+      "HelpDeskCitation": {
+        "properties": {
+          "locale": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "locale",
+          "slug",
+          "title"
+        ],
+        "title": "HelpDeskCitation",
+        "type": "object"
+      },
+      "HelpDeskClientContext": {
+        "additionalProperties": false,
+        "properties": {
+          "app_version": {
+            "maxLength": 80,
+            "type": "string"
+          },
+          "browser": {
+            "maxLength": 80,
+            "type": "string"
+          },
+          "platform": {
+            "maxLength": 80,
+            "type": "string"
+          },
+          "viewport": {
+            "maxLength": 80,
+            "type": "string"
+          }
+        },
+        "title": "HelpDeskClientContext",
+        "type": "object"
+      },
+      "HelpDeskConversation": {
+        "properties": {
+          "assistant": {
+            "enum": [
+              "answered",
+              "not_confident",
+              "no_articles",
+              "limit_reached",
+              "unavailable",
+              "skipped"
+            ],
+            "nullable": true,
+            "type": "string"
+          },
+          "can_hand_off": {
+            "type": "boolean"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "last_message_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "messages": {
+            "items": {
+              "properties": {
+                "author": {
+                  "enum": [
+                    "person",
+                    "assistant",
+                    "palee"
+                  ],
+                  "type": "string"
+                },
+                "body": {
+                  "type": "string"
+                },
+                "citations": {
+                  "items": {
+                    "properties": {
+                      "locale": {
+                        "type": "string"
+                      },
+                      "slug": {
+                        "type": "string"
+                      },
+                      "title": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "locale",
+                      "slug",
+                      "title"
+                    ],
+                    "title": "HelpDeskCitation",
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "confident": {
+                  "nullable": true,
+                  "type": "boolean"
+                },
+                "guide_id": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "sent_at": {
+                  "format": "date-time",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "author",
+                "body",
+                "citations",
+                "confident",
+                "guide_id",
+                "id",
+                "sent_at"
+              ],
+              "title": "HelpDeskMessage",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "screen_path": {
+            "nullable": true,
+            "type": "string"
+          },
+          "started_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "assistant",
+              "waiting_for_palee",
+              "answered_by_palee",
+              "resolved"
+            ],
+            "type": "string"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "ticket": {
+            "nullable": true,
+            "properties": {
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "priority": {
+                "enum": [
+                  "normal",
+                  "urgent"
+                ],
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "open",
+                  "waiting_on_box",
+                  "solved"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "priority",
+              "status"
+            ],
+            "title": "HelpDeskTicketRef",
+            "type": "object"
+          }
+        },
+        "required": [
+          "assistant",
+          "can_hand_off",
+          "id",
+          "last_message_at",
+          "locale",
+          "messages",
+          "screen_path",
+          "started_at",
+          "status",
+          "subject",
+          "ticket"
+        ],
+        "title": "HelpDeskConversation",
+        "type": "object"
+      },
+      "HelpDeskConversationList": {
+        "properties": {
+          "conversations": {
+            "items": {
+              "properties": {
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "last_message_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "locale": {
+                  "type": "string"
+                },
+                "screen_path": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "started_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "assistant",
+                    "waiting_for_palee",
+                    "answered_by_palee",
+                    "resolved"
+                  ],
+                  "type": "string"
+                },
+                "subject": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "last_message_at",
+                "locale",
+                "screen_path",
+                "started_at",
+                "status",
+                "subject"
+              ],
+              "title": "HelpDeskConversationSummary",
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "conversations"
+        ],
+        "title": "HelpDeskConversationList",
+        "type": "object"
+      },
+      "HelpDeskConversationSummary": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "last_message_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "screen_path": {
+            "nullable": true,
+            "type": "string"
+          },
+          "started_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "assistant",
+              "waiting_for_palee",
+              "answered_by_palee",
+              "resolved"
+            ],
+            "type": "string"
+          },
+          "subject": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "last_message_at",
+          "locale",
+          "screen_path",
+          "started_at",
+          "status",
+          "subject"
+        ],
+        "title": "HelpDeskConversationSummary",
+        "type": "object"
+      },
+      "HelpDeskHandOff": {
+        "additionalProperties": false,
+        "properties": {
+          "client_context": {
+            "additionalProperties": false,
+            "properties": {
+              "app_version": {
+                "maxLength": 80,
+                "type": "string"
+              },
+              "browser": {
+                "maxLength": 80,
+                "type": "string"
+              },
+              "platform": {
+                "maxLength": 80,
+                "type": "string"
+              },
+              "viewport": {
+                "maxLength": 80,
+                "type": "string"
+              }
+            },
+            "title": "HelpDeskClientContext",
+            "type": "object"
+          },
+          "note": {
+            "maxLength": 1000,
+            "type": "string"
+          },
+          "priority": {
+            "enum": [
+              "normal",
+              "urgent"
+            ],
+            "type": "string"
+          }
+        },
+        "title": "HelpDeskHandOff",
+        "type": "object"
+      },
+      "HelpDeskMessage": {
+        "properties": {
+          "author": {
+            "enum": [
+              "person",
+              "assistant",
+              "palee"
+            ],
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "citations": {
+            "items": {
+              "properties": {
+                "locale": {
+                  "type": "string"
+                },
+                "slug": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "locale",
+                "slug",
+                "title"
+              ],
+              "title": "HelpDeskCitation",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "confident": {
+            "nullable": true,
+            "type": "boolean"
+          },
+          "guide_id": {
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "sent_at": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "author",
+          "body",
+          "citations",
+          "confident",
+          "guide_id",
+          "id",
+          "sent_at"
+        ],
+        "title": "HelpDeskMessage",
+        "type": "object"
+      },
+      "HelpDeskMessageWrite": {
+        "additionalProperties": false,
+        "properties": {
+          "message": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "message"
+        ],
+        "title": "HelpDeskMessageWrite",
+        "type": "object"
+      },
+      "HelpDeskReply": {
+        "additionalProperties": false,
+        "properties": {
+          "body": {
+            "maxLength": 4000,
+            "minLength": 1,
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "waiting_on_box",
+              "solved"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "title": "HelpDeskReply",
+        "type": "object"
+      },
+      "HelpDeskStart": {
+        "additionalProperties": false,
+        "properties": {
+          "locale": {
+            "maxLength": 10,
+            "type": "string"
+          },
+          "message": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "type": "string"
+          },
+          "screen_path": {
+            "description": "The app path asked from",
+            "maxLength": 300,
+            "type": "string"
+          }
+        },
+        "required": [
+          "message"
+        ],
+        "title": "HelpDeskStart",
+        "type": "object"
+      },
+      "HelpDeskTicket": {
+        "properties": {
+          "articles_tried": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "assignee_id": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "client_context": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "first_response_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "opened_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "organization_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "priority": {
+            "enum": [
+              "normal",
+              "urgent"
+            ],
+            "type": "string"
+          },
+          "requester_id": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "screen_path": {
+            "nullable": true,
+            "type": "string"
+          },
+          "solved_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "open",
+              "waiting_on_box",
+              "solved"
+            ],
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "articles_tried",
+          "assignee_id",
+          "client_context",
+          "first_response_at",
+          "id",
+          "locale",
+          "opened_at",
+          "organization_id",
+          "priority",
+          "requester_id",
+          "screen_path",
+          "solved_at",
+          "status",
+          "summary",
+          "updated_at"
+        ],
+        "title": "HelpDeskTicket",
+        "type": "object"
+      },
+      "HelpDeskTicketConversation": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "started_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "assistant",
+              "waiting_for_palee",
+              "answered_by_palee",
+              "resolved"
+            ],
+            "type": "string"
+          },
+          "subject": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "started_at",
+          "status",
+          "subject"
+        ],
+        "title": "HelpDeskTicketConversation",
+        "type": "object"
+      },
+      "HelpDeskTicketDetail": {
+        "properties": {
+          "articles_tried": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "assignee_id": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "client_context": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "conversation": {
+            "properties": {
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "started_at": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "assistant",
+                  "waiting_for_palee",
+                  "answered_by_palee",
+                  "resolved"
+                ],
+                "type": "string"
+              },
+              "subject": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "started_at",
+              "status",
+              "subject"
+            ],
+            "title": "HelpDeskTicketConversation",
+            "type": "object"
+          },
+          "first_response_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "messages": {
+            "items": {
+              "properties": {
+                "author": {
+                  "enum": [
+                    "person",
+                    "assistant",
+                    "palee"
+                  ],
+                  "type": "string"
+                },
+                "body": {
+                  "type": "string"
+                },
+                "citations": {
+                  "items": {
+                    "properties": {
+                      "locale": {
+                        "type": "string"
+                      },
+                      "slug": {
+                        "type": "string"
+                      },
+                      "title": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "locale",
+                      "slug",
+                      "title"
+                    ],
+                    "title": "HelpDeskCitation",
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "confident": {
+                  "nullable": true,
+                  "type": "boolean"
+                },
+                "guide_id": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "sent_at": {
+                  "format": "date-time",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "author",
+                "body",
+                "citations",
+                "confident",
+                "guide_id",
+                "id",
+                "sent_at"
+              ],
+              "title": "HelpDeskMessage",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "opened_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "organization_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "priority": {
+            "enum": [
+              "normal",
+              "urgent"
+            ],
+            "type": "string"
+          },
+          "requester_id": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "screen_path": {
+            "nullable": true,
+            "type": "string"
+          },
+          "solved_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "open",
+              "waiting_on_box",
+              "solved"
+            ],
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "articles_tried",
+          "assignee_id",
+          "client_context",
+          "conversation",
+          "first_response_at",
+          "id",
+          "locale",
+          "messages",
+          "opened_at",
+          "organization_id",
+          "priority",
+          "requester_id",
+          "screen_path",
+          "solved_at",
+          "status",
+          "summary",
+          "updated_at"
+        ],
+        "title": "HelpDeskTicketDetail",
+        "type": "object"
+      },
+      "HelpDeskTicketList": {
+        "properties": {
+          "tickets": {
+            "items": {
+              "properties": {
+                "articles_tried": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "assignee_id": {
+                  "format": "uuid",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "client_context": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "first_response_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "locale": {
+                  "type": "string"
+                },
+                "opened_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "organization_id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "priority": {
+                  "enum": [
+                    "normal",
+                    "urgent"
+                  ],
+                  "type": "string"
+                },
+                "requester_id": {
+                  "format": "uuid",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "screen_path": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "solved_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "open",
+                    "waiting_on_box",
+                    "solved"
+                  ],
+                  "type": "string"
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "updated_at": {
+                  "format": "date-time",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "articles_tried",
+                "assignee_id",
+                "client_context",
+                "first_response_at",
+                "id",
+                "locale",
+                "opened_at",
+                "organization_id",
+                "priority",
+                "requester_id",
+                "screen_path",
+                "solved_at",
+                "status",
+                "summary",
+                "updated_at"
+              ],
+              "title": "HelpDeskTicket",
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "tickets"
+        ],
+        "title": "HelpDeskTicketList",
+        "type": "object"
+      },
+      "HelpDeskTicketRef": {
+        "nullable": true,
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "priority": {
+            "enum": [
+              "normal",
+              "urgent"
+            ],
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "open",
+              "waiting_on_box",
+              "solved"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "priority",
+          "status"
+        ],
+        "title": "HelpDeskTicketRef",
+        "type": "object"
+      },
+      "HelpDeskTicketUpdate": {
+        "additionalProperties": false,
+        "properties": {
+          "assignee_id": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "priority": {
+            "enum": [
+              "normal",
+              "urgent"
+            ],
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "open",
+              "waiting_on_box",
+              "solved"
+            ],
+            "type": "string"
+          }
+        },
+        "title": "HelpDeskTicketUpdate",
         "type": "object"
       },
       "InjuryAccessLog": {
@@ -158500,6 +160607,10 @@
                   "properties": {
                     "ai_settings": {
                       "properties": {
+                        "data_questions_enabled": {
+                          "description": "ADR-361: staff may ask questions over the box's data (platform AI)",
+                          "type": "boolean"
+                        },
                         "default_model": {
                           "type": "string"
                         },
@@ -158557,6 +160668,7 @@
                         }
                       },
                       "required": [
+                        "data_questions_enabled",
                         "scaling_enabled",
                         "voice_enabled",
                         "key_configured",
@@ -158605,6 +160717,9 @@
                     "type": "string",
                     "writeOnly": true
                   },
+                  "data_questions_enabled": {
+                    "type": "boolean"
+                  },
                   "model": {
                     "maxLength": 80,
                     "nullable": true,
@@ -158635,6 +160750,10 @@
                   "properties": {
                     "ai_settings": {
                       "properties": {
+                        "data_questions_enabled": {
+                          "description": "ADR-361: staff may ask questions over the box's data (platform AI)",
+                          "type": "boolean"
+                        },
                         "default_model": {
                           "type": "string"
                         },
@@ -158692,6 +160811,7 @@
                         }
                       },
                       "required": [
+                        "data_questions_enabled",
                         "scaling_enabled",
                         "voice_enabled",
                         "key_configured",
@@ -178997,6 +181117,785 @@
         "summary": "Whether members may start groups, and whether staff approve them first",
         "tags": [
           "Admin Community"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/data-questions": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminDataQuestionController.index",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "organization_slug",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "scope",
+            "required": false,
+            "schema": {
+              "enum": [
+                "mine",
+                "all"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "questions": {
+                      "items": {
+                        "properties": {
+                          "actions": {
+                            "items": {
+                              "properties": {
+                                "count": {
+                                  "type": "integer"
+                                },
+                                "kind": {
+                                  "enum": [
+                                    "message_people"
+                                  ],
+                                  "type": "string"
+                                },
+                                "ref": {
+                                  "type": "string"
+                                },
+                                "user_ids": {
+                                  "items": {
+                                    "format": "uuid",
+                                    "type": "string"
+                                  },
+                                  "type": "array"
+                                }
+                              },
+                              "required": [
+                                "count",
+                                "kind",
+                                "ref",
+                                "user_ids"
+                              ],
+                              "title": "DataQuestionAction",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "answer": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "asked_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "asked_by_id": {
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "citations": {
+                            "items": {
+                              "properties": {
+                                "arguments": {
+                                  "additionalProperties": true,
+                                  "type": "object"
+                                },
+                                "query": {
+                                  "type": "string"
+                                },
+                                "ref": {
+                                  "description": "q1, q2… as written in the answer",
+                                  "type": "string"
+                                },
+                                "summary": {
+                                  "additionalProperties": true,
+                                  "type": "object"
+                                }
+                              },
+                              "required": [
+                                "arguments",
+                                "query",
+                                "ref",
+                                "summary"
+                              ],
+                              "title": "DataQuestionCitation",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "error_code": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "grounded": {
+                            "description": "Every number in the answer was found in the cited data",
+                            "type": "boolean"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "locale": {
+                            "type": "string"
+                          },
+                          "queries": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "question": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "answered",
+                              "unanswerable",
+                              "failed",
+                              "refused"
+                            ],
+                            "type": "string"
+                          },
+                          "tables": {
+                            "description": "Built by the server, only in the answer to the question (never stored)",
+                            "items": {
+                              "properties": {
+                                "columns": {
+                                  "items": {
+                                    "type": "string"
+                                  },
+                                  "type": "array"
+                                },
+                                "query": {
+                                  "type": "string"
+                                },
+                                "ref": {
+                                  "type": "string"
+                                },
+                                "rows": {
+                                  "items": {
+                                    "additionalProperties": true,
+                                    "type": "object"
+                                  },
+                                  "type": "array"
+                                }
+                              },
+                              "required": [
+                                "columns",
+                                "query",
+                                "ref",
+                                "rows"
+                              ],
+                              "title": "DataQuestionTable",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "unsupported_numbers": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "required": [
+                          "actions",
+                          "answer",
+                          "asked_at",
+                          "asked_by_id",
+                          "citations",
+                          "error_code",
+                          "grounded",
+                          "id",
+                          "locale",
+                          "queries",
+                          "question",
+                          "status",
+                          "tables",
+                          "unsupported_numbers"
+                        ],
+                        "title": "DataQuestion",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "questions"
+                  ],
+                  "title": "DataQuestionList",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Questions"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "My questions, newest first; scope=all lists the box's audit log (owner, admin)",
+        "tags": [
+          "Data questions"
+        ]
+      },
+      "post": {
+        "callbacks": {},
+        "description": "The model picks typed, permission-checked read queries; it never writes SQL nor sees people's names. `grounded` says whether every number in the answer was found in the cited data. 403 data_questions_disabled, 429 ai_budget_exhausted / ai_daily_limit_reached, 424 llm_unavailable / llm_quota_exhausted / llm_invalid_answer.",
+        "operationId": "PaleeWeb.AdminDataQuestionController.create",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "organization_slug",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "locale": {
+                    "description": "Answer language (12 locales)",
+                    "maxLength": 10,
+                    "type": "string"
+                  },
+                  "question": {
+                    "maxLength": 500,
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "question"
+                ],
+                "title": "DataQuestionRequest",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "actions": {
+                      "items": {
+                        "properties": {
+                          "count": {
+                            "type": "integer"
+                          },
+                          "kind": {
+                            "enum": [
+                              "message_people"
+                            ],
+                            "type": "string"
+                          },
+                          "ref": {
+                            "type": "string"
+                          },
+                          "user_ids": {
+                            "items": {
+                              "format": "uuid",
+                              "type": "string"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "required": [
+                          "count",
+                          "kind",
+                          "ref",
+                          "user_ids"
+                        ],
+                        "title": "DataQuestionAction",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "answer": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "asked_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "asked_by_id": {
+                      "format": "uuid",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "citations": {
+                      "items": {
+                        "properties": {
+                          "arguments": {
+                            "additionalProperties": true,
+                            "type": "object"
+                          },
+                          "query": {
+                            "type": "string"
+                          },
+                          "ref": {
+                            "description": "q1, q2… as written in the answer",
+                            "type": "string"
+                          },
+                          "summary": {
+                            "additionalProperties": true,
+                            "type": "object"
+                          }
+                        },
+                        "required": [
+                          "arguments",
+                          "query",
+                          "ref",
+                          "summary"
+                        ],
+                        "title": "DataQuestionCitation",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "error_code": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "grounded": {
+                      "description": "Every number in the answer was found in the cited data",
+                      "type": "boolean"
+                    },
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "locale": {
+                      "type": "string"
+                    },
+                    "queries": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "question": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "enum": [
+                        "answered",
+                        "unanswerable",
+                        "failed",
+                        "refused"
+                      ],
+                      "type": "string"
+                    },
+                    "tables": {
+                      "description": "Built by the server, only in the answer to the question (never stored)",
+                      "items": {
+                        "properties": {
+                          "columns": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "query": {
+                            "type": "string"
+                          },
+                          "ref": {
+                            "type": "string"
+                          },
+                          "rows": {
+                            "items": {
+                              "additionalProperties": true,
+                              "type": "object"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "required": [
+                          "columns",
+                          "query",
+                          "ref",
+                          "rows"
+                        ],
+                        "title": "DataQuestionTable",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "unsupported_numbers": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "actions",
+                    "answer",
+                    "asked_at",
+                    "asked_by_id",
+                    "citations",
+                    "error_code",
+                    "grounded",
+                    "id",
+                    "locale",
+                    "queries",
+                    "question",
+                    "status",
+                    "tables",
+                    "unsupported_numbers"
+                  ],
+                  "title": "DataQuestion",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Answer"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Ask a question over the box's data",
+        "tags": [
+          "Data questions"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/data-questions/catalogue": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminDataQuestionController.catalogue",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "organization_slug",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "asked_today": {
+                      "type": "integer"
+                    },
+                    "daily_limit": {
+                      "nullable": true,
+                      "type": "integer"
+                    },
+                    "enabled": {
+                      "description": "Settings › AI switch (owner)",
+                      "type": "boolean"
+                    },
+                    "queries": {
+                      "items": {
+                        "properties": {
+                          "arguments": {
+                            "additionalProperties": true,
+                            "description": "JSON Schema of the arguments",
+                            "type": "object"
+                          },
+                          "name": {
+                            "enum": [
+                              "attendance_by_class_type",
+                              "expiring_subscriptions",
+                              "member_counts",
+                              "members_absent",
+                              "revenue_by_month",
+                              "revenue_by_package"
+                            ],
+                            "type": "string"
+                          },
+                          "people": {
+                            "description": "Its results list people (names shown only to staff)",
+                            "type": "boolean"
+                          },
+                          "summary": {
+                            "type": "string"
+                          },
+                          "version": {
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "arguments",
+                          "name",
+                          "people",
+                          "summary",
+                          "version"
+                        ],
+                        "title": "DataQuery",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "asked_today",
+                    "daily_limit",
+                    "enabled",
+                    "queries"
+                  ],
+                  "title": "DataQuestionCatalogue",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Catalogue"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "What this person can ask: the switch, the read queries and the daily limit",
+        "tags": [
+          "Data questions"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/data-questions/{id}": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminDataQuestionController.show",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "organization_slug",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "actions": {
+                      "items": {
+                        "properties": {
+                          "count": {
+                            "type": "integer"
+                          },
+                          "kind": {
+                            "enum": [
+                              "message_people"
+                            ],
+                            "type": "string"
+                          },
+                          "ref": {
+                            "type": "string"
+                          },
+                          "user_ids": {
+                            "items": {
+                              "format": "uuid",
+                              "type": "string"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "required": [
+                          "count",
+                          "kind",
+                          "ref",
+                          "user_ids"
+                        ],
+                        "title": "DataQuestionAction",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "answer": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "asked_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "asked_by_id": {
+                      "format": "uuid",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "citations": {
+                      "items": {
+                        "properties": {
+                          "arguments": {
+                            "additionalProperties": true,
+                            "type": "object"
+                          },
+                          "query": {
+                            "type": "string"
+                          },
+                          "ref": {
+                            "description": "q1, q2… as written in the answer",
+                            "type": "string"
+                          },
+                          "summary": {
+                            "additionalProperties": true,
+                            "type": "object"
+                          }
+                        },
+                        "required": [
+                          "arguments",
+                          "query",
+                          "ref",
+                          "summary"
+                        ],
+                        "title": "DataQuestionCitation",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "error_code": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "grounded": {
+                      "description": "Every number in the answer was found in the cited data",
+                      "type": "boolean"
+                    },
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "locale": {
+                      "type": "string"
+                    },
+                    "queries": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "question": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "enum": [
+                        "answered",
+                        "unanswerable",
+                        "failed",
+                        "refused"
+                      ],
+                      "type": "string"
+                    },
+                    "tables": {
+                      "description": "Built by the server, only in the answer to the question (never stored)",
+                      "items": {
+                        "properties": {
+                          "columns": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "query": {
+                            "type": "string"
+                          },
+                          "ref": {
+                            "type": "string"
+                          },
+                          "rows": {
+                            "items": {
+                              "additionalProperties": true,
+                              "type": "object"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "required": [
+                          "columns",
+                          "query",
+                          "ref",
+                          "rows"
+                        ],
+                        "title": "DataQuestionTable",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "unsupported_numbers": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "actions",
+                    "answer",
+                    "asked_at",
+                    "asked_by_id",
+                    "citations",
+                    "error_code",
+                    "grounded",
+                    "id",
+                    "locale",
+                    "queries",
+                    "question",
+                    "status",
+                    "tables",
+                    "unsupported_numbers"
+                  ],
+                  "title": "DataQuestion",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Question"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "One question and its answer (tables are not stored)",
+        "tags": [
+          "Data questions"
         ]
       }
     },
@@ -202739,6 +205638,1223 @@
         "summary": "The address and neighbourhood at a map point (ADR-141)",
         "tags": [
           "Admin Facility"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/help-desk/conversations": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminHelpDeskController.index",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "organization_slug",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "conversations": {
+                      "items": {
+                        "properties": {
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "last_message_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "locale": {
+                            "type": "string"
+                          },
+                          "screen_path": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "started_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "assistant",
+                              "waiting_for_palee",
+                              "answered_by_palee",
+                              "resolved"
+                            ],
+                            "type": "string"
+                          },
+                          "subject": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "last_message_at",
+                          "locale",
+                          "screen_path",
+                          "started_at",
+                          "status",
+                          "subject"
+                        ],
+                        "title": "HelpDeskConversationSummary",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "conversations"
+                  ],
+                  "title": "HelpDeskConversationList",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Conversations"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "My support conversations, latest first",
+        "tags": [
+          "Help desk"
+        ]
+      },
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminHelpDeskController.create",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "organization_slug",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "locale": {
+                    "maxLength": 10,
+                    "type": "string"
+                  },
+                  "message": {
+                    "maxLength": 2000,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "screen_path": {
+                    "description": "The app path asked from",
+                    "maxLength": 300,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "message"
+                ],
+                "title": "HelpDeskStart",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "assistant": {
+                      "enum": [
+                        "answered",
+                        "not_confident",
+                        "no_articles",
+                        "limit_reached",
+                        "unavailable",
+                        "skipped"
+                      ],
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "can_hand_off": {
+                      "type": "boolean"
+                    },
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "last_message_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "locale": {
+                      "type": "string"
+                    },
+                    "messages": {
+                      "items": {
+                        "properties": {
+                          "author": {
+                            "enum": [
+                              "person",
+                              "assistant",
+                              "palee"
+                            ],
+                            "type": "string"
+                          },
+                          "body": {
+                            "type": "string"
+                          },
+                          "citations": {
+                            "items": {
+                              "properties": {
+                                "locale": {
+                                  "type": "string"
+                                },
+                                "slug": {
+                                  "type": "string"
+                                },
+                                "title": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "locale",
+                                "slug",
+                                "title"
+                              ],
+                              "title": "HelpDeskCitation",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "confident": {
+                            "nullable": true,
+                            "type": "boolean"
+                          },
+                          "guide_id": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "sent_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "author",
+                          "body",
+                          "citations",
+                          "confident",
+                          "guide_id",
+                          "id",
+                          "sent_at"
+                        ],
+                        "title": "HelpDeskMessage",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "screen_path": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "started_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "status": {
+                      "enum": [
+                        "assistant",
+                        "waiting_for_palee",
+                        "answered_by_palee",
+                        "resolved"
+                      ],
+                      "type": "string"
+                    },
+                    "subject": {
+                      "type": "string"
+                    },
+                    "ticket": {
+                      "nullable": true,
+                      "properties": {
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "priority": {
+                          "enum": [
+                            "normal",
+                            "urgent"
+                          ],
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "open",
+                            "waiting_on_box",
+                            "solved"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "priority",
+                        "status"
+                      ],
+                      "title": "HelpDeskTicketRef",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "assistant",
+                    "can_hand_off",
+                    "id",
+                    "last_message_at",
+                    "locale",
+                    "messages",
+                    "screen_path",
+                    "started_at",
+                    "status",
+                    "subject",
+                    "ticket"
+                  ],
+                  "title": "HelpDeskConversation",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Conversation"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Start a support conversation; the assistant answers from the help centre",
+        "tags": [
+          "Help desk"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/help-desk/conversations/{id}": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminHelpDeskController.show",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "organization_slug",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "assistant": {
+                      "enum": [
+                        "answered",
+                        "not_confident",
+                        "no_articles",
+                        "limit_reached",
+                        "unavailable",
+                        "skipped"
+                      ],
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "can_hand_off": {
+                      "type": "boolean"
+                    },
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "last_message_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "locale": {
+                      "type": "string"
+                    },
+                    "messages": {
+                      "items": {
+                        "properties": {
+                          "author": {
+                            "enum": [
+                              "person",
+                              "assistant",
+                              "palee"
+                            ],
+                            "type": "string"
+                          },
+                          "body": {
+                            "type": "string"
+                          },
+                          "citations": {
+                            "items": {
+                              "properties": {
+                                "locale": {
+                                  "type": "string"
+                                },
+                                "slug": {
+                                  "type": "string"
+                                },
+                                "title": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "locale",
+                                "slug",
+                                "title"
+                              ],
+                              "title": "HelpDeskCitation",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "confident": {
+                            "nullable": true,
+                            "type": "boolean"
+                          },
+                          "guide_id": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "sent_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "author",
+                          "body",
+                          "citations",
+                          "confident",
+                          "guide_id",
+                          "id",
+                          "sent_at"
+                        ],
+                        "title": "HelpDeskMessage",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "screen_path": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "started_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "status": {
+                      "enum": [
+                        "assistant",
+                        "waiting_for_palee",
+                        "answered_by_palee",
+                        "resolved"
+                      ],
+                      "type": "string"
+                    },
+                    "subject": {
+                      "type": "string"
+                    },
+                    "ticket": {
+                      "nullable": true,
+                      "properties": {
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "priority": {
+                          "enum": [
+                            "normal",
+                            "urgent"
+                          ],
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "open",
+                            "waiting_on_box",
+                            "solved"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "priority",
+                        "status"
+                      ],
+                      "title": "HelpDeskTicketRef",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "assistant",
+                    "can_hand_off",
+                    "id",
+                    "last_message_at",
+                    "locale",
+                    "messages",
+                    "screen_path",
+                    "started_at",
+                    "status",
+                    "subject",
+                    "ticket"
+                  ],
+                  "title": "HelpDeskConversation",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Conversation"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "One of my conversations with its messages",
+        "tags": [
+          "Help desk"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/help-desk/conversations/{id}/hand-off": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminHelpDeskController.hand_off",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "organization_slug",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "client_context": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "app_version": {
+                        "maxLength": 80,
+                        "type": "string"
+                      },
+                      "browser": {
+                        "maxLength": 80,
+                        "type": "string"
+                      },
+                      "platform": {
+                        "maxLength": 80,
+                        "type": "string"
+                      },
+                      "viewport": {
+                        "maxLength": 80,
+                        "type": "string"
+                      }
+                    },
+                    "title": "HelpDeskClientContext",
+                    "type": "object"
+                  },
+                  "note": {
+                    "maxLength": 1000,
+                    "type": "string"
+                  },
+                  "priority": {
+                    "enum": [
+                      "normal",
+                      "urgent"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "title": "HelpDeskHandOff",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "assistant": {
+                      "enum": [
+                        "answered",
+                        "not_confident",
+                        "no_articles",
+                        "limit_reached",
+                        "unavailable",
+                        "skipped"
+                      ],
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "can_hand_off": {
+                      "type": "boolean"
+                    },
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "last_message_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "locale": {
+                      "type": "string"
+                    },
+                    "messages": {
+                      "items": {
+                        "properties": {
+                          "author": {
+                            "enum": [
+                              "person",
+                              "assistant",
+                              "palee"
+                            ],
+                            "type": "string"
+                          },
+                          "body": {
+                            "type": "string"
+                          },
+                          "citations": {
+                            "items": {
+                              "properties": {
+                                "locale": {
+                                  "type": "string"
+                                },
+                                "slug": {
+                                  "type": "string"
+                                },
+                                "title": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "locale",
+                                "slug",
+                                "title"
+                              ],
+                              "title": "HelpDeskCitation",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "confident": {
+                            "nullable": true,
+                            "type": "boolean"
+                          },
+                          "guide_id": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "sent_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "author",
+                          "body",
+                          "citations",
+                          "confident",
+                          "guide_id",
+                          "id",
+                          "sent_at"
+                        ],
+                        "title": "HelpDeskMessage",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "screen_path": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "started_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "status": {
+                      "enum": [
+                        "assistant",
+                        "waiting_for_palee",
+                        "answered_by_palee",
+                        "resolved"
+                      ],
+                      "type": "string"
+                    },
+                    "subject": {
+                      "type": "string"
+                    },
+                    "ticket": {
+                      "nullable": true,
+                      "properties": {
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "priority": {
+                          "enum": [
+                            "normal",
+                            "urgent"
+                          ],
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "open",
+                            "waiting_on_box",
+                            "solved"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "priority",
+                        "status"
+                      ],
+                      "title": "HelpDeskTicketRef",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "assistant",
+                    "can_hand_off",
+                    "id",
+                    "last_message_at",
+                    "locale",
+                    "messages",
+                    "screen_path",
+                    "started_at",
+                    "status",
+                    "subject",
+                    "ticket"
+                  ],
+                  "title": "HelpDeskConversation",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Conversation"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Hand the conversation to the Palee team (opens a ticket; idempotent)",
+        "tags": [
+          "Help desk"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/help-desk/conversations/{id}/messages": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminHelpDeskController.message",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "organization_slug",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "message": {
+                    "maxLength": 2000,
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "message"
+                ],
+                "title": "HelpDeskMessageWrite",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "assistant": {
+                      "enum": [
+                        "answered",
+                        "not_confident",
+                        "no_articles",
+                        "limit_reached",
+                        "unavailable",
+                        "skipped"
+                      ],
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "can_hand_off": {
+                      "type": "boolean"
+                    },
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "last_message_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "locale": {
+                      "type": "string"
+                    },
+                    "messages": {
+                      "items": {
+                        "properties": {
+                          "author": {
+                            "enum": [
+                              "person",
+                              "assistant",
+                              "palee"
+                            ],
+                            "type": "string"
+                          },
+                          "body": {
+                            "type": "string"
+                          },
+                          "citations": {
+                            "items": {
+                              "properties": {
+                                "locale": {
+                                  "type": "string"
+                                },
+                                "slug": {
+                                  "type": "string"
+                                },
+                                "title": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "locale",
+                                "slug",
+                                "title"
+                              ],
+                              "title": "HelpDeskCitation",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "confident": {
+                            "nullable": true,
+                            "type": "boolean"
+                          },
+                          "guide_id": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "sent_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "author",
+                          "body",
+                          "citations",
+                          "confident",
+                          "guide_id",
+                          "id",
+                          "sent_at"
+                        ],
+                        "title": "HelpDeskMessage",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "screen_path": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "started_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "status": {
+                      "enum": [
+                        "assistant",
+                        "waiting_for_palee",
+                        "answered_by_palee",
+                        "resolved"
+                      ],
+                      "type": "string"
+                    },
+                    "subject": {
+                      "type": "string"
+                    },
+                    "ticket": {
+                      "nullable": true,
+                      "properties": {
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "priority": {
+                          "enum": [
+                            "normal",
+                            "urgent"
+                          ],
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "open",
+                            "waiting_on_box",
+                            "solved"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "priority",
+                        "status"
+                      ],
+                      "title": "HelpDeskTicketRef",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "assistant",
+                    "can_hand_off",
+                    "id",
+                    "last_message_at",
+                    "locale",
+                    "messages",
+                    "screen_path",
+                    "started_at",
+                    "status",
+                    "subject",
+                    "ticket"
+                  ],
+                  "title": "HelpDeskConversation",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Conversation"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Write in a conversation (the assistant answers while it has it)",
+        "tags": [
+          "Help desk"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/help-desk/conversations/{id}/resolve": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminHelpDeskController.resolve",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "organization_slug",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "assistant": {
+                      "enum": [
+                        "answered",
+                        "not_confident",
+                        "no_articles",
+                        "limit_reached",
+                        "unavailable",
+                        "skipped"
+                      ],
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "can_hand_off": {
+                      "type": "boolean"
+                    },
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "last_message_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "locale": {
+                      "type": "string"
+                    },
+                    "messages": {
+                      "items": {
+                        "properties": {
+                          "author": {
+                            "enum": [
+                              "person",
+                              "assistant",
+                              "palee"
+                            ],
+                            "type": "string"
+                          },
+                          "body": {
+                            "type": "string"
+                          },
+                          "citations": {
+                            "items": {
+                              "properties": {
+                                "locale": {
+                                  "type": "string"
+                                },
+                                "slug": {
+                                  "type": "string"
+                                },
+                                "title": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "locale",
+                                "slug",
+                                "title"
+                              ],
+                              "title": "HelpDeskCitation",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "confident": {
+                            "nullable": true,
+                            "type": "boolean"
+                          },
+                          "guide_id": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "sent_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "author",
+                          "body",
+                          "citations",
+                          "confident",
+                          "guide_id",
+                          "id",
+                          "sent_at"
+                        ],
+                        "title": "HelpDeskMessage",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "screen_path": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "started_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "status": {
+                      "enum": [
+                        "assistant",
+                        "waiting_for_palee",
+                        "answered_by_palee",
+                        "resolved"
+                      ],
+                      "type": "string"
+                    },
+                    "subject": {
+                      "type": "string"
+                    },
+                    "ticket": {
+                      "nullable": true,
+                      "properties": {
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "priority": {
+                          "enum": [
+                            "normal",
+                            "urgent"
+                          ],
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "open",
+                            "waiting_on_box",
+                            "solved"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "priority",
+                        "status"
+                      ],
+                      "title": "HelpDeskTicketRef",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "assistant",
+                    "can_hand_off",
+                    "id",
+                    "last_message_at",
+                    "locale",
+                    "messages",
+                    "screen_path",
+                    "started_at",
+                    "status",
+                    "subject",
+                    "ticket"
+                  ],
+                  "title": "HelpDeskConversation",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Conversation"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Close the conversation (and its ticket)",
+        "tags": [
+          "Help desk"
         ]
       }
     },
@@ -326818,6 +330934,1475 @@
         ]
       }
     },
+    "/api/platform/help-desk/tickets": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformHelpDeskController.index",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "enum": [
+                "open",
+                "waiting_on_box",
+                "solved"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "tickets": {
+                      "items": {
+                        "properties": {
+                          "articles_tried": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "assignee_id": {
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "client_context": {
+                            "additionalProperties": true,
+                            "type": "object"
+                          },
+                          "first_response_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "locale": {
+                            "type": "string"
+                          },
+                          "opened_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "organization_id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "priority": {
+                            "enum": [
+                              "normal",
+                              "urgent"
+                            ],
+                            "type": "string"
+                          },
+                          "requester_id": {
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "screen_path": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "solved_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "open",
+                              "waiting_on_box",
+                              "solved"
+                            ],
+                            "type": "string"
+                          },
+                          "summary": {
+                            "type": "string"
+                          },
+                          "updated_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "articles_tried",
+                          "assignee_id",
+                          "client_context",
+                          "first_response_at",
+                          "id",
+                          "locale",
+                          "opened_at",
+                          "organization_id",
+                          "priority",
+                          "requester_id",
+                          "screen_path",
+                          "solved_at",
+                          "status",
+                          "summary",
+                          "updated_at"
+                        ],
+                        "title": "HelpDeskTicket",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "tickets"
+                  ],
+                  "title": "HelpDeskTicketList",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Tickets"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Tickets of every box, urgent first then oldest (vendors)",
+        "tags": [
+          "Platform help desk"
+        ]
+      }
+    },
+    "/api/platform/help-desk/tickets/{id}": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformHelpDeskController.show",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "articles_tried": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "assignee_id": {
+                      "format": "uuid",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "client_context": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    },
+                    "conversation": {
+                      "properties": {
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "started_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "assistant",
+                            "waiting_for_palee",
+                            "answered_by_palee",
+                            "resolved"
+                          ],
+                          "type": "string"
+                        },
+                        "subject": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "started_at",
+                        "status",
+                        "subject"
+                      ],
+                      "title": "HelpDeskTicketConversation",
+                      "type": "object"
+                    },
+                    "first_response_at": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "locale": {
+                      "type": "string"
+                    },
+                    "messages": {
+                      "items": {
+                        "properties": {
+                          "author": {
+                            "enum": [
+                              "person",
+                              "assistant",
+                              "palee"
+                            ],
+                            "type": "string"
+                          },
+                          "body": {
+                            "type": "string"
+                          },
+                          "citations": {
+                            "items": {
+                              "properties": {
+                                "locale": {
+                                  "type": "string"
+                                },
+                                "slug": {
+                                  "type": "string"
+                                },
+                                "title": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "locale",
+                                "slug",
+                                "title"
+                              ],
+                              "title": "HelpDeskCitation",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "confident": {
+                            "nullable": true,
+                            "type": "boolean"
+                          },
+                          "guide_id": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "sent_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "author",
+                          "body",
+                          "citations",
+                          "confident",
+                          "guide_id",
+                          "id",
+                          "sent_at"
+                        ],
+                        "title": "HelpDeskMessage",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "opened_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "organization_id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "priority": {
+                      "enum": [
+                        "normal",
+                        "urgent"
+                      ],
+                      "type": "string"
+                    },
+                    "requester_id": {
+                      "format": "uuid",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "screen_path": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "solved_at": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "status": {
+                      "enum": [
+                        "open",
+                        "waiting_on_box",
+                        "solved"
+                      ],
+                      "type": "string"
+                    },
+                    "summary": {
+                      "type": "string"
+                    },
+                    "updated_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "articles_tried",
+                    "assignee_id",
+                    "client_context",
+                    "conversation",
+                    "first_response_at",
+                    "id",
+                    "locale",
+                    "messages",
+                    "opened_at",
+                    "organization_id",
+                    "priority",
+                    "requester_id",
+                    "screen_path",
+                    "solved_at",
+                    "status",
+                    "summary",
+                    "updated_at"
+                  ],
+                  "title": "HelpDeskTicketDetail",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Ticket"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "One ticket with its conversation (audited)",
+        "tags": [
+          "Platform help desk"
+        ]
+      },
+      "patch": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformHelpDeskController.update",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "assignee_id": {
+                    "format": "uuid",
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "priority": {
+                    "enum": [
+                      "normal",
+                      "urgent"
+                    ],
+                    "type": "string"
+                  },
+                  "status": {
+                    "enum": [
+                      "open",
+                      "waiting_on_box",
+                      "solved"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "title": "HelpDeskTicketUpdate",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "articles_tried": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "assignee_id": {
+                      "format": "uuid",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "client_context": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    },
+                    "conversation": {
+                      "properties": {
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "started_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "assistant",
+                            "waiting_for_palee",
+                            "answered_by_palee",
+                            "resolved"
+                          ],
+                          "type": "string"
+                        },
+                        "subject": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "started_at",
+                        "status",
+                        "subject"
+                      ],
+                      "title": "HelpDeskTicketConversation",
+                      "type": "object"
+                    },
+                    "first_response_at": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "locale": {
+                      "type": "string"
+                    },
+                    "messages": {
+                      "items": {
+                        "properties": {
+                          "author": {
+                            "enum": [
+                              "person",
+                              "assistant",
+                              "palee"
+                            ],
+                            "type": "string"
+                          },
+                          "body": {
+                            "type": "string"
+                          },
+                          "citations": {
+                            "items": {
+                              "properties": {
+                                "locale": {
+                                  "type": "string"
+                                },
+                                "slug": {
+                                  "type": "string"
+                                },
+                                "title": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "locale",
+                                "slug",
+                                "title"
+                              ],
+                              "title": "HelpDeskCitation",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "confident": {
+                            "nullable": true,
+                            "type": "boolean"
+                          },
+                          "guide_id": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "sent_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "author",
+                          "body",
+                          "citations",
+                          "confident",
+                          "guide_id",
+                          "id",
+                          "sent_at"
+                        ],
+                        "title": "HelpDeskMessage",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "opened_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "organization_id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "priority": {
+                      "enum": [
+                        "normal",
+                        "urgent"
+                      ],
+                      "type": "string"
+                    },
+                    "requester_id": {
+                      "format": "uuid",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "screen_path": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "solved_at": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "status": {
+                      "enum": [
+                        "open",
+                        "waiting_on_box",
+                        "solved"
+                      ],
+                      "type": "string"
+                    },
+                    "summary": {
+                      "type": "string"
+                    },
+                    "updated_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "articles_tried",
+                    "assignee_id",
+                    "client_context",
+                    "conversation",
+                    "first_response_at",
+                    "id",
+                    "locale",
+                    "messages",
+                    "opened_at",
+                    "organization_id",
+                    "priority",
+                    "requester_id",
+                    "screen_path",
+                    "solved_at",
+                    "status",
+                    "summary",
+                    "updated_at"
+                  ],
+                  "title": "HelpDeskTicketDetail",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Ticket"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Change a ticket's state, priority or assignee",
+        "tags": [
+          "Platform help desk"
+        ]
+      }
+    },
+    "/api/platform/help-desk/tickets/{id}/replies": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformHelpDeskController.reply",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "body": {
+                    "maxLength": 4000,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "status": {
+                    "enum": [
+                      "waiting_on_box",
+                      "solved"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "body"
+                ],
+                "title": "HelpDeskReply",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "articles_tried": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "assignee_id": {
+                      "format": "uuid",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "client_context": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    },
+                    "conversation": {
+                      "properties": {
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "started_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "assistant",
+                            "waiting_for_palee",
+                            "answered_by_palee",
+                            "resolved"
+                          ],
+                          "type": "string"
+                        },
+                        "subject": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "started_at",
+                        "status",
+                        "subject"
+                      ],
+                      "title": "HelpDeskTicketConversation",
+                      "type": "object"
+                    },
+                    "first_response_at": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "locale": {
+                      "type": "string"
+                    },
+                    "messages": {
+                      "items": {
+                        "properties": {
+                          "author": {
+                            "enum": [
+                              "person",
+                              "assistant",
+                              "palee"
+                            ],
+                            "type": "string"
+                          },
+                          "body": {
+                            "type": "string"
+                          },
+                          "citations": {
+                            "items": {
+                              "properties": {
+                                "locale": {
+                                  "type": "string"
+                                },
+                                "slug": {
+                                  "type": "string"
+                                },
+                                "title": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "locale",
+                                "slug",
+                                "title"
+                              ],
+                              "title": "HelpDeskCitation",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "confident": {
+                            "nullable": true,
+                            "type": "boolean"
+                          },
+                          "guide_id": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "sent_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "author",
+                          "body",
+                          "citations",
+                          "confident",
+                          "guide_id",
+                          "id",
+                          "sent_at"
+                        ],
+                        "title": "HelpDeskMessage",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "opened_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "organization_id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "priority": {
+                      "enum": [
+                        "normal",
+                        "urgent"
+                      ],
+                      "type": "string"
+                    },
+                    "requester_id": {
+                      "format": "uuid",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "screen_path": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "solved_at": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "status": {
+                      "enum": [
+                        "open",
+                        "waiting_on_box",
+                        "solved"
+                      ],
+                      "type": "string"
+                    },
+                    "summary": {
+                      "type": "string"
+                    },
+                    "updated_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "articles_tried",
+                    "assignee_id",
+                    "client_context",
+                    "conversation",
+                    "first_response_at",
+                    "id",
+                    "locale",
+                    "messages",
+                    "opened_at",
+                    "organization_id",
+                    "priority",
+                    "requester_id",
+                    "screen_path",
+                    "solved_at",
+                    "status",
+                    "summary",
+                    "updated_at"
+                  ],
+                  "title": "HelpDeskTicketDetail",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Ticket"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Answer the box (the ticket waits on the box, or is solved)",
+        "tags": [
+          "Platform help desk"
+        ]
+      }
+    },
+    "/api/platform/help/articles": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformHelpArticleController.index",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "locale",
+            "required": false,
+            "schema": {
+              "enum": [
+                "en",
+                "el",
+                "ar",
+                "ru",
+                "de",
+                "es",
+                "pt-PT",
+                "he",
+                "it",
+                "bg",
+                "nl",
+                "fr"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "enum": [
+                "draft",
+                "published"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "slug",
+            "required": false,
+            "schema": {
+              "maxLength": 80,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "articles": {
+                      "items": {
+                        "properties": {
+                          "audience": {
+                            "enum": [
+                              "staff",
+                              "member",
+                              "all"
+                            ],
+                            "type": "string"
+                          },
+                          "body": {
+                            "description": "Markdown without HTML",
+                            "type": "string"
+                          },
+                          "complete": {
+                            "description": "Fully translated",
+                            "type": "boolean"
+                          },
+                          "fallback": {
+                            "description": "Shown in English: no translation yet",
+                            "type": "boolean"
+                          },
+                          "feature_key": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "guide_id": {
+                            "description": "In-app guide it can start (ADR-193)",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "keywords": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "locale": {
+                            "enum": [
+                              "en",
+                              "el",
+                              "ar",
+                              "ru",
+                              "de",
+                              "es",
+                              "pt-PT",
+                              "he",
+                              "it",
+                              "bg",
+                              "nl",
+                              "fr"
+                            ],
+                            "type": "string"
+                          },
+                          "position": {
+                            "type": "integer"
+                          },
+                          "published_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "screens": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "slug": {
+                            "type": "string"
+                          },
+                          "source": {
+                            "enum": [
+                              "seed",
+                              "palee"
+                            ],
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "draft",
+                              "published"
+                            ],
+                            "type": "string"
+                          },
+                          "summary": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "updated_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "version": {
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "audience",
+                          "body",
+                          "complete",
+                          "fallback",
+                          "feature_key",
+                          "guide_id",
+                          "id",
+                          "keywords",
+                          "locale",
+                          "position",
+                          "published_at",
+                          "screens",
+                          "slug",
+                          "source",
+                          "status",
+                          "summary",
+                          "title",
+                          "updated_at",
+                          "version"
+                        ],
+                        "title": "HelpArticleConsole",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "articles"
+                  ],
+                  "title": "HelpArticleConsoleList",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Articles"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Every help article in every locale, drafts too (vendors)",
+        "tags": [
+          "Platform help centre"
+        ]
+      }
+    },
+    "/api/platform/help/articles/{slug}/{locale}": {
+      "delete": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformHelpArticleController.delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "maxLength": 80,
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "locale",
+            "required": true,
+            "schema": {
+              "enum": [
+                "en",
+                "el",
+                "ar",
+                "ru",
+                "de",
+                "es",
+                "pt-PT",
+                "he",
+                "it",
+                "bg",
+                "nl",
+                "fr"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "deleted": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "deleted"
+                  ],
+                  "title": "HelpArticleDeleted",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Deleted"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Delete one locale of a help article",
+        "tags": [
+          "Platform help centre"
+        ]
+      },
+      "put": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformHelpArticleController.save",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "maxLength": 80,
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "locale",
+            "required": true,
+            "schema": {
+              "enum": [
+                "en",
+                "el",
+                "ar",
+                "ru",
+                "de",
+                "es",
+                "pt-PT",
+                "he",
+                "it",
+                "bg",
+                "nl",
+                "fr"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "audience": {
+                    "enum": [
+                      "staff",
+                      "member",
+                      "all"
+                    ],
+                    "type": "string"
+                  },
+                  "body": {
+                    "maxLength": 20000,
+                    "type": "string"
+                  },
+                  "feature_key": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "guide_id": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "keywords": {
+                    "items": {
+                      "maxLength": 60,
+                      "type": "string"
+                    },
+                    "maxItems": 30,
+                    "type": "array"
+                  },
+                  "position": {
+                    "maximum": 10000,
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "screens": {
+                    "items": {
+                      "maxLength": 200,
+                      "type": "string"
+                    },
+                    "maxItems": 20,
+                    "type": "array"
+                  },
+                  "status": {
+                    "enum": [
+                      "draft",
+                      "published"
+                    ],
+                    "type": "string"
+                  },
+                  "summary": {
+                    "maxLength": 500,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "title": {
+                    "maxLength": 160,
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "title": "HelpArticleWrite",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "audience": {
+                      "enum": [
+                        "staff",
+                        "member",
+                        "all"
+                      ],
+                      "type": "string"
+                    },
+                    "body": {
+                      "description": "Markdown without HTML",
+                      "type": "string"
+                    },
+                    "complete": {
+                      "description": "Fully translated",
+                      "type": "boolean"
+                    },
+                    "fallback": {
+                      "description": "Shown in English: no translation yet",
+                      "type": "boolean"
+                    },
+                    "feature_key": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "guide_id": {
+                      "description": "In-app guide it can start (ADR-193)",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "keywords": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "locale": {
+                      "enum": [
+                        "en",
+                        "el",
+                        "ar",
+                        "ru",
+                        "de",
+                        "es",
+                        "pt-PT",
+                        "he",
+                        "it",
+                        "bg",
+                        "nl",
+                        "fr"
+                      ],
+                      "type": "string"
+                    },
+                    "position": {
+                      "type": "integer"
+                    },
+                    "published_at": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "screens": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "slug": {
+                      "type": "string"
+                    },
+                    "source": {
+                      "enum": [
+                        "seed",
+                        "palee"
+                      ],
+                      "type": "string"
+                    },
+                    "status": {
+                      "enum": [
+                        "draft",
+                        "published"
+                      ],
+                      "type": "string"
+                    },
+                    "summary": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "updated_at": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "version": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "audience",
+                    "body",
+                    "complete",
+                    "fallback",
+                    "feature_key",
+                    "guide_id",
+                    "id",
+                    "keywords",
+                    "locale",
+                    "position",
+                    "published_at",
+                    "screens",
+                    "slug",
+                    "source",
+                    "status",
+                    "summary",
+                    "title",
+                    "updated_at",
+                    "version"
+                  ],
+                  "title": "HelpArticleConsole",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Article"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Write one locale of a help article (creates it when new)",
+        "tags": [
+          "Platform help centre"
+        ]
+      }
+    },
+    "/api/platform/help/reindex": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformHelpArticleController.reindex",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reindexed": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "reindexed"
+                  ],
+                  "title": "HelpArticlesReindexed",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Reindexed"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Rebuild the help search index from the published articles",
+        "tags": [
+          "Platform help centre"
+        ]
+      }
+    },
     "/api/platform/organization-purges": {
       "get": {
         "callbacks": {},
@@ -338230,6 +343815,510 @@
         "summary": "The packages a published box sells online (ADR-248)",
         "tags": [
           "Public box page"
+        ]
+      }
+    },
+    "/api/public/help/articles": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.HelpArticleController.index",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "maxLength": 200,
+              "type": "string"
+            }
+          },
+          {
+            "description": "One of the 12 app locales; default en",
+            "in": "query",
+            "name": "locale",
+            "required": false,
+            "schema": {
+              "maxLength": 10,
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "audience",
+            "required": false,
+            "schema": {
+              "enum": [
+                "staff",
+                "member"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "The app path the reader is on; its articles rank first",
+            "in": "query",
+            "name": "screen",
+            "required": false,
+            "schema": {
+              "maxLength": 300,
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "feature",
+            "required": false,
+            "schema": {
+              "maxLength": 48,
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "maximum": 20,
+              "minimum": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "articles": {
+                      "items": {
+                        "properties": {
+                          "audience": {
+                            "enum": [
+                              "staff",
+                              "member",
+                              "all"
+                            ],
+                            "type": "string"
+                          },
+                          "body": {
+                            "description": "Markdown without HTML",
+                            "type": "string"
+                          },
+                          "complete": {
+                            "description": "Fully translated",
+                            "type": "boolean"
+                          },
+                          "fallback": {
+                            "description": "Shown in English: no translation yet",
+                            "type": "boolean"
+                          },
+                          "feature_key": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "guide_id": {
+                            "description": "In-app guide it can start (ADR-193)",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "locale": {
+                            "enum": [
+                              "en",
+                              "el",
+                              "ar",
+                              "ru",
+                              "de",
+                              "es",
+                              "pt-PT",
+                              "he",
+                              "it",
+                              "bg",
+                              "nl",
+                              "fr"
+                            ],
+                            "type": "string"
+                          },
+                          "screens": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "slug": {
+                            "type": "string"
+                          },
+                          "summary": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "updated_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "audience",
+                          "body",
+                          "complete",
+                          "fallback",
+                          "feature_key",
+                          "guide_id",
+                          "locale",
+                          "screens",
+                          "slug",
+                          "summary",
+                          "title",
+                          "updated_at"
+                        ],
+                        "title": "HelpArticle",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "locale": {
+                      "enum": [
+                        "en",
+                        "el",
+                        "ar",
+                        "ru",
+                        "de",
+                        "es",
+                        "pt-PT",
+                        "he",
+                        "it",
+                        "bg",
+                        "nl",
+                        "fr"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "articles",
+                    "locale"
+                  ],
+                  "title": "HelpArticleList",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Articles"
+          }
+        },
+        "security": [],
+        "summary": "Search the help centre",
+        "tags": [
+          "Help centre"
+        ]
+      }
+    },
+    "/api/public/help/articles/{slug}": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.HelpArticleController.show",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "maxLength": 80,
+              "type": "string"
+            }
+          },
+          {
+            "description": "One of the 12 app locales; default en",
+            "in": "query",
+            "name": "locale",
+            "required": false,
+            "schema": {
+              "maxLength": 10,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "audience": {
+                      "enum": [
+                        "staff",
+                        "member",
+                        "all"
+                      ],
+                      "type": "string"
+                    },
+                    "body": {
+                      "description": "Markdown without HTML",
+                      "type": "string"
+                    },
+                    "complete": {
+                      "description": "Fully translated",
+                      "type": "boolean"
+                    },
+                    "fallback": {
+                      "description": "Shown in English: no translation yet",
+                      "type": "boolean"
+                    },
+                    "feature_key": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "guide_id": {
+                      "description": "In-app guide it can start (ADR-193)",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "locale": {
+                      "enum": [
+                        "en",
+                        "el",
+                        "ar",
+                        "ru",
+                        "de",
+                        "es",
+                        "pt-PT",
+                        "he",
+                        "it",
+                        "bg",
+                        "nl",
+                        "fr"
+                      ],
+                      "type": "string"
+                    },
+                    "screens": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "slug": {
+                      "type": "string"
+                    },
+                    "summary": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "updated_at": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "audience",
+                    "body",
+                    "complete",
+                    "fallback",
+                    "feature_key",
+                    "guide_id",
+                    "locale",
+                    "screens",
+                    "slug",
+                    "summary",
+                    "title",
+                    "updated_at"
+                  ],
+                  "title": "HelpArticle",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Article"
+          }
+        },
+        "security": [],
+        "summary": "One help article, in the locale or else in English",
+        "tags": [
+          "Help centre"
+        ]
+      }
+    },
+    "/api/public/help/screen": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.HelpArticleController.screen",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "path",
+            "required": true,
+            "schema": {
+              "maxLength": 300,
+              "type": "string"
+            }
+          },
+          {
+            "description": "One of the 12 app locales; default en",
+            "in": "query",
+            "name": "locale",
+            "required": false,
+            "schema": {
+              "maxLength": 10,
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "audience",
+            "required": false,
+            "schema": {
+              "enum": [
+                "staff",
+                "member"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "maximum": 20,
+              "minimum": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "articles": {
+                      "items": {
+                        "properties": {
+                          "audience": {
+                            "enum": [
+                              "staff",
+                              "member",
+                              "all"
+                            ],
+                            "type": "string"
+                          },
+                          "body": {
+                            "description": "Markdown without HTML",
+                            "type": "string"
+                          },
+                          "complete": {
+                            "description": "Fully translated",
+                            "type": "boolean"
+                          },
+                          "fallback": {
+                            "description": "Shown in English: no translation yet",
+                            "type": "boolean"
+                          },
+                          "feature_key": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "guide_id": {
+                            "description": "In-app guide it can start (ADR-193)",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "locale": {
+                            "enum": [
+                              "en",
+                              "el",
+                              "ar",
+                              "ru",
+                              "de",
+                              "es",
+                              "pt-PT",
+                              "he",
+                              "it",
+                              "bg",
+                              "nl",
+                              "fr"
+                            ],
+                            "type": "string"
+                          },
+                          "screens": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "slug": {
+                            "type": "string"
+                          },
+                          "summary": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "updated_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "audience",
+                          "body",
+                          "complete",
+                          "fallback",
+                          "feature_key",
+                          "guide_id",
+                          "locale",
+                          "screens",
+                          "slug",
+                          "summary",
+                          "title",
+                          "updated_at"
+                        ],
+                        "title": "HelpArticle",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "locale": {
+                      "enum": [
+                        "en",
+                        "el",
+                        "ar",
+                        "ru",
+                        "de",
+                        "es",
+                        "pt-PT",
+                        "he",
+                        "it",
+                        "bg",
+                        "nl",
+                        "fr"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "articles",
+                    "locale"
+                  ],
+                  "title": "HelpArticleList",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Articles"
+          }
+        },
+        "security": [],
+        "summary": "The help articles linked from one app screen",
+        "tags": [
+          "Help centre"
         ]
       }
     },
