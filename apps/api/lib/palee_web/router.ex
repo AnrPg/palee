@@ -809,6 +809,10 @@ defmodule PaleeWeb.Router do
     post("/check-ins", ScheduleController, :check_in)
     get("/workouts/:id", WorkoutController, :show)
     get("/workouts/:id/scales", WorkoutController, :scales)
+    # ADR-356 (CP-D2): filtered WOD leaderboards with percentiles.
+    get("/workouts/:id/leaderboard", WorkoutLeaderboardController, :show)
+    get("/me/leaderboard-profile", WorkoutLeaderboardController, :profile)
+    put("/me/leaderboard-profile", WorkoutLeaderboardController, :update_profile)
   end
 
   scope "/api/org/:organization_slug", PaleeWeb do
