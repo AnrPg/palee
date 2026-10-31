@@ -255,7 +255,8 @@ defmodule Palee.Repo.Migrations.OpenPlatform do
     create unique_index(:integration_marketing_consents, [:organization_id, :user_id, :channel])
 
     create constraint(:integration_marketing_consents, :integration_marketing_consents_check,
-             check: "channel IN ('email') AND (granted_at IS NOT NULL OR withdrawn_at IS NOT NULL)"
+             check:
+               "channel IN ('email') AND (granted_at IS NOT NULL OR withdrawn_at IS NOT NULL)"
            )
 
     create table(:audience_members, primary_key: false) do

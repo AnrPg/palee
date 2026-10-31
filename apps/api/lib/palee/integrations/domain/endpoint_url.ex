@@ -18,7 +18,9 @@ defmodule Palee.Integrations.Domain.EndpointUrl do
 
   def validate(url, opts) when is_binary(url) do
     url = String.trim(url)
-    allowed_schemes = if Keyword.get(opts, :allow_http, false), do: ~w(https http), else: ~w(https)
+
+    allowed_schemes =
+      if Keyword.get(opts, :allow_http, false), do: ~w(https http), else: ~w(https)
 
     with true <- byte_size(url) <= @max_length,
          %URI{scheme: scheme, host: host, userinfo: nil} when is_binary(host) and host != "" <-
@@ -58,6 +60,7 @@ defmodule Palee.Integrations.Domain.EndpointUrl do
   def private_address?({a, _, _, _}) when a >= 224, do: true
   def private_address?({0, 0, 0, 0, 0, 0, 0, 0}), do: true
   def private_address?({0, 0, 0, 0, 0, 0, 0, 1}), do: true
+
   def private_address?({0, 0, 0, 0, 0, 0xFFFF, a, b}),
     do: private_address?({div(a, 256), rem(a, 256), div(b, 256), rem(b, 256)})
 

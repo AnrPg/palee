@@ -64,7 +64,9 @@ defmodule Palee.Infrastructure.Integrations.EctoIntegrationStore do
   def get_api_key(%{organization_id: organization_id}, id) do
     with {:ok, id} <- Ecto.UUID.cast(id),
          %ApiKey{} = key <-
-           Repo.one(from k in ApiKey, where: k.organization_id == ^organization_id and k.id == ^id) do
+           Repo.one(
+             from k in ApiKey, where: k.organization_id == ^organization_id and k.id == ^id
+           ) do
       plain(key)
     else
       _missing -> nil
@@ -213,11 +215,15 @@ defmodule Palee.Infrastructure.Integrations.EctoIntegrationStore do
 
   @impl true
   def update_endpoint(%{organization_id: organization_id}, id, changes) do
-    query = from e in WebhookEndpoint, where: e.organization_id == ^organization_id and e.id == ^id
+    query =
+      from e in WebhookEndpoint, where: e.organization_id == ^organization_id and e.id == ^id
 
     case Repo.one(query) do
-      nil -> {:error, :not_found}
-      endpoint -> endpoint |> WebhookEndpoint.changeset(changes) |> Repo.update() |> plain_result()
+      nil ->
+        {:error, :not_found}
+
+      endpoint ->
+        endpoint |> WebhookEndpoint.changeset(changes) |> Repo.update() |> plain_result()
     end
   end
 
@@ -287,8 +293,11 @@ defmodule Palee.Infrastructure.Integrations.EctoIntegrationStore do
       from d in WebhookDelivery, where: d.organization_id == ^organization_id and d.id == ^id
 
     case Repo.one(query) do
-      nil -> {:error, :not_found}
-      delivery -> delivery |> WebhookDelivery.changeset(changes) |> Repo.update() |> plain_result()
+      nil ->
+        {:error, :not_found}
+
+      delivery ->
+        delivery |> WebhookDelivery.changeset(changes) |> Repo.update() |> plain_result()
     end
   end
 

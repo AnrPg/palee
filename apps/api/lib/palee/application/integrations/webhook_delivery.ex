@@ -38,7 +38,9 @@ defmodule Palee.Application.Integrations.WebhookDelivery do
         deliver(%{organization_id: organization_id}, :due, now)
       rescue
         error ->
-          Logger.error("webhook delivery failed for #{organization_id}: #{Exception.message(error)}")
+          Logger.error(
+            "webhook delivery failed for #{organization_id}: #{Exception.message(error)}"
+          )
       end
     end)
 

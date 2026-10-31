@@ -34,11 +34,13 @@ defmodule Palee.Application.Operations.WebhookSubscriptionsDelete do
   end
 
   @impl true
-  def preview(_context, %{"id" => id}), do: {:ok, %{"would" => "remove the subscription", "id" => id}}
+  def preview(_context, %{"id" => id}),
+    do: {:ok, %{"would" => "remove the subscription", "id" => id}}
 
   @impl true
   def execute(%{principal: %{kind: :api_key, api_key_id: key_id}} = context, %{"id" => id}) do
-    with :ok <- Integrations.delete_key_endpoint(context, key_id, id), do: {:ok, %{"deleted" => true}}
+    with :ok <- Integrations.delete_key_endpoint(context, key_id, id),
+         do: {:ok, %{"deleted" => true}}
   end
 
   def execute(_context, _input), do: {:error, :api_key_required}

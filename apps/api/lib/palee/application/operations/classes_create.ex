@@ -54,14 +54,22 @@ defmodule Palee.Application.Operations.ClassesCreate do
   @impl true
   def preview(context, input) do
     case Scheduling.get_class_type(context, input["class_type_id"]) do
-      nil -> {:error, :not_found}
-      class_type -> {:ok, %{"would" => "add a class", "class" => Map.put(input, "name", input["name"] || class_type.name)}}
+      nil ->
+        {:error, :not_found}
+
+      class_type ->
+        {:ok,
+         %{
+           "would" => "add a class",
+           "class" => Map.put(input, "name", input["name"] || class_type.name)
+         }}
     end
   end
 
   @impl true
   def execute(context, input) do
-    with %{} = class_type <- Scheduling.get_class_type(context, input["class_type_id"]) || {:error, :not_found},
+    with %{} = class_type <-
+           Scheduling.get_class_type(context, input["class_type_id"]) || {:error, :not_found},
          {:ok, slot} <-
            CreateScheduledSlot.call(context, %{
              class_type_id: class_type.id,

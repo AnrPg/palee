@@ -40,7 +40,12 @@ defmodule Palee.Application.Operations.PaymentsList do
   def execute(context, input) do
     with {:ok, offset} <- Views.decode_cursor(input["cursor"]) do
       filters =
-        %{status: input["status"], user_id: input["member_id"], limit: input["limit"], offset: offset}
+        %{
+          status: input["status"],
+          user_id: input["member_id"],
+          limit: input["limit"],
+          offset: offset
+        }
         |> Map.reject(fn {_key, value} -> is_nil(value) end)
 
       %{payments: payments, total: total} = OnlinePayments.list(context, filters)

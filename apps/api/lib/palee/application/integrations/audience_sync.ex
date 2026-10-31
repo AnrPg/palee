@@ -116,7 +116,10 @@ defmodule Palee.Application.Integrations.AudienceSync do
       |> unsubscribe_all(plan.unsubscribe, emails, context, connection, adapter, now)
 
     :ok = Integrations.finish_sync(context, now, error)
-    if match?({:unauthorized, _}, error), do: {:error, :audience_unauthorized}, else: {:ok, counts}
+
+    if match?({:unauthorized, _}, error),
+      do: {:error, :audience_unauthorized},
+      else: {:ok, counts}
   end
 
   defp subscribe_all(acc, contacts, context, connection, adapter, now) do
@@ -129,8 +132,16 @@ defmodule Palee.Application.Integrations.AudienceSync do
 
   # An unsubscribe needs the address: a member who still has one is told by
   # it; one whose account is gone was removed with it (ON DELETE CASCADE).
-  defp unsubscribe_all({counts, {:unauthorized, _} = error}, _rows, _emails, _context, _connection, _adapter, _now),
-    do: {counts, error}
+  defp unsubscribe_all(
+         {counts, {:unauthorized, _} = error},
+         _rows,
+         _emails,
+         _context,
+         _connection,
+         _adapter,
+         _now
+       ),
+       do: {counts, error}
 
   defp unsubscribe_all(acc, rows, emails, context, connection, adapter, now) do
     accounts =

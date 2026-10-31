@@ -58,7 +58,8 @@ defmodule Palee.Integrations do
   # ── API keys ────────────────────────────────────────────────────────────
 
   @doc "The box's keys, newest first, without hashes."
-  def list_api_keys(context), do: context |> IntegrationStore.list_api_keys() |> Enum.map(&key_view/1)
+  def list_api_keys(context),
+    do: context |> IntegrationStore.list_api_keys() |> Enum.map(&key_view/1)
 
   @doc """
   A new key acting for `actor_id`: `{:ok, %{key, token}}`. The token is in
@@ -256,7 +257,8 @@ defmodule Palee.Integrations do
     do: IntegrationStore.finish_idempotent(context, record_id, status, body)
 
   @doc "Frees the key after an unexpected failure, so the client may try again."
-  def abandon_idempotent(context, record_id), do: IntegrationStore.forget_idempotent(context, record_id)
+  def abandon_idempotent(context, record_id),
+    do: IntegrationStore.forget_idempotent(context, record_id)
 
   @doc "Removes expired records (the sweep)."
   def purge_idempotency(context, now), do: IntegrationStore.purge_idempotency(context, now)
@@ -464,7 +466,8 @@ defmodule Palee.Integrations do
 
   @doc "A `ping` to one endpoint (Settings › «Δοκιμή»): `{:ok, delivery}`."
   def enqueue_ping(context, endpoint_id, event_id, %DateTime{} = now) do
-    with %{} = endpoint <- IntegrationStore.get_endpoint(context, endpoint_id) || {:error, :not_found} do
+    with %{} = endpoint <-
+           IntegrationStore.get_endpoint(context, endpoint_id) || {:error, :not_found} do
       payload =
         PublicEvents.envelope(
           event_id,
@@ -490,7 +493,8 @@ defmodule Palee.Integrations do
   event id (`replay_of_id` names the original): `{:ok, delivery}`.
   """
   def replay(context, delivery_id, %DateTime{} = now) do
-    with %{} = original <- IntegrationStore.get_delivery(context, delivery_id) || {:error, :not_found},
+    with %{} = original <-
+           IntegrationStore.get_delivery(context, delivery_id) || {:error, :not_found},
          %{status: "active"} <-
            IntegrationStore.get_endpoint(context, original.endpoint_id) ||
              {:error, :webhook_disabled},
@@ -583,7 +587,9 @@ defmodule Palee.Integrations do
     {:ok, counts}
   end
 
-  defp bump(counts, :delivered), do: %{counts | sent: counts.sent + 1, delivered: counts.delivered + 1}
+  defp bump(counts, :delivered),
+    do: %{counts | sent: counts.sent + 1, delivered: counts.delivered + 1}
+
   defp bump(counts, :failed), do: %{counts | sent: counts.sent + 1, failed: counts.failed + 1}
   defp bump(counts, :retry), do: %{counts | sent: counts.sent + 1}
 
@@ -722,7 +728,7 @@ defmodule Palee.Integrations do
     previous = IntegrationStore.get_connection(context)
 
     with true <- provider in @audience_providers || {:error, :invalid_audience_provider},
-         true <- provider != "sandbox" or sandbox?() || {:error, :invalid_audience_provider},
+         true <- (provider != "sandbox" or sandbox?()) || {:error, :invalid_audience_provider},
          {:ok, list_id} <- list_id(params[:list_id]),
          {:ok, credentials} <- audience_credentials(provider, params[:api_key], previous),
          candidate = %{list_id: list_id, credentials: credentials},
@@ -781,8 +787,13 @@ defmodule Palee.Integrations do
   @doc "Asks for a sync soon (after a consent change or from Settings)."
   def request_sync(context, %DateTime{} = now) do
     case IntegrationStore.get_connection(context) do
-      nil -> {:error, :audience_not_connected}
-      _connection -> with {:ok, _saved} <- IntegrationStore.save_connection(context, %{sync_requested_at: now}), do: :ok
+      nil ->
+        {:error, :audience_not_connected}
+
+      _connection ->
+        with {:ok, _saved} <-
+               IntegrationStore.save_connection(context, %{sync_requested_at: now}),
+             do: :ok
     end
   end
 
@@ -804,7 +815,8 @@ defmodule Palee.Integrations do
   def audience_members(context, connection_id),
     do: IntegrationStore.list_audience_members(context, connection_id)
 
-  def record_audience_member(context, attrs), do: IntegrationStore.upsert_audience_member(context, attrs)
+  def record_audience_member(context, attrs),
+    do: IntegrationStore.upsert_audience_member(context, attrs)
 
   def consented_user_ids(context), do: IntegrationStore.consented_user_ids(context)
 
@@ -835,7 +847,8 @@ defmodule Palee.Integrations do
   The member's own yes or no (never staff on their behalf): `{:ok,
   consent}`. Saying no after yes keeps when they said yes, as proof.
   """
-  def set_consent(context, user_id, granted, source, %DateTime{} = now) when is_boolean(granted) do
+  def set_consent(context, user_id, granted, source, %DateTime{} = now)
+      when is_boolean(granted) do
     previous = IntegrationStore.get_consent(context, user_id)
 
     attrs =

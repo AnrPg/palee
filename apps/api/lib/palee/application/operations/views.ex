@@ -211,7 +211,8 @@ defmodule Palee.Application.Operations.Views do
       "price_cents" => Map.get(package, :base_price_cents),
       "currency" => Map.get(package, :currency) || currency,
       "billing_period" => package |> Map.get(:billing_period) |> string(),
-      "active" => Map.get(package, :active, true) != false and is_nil(Map.get(package, :retired_at))
+      "active" =>
+        Map.get(package, :active, true) != false and is_nil(Map.get(package, :retired_at))
     }
   end
 
@@ -256,7 +257,10 @@ defmodule Palee.Application.Operations.Views do
 
   def iso(nil), do: nil
   def iso(%DateTime{} = at), do: DateTime.to_iso8601(at)
-  def iso(%NaiveDateTime{} = at), do: at |> DateTime.from_naive!("Etc/UTC") |> DateTime.to_iso8601()
+
+  def iso(%NaiveDateTime{} = at),
+    do: at |> DateTime.from_naive!("Etc/UTC") |> DateTime.to_iso8601()
+
   def iso(value) when is_binary(value), do: value
 
   defp string(nil), do: nil

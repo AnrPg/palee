@@ -61,7 +61,8 @@ defmodule Palee.Application.Operations.MembersInvite do
       %{"intended_email" => input["email"], "role" => "member"}
       |> then(&if(input["locale"], do: Map.put(&1, "email_locale", input["locale"]), else: &1))
 
-    with {:ok, %{invitation: invitation, address: address}} <- InvitationEmails.send(context, params) do
+    with {:ok, %{invitation: invitation, address: address}} <-
+           InvitationEmails.send(context, params) do
       {:ok,
        %{
          "invitation_id" => invitation.id,

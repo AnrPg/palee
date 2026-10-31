@@ -16,7 +16,8 @@ defmodule Palee.Integrations.OpenPlatformDomainTest do
 
   describe "API key tokens" do
     test "a new token parses back to its prefix and matches only its own hash" do
-      token = ApiKeyToken.new("live", :crypto.strong_rand_bytes(ApiKeyToken.random_bytes_needed()))
+      token =
+        ApiKeyToken.new("live", :crypto.strong_rand_bytes(ApiKeyToken.random_bytes_needed()))
 
       assert token.token =~ ~r/\Apalee_live_[a-z2-7]{12}_[a-z2-7]{40}\z/
       assert {:ok, prefix} = ApiKeyToken.parse(token.token)
@@ -61,9 +62,14 @@ defmodule Palee.Integrations.OpenPlatformDomainTest do
       assert header =~ ~r/\At=1700000000,v1=[0-9a-f]{64}\z/
       assert :ok = WebhookSignature.verify("whsec_a", header, body, 1_700_000_100)
       assert {:error, :stale} = WebhookSignature.verify("whsec_a", header, body, 1_700_001_000)
-      assert {:error, :mismatch} = WebhookSignature.verify("whsec_a", header, body <> " ", 1_700_000_000)
+
+      assert {:error, :mismatch} =
+               WebhookSignature.verify("whsec_a", header, body <> " ", 1_700_000_000)
+
       assert {:error, :mismatch} = WebhookSignature.verify("whsec_b", header, body, 1_700_000_000)
-      assert {:error, :malformed} = WebhookSignature.verify("whsec_a", "v1=abc", body, 1_700_000_000)
+
+      assert {:error, :malformed} =
+               WebhookSignature.verify("whsec_a", "v1=abc", body, 1_700_000_000)
     end
 
     test "during a secret rotation both secrets verify" do
@@ -88,7 +94,10 @@ defmodule Palee.Integrations.OpenPlatformDomainTest do
       assert DateTime.diff(at, @now) == 60
       assert {:pending, at} = DeliveryPolicy.after_attempt(:failed, 8, @now)
       assert DateTime.diff(at, @now) == 86_400
-      assert {:failed, nil} = DeliveryPolicy.after_attempt(:failed, DeliveryPolicy.max_attempts(), @now)
+
+      assert {:failed, nil} =
+               DeliveryPolicy.after_attempt(:failed, DeliveryPolicy.max_attempts(), @now)
+
       assert {:failed, nil} = DeliveryPolicy.after_attempt(:gone, 1, @now)
       assert DeliveryPolicy.max_attempts() == 9
     end
@@ -133,7 +142,8 @@ defmodule Palee.Integrations.OpenPlatformDomainTest do
 
   describe "endpoint URLs" do
     test "only https to a public host" do
-      assert {:ok, "https://hooks.zapier.com/x"} = EndpointUrl.validate(" https://hooks.zapier.com/x ")
+      assert {:ok, "https://hooks.zapier.com/x"} =
+               EndpointUrl.validate(" https://hooks.zapier.com/x ")
 
       for bad <- [
             "http://example.com",
@@ -149,7 +159,11 @@ defmodule Palee.Integrations.OpenPlatformDomainTest do
         assert {:error, :invalid_webhook_url} = EndpointUrl.validate(bad), bad
       end
 
-      assert {:ok, _url} = EndpointUrl.validate("http://localhost:4000/x", allow_http: true, allow_private: true)
+      assert {:ok, _url} =
+               EndpointUrl.validate("http://localhost:4000/x",
+                 allow_http: true,
+                 allow_private: true
+               )
     end
 
     test "private addresses are recognised" do
@@ -168,7 +182,13 @@ defmodule Palee.Integrations.OpenPlatformDomainTest do
       assert a == b
       refute a == Idempotency.fingerprint("bookings.cancel", %{"a" => 1, "b" => %{"x" => [1, 2]}})
 
-      done = %{request_hash: a, state: "completed", response_status: 201, response_body: %{"id" => 1}}
+      done = %{
+        request_hash: a,
+        state: "completed",
+        response_status: 201,
+        response_body: %{"id" => 1}
+      }
+
       assert {:replay, 201, %{"id" => 1}} = Idempotency.decide(done, a)
       assert {:error, :idempotency_key_in_use} = Idempotency.decide(%{done | state: "running"}, a)
       assert {:error, :idempotency_key_reused} = Idempotency.decide(done, "other")
@@ -178,7 +198,9 @@ defmodule Palee.Integrations.OpenPlatformDomainTest do
       assert {:ok, "abc-123"} = Idempotency.validate_key("abc-123")
       assert {:error, :invalid_idempotency_key} = Idempotency.validate_key("")
       assert {:error, :invalid_idempotency_key} = Idempotency.validate_key("has space")
-      assert {:error, :invalid_idempotency_key} = Idempotency.validate_key(String.duplicate("a", 256))
+
+      assert {:error, :invalid_idempotency_key} =
+               Idempotency.validate_key(String.duplicate("a", 256))
     end
   end
 
@@ -188,7 +210,11 @@ defmodule Palee.Integrations.OpenPlatformDomainTest do
       nikos = %{user_id: "n", email: "nikos@example.com", first_name: "Νίκος"}
 
       synced = [
-        %{user_id: "m", email_hash: AudienceSyncPlan.email_hash("maria@example.com"), status: "subscribed"},
+        %{
+          user_id: "m",
+          email_hash: AudienceSyncPlan.email_hash("maria@example.com"),
+          status: "subscribed"
+        },
         %{user_id: "x", email_hash: "h", status: "subscribed"},
         %{user_id: "y", email_hash: "h", status: "unsubscribed"}
       ]

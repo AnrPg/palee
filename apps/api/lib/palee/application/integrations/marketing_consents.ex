@@ -9,14 +9,21 @@ defmodule Palee.Application.Integrations.MarketingConsents do
   alias Palee.Application.Integrations.AudienceSync
   alias Palee.{Integrations, Organizations}
 
-  def show(context), do: Map.put(Integrations.consent(context, context.user_id), :list_connected, connected?(context))
+  def show(context),
+    do:
+      Map.put(
+        Integrations.consent(context, context.user_id),
+        :list_connected,
+        connected?(context)
+      )
 
   @doc "`{:ok, consent}`; `granted` must be true or false."
   def update(context, params, now \\ DateTime.utc_now()) do
     granted = Map.get(params, :granted, Map.get(params, "granted"))
 
     with :member <- Organizations.membership_standing(context.organization_id, context.user_id),
-         {:ok, consent} <- Integrations.set_consent(context, context.user_id, granted, "member_app", now) do
+         {:ok, consent} <-
+           Integrations.set_consent(context, context.user_id, granted, "member_app", now) do
       if connected?(context) do
         with :ok <- Integrations.request_sync(context, now), do: AudienceSync.schedule(context)
       end

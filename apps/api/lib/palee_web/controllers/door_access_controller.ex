@@ -61,7 +61,9 @@ defmodule PaleeWeb.DoorAccessController do
     request_body: %RequestBody{
       required: false,
       content: %{
-        "application/json" => %MediaType{schema: %Schema{type: :object, additionalProperties: true}}
+        "application/json" => %MediaType{
+          schema: %Schema{type: :object, additionalProperties: true}
+        }
       }
     },
     responses: [ok: {"Recorded", "application/json", S.recorded()}]

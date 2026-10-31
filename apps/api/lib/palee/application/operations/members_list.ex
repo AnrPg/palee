@@ -45,7 +45,11 @@ defmodule Palee.Application.Operations.MembersList do
          params = %{"limit" => input["limit"], "offset" => offset, "role" => input["role"]},
          {:ok, %{users: users, meta: meta}} <- ListAdminUsers.call(params, context) do
       email? = Organizations.can?(context, :view_billing_contacts)
-      accounts = if email?, do: users |> Enum.map(& &1.id) |> Identity.list_by_ids() |> Map.new(&{&1.id, &1}), else: %{}
+
+      accounts =
+        if email?,
+          do: users |> Enum.map(& &1.id) |> Identity.list_by_ids() |> Map.new(&{&1.id, &1}),
+          else: %{}
 
       data =
         Enum.map(users, fn user ->
@@ -53,7 +57,8 @@ defmodule Palee.Application.Operations.MembersList do
           Views.member(Map.merge(user, %{email: Map.get(account, :email)}), user.roles, email?)
         end)
 
-      {:ok, %{"data" => data, "next_cursor" => Views.next_cursor(offset, input["limit"], meta.total)}}
+      {:ok,
+       %{"data" => data, "next_cursor" => Views.next_cursor(offset, input["limit"], meta.total)}}
     end
   end
 end

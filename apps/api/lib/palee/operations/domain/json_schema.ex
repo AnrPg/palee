@@ -59,7 +59,12 @@ defmodule Palee.Operations.Domain.JsonSchema do
 
     unknown =
       if schema["additionalProperties"] == false,
-        do: for(key <- Map.keys(given), not Map.has_key?(properties, key), do: {path ++ [key], "is not allowed"}),
+        do:
+          for(
+            key <- Map.keys(given),
+            not Map.has_key?(properties, key),
+            do: {path ++ [key], "is not allowed"}
+          ),
         else: []
 
     {result, errors} =
@@ -67,9 +72,14 @@ defmodule Palee.Operations.Domain.JsonSchema do
         case Map.fetch(given, name) do
           :error ->
             cond do
-              name in required -> {acc, [{path ++ [name], "is required"} | errors]}
-              Map.has_key?(property, "default") -> {Map.put(acc, name, property["default"]), errors}
-              true -> {acc, errors}
+              name in required ->
+                {acc, [{path ++ [name], "is required"} | errors]}
+
+              Map.has_key?(property, "default") ->
+                {Map.put(acc, name, property["default"]), errors}
+
+              true ->
+                {acc, errors}
             end
 
           {:ok, item} ->
@@ -115,7 +125,11 @@ defmodule Palee.Operations.Domain.JsonSchema do
 
     errors =
       []
-      |> check(schema["enum"] && value not in schema["enum"], path, "is not one of the allowed values")
+      |> check(
+        schema["enum"] && value not in schema["enum"],
+        path,
+        "is not one of the allowed values"
+      )
       |> check(schema["minLength"] && length < schema["minLength"], path, "is too short")
       |> check(schema["maxLength"] && length > schema["maxLength"], path, "is too long")
       |> check(not format?(schema["format"], value), path, "is not a valid #{schema["format"]}")
@@ -158,7 +172,10 @@ defmodule Palee.Operations.Domain.JsonSchema do
   defp format?("email", value), do: Regex.match?(@email, value) and String.length(value) <= 254
 
   defp format?("uri", value) do
-    match?(%URI{scheme: scheme, host: host} when scheme in ["https", "http"] and is_binary(host), URI.parse(value))
+    match?(
+      %URI{scheme: scheme, host: host} when scheme in ["https", "http"] and is_binary(host),
+      URI.parse(value)
+    )
   end
 
   defp main_type(%{"type" => types}) when is_list(types), do: Enum.find(types, &(&1 != "null"))
@@ -172,7 +189,10 @@ defmodule Palee.Operations.Domain.JsonSchema do
   defp group(errors) do
     errors
     |> Enum.reverse()
-    |> Enum.group_by(fn {path, _message} -> if path == [], do: "body", else: Enum.join(path, ".") end, &elem(&1, 1))
+    |> Enum.group_by(
+      fn {path, _message} -> if path == [], do: "body", else: Enum.join(path, ".") end,
+      &elem(&1, 1)
+    )
   end
 
   # -- the contract
@@ -181,11 +201,14 @@ defmodule Palee.Operations.Domain.JsonSchema do
   `:ok` when the schema uses only the supported subset (and its `required`
   names exist and are sorted), otherwise `{:error, reasons}`.
   """
-  def contract_check(schema), do: schema |> problems([]) |> then(&if(&1 == [], do: :ok, else: {:error, &1}))
+  def contract_check(schema),
+    do: schema |> problems([]) |> then(&if(&1 == [], do: :ok, else: {:error, &1}))
 
   defp problems(schema, path) when is_map(schema) do
     unknown =
-      for key <- Map.keys(schema), key not in @keywords, do: "#{Enum.join(path, ".")}: unknown keyword #{key}"
+      for key <- Map.keys(schema),
+          key not in @keywords,
+          do: "#{Enum.join(path, ".")}: unknown keyword #{key}"
 
     format =
       if schema["format"] && schema["format"] not in @formats,
@@ -197,9 +220,14 @@ defmodule Palee.Operations.Domain.JsonSchema do
 
     required_problems =
       cond do
-        required != Enum.sort(required) -> ["#{Enum.join(path, ".")}: required is not sorted"]
-        Enum.any?(required, &(not Map.has_key?(properties, &1))) -> ["#{Enum.join(path, ".")}: required names a missing property"]
-        true -> []
+        required != Enum.sort(required) ->
+          ["#{Enum.join(path, ".")}: required is not sorted"]
+
+        Enum.any?(required, &(not Map.has_key?(properties, &1))) ->
+          ["#{Enum.join(path, ".")}: required names a missing property"]
+
+        true ->
+          []
       end
 
     nested =

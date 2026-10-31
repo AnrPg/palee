@@ -158,7 +158,8 @@ defmodule PaleeWeb.FallbackController do
     |> json(%{code: to_string(reason), error: message})
   end
 
-  def call(conn, {:error, reason, details}) when is_map_key(@open_platform_detail_errors, reason) do
+  def call(conn, {:error, reason, details})
+      when is_map_key(@open_platform_detail_errors, reason) do
     {status, message} = Map.fetch!(@open_platform_detail_errors, reason)
     package_contract_error(conn, status, to_string(reason), message, details)
   end

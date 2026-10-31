@@ -95,7 +95,11 @@ defmodule Palee.Integrations.Domain.PublicEvents do
   def from_domain(:booking_made, %{booking_id: booking_id} = payload),
     do:
       {:ok, "booking.created",
-       %{booking_id: booking_id, class_id: payload[:scheduled_class_id], member_id: payload[:user_id]}}
+       %{
+         booking_id: booking_id,
+         class_id: payload[:scheduled_class_id],
+         member_id: payload[:user_id]
+       }}
 
   def from_domain(:booking_cancelled, %{booking_id: booking_id} = payload) do
     {:ok, "booking.cancelled",

@@ -9,7 +9,8 @@ defmodule Palee.Workers.AudienceSyncJob do
   alias Palee.Application.Integrations.AudienceSync
 
   @impl Oban.Worker
-  def perform(%Oban.Job{args: %{"organization_id" => organization_id}}) when is_binary(organization_id) do
+  def perform(%Oban.Job{args: %{"organization_id" => organization_id}})
+      when is_binary(organization_id) do
     _result = AudienceSync.run(%{organization_id: organization_id})
     :ok
   end

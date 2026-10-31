@@ -98,7 +98,12 @@ defmodule PaleeWeb.OpenPlatformTest do
 
     Req.Test.stub(Palee.WebhookHttp, fn conn ->
       {:ok, body, conn} = Plug.Conn.read_body(conn)
-      send(test, {:webhook, conn.request_path, Plug.Conn.get_req_header(conn, "palee-signature"), body})
+
+      send(
+        test,
+        {:webhook, conn.request_path, Plug.Conn.get_req_header(conn, "palee-signature"), body}
+      )
+
       Plug.Conn.send_resp(conn, status, "ok")
     end)
   end
@@ -113,7 +118,9 @@ defmodule PaleeWeb.OpenPlatformTest do
       assert key["scopes"] == ["members:read"]
       assert key["status"] == "active"
 
-      %{"keys" => [listed]} = as(ctx.owner) |> get("#{ctx.admin}/integrations/api-keys") |> json_response(200)
+      %{"keys" => [listed]} =
+        as(ctx.owner) |> get("#{ctx.admin}/integrations/api-keys") |> json_response(200)
+
       assert listed["masked"] == "palee_test_#{key["prefix"]}_…"
       refute Map.has_key?(listed, "token")
       refute inspect(listed) =~ token
@@ -158,7 +165,9 @@ defmodule PaleeWeb.OpenPlatformTest do
       %{"key" => %{"id" => id}, "token" => old} = make_key(ctx, ["members:read"])
 
       %{"token" => new, "key" => rotated} =
-        as(ctx.owner) |> post("#{ctx.admin}/integrations/api-keys/#{id}/rotate") |> json_response(200)
+        as(ctx.owner)
+        |> post("#{ctx.admin}/integrations/api-keys/#{id}/rotate")
+        |> json_response(200)
 
       refute new == old
       assert rotated["previous_secret_expires_at"]
@@ -166,7 +175,9 @@ defmodule PaleeWeb.OpenPlatformTest do
       assert api(old) |> get("/api/public/v1/me") |> json_response(200)
 
       assert %{"key" => %{"status" => "revoked"}} =
-               as(ctx.owner) |> delete("#{ctx.admin}/integrations/api-keys/#{id}") |> json_response(200)
+               as(ctx.owner)
+               |> delete("#{ctx.admin}/integrations/api-keys/#{id}")
+               |> json_response(200)
 
       assert %{"code" => "invalid_api_key"} = api(new) |> get("/api/public/v1/me") |> problem(401)
       assert %{"code" => "invalid_api_key"} = api(old) |> get("/api/public/v1/me") |> problem(401)
@@ -181,7 +192,8 @@ defmodule PaleeWeb.OpenPlatformTest do
       {:ok, _membership} =
         Palee.Application.ChangeMembershipRoles.set_role(ctx.context, admin.id, "member")
 
-      assert %{"code" => "forbidden"} = api(token) |> get("/api/public/v1/members") |> problem(403)
+      assert %{"code" => "forbidden"} =
+               api(token) |> get("/api/public/v1/members") |> problem(403)
     end
 
     test "members cannot make keys; scopes must be known", ctx do
@@ -193,11 +205,15 @@ defmodule PaleeWeb.OpenPlatformTest do
 
       assert %{"code" => "invalid_scopes"} =
                as(ctx.owner)
-               |> post("#{ctx.admin}/integrations/api-keys", %{name: "x", scopes: ["payments:write"]})
+               |> post("#{ctx.admin}/integrations/api-keys", %{
+                 name: "x",
+                 scopes: ["payments:write"]
+               })
                |> json_response(422)
     end
 
-    test "commands: preview writes nothing, Idempotency-Key runs once, another body is refused", ctx do
+    test "commands: preview writes nothing, Idempotency-Key runs once, another body is refused",
+         ctx do
       %{"token" => token} = make_key(ctx, ["classes:read", "classes:write"])
       starts_at = DateTime.utc_now() |> DateTime.add(2, :day) |> DateTime.truncate(:second)
 
@@ -247,7 +263,9 @@ defmodule PaleeWeb.OpenPlatformTest do
                |> post("/api/public/v1/classes", body)
                |> problem(422)
 
-      assert %{"id" => id} = api(token) |> get("/api/public/v1/classes/#{created["id"]}") |> json_response(200)
+      assert %{"id" => id} =
+               api(token) |> get("/api/public/v1/classes/#{created["id"]}") |> json_response(200)
+
       assert id == created["id"]
     end
 
@@ -286,7 +304,8 @@ defmodule PaleeWeb.OpenPlatformTest do
   # ------------------------------------------------------------------ webhooks
 
   describe "webhooks" do
-    test "deliveries are signed, logged, retried, replayed and a 410 turns the endpoint off", ctx do
+    test "deliveries are signed, logged, retried, replayed and a 410 turns the endpoint off",
+         ctx do
       %{"endpoint" => endpoint, "secret" => secret} =
         as(ctx.owner)
         |> post("#{ctx.admin}/integrations/webhooks", %{
@@ -296,13 +315,20 @@ defmodule PaleeWeb.OpenPlatformTest do
         |> json_response(201)
 
       assert secret =~ ~r/\Awhsec_/
-      refute inspect(as(ctx.owner) |> get("#{ctx.admin}/integrations/webhooks") |> json_response(200)) =~ secret
+
+      refute inspect(
+               as(ctx.owner)
+               |> get("#{ctx.admin}/integrations/webhooks")
+               |> json_response(200)
+             ) =~ secret
 
       # «Δοκιμή»: a signed ping.
       receiver(200)
 
       %{"delivery" => ping} =
-        as(ctx.owner) |> post("#{ctx.admin}/integrations/webhooks/#{endpoint["id"]}/test") |> json_response(200)
+        as(ctx.owner)
+        |> post("#{ctx.admin}/integrations/webhooks/#{endpoint["id"]}/test")
+        |> json_response(200)
 
       assert ping["status"] == "succeeded"
       assert_received {:webhook, "/palee", [signature], body}
@@ -316,7 +342,11 @@ defmodule PaleeWeb.OpenPlatformTest do
       :ok =
         WebhookEvents.handle(
           :booking_made,
-          %{booking_id: Ecto.UUID.generate(), scheduled_class_id: Ecto.UUID.generate(), user_id: member_id},
+          %{
+            booking_id: Ecto.UUID.generate(),
+            scheduled_class_id: Ecto.UUID.generate(),
+            user_id: member_id
+          },
           ctx.organization.id,
           DateTime.utc_now()
         )
@@ -339,7 +369,9 @@ defmodule PaleeWeb.OpenPlatformTest do
       assert failed["next_attempt_at"]
 
       %{"delivery" => detail} =
-        as(ctx.owner) |> get("#{ctx.admin}/integrations/deliveries/#{failed["id"]}") |> json_response(200)
+        as(ctx.owner)
+        |> get("#{ctx.admin}/integrations/deliveries/#{failed["id"]}")
+        |> json_response(200)
 
       assert [%{"outcome" => "failed", "status_code" => 500}] = detail["attempts_log"]
 
@@ -347,7 +379,9 @@ defmodule PaleeWeb.OpenPlatformTest do
       receiver(200)
 
       %{"delivery" => replayed} =
-        as(ctx.owner) |> post("#{ctx.admin}/integrations/deliveries/#{ping["id"]}/replay") |> json_response(200)
+        as(ctx.owner)
+        |> post("#{ctx.admin}/integrations/deliveries/#{ping["id"]}/replay")
+        |> json_response(200)
 
       assert replayed["status"] == "succeeded"
       assert replayed["event_id"] == ping["event_id"]
@@ -355,18 +389,30 @@ defmodule PaleeWeb.OpenPlatformTest do
 
       # 410 Gone: failed at once and the endpoint is switched off.
       receiver(410)
-      as(ctx.owner) |> post("#{ctx.admin}/integrations/webhooks/#{endpoint["id"]}/test") |> json_response(200)
 
-      %{"webhooks" => [off]} = as(ctx.owner) |> get("#{ctx.admin}/integrations/webhooks") |> json_response(200)
+      as(ctx.owner)
+      |> post("#{ctx.admin}/integrations/webhooks/#{endpoint["id"]}/test")
+      |> json_response(200)
+
+      %{"webhooks" => [off]} =
+        as(ctx.owner) |> get("#{ctx.admin}/integrations/webhooks") |> json_response(200)
+
       assert off["status"] == "disabled"
       assert off["disabled_reason"] == "gone"
     end
 
     test "private and plain-http addresses are refused", ctx do
-      for url <- ["http://hooks.example.com/x", "https://127.0.0.1/x", "https://169.254.169.254/x"] do
+      for url <- [
+            "http://hooks.example.com/x",
+            "https://127.0.0.1/x",
+            "https://169.254.169.254/x"
+          ] do
         assert %{"code" => "invalid_webhook_url"} =
                  as(ctx.owner)
-                 |> post("#{ctx.admin}/integrations/webhooks", %{url: url, events: ["booking.created"]})
+                 |> post("#{ctx.admin}/integrations/webhooks", %{
+                   url: url,
+                   events: ["booking.created"]
+                 })
                  |> json_response(422)
       end
     end
@@ -392,21 +438,25 @@ defmodule PaleeWeb.OpenPlatformTest do
                })
                |> problem(403)
 
-      %{"webhooks" => [listed]} = as(ctx.owner) |> get("#{ctx.admin}/integrations/webhooks") |> json_response(200)
+      %{"webhooks" => [listed]} =
+        as(ctx.owner) |> get("#{ctx.admin}/integrations/webhooks") |> json_response(200)
+
       assert listed["source"] == "api"
 
       assert api(token)
              |> delete("/api/public/v1/webhook-subscriptions/#{subscription["id"]}")
              |> response(200)
 
-      assert %{"webhooks" => []} = as(ctx.owner) |> get("#{ctx.admin}/integrations/webhooks") |> json_response(200)
+      assert %{"webhooks" => []} =
+               as(ctx.owner) |> get("#{ctx.admin}/integrations/webhooks") |> json_response(200)
     end
   end
 
   # ------------------------------------------------------------------ email list
 
   describe "email list and marketing consent" do
-    test "only members who said yes are sent, email and first name only; no takes them off", ctx do
+    test "only members who said yes are sent, email and first name only; no takes them off",
+         ctx do
       member = add_member(ctx.organization, user_fixture(%{display_name: "Μαρία Παπαδοπούλου"}))
       _silent = add_member(ctx.organization, user_fixture())
       test = self()
@@ -433,7 +483,9 @@ defmodule PaleeWeb.OpenPlatformTest do
       refute_received {:mailchimp, "PUT", _path, _body}
 
       path = "/api/org/#{ctx.organization.slug}/me/marketing-consent"
-      assert %{"granted" => false, "list_connected" => true} = as(member) |> get(path) |> json_response(200)
+
+      assert %{"granted" => false, "list_connected" => true} =
+               as(member) |> get(path) |> json_response(200)
 
       assert %{"granted" => true, "granted_at" => granted_at} =
                as(member) |> put(path, %{granted: true}) |> json_response(200)
@@ -457,7 +509,10 @@ defmodule PaleeWeb.OpenPlatformTest do
     end
 
     test "a refused key is not saved", ctx do
-      Req.Test.stub(Palee.AudienceHttp, &Plug.Conn.send_resp(&1, 401, ~s({"title":"API Key Invalid"})))
+      Req.Test.stub(
+        Palee.AudienceHttp,
+        &Plug.Conn.send_resp(&1, 401, ~s({"title":"API Key Invalid"}))
+      )
 
       assert %{"code" => "audience_unauthorized"} =
                as(ctx.owner)
@@ -470,7 +525,6 @@ defmodule PaleeWeb.OpenPlatformTest do
 
       assert %{"connection" => nil} =
                as(ctx.owner) |> get("#{ctx.admin}/integrations/email-list") |> json_response(200)
-
     end
   end
 
@@ -486,19 +540,26 @@ defmodule PaleeWeb.OpenPlatformTest do
 
     defp open(ctx, user, extra \\ %{}) do
       as(user)
-      |> post("/api/access/open", Map.merge(%{location_id: ctx.location.id, code: door_code(ctx)}, extra))
+      |> post(
+        "/api/access/open",
+        Map.merge(%{location_id: ctx.location.id, code: door_code(ctx)}, extra)
+      )
     end
 
     defp make_door(ctx, attrs) do
       as(ctx.owner)
       |> post(
         "#{ctx.admin}/doors",
-        Map.merge(%{name: "Κεντρική είσοδος", location_id: ctx.location.id, provider: "sandbox"}, attrs)
+        Map.merge(
+          %{name: "Κεντρική είσοδος", location_id: ctx.location.id, provider: "sandbox"},
+          attrs
+        )
       )
       |> json_response(201)
     end
 
-    test "a member with a booking in the window opens it; others are refused; all is logged", ctx do
+    test "a member with a booking in the window opens it; others are refused; all is logged",
+         ctx do
       %{"door" => door, "event_url" => event_url} = make_door(ctx, %{})
       assert door["rules"]["who"] == "booked_or_covered"
       refute door["credentials_saved"]
@@ -518,7 +579,9 @@ defmodule PaleeWeb.OpenPlatformTest do
       assert %{"opened" => true, "reason" => "staff"} = open(ctx, ctx.owner) |> json_response(200)
       refute open(ctx, stranger).status == 200
 
-      %{"events" => events} = as(ctx.owner) |> get("#{ctx.admin}/access-events") |> json_response(200)
+      %{"events" => events} =
+        as(ctx.owner) |> get("#{ctx.admin}/access-events") |> json_response(200)
+
       kinds = Enum.map(events, &{&1["kind"], &1["reason"], &1["user_id"]})
       assert {"granted", "booked_class", booked.id} in kinds
       assert {"denied", "no_booking_in_window", walk_in.id} in kinds
@@ -526,18 +589,25 @@ defmodule PaleeWeb.OpenPlatformTest do
     end
 
     test "an offline controller keeps the door locked and sends the member to the desk", ctx do
-      %{"door" => door} = make_door(ctx, %{settings: %{simulate: "offline"}, rules: %{who: "members"}})
+      %{"door" => door} =
+        make_door(ctx, %{settings: %{simulate: "offline"}, rules: %{who: "members"}})
+
       member = add_member(ctx.organization, user_fixture())
 
       assert %{"code" => "door_offline"} = open(ctx, member) |> json_response(503)
 
       assert %{"code" => "door_offline"} =
-               as(ctx.owner) |> post("#{ctx.admin}/doors/#{door["id"]}/unlock") |> json_response(503)
+               as(ctx.owner)
+               |> post("#{ctx.admin}/doors/#{door["id"]}/unlock")
+               |> json_response(503)
 
       %{"events" => events} =
-        as(ctx.owner) |> get("#{ctx.admin}/access-events?kind=unlock_failed") |> json_response(200)
+        as(ctx.owner)
+        |> get("#{ctx.admin}/access-events?kind=unlock_failed")
+        |> json_response(200)
 
       assert length(events) == 2
+
       assert %{"doors" => [%{"last_error" => "offline" <> _}]} =
                as(ctx.owner) |> get("#{ctx.admin}/doors") |> json_response(200)
     end
@@ -558,16 +628,24 @@ defmodule PaleeWeb.OpenPlatformTest do
       assert id == first["id"]
     end
 
-    test "a Shelly relay is checked when saved, pulsed with toggle_after, and posts its events", ctx do
+    test "a Shelly relay is checked when saved, pulsed with toggle_after, and posts its events",
+         ctx do
       test = self()
 
       Req.Test.stub(Palee.DoorHttp, fn conn ->
         {:ok, body, conn} = Plug.Conn.read_body(conn)
-        send(test, {:shelly, conn.host, conn.request_path, conn.query_params, Jason.decode!(body)})
+
+        send(
+          test,
+          {:shelly, conn.host, conn.request_path, conn.query_params, Jason.decode!(body)}
+        )
 
         case conn.request_path do
-          "/v2/devices/api/get" -> Req.Test.json(conn, [%{"id" => "a8032ab12345", "online" => true}])
-          _set -> Req.Test.json(conn, %{})
+          "/v2/devices/api/get" ->
+            Req.Test.json(conn, [%{"id" => "a8032ab12345", "online" => true}])
+
+          _set ->
+            Req.Test.json(conn, %{})
         end
       end)
 
@@ -581,13 +659,20 @@ defmodule PaleeWeb.OpenPlatformTest do
 
       assert door["credentials_saved"]
       refute inspect(door) =~ String.duplicate("k", 40)
-      assert_received {:shelly, "shelly-77-eu.shelly.cloud", "/v2/devices/api/get", %{"auth_key" => _}, _body}
+
+      assert_received {:shelly, "shelly-77-eu.shelly.cloud", "/v2/devices/api/get",
+                       %{"auth_key" => _}, _body}
 
       member = add_member(ctx.organization, user_fixture())
       assert %{"opened" => true, "seconds" => 3} = open(ctx, member) |> json_response(200)
 
       assert_received {:shelly, _host, "/v2/devices/api/set/switch", _query,
-                       %{"id" => "a8032ab12345", "channel" => 0, "on" => true, "toggle_after" => 3}}
+                       %{
+                         "id" => "a8032ab12345",
+                         "channel" => 0,
+                         "on" => true,
+                         "toggle_after" => 3
+                       }}
 
       # The relay's own action (GET with the door's token).
       %URI{path: path, query: query} = URI.parse(event_url)
@@ -612,7 +697,11 @@ defmodule PaleeWeb.OpenPlatformTest do
                as(desk) |> post("#{ctx.admin}/doors/#{door["id"]}/unlock") |> json_response(200)
 
       as(desk)
-      |> post("#{ctx.admin}/doors", %{name: "x", location_id: ctx.location.id, provider: "sandbox"})
+      |> post("#{ctx.admin}/doors", %{
+        name: "x",
+        location_id: ctx.location.id,
+        provider: "sandbox"
+      })
       |> json_response(403)
 
       %{"events" => [event]} =

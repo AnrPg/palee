@@ -20,7 +20,9 @@ defmodule Palee.Integrations.OpenPlatformRLSTest do
     boxes =
       for name <- ["RLS Open A", "RLS Open B"] do
         {:ok, organization} =
-          Organizations.create_organization(%{name: "#{name} #{System.unique_integer([:positive])}"})
+          Organizations.create_organization(%{
+            name: "#{name} #{System.unique_integer([:positive])}"
+          })
 
         owner = user_fixture()
 
@@ -58,9 +60,16 @@ defmodule Palee.Integrations.OpenPlatformRLSTest do
 
     # A key is found from its token alone, then only in its own box.
     {:ok, %{key: key, token: token}} =
-      Integrations.create_api_key(context(a), %{name: "Zap", scopes: ["members:read"]}, a.owner.id, now)
+      Integrations.create_api_key(
+        context(a),
+        %{name: "Zap", scopes: ["members:read"]},
+        a.owner.id,
+        now
+      )
 
-    assert {:ok, %{organization_id: org_id, key: %{id: key_id}}} = Integrations.authenticate(token, now)
+    assert {:ok, %{organization_id: org_id, key: %{id: key_id}}} =
+             Integrations.authenticate(token, now)
+
     assert org_id == a.organization.id
     assert key_id == key.id
     assert [_one] = Integrations.list_api_keys(context(a))
@@ -86,14 +95,23 @@ defmodule Palee.Integrations.OpenPlatformRLSTest do
              )
 
     assert {:ok, 0} =
-             Integrations.enqueue_event(context(b), "booking.created", %{}, Ecto.UUID.generate(), now, now)
+             Integrations.enqueue_event(
+               context(b),
+               "booking.created",
+               %{},
+               Ecto.UUID.generate(),
+               now,
+               now
+             )
 
     assert a.organization.id in Integrations.due_organizations(DateTime.add(now, 1, :second))
     refute b.organization.id in Integrations.due_organizations(DateTime.add(now, 1, :second))
     assert {:error, :not_found} = Integrations.get_endpoint(context(b), endpoint.id)
 
     # Consent is the member's own row of that box.
-    assert {:ok, %{granted: true}} = Integrations.set_consent(context(a), a.owner.id, true, "member_app", now)
+    assert {:ok, %{granted: true}} =
+             Integrations.set_consent(context(a), a.owner.id, true, "member_app", now)
+
     assert %{granted: false} = Integrations.consent(context(b), a.owner.id)
 
     # A door's box is found from the event URL, its log stays in the box.

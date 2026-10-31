@@ -37,7 +37,8 @@ defmodule Palee.Infrastructure.Access.EctoAccessStore do
     with {:ok, id} <- Ecto.UUID.cast(id),
          %DoorController{} = door <-
            Repo.one(
-             from d in DoorController, where: d.organization_id == ^organization_id and d.id == ^id
+             from d in DoorController,
+               where: d.organization_id == ^organization_id and d.id == ^id
            ) do
       door_map(door)
     else
@@ -62,7 +63,10 @@ defmodule Palee.Infrastructure.Access.EctoAccessStore do
         {:error, :not_found}
 
       door ->
-        door |> DoorController.changeset(encode_credentials(changes)) |> Repo.update() |> door_result()
+        door
+        |> DoorController.changeset(encode_credentials(changes))
+        |> Repo.update()
+        |> door_result()
     end
   end
 

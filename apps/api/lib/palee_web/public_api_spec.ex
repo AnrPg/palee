@@ -30,7 +30,8 @@ defmodule PaleeWeb.PublicApiSpec do
       },
       "servers" => [%{"url" => String.trim_trailing(base_url, "/") <> @prefix}],
       "security" => [%{"apiKey" => []}],
-      "tags" => specs |> Enum.map(&tag/1) |> Enum.uniq() |> Enum.sort() |> Enum.map(&%{"name" => &1}),
+      "tags" =>
+        specs |> Enum.map(&tag/1) |> Enum.uniq() |> Enum.sort() |> Enum.map(&%{"name" => &1}),
       "paths" => paths(specs),
       "webhooks" => webhooks(),
       "components" => %{
@@ -49,7 +50,9 @@ defmodule PaleeWeb.PublicApiSpec do
           "Problem" => %{
             "description" => "Refused (RFC 9457). `code` is stable; `title` is English copy.",
             "content" => %{
-              "application/problem+json" => %{"schema" => %{"$ref" => "#/components/schemas/Problem"}}
+              "application/problem+json" => %{
+                "schema" => %{"$ref" => "#/components/schemas/Problem"}
+              }
             }
           }
         }
@@ -148,7 +151,9 @@ defmodule PaleeWeb.PublicApiSpec do
 
   defp param({name, schema}, location, required) do
     %{"name" => name, "in" => location, "required" => required, "schema" => schema}
-    |> then(&if(schema["description"], do: Map.put(&1, "description", schema["description"]), else: &1))
+    |> then(
+      &if(schema["description"], do: Map.put(&1, "description", schema["description"]), else: &1)
+    )
   end
 
   defp header_params(%{kind: :command}) do
@@ -219,7 +224,11 @@ defmodule PaleeWeb.PublicApiSpec do
     %{
       "type" => "object",
       "properties" => %{
-        "id" => %{"type" => "string", "format" => "uuid", "description" => "Drop duplicates by it"},
+        "id" => %{
+          "type" => "string",
+          "format" => "uuid",
+          "description" => "Drop duplicates by it"
+        },
         "type" => %{"const" => type},
         "api_version" => %{"const" => PublicEvents.api_version()},
         "created_at" => %{"type" => "string", "format" => "date-time"},

@@ -62,11 +62,20 @@ defmodule Palee.Operations do
       |> need(is_binary(spec[:name]) and spec.name =~ ~r/\A[a-z_]+\.[a-z_]+\z/, "name")
       |> need(spec[:kind] in @kinds, "kind")
       |> need(spec[:risk] in @risks, "risk")
-      |> need(is_list(spec[:data_classes]) and Enum.all?(spec.data_classes, &(&1 in @data_classes)), "data_classes")
+      |> need(
+        is_list(spec[:data_classes]) and Enum.all?(spec.data_classes, &(&1 in @data_classes)),
+        "data_classes"
+      )
       |> need(is_list(spec[:capability]) and spec.capability != [], "capability")
       |> need(is_binary(spec[:scope]), "scope")
-      |> need(is_binary(spec[:summary]) and is_binary(spec[:description]), "summary and description")
-      |> need(spec[:kind] == :query or function_exported?(module, :preview, 2), "commands need preview/2")
+      |> need(
+        is_binary(spec[:summary]) and is_binary(spec[:description]),
+        "summary and description"
+      )
+      |> need(
+        spec[:kind] == :query or function_exported?(module, :preview, 2),
+        "commands need preview/2"
+      )
       |> need(spec[:kind] == :query or spec[:risk] != :read, "commands must declare a write risk")
       |> need(match?(%{method: m, path: "/" <> _} when m in @methods, spec[:http]), "http")
       |> schema_problems("input", spec[:input])

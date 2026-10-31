@@ -60,8 +60,16 @@ defmodule Palee.Application.Operations.MemberPackagesAssign do
   @impl true
   def preview(context, input) do
     case Finance.get_package(context, input["package_id"]) do
-      nil -> {:error, :not_found}
-      package -> {:ok, %{"would" => "give the package", "package" => Views.package(package, "EUR"), "member_id" => input["member_id"]}}
+      nil ->
+        {:error, :not_found}
+
+      package ->
+        {:ok,
+         %{
+           "would" => "give the package",
+           "package" => Views.package(package, "EUR"),
+           "member_id" => input["member_id"]
+         }}
     end
   end
 
@@ -72,7 +80,12 @@ defmodule Palee.Application.Operations.MemberPackagesAssign do
       |> then(&if(input["starts_on"], do: Map.put(&1, "starts_on", input["starts_on"]), else: &1))
 
     with {:ok, _result} <- AssignFinanceMemberPackage.call(context, input["member_id"], params) do
-      {:ok, %{"member_id" => input["member_id"], "package_id" => input["package_id"], "status" => "assigned"}}
+      {:ok,
+       %{
+         "member_id" => input["member_id"],
+         "package_id" => input["package_id"],
+         "status" => "assigned"
+       }}
     end
   end
 end

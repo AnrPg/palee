@@ -10,7 +10,8 @@ defmodule Palee.Operations.RegistryTest do
     assert length(Operations.modules()) >= 15
 
     for module <- Operations.modules() do
-      assert Operations.contract(module) == :ok, "#{inspect(module)}: #{inspect(Operations.contract(module))}"
+      assert Operations.contract(module) == :ok,
+             "#{inspect(module)}: #{inspect(Operations.contract(module))}"
     end
   end
 
@@ -33,7 +34,10 @@ defmodule Palee.Operations.RegistryTest do
 
   test "routes use Phoenix path parameters" do
     assert {:get, "/members/:id", "members.get"} in Operations.routes()
-    assert Operations.phoenix_path("/classes/{class_id}/bookings") == "/classes/:class_id/bookings"
+
+    assert Operations.phoenix_path("/classes/{class_id}/bookings") ==
+             "/classes/:class_id/bookings"
+
     assert {:error, :unknown_operation} = Operations.fetch("members.delete")
   end
 
@@ -55,7 +59,12 @@ defmodule Palee.Operations.RegistryTest do
       id = Ecto.UUID.generate()
 
       assert {:ok, %{"id" => ^id, "limit" => 10, "role" => "staff", "at" => nil}} =
-               JsonSchema.cast(@schema, %{"id" => id, "limit" => "10", "role" => "staff", "at" => nil})
+               JsonSchema.cast(@schema, %{
+                 "id" => id,
+                 "limit" => "10",
+                 "role" => "staff",
+                 "at" => nil
+               })
 
       assert {:ok, %{"limit" => 25}} = JsonSchema.cast(@schema, %{"id" => id})
     end
@@ -75,7 +84,10 @@ defmodule Palee.Operations.RegistryTest do
 
     test "contract_check refuses unsorted required lists and unsupported keywords" do
       assert :ok = JsonSchema.contract_check(@schema)
-      assert {:error, _problems} = JsonSchema.contract_check(%{@schema | "required" => ["b", "a"]})
+
+      assert {:error, _problems} =
+               JsonSchema.contract_check(%{@schema | "required" => ["b", "a"]})
+
       assert {:error, _problems} = JsonSchema.contract_check(Map.put(@schema, "oneOf", []))
     end
   end

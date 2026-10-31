@@ -399,7 +399,10 @@ config :palee, :domain_event_handlers, %{
   ],
   # ADR-156: the invite funnel follows events, trials, joining and paying.
   event_attendance_recorded: [Palee.Application.ReferralReactions],
-  membership_payment_recorded: [Palee.Application.ReferralReactions, Palee.Application.Integrations.WebhookEvents],
+  membership_payment_recorded: [
+    Palee.Application.ReferralReactions,
+    Palee.Application.Integrations.WebhookEvents
+  ],
   booking_cancelled: [
     Palee.Application.TrialReactions,
     Palee.Application.WalletReactions,

@@ -67,7 +67,9 @@ defmodule Palee.Access.DoorDomainTest do
                EntryRules.decide(facts(%{open_gym_covered?: true}), %{}, @now, @local)
 
       assert {:grant, :member} = EntryRules.decide(facts(), %{"who" => "members"}, @now, @local)
-      assert {:deny, :staff_only} = EntryRules.decide(facts(), %{"who" => "staff_only"}, @now, @local)
+
+      assert {:deny, :staff_only} =
+               EntryRules.decide(facts(), %{"who" => "staff_only"}, @now, @local)
     end
 
     test "opening hours are in the box's local time" do
@@ -103,7 +105,9 @@ defmodule Palee.Access.DoorDomainTest do
       refute Map.has_key?(rules, "unknown")
 
       assert {:ok, %{"hours" => [%{"days" => [1, 2], "from" => "06:00", "to" => "24:00"}]}} =
-               EntryRules.normalize(%{"hours" => [%{"days" => [2, 1, 1], "from" => "06:00", "to" => "24:00"}]})
+               EntryRules.normalize(%{
+                 "hours" => [%{"days" => [2, 1, 1], "from" => "06:00", "to" => "24:00"}]
+               })
 
       for bad <- [
             %{"who" => "everyone"},
@@ -121,11 +125,19 @@ defmodule Palee.Access.DoorDomainTest do
 
   describe "provider settings" do
     test "Shelly needs its cloud server, device, channel and auth key" do
-      assert {:ok, %{"server" => "shelly-77-eu.shelly.cloud", "device_id" => "a8032ab12345", "channel" => 0},
+      assert {:ok,
+              %{
+                "server" => "shelly-77-eu.shelly.cloud",
+                "device_id" => "a8032ab12345",
+                "channel" => 0
+              },
               %{"auth_key" => _key}} =
                ProviderSettings.validate(
                  "shelly",
-                 %{"server" => "https://Shelly-77-eu.shelly.cloud", "device_id" => "a8032ab12345"},
+                 %{
+                   "server" => "https://Shelly-77-eu.shelly.cloud",
+                   "device_id" => "a8032ab12345"
+                 },
                  %{"auth_key" => String.duplicate("k", 40)}
                )
 
@@ -150,7 +162,9 @@ defmodule Palee.Access.DoorDomainTest do
                  "api_key" => "saved-key-0123456789"
                })
 
-      assert {:error, :invalid_door_settings} = ProviderSettings.validate("kisi", %{"lock_id" => 42}, nil)
+      assert {:error, :invalid_door_settings} =
+               ProviderSettings.validate("kisi", %{"lock_id" => 42}, nil)
+
       assert {:error, :invalid_door_settings} = ProviderSettings.validate("nuki", %{}, %{})
     end
   end

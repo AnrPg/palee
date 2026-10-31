@@ -25,7 +25,9 @@ defmodule Palee.Application.Access.DoorSettings do
     do: if(Application.get_env(:palee, :open_platform_sandbox, false), do: [], else: ["sandbox"])
 
   def list(context, params) do
-    filters = %{location_id: param(params, :location_id)} |> Map.reject(fn {_k, v} -> is_nil(v) end)
+    filters =
+      %{location_id: param(params, :location_id)} |> Map.reject(fn {_k, v} -> is_nil(v) end)
+
     %{doors: context |> Access.list_doors(filters) |> scoped(context)}
   end
 

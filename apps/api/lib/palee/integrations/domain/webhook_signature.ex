@@ -46,9 +46,12 @@ defmodule Palee.Integrations.Domain.WebhookSignature do
          :ok <- fresh(timestamp, now, tolerance) do
       expected = sign(secret, timestamp, body)
 
-      if Enum.any?(signatures, &(byte_size(&1) == byte_size(expected) and :crypto.hash_equals(&1, expected))),
-        do: :ok,
-        else: {:error, :mismatch}
+      if Enum.any?(
+           signatures,
+           &(byte_size(&1) == byte_size(expected) and :crypto.hash_equals(&1, expected))
+         ),
+         do: :ok,
+         else: {:error, :mismatch}
     end
   end
 

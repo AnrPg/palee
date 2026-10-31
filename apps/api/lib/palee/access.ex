@@ -55,7 +55,7 @@ defmodule Palee.Access do
   def create_door(context, params, actor_id) do
     provider = params[:provider]
 
-    with true <- provider != "sandbox" or sandbox?() || {:error, :invalid_door_settings},
+    with true <- (provider != "sandbox" or sandbox?()) || {:error, :invalid_door_settings},
          {:ok, name} <- door_name(params[:name]),
          {:ok, location_id} <- uuid(params[:location_id]),
          {:ok, settings, credentials} <-
@@ -165,8 +165,11 @@ defmodule Palee.Access do
 
   defp door_name(name) when is_binary(name) do
     case String.trim(name) do
-      "" -> {:error, :invalid_door_name}
-      trimmed -> if String.length(trimmed) <= 80, do: {:ok, trimmed}, else: {:error, :invalid_door_name}
+      "" ->
+        {:error, :invalid_door_name}
+
+      trimmed ->
+        if String.length(trimmed) <= 80, do: {:ok, trimmed}, else: {:error, :invalid_door_name}
     end
   end
 
@@ -272,7 +275,9 @@ defmodule Palee.Access do
     with organization_id when is_binary(organization_id) <- AccessStore.lookup_door(door_id),
          context = %{organization_id: organization_id},
          %{} = door <- AccessStore.get_door(context, door_id),
-         true <- is_binary(door.event_token_hash) and :crypto.hash_equals(hash(token), door.event_token_hash),
+         true <-
+           is_binary(door.event_token_hash) and
+             :crypto.hash_equals(hash(token), door.event_token_hash),
          {:ok, events} <- controller(door.provider).parse_event(door, params) do
       AccessStore.update_door(context, door.id, %{last_seen_at: now})
 

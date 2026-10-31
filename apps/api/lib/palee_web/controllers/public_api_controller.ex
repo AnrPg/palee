@@ -24,9 +24,14 @@ defmodule PaleeWeb.PublicApiController do
     opts = [idempotency_key: header(conn, "idempotency-key"), preview: preview?(conn)]
 
     case PublicApi.run(conn.assigns.tenant_context, name, input(conn), opts) do
-      {:ok, status, body} -> respond(conn, status, body)
-      {:ok, status, body, :replayed} -> conn |> put_resp_header("idempotent-replayed", "true") |> respond(status, body)
-      error -> FallbackController.call(conn, error)
+      {:ok, status, body} ->
+        respond(conn, status, body)
+
+      {:ok, status, body, :replayed} ->
+        conn |> put_resp_header("idempotent-replayed", "true") |> respond(status, body)
+
+      error ->
+        FallbackController.call(conn, error)
     end
   end
 

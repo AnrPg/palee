@@ -24,7 +24,9 @@ defmodule Palee.Application.Integrations.OpenPlatformSweep do
         Access.purge_old_events(context, now)
       rescue
         error ->
-          Logger.error("open platform sweep failed for #{organization_id}: #{Exception.message(error)}")
+          Logger.error(
+            "open platform sweep failed for #{organization_id}: #{Exception.message(error)}"
+          )
       end
     end)
 

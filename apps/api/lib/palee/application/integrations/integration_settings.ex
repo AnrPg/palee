@@ -30,7 +30,11 @@ defmodule Palee.Application.Integrations.IntegrationSettings do
   def create_key(context, params, now \\ DateTime.utc_now()) do
     Integrations.create_api_key(
       context,
-      %{name: param(params, :name), scopes: param(params, :scopes), expires_at: param(params, :expires_at)},
+      %{
+        name: param(params, :name),
+        scopes: param(params, :scopes),
+        expires_at: param(params, :expires_at)
+      },
       context.user_id,
       now
     )
@@ -50,7 +54,11 @@ defmodule Palee.Application.Integrations.IntegrationSettings do
   def create_webhook(context, params) do
     Integrations.create_endpoint(
       context,
-      %{url: param(params, :url), events: param(params, :events), description: param(params, :description)},
+      %{
+        url: param(params, :url),
+        events: param(params, :events),
+        description: param(params, :description)
+      },
       context.user_id
     )
   end
@@ -100,7 +108,8 @@ defmodule Palee.Application.Integrations.IntegrationSettings do
 
   @doc "Sends an event again (a new delivery with the same event id)."
   def replay(context, id, now \\ DateTime.utc_now()) do
-    with {:ok, delivery} <- Integrations.replay(context, id, now), do: send_now(context, delivery.id)
+    with {:ok, delivery} <- Integrations.replay(context, id, now),
+         do: send_now(context, delivery.id)
   end
 
   defp send_now(context, delivery_id) do

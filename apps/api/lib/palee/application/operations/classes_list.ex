@@ -64,7 +64,9 @@ defmodule Palee.Application.Operations.ClassesList do
             class_type_ids: [],
             include_drafts: true
           })
-          |> Enum.filter(&(is_nil(input["location_id"]) or Map.get(&1, :location_id) == input["location_id"]))
+          |> Enum.filter(
+            &(is_nil(input["location_id"]) or Map.get(&1, :location_id) == input["location_id"])
+          )
 
         {:ok, %{"data" => Enum.map(slots, &Views.class/1)}}
     end

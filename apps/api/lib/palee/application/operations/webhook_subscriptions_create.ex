@@ -34,7 +34,10 @@ defmodule Palee.Application.Operations.WebhookSubscriptionsCreate do
             "type" => "array",
             "minItems" => 1,
             "maxItems" => 10,
-            "items" => %{"type" => "string", "enum" => Palee.Integrations.Domain.PublicEvents.types()}
+            "items" => %{
+              "type" => "string",
+              "enum" => Palee.Integrations.Domain.PublicEvents.types()
+            }
           }
         },
         "required" => ["events", "url"]
@@ -45,21 +48,34 @@ defmodule Palee.Application.Operations.WebhookSubscriptionsCreate do
           "id" => Views.uuid(),
           "url" => %{"type" => "string"},
           "events" => %{"type" => "array", "items" => %{"type" => "string"}},
-          "secret" => %{"type" => "string", "description" => "Shown once. Verify signatures with it."}
+          "secret" => %{
+            "type" => "string",
+            "description" => "Shown once. Verify signatures with it."
+          }
         },
         "required" => ["events", "id", "secret", "url"]
       },
       examples: [
-        %{input: %{"url" => "https://hooks.zapier.com/hooks/standard/1/abc", "events" => ["booking.created"]}, output: %{}}
+        %{
+          input: %{
+            "url" => "https://hooks.zapier.com/hooks/standard/1/abc",
+            "events" => ["booking.created"]
+          },
+          output: %{}
+        }
       ]
     }
   end
 
   @impl true
-  def preview(_context, input), do: {:ok, %{"would" => "subscribe", "url" => input["url"], "events" => input["events"]}}
+  def preview(_context, input),
+    do: {:ok, %{"would" => "subscribe", "url" => input["url"], "events" => input["events"]}}
 
   @impl true
-  def execute(%{principal: %{kind: :api_key, api_key_id: key_id, scopes: scopes}} = context, input) do
+  def execute(
+        %{principal: %{kind: :api_key, api_key_id: key_id, scopes: scopes}} = context,
+        input
+      ) do
     with {:ok, %{endpoint: endpoint, secret: secret}} <-
            Integrations.create_endpoint(
              context,
@@ -69,7 +85,13 @@ defmodule Palee.Application.Operations.WebhookSubscriptionsCreate do
              api_key_id: key_id,
              scopes: scopes
            ) do
-      {:ok, %{"id" => endpoint.id, "url" => endpoint.url, "events" => endpoint.events, "secret" => secret}}
+      {:ok,
+       %{
+         "id" => endpoint.id,
+         "url" => endpoint.url,
+         "events" => endpoint.events,
+         "secret" => secret
+       }}
     end
   end
 

@@ -49,8 +49,16 @@ defmodule Palee.Application.Operations.BookingsCreate do
   @impl true
   def preview(context, input) do
     case Scheduling.get_slot(context, input["class_id"]) do
-      nil -> {:error, :not_found}
-      slot -> {:ok, %{"would" => "book the member", "class" => Views.class(slot), "member_id" => input["member_id"]}}
+      nil ->
+        {:error, :not_found}
+
+      slot ->
+        {:ok,
+         %{
+           "would" => "book the member",
+           "class" => Views.class(slot),
+           "member_id" => input["member_id"]
+         }}
     end
   end
 

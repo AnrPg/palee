@@ -66,7 +66,9 @@ defmodule Palee.Application.Access.DoorAccess do
 
   defp deny(context, door, user_id, reason, method, now) do
     log(context, door, user_id, "denied", reason, method, now)
-    {:error, :entry_denied, %{reason: Atom.to_string(reason), door: %{id: door.id, name: door.name}}}
+
+    {:error, :entry_denied,
+     %{reason: Atom.to_string(reason), door: %{id: door.id, name: door.name}}}
   end
 
   defp pick_door(context, location_id, door_id) do
@@ -90,7 +92,12 @@ defmodule Palee.Application.Access.DoorAccess do
 
   defp facts(context, user_id, location_id, now) do
     gathered = CheckInFacts.gather(context, user_id, location_id, now)
-    roles = context |> Organizations.member_roles_by_user() |> Map.get(user_id, %{}) |> Map.get(:roles, [])
+
+    roles =
+      context
+      |> Organizations.member_roles_by_user()
+      |> Map.get(user_id, %{})
+      |> Map.get(:roles, [])
 
     %{
       staff?: gathered.member? and MembershipPolicy.staff?(roles),
