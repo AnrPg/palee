@@ -373,7 +373,9 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
              SubscriptionSelection.eligible?(
                package.id,
                package.params || %{},
-               list_subscriptions(membership.id)
+               list_subscriptions(membership.id),
+               channel: :staff,
+               today: GymClock.today()
              ),
            {:ok, params} <- payment_model_params(membership, package, string_key_map(params)) do
         subscription = insert_subscription!(membership, package, params)
@@ -2560,7 +2562,10 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
         :booking_window_days,
         :cancellation_cutoff_hours,
         :waitlist_priority,
-        :no_show_penalty_waived
+        :no_show_penalty_waived,
+        :daily_booking_limit,
+        :weekly_booking_limit,
+        :open_bookings_limit
       ])
     else
       _ ->
@@ -2568,8 +2573,30 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
           booking_window_days: nil,
           cancellation_cutoff_hours: nil,
           waitlist_priority: "normal",
-          no_show_penalty_waived: false
+          no_show_penalty_waived: false,
+          daily_booking_limit: nil,
+          weekly_booking_limit: nil,
+          open_bookings_limit: nil
         }
+    end
+  end
+
+  @impl true
+  def purchase_eligibility(user_id, package_id, channel, %Date{} = today) do
+    with %MembershipPackage{} = package <-
+           tenant_scope(MembershipPackage)
+           |> where([package], package.id == ^package_id)
+           |> Repo.one() || {:error, :not_found} do
+      history =
+        case tenant_scope(Membership) |> where([m], m.user_id == ^user_id) |> Repo.one() do
+          %Membership{id: membership_id} -> list_subscriptions(membership_id)
+          nil -> []
+        end
+
+      SubscriptionSelection.eligible?(package.id, package.params || %{}, history,
+        channel: channel,
+        today: today
+      )
     end
   end
 

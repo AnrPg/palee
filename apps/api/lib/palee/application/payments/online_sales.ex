@@ -151,6 +151,8 @@ defmodule Palee.Application.Payments.OnlineSales do
       {:ok,
        %{
          package: public_package(package),
+         # ADR-342: why this member may not buy it (nil: they may).
+         eligibility: eligibility_code(context, package),
          available: Payments.available?(context, online_purpose(package)),
          provider: Payments.provider(context),
          withdrawal_days: if(applies, do: Withdrawal.days()),
@@ -173,6 +175,8 @@ defmodule Palee.Application.Payments.OnlineSales do
     now = DateTime.utc_now()
 
     with {:ok, package} <- package_for_sale(context, package_id),
+         # ADR-342: refused before any money is taken, not after.
+         :ok <- eligible(context, package, now),
          true <-
            Payments.available?(context, online_purpose(package)) ||
              {:error, :online_payments_unavailable},
@@ -215,6 +219,26 @@ defmodule Palee.Application.Payments.OnlineSales do
       )
     end
   end
+
+  defp eligible(context, package, now) do
+    Finance.purchase_eligibility(
+      context,
+      context.user_id,
+      package.id,
+      :member,
+      Organizations.local_today(context.organization_id, now)
+    )
+  end
+
+  defp eligibility_code(%{user_id: user_id} = context, package) when is_binary(user_id) do
+    case eligible(context, package, DateTime.utc_now()) do
+      :ok -> nil
+      {:error, code} when is_atom(code) -> Atom.to_string(code)
+      _other -> nil
+    end
+  end
+
+  defp eligibility_code(_context, _package), do: nil
 
   defp package_for_sale(context, package_id) do
     case Ecto.UUID.cast(package_id) do

@@ -3098,6 +3098,16 @@ defmodule PaleeWeb.FallbackController do
 
   # ADR-097 Phase B: booking rules, perks, freezes and facility.
   @phase_b_errors %{
+    # ADR-342 (CP-A8): purchase and booking rules of a package.
+    package_staff_only: {:forbidden, "Only the box's staff can give this package"},
+    package_purchase_limit_reached:
+      {:conflict, "You have bought this package as many times as it allows"},
+    package_prerequisite_missing:
+      {:conflict, "This package needs another package of the box first"},
+    package_active_members_only: {:conflict, "This package is for members with an active package"},
+    booking_daily_limit_reached: {:conflict, "Your package allows no more classes that day"},
+    booking_weekly_limit_reached: {:conflict, "Your package allows no more classes that week"},
+    booking_open_limit_reached: {:conflict, "Your package allows no more upcoming bookings"},
     finance_membership_frozen: {:forbidden, "The membership is frozen"},
     finance_time_window_not_included: {:forbidden, "This time is outside the package's hours"},
     finance_location_not_included: {:forbidden, "This location is not included in the package"},

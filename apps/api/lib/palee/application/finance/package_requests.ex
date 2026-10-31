@@ -27,6 +27,9 @@ defmodule Palee.Application.Finance.PackageRequests do
     today = today(context)
 
     with {:ok, package} <- requestable_package(context, package_id),
+         # ADR-342: who may buy it, how often, intro-only and prerequisites.
+         :ok <-
+           Finance.purchase_eligibility(context, context.user_id, package.id, :member, today),
          {:ok, request, how} <-
            scoped(context, fn ->
              PackageRequestStore.request(%{

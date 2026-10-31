@@ -133,6 +133,9 @@ defmodule Palee.Finance.Ports.FinanceStore do
   @callback cancel_freeze(binary(), binary(), map()) :: {:ok, map()} | {:error, term()}
   @callback list_freezes(binary()) :: [map()]
   @callback booking_terms(binary(), Date.t()) :: map()
+  @doc "ADR-342: whether the person may take the package now (`:member` or `:staff`)."
+  @callback purchase_eligibility(binary(), binary(), :member | :staff, Date.t()) ::
+              :ok | {:error, atom()}
   @callback allowance_terms(binary(), atom(), Date.t()) :: map() | nil
   # ADR-098 payment models
   @callback list_beneficiaries(binary()) :: [map()]
