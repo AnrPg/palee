@@ -429,7 +429,8 @@ defmodule PaleeWeb.Schemas.CheckIn do
         can_auto_check_in: %Schema{type: :boolean},
         override_allowed: %Schema{type: :boolean},
         checked_in: check_in(),
-        organization_id: @uuid
+        organization_id: @uuid,
+        visit: PaleeWeb.Schemas.TrainingFloor.visit()
       },
       required: [:member, :decision, :problems, :can_auto_check_in, :override_allowed]
     }

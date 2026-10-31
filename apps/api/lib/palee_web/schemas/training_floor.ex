@@ -282,6 +282,71 @@ defmodule PaleeWeb.Schemas.TrainingFloor do
     }
   end
 
+  # -- CP-E1: visit badges ------------------------------------------------------
+
+  @badges ~w(first_visit first_in_class_type guest trial brought_by_member came_via_event came_via_referral)
+
+  def via do
+    %Schema{
+      title: "VisitVia",
+      type: :object,
+      nullable: true,
+      description: "How a first-time visitor came (referral attribution)",
+      properties: %{
+        kind: %Schema{type: :string, enum: ~w(event referral)},
+        event_id: @maybe_uuid,
+        channel: @maybe_string,
+        by_user_id: @maybe_uuid,
+        by_nickname: @maybe_string
+      },
+      required: [:kind]
+    }
+  end
+
+  def visit do
+    %Schema{
+      title: "VisitBadges",
+      type: :object,
+      properties: %{
+        badges: %Schema{type: :array, items: %Schema{type: :string, enum: @badges}},
+        via: via()
+      },
+      required: [:badges, :via]
+    }
+  end
+
+  def class_visit_badges do
+    %Schema{
+      title: "ClassVisitBadges",
+      type: :object,
+      properties: %{
+        slot_id: @uuid,
+        people: %Schema{
+          type: :array,
+          items: %Schema{
+            title: "ClassVisitPerson",
+            type: :object,
+            properties: %{
+              booking_id: @uuid,
+              user_id: @uuid,
+              guest_name: @maybe_string,
+              brought_by: %Schema{
+                type: :object,
+                nullable: true,
+                properties: %{user_id: @uuid, nickname: @maybe_string},
+                required: [:user_id]
+              },
+              badges: %Schema{type: :array, items: %Schema{type: :string, enum: @badges}},
+              via: via()
+            },
+            required: [:badges, :booking_id, :brought_by, :guest_name, :user_id, :via]
+          }
+        }
+      },
+      required: [:people, :slot_id]
+    }
+  end
+
   @doc false
   def shared, do: %{uuid: @uuid, date: @date, maybe_date: @maybe_date, datetime: @datetime}
 end

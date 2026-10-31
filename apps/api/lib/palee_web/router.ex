@@ -1338,6 +1338,8 @@ defmodule PaleeWeb.Router do
     put("/schedule/day-workouts", AdminDayWorkoutController, :put)
     delete("/schedule/day-workouts/:id", AdminDayWorkoutController, :delete)
     post("/schedule/slots/:id/state", AdminScheduleController, :change_state)
+    # ADR-359 (CP-E1): first visit, guest and how they came.
+    get("/schedule/slots/:id/visit-badges", AdminVisitBadgesController, :show)
     delete("/schedule/slots/:id", AdminScheduleController, :delete_slot)
 
     get(

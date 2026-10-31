@@ -37,6 +37,9 @@ defmodule Palee.Scheduling do
 
   defdelegate transaction(context, fun), to: Palee.Scheduling.SchedulingStore
 
+  # ADR-359 (CP-E1): «Πρώτη επίσκεψη», «Επισκέπτης» and the other visit badges.
+  defdelegate visit_badges(facts), to: Palee.Scheduling.Domain.VisitBadges, as: :badges
+
   # ADR-357 (CP-D3): «Χωρίς WOD» / «Μικτό» / «Όλα με WOD» per gym day.
   defdelegate day_assignment_tags(dates, classes),
     to: Palee.Scheduling.Domain.DayAssignmentTag,

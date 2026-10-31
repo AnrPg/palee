@@ -18,7 +18,7 @@ defmodule Palee.Application.DeskCheckIn do
   Every check-in records its method: `member_qr`, `wallet` or `desk_search`.
   """
 
-  alias Palee.Application.{CheckInActions, CheckInFacts, MemberCodes, ScanCheckIn}
+  alias Palee.Application.{CheckInActions, CheckInFacts, MemberCodes, ScanCheckIn, VisitBadges}
   alias Palee.{Facility, Identity, Organizations}
   alias Palee.Facility.Domain.{CheckInPolicy, DeskAssessment, ResolveScan}
 
@@ -246,8 +246,21 @@ defmodule Palee.Application.DeskCheckIn do
       can_auto_check_in: assessment.can_auto_check_in,
       override_allowed: assessment.override_allowed,
       checked_in: check_in,
-      organization_id: context.organization_id
+      organization_id: context.organization_id,
+      visit: visit(context, view, now_bookings)
     }
+  end
+
+  # ADR-359 (CP-E1): «Πρώτη επίσκεψη», «Επισκέπτης» and how they came,
+  # counting visits before this one (never the class being checked in to).
+  defp visit(context, view, bookings) do
+    booking = List.first(bookings)
+
+    VisitBadges.for_person(context, view.user_id, view.now,
+      class_type_id: booking && Map.get(booking, :class_type_id),
+      booking_kind: booking && booking |> Map.get(:kind) |> then(&(&1 && to_string(&1))),
+      exclude_class_ids: Enum.map(bookings, & &1.scheduled_class_id)
+    )
   end
 
   defp in_window(view), do: ResolveScan.candidates(view.facts, view.rules, view.now)
