@@ -32,7 +32,8 @@ defmodule Palee.Email.Templates.StatusUpdate do
         [
           Layout.text_button(tr(locale, "Open the status page"), url),
           Layout.text_button(tr(locale, "Stop these emails"), assigns.unsubscribe_url)
-        ]
+        ],
+      reason: reason(locale)
     )
   end
 
@@ -49,14 +50,15 @@ defmodule Palee.Email.Templates.StatusUpdate do
         Layout.paragraph(assigns.body),
         Layout.button(tr(locale, "Open the status page"), url),
         Layout.fallback_link(locale, url),
-        Layout.note(
-          tr(locale, "You get these emails because you asked for them on the status page.")
-        ),
         Layout.paragraph(tr(locale, "Stop these emails") <> ": " <> assigns.unsubscribe_url)
       ],
-      preheader: assigns.body
+      preheader: assigns.body,
+      reason: reason(locale)
     )
   end
+
+  defp reason(locale),
+    do: tr(locale, "You get these emails because you asked for them on the status page.")
 
   defp window_rows(%{kind: "maintenance", scheduled_for: from, scheduled_until: until}, locale)
        when not is_nil(from) and not is_nil(until),

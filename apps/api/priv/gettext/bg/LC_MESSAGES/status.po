@@ -51,3 +51,6 @@ msgstr "Поддръжката е в ход"
 
 msgid "Maintenance completed"
 msgstr "Поддръжката приключи"
+
+msgid "You get this email because this address was entered on the Palee status page."
+msgstr "Получавате този имейл, защото този адрес е въведен на страницата за състоянието на Palee."

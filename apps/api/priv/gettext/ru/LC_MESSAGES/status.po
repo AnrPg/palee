@@ -51,3 +51,6 @@ msgstr "Идёт обслуживание"
 
 msgid "Maintenance completed"
 msgstr "Обслуживание завершено"
+
+msgid "You get this email because this address was entered on the Palee status page."
+msgstr "Вы получили это письмо, потому что этот адрес был указан на странице статуса Palee."

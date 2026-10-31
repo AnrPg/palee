@@ -14,12 +14,16 @@ defmodule Palee.Email.Templates.StatusSubscriptionConfirm do
 
   @impl true
   def text(%{url: url}, locale) do
-    Layout.text(locale, [
-      Layout.t(locale, "Hello,"),
-      what(locale),
-      Layout.text_button(tr(locale, "Confirm"), url),
-      not_you(locale)
-    ])
+    Layout.text(
+      locale,
+      [
+        Layout.t(locale, "Hello,"),
+        what(locale),
+        Layout.text_button(tr(locale, "Confirm"), url),
+        not_you(locale)
+      ],
+      reason: reason(locale)
+    )
   end
 
   @impl true
@@ -34,7 +38,8 @@ defmodule Palee.Email.Templates.StatusSubscriptionConfirm do
         Layout.fallback_link(locale, url),
         Layout.note(not_you(locale))
       ],
-      preheader: what(locale)
+      preheader: what(locale),
+      reason: reason(locale)
     )
   end
 
@@ -44,6 +49,10 @@ defmodule Palee.Email.Templates.StatusSubscriptionConfirm do
         locale,
         "Someone asked to get an email when Palee has an incident or planned maintenance. Confirm and we will write to this address only then."
       )
+
+  defp reason(locale),
+    do:
+      tr(locale, "You get this email because this address was entered on the Palee status page.")
 
   defp not_you(locale),
     do: tr(locale, "If it wasn't you, ignore this email: nothing will be sent.")

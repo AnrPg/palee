@@ -51,3 +51,6 @@ msgstr "Maintenance en cours"
 
 msgid "Maintenance completed"
 msgstr "Maintenance terminée"
+
+msgid "You get this email because this address was entered on the Palee status page."
+msgstr "Tu reçois cet e-mail parce que cette adresse a été saisie sur la page d'état de Palee."

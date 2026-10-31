@@ -49,3 +49,6 @@ msgstr ""
 
 msgid "Maintenance completed"
 msgstr ""
+
+msgid "You get this email because this address was entered on the Palee status page."
+msgstr ""

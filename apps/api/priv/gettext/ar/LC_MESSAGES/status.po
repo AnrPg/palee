@@ -51,3 +51,6 @@ msgstr "الصيانة جارية"
 
 msgid "Maintenance completed"
 msgstr "اكتملت الصيانة"
+
+msgid "You get this email because this address was entered on the Palee status page."
+msgstr "تصلك هذه الرسالة لأن هذا العنوان أُدخل في صفحة حالة Palee."
