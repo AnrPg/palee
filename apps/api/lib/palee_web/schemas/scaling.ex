@@ -163,6 +163,10 @@ defmodule PaleeWeb.Schemas.Scaling do
         provider: %Schema{type: :string, enum: ["anthropic"]},
         scaling_enabled: %Schema{type: :boolean},
         voice_enabled: %Schema{type: :boolean},
+        data_questions_enabled: %Schema{
+          type: :boolean,
+          description: "ADR-361: staff may ask questions over the box's data (platform AI)"
+        },
         key_configured: %Schema{type: :boolean},
         key_last4: @maybe_string,
         key_status: %Schema{type: :string, enum: ~w(unknown valid rejected)},
@@ -180,6 +184,7 @@ defmodule PaleeWeb.Schemas.Scaling do
         }
       },
       required: [
+        :data_questions_enabled,
         :scaling_enabled,
         :voice_enabled,
         :key_configured,
@@ -207,6 +212,7 @@ defmodule PaleeWeb.Schemas.Scaling do
       properties: %{
         scaling_enabled: %Schema{type: :boolean},
         voice_enabled: %Schema{type: :boolean},
+        data_questions_enabled: %Schema{type: :boolean},
         api_key: %Schema{type: :string, minLength: 20, maxLength: 300, writeOnly: true},
         remove_key: %Schema{type: :boolean},
         model: %Schema{type: :string, nullable: true, maxLength: 80}

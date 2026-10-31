@@ -3405,7 +3405,17 @@ defmodule PaleeWeb.FallbackController do
     invalid_phone_health_batch: {:unprocessable_entity, "Send the records as lists"},
     # ADR-171: push to the store apps.
     native_push_not_configured:
-      {:service_unavailable, "Push to the app isn't available on this server yet"}
+      {:service_unavailable, "Push to the app isn't available on this server yet"},
+    # ADR-360..363: AI questions over the box's data, the help centre and support.
+    data_questions_disabled:
+      {:forbidden, "Questions over the box's data are switched off in Settings › AI"},
+    ai_budget_exhausted: {:too_many_requests, "This month's AI allowance for the box is used up"},
+    ai_daily_limit_reached: {:too_many_requests, "You've reached today's limit; try tomorrow"},
+    llm_not_configured: {:service_unavailable, "The AI assistant isn't set up on this server"},
+    llm_quota_exhausted: {:failed_dependency, "The AI assistant has run out of credits"},
+    llm_unavailable: {:failed_dependency, "The AI assistant is unavailable; try again"},
+    llm_invalid_answer: {:failed_dependency, "The AI assistant answered unclearly; try again"},
+    search_index_unavailable: {:service_unavailable, "The help search index is unavailable"}
   }
 
   def call(conn, {:error, reason}) when is_map_key(@phase_b_errors, reason) do

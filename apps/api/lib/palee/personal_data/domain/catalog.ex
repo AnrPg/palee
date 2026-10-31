@@ -141,6 +141,18 @@ defmodule Palee.PersonalData.Domain.Catalog do
       ),
       # ADR-280: Partners rows are the person's own (account-level).
       account("messages", "partner_messages", {:eq, "author_id"}),
+      # ADR-363: support conversations with Palee (the team's replies are
+      # part of the person's conversation; who on the team wrote is not).
+      tenant("messages", "help_desk_conversations", @me),
+      tenant(
+        "messages",
+        "help_desk_messages",
+        {:in, "conversation_id", "help_desk_conversations", "id", @me},
+        drop: ~w(author_id)
+      ),
+      tenant("messages", "help_desk_tickets", {:eq, "requester_id"}, drop: ~w(assignee_id)),
+      # ADR-361: the questions the person asked over the box's data.
+      tenant("messages", "data_questions", @me),
 
       # -- community -------------------------------------------------------------
       account("community", "community_profile_posts", @me),

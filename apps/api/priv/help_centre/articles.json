@@ -1,0 +1,1608 @@
+{
+  "version": 1,
+  "articles": [
+    {
+      "slug": "feature-social",
+      "feature_key": "social",
+      "guide_id": null,
+      "audience": "member",
+      "screens": [
+        "/clubs",
+        "/around"
+      ],
+      "position": 100,
+      "locales": {
+        "en": {
+          "title": "Social app for athletes",
+          "summary": "A feed of your clubs and the people you follow, club channels, posts with photos and workouts, and Around me to discover nearby events, open clubs and boxes on a map.",
+          "body": "A feed of your clubs and the people you follow, club channels, posts with photos and workouts, and Around me to discover nearby events, open clubs and boxes on a map.\n\n- Feed with a club bar; every post shows its origin (club and channel); scope toggle between My people (clubs and people you follow) and Around me\n- Posts with up to 4 photos or video, text-only posts, and an optional workout attached from the journal\n- Audience picker per post: a club channel, followers or public\n- Clubs with channels: announcements, today's WOD with leaderboard, challenges, time-slot groups, seasons, PT squads, member-created groups and open clubs that non-members can join\n- Follows and follow requests, profile with posts, shared PRs and clubs\n- One search for clubs, people, boxes and independent coaches by name, forgiving accents, Latin spelling and typos\n- Around me: nearby events, open clubs, gyms offering trials and public posts, as a list or a map, with radius, discipline, time, cost, level, language and audience filters and saved filter combinations\n- Direct messages and threads, notifications and web push\n- Message any box from its page; the box answers from one shared team inbox, with coaches brought in for training questions\n- Moderation: report queue, block, auto-archive of inactive member groups",
+          "complete": true
+        },
+        "el": {
+          "title": "Κοινωνική εφαρμογή για αθλητές",
+          "summary": "Ροή από τα clubs σου και τους ανθρώπους που ακολουθείς, κανάλια clubs, αναρτήσεις με φωτογραφίες και προπονήσεις, και το Γύρω μου για να ανακαλύπτεις στον χάρτη κοντινές εκδηλώσεις, ανοιχτά clubs και box.",
+          "body": "Ροή από τα clubs σου και τους ανθρώπους που ακολουθείς, κανάλια clubs, αναρτήσεις με φωτογραφίες και προπονήσεις, και το Γύρω μου για να ανακαλύπτεις στον χάρτη κοντινές εκδηλώσεις, ανοιχτά clubs και box.",
+          "complete": false
+        },
+        "ar": {
+          "title": "تطبيق اجتماعي للرياضيين",
+          "summary": "موجز من مجموعاتك والأشخاص الذين تتابعهم، وقنوات المجموعات، ومنشورات بالصور والتمارين، و«حولي» لاكتشاف الفعاليات القريبة والمجموعات المفتوحة والأندية على الخريطة.",
+          "body": "موجز من مجموعاتك والأشخاص الذين تتابعهم، وقنوات المجموعات، ومنشورات بالصور والتمارين، و«حولي» لاكتشاف الفعاليات القريبة والمجموعات المفتوحة والأندية على الخريطة.",
+          "complete": false
+        },
+        "ru": {
+          "title": "Социальное приложение для спортсменов",
+          "summary": "Лента твоих клубов и людей, на которых ты подписан(а), каналы клубов, посты с фото и тренировками, а также раздел «Рядом», где на карте видны ближайшие события, открытые клубы и боксы.",
+          "body": "Лента твоих клубов и людей, на которых ты подписан(а), каналы клубов, посты с фото и тренировками, а также раздел «Рядом», где на карте видны ближайшие события, открытые клубы и боксы.",
+          "complete": false
+        },
+        "de": {
+          "title": "Soziale App für Athleten",
+          "summary": "Ein Feed deiner Clubs und der Leute, denen du folgst, Club-Kanäle, Beiträge mit Fotos und Workouts sowie „In der Nähe“, um Events, offene Clubs und Boxen in deiner Umgebung auf einer Karte zu entdecken.",
+          "body": "Ein Feed deiner Clubs und der Leute, denen du folgst, Club-Kanäle, Beiträge mit Fotos und Workouts sowie „In der Nähe“, um Events, offene Clubs und Boxen in deiner Umgebung auf einer Karte zu entdecken.",
+          "complete": false
+        },
+        "es": {
+          "title": "App social para atletas",
+          "summary": "Un feed de tus clubs y de las personas que sigues, canales de club, publicaciones con fotos y entrenamientos, y Cerca de mí para descubrir en un mapa eventos, clubs abiertos y boxes cercanos.",
+          "body": "Un feed de tus clubs y de las personas que sigues, canales de club, publicaciones con fotos y entrenamientos, y Cerca de mí para descubrir en un mapa eventos, clubs abiertos y boxes cercanos.",
+          "complete": false
+        },
+        "pt-PT": {
+          "title": "App social para atletas",
+          "summary": "Um feed dos teus clubes e das pessoas que segues, canais de clube, publicações com fotos e treinos, e Perto de mim para descobrir num mapa eventos, clubes abertos e ginásios próximos.",
+          "body": "Um feed dos teus clubes e das pessoas que segues, canais de clube, publicações com fotos e treinos, e Perto de mim para descobrir num mapa eventos, clubes abertos e ginásios próximos.",
+          "complete": false
+        },
+        "he": {
+          "title": "אפליקציה חברתית לספורטאים",
+          "summary": "פיד של המועדונים שלך ושל האנשים שאחריהם את/ה עוקב/ת, ערוצי מועדון, פוסטים עם תמונות ואימונים, וסביבי לגילוי אירועים, מועדונים פתוחים וחדרי כושר קרובים על המפה.",
+          "body": "פיד של המועדונים שלך ושל האנשים שאחריהם את/ה עוקב/ת, ערוצי מועדון, פוסטים עם תמונות ואימונים, וסביבי לגילוי אירועים, מועדונים פתוחים וחדרי כושר קרובים על המפה.",
+          "complete": false
+        },
+        "it": {
+          "title": "App social per atleti",
+          "summary": "Un feed dei tuoi club e delle persone che segui, canali dei club, post con foto e allenamenti, e Intorno a me per scoprire su una mappa eventi, club aperti e box vicini.",
+          "body": "Un feed dei tuoi club e delle persone che segui, canali dei club, post con foto e allenamenti, e Intorno a me per scoprire su una mappa eventi, club aperti e box vicini.",
+          "complete": false
+        },
+        "bg": {
+          "title": "Социално приложение за спортисти",
+          "summary": "Фийд от твоите клубове и хората, които следваш, канали на клубовете, публикации със снимки и тренировки, и Около мен за откриване на събития, открити клубове и зали наблизо на картата.",
+          "body": "Фийд от твоите клубове и хората, които следваш, канали на клубовете, публикации със снимки и тренировки, и Около мен за откриване на събития, открити клубове и зали наблизо на картата.",
+          "complete": false
+        },
+        "nl": {
+          "title": "Sociale app voor sporters",
+          "summary": "Een feed van je clubs en de mensen die je volgt, clubkanalen, berichten met foto's en workouts, en In de buurt om evenementen, open clubs en sportscholen in de buurt op een kaart te ontdekken.",
+          "body": "Een feed van je clubs en de mensen die je volgt, clubkanalen, berichten met foto's en workouts, en In de buurt om evenementen, open clubs en sportscholen in de buurt op een kaart te ontdekken.",
+          "complete": false
+        },
+        "fr": {
+          "title": "App sociale pour athlètes",
+          "summary": "Un fil de tes clubs et des personnes que tu suis, des canaux de club, des publications avec photos et entraînements, et Autour de moi pour découvrir sur une carte les événements, clubs ouverts et box à proximité.",
+          "body": "Un fil de tes clubs et des personnes que tu suis, des canaux de club, des publications avec photos et entraînements, et Autour de moi pour découvrir sur une carte les événements, clubs ouverts et box à proximité.",
+          "complete": false
+        }
+      }
+    },
+    {
+      "slug": "feature-partners",
+      "feature_key": "partners",
+      "guide_id": null,
+      "audience": "member",
+      "screens": [
+        "/partners"
+      ],
+      "position": 101,
+      "locales": {
+        "en": {
+          "title": "Training partners and support",
+          "summary": "Find a training partner among verified adults near you, matched only if you both want to, and pick a check-in buddy who hears from you only when you ask for help.",
+          "body": "Find a training partner among verified adults near you, matched only if you both want to, and pick a check-in buddy who hears from you only when you ask for help.\n\n- Training partners: one public deck for verified adults (18+) across Palee, opened from Around me; verified once by an active box or coach membership, or by two sponsors and a check by the Palee team\n- Full-screen cards to swipe, mutual match only, then message and plan together with up to three suggestions (classes of a shared box, or events and trial classes near both)\n- Filters by level, time, goal, discipline and distance between neighbourhoods (2, 5, 10 or 25 km, never live location); report to the Palee team, which also blocks; opt out at any time\n- Check-in buddy: one or two trusted people who receive only what the user sends with \"I need support\", with quick replies\n- Optional weekly counts-only summary; a coach summary only with permission",
+          "complete": true
+        },
+        "el": {
+          "title": "Συναθλητές και στήριξη",
+          "summary": "Βρες συναθλητή ανάμεσα σε επαληθευμένους ενήλικες κοντά σου, μόνο με αμοιβαία συναίνεση, και διάλεξε ένα φιλαράκι στήριξης που σε ακούει μόνο όταν ζητάς βοήθεια.",
+          "body": "Βρες συναθλητή ανάμεσα σε επαληθευμένους ενήλικες κοντά σου, μόνο με αμοιβαία συναίνεση, και διάλεξε ένα φιλαράκι στήριξης που σε ακούει μόνο όταν ζητάς βοήθεια.",
+          "complete": false
+        },
+        "ar": {
+          "title": "شركاء التدريب والدعم",
+          "summary": "اعثر على شريك تدريب بين بالغين موثّقين قريبين منك بموافقة متبادلة، واختر رفيق دعم لا يتلقى منك رسائل إلا عندما تطلب المساعدة.",
+          "body": "اعثر على شريك تدريب بين بالغين موثّقين قريبين منك بموافقة متبادلة، واختر رفيق دعم لا يتلقى منك رسائل إلا عندما تطلب المساعدة.",
+          "complete": false
+        },
+        "ru": {
+          "title": "Партнёры по тренировкам и поддержка",
+          "summary": "Найди партнёра по тренировкам среди проверенных взрослых рядом по взаимному согласию и выбери друга на связи, который получит от тебя весточку, только когда ты попросишь о помощи.",
+          "body": "Найди партнёра по тренировкам среди проверенных взрослых рядом по взаимному согласию и выбери друга на связи, который получит от тебя весточку, только когда ты попросишь о помощи.",
+          "complete": false
+        },
+        "de": {
+          "title": "Trainingspartner und Unterstützung",
+          "summary": "Finde einen Trainingspartner unter verifizierten Erwachsenen in deiner Nähe – nur mit beidseitiger Zustimmung – und wähle einen Check-in-Kumpel, der nur dann von dir hört, wenn du um Hilfe bittest.",
+          "body": "Finde einen Trainingspartner unter verifizierten Erwachsenen in deiner Nähe – nur mit beidseitiger Zustimmung – und wähle einen Check-in-Kumpel, der nur dann von dir hört, wenn du um Hilfe bittest.",
+          "complete": false
+        },
+        "es": {
+          "title": "Compañeros de entrenamiento y apoyo",
+          "summary": "Encuentra un compañero de entrenamiento entre adultos verificados cerca de ti, siempre con consentimiento mutuo, y elige un colega de apoyo que solo sabrá de ti cuando pidas ayuda.",
+          "body": "Encuentra un compañero de entrenamiento entre adultos verificados cerca de ti, siempre con consentimiento mutuo, y elige un colega de apoyo que solo sabrá de ti cuando pidas ayuda.",
+          "complete": false
+        },
+        "pt-PT": {
+          "title": "Parceiros de treino e apoio",
+          "summary": "Encontra um parceiro de treino entre adultos verificados perto de ti, sempre com consentimento mútuo, e escolhe um amigalhaço de apoio que só recebe notícias tuas quando pedires ajuda.",
+          "body": "Encontra um parceiro de treino entre adultos verificados perto de ti, sempre com consentimento mútuo, e escolhe um amigalhaço de apoio que só recebe notícias tuas quando pedires ajuda.",
+          "complete": false
+        },
+        "he": {
+          "title": "שותפים לאימון ותמיכה",
+          "summary": "מציאת שותף לאימון בין מבוגרים מאומתים בסביבה, בהסכמה הדדית, ובחירת חבר לתמיכה שישמע ממך רק כשתבקש/י עזרה.",
+          "body": "מציאת שותף לאימון בין מבוגרים מאומתים בסביבה, בהסכמה הדדית, ובחירת חבר לתמיכה שישמע ממך רק כשתבקש/י עזרה.",
+          "complete": false
+        },
+        "it": {
+          "title": "Compagni di allenamento e supporto",
+          "summary": "Trova un compagno di allenamento tra adulti verificati vicino a te, con consenso reciproco, e scegli un compagno di supporto che ti sentirà solo quando chiedi aiuto.",
+          "body": "Trova un compagno di allenamento tra adulti verificati vicino a te, con consenso reciproco, e scegli un compagno di supporto che ti sentirà solo quando chiedi aiuto.",
+          "complete": false
+        },
+        "bg": {
+          "title": "Партньори за тренировка и подкрепа",
+          "summary": "Намери партньор за тренировка сред потвърдени пълнолетни наблизо при взаимно съгласие и избери приятелче за подкрепа, което ще чуе от теб само когато поискаш помощ.",
+          "body": "Намери партньор за тренировка сред потвърдени пълнолетни наблизо при взаимно съгласие и избери приятелче за подкрепа, което ще чуе от теб само когато поискаш помощ.",
+          "complete": false
+        },
+        "nl": {
+          "title": "Trainingspartners en steun",
+          "summary": "Vind een trainingsmaatje onder geverifieerde volwassenen bij jou in de buurt met wederzijdse toestemming, en kies een steunmaatje dat alleen van je hoort als je om hulp vraagt.",
+          "body": "Vind een trainingsmaatje onder geverifieerde volwassenen bij jou in de buurt met wederzijdse toestemming, en kies een steunmaatje dat alleen van je hoort als je om hulp vraagt.",
+          "complete": false
+        },
+        "fr": {
+          "title": "Partenaires d'entraînement et soutien",
+          "summary": "Trouve un partenaire d'entraînement parmi des adultes vérifiés près de chez toi, avec accord mutuel, et choisis un pote de soutien qui n'a de tes nouvelles que lorsque tu demandes de l'aide.",
+          "body": "Trouve un partenaire d'entraînement parmi des adultes vérifiés près de chez toi, avec accord mutuel, et choisis un pote de soutien qui n'a de tes nouvelles que lorsque tu demandes de l'aide.",
+          "complete": false
+        }
+      }
+    },
+    {
+      "slug": "feature-events",
+      "feature_key": "events",
+      "guide_id": null,
+      "audience": "all",
+      "screens": [
+        "/events"
+      ],
+      "position": 102,
+      "locales": {
+        "en": {
+          "title": "Events and organisers",
+          "summary": "Open WODs, bootcamps, runs and competitions with RSVPs, capacity, waitlist, guest passes, co-hosting and an organiser console for management, finances and analytics.",
+          "body": "Open WODs, bootcamps, runs and competitions with RSVPs, capacity, waitlist, guest passes, co-hosting and an organiser console for management, finances and analytics.\n\n- Events from gyms, coaches, clubs, member groups and individual organisers: open WODs, bootcamps, runs, competitions and socials\n- RSVP (\"I'm going\"), capacity, waitlist, guest passes, invitations and free or paid tickets\n- Organise as yourself or as a business, with co-hosts that accept the invitation\n- Organiser console with management, finances and analytics tabs\n- Event cards in club feeds, on the public gym page and in Around me\n- Times shown in the event's own time zone with a \"your time\" badge for travellers",
+          "complete": true
+        },
+        "el": {
+          "title": "Εκδηλώσεις και διοργανωτές",
+          "summary": "Ανοιχτά WOD, εντατικές προπονήσεις, τρεξίματα και αγώνες με δηλώσεις συμμετοχής, χωρητικότητα, λίστα αναμονής, πάσο καλεσμένου, συνδιοργάνωση και κονσόλα διοργανωτή για διαχείριση, οικονομικά και στατιστικά.",
+          "body": "Ανοιχτά WOD, εντατικές προπονήσεις, τρεξίματα και αγώνες με δηλώσεις συμμετοχής, χωρητικότητα, λίστα αναμονής, πάσο καλεσμένου, συνδιοργάνωση και κονσόλα διοργανωτή για διαχείριση, οικονομικά και στατιστικά.",
+          "complete": false
+        },
+        "ar": {
+          "title": "الفعاليات والمنظمون",
+          "summary": "WOD مفتوحة ومعسكرات تدريبية وفعاليات جري ومسابقات مع تأكيد الحضور والسعة وقائمة الانتظار وتصاريح الضيوف والاستضافة المشتركة، ولوحة تحكم للمنظم للإدارة والشؤون المالية والتحليلات.",
+          "body": "WOD مفتوحة ومعسكرات تدريبية وفعاليات جري ومسابقات مع تأكيد الحضور والسعة وقائمة الانتظار وتصاريح الضيوف والاستضافة المشتركة، ولوحة تحكم للمنظم للإدارة والشؤون المالية والتحليلات.",
+          "complete": false
+        },
+        "ru": {
+          "title": "События и организаторы",
+          "summary": "Открытые WOD, буткемпы, забеги и соревнования с записью участников, лимитом мест, листом ожидания, гостевыми пропусками, совместной организацией и консолью организатора для управления, финансов и аналитики.",
+          "body": "Открытые WOD, буткемпы, забеги и соревнования с записью участников, лимитом мест, листом ожидания, гостевыми пропусками, совместной организацией и консолью организатора для управления, финансов и аналитики.",
+          "complete": false
+        },
+        "de": {
+          "title": "Events und Veranstalter",
+          "summary": "Open WODs, Bootcamps, Läufe und Wettkämpfe mit Zusagen, Kapazität, Warteliste, Gästepässen, Mitveranstaltern und einer Veranstalterkonsole für Verwaltung, Finanzen und Analysen.",
+          "body": "Open WODs, Bootcamps, Läufe und Wettkämpfe mit Zusagen, Kapazität, Warteliste, Gästepässen, Mitveranstaltern und einer Veranstalterkonsole für Verwaltung, Finanzen und Analysen.",
+          "complete": false
+        },
+        "es": {
+          "title": "Eventos y organizadores",
+          "summary": "WODs abiertos, bootcamps, carreras y competiciones con confirmaciones de asistencia, aforo, lista de espera, pases de invitado, coorganización y una consola de organizador para gestión, finanzas y estadísticas.",
+          "body": "WODs abiertos, bootcamps, carreras y competiciones con confirmaciones de asistencia, aforo, lista de espera, pases de invitado, coorganización y una consola de organizador para gestión, finanzas y estadísticas.",
+          "complete": false
+        },
+        "pt-PT": {
+          "title": "Eventos e organizadores",
+          "summary": "WODs abertos, bootcamps, corridas e competições com confirmações de presença, lotação, lista de espera, passes de convidado, coorganização e uma consola de organizador para gestão, finanças e estatísticas.",
+          "body": "WODs abertos, bootcamps, corridas e competições com confirmações de presença, lotação, lista de espera, passes de convidado, coorganização e uma consola de organizador para gestão, finanças e estatísticas.",
+          "complete": false
+        },
+        "he": {
+          "title": "אירועים ומארגנים",
+          "summary": "WOD פתוחים, מחנות אימון, ריצות ותחרויות עם אישורי הגעה, מכסת משתתפים, רשימת המתנה, כרטיסי אורח, ארגון משותף וקונסולת מארגן לניהול, כספים וניתוח נתונים.",
+          "body": "WOD פתוחים, מחנות אימון, ריצות ותחרויות עם אישורי הגעה, מכסת משתתפים, רשימת המתנה, כרטיסי אורח, ארגון משותף וקונסולת מארגן לניהול, כספים וניתוח נתונים.",
+          "complete": false
+        },
+        "it": {
+          "title": "Eventi e organizzatori",
+          "summary": "WOD aperti, bootcamp, corse e gare con conferme di partecipazione, capienza, lista d'attesa, pass ospite, co-organizzazione e una console organizzatore per gestione, finanze e statistiche.",
+          "body": "WOD aperti, bootcamp, corse e gare con conferme di partecipazione, capienza, lista d'attesa, pass ospite, co-organizzazione e una console organizzatore per gestione, finanze e statistiche.",
+          "complete": false
+        },
+        "bg": {
+          "title": "Събития и организатори",
+          "summary": "Открити WOD, буткемпове, бягания и състезания с потвърждения за участие, капацитет, списък на чакащите, гостуващи пропуски, съорганизиране и конзола на организатора за управление, финанси и анализи.",
+          "body": "Открити WOD, буткемпове, бягания и състезания с потвърждения за участие, капацитет, списък на чакащите, гостуващи пропуски, съорганизиране и конзола на организатора за управление, финанси и анализи.",
+          "complete": false
+        },
+        "nl": {
+          "title": "Evenementen en organisatoren",
+          "summary": "Open WOD's, bootcamps, hardlooprondes en wedstrijden met aanmeldingen, capaciteit, wachtlijst, gastpassen, co-hosting en een organisatorconsole voor beheer, financiën en analyses.",
+          "body": "Open WOD's, bootcamps, hardlooprondes en wedstrijden met aanmeldingen, capaciteit, wachtlijst, gastpassen, co-hosting en een organisatorconsole voor beheer, financiën en analyses.",
+          "complete": false
+        },
+        "fr": {
+          "title": "Événements et organisateurs",
+          "summary": "Open WOD, bootcamps, sorties running et compétitions avec inscriptions, capacité, liste d'attente, pass invité, co-organisation et console organisateur pour la gestion, les finances et les statistiques.",
+          "body": "Open WOD, bootcamps, sorties running et compétitions avec inscriptions, capacité, liste d'attente, pass invité, co-organisation et console organisateur pour la gestion, les finances et les statistiques.",
+          "complete": false
+        }
+      }
+    },
+    {
+      "slug": "feature-box",
+      "feature_key": "box",
+      "guide_id": null,
+      "audience": "member",
+      "screens": [
+        "/box"
+      ],
+      "position": 103,
+      "locales": {
+        "en": {
+          "title": "Your box in your pocket",
+          "summary": "Book classes and appointments, check in with a rotating QR code, a Wallet pass or NFC, see today's workout, follow your subscription packages and pay, all from one Box tab.",
+          "body": "Book classes and appointments, check in with a rotating QR code, a Wallet pass or NFC, see today's workout, follow your subscription packages and pay, all from one Box tab.\n\n- Box tab: today's workout card from every provider (gym classes and personal coaches) with source labels and a provider switcher\n- Class schedule with filters (location, class type, coach, time, only with free spots, only covered by my package), waitlist, open-gym check-in and calendar (ICS) export\n- Appointments, video library and a coach area with programs, form reviews and nutrition\n- Check-in with a rotating door QR code (screenshots don't work), Apple and Google Wallet passes, a personal QR, NFC door tags and a geofenced reminder in the native app\n- Packages, entitlements, seasons, corporate enrollment, invoices and refund receipts per provider",
+          "complete": true
+        },
+        "el": {
+          "title": "Το box σου στην τσέπη σου",
+          "summary": "Κλείσε τμήματα και ραντεβού, δήλωσε παρουσία με QR που αλλάζει, κάρτα Wallet ή NFC, δες την προπόνηση της ημέρας, παρακολούθησε τα πακέτα συνδρομής σου και πλήρωσε, όλα από την καρτέλα Box.",
+          "body": "Κλείσε τμήματα και ραντεβού, δήλωσε παρουσία με QR που αλλάζει, κάρτα Wallet ή NFC, δες την προπόνηση της ημέρας, παρακολούθησε τα πακέτα συνδρομής σου και πλήρωσε, όλα από την καρτέλα Box.",
+          "complete": false
+        },
+        "ar": {
+          "title": "ناديك في جيبك",
+          "summary": "احجز الحصص والمواعيد، وسجّل حضورك برمز QR متغيّر أو بطاقة Wallet أو NFC، واطّلع على تمرين اليوم، وتابع باقات اشتراكك وادفع، كل ذلك من تبويب «Box» واحد.",
+          "body": "احجز الحصص والمواعيد، وسجّل حضورك برمز QR متغيّر أو بطاقة Wallet أو NFC، واطّلع على تمرين اليوم، وتابع باقات اشتراكك وادفع، كل ذلك من تبويب «Box» واحد.",
+          "complete": false
+        },
+        "ru": {
+          "title": "Твой бокс в кармане",
+          "summary": "Записывайся на занятия и к тренеру, делай чек-ин по меняющемуся QR-коду, карте в Wallet или через NFC, смотри тренировку дня, следи за абонементными пакетами и оплачивай — всё на одной вкладке «Box».",
+          "body": "Записывайся на занятия и к тренеру, делай чек-ин по меняющемуся QR-коду, карте в Wallet или через NFC, смотри тренировку дня, следи за абонементными пакетами и оплачивай — всё на одной вкладке «Box».",
+          "complete": false
+        },
+        "de": {
+          "title": "Deine Box in der Hosentasche",
+          "summary": "Kurse und Termine buchen, per wechselndem QR-Code, Wallet-Karte oder NFC einchecken, das heutige Workout sehen, deine Abo-Pakete im Blick behalten und bezahlen, alles im Tab Box.",
+          "body": "Kurse und Termine buchen, per wechselndem QR-Code, Wallet-Karte oder NFC einchecken, das heutige Workout sehen, deine Abo-Pakete im Blick behalten und bezahlen, alles im Tab Box.",
+          "complete": false
+        },
+        "es": {
+          "title": "Tu box en el bolsillo",
+          "summary": "Reserva clases y citas, haz check-in con un código QR rotativo, un pase de Wallet o NFC, consulta el entrenamiento del día, sigue tus paquetes de suscripción y paga, todo desde una sola pestaña Box.",
+          "body": "Reserva clases y citas, haz check-in con un código QR rotativo, un pase de Wallet o NFC, consulta el entrenamiento del día, sigue tus paquetes de suscripción y paga, todo desde una sola pestaña Box.",
+          "complete": false
+        },
+        "pt-PT": {
+          "title": "O teu ginásio no bolso",
+          "summary": "Reserva aulas e marcações, faz check-in com um código QR rotativo, um passe Wallet ou NFC, vê o treino do dia, acompanha os teus pacotes de subscrição e paga, tudo num único separador Box.",
+          "body": "Reserva aulas e marcações, faz check-in com um código QR rotativo, um passe Wallet ou NFC, vê o treino do dia, acompanha os teus pacotes de subscrição e paga, tudo num único separador Box.",
+          "complete": false
+        },
+        "he": {
+          "title": "חדר הכושר שלך בכיס",
+          "summary": "הזמנת שיעורים ופגישות, צ׳ק-אין עם קוד QR מתחלף, כרטיס Wallet או NFC, האימון של היום, מעקב אחר חבילות המנוי ותשלום, הכול מלשונית Box אחת.",
+          "body": "הזמנת שיעורים ופגישות, צ׳ק-אין עם קוד QR מתחלף, כרטיס Wallet או NFC, האימון של היום, מעקב אחר חבילות המנוי ותשלום, הכול מלשונית Box אחת.",
+          "complete": false
+        },
+        "it": {
+          "title": "Il tuo box in tasca",
+          "summary": "Prenota lezioni e appuntamenti, fai il check-in con un codice QR a rotazione, un pass Wallet o NFC, guarda l'allenamento del giorno, segui i tuoi pacchetti di abbonamento e paga, tutto da un'unica scheda Box.",
+          "body": "Prenota lezioni e appuntamenti, fai il check-in con un codice QR a rotazione, un pass Wallet o NFC, guarda l'allenamento del giorno, segui i tuoi pacchetti di abbonamento e paga, tutto da un'unica scheda Box.",
+          "complete": false
+        },
+        "bg": {
+          "title": "Твоята зала в джоба ти",
+          "summary": "Записвай се за занятия и часове, чекирай се с въртящ се QR код, карта в Wallet или NFC, виж днешната тренировка, следи абонаментните си пакети и плащай — всичко от един раздел Box.",
+          "body": "Записвай се за занятия и часове, чекирай се с въртящ се QR код, карта в Wallet или NFC, виж днешната тренировка, следи абонаментните си пакети и плащай — всичко от един раздел Box.",
+          "complete": false
+        },
+        "nl": {
+          "title": "Je sportschool in je broekzak",
+          "summary": "Boek lessen en afspraken, check in met een wisselende QR-code, een Wallet-pas of NFC, bekijk de workout van vandaag, volg je abonnementspakketten en betaal, allemaal vanuit één Box-tab.",
+          "body": "Boek lessen en afspraken, check in met een wisselende QR-code, een Wallet-pas of NFC, bekijk de workout van vandaag, volg je abonnementspakketten en betaal, allemaal vanuit één Box-tab.",
+          "complete": false
+        },
+        "fr": {
+          "title": "Ta box dans ta poche",
+          "summary": "Réserve cours et rendez-vous, fais ton check-in avec un QR code qui change, une carte Wallet ou NFC, consulte l'entraînement du jour, suis tes forfaits d'abonnement et paie, le tout depuis un seul onglet Box.",
+          "body": "Réserve cours et rendez-vous, fais ton check-in avec un QR code qui change, une carte Wallet ou NFC, consulte l'entraînement du jour, suis tes forfaits d'abonnement et paie, le tout depuis un seul onglet Box.",
+          "complete": false
+        }
+      }
+    },
+    {
+      "slug": "feature-training",
+      "feature_key": "training",
+      "guide_id": null,
+      "audience": "member",
+      "screens": [
+        "/workouts"
+      ],
+      "position": 104,
+      "locales": {
+        "en": {
+          "title": "Workout execution",
+          "summary": "Run any workout with a step-synchronised timer, scaling options, per-exercise notes, injury warnings and offline check-offs, or log a score in seconds, even by voice.",
+          "body": "Run any workout with a step-synchronised timer, scaling options, per-exercise notes, injury warnings and offline check-offs, or log a score in seconds, even by voice.\n\n- Workout execution screen with a step-synchronised timer, auto-progressing steps, modifications and per-exercise notes\n- Structured and free-text WODs with sections and per-section scoring; structured WODs run set-wise supersets, per-round values, interruptions and heart-rate rest\n- WOD goals: target muscle groups, fitness qualities and stimulus, then \"what did you feel\" after the workout\n- Injury warnings with acknowledgement before risky movements\n- Quick logging of score, RPE and notes without the timer; voice logging that turns speech into a draft entry to confirm\n- Offline check-offs saved on the device and synced later\n- Class timer display for the gym's screen, controlled by the coach\n- Optional AI scaling suggestions that a coach approves before members see them (off by default)",
+          "complete": true
+        },
+        "el": {
+          "title": "Εκτέλεση προπόνησης",
+          "summary": "Κάνε οποιαδήποτε προπόνηση με χρονόμετρο συγχρονισμένο με τα βήματα, επιλογές κλιμάκωσης, σημειώσεις ανά άσκηση, προειδοποιήσεις τραυματισμού και σημάδεμα χωρίς σύνδεση, ή καταχώρισε σκορ σε δευτερόλεπτα, ακόμη και με τη φωνή.",
+          "body": "Κάνε οποιαδήποτε προπόνηση με χρονόμετρο συγχρονισμένο με τα βήματα, επιλογές κλιμάκωσης, σημειώσεις ανά άσκηση, προειδοποιήσεις τραυματισμού και σημάδεμα χωρίς σύνδεση, ή καταχώρισε σκορ σε δευτερόλεπτα, ακόμη και με τη φωνή.",
+          "complete": false
+        },
+        "ar": {
+          "title": "تنفيذ التمارين",
+          "summary": "نفّذ أي تمرين بمؤقت متزامن مع الخطوات، وخيارات لتعديل الشدة، وملاحظات لكل تمرين، وتنبيهات للإصابات، وتعليم الإنجاز دون اتصال، أو سجّل نتيجتك في ثوانٍ، حتى بالصوت.",
+          "body": "نفّذ أي تمرين بمؤقت متزامن مع الخطوات، وخيارات لتعديل الشدة، وملاحظات لكل تمرين، وتنبيهات للإصابات، وتعليم الإنجاز دون اتصال، أو سجّل نتيجتك في ثوانٍ، حتى بالصوت.",
+          "complete": false
+        },
+        "ru": {
+          "title": "Выполнение тренировки",
+          "summary": "Проходи любую тренировку с таймером, синхронизированным по шагам, вариантами адаптации, заметками к упражнениям, предупреждениями о травмах и отметками без сети или записывай результат за секунды, даже голосом.",
+          "body": "Проходи любую тренировку с таймером, синхронизированным по шагам, вариантами адаптации, заметками к упражнениям, предупреждениями о травмах и отметками без сети или записывай результат за секунды, даже голосом.",
+          "complete": false
+        },
+        "de": {
+          "title": "Workout-Durchführung",
+          "summary": "Absolviere jedes Workout mit einem schrittgenauen Timer, Skalierungsoptionen, Notizen pro Übung, Verletzungshinweisen und Offline-Abhaken – oder trage ein Ergebnis in Sekunden ein, sogar per Sprache.",
+          "body": "Absolviere jedes Workout mit einem schrittgenauen Timer, Skalierungsoptionen, Notizen pro Übung, Verletzungshinweisen und Offline-Abhaken – oder trage ein Ergebnis in Sekunden ein, sogar per Sprache.",
+          "complete": false
+        },
+        "es": {
+          "title": "Ejecución del entrenamiento",
+          "summary": "Haz cualquier entrenamiento con un temporizador sincronizado por pasos, opciones de escalado, notas por ejercicio, avisos de lesiones y marcado sin conexión, o registra un resultado en segundos, incluso por voz.",
+          "body": "Haz cualquier entrenamiento con un temporizador sincronizado por pasos, opciones de escalado, notas por ejercicio, avisos de lesiones y marcado sin conexión, o registra un resultado en segundos, incluso por voz.",
+          "complete": false
+        },
+        "pt-PT": {
+          "title": "Execução do treino",
+          "summary": "Faz qualquer treino com um temporizador sincronizado por etapas, opções de adaptação, notas por exercício, avisos de lesão e registo sem ligação, ou regista um resultado em segundos, até por voz.",
+          "body": "Faz qualquer treino com um temporizador sincronizado por etapas, opções de adaptação, notas por exercício, avisos de lesão e registo sem ligação, ou regista um resultado em segundos, até por voz.",
+          "complete": false
+        },
+        "he": {
+          "title": "ביצוע אימונים",
+          "summary": "הרצת כל אימון עם טיימר מסונכרן לשלבים, אפשרויות התאמה, הערות לכל תרגיל, אזהרות פציעה וסימון השלמה גם בלי חיבור, או רישום תוצאה בשניות, אפילו בקול.",
+          "body": "הרצת כל אימון עם טיימר מסונכרן לשלבים, אפשרויות התאמה, הערות לכל תרגיל, אזהרות פציעה וסימון השלמה גם בלי חיבור, או רישום תוצאה בשניות, אפילו בקול.",
+          "complete": false
+        },
+        "it": {
+          "title": "Esecuzione dell'allenamento",
+          "summary": "Esegui qualsiasi allenamento con un timer sincronizzato per fasi, opzioni di scaling, note per esercizio, avvisi sugli infortuni e spunte offline, oppure registra un punteggio in pochi secondi, anche a voce.",
+          "body": "Esegui qualsiasi allenamento con un timer sincronizzato per fasi, opzioni di scaling, note per esercizio, avvisi sugli infortuni e spunte offline, oppure registra un punteggio in pochi secondi, anche a voce.",
+          "complete": false
+        },
+        "bg": {
+          "title": "Изпълнение на тренировки",
+          "summary": "Изпълни всяка тренировка с таймер, синхронизиран по стъпки, варианти за адаптиране, бележки към всяко упражнение, предупреждения за травми и отметки офлайн, или запиши резултат за секунди, дори с глас.",
+          "body": "Изпълни всяка тренировка с таймер, синхронизиран по стъпки, варианти за адаптиране, бележки към всяко упражнение, предупреждения за травми и отметки офлайн, или запиши резултат за секунди, дори с глас.",
+          "complete": false
+        },
+        "nl": {
+          "title": "Workouts uitvoeren",
+          "summary": "Voer elke workout uit met een timer die per stap meeloopt, scalingopties, notities per oefening, blessurewaarschuwingen en offline afvinken, of log een score in seconden, zelfs met je stem.",
+          "body": "Voer elke workout uit met een timer die per stap meeloopt, scalingopties, notities per oefening, blessurewaarschuwingen en offline afvinken, of log een score in seconden, zelfs met je stem.",
+          "complete": false
+        },
+        "fr": {
+          "title": "Exécution des entraînements",
+          "summary": "Lance n'importe quel entraînement avec un chrono synchronisé étape par étape, des options de scale, des notes par exercice, des alertes blessure et des validations hors ligne, ou enregistre un score en quelques secondes, même à la voix.",
+          "body": "Lance n'importe quel entraînement avec un chrono synchronisé étape par étape, des options de scale, des notes par exercice, des alertes blessure et des validations hors ligne, ou enregistre un score en quelques secondes, même à la voix.",
+          "complete": false
+        }
+      }
+    },
+    {
+      "slug": "feature-journal",
+      "feature_key": "journal",
+      "guide_id": null,
+      "audience": "member",
+      "screens": [
+        "/journal"
+      ],
+      "position": 105,
+      "locales": {
+        "en": {
+          "title": "Private training journal",
+          "summary": "Every workout, PR, note and rating in one journal that belongs to the athlete and follows them across boxes and coaches, private by default with a clear visibility ladder.",
+          "body": "Every workout, PR, note and rating in one journal that belongs to the athlete and follows them across boxes and coaches, private by default with a clear visibility ladder.\n\n- One journal across all gyms and coaches: workouts, PRs, measurements, wellbeing, cravings, injuries, technique videos, ratings and notes\n- Visibility ladder on every entry: only me, my coach can see, ask for a reply, rating, or post\n- Vault of completed workouts with dated results, trends and repeat\n- Pantheon of personal records with optional sharing grants\n- Filters by entry type, visibility, date, source and text search; export",
+          "complete": true
+        },
+        "el": {
+          "title": "Ιδιωτικό ημερολόγιο προπόνησης",
+          "summary": "Κάθε προπόνηση, PR, σημείωση και αξιολόγηση σε ένα ημερολόγιο που ανήκει στον αθλητή και τον ακολουθεί σε box και coach, ιδιωτικό από προεπιλογή με σαφή επίπεδα ορατότητας.",
+          "body": "Κάθε προπόνηση, PR, σημείωση και αξιολόγηση σε ένα ημερολόγιο που ανήκει στον αθλητή και τον ακολουθεί σε box και coach, ιδιωτικό από προεπιλογή με σαφή επίπεδα ορατότητας.",
+          "complete": false
+        },
+        "ar": {
+          "title": "يوميات تدريب خاصة",
+          "summary": "كل تمرين وPR وملاحظة وتقييم في يوميات واحدة يملكها الرياضي وترافقه بين الأندية والمدربين، خاصة افتراضيًا مع مستويات ظهور واضحة.",
+          "body": "كل تمرين وPR وملاحظة وتقييم في يوميات واحدة يملكها الرياضي وترافقه بين الأندية والمدربين، خاصة افتراضيًا مع مستويات ظهور واضحة.",
+          "complete": false
+        },
+        "ru": {
+          "title": "Личный дневник тренировок",
+          "summary": "Каждая тренировка, PR, заметка и оценка — в одном дневнике, который принадлежит спортсмену и остаётся с ним при смене бокса и тренера; по умолчанию он закрыт, а уровни видимости понятны.",
+          "body": "Каждая тренировка, PR, заметка и оценка — в одном дневнике, который принадлежит спортсмену и остаётся с ним при смене бокса и тренера; по умолчанию он закрыт, а уровни видимости понятны.",
+          "complete": false
+        },
+        "de": {
+          "title": "Privates Trainingstagebuch",
+          "summary": "Jedes Workout, jeder PR, jede Notiz und Bewertung in einem Tagebuch, das dem Athleten gehört und ihn über Boxen und Coaches hinweg begleitet, standardmäßig privat, mit klar abgestuften Sichtbarkeitsstufen.",
+          "body": "Jedes Workout, jeder PR, jede Notiz und Bewertung in einem Tagebuch, das dem Athleten gehört und ihn über Boxen und Coaches hinweg begleitet, standardmäßig privat, mit klar abgestuften Sichtbarkeitsstufen.",
+          "complete": false
+        },
+        "es": {
+          "title": "Diario de entrenamiento privado",
+          "summary": "Cada entrenamiento, PR, nota y valoración en un único diario que pertenece al atleta y le acompaña entre boxes y coaches, privado por defecto y con niveles de visibilidad claros.",
+          "body": "Cada entrenamiento, PR, nota y valoración en un único diario que pertenece al atleta y le acompaña entre boxes y coaches, privado por defecto y con niveles de visibilidad claros.",
+          "complete": false
+        },
+        "pt-PT": {
+          "title": "Diário de treino privado",
+          "summary": "Cada treino, PR, nota e avaliação num único diário que pertence ao atleta e o acompanha entre ginásios e coaches, privado por predefinição e com níveis de visibilidade claros.",
+          "body": "Cada treino, PR, nota e avaliação num único diário que pertence ao atleta e o acompanha entre ginásios e coaches, privado por predefinição e com níveis de visibilidade claros.",
+          "complete": false
+        },
+        "he": {
+          "title": "יומן אימונים פרטי",
+          "summary": "כל אימון, PR, הערה ודירוג ביומן אחד ששייך לספורטאי ומלווה אותו בין חדרי כושר ומאמנים, פרטי כברירת מחדל עם רמות נראות ברורות.",
+          "body": "כל אימון, PR, הערה ודירוג ביומן אחד ששייך לספורטאי ומלווה אותו בין חדרי כושר ומאמנים, פרטי כברירת מחדל עם רמות נראות ברורות.",
+          "complete": false
+        },
+        "it": {
+          "title": "Diario di allenamento privato",
+          "summary": "Ogni allenamento, PR, nota e valutazione in un unico diario che appartiene all'atleta e lo segue tra box e coach, privato per impostazione predefinita e con livelli di visibilità chiari.",
+          "body": "Ogni allenamento, PR, nota e valutazione in un unico diario che appartiene all'atleta e lo segue tra box e coach, privato per impostazione predefinita e con livelli di visibilità chiari.",
+          "complete": false
+        },
+        "bg": {
+          "title": "Личен тренировъчен дневник",
+          "summary": "Всяка тренировка, PR, бележка и оценка в един дневник, който принадлежи на спортиста и го следва между зали и треньори, личен по подразбиране и с ясни нива на видимост.",
+          "body": "Всяка тренировка, PR, бележка и оценка в един дневник, който принадлежи на спортиста и го следва между зали и треньори, личен по подразбиране и с ясни нива на видимост.",
+          "complete": false
+        },
+        "nl": {
+          "title": "Privé-trainingsdagboek",
+          "summary": "Elke workout, PR, notitie en beoordeling in één dagboek dat van de sporter is en meegaat naar andere sportscholen en coaches, standaard privé met duidelijke zichtbaarheidsniveaus.",
+          "body": "Elke workout, PR, notitie en beoordeling in één dagboek dat van de sporter is en meegaat naar andere sportscholen en coaches, standaard privé met duidelijke zichtbaarheidsniveaus.",
+          "complete": false
+        },
+        "fr": {
+          "title": "Journal d'entraînement privé",
+          "summary": "Chaque entraînement, PR, note et évaluation dans un seul journal qui appartient à l'athlète et le suit d'une box et d'un coach à l'autre, privé par défaut avec des niveaux de visibilité clairs.",
+          "body": "Chaque entraînement, PR, note et évaluation dans un seul journal qui appartient à l'athlète et le suit d'une box et d'un coach à l'autre, privé par défaut avec des niveaux de visibilité clairs.",
+          "complete": false
+        }
+      }
+    },
+    {
+      "slug": "feature-body",
+      "feature_key": "body",
+      "guide_id": null,
+      "audience": "member",
+      "screens": [],
+      "position": 106,
+      "locales": {
+        "en": {
+          "title": "Body and wellbeing",
+          "summary": "Body measurements and progress photos with a pose guide and compare slider, plus water, sleep, meals, mood and cravings, with health-safe defaults such as showing weight as a trend only.",
+          "body": "Body measurements and progress photos with a pose guide and compare slider, plus water, sleep, meals, mood and cravings, with health-safe defaults such as showing weight as a trend only.\n\n- Body snapshots: weight, body-fat %, circumferences and optional front, side and back photos\n- Camera ghost outline of the previous photo for the same pose; compare slider or side by side; charts per metric\n- Photos always private unless explicitly shared with the coach, with a second confirmation and optional blur\n- Wellbeing today: water, sleep, meals in or out of plan, mood, energy and stress\n- Craving log with intensity, trigger and outcome, linked to the check-in buddy\n- Health-safe defaults: weight can be shown as a trend only, journal sections can be turned off, correlations shown as indicators, never medical advice",
+          "complete": true
+        },
+        "el": {
+          "title": "Σώμα και ευεξία",
+          "summary": "Σωματικές μετρήσεις και φωτογραφίες προόδου με οδηγό στάσης και ρυθμιστικό σύγκρισης, καθώς και νερό, ύπνος, γεύματα, διάθεση και λιγούρες, με ασφαλείς για την υγεία προεπιλογές, όπως η εμφάνιση του βάρους μόνο ως τάση.",
+          "body": "Σωματικές μετρήσεις και φωτογραφίες προόδου με οδηγό στάσης και ρυθμιστικό σύγκρισης, καθώς και νερό, ύπνος, γεύματα, διάθεση και λιγούρες, με ασφαλείς για την υγεία προεπιλογές, όπως η εμφάνιση του βάρους μόνο ως τάση.",
+          "complete": false
+        },
+        "ar": {
+          "title": "الجسم والعافية",
+          "summary": "قياسات الجسم وصور التقدّم مع دليل للوضعيات وشريط للمقارنة، إلى جانب الماء والنوم والوجبات والمزاج والرغبة الشديدة في الطعام، مع إعدادات افتراضية تراعي الصحة مثل عرض الوزن كاتجاه فقط.",
+          "body": "قياسات الجسم وصور التقدّم مع دليل للوضعيات وشريط للمقارنة، إلى جانب الماء والنوم والوجبات والمزاج والرغبة الشديدة في الطعام، مع إعدادات افتراضية تراعي الصحة مثل عرض الوزن كاتجاه فقط.",
+          "complete": false
+        },
+        "ru": {
+          "title": "Тело и самочувствие",
+          "summary": "Замеры тела и фото прогресса с подсказкой позы и слайдером сравнения, а также вода, сон, питание, настроение и тяга к еде — с бережными настройками по умолчанию, например вес показывается только как тренд.",
+          "body": "Замеры тела и фото прогресса с подсказкой позы и слайдером сравнения, а также вода, сон, питание, настроение и тяга к еде — с бережными настройками по умолчанию, например вес показывается только как тренд.",
+          "complete": false
+        },
+        "de": {
+          "title": "Körper und Wohlbefinden",
+          "summary": "Körpermaße und Fortschrittsfotos mit Posenhilfe und Vergleichsregler, dazu Wasser, Schlaf, Mahlzeiten, Stimmung und Heißhunger – mit gesundheitsbewussten Voreinstellungen, etwa Gewicht nur als Trend.",
+          "body": "Körpermaße und Fortschrittsfotos mit Posenhilfe und Vergleichsregler, dazu Wasser, Schlaf, Mahlzeiten, Stimmung und Heißhunger – mit gesundheitsbewussten Voreinstellungen, etwa Gewicht nur als Trend.",
+          "complete": false
+        },
+        "es": {
+          "title": "Cuerpo y bienestar",
+          "summary": "Medidas corporales y fotos de progreso con guía de poses y comparador deslizante, además de agua, sueño, comidas, estado de ánimo y antojos, con ajustes saludables por defecto como mostrar el peso solo como tendencia.",
+          "body": "Medidas corporales y fotos de progreso con guía de poses y comparador deslizante, además de agua, sueño, comidas, estado de ánimo y antojos, con ajustes saludables por defecto como mostrar el peso solo como tendencia.",
+          "complete": false
+        },
+        "pt-PT": {
+          "title": "Corpo e bem-estar",
+          "summary": "Medidas corporais e fotos de progresso com guia de poses e comparador deslizante, além de água, sono, refeições, humor e desejos alimentares, com predefinições seguras para a saúde, como mostrar o peso apenas como tendência.",
+          "body": "Medidas corporais e fotos de progresso com guia de poses e comparador deslizante, além de água, sono, refeições, humor e desejos alimentares, com predefinições seguras para a saúde, como mostrar o peso apenas como tendência.",
+          "complete": false
+        },
+        "he": {
+          "title": "גוף ובריאות",
+          "summary": "מדידות גוף ותמונות התקדמות עם מדריך תנוחות ומחוון השוואה, וגם מים, שינה, ארוחות, מצב רוח ותשוקות לאוכל, עם ברירות מחדל בטוחות לבריאות, כמו הצגת המשקל כמגמה בלבד.",
+          "body": "מדידות גוף ותמונות התקדמות עם מדריך תנוחות ומחוון השוואה, וגם מים, שינה, ארוחות, מצב רוח ותשוקות לאוכל, עם ברירות מחדל בטוחות לבריאות, כמו הצגת המשקל כמגמה בלבד.",
+          "complete": false
+        },
+        "it": {
+          "title": "Corpo e benessere",
+          "summary": "Misure corporee e foto dei progressi con guida alle pose e cursore di confronto, oltre ad acqua, sonno, pasti, umore e voglie, con impostazioni predefinite attente alla salute, come mostrare il peso solo come andamento.",
+          "body": "Misure corporee e foto dei progressi con guida alle pose e cursore di confronto, oltre ad acqua, sonno, pasti, umore e voglie, con impostazioni predefinite attente alla salute, come mostrare il peso solo come andamento.",
+          "complete": false
+        },
+        "bg": {
+          "title": "Тяло и благосъстояние",
+          "summary": "Телесни измервания и снимки на напредъка с ръководство за позите и плъзгач за сравнение, плюс вода, сън, хранения, настроение и желания за храна, с безопасни за здравето настройки, като показване на теглото само като тенденция.",
+          "body": "Телесни измервания и снимки на напредъка с ръководство за позите и плъзгач за сравнение, плюс вода, сън, хранения, настроение и желания за храна, с безопасни за здравето настройки, като показване на теглото само като тенденция.",
+          "complete": false
+        },
+        "nl": {
+          "title": "Lichaam en welzijn",
+          "summary": "Lichaamsmetingen en voortgangsfoto's met een poseergids en vergelijkingsschuif, plus water, slaap, maaltijden, stemming en trek, met gezonde standaardinstellingen zoals gewicht alleen als trend tonen.",
+          "body": "Lichaamsmetingen en voortgangsfoto's met een poseergids en vergelijkingsschuif, plus water, slaap, maaltijden, stemming en trek, met gezonde standaardinstellingen zoals gewicht alleen als trend tonen.",
+          "complete": false
+        },
+        "fr": {
+          "title": "Corps et bien-être",
+          "summary": "Mensurations et photos de progression avec guide de pose et curseur de comparaison, plus eau, sommeil, repas, humeur et envies alimentaires, avec des réglages par défaut bienveillants comme l'affichage du poids en tendance uniquement.",
+          "body": "Mensurations et photos de progression avec guide de pose et curseur de comparaison, plus eau, sommeil, repas, humeur et envies alimentaires, avec des réglages par défaut bienveillants comme l'affichage du poids en tendance uniquement.",
+          "complete": false
+        }
+      }
+    },
+    {
+      "slug": "feature-progress",
+      "feature_key": "progress",
+      "guide_id": null,
+      "audience": "member",
+      "screens": [],
+      "position": 107,
+      "locales": {
+        "en": {
+          "title": "Progress analytics and anatomy atlas",
+          "summary": "Consistency, strength, benchmarks, muscle coverage on a 3D anatomy atlas, the ten fitness qualities, training load and insights such as sleep versus performance.",
+          "body": "Consistency, strength, benchmarks, muscle coverage on a 3D anatomy atlas, the ten fitness qualities, training load and insights such as sleep versus performance.\n\n- Consistency heatmap and streaks, perseverance (adherence to programmed work), strength (estimated 1RM), benchmarks and retest reminders\n- XP level from workouts, PRs, weeks on goal and challenges; strength gain over the last 8 weeks; the next milestone badge with the steps left\n- Volume by modality, muscle coverage with push/pull and quad/hamstring balance, radar of the ten general physical skills\n- Training load (session RPE, acute:chronic ratio as an indicator)\n- Insights such as sleep versus performance and best time of day, only after enough data\n- 3D anatomy atlas: region, muscle group and muscle head, with the athlete's own sets, heat-map mode and exercises from the gym's library",
+          "complete": true
+        },
+        "el": {
+          "title": "Αναλύσεις προόδου και ανατομικός άτλαντας",
+          "summary": "Συνέπεια, δύναμη, τεστ αναφοράς, κάλυψη μυών σε τρισδιάστατο ανατομικό άτλαντα, οι δέκα φυσικές ικανότητες, προπονητικό φορτίο και συσχετίσεις, όπως ύπνος και απόδοση.",
+          "body": "Συνέπεια, δύναμη, τεστ αναφοράς, κάλυψη μυών σε τρισδιάστατο ανατομικό άτλαντα, οι δέκα φυσικές ικανότητες, προπονητικό φορτίο και συσχετίσεις, όπως ύπνος και απόδοση.",
+          "complete": false
+        },
+        "ar": {
+          "title": "تحليلات التقدّم وأطلس التشريح",
+          "summary": "الانتظام والقوة والاختبارات المرجعية وتغطية العضلات على أطلس تشريح ثلاثي الأبعاد، والصفات البدنية العشر، وحمل التدريب، ورؤى مثل العلاقة بين النوم والأداء.",
+          "body": "الانتظام والقوة والاختبارات المرجعية وتغطية العضلات على أطلس تشريح ثلاثي الأبعاد، والصفات البدنية العشر، وحمل التدريب، ورؤى مثل العلاقة بين النوم والأداء.",
+          "complete": false
+        },
+        "ru": {
+          "title": "Аналитика прогресса и анатомический атлас",
+          "summary": "Регулярность, сила, контрольные тесты, проработка мышц на 3D-атласе анатомии, десять физических качеств, тренировочная нагрузка и выводы, например связь сна и результатов.",
+          "body": "Регулярность, сила, контрольные тесты, проработка мышц на 3D-атласе анатомии, десять физических качеств, тренировочная нагрузка и выводы, например связь сна и результатов.",
+          "complete": false
+        },
+        "de": {
+          "title": "Fortschrittsanalysen und Anatomie-Atlas",
+          "summary": "Konstanz, Kraft, Benchmarks, Muskelabdeckung auf einem 3D-Anatomie-Atlas, die zehn Fitnessqualitäten, Trainingsbelastung und Erkenntnisse wie Schlaf im Vergleich zur Leistung.",
+          "body": "Konstanz, Kraft, Benchmarks, Muskelabdeckung auf einem 3D-Anatomie-Atlas, die zehn Fitnessqualitäten, Trainingsbelastung und Erkenntnisse wie Schlaf im Vergleich zur Leistung.",
+          "complete": false
+        },
+        "es": {
+          "title": "Análisis de progreso y atlas anatómico",
+          "summary": "Constancia, fuerza, benchmarks, cobertura muscular en un atlas anatómico 3D, las diez cualidades físicas, carga de entrenamiento y conclusiones como sueño frente a rendimiento.",
+          "body": "Constancia, fuerza, benchmarks, cobertura muscular en un atlas anatómico 3D, las diez cualidades físicas, carga de entrenamiento y conclusiones como sueño frente a rendimiento.",
+          "complete": false
+        },
+        "pt-PT": {
+          "title": "Análise de progresso e atlas anatómico",
+          "summary": "Consistência, força, benchmarks, cobertura muscular num atlas anatómico 3D, as dez qualidades físicas, carga de treino e conclusões como sono versus desempenho.",
+          "body": "Consistência, força, benchmarks, cobertura muscular num atlas anatómico 3D, as dez qualidades físicas, carga de treino e conclusões como sono versus desempenho.",
+          "complete": false
+        },
+        "he": {
+          "title": "ניתוח התקדמות ואטלס אנטומי",
+          "summary": "עקביות, כוח, מדדי ייחוס, כיסוי שרירים באטלס אנטומי תלת־ממדי, עשר יכולות הכושר, עומס אימונים ותובנות כמו שינה מול ביצועים.",
+          "body": "עקביות, כוח, מדדי ייחוס, כיסוי שרירים באטלס אנטומי תלת־ממדי, עשר יכולות הכושר, עומס אימונים ותובנות כמו שינה מול ביצועים.",
+          "complete": false
+        },
+        "it": {
+          "title": "Analisi dei progressi e atlante anatomico",
+          "summary": "Costanza, forza, benchmark, copertura muscolare su un atlante anatomico 3D, le dieci qualità atletiche, carico di allenamento e approfondimenti come sonno rispetto alla prestazione.",
+          "body": "Costanza, forza, benchmark, copertura muscolare su un atlante anatomico 3D, le dieci qualità atletiche, carico di allenamento e approfondimenti come sonno rispetto alla prestazione.",
+          "complete": false
+        },
+        "bg": {
+          "title": "Анализ на напредъка и анатомичен атлас",
+          "summary": "Постоянство, сила, бенчмаркове, натоварени мускули върху 3D анатомичен атлас, десетте фитнес качества, тренировъчно натоварване и изводи като сън спрямо представяне.",
+          "body": "Постоянство, сила, бенчмаркове, натоварени мускули върху 3D анатомичен атлас, десетте фитнес качества, тренировъчно натоварване и изводи като сън спрямо представяне.",
+          "complete": false
+        },
+        "nl": {
+          "title": "Voortgangsanalyse en anatomische atlas",
+          "summary": "Consistentie, kracht, benchmarks, spierdekking op een 3D-anatomische atlas, de tien fitnesskwaliteiten, trainingsbelasting en inzichten zoals slaap tegenover prestaties.",
+          "body": "Consistentie, kracht, benchmarks, spierdekking op een 3D-anatomische atlas, de tien fitnesskwaliteiten, trainingsbelasting en inzichten zoals slaap tegenover prestaties.",
+          "complete": false
+        },
+        "fr": {
+          "title": "Analyse des progrès et atlas anatomique",
+          "summary": "Régularité, force, benchmarks, muscles sollicités sur un atlas anatomique 3D, les dix qualités physiques, charge d'entraînement et analyses comme sommeil et performance.",
+          "body": "Régularité, force, benchmarks, muscles sollicités sur un atlas anatomique 3D, les dix qualités physiques, charge d'entraînement et analyses comme sommeil et performance.",
+          "complete": false
+        }
+      }
+    },
+    {
+      "slug": "feature-business",
+      "feature_key": "business",
+      "guide_id": null,
+      "audience": "staff",
+      "screens": [
+        "/admin",
+        "/admin/schedule",
+        "/admin/class-schedule",
+        "/admin/check-in",
+        "/admin/workouts",
+        "/admin/inventory",
+        "/admin/cleaning",
+        "/admin/reviews",
+        "/admin/users"
+      ],
+      "position": 108,
+      "locales": {
+        "en": {
+          "title": "Box management",
+          "summary": "Class schedules and recurring classes, appointments, check-in desk, workout library with goals, challenges, community moderation, inventory, cleaning log, reviews and reports.",
+          "body": "Class schedules and recurring classes, appointments, check-in desk, workout library with goals, challenges, community moderation, inventory, cleaning log, reviews and reports.\n\n- Business console for gyms, studios, boxes and martial-arts clubs\n- Class schedule, recurring series and appointment slots; check-in desk with door display mode\n- Workout library (WODs vault) with a workout assistant, sections and goals\n- Structured WOD editor next to free text: a wizard per section (flow, time, exercises, score) with six flows (sets, For Time, AMRAP, EMOM, intervals, rest), set structures (superset, complex, cluster, drop set, rest-pause), interruptions and heart-rate rest, presets such as Tabata, Death by and EDT, values per set or per round with ranges, decimals and progressions, optional tempo, RPE, RIR, pace, heart-rate zone and per-side, fully keyboard-operable\n- Seasonal challenges and leaderboards, community moderation and announcements, content and reviews\n- Inventory and cleaning log\n- Reports: overview, finance, training, coaching, engagement, health and marketing\n- Demo mode: a new business tries everything with sample data before activation\n- Interactive walkthroughs over the real screens for the shop, event organising and offers (campaigns, coupons, partner perks, referrals), with a demo-data fill for new businesses",
+          "complete": true
+        },
+        "el": {
+          "title": "Διαχείριση box",
+          "summary": "Πρόγραμμα και επαναλαμβανόμενα τμήματα, ραντεβού, check-in στην υποδοχή, βιβλιοθήκη προπονήσεων με στόχους, challenges, εποπτεία κοινότητας, απόθεμα, πρόγραμμα καθαριότητας, κριτικές και αναφορές.",
+          "body": "Πρόγραμμα και επαναλαμβανόμενα τμήματα, ραντεβού, check-in στην υποδοχή, βιβλιοθήκη προπονήσεων με στόχους, challenges, εποπτεία κοινότητας, απόθεμα, πρόγραμμα καθαριότητας, κριτικές και αναφορές.",
+          "complete": false
+        },
+        "ar": {
+          "title": "إدارة الأندية والاستوديوهات",
+          "summary": "جداول الحصص وسلاسلها، والمواعيد، ومكتب تسجيل الحضور، ومكتبة تمارين مع أهداف، والتحديات، والإشراف على المجتمع، والمخزون، وسجل النظافة، والتقييمات، والتقارير.",
+          "body": "جداول الحصص وسلاسلها، والمواعيد، ومكتب تسجيل الحضور، ومكتبة تمارين مع أهداف، والتحديات، والإشراف على المجتمع، والمخزون، وسجل النظافة، والتقييمات، والتقارير.",
+          "complete": false
+        },
+        "ru": {
+          "title": "Управление боксом",
+          "summary": "Расписание и повторяющиеся занятия, записи к тренерам, чек-ин на ресепшене, библиотека тренировок с целями, челленджи, модерация сообщества, инвентарь, журнал уборки, отзывы и отчёты.",
+          "body": "Расписание и повторяющиеся занятия, записи к тренерам, чек-ин на ресепшене, библиотека тренировок с целями, челленджи, модерация сообщества, инвентарь, журнал уборки, отзывы и отчёты.",
+          "complete": false
+        },
+        "de": {
+          "title": "Box-Verwaltung",
+          "summary": "Kurspläne und wiederkehrende Kurse, Termine, Check-in am Empfang, Workout-Bibliothek mit Zielen, Challenges, Community-Moderation, Inventar, Reinigungsprotokoll, Bewertungen und Berichte.",
+          "body": "Kurspläne und wiederkehrende Kurse, Termine, Check-in am Empfang, Workout-Bibliothek mit Zielen, Challenges, Community-Moderation, Inventar, Reinigungsprotokoll, Bewertungen und Berichte.",
+          "complete": false
+        },
+        "es": {
+          "title": "Gestión del box",
+          "summary": "Horarios y clases recurrentes, citas, mostrador de check-in, biblioteca de entrenamientos con objetivos, retos, moderación de la comunidad, inventario, registro de limpieza, valoraciones e informes.",
+          "body": "Horarios y clases recurrentes, citas, mostrador de check-in, biblioteca de entrenamientos con objetivos, retos, moderación de la comunidad, inventario, registro de limpieza, valoraciones e informes.",
+          "complete": false
+        },
+        "pt-PT": {
+          "title": "Gestão de ginásios e estúdios",
+          "summary": "Horários e séries de aulas, marcações, balcão de check-in, biblioteca de treinos com objetivos, desafios, moderação da comunidade, inventário, registo de limpeza, avaliações e relatórios.",
+          "body": "Horários e séries de aulas, marcações, balcão de check-in, biblioteca de treinos com objetivos, desafios, moderação da comunidade, inventário, registo de limpeza, avaliações e relatórios.",
+          "complete": false
+        },
+        "he": {
+          "title": "ניהול חדרי כושר וסטודיואים",
+          "summary": "לוחות שיעורים וסדרות, פגישות, עמדת צ׳ק-אין, ספריית אימונים עם יעדים, אתגרים, ניהול קהילה, מלאי, יומן ניקיון, ביקורות ודוחות.",
+          "body": "לוחות שיעורים וסדרות, פגישות, עמדת צ׳ק-אין, ספריית אימונים עם יעדים, אתגרים, ניהול קהילה, מלאי, יומן ניקיון, ביקורות ודוחות.",
+          "complete": false
+        },
+        "it": {
+          "title": "Gestione del box",
+          "summary": "Calendario delle lezioni e lezioni ricorrenti, appuntamenti, banco check-in, libreria di allenamenti con obiettivi, challenge, moderazione della community, inventario, registro pulizie, recensioni e report.",
+          "body": "Calendario delle lezioni e lezioni ricorrenti, appuntamenti, banco check-in, libreria di allenamenti con obiettivi, challenge, moderazione della community, inventario, registro pulizie, recensioni e report.",
+          "complete": false
+        },
+        "bg": {
+          "title": "Управление на зали и студия",
+          "summary": "График на занятията и повтарящи се занятия, часове, пункт за чекиране, библиотека с тренировки и цели, challenges, модериране на общността, инвентар, дневник за почистване, отзиви и отчети.",
+          "body": "График на занятията и повтарящи се занятия, часове, пункт за чекиране, библиотека с тренировки и цели, challenges, модериране на общността, инвентар, дневник за почистване, отзиви и отчети.",
+          "complete": false
+        },
+        "nl": {
+          "title": "Beheer van sportscholen en studio's",
+          "summary": "Lesroosters en reeksen, afspraken, incheckbalie, workoutbibliotheek met doelen, challenges, communitymoderatie, voorraad, schoonmaaklogboek, beoordelingen en rapporten.",
+          "body": "Lesroosters en reeksen, afspraken, incheckbalie, workoutbibliotheek met doelen, challenges, communitymoderatie, voorraad, schoonmaaklogboek, beoordelingen en rapporten.",
+          "complete": false
+        },
+        "fr": {
+          "title": "Gestion de la box",
+          "summary": "Plannings et cours récurrents, rendez-vous, accueil check-in, bibliothèque d'entraînements avec objectifs, challenges, modération de la communauté, inventaire, registre de nettoyage, avis et rapports.",
+          "body": "Plannings et cours récurrents, rendez-vous, accueil check-in, bibliothèque d'entraînements avec objectifs, challenges, modération de la communauté, inventaire, registre de nettoyage, avis et rapports.",
+          "complete": false
+        }
+      }
+    },
+    {
+      "slug": "feature-coaching",
+      "feature_key": "coaching",
+      "guide_id": null,
+      "audience": "staff",
+      "screens": [
+        "/admin/coaching",
+        "/admin/coaching-assignments"
+      ],
+      "position": 109,
+      "locales": {
+        "en": {
+          "title": "Personal training and independent coaches",
+          "summary": "Programs, reply and form-review queues, nutrition plans, coach notes, PT squads and session packages; independent coaches get their own lighter console and a team club.",
+          "body": "Programs, reply and form-review queues, nutrition plans, coach notes, PT squads and session packages; independent coaches get their own lighter console and a team club.\n\n- Coaching assignments and programs that athletes can accept, reschedule or request\n- Reply queue for athlete questions and a form-review queue for technique videos\n- Nutrition plans with macros, staff-only coach notes (read-audited), wellbeing summaries with consent\n- PT squads: invite-only channels for a coach and their clients\n- Solo-coach tier: independent trainers get a lighter console, session packages, a team club and open bootcamps",
+          "complete": true
+        },
+        "el": {
+          "title": "Προσωπική προπόνηση και ανεξάρτητοι coach",
+          "summary": "Προγράμματα, ουρές απαντήσεων και ελέγχου τεχνικής, πλάνα διατροφής, σημειώσεις coach, ομάδες του coach και πακέτα συνεδριών· οι ανεξάρτητοι coach έχουν τη δική τους, πιο απλή κονσόλα και ένα club ομάδας.",
+          "body": "Προγράμματα, ουρές απαντήσεων και ελέγχου τεχνικής, πλάνα διατροφής, σημειώσεις coach, ομάδες του coach και πακέτα συνεδριών· οι ανεξάρτητοι coach έχουν τη δική τους, πιο απλή κονσόλα και ένα club ομάδας.",
+          "complete": false
+        },
+        "ar": {
+          "title": "التدريب الشخصي والمدربون المستقلون",
+          "summary": "البرامج، وقوائم الردود ومراجعة الأداء الحركي، وخطط التغذية، وملاحظات المدرب، ومجموعات التدريب الشخصي، وباقات الجلسات؛ ويحصل المدربون المستقلون على لوحة تحكم أخف خاصة بهم ومجموعة لفريقهم.",
+          "body": "البرامج، وقوائم الردود ومراجعة الأداء الحركي، وخطط التغذية، وملاحظات المدرب، ومجموعات التدريب الشخصي، وباقات الجلسات؛ ويحصل المدربون المستقلون على لوحة تحكم أخف خاصة بهم ومجموعة لفريقهم.",
+          "complete": false
+        },
+        "ru": {
+          "title": "Персональные тренировки и независимые тренеры",
+          "summary": "Программы, очереди ответов и разборов техники, планы питания, заметки тренера, мини-группы и пакеты персональных тренировок; у независимых тренеров своя, более простая консоль и клуб Team.",
+          "body": "Программы, очереди ответов и разборов техники, планы питания, заметки тренера, мини-группы и пакеты персональных тренировок; у независимых тренеров своя, более простая консоль и клуб Team.",
+          "complete": false
+        },
+        "de": {
+          "title": "Personal Training und unabhängige Coaches",
+          "summary": "Programme, Warteschlangen für Antworten und Technik-Checks, Ernährungspläne, Coach-Notizen, PT-Squads und Session-Pakete; unabhängige Coaches erhalten eine eigene, schlankere Konsole und einen Team-Club.",
+          "body": "Programme, Warteschlangen für Antworten und Technik-Checks, Ernährungspläne, Coach-Notizen, PT-Squads und Session-Pakete; unabhängige Coaches erhalten eine eigene, schlankere Konsole und einen Team-Club.",
+          "complete": false
+        },
+        "es": {
+          "title": "Entrenamiento personal y coaches independientes",
+          "summary": "Programas, colas de respuestas y de revisión de técnica, planes de nutrición, notas del coach, squads de PT y paquetes de entrenamiento personal; los coaches independientes tienen su propia consola más ligera y un club Team.",
+          "body": "Programas, colas de respuestas y de revisión de técnica, planes de nutrición, notas del coach, squads de PT y paquetes de entrenamiento personal; los coaches independientes tienen su propia consola más ligera y un club Team.",
+          "complete": false
+        },
+        "pt-PT": {
+          "title": "Treino personalizado e coaches independentes",
+          "summary": "Programas, filas de respostas e de revisão de técnica, planos de nutrição, notas do coach, grupos de PT e pacotes de sessões; os coaches independentes têm a sua própria consola, mais simples, e um clube de equipa.",
+          "body": "Programas, filas de respostas e de revisão de técnica, planos de nutrição, notas do coach, grupos de PT e pacotes de sessões; os coaches independentes têm a sua própria consola, mais simples, e um clube de equipa.",
+          "complete": false
+        },
+        "he": {
+          "title": "אימון אישי ומאמנים עצמאיים",
+          "summary": "תוכניות, תורי תגובות ובדיקות טכניקה, תוכניות תזונה, הערות מאמן, קבוצות אימון אישי וחבילות מפגשים; מאמנים עצמאיים מקבלים קונסולה קלה משלהם ומועדון צוות.",
+          "body": "תוכניות, תורי תגובות ובדיקות טכניקה, תוכניות תזונה, הערות מאמן, קבוצות אימון אישי וחבילות מפגשים; מאמנים עצמאיים מקבלים קונסולה קלה משלהם ומועדון צוות.",
+          "complete": false
+        },
+        "it": {
+          "title": "Personal training e coach indipendenti",
+          "summary": "Programmi, code di risposte e revisione della tecnica, piani alimentari, note del coach, squad PT e pacchetti di personal training; i coach indipendenti hanno una propria console più snella e un club Team.",
+          "body": "Programmi, code di risposte e revisione della tecnica, piani alimentari, note del coach, squad PT e pacchetti di personal training; i coach indipendenti hanno una propria console più snella e un club Team.",
+          "complete": false
+        },
+        "bg": {
+          "title": "Персонални тренировки и самостоятелни треньори",
+          "summary": "Програми, опашки за отговори и преглед на техниката, хранителни планове, бележки на треньора, групи за персонални тренировки и пакети от сесии; самостоятелните треньори получават своя по-лека конзола и отборен клуб.",
+          "body": "Програми, опашки за отговори и преглед на техниката, хранителни планове, бележки на треньора, групи за персонални тренировки и пакети от сесии; самостоятелните треньори получават своя по-лека конзола и отборен клуб.",
+          "complete": false
+        },
+        "nl": {
+          "title": "Personal training en zelfstandige coaches",
+          "summary": "Programma's, wachtrijen voor antwoorden en techniekfeedback, voedingsschema's, coachnotities, PT-groepen en sessiepakketten; zelfstandige coaches krijgen hun eigen lichtere console en een teamclub.",
+          "body": "Programma's, wachtrijen voor antwoorden en techniekfeedback, voedingsschema's, coachnotities, PT-groepen en sessiepakketten; zelfstandige coaches krijgen hun eigen lichtere console en een teamclub.",
+          "complete": false
+        },
+        "fr": {
+          "title": "Coaching individuel et coachs indépendants",
+          "summary": "Programmes, files de réponses et de corrections techniques, plans nutritionnels, notes du coach, groupes de coaching individuel et forfaits de coaching individuel ; les coachs indépendants ont leur propre console allégée et un club d'équipe.",
+          "body": "Programmes, files de réponses et de corrections techniques, plans nutritionnels, notes du coach, groupes de coaching individuel et forfaits de coaching individuel ; les coachs indépendants ont leur propre console allégée et un club d'équipe.",
+          "complete": false
+        }
+      }
+    },
+    {
+      "slug": "feature-finance",
+      "feature_key": "finance",
+      "guide_id": null,
+      "audience": "staff",
+      "screens": [
+        "/admin/finance",
+        "/admin/collect"
+      ],
+      "position": 110,
+      "locales": {
+        "en": {
+          "title": "Payments and finance",
+          "summary": "Subscription packages and seasons, promotions, member billing, invoices and refunds, corporate clients, reconciliation and accounting exports.",
+          "body": "Subscription packages and seasons, promotions, member billing, invoices and refunds, corporate clients, reconciliation and accounting exports.\n\n- Package catalog, member packages and entitlements, seasons (for example 12-week race prep) with their own club channel\n- Promotions, member billing, invoices and refund receipts\n- Corporate clients and corporate invoices\n- Reconciliation records and accounting exports with a checksummed manifest",
+          "complete": true
+        },
+        "el": {
+          "title": "Πληρωμές και οικονομικά",
+          "summary": "Πακέτα συνδρομής και σεζόν, προσφορές, χρεώσεις μελών, τιμολόγια και επιστροφές χρημάτων, εταιρικοί πελάτες, συμφωνία λογαριασμών και εξαγωγές για λογιστήριο.",
+          "body": "Πακέτα συνδρομής και σεζόν, προσφορές, χρεώσεις μελών, τιμολόγια και επιστροφές χρημάτων, εταιρικοί πελάτες, συμφωνία λογαριασμών και εξαγωγές για λογιστήριο.",
+          "complete": false
+        },
+        "ar": {
+          "title": "المدفوعات والشؤون المالية",
+          "summary": "باقات الاشتراك والمواسم، والعروض الترويجية، وفوترة الأعضاء، والفواتير والمبالغ المستردة، وعملاء الشركات، والتسوية، والتصدير للمحاسبة.",
+          "body": "باقات الاشتراك والمواسم، والعروض الترويجية، وفوترة الأعضاء، والفواتير والمبالغ المستردة، وعملاء الشركات، والتسوية، والتصدير للمحاسبة.",
+          "complete": false
+        },
+        "ru": {
+          "title": "Платежи и финансы",
+          "summary": "Абонементные пакеты и сезоны, акции, выставление счетов участникам, счета и возвраты, корпоративные клиенты, сверка и выгрузки для бухгалтерии.",
+          "body": "Абонементные пакеты и сезоны, акции, выставление счетов участникам, счета и возвраты, корпоративные клиенты, сверка и выгрузки для бухгалтерии.",
+          "complete": false
+        },
+        "de": {
+          "title": "Zahlungen und Finanzen",
+          "summary": "Abo-Pakete und Saisons, Aktionen, Mitgliederabrechnung, Rechnungen und Erstattungen, Firmenkunden, Abgleich und Buchhaltungsexporte.",
+          "body": "Abo-Pakete und Saisons, Aktionen, Mitgliederabrechnung, Rechnungen und Erstattungen, Firmenkunden, Abgleich und Buchhaltungsexporte.",
+          "complete": false
+        },
+        "es": {
+          "title": "Pagos y finanzas",
+          "summary": "Paquetes de suscripción y temporadas, promociones, facturación a socios, facturas y reembolsos, clientes corporativos, conciliación y exportaciones contables.",
+          "body": "Paquetes de suscripción y temporadas, promociones, facturación a socios, facturas y reembolsos, clientes corporativos, conciliación y exportaciones contables.",
+          "complete": false
+        },
+        "pt-PT": {
+          "title": "Pagamentos e finanças",
+          "summary": "Pacotes de subscrição e épocas, promoções, faturação de membros, faturas e reembolsos, clientes empresariais, reconciliação e exportações contabilísticas.",
+          "body": "Pacotes de subscrição e épocas, promoções, faturação de membros, faturas e reembolsos, clientes empresariais, reconciliação e exportações contabilísticas.",
+          "complete": false
+        },
+        "he": {
+          "title": "תשלומים וכספים",
+          "summary": "חבילות מנוי ועונות, מבצעים, חיוב חברים, חשבוניות והחזרים, לקוחות עסקיים, התאמות וייצוא להנהלת חשבונות.",
+          "body": "חבילות מנוי ועונות, מבצעים, חיוב חברים, חשבוניות והחזרים, לקוחות עסקיים, התאמות וייצוא להנהלת חשבונות.",
+          "complete": false
+        },
+        "it": {
+          "title": "Pagamenti e finanze",
+          "summary": "Pacchetti di abbonamento e stagioni, promozioni, fatturazione dei soci, fatture e rimborsi, clienti aziendali, riconciliazione ed esportazioni contabili.",
+          "body": "Pacchetti di abbonamento e stagioni, promozioni, fatturazione dei soci, fatture e rimborsi, clienti aziendali, riconciliazione ed esportazioni contabili.",
+          "complete": false
+        },
+        "bg": {
+          "title": "Плащания и финанси",
+          "summary": "Абонаментни пакети и сезони, промоции, таксуване на членове, фактури и възстановявания, корпоративни клиенти, равнение и експорт за счетоводството.",
+          "body": "Абонаментни пакети и сезони, промоции, таксуване на членове, фактури и възстановявания, корпоративни клиенти, равнение и експорт за счетоводството.",
+          "complete": false
+        },
+        "nl": {
+          "title": "Betalingen en financiën",
+          "summary": "Abonnementspakketten en seizoenen, acties, ledenfacturering, facturen en terugbetalingen, zakelijke klanten, afstemming en exports voor de boekhouding.",
+          "body": "Abonnementspakketten en seizoenen, acties, ledenfacturering, facturen en terugbetalingen, zakelijke klanten, afstemming en exports voor de boekhouding.",
+          "complete": false
+        },
+        "fr": {
+          "title": "Paiements et finances",
+          "summary": "Forfaits d'abonnement et saisons, promotions, facturation des membres, factures et remboursements, clients entreprises, rapprochement et exports comptables.",
+          "body": "Forfaits d'abonnement et saisons, promotions, facturation des membres, factures et remboursements, clients entreprises, rapprochement et exports comptables.",
+          "complete": false
+        }
+      }
+    },
+    {
+      "slug": "feature-growth",
+      "feature_key": "growth",
+      "guide_id": null,
+      "audience": "staff",
+      "screens": [
+        "/admin/public-page",
+        "/admin/trials"
+      ],
+      "position": 111,
+      "locales": {
+        "en": {
+          "title": "Growth without discount marketplaces",
+          "summary": "A public box page, trial classes the owner controls, member referrals with rewards and open events bring new clients while the relationship stays with the box.",
+          "body": "A public box page, trial classes the owner controls, member referrals with rewards and open events bring new clients while the relationship stays with the box.\n\n- Public gym page: about, photos, disciplines, coaches, locations, hours, read-only schedule, events and public posts\n- Owner-controlled trial policy and slots, trial requests queue and conversion tracking; the check-in door offers a trial to non-members\n- Member referrals with a personal link and QR, automatic attribution (sign-up, trial, paid) and rewards approved by the owner\n- No credits, no discount marketplace: the owner sets prices and the client relationship stays with the gym",
+          "complete": true
+        },
+        "el": {
+          "title": "Ανάπτυξη χωρίς πλατφόρμες εκπτώσεων",
+          "summary": "Δημόσια σελίδα box, δοκιμαστικά τμήματα που ελέγχει ο ιδιοκτήτης, συστάσεις μελών με ανταμοιβές και ανοιχτές εκδηλώσεις φέρνουν νέους πελάτες, ενώ η σχέση μένει στο box.",
+          "body": "Δημόσια σελίδα box, δοκιμαστικά τμήματα που ελέγχει ο ιδιοκτήτης, συστάσεις μελών με ανταμοιβές και ανοιχτές εκδηλώσεις φέρνουν νέους πελάτες, ενώ η σχέση μένει στο box.",
+          "complete": false
+        },
+        "ar": {
+          "title": "نمو بلا منصات الخصومات",
+          "summary": "صفحة عامة للـ box، وحصص تجريبية يتحكم بها المالك، وإحالات من الأعضاء مع مكافآت، وفعاليات مفتوحة تجلب عملاء جددًا، بينما تبقى العلاقة مع الـ box.",
+          "body": "صفحة عامة للـ box، وحصص تجريبية يتحكم بها المالك، وإحالات من الأعضاء مع مكافآت، وفعاليات مفتوحة تجلب عملاء جددًا، بينما تبقى العلاقة مع الـ box.",
+          "complete": false
+        },
+        "ru": {
+          "title": "Рост без скидочных площадок",
+          "summary": "Публичная страница бокса, пробные занятия под контролем владельца, рекомендации от участников с наградами и открытые события приводят новых клиентов, а отношения с ними остаются у бокса.",
+          "body": "Публичная страница бокса, пробные занятия под контролем владельца, рекомендации от участников с наградами и открытые события приводят новых клиентов, а отношения с ними остаются у бокса.",
+          "complete": false
+        },
+        "de": {
+          "title": "Wachstum ohne Rabattplattformen",
+          "summary": "Eine öffentliche Box-Seite, vom Inhaber gesteuerte Probetrainings, Mitglieder-Empfehlungen mit Prämien und offene Events bringen neue Kunden – die Kundenbeziehung bleibt bei der Box.",
+          "body": "Eine öffentliche Box-Seite, vom Inhaber gesteuerte Probetrainings, Mitglieder-Empfehlungen mit Prämien und offene Events bringen neue Kunden – die Kundenbeziehung bleibt bei der Box.",
+          "complete": false
+        },
+        "es": {
+          "title": "Crecer sin plataformas de descuentos",
+          "summary": "Una página pública del box, clases de prueba que controla el propietario, recomendaciones de socios con recompensas y eventos abiertos atraen nuevos clientes mientras la relación sigue siendo del box.",
+          "body": "Una página pública del box, clases de prueba que controla el propietario, recomendaciones de socios con recompensas y eventos abiertos atraen nuevos clientes mientras la relación sigue siendo del box.",
+          "complete": false
+        },
+        "pt-PT": {
+          "title": "Crescer sem plataformas de descontos",
+          "summary": "Uma página pública da box, aulas experimentais controladas pelo proprietário, recomendações de sócios com recompensas e eventos abertos trazem novos clientes, enquanto a relação continua a ser da box.",
+          "body": "Uma página pública da box, aulas experimentais controladas pelo proprietário, recomendações de sócios com recompensas e eventos abertos trazem novos clientes, enquanto a relação continua a ser da box.",
+          "complete": false
+        },
+        "he": {
+          "title": "צמיחה בלי פלטפורמות הנחות",
+          "summary": "דף ציבורי לבוקס, שיעורי ניסיון בשליטת הבעלים, הפניות מנויים עם תגמולים ואירועים פתוחים מביאים לקוחות חדשים, והקשר נשאר עם הבוקס.",
+          "body": "דף ציבורי לבוקס, שיעורי ניסיון בשליטת הבעלים, הפניות מנויים עם תגמולים ואירועים פתוחים מביאים לקוחות חדשים, והקשר נשאר עם הבוקס.",
+          "complete": false
+        },
+        "it": {
+          "title": "Crescere senza piattaforme di sconti",
+          "summary": "Una pagina pubblica del box, lezioni di prova gestite dal titolare, inviti dei soci con premi ed eventi aperti portano nuovi clienti, mentre il rapporto resta con il box.",
+          "body": "Una pagina pubblica del box, lezioni di prova gestite dal titolare, inviti dei soci con premi ed eventi aperti portano nuovi clienti, mentre il rapporto resta con il box.",
+          "complete": false
+        },
+        "bg": {
+          "title": "Растеж без платформи за отстъпки",
+          "summary": "Публична страница на залата, пробни занятия под контрола на собственика, препоръки от членове с награди и открити събития носят нови клиенти, а връзката с тях остава при залата.",
+          "body": "Публична страница на залата, пробни занятия под контрола на собственика, препоръки от членове с награди и открити събития носят нови клиенти, а връзката с тях остава при залата.",
+          "complete": false
+        },
+        "nl": {
+          "title": "Groeien zonder kortingsplatforms",
+          "summary": "Een openbare sportschoolpagina, proeflesplekken die de eigenaar zelf bepaalt, ledenverwijzingen met beloningen en open evenementen brengen nieuwe klanten, terwijl de relatie bij de sportschool blijft.",
+          "body": "Een openbare sportschoolpagina, proeflesplekken die de eigenaar zelf bepaalt, ledenverwijzingen met beloningen en open evenementen brengen nieuwe klanten, terwijl de relatie bij de sportschool blijft.",
+          "complete": false
+        },
+        "fr": {
+          "title": "Grandir sans plateformes de réduction",
+          "summary": "Une page publique de la box, des cours d'essai maîtrisés par le gérant, du parrainage récompensé et des événements ouverts attirent de nouveaux clients, tandis que la relation reste avec la box.",
+          "body": "Une page publique de la box, des cours d'essai maîtrisés par le gérant, du parrainage récompensé et des événements ouverts attirent de nouveaux clients, tandis que la relation reste avec la box.",
+          "complete": false
+        }
+      }
+    },
+    {
+      "slug": "feature-branches",
+      "feature_key": "branches",
+      "guide_id": null,
+      "audience": "staff",
+      "screens": [
+        "/admin/settings"
+      ],
+      "position": 112,
+      "locales": {
+        "en": {
+          "title": "Multiple branches and staff roles",
+          "summary": "Staff roles and permissions scoped to branches, a branch filter across finance, coaching and statistics, and one-step creation of classes or subscription packages for several branches.",
+          "body": "Staff roles and permissions scoped to branches, a branch filter across finance, coaching and statistics, and one-step creation of classes or subscription packages for several branches.\n\n- Staff roles and permissions (owner, branch manager, coach, front desk, cleaning and more), with invitations that carry roles and branches\n- Branch filter on finance, coaching and statistics for staff who see several branches\n- \"Applies to\" chips create a class, series or appointment slot per branch, or one package, promotion or coaching assignment for several branches\n- Each gym uses its own time zone; times are stored in UTC",
+          "complete": true
+        },
+        "el": {
+          "title": "Πολλά παραρτήματα και ρόλοι προσωπικού",
+          "summary": "Ρόλοι και δικαιώματα προσωπικού ανά παράρτημα, φίλτρο παραρτήματος σε οικονομικά, coaching και στατιστικά, και δημιουργία τμημάτων ή πακέτων συνδρομής για πολλά παραρτήματα με μία κίνηση.",
+          "body": "Ρόλοι και δικαιώματα προσωπικού ανά παράρτημα, φίλτρο παραρτήματος σε οικονομικά, coaching και στατιστικά, και δημιουργία τμημάτων ή πακέτων συνδρομής για πολλά παραρτήματα με μία κίνηση.",
+          "complete": false
+        },
+        "ar": {
+          "title": "فروع متعددة وأدوار للموظفين",
+          "summary": "أدوار وصلاحيات للموظفين حسب الفرع، وتصفية حسب الفرع في الشؤون المالية والتدريب والإحصاءات، وإنشاء الحصص أو باقات الاشتراك لعدة فروع بخطوة واحدة.",
+          "body": "أدوار وصلاحيات للموظفين حسب الفرع، وتصفية حسب الفرع في الشؤون المالية والتدريب والإحصاءات، وإنشاء الحصص أو باقات الاشتراك لعدة فروع بخطوة واحدة.",
+          "complete": false
+        },
+        "ru": {
+          "title": "Несколько филиалов и роли в команде",
+          "summary": "Роли и права членов команды в рамках филиалов, фильтр по филиалам в финансах, тренерской работе и статистике, а также создание занятий или абонементных пакетов сразу для нескольких филиалов в один шаг.",
+          "body": "Роли и права членов команды в рамках филиалов, фильтр по филиалам в финансах, тренерской работе и статистике, а также создание занятий или абонементных пакетов сразу для нескольких филиалов в один шаг.",
+          "complete": false
+        },
+        "de": {
+          "title": "Mehrere Standorte und Teamrollen",
+          "summary": "Teamrollen und Berechtigungen pro Standort, ein Standortfilter für Finanzen, Coaching und Statistiken sowie das Anlegen von Kursen oder Abo-Paketen für mehrere Standorte in einem Schritt.",
+          "body": "Teamrollen und Berechtigungen pro Standort, ein Standortfilter für Finanzen, Coaching und Statistiken sowie das Anlegen von Kursen oder Abo-Paketen für mehrere Standorte in einem Schritt.",
+          "complete": false
+        },
+        "es": {
+          "title": "Varias sedes y roles del equipo",
+          "summary": "Roles y permisos del equipo limitados por sede, un filtro de sede en finanzas, coaching y estadísticas, y creación en un solo paso de clases o paquetes de suscripción para varias sedes.",
+          "body": "Roles y permisos del equipo limitados por sede, un filtro de sede en finanzas, coaching y estadísticas, y creación en un solo paso de clases o paquetes de suscripción para varias sedes.",
+          "complete": false
+        },
+        "pt-PT": {
+          "title": "Várias unidades e funções da equipa",
+          "summary": "Funções e permissões da equipa limitadas por espaço, um filtro de espaço em finanças, coaching e estatísticas, e criação num só passo de aulas ou pacotes de subscrição para vários espaços.",
+          "body": "Funções e permissões da equipa limitadas por espaço, um filtro de espaço em finanças, coaching e estatísticas, e criação num só passo de aulas ou pacotes de subscrição para vários espaços.",
+          "complete": false
+        },
+        "he": {
+          "title": "סניפים מרובים ותפקידי צוות",
+          "summary": "תפקידים והרשאות צוות לפי סניף, סינון סניפים בכספים, באימון ובסטטיסטיקה, ויצירת שיעורים או חבילות מנוי לכמה סניפים בצעד אחד.",
+          "body": "תפקידים והרשאות צוות לפי סניף, סינון סניפים בכספים, באימון ובסטטיסטיקה, ויצירת שיעורים או חבילות מנוי לכמה סניפים בצעד אחד.",
+          "complete": false
+        },
+        "it": {
+          "title": "Più sedi e ruoli dello staff",
+          "summary": "Ruoli e permessi dello staff limitati per sede, un filtro per sede su finanze, coaching e statistiche, e creazione in un solo passaggio di lezioni o pacchetti di abbonamento per più sedi.",
+          "body": "Ruoli e permessi dello staff limitati per sede, un filtro per sede su finanze, coaching e statistiche, e creazione in un solo passaggio di lezioni o pacchetti di abbonamento per più sedi.",
+          "complete": false
+        },
+        "bg": {
+          "title": "Няколко филиала и роли на персонала",
+          "summary": "Роли и права на персонала по филиали, филтър по филиал във финанси, coaching и статистика, и създаване на занятия или абонаментни пакети за няколко филиала с една стъпка.",
+          "body": "Роли и права на персонала по филиали, филтър по филиал във финанси, coaching и статистика, и създаване на занятия или абонаментни пакети за няколко филиала с една стъпка.",
+          "complete": false
+        },
+        "nl": {
+          "title": "Meerdere vestigingen en personeelsrollen",
+          "summary": "Personeelsrollen en rechten per vestiging, een vestigingsfilter in financiën, coaching en statistieken, en lessen of abonnementspakketten voor meerdere vestigingen in één stap aanmaken.",
+          "body": "Personeelsrollen en rechten per vestiging, een vestigingsfilter in financiën, coaching en statistieken, en lessen of abonnementspakketten voor meerdere vestigingen in één stap aanmaken.",
+          "complete": false
+        },
+        "fr": {
+          "title": "Plusieurs sites et rôles de l'équipe",
+          "summary": "Rôles et autorisations de l'équipe par site, filtre par site dans les finances, le coaching et les statistiques, et création en une étape de cours ou de forfaits d'abonnement pour plusieurs sites.",
+          "body": "Rôles et autorisations de l'équipe par site, filtre par site dans les finances, le coaching et les statistiques, et création en une étape de cours ou de forfaits d'abonnement pour plusieurs sites.",
+          "complete": false
+        }
+      }
+    },
+    {
+      "slug": "feature-devices",
+      "feature_key": "devices",
+      "guide_id": null,
+      "audience": "member",
+      "screens": [],
+      "position": 113,
+      "locales": {
+        "en": {
+          "title": "Apps, devices and integrations",
+          "summary": "An installable web app that works offline, native iOS and Android builds, Garmin, Apple Health and Health Connect, home-screen widgets, calendar feeds and push notifications.",
+          "body": "An installable web app that works offline, native iOS and Android builds, Garmin, Apple Health and Health Connect, home-screen widgets, calendar feeds and push notifications.\n\n- Installable progressive web app with an offline outbox\n- Native iOS and Android builds with push notifications, deep links, home-screen widgets, NFC and geofencing\n- Garmin, Apple Health and Health Connect import with de-duplication\n- Calendar (ICS) feeds and Apple/Google Wallet passes",
+          "complete": true
+        },
+        "el": {
+          "title": "Εφαρμογές, συσκευές και διασυνδέσεις",
+          "summary": "Εγκαταστάσιμη διαδικτυακή εφαρμογή που λειτουργεί χωρίς σύνδεση, εγγενείς εκδόσεις για iOS και Android, Garmin, Apple Health και Health Connect, μικροεφαρμογές αρχικής οθόνης, ροές ημερολογίου και ειδοποιήσεις.",
+          "body": "Εγκαταστάσιμη διαδικτυακή εφαρμογή που λειτουργεί χωρίς σύνδεση, εγγενείς εκδόσεις για iOS και Android, Garmin, Apple Health και Health Connect, μικροεφαρμογές αρχικής οθόνης, ροές ημερολογίου και ειδοποιήσεις.",
+          "complete": false
+        },
+        "ar": {
+          "title": "التطبيقات والأجهزة والتكاملات",
+          "summary": "تطبيق ويب قابل للتثبيت يعمل دون اتصال، وإصدارات أصلية لـ iOS وAndroid، وGarmin وApple Health وHealth Connect، وأدوات على الشاشة الرئيسية، وموجزات تقويم، وإشعارات فورية.",
+          "body": "تطبيق ويب قابل للتثبيت يعمل دون اتصال، وإصدارات أصلية لـ iOS وAndroid، وGarmin وApple Health وHealth Connect، وأدوات على الشاشة الرئيسية، وموجزات تقويم، وإشعارات فورية.",
+          "complete": false
+        },
+        "ru": {
+          "title": "Приложения, устройства и интеграции",
+          "summary": "Устанавливаемое веб-приложение, работающее офлайн, нативные сборки для iOS и Android, Garmin, Apple Health и Health Connect, виджеты на главном экране, календарные подписки и пуш-уведомления.",
+          "body": "Устанавливаемое веб-приложение, работающее офлайн, нативные сборки для iOS и Android, Garmin, Apple Health и Health Connect, виджеты на главном экране, календарные подписки и пуш-уведомления.",
+          "complete": false
+        },
+        "de": {
+          "title": "Apps, Geräte und Integrationen",
+          "summary": "Eine installierbare Web-App, die offline funktioniert, native iOS- und Android-Apps, Garmin, Apple Health und Health Connect, Widgets für den Startbildschirm, Kalender-Feeds und Push-Benachrichtigungen.",
+          "body": "Eine installierbare Web-App, die offline funktioniert, native iOS- und Android-Apps, Garmin, Apple Health und Health Connect, Widgets für den Startbildschirm, Kalender-Feeds und Push-Benachrichtigungen.",
+          "complete": false
+        },
+        "es": {
+          "title": "Apps, dispositivos e integraciones",
+          "summary": "Una app web instalable que funciona sin conexión, apps nativas para iOS y Android, Garmin, Apple Health y Health Connect, widgets para la pantalla de inicio, calendarios sincronizados y notificaciones push.",
+          "body": "Una app web instalable que funciona sin conexión, apps nativas para iOS y Android, Garmin, Apple Health y Health Connect, widgets para la pantalla de inicio, calendarios sincronizados y notificaciones push.",
+          "complete": false
+        },
+        "pt-PT": {
+          "title": "Apps, dispositivos e integrações",
+          "summary": "Uma app web instalável que funciona sem ligação, apps nativas para iOS e Android, Garmin, Apple Health e Health Connect, widgets para o ecrã inicial, calendários sincronizados e notificações push.",
+          "body": "Uma app web instalável que funciona sem ligação, apps nativas para iOS e Android, Garmin, Apple Health e Health Connect, widgets para o ecrã inicial, calendários sincronizados e notificações push.",
+          "complete": false
+        },
+        "he": {
+          "title": "אפליקציות, מכשירים ושילובים",
+          "summary": "אפליקציית ווב להתקנה שעובדת גם בלי חיבור, גרסאות iOS ו-Android מקוריות, Garmin, Apple Health ו-Health Connect, ווידג׳טים למסך הבית, הזנות יומן והתראות פוש.",
+          "body": "אפליקציית ווב להתקנה שעובדת גם בלי חיבור, גרסאות iOS ו-Android מקוריות, Garmin, Apple Health ו-Health Connect, ווידג׳טים למסך הבית, הזנות יומן והתראות פוש.",
+          "complete": false
+        },
+        "it": {
+          "title": "App, dispositivi e integrazioni",
+          "summary": "Una web app installabile che funziona offline, app native iOS e Android, Garmin, Apple Health e Health Connect, widget per la schermata Home, feed del calendario e notifiche push.",
+          "body": "Una web app installabile che funziona offline, app native iOS e Android, Garmin, Apple Health e Health Connect, widget per la schermata Home, feed del calendario e notifiche push.",
+          "complete": false
+        },
+        "bg": {
+          "title": "Приложения, устройства и интеграции",
+          "summary": "Уеб приложение за инсталиране, което работи офлайн, нативни версии за iOS и Android, Garmin, Apple Health и Health Connect, джаджи за началния екран, абонаменти за календар и push известия.",
+          "body": "Уеб приложение за инсталиране, което работи офлайн, нативни версии за iOS и Android, Garmin, Apple Health и Health Connect, джаджи за началния екран, абонаменти за календар и push известия.",
+          "complete": false
+        },
+        "nl": {
+          "title": "Apps, apparaten en koppelingen",
+          "summary": "Een installeerbare webapp die offline werkt, native versies voor iOS en Android, Garmin, Apple Health en Health Connect, widgets voor het beginscherm, agenda-feeds en pushmeldingen.",
+          "body": "Een installeerbare webapp die offline werkt, native versies voor iOS en Android, Garmin, Apple Health en Health Connect, widgets voor het beginscherm, agenda-feeds en pushmeldingen.",
+          "complete": false
+        },
+        "fr": {
+          "title": "Apps, appareils et intégrations",
+          "summary": "Une web app installable qui fonctionne hors ligne, des versions natives iOS et Android, Garmin, Apple Health et Health Connect, des widgets d'écran d'accueil, des flux d'agenda et des notifications push.",
+          "body": "Une web app installable qui fonctionne hors ligne, des versions natives iOS et Android, Garmin, Apple Health et Health Connect, des widgets d'écran d'accueil, des flux d'agenda et des notifications push.",
+          "complete": false
+        }
+      }
+    },
+    {
+      "slug": "feature-privacy",
+      "feature_key": "privacy",
+      "guide_id": null,
+      "audience": "all",
+      "screens": [
+        "/privacy"
+      ],
+      "position": 114,
+      "locales": {
+        "en": {
+          "title": "Privacy, safety and languages",
+          "summary": "No ads, private-by-default data, report and block tools, data export, each box in its own time zone, and the whole app in twelve languages.",
+          "body": "No ads, private-by-default data, report and block tools, data export, each box in its own time zone, and the whole app in twelve languages.\n\n- No ads and no tracking for advertising; notes, body data, photos and cravings private by default\n- Injuries are the one exception: coaches always see them, for safety\n- Report and block everywhere people meet; partner matching only with mutual consent\n- Tenant data export and retention for gyms; journal export for athletes\n- Twelve languages: English, Greek, Arabic, Russian, German, Spanish, Portuguese, Hebrew, Italian, Bulgarian, Dutch and French, with right-to-left layouts\n- Light and dark themes",
+          "complete": true
+        },
+        "el": {
+          "title": "Απόρρητο, ασφάλεια και γλώσσες",
+          "summary": "Χωρίς διαφημίσεις, ιδιωτικά δεδομένα από προεπιλογή, εργαλεία αναφοράς και αποκλεισμού, εξαγωγή δεδομένων, κάθε box στη δική του ζώνη ώρας και ολόκληρη η εφαρμογή σε δώδεκα γλώσσες.",
+          "body": "Χωρίς διαφημίσεις, ιδιωτικά δεδομένα από προεπιλογή, εργαλεία αναφοράς και αποκλεισμού, εξαγωγή δεδομένων, κάθε box στη δική του ζώνη ώρας και ολόκληρη η εφαρμογή σε δώδεκα γλώσσες.",
+          "complete": false
+        },
+        "ar": {
+          "title": "الخصوصية والأمان واللغات",
+          "summary": "بلا إعلانات، وبيانات خاصة افتراضيًا، وأدوات للإبلاغ والحظر، وتصدير البيانات، ولكل نادٍ منطقته الزمنية، والتطبيق بالكامل باثنتي عشرة لغة.",
+          "body": "بلا إعلانات، وبيانات خاصة افتراضيًا، وأدوات للإبلاغ والحظر، وتصدير البيانات، ولكل نادٍ منطقته الزمنية، والتطبيق بالكامل باثنتي عشرة لغة.",
+          "complete": false
+        },
+        "ru": {
+          "title": "Конфиденциальность, безопасность и языки",
+          "summary": "Без рекламы, данные закрыты по умолчанию, инструменты жалоб и блокировки, экспорт данных, у каждого бокса свой часовой пояс, а всё приложение доступно на двенадцати языках.",
+          "body": "Без рекламы, данные закрыты по умолчанию, инструменты жалоб и блокировки, экспорт данных, у каждого бокса свой часовой пояс, а всё приложение доступно на двенадцати языках.",
+          "complete": false
+        },
+        "de": {
+          "title": "Datenschutz, Sicherheit und Sprachen",
+          "summary": "Keine Werbung, standardmäßig private Daten, Melde- und Blockierfunktionen, Datenexport, jede Box in ihrer eigenen Zeitzone und die gesamte App in zwölf Sprachen.",
+          "body": "Keine Werbung, standardmäßig private Daten, Melde- und Blockierfunktionen, Datenexport, jede Box in ihrer eigenen Zeitzone und die gesamte App in zwölf Sprachen.",
+          "complete": false
+        },
+        "es": {
+          "title": "Privacidad, seguridad e idiomas",
+          "summary": "Sin anuncios, datos privados por defecto, herramientas para denunciar y bloquear, exportación de datos, cada box en su propia zona horaria y toda la app en doce idiomas.",
+          "body": "Sin anuncios, datos privados por defecto, herramientas para denunciar y bloquear, exportación de datos, cada box en su propia zona horaria y toda la app en doce idiomas.",
+          "complete": false
+        },
+        "pt-PT": {
+          "title": "Privacidade, segurança e idiomas",
+          "summary": "Sem anúncios, dados privados por predefinição, ferramentas para denunciar e bloquear, exportação de dados, cada ginásio no seu próprio fuso horário e toda a app em doze idiomas.",
+          "body": "Sem anúncios, dados privados por predefinição, ferramentas para denunciar e bloquear, exportação de dados, cada ginásio no seu próprio fuso horário e toda a app em doze idiomas.",
+          "complete": false
+        },
+        "he": {
+          "title": "פרטיות, בטיחות ושפות",
+          "summary": "בלי פרסומות, נתונים פרטיים כברירת מחדל, כלי דיווח וחסימה, ייצוא נתונים, כל חדר כושר באזור הזמן שלו, וכל האפליקציה בשתים־עשרה שפות.",
+          "body": "בלי פרסומות, נתונים פרטיים כברירת מחדל, כלי דיווח וחסימה, ייצוא נתונים, כל חדר כושר באזור הזמן שלו, וכל האפליקציה בשתים־עשרה שפות.",
+          "complete": false
+        },
+        "it": {
+          "title": "Privacy, sicurezza e lingue",
+          "summary": "Nessuna pubblicità, dati privati per impostazione predefinita, strumenti di segnalazione e blocco, esportazione dei dati, ogni box nel proprio fuso orario e tutta l'app in dodici lingue.",
+          "body": "Nessuna pubblicità, dati privati per impostazione predefinita, strumenti di segnalazione e blocco, esportazione dei dati, ogni box nel proprio fuso orario e tutta l'app in dodici lingue.",
+          "complete": false
+        },
+        "bg": {
+          "title": "Поверителност, безопасност и езици",
+          "summary": "Без реклами, лични данни по подразбиране, инструменти за докладване и блокиране, експорт на данни, всяка зала в своята часова зона и цялото приложение на дванайсет езика.",
+          "body": "Без реклами, лични данни по подразбиране, инструменти за докладване и блокиране, експорт на данни, всяка зала в своята часова зона и цялото приложение на дванайсет езика.",
+          "complete": false
+        },
+        "nl": {
+          "title": "Privacy, veiligheid en talen",
+          "summary": "Geen advertenties, gegevens standaard privé, meld- en blokkeertools, gegevensexport, elke sportschool in haar eigen tijdzone en de hele app in twaalf talen.",
+          "body": "Geen advertenties, gegevens standaard privé, meld- en blokkeertools, gegevensexport, elke sportschool in haar eigen tijdzone en de hele app in twaalf talen.",
+          "complete": false
+        },
+        "fr": {
+          "title": "Confidentialité, sécurité et langues",
+          "summary": "Pas de publicité, données privées par défaut, outils de signalement et de blocage, export des données, chaque box dans son propre fuseau horaire et toute l'app en douze langues.",
+          "body": "Pas de publicité, données privées par défaut, outils de signalement et de blocage, export des données, chaque box dans son propre fuseau horaire et toute l'app en douze langues.",
+          "complete": false
+        }
+      }
+    },
+    {
+      "slug": "guide-shop-staff",
+      "feature_key": null,
+      "guide_id": "shop_staff",
+      "audience": "staff",
+      "screens": [
+        "/admin/shop"
+      ],
+      "position": 10,
+      "locales": {
+        "en": {
+          "title": "Run your shop",
+          "summary": "Add products, sell in the app and at the desk, keep stock right.",
+          "body": "Add products, sell in the app and at the desk, keep stock right.\n\n1. **Your box's shop**: Box members order in the app and collect at the desk. You sell from the till too.\n2. **Add a product**: Tap «New product».\n3. **Photos sell**: Add a few clear photos. The first one is the cover.\n4. **Price and options**: One price, or sizes and flavours with their own stock.\n5. **Where it sells**: In the app, at the desk or both. Box members only, or anyone.\n6. **Save, then publish**: A new product is a draft. Publish it to open the shop.\n7. **Orders**: Tap «Orders».\n8. **Prepare, then hand over**: Mark an order ready and the member is told where to collect it.\n9. **The desk till**: Sell at the desk in seconds, paid now or on the box member's account.\n10. **Stock**: Every sale, delivery and count is logged. Low stock warns you.\n11. **What sells**: Weekly sales, margins and your top products.\n12. **You're set**: Replay this any time from Guides.",
+          "complete": true
+        },
+        "el": {
+          "title": "Τρέξε το κατάστημά σου",
+          "summary": "Πρόσθεσε προϊόντα, πούλα στο app και στο ταμείο, κράτα σωστό το απόθεμα.",
+          "body": "Πρόσθεσε προϊόντα, πούλα στο app και στο ταμείο, κράτα σωστό το απόθεμα.\n\n1. **Το κατάστημα του box σου**: Τα μέλη box παραγγέλνουν στο app και παραλαμβάνουν στην υποδοχή. Πουλάς και από το ταμείο.\n2. **Πρόσθεσε προϊόν**: Πάτα «Νέο προϊόν».\n3. **Οι φωτογραφίες πουλάνε**: Πρόσθεσε μερικές καθαρές φωτογραφίες. Η πρώτη είναι το εξώφυλλο.\n4. **Τιμή και επιλογές**: Μία τιμή ή μεγέθη και γεύσεις με δικό τους απόθεμα.\n5. **Πού πουλιέται**: Στο app, στο ταμείο ή και στα δύο. Μόνο για μέλη του box ή για όλους.\n6. **Αποθήκευσε, μετά δημοσίευσε**: Ένα νέο προϊόν είναι πρόχειρο. Δημοσίευσέ το για να ανοίξει το κατάστημα.\n7. **Παραγγελίες**: Πάτα «Παραγγελίες».\n8. **Ετοίμασε, μετά παράδωσε**: Σημείωσε μια παραγγελία ως έτοιμη και το μέλος μαθαίνει πού να την παραλάβει.\n9. **Το ταμείο**: Πούλα στο ταμείο σε δευτερόλεπτα, με πληρωμή τώρα ή στον λογαριασμό του μέλους του box.\n10. **Απόθεμα**: Κάθε πώληση, παραλαβή εμπορεύματος και καταμέτρηση καταγράφεται. Το χαμηλό απόθεμα σε ειδοποιεί.\n11. **Τι πουλάει**: Εβδομαδιαίες πωλήσεις, περιθώρια κέρδους και τα πιο δημοφιλή προϊόντα σου.\n12. **Όλα έτοιμα**: Δες το ξανά όποτε θες από τους Οδηγούς.",
+          "complete": true
+        },
+        "ar": {
+          "title": "أدِر متجرك",
+          "summary": "أضف المنتجات، وبِع في التطبيق وفي الصندوق، وحافظ على دقة المخزون.",
+          "body": "أضف المنتجات، وبِع في التطبيق وفي الصندوق، وحافظ على دقة المخزون.\n\n1. **متجر صالتك**: يطلب الأعضاء من التطبيق ويستلمون من الاستقبال. وتبيع أنت من الصندوق أيضًا.\n2. **أضف منتجًا**: اضغط على «منتج جديد».\n3. **الصور تبيع**: أضف بعض الصور الواضحة. الأولى هي صورة الغلاف.\n4. **السعر والخيارات**: سعر واحد، أو مقاسات ونكهات لكل منها مخزونها.\n5. **أين يُباع**: في التطبيق، أو في الصندوق، أو كليهما. للأعضاء فقط، أو للجميع.\n6. **احفظ ثم انشر**: المنتج الجديد مسودة. انشره لفتح المتجر.\n7. **الطلبات**: اضغط على «الطلبات».\n8. **جهّز ثم سلّم**: حدّد الطلب كجاهز، فيُبلَّغ العضو بمكان استلامه.\n9. **صندوق الاستقبال**: بِع في الاستقبال خلال ثوانٍ، بالدفع الآن أو على حساب العضو.\n10. **المخزون**: كل بيع وتوريد وجرد يُسجَّل. وتصلك تنبيهات عند انخفاض المخزون.\n11. **ما الذي يُباع**: المبيعات الأسبوعية، والهوامش، وأكثر منتجاتك مبيعًا.\n12. **كل شيء جاهز**: أعد هذه الجولة متى شئت من الأدلة.",
+          "complete": true
+        },
+        "ru": {
+          "title": "Веди свой магазин",
+          "summary": "Добавляй товары, продавай в приложении и на кассе, следи за остатками.",
+          "body": "Добавляй товары, продавай в приложении и на кассе, следи за остатками.\n\n1. **Магазин твоего бокса**: Участники бокса заказывают в приложении и забирают на ресепшене. А ты продаёшь ещё и на кассе.\n2. **Добавь товар**: Нажми «Новый товар».\n3. **Фото продают**: Добавь несколько чётких фото. Первое станет обложкой.\n4. **Цена и варианты**: Одна цена или размеры и вкусы со своими остатками.\n5. **Где продавать**: В приложении, на кассе или и там, и там. Только участникам бокса или всем.\n6. **Сохрани и опубликуй**: Новый товар — это черновик. Опубликуй его, чтобы открыть магазин.\n7. **Заказы**: Нажми «Заказы».\n8. **Собери и выдай**: Отметь заказ готовым, и участник узнает, где его забрать.\n9. **Касса на ресепшене**: Продавай на ресепшене за секунды: оплата сразу или на счёт участника бокса.\n10. **Остатки**: Каждая продажа, поставка и пересчёт записываются. О малых остатках ты узнаешь заранее.\n11. **Что продаётся**: Продажи за неделю, маржа и твои топ-товары.\n12. **Всё готово**: Пройди это снова в любой момент из «Гайдов».",
+          "complete": true
+        },
+        "de": {
+          "title": "Führe deinen Shop",
+          "summary": "Produkte anlegen, in der App und an der Kasse verkaufen, den Bestand im Griff behalten.",
+          "body": "Produkte anlegen, in der App und an der Kasse verkaufen, den Bestand im Griff behalten.\n\n1. **Der Shop deiner Box**: Mitglieder bestellen in der App und holen am Empfang ab. Du verkaufst auch an der Kasse.\n2. **Produkt hinzufügen**: Tippe auf „Neues Produkt“.\n3. **Fotos verkaufen**: Füge ein paar klare Fotos hinzu. Das erste ist das Titelbild.\n4. **Preis und Optionen**: Ein Preis oder Größen und Geschmacksrichtungen mit eigenem Bestand.\n5. **Wo es verkauft wird**: In der App, an der Kasse oder beides. Nur für Mitglieder oder für alle.\n6. **Speichern, dann veröffentlichen**: Ein neues Produkt ist ein Entwurf. Veröffentliche es, um den Shop zu öffnen.\n7. **Bestellungen**: Tippe auf „Bestellungen“.\n8. **Vorbereiten, dann übergeben**: Markiere eine Bestellung als bereit, und das Mitglied erfährt, wo es sie abholt.\n9. **Die Kasse**: Verkaufe an der Kasse in Sekunden, sofort bezahlt oder aufs Konto des Mitglieds.\n10. **Bestand**: Jeder Verkauf, jede Lieferung und jede Zählung wird erfasst. Bei niedrigem Bestand wirst du gewarnt.\n11. **Was sich verkauft**: Verkäufe pro Woche, Margen und deine Top-Produkte.\n12. **Alles bereit**: Wiederhole das jederzeit unter Anleitungen.",
+          "complete": true
+        },
+        "es": {
+          "title": "Gestiona tu tienda",
+          "summary": "Añade productos, vende en la app y en caja, controla el stock.",
+          "body": "Añade productos, vende en la app y en caja, controla el stock.\n\n1. **La tienda de tu box**: Los socios piden en la app y recogen en recepción. Tú también vendes desde la caja.\n2. **Añade un producto**: Toca «Nuevo producto».\n3. **Las fotos venden**: Añade unas cuantas fotos claras. La primera es la portada.\n4. **Precio y variantes**: Un precio único, o tallas y sabores con su propio stock.\n5. **Dónde se vende**: En la app, en caja o en ambas. Solo socios o cualquiera.\n6. **Guarda y publica**: Un producto nuevo es un borrador. Publícalo para abrir la tienda.\n7. **Pedidos**: Toca «Pedidos».\n8. **Prepara y entrega**: Marca un pedido como listo y el socio sabrá dónde recogerlo.\n9. **La caja**: Vende en recepción en segundos, pagado al momento o a la cuenta del socio.\n10. **Stock**: Cada venta, entrega y recuento queda registrado. Te avisamos si queda poco stock.\n11. **Qué se vende**: Ventas semanales, márgenes y tus productos estrella.\n12. **¡Todo listo!**: Repítelo cuando quieras desde Guías.",
+          "complete": true
+        },
+        "pt-PT": {
+          "title": "Gere a tua loja",
+          "summary": "Adiciona produtos, vende na app e na caixa, mantém o stock certo.",
+          "body": "Adiciona produtos, vende na app e na caixa, mantém o stock certo.\n\n1. **A loja da tua box**: Os membros encomendam na app e levantam na receção. Também vendes na caixa.\n2. **Adiciona um produto**: Toca em «Novo produto».\n3. **As fotos vendem**: Adiciona algumas fotos nítidas. A primeira é a capa.\n4. **Preço e variantes**: Um só preço, ou tamanhos e sabores com stock próprio.\n5. **Onde se vende**: Na app, na caixa ou em ambas. Só membros, ou qualquer pessoa.\n6. **Guarda e depois publica**: Um produto novo é um rascunho. Publica-o para abrir a loja.\n7. **Encomendas**: Toca em «Encomendas».\n8. **Prepara e entrega**: Marca uma encomenda como pronta e o membro fica a saber onde a levantar.\n9. **A caixa**: Vende na receção em segundos, pago logo ou na conta do membro.\n10. **Stock**: Cada venda, entrega e contagem fica registada. Avisamos-te quando o stock está baixo.\n11. **O que vende**: Vendas semanais, margens e os teus produtos mais vendidos.\n12. **Está tudo pronto**: Revê isto quando quiseres em Guias.",
+          "complete": true
+        },
+        "he": {
+          "title": "ניהול החנות",
+          "summary": "הוסיפו מוצרים, מכרו באפליקציה ובקופה, ושמרו על מלאי מדויק.",
+          "body": "הוסיפו מוצרים, מכרו באפליקציה ובקופה, ושמרו על מלאי מדויק.\n\n1. **החנות של הבוקס**: המנויים מזמינים באפליקציה ואוספים בדלפק. אתם מוכרים גם מהקופה.\n2. **הוספת מוצר**: לחצו על «מוצר חדש».\n3. **תמונות מוכרות**: הוסיפו כמה תמונות ברורות. הראשונה היא תמונת השער.\n4. **מחיר ואפשרויות**: מחיר אחד, או מידות וטעמים עם מלאי משלהם.\n5. **איפה זה נמכר**: באפליקציה, בקופה או בשניהם. למנויים בלבד, או לכולם.\n6. **שומרים, ואז מפרסמים**: מוצר חדש הוא טיוטה. פרסמו אותו כדי לפתוח את החנות.\n7. **הזמנות**: לחצו על «הזמנות».\n8. **מכינים, ואז מוסרים**: סמנו הזמנה כמוכנה והמנוי יקבל הודעה איפה לאסוף אותה.\n9. **הקופה בדלפק**: מכירה בדלפק בשניות, בתשלום מיידי או על חשבון המנוי.\n10. **מלאי**: כל מכירה, משלוח וספירה נרשמים. מלאי נמוך מתריע לכם.\n11. **מה נמכר**: מכירות שבועיות, רווחיות והמוצרים המובילים שלכם.\n12. **הכול מוכן**: אפשר לחזור על זה מתי שרוצים מתוך מדריכים.",
+          "complete": true
+        },
+        "it": {
+          "title": "Gestisci il tuo negozio",
+          "summary": "Aggiungi prodotti, vendi nell'app e in cassa, tieni le scorte in ordine.",
+          "body": "Aggiungi prodotti, vendi nell'app e in cassa, tieni le scorte in ordine.\n\n1. **Il negozio del tuo box**: I soci ordinano nell'app e ritirano alla reception. Tu vendi anche in cassa.\n2. **Aggiungi un prodotto**: Tocca «Nuovo prodotto».\n3. **Le foto vendono**: Aggiungi qualche foto nitida. La prima è la copertina.\n4. **Prezzo e opzioni**: Un solo prezzo, oppure taglie e gusti con scorte proprie.\n5. **Dove si vende**: Nell'app, in cassa o in entrambi. Solo per i soci o per tutti.\n6. **Salva, poi pubblica**: Un nuovo prodotto è una bozza. Pubblicalo per aprire il negozio.\n7. **Ordini**: Tocca «Ordini».\n8. **Prepara, poi consegna**: Segna un ordine come pronto e il socio sa dove ritirarlo.\n9. **La cassa**: Vendi in cassa in pochi secondi, pagato subito o sul conto del socio.\n10. **Magazzino**: Ogni vendita, consegna e conteggio viene registrato. Ti avvisa quando le scorte sono basse.\n11. **Cosa vende**: Vendite settimanali, margini e i tuoi prodotti migliori.\n12. **Tutto pronto**: Rivedi questa guida quando vuoi da Guide.",
+          "complete": true
+        },
+        "bg": {
+          "title": "Управлявай магазина си",
+          "summary": "Добавяй продукти, продавай в приложението и на касата, поддържай наличността точна.",
+          "body": "Добавяй продукти, продавай в приложението и на касата, поддържай наличността точна.\n\n1. **Магазинът на твоя бокс**: Членовете поръчват в приложението и вземат от рецепцията. Ти продаваш и от касата.\n2. **Добави продукт**: Докосни „Нов продукт“.\n3. **Снимките продават**: Добави няколко ясни снимки. Първата е корицата.\n4. **Цена и варианти**: Една цена или размери и вкусове със собствена наличност.\n5. **Къде се продава**: В приложението, на касата или и двете. Само за членове или за всички.\n6. **Запази, после публикувай**: Новият продукт е чернова. Публикувай го, за да отвориш магазина.\n7. **Поръчки**: Докосни „Поръчки“.\n8. **Приготви и предай**: Отбележи поръчка като готова и членът ще разбере откъде да я вземе.\n9. **Касата**: Продавай на рецепцията за секунди, платено веднага или по сметката на члена.\n10. **Наличност**: Всяка продажба, доставка и преброяване се записва. При ниска наличност получаваш предупреждение.\n11. **Какво се продава**: Седмични продажби, маржове и най-продаваните ти продукти.\n12. **Готов си**: Пусни това отново по всяко време от Ръководства.",
+          "complete": true
+        },
+        "nl": {
+          "title": "Je winkel runnen",
+          "summary": "Voeg producten toe, verkoop in de app en aan de kassa, houd de voorraad op orde.",
+          "body": "Voeg producten toe, verkoop in de app en aan de kassa, houd de voorraad op orde.\n\n1. **De winkel van je box**: Leden bestellen in de app en halen op bij de balie. Jij verkoopt ook aan de kassa.\n2. **Product toevoegen**: Tik op „Nieuw product”.\n3. **Foto's verkopen**: Voeg een paar duidelijke foto's toe. De eerste is de omslag.\n4. **Prijs en varianten**: Eén prijs, of maten en smaken met elk hun eigen voorraad.\n5. **Waar het verkocht wordt**: In de app, aan de kassa of allebei. Alleen leden, of iedereen.\n6. **Opslaan, dan publiceren**: Een nieuw product is een concept. Publiceer het om de winkel te openen.\n7. **Bestellingen**: Tik op „Bestellingen”.\n8. **Klaarzetten en overhandigen**: Markeer een bestelling als klaar en het lid hoort waar die op te halen is.\n9. **De kassa**: Verkoop in seconden aan de balie, direct betaald of op de rekening van het lid.\n10. **Voorraad**: Elke verkoop, levering en telling wordt vastgelegd. Bij lage voorraad krijg je een melding.\n11. **Wat verkoopt**: Wekelijkse verkoop, marges en je toppers.\n12. **Je bent klaar**: Bekijk dit altijd opnieuw via Gidsen.",
+          "complete": true
+        },
+        "fr": {
+          "title": "Gère ta boutique",
+          "summary": "Ajoute des produits, vends dans l'app et à la caisse, garde un stock juste.",
+          "body": "Ajoute des produits, vends dans l'app et à la caisse, garde un stock juste.\n\n1. **La boutique de ta box**: Les membres de la box commandent dans l'app et récupèrent à l'accueil. Tu vends aussi à la caisse.\n2. **Ajouter un produit**: Touche « Nouveau produit ».\n3. **Les photos font vendre**: Ajoute quelques photos nettes. La première sert de couverture.\n4. **Prix et options**: Un seul prix, ou des tailles et des saveurs avec leur propre stock.\n5. **Où le vendre**: Dans l'app, à la caisse ou les deux. Réservé aux membres de la box, ou ouvert à tous.\n6. **Enregistre, puis publie**: Un nouveau produit est un brouillon. Publie-le pour ouvrir la boutique.\n7. **Commandes**: Touche « Commandes ».\n8. **Prépare, puis remets**: Marque une commande comme prête et le membre apprend où la récupérer.\n9. **La caisse**: Vends à l'accueil en quelques secondes, payé tout de suite ou sur le compte du membre de la box.\n10. **Stock**: Chaque vente, livraison et inventaire est enregistré. Le stock bas t'alerte.\n11. **Ce qui se vend**: Ventes de la semaine, marges et tes meilleurs produits.\n12. **C'est prêt**: Revois ce guide quand tu veux depuis Guides.",
+          "complete": true
+        }
+      }
+    },
+    {
+      "slug": "guide-events-organising",
+      "feature_key": null,
+      "guide_id": "events_organising",
+      "audience": "staff",
+      "screens": [
+        "/events/hosting"
+      ],
+      "position": 11,
+      "locales": {
+        "en": {
+          "title": "Organise events",
+          "summary": "Plan in 7 short steps, sell places, check people in, see the numbers.",
+          "body": "Plan in 7 short steps, sell places, check people in, see the numbers.\n\n1. **Events, start to finish**: Plan it, fill it, run it and see how it went, in one place.\n2. **Start an event**: Tap «+ New event».\n3. **Seven short steps**: Host, basics, when, where, who and price, places, review. Tap a done step to go back.\n4. **One decision per screen**: Fill this in, then Next.\n5. **Next knows what's missing**: If something is left, it tells you what.\n6. **Co-host with others**: On «Places and co-hosts», ask a box or coach to co-host by their page address.\n7. **Manage**: Each event: attendees, check-in, payments at the box, refunds and messages.\n8. **Finances**: Tap «Finances»: income, refunds and what is still owed.\n9. **Analytics**: Tap «Analytics»: views, sign-ups, waitlist and who came.\n10. **Ready to host**: Replay this any time from Guides.",
+          "complete": true
+        },
+        "el": {
+          "title": "Οργάνωσε events",
+          "summary": "Σχεδίασε σε 7 σύντομα βήματα, πούλα θέσεις, κάνε check-in, δες τα νούμερα.",
+          "body": "Σχεδίασε σε 7 σύντομα βήματα, πούλα θέσεις, κάνε check-in, δες τα νούμερα.\n\n1. **Events από την αρχή ως το τέλος**: Σχεδίασέ το, γέμισέ το, τρέξ' το και δες πώς πήγε, όλα σε ένα σημείο.\n2. **Ξεκίνα ένα event**: Πάτα «+ Νέο event».\n3. **Επτά σύντομα βήματα**: Διοργανωτής, βασικά, πότε, πού, ποιοι και τιμή, θέσεις, έλεγχος. Πάτα ένα ολοκληρωμένο βήμα για να γυρίσεις πίσω.\n4. **Μία απόφαση ανά οθόνη**: Συμπλήρωσε αυτό και μετά Επόμενο.\n5. **Το Επόμενο ξέρει τι λείπει**: Αν λείπει κάτι, σου λέει τι.\n6. **Συνδιοργάνωση με άλλους**: Στο «Θέσεις και συνδιοργανωτές», ζήτα από ένα box ή έναν coach να συνδιοργανώσει, με τη διεύθυνση της σελίδας του.\n7. **Διαχείριση**: Για κάθε event: συμμετοχές, check-in, πληρωμές στο box, επιστροφές χρημάτων και μηνύματα.\n8. **Οικονομικά**: Πάτα «Οικονομικά»: έσοδα, επιστροφές και τι χρωστιέται ακόμα.\n9. **Αναλυτικά**: Πάτα «Αναλυτικά»: προβολές, εγγραφές, λίστα αναμονής και ποιοι ήρθαν.\n10. **Ώρα για διοργάνωση**: Δες το ξανά όποτε θες από τους Οδηγούς.",
+          "complete": true
+        },
+        "ar": {
+          "title": "نظّم الفعاليات",
+          "summary": "خطّط في 7 خطوات قصيرة، وبِع الأماكن، وسجّل الحضور، وتابع الأرقام.",
+          "body": "خطّط في 7 خطوات قصيرة، وبِع الأماكن، وسجّل الحضور، وتابع الأرقام.\n\n1. **الفعاليات من البداية إلى النهاية**: خطّط، واملأ الأماكن، ونفّذ، واعرف كيف سارت، في مكان واحد.\n2. **أنشئ فعالية**: اضغط على «+ فعالية جديدة».\n3. **سبع خطوات قصيرة**: المستضيف، الأساسيات، متى، أين، لمن والسعر، الأماكن، المراجعة. اضغط على خطوة مكتملة للعودة إليها.\n4. **قرار واحد في كل شاشة**: املأ هذا، ثم التالي.\n5. **«التالي» يعرف ما الناقص**: إذا بقي شيء، سيخبرك ما هو.\n6. **استضِف مع آخرين**: في «الأماكن والمنظمون المشاركون»، اطلب من صالة أو مدرب الاستضافة المشتركة عبر عنوان صفحته.\n7. **الإدارة**: لكل فعالية: الحضور، وتسجيل الحضور، والدفع في الصالة، والمبالغ المستردة، والرسائل.\n8. **المالية**: اضغط على «المالية»: الدخل، والمبالغ المستردة، وما لم يُدفع بعد.\n9. **التحليلات**: اضغط على «التحليلات»: المشاهدات، والتسجيلات، وقائمة الانتظار، ومن حضر.\n10. **جاهز للاستضافة**: أعد هذه الجولة متى شئت من الأدلة.",
+          "complete": true
+        },
+        "ru": {
+          "title": "Организуй события",
+          "summary": "Спланируй за 7 коротких шагов, продавай места, делай чек-ин гостей, смотри цифры.",
+          "body": "Спланируй за 7 коротких шагов, продавай места, делай чек-ин гостей, смотри цифры.\n\n1. **События от и до**: Спланируй, набери участников, проведи и посмотри итоги — всё в одном месте.\n2. **Создай событие**: Нажми «+ Новое событие».\n3. **Семь коротких шагов**: Организатор, основное, когда, где, для кого и цена, места, проверка. Нажми на пройденный шаг, чтобы вернуться.\n4. **Один вопрос на экран**: Заполни и нажми «Далее».\n5. **«Далее» знает, чего не хватает**: Если что-то не заполнено, подскажет, что именно.\n6. **Организуй вместе с другими**: На шаге «Места и соорганизаторы» пригласи бокс или тренера в соорганизаторы по адресу страницы.\n7. **Управление**: У каждого события: участники, чек-ин, оплата в боксе, возвраты и сообщения.\n8. **Финансы**: Нажми «Финансы»: доходы, возвраты и что ещё не оплачено.\n9. **Аналитика**: Нажми «Аналитика»: просмотры, записи, лист ожидания и кто пришёл.\n10. **Можно организовывать**: Пройди это снова в любой момент из «Гайдов».",
+          "complete": true
+        },
+        "de": {
+          "title": "Events organisieren",
+          "summary": "In 7 kurzen Schritten planen, Plätze verkaufen, Leute einchecken, Zahlen sehen.",
+          "body": "In 7 kurzen Schritten planen, Plätze verkaufen, Leute einchecken, Zahlen sehen.\n\n1. **Events von A bis Z**: Planen, füllen, durchführen und sehen, wie es lief, alles an einem Ort.\n2. **Event starten**: Tippe auf „+ Neues Event“.\n3. **Sieben kurze Schritte**: Veranstalter, Grundlagen, wann, wo, wer und Preis, Plätze, Prüfen. Tippe auf einen erledigten Schritt, um zurückzugehen.\n4. **Eine Entscheidung pro Bildschirm**: Füll das aus, dann Weiter.\n5. **Weiter weiß, was fehlt**: Fehlt noch etwas, sagt es dir, was.\n6. **Mit anderen veranstalten**: Unter „Plätze und Mitveranstalter“ fragst du eine Box oder einen Coach über die Seitenadresse als Mitveranstalter an.\n7. **Verwalten**: Für jedes Event: Teilnehmende, Check-in, Zahlungen in der Box, Erstattungen und Nachrichten.\n8. **Finanzen**: Tippe auf „Finanzen“: Einnahmen, Erstattungen und was noch offen ist.\n9. **Analysen**: Tippe auf „Analysen“: Aufrufe, Anmeldungen, Warteliste und wer da war.\n10. **Bereit zum Veranstalten**: Wiederhole das jederzeit unter Anleitungen.",
+          "complete": true
+        },
+        "es": {
+          "title": "Organiza eventos",
+          "summary": "Planifica en 7 pasos cortos, vende plazas, haz el check-in y mira los números.",
+          "body": "Planifica en 7 pasos cortos, vende plazas, haz el check-in y mira los números.\n\n1. **Eventos, de principio a fin**: Planifícalo, llénalo, gestiónalo y mira cómo fue, todo en un sitio.\n2. **Crea un evento**: Toca «+ Nuevo evento».\n3. **Siete pasos cortos**: Organizador, datos básicos, cuándo, dónde, quién y precio, plazas, revisión. Toca un paso hecho para volver.\n4. **Una decisión por pantalla**: Rellena esto y luego Siguiente.\n5. **Siguiente sabe qué falta**: Si queda algo, te dice qué.\n6. **Coorganiza con otros**: En «Plazas y coorganizadores», pide a un box o a un coach que coorganice con la dirección de su página.\n7. **Gestionar**: Cada evento: asistentes, check-in, pagos en el box, reembolsos y mensajes.\n8. **Finanzas**: Toca «Finanzas»: ingresos, reembolsos y lo que aún se debe.\n9. **Analítica**: Toca «Analítica»: visitas, inscripciones, lista de espera y quién vino.\n10. **Listo para organizar**: Repítelo cuando quieras desde Guías.",
+          "complete": true
+        },
+        "pt-PT": {
+          "title": "Organiza eventos",
+          "summary": "Planeia em 7 passos curtos, vende lugares, faz o check-in e vê os números.",
+          "body": "Planeia em 7 passos curtos, vende lugares, faz o check-in e vê os números.\n\n1. **Eventos, do início ao fim**: Planeia, enche, gere e vê como correu, tudo num só sítio.\n2. **Cria um evento**: Toca em «+ Novo evento».\n3. **Sete passos curtos**: Organizador, dados básicos, quando, onde, quem e preço, lugares, revisão. Toca num passo feito para voltar.\n4. **Uma decisão por ecrã**: Preenche isto e depois Seguinte.\n5. **Seguinte sabe o que falta**: Se faltar algo, diz-te o quê.\n6. **Coorganiza com outros**: Em «Lugares e coorganizadores», pede a uma box ou a um coach para coorganizar pelo endereço da página.\n7. **Gerir**: Cada evento: participantes, check-in, pagamentos na box, reembolsos e mensagens.\n8. **Finanças**: Toca em «Finanças»: receitas, reembolsos e o que ainda está por pagar.\n9. **Análises**: Toca em «Análises»: visualizações, inscrições, lista de espera e quem apareceu.\n10. **Pronto para organizar**: Revê isto quando quiseres em Guias.",
+          "complete": true
+        },
+        "he": {
+          "title": "ארגון אירועים",
+          "summary": "תכננו ב־7 צעדים קצרים, מכרו מקומות, עשו צ׳ק-אין וראו את המספרים.",
+          "body": "תכננו ב־7 צעדים קצרים, מכרו מקומות, עשו צ׳ק-אין וראו את המספרים.\n\n1. **אירועים מההתחלה ועד הסוף**: מתכננים, ממלאים, מנהלים ורואים איך היה, הכול במקום אחד.\n2. **יצירת אירוע**: לחצו על «+ אירוע חדש».\n3. **שבעה צעדים קצרים**: מארח, פרטים בסיסיים, מתי, איפה, למי ומחיר, מקומות, סקירה. לחצו על צעד שהושלם כדי לחזור אליו.\n4. **החלטה אחת בכל מסך**: מלאו את זה, ואז הבא.\n5. **«הבא» יודע מה חסר**: אם משהו נשאר, הוא יגיד לכם מה.\n6. **אירוח יחד עם אחרים**: ב־«מקומות ומארגנים שותפים», בקשו מבוקס או ממאמן לארח יחד לפי כתובת הדף שלהם.\n7. **ניהול**: לכל אירוע: משתתפים, צ׳ק-אין, תשלומים בבוקס, החזרים והודעות.\n8. **כספים**: לחצו על «כספים»: הכנסות, החזרים ומה עוד לא שולם.\n9. **נתונים**: לחצו על «נתונים»: צפיות, הרשמות, רשימת המתנה ומי הגיע.\n10. **מוכנים לארח**: אפשר לחזור על זה מתי שרוצים מתוך מדריכים.",
+          "complete": true
+        },
+        "it": {
+          "title": "Organizza eventi",
+          "summary": "Pianifica in 7 brevi passi, vendi posti, fai il check-in, guarda i numeri.",
+          "body": "Pianifica in 7 brevi passi, vendi posti, fai il check-in, guarda i numeri.\n\n1. **Eventi, dall'inizio alla fine**: Pianificalo, riempilo, gestiscilo e guarda com'è andata, in un unico posto.\n2. **Crea un evento**: Tocca «+ Nuovo evento».\n3. **Sette brevi passi**: Organizzatore, dati base, quando, dove, chi e prezzo, posti, riepilogo. Tocca un passo fatto per tornarci.\n4. **Una scelta per schermata**: Compila qui, poi Avanti.\n5. **Avanti sa cosa manca**: Se manca qualcosa, ti dice cosa.\n6. **Co-organizza con altri**: In «Posti e co-organizzatori», chiedi a un box o a un coach di co-organizzare tramite l'indirizzo della sua pagina.\n7. **Gestisci**: Per ogni evento: partecipanti, check-in, pagamenti al box, rimborsi e messaggi.\n8. **Finanze**: Tocca «Finanze»: entrate, rimborsi e quanto resta da incassare.\n9. **Analisi**: Tocca «Analisi»: visualizzazioni, iscrizioni, lista d'attesa e chi è venuto.\n10. **Tutto pronto per l'evento**: Rivedi questa guida quando vuoi da Guide.",
+          "complete": true
+        },
+        "bg": {
+          "title": "Организирай събития",
+          "summary": "Планирай в 7 кратки стъпки, продавай места, чекирай хората, виж числата.",
+          "body": "Планирай в 7 кратки стъпки, продавай места, чекирай хората, виж числата.\n\n1. **Събития от начало до край**: Планирай, напълни, проведи и виж как е минало, на едно място.\n2. **Създай събитие**: Докосни „+ Ново събитие“.\n3. **Седем кратки стъпки**: Организатор, основни данни, кога, къде, кой и цена, места, преглед. Докосни готова стъпка, за да се върнеш.\n4. **Едно решение на екран**: Попълни това, после Напред.\n5. **Напред знае какво липсва**: Ако нещо остава, ще ти каже какво.\n6. **Организирай с други**: В „Места и съорганизатори“ покани бокс или треньор за съорганизатор чрез адреса на страницата му.\n7. **Управление**: За всяко събитие: участници, чекиране, плащания в бокса, възстановявания и съобщения.\n8. **Финанси**: Докосни „Финанси“: приходи, възстановявания и какво още се дължи.\n9. **Анализи**: Докосни „Анализи“: прегледи, записвания, списък с чакащи и кой е дошъл.\n10. **Готов за организиране**: Пусни това отново по всяко време от Ръководства.",
+          "complete": true
+        },
+        "nl": {
+          "title": "Evenementen organiseren",
+          "summary": "Plan in 7 korte stappen, verkoop plekken, check mensen in, bekijk de cijfers.",
+          "body": "Plan in 7 korte stappen, verkoop plekken, check mensen in, bekijk de cijfers.\n\n1. **Evenementen van begin tot eind**: Plannen, vullen, uitvoeren en zien hoe het ging, op één plek.\n2. **Evenement starten**: Tik op „+ Nieuw event”.\n3. **Zeven korte stappen**: Organisator, basis, wanneer, waar, wie en prijs, plekken, controle. Tik op een afgeronde stap om terug te gaan.\n4. **Eén keuze per scherm**: Vul dit in en tik dan op Volgende.\n5. **Volgende weet wat er ontbreekt**: Mist er nog iets, dan zegt het wat.\n6. **Samen organiseren**: Vraag bij „Plaatsen en co-organisatoren” een box of coach via hun pagina-adres om mee te organiseren.\n7. **Beheren**: Per evenement: deelnemers, inchecken, betalingen bij de box, terugbetalingen en berichten.\n8. **Financiën**: Tik op „Financiën”: inkomsten, terugbetalingen en wat nog openstaat.\n9. **Analyses**: Tik op „Analyses”: weergaven, aanmeldingen, wachtlijst en wie er kwam.\n10. **Klaar om te organiseren**: Bekijk dit altijd opnieuw via Gidsen.",
+          "complete": true
+        },
+        "fr": {
+          "title": "Organiser des événements",
+          "summary": "Planifie en 7 petites étapes, vends des places, fais le check-in, vois les chiffres.",
+          "body": "Planifie en 7 petites étapes, vends des places, fais le check-in, vois les chiffres.\n\n1. **Les événements de A à Z**: Planifie, remplis, gère et vois comment ça s'est passé, au même endroit.\n2. **Créer un événement**: Touche « + Nouvel événement ».\n3. **Sept petites étapes**: Organisateur, infos de base, quand, où, qui et prix, places, vérification. Touche une étape terminée pour y revenir.\n4. **Une décision par écran**: Remplis ceci, puis Suivant.\n5. **Suivant sait ce qui manque**: S'il reste quelque chose, il te dit quoi.\n6. **Co-organiser avec d'autres**: Dans « Places et co-organisateurs », demande à une box ou à un coach de co-organiser via l'adresse de sa page.\n7. **Gérer**: Pour chaque événement : participants, check-in, paiements à la box, remboursements et messages.\n8. **Finances**: Touche « Finances » : revenus, remboursements et ce qui reste dû.\n9. **Statistiques**: Touche « Statistiques » : vues, inscriptions, liste d'attente et qui est venu.\n10. **À toi d'organiser**: Revois ce guide quand tu veux depuis Guides.",
+          "complete": true
+        }
+      }
+    },
+    {
+      "slug": "guide-finance-offers",
+      "feature_key": null,
+      "guide_id": "finance_offers",
+      "audience": "staff",
+      "screens": [
+        "/admin/finance"
+      ],
+      "position": 12,
+      "locales": {
+        "en": {
+          "title": "Offers, partners and referrals",
+          "summary": "Campaigns and coupons, partner perks, and a bring-a-friend program.",
+          "body": "Campaigns and coupons, partner perks, and a bring-a-friend program.\n\n1. **Grow with offers**: Your own campaigns and coupons, perks from partner stores, and rewards for bringing friends.\n2. **Start a campaign**: Tap «+ New campaign».\n3. **Name and dates**: A campaign groups your offers, e.g. «Summer». Pick when it runs.\n4. **Coupons**: Open a campaign to add codes: a percent or an amount off, with a use limit.\n5. **Partner perks**: Tap «Partners'».\n6. **Add a perk**: Tap «+ New partner offer».\n7. **The partner**: Their name, link and logo.\n8. **What members get**: A percent, an amount, or anything else, like a free coffee.\n9. **How the store checks it**: A shared code, a link with the code in it, or showing a live membership.\n10. **Terms**: Dates, who gets it and how often. Save a draft, publish when agreed.\n11. **Bring a friend**: A program rewards box members who bring someone who joins.\n12. **Approve and reward**: Referrals land here. Approve one and its reward goes out.\n13. **All set**: Replay this any time from Guides.",
+          "complete": true
+        },
+        "el": {
+          "title": "Προσφορές, συνεργάτες και συστάσεις",
+          "summary": "Καμπάνιες και κωδικοί έκπτωσης, προσφορές συνεργατών και πρόγραμμα «Φέρε φίλο».",
+          "body": "Καμπάνιες και κωδικοί έκπτωσης, προσφορές συνεργατών και πρόγραμμα «Φέρε φίλο».\n\n1. **Μεγάλωσε με προσφορές**: Δικές σου καμπάνιες και κωδικοί, προσφορές από καταστήματα συνεργατών και ανταμοιβές για όσους φέρνουν φίλους.\n2. **Ξεκίνα καμπάνια**: Πάτα «+ Νέα καμπάνια».\n3. **Όνομα και ημερομηνίες**: Μια καμπάνια ομαδοποιεί τις προσφορές σου, π.χ. «Καλοκαίρι». Διάλεξε πότε τρέχει.\n4. **Κωδικοί έκπτωσης**: Άνοιξε μια καμπάνια για να προσθέσεις κωδικούς: έκπτωση σε ποσοστό ή ποσό, με όριο χρήσεων.\n5. **Προσφορές συνεργατών**: Πάτα «Συνεργατών».\n6. **Πρόσθεσε προσφορά συνεργάτη**: Πάτα «+ Νέα προσφορά συνεργάτη».\n7. **Ο συνεργάτης**: Όνομα, σύνδεσμος και λογότυπο.\n8. **Τι παίρνουν τα μέλη**: Ποσοστό, ποσό ή οτιδήποτε άλλο, όπως έναν δωρεάν καφέ.\n9. **Πώς το ελέγχει το κατάστημα**: Κοινός κωδικός, σύνδεσμος με τον κωδικό μέσα ή επίδειξη ζωντανής συνδρομής.\n10. **Όροι**: Ημερομηνίες, ποιοι το παίρνουν και πόσο συχνά. Αποθήκευσε πρόχειρο, δημοσίευσε όταν συμφωνηθεί.\n11. **Φέρε φίλο**: Ένα πρόγραμμα ανταμείβει τα μέλη του box που φέρνουν κάποιον που γράφεται.\n12. **Έγκριση και ανταμοιβή**: Οι συστάσεις έρχονται εδώ. Έγκρινε μία και η ανταμοιβή της στέλνεται.\n13. **Όλα έτοιμα**: Δες το ξανά όποτε θες από τους Οδηγούς.",
+          "complete": true
+        },
+        "ar": {
+          "title": "العروض والشركاء والإحالات",
+          "summary": "حملات وأكواد، ومزايا من الشركاء، وبرنامج «أحضر صديقًا».",
+          "body": "حملات وأكواد، ومزايا من الشركاء، وبرنامج «أحضر صديقًا».\n\n1. **انمُ بالعروض**: حملاتك وأكوادك، ومزايا من متاجر شريكة، ومكافآت على إحضار الأصدقاء.\n2. **ابدأ حملة**: اضغط على «+ حملة جديدة».\n3. **الاسم والتواريخ**: تجمع الحملة عروضك، مثل «الصيف». اختر متى تعمل.\n4. **الأكواد**: افتح حملة لإضافة أكواد: خصم بنسبة أو بمبلغ، مع حد للاستخدام.\n5. **عروض الشركاء**: اضغط على «من الشركاء».\n6. **أضف عرض شريك**: اضغط على «+ عرض شريك جديد».\n7. **الشريك**: اسمه ورابطه وشعاره.\n8. **ما يحصل عليه الأعضاء**: نسبة، أو مبلغ، أو أي شيء آخر، مثل قهوة مجانية.\n9. **كيف يتحقق المتجر**: كود مشترك، أو رابط يتضمن الكود، أو عرض عضوية سارية.\n10. **الشروط**: التواريخ، ومن يحصل عليه وكم مرة. احفظ مسودة، وانشر عند الاتفاق.\n11. **أحضر صديقًا**: برنامج يكافئ الأعضاء الذين يُحضرون شخصًا ينضم.\n12. **وافق وكافئ**: تصل الإحالات إلى هنا. وافق على إحداها فتُرسل مكافأتها.\n13. **كل شيء جاهز**: أعد هذه الجولة متى شئت من الأدلة.",
+          "complete": true
+        },
+        "ru": {
+          "title": "Акции, партнёры и рекомендации",
+          "summary": "Кампании и промокоды, партнёрские предложения и программа «Приведи друга».",
+          "body": "Кампании и промокоды, партнёрские предложения и программа «Приведи друга».\n\n1. **Расти с акциями**: Твои кампании и промокоды, предложения от магазинов-партнёров и награды за приглашённых друзей.\n2. **Создай кампанию**: Нажми «+ Новая кампания».\n3. **Название и даты**: Кампания объединяет твои акции, например «Лето». Выбери, когда она идёт.\n4. **Промокоды**: Открой кампанию, чтобы добавить коды: скидка в процентах или сумме, с лимитом использований.\n5. **Партнёрские предложения**: Нажми «От партнёров».\n6. **Добавь предложение партнёра**: Нажми «+ Новое партнёрское предложение».\n7. **Партнёр**: Название, ссылка и логотип.\n8. **Что получат участники**: Процент, сумму или что-то другое, например бесплатный кофе.\n9. **Как магазин это проверяет**: Общий код, ссылка с кодом или показ активного абонемента.\n10. **Условия**: Даты, кому и как часто. Сохрани черновик и опубликуй, когда договоритесь.\n11. **Приведи друга**: Программа награждает участников бокса, чей друг вступил в бокс.\n12. **Одобряй и награждай**: Рекомендации приходят сюда. Одобри — и награда отправится.\n13. **Всё готово**: Пройди это снова в любой момент из «Гайдов».",
+          "complete": true
+        },
+        "de": {
+          "title": "Angebote, Partner und Empfehlungen",
+          "summary": "Kampagnen und Rabattcodes, Partnervorteile und ein Programm „Freund mitbringen“.",
+          "body": "Kampagnen und Rabattcodes, Partnervorteile und ein Programm „Freund mitbringen“.\n\n1. **Mit Angeboten wachsen**: Eigene Kampagnen und Rabattcodes, Vorteile bei Partnergeschäften und Prämien fürs Mitbringen von Freunden.\n2. **Kampagne starten**: Tippe auf „+ Neue Kampagne“.\n3. **Name und Zeitraum**: Eine Kampagne bündelt deine Angebote, z. B. „Sommer“. Wähle, wann sie läuft.\n4. **Rabattcodes**: Öffne eine Kampagne, um Codes hinzuzufügen: Rabatt in Prozent oder als Betrag, mit Nutzungslimit.\n5. **Partnervorteile**: Tippe auf „Der Partner“.\n6. **Partnerangebot hinzufügen**: Tippe auf „+ Neues Partnerangebot“.\n7. **Der Partner**: Name, Link und Logo.\n8. **Was Mitglieder bekommen**: Prozente, ein Betrag oder etwas anderes, etwa ein Gratis-Kaffee.\n9. **Wie der Laden es prüft**: Ein gemeinsamer Code, ein Link mit eingesetztem Code oder die live gezeigte Mitgliedschaft.\n10. **Bedingungen**: Zeitraum, wer es bekommt und wie oft. Als Entwurf speichern, veröffentlichen, wenn alles abgesprochen ist.\n11. **Freund mitbringen**: Ein Programm belohnt Mitglieder, die jemanden mitbringen, der beitritt.\n12. **Freigeben und belohnen**: Empfehlungen landen hier. Gib eine frei, und ihre Prämie geht raus.\n13. **Alles bereit**: Wiederhole das jederzeit unter Anleitungen.",
+          "complete": true
+        },
+        "es": {
+          "title": "Ofertas, colaboradores y recomendaciones",
+          "summary": "Campañas y cupones, ventajas de colaboradores y un programa Trae a un amigo.",
+          "body": "Campañas y cupones, ventajas de colaboradores y un programa Trae a un amigo.\n\n1. **Crece con ofertas**: Tus propias campañas y cupones, ventajas de tiendas colaboradoras y recompensas por traer amigos.\n2. **Crea una campaña**: Toca «+ Nueva campaña».\n3. **Nombre y fechas**: Una campaña agrupa tus ofertas, p. ej. «Verano». Elige cuándo se aplica.\n4. **Cupones**: Abre una campaña para añadir códigos: un porcentaje o un importe de descuento, con límite de usos.\n5. **Ventajas de colaboradores**: Toca «De colaboradores».\n6. **Añade una ventaja**: Toca «+ Nueva oferta de colaborador».\n7. **El colaborador**: Su nombre, enlace y logo.\n8. **Qué reciben los socios**: Un porcentaje, un importe o cualquier otra cosa, como un café gratis.\n9. **Cómo lo comprueba la tienda**: Un código compartido, un enlace con el código o mostrando una membresía activa.\n10. **Condiciones**: Fechas, quién la recibe y con qué frecuencia. Guarda un borrador y publícala cuando esté acordada.\n11. **Trae a un amigo**: Un programa que premia a los socios que traen a alguien que se apunta.\n12. **Aprueba y recompensa**: Las recomendaciones llegan aquí. Aprueba una y se envía su recompensa.\n13. **Todo listo**: Repítelo cuando quieras desde Guías.",
+          "complete": true
+        },
+        "pt-PT": {
+          "title": "Ofertas, parceiros e indicações",
+          "summary": "Campanhas e cupões, vantagens de parceiros e um programa Traz um amigo.",
+          "body": "Campanhas e cupões, vantagens de parceiros e um programa Traz um amigo.\n\n1. **Cresce com ofertas**: As tuas campanhas e cupões, vantagens de lojas parceiras e recompensas por trazer amigos.\n2. **Cria uma campanha**: Toca em «+ Nova campanha».\n3. **Nome e datas**: Uma campanha agrupa as tuas ofertas, p. ex. «Verão». Escolhe quando decorre.\n4. **Cupões**: Abre uma campanha para adicionar códigos: uma percentagem ou um valor de desconto, com limite de utilizações.\n5. **Vantagens de parceiros**: Toca em «De parceiros».\n6. **Adiciona uma oferta de parceiro**: Toca em «+ Nova oferta de parceiro».\n7. **O parceiro**: O nome, o link e o logótipo.\n8. **O que os membros recebem**: Uma percentagem, um valor ou outra coisa, como um café grátis.\n9. **Como a loja confirma**: Um código partilhado, um link com o código ou mostrar uma subscrição ativa.\n10. **Condições**: Datas, quem recebe e com que frequência. Guarda um rascunho e publica quando estiver acordado.\n11. **Traz um amigo**: Um programa que recompensa os membros que trazem alguém que se inscreve.\n12. **Aprova e recompensa**: As indicações chegam aqui. Aprova uma e a recompensa é enviada.\n13. **Está tudo pronto**: Revê isto quando quiseres em Guias.",
+          "complete": true
+        },
+        "he": {
+          "title": "מבצעים, שותפים והפניות",
+          "summary": "קמפיינים וקודים, הטבות שותפים ותוכנית «הבא חבר».",
+          "body": "קמפיינים וקודים, הטבות שותפים ותוכנית «הבא חבר».\n\n1. **צומחים עם מבצעים**: הקמפיינים והקודים שלכם, הטבות מחנויות שותפות ותגמולים על הבאת חברים.\n2. **יצירת קמפיין**: לחצו על «+ קמפיין חדש».\n3. **שם ותאריכים**: קמפיין מקבץ את המבצעים שלכם, למשל «קיץ». בחרו מתי הוא פעיל.\n4. **קודים**: פתחו קמפיין כדי להוסיף קודים: הנחה באחוזים או בסכום, עם מגבלת שימוש.\n5. **הטבות שותפים**: לחצו על «של שותפים».\n6. **הוספת הטבת שותף**: לחצו על «+ הטבת שותף חדשה».\n7. **השותף**: השם, הקישור והלוגו שלו.\n8. **מה המנויים מקבלים**: אחוזים, סכום, או כל דבר אחר, כמו קפה חינם.\n9. **איך החנות בודקת**: קוד משותף, קישור עם הקוד בתוכו, או הצגת מנוי פעיל.\n10. **תנאים**: תאריכים, מי מקבל וכמה פעמים. שמרו טיוטה ופרסמו כשסוכם.\n11. **הבא חבר**: תוכנית שמתגמלת מנויים שמביאים מישהו שמצטרף.\n12. **מאשרים ומתגמלים**: ההפניות מגיעות לכאן. אשרו אחת והתגמול יוצא.\n13. **הכול מוכן**: אפשר לחזור על זה מתי שרוצים מתוך מדריכים.",
+          "complete": true
+        },
+        "it": {
+          "title": "Offerte, partner e inviti",
+          "summary": "Campagne e codici sconto, vantaggi dei partner e un programma Porta un amico.",
+          "body": "Campagne e codici sconto, vantaggi dei partner e un programma Porta un amico.\n\n1. **Cresci con le offerte**: Le tue campagne e i tuoi codici sconto, vantaggi dai negozi partner e premi per chi porta amici.\n2. **Crea una campagna**: Tocca «+ Nuova campagna».\n3. **Nome e date**: Una campagna raggruppa le tue offerte, es. «Estate». Scegli quando è attiva.\n4. **Codici sconto**: Apri una campagna per aggiungere codici: uno sconto in percentuale o in importo, con un limite di utilizzi.\n5. **Vantaggi dei partner**: Tocca «Dei partner».\n6. **Aggiungi un'offerta partner**: Tocca «+ Nuova offerta partner».\n7. **Il partner**: Nome, link e logo.\n8. **Cosa ricevono i soci**: Una percentuale, un importo o altro, come un caffè gratis.\n9. **Come lo verifica il negozio**: Un codice condiviso, un link con il codice dentro o l'abbonamento mostrato dal vivo.\n10. **Condizioni**: Date, chi ne ha diritto e quanto spesso. Salva una bozza, pubblica quando è tutto concordato.\n11. **Porta un amico**: Un programma premia i soci che portano qualcuno che si iscrive.\n12. **Approva e premia**: Gli inviti arrivano qui. Approvane uno e parte il suo premio.\n13. **Tutto pronto**: Rivedi questa guida quando vuoi da Guide.",
+          "complete": true
+        },
+        "bg": {
+          "title": "Оферти, партньори и препоръки",
+          "summary": "Кампании и купони, партньорски привилегии и програма „Доведи приятел“.",
+          "body": "Кампании и купони, партньорски привилегии и програма „Доведи приятел“.\n\n1. **Расти с оферти**: Собствени кампании и купони, привилегии от партньорски магазини и награди за доведени приятели.\n2. **Създай кампания**: Докосни „+ Нова кампания“.\n3. **Име и дати**: Кампанията събира офертите ти, напр. „Лято“. Избери кога важи.\n4. **Купони**: Отвори кампания, за да добавиш кодове: процент или сума отстъпка, с лимит на използване.\n5. **Партньорски привилегии**: Докосни „На партньори“.\n6. **Добави партньорска оферта**: Докосни „+ Нова партньорска оферта“.\n7. **Партньорът**: Име, линк и лого.\n8. **Какво получават членовете**: Процент, сума или нещо друго, например безплатно кафе.\n9. **Как магазинът проверява**: Общ код, линк с кода в него или показване на активно членство.\n10. **Условия**: Дати, кой я получава и колко често. Запази чернова, публикувай, когато се договорите.\n11. **Доведи приятел**: Програма, която награждава членовете, довели някой, който се запише.\n12. **Одобри и награди**: Препоръките идват тук. Одобри една и наградата ѝ се изпраща.\n13. **Всичко е готово**: Пусни това отново по всяко време от Ръководства.",
+          "complete": true
+        },
+        "nl": {
+          "title": "Aanbiedingen, partners en verwijzingen",
+          "summary": "Campagnes en coupons, partnervoordelen en een programma om vrienden mee te nemen.",
+          "body": "Campagnes en coupons, partnervoordelen en een programma om vrienden mee te nemen.\n\n1. **Groei met aanbiedingen**: Je eigen campagnes en coupons, voordelen van partnerwinkels en beloningen voor het meenemen van vrienden.\n2. **Campagne starten**: Tik op „+ Nieuwe campagne”.\n3. **Naam en data**: Een campagne bundelt je aanbiedingen, bijv. „Zomer”. Kies wanneer die loopt.\n4. **Coupons**: Open een campagne om codes toe te voegen: een percentage of bedrag korting, met een gebruikslimiet.\n5. **Partnervoordelen**: Tik op „Van partners”.\n6. **Partnerdeal toevoegen**: Tik op „+ Nieuwe partneraanbieding”.\n7. **De partner**: Naam, link en logo.\n8. **Wat leden krijgen**: Een percentage, een bedrag of iets anders, zoals gratis koffie.\n9. **Hoe de winkel het controleert**: Een gedeelde code, een link met de code erin, of een actief lidmaatschap laten zien.\n10. **Voorwaarden**: Data, wie het krijgt en hoe vaak. Sla een concept op en publiceer zodra het rond is.\n11. **Neem een vriend mee**: Een programma beloont leden die iemand meenemen die lid wordt.\n12. **Goedkeuren en belonen**: Verwijzingen komen hier binnen. Keur er een goed en de beloning gaat eruit.\n13. **Helemaal klaar**: Bekijk dit altijd opnieuw via Gidsen.",
+          "complete": true
+        },
+        "fr": {
+          "title": "Offres, partenaires et parrainage",
+          "summary": "Campagnes et codes de réduction, avantages partenaires et un programme Amène un ami.",
+          "body": "Campagnes et codes de réduction, avantages partenaires et un programme Amène un ami.\n\n1. **Grandis avec les offres**: Tes propres campagnes et codes, des avantages chez des magasins partenaires, et des récompenses pour qui amène des amis.\n2. **Lancer une campagne**: Touche « + Nouvelle campagne ».\n3. **Nom et dates**: Une campagne regroupe tes offres, p. ex. « Été ». Choisis quand elle a lieu.\n4. **Codes de réduction**: Ouvre une campagne pour ajouter des codes : un pourcentage ou un montant de réduction, avec une limite d'utilisation.\n5. **Avantages partenaires**: Touche « Des partenaires ».\n6. **Ajouter une offre partenaire**: Touche « + Nouvelle offre partenaire ».\n7. **Le partenaire**: Son nom, son lien et son logo.\n8. **Ce que reçoivent les membres**: Un pourcentage, un montant ou autre chose, comme un café offert.\n9. **Comment le magasin vérifie**: Un code commun, un lien avec le code inclus, ou un abonnement montré en direct.\n10. **Conditions**: Dates, qui en profite et à quelle fréquence. Enregistre un brouillon, publie une fois d'accord.\n11. **Amène un ami**: Un programme récompense les membres de la box qui amènent quelqu'un qui s'inscrit.\n12. **Approuver et récompenser**: Les parrainages arrivent ici. Approuves-en un et sa récompense part.\n13. **Tout est prêt**: Revois ce guide quand tu veux depuis Guides.",
+          "complete": true
+        }
+      }
+    },
+    {
+      "slug": "guide-member-club-event",
+      "feature_key": null,
+      "guide_id": "member_club_event",
+      "audience": "member",
+      "screens": [
+        "/events",
+        "/clubs"
+      ],
+      "position": 13,
+      "locales": {
+        "en": {
+          "title": "Your own club and event",
+          "summary": "Start a group in your box's club and plan an event, alone or with a box.",
+          "body": "Start a group in your box's club and plan an event, alone or with a box.\n\n1. **Make it yours**: Start a group with your people and plan your own events.\n2. **Your box's club**: Tap «Channels».\n3. **Groups**: Small clubs inside the box: their own chat and events.\n4. **Start a member group**: Tap «Suggest a group».\n5. **Name it, pick who joins**: Open to all, or by request.\n6. **Groups live in a box**: Join a box first, then start a group in its club. Events you can plan right away.\n7. **Plan an event**: Tap «+ New event».\n8. **Who hosts**: You, or a group or business you run.\n9. **On your own**: Open to anyone nearby, or invite-only with your link.\n10. **With a box**: On «Places and co-hosts», ask the box to co-host by its page address.\n11. **Run it**: After you publish, «Events you host» has attendees, check-in and the numbers.\n12. **Over to you**: Replay this any time from Guides.",
+          "complete": true
+        },
+        "el": {
+          "title": "Το δικό σου club και event",
+          "summary": "Ξεκίνα μια ομάδα στο club του box σου και οργάνωσε μια εκδήλωση, μόνο εσύ ή μαζί με ένα box.",
+          "body": "Ξεκίνα μια ομάδα στο club του box σου και οργάνωσε μια εκδήλωση, μόνο εσύ ή μαζί με ένα box.\n\n1. **Κάν' το δικό σου**: Ξεκίνα μια ομάδα με τους δικούς σου ανθρώπους και οργάνωσε τις δικές σου εκδηλώσεις.\n2. **Το club του box σου**: Πάτα «Κανάλια».\n3. **Ομάδες**: Μικρά club μέσα στο box, με δική τους συνομιλία και events.\n4. **Ξεκίνα ομάδα μελών**: Πάτα «Πρότεινε ομάδα».\n5. **Δώσε όνομα, διάλεξε ποιοι μπαίνουν**: Ανοιχτή σε όλους ή με αίτημα.\n6. **Οι ομάδες ανήκουν σε box**: Γράψου πρώτα σε ένα box και μετά ξεκίνα ομάδα στο club του. Εκδηλώσεις μπορείς να οργανώσεις αμέσως.\n7. **Οργάνωσε ένα event**: Πάτα «+ Νέο event».\n8. **Ποιος διοργανώνει**: Εσύ ή μια ομάδα ή επιχείρηση που τρέχεις.\n9. **Μόνο εσύ**: Ανοιχτό σε όποιον είναι κοντά ή μόνο με πρόσκληση, μέσω του συνδέσμου σου.\n10. **Με ένα box**: Στο «Θέσεις και συνδιοργανωτές», ζήτα από το box να συνδιοργανώσει, με τη διεύθυνση της σελίδας του.\n11. **Τρέξ' το**: Μετά τη δημοσίευση, στο «Τα events που διοργανώνεις» βρίσκεις συμμετοχές, check-in και τα νούμερα.\n12. **Σειρά σου**: Δες το ξανά όποτε θες από τους Οδηγούς.",
+          "complete": true
+        },
+        "ar": {
+          "title": "ناديك وفعاليتك",
+          "summary": "أنشئ مجموعة في نادي صالتك وخطّط لفعالية، بمفردك أو مع صالة.",
+          "body": "أنشئ مجموعة في نادي صالتك وخطّط لفعالية، بمفردك أو مع صالة.\n\n1. **اجعله لك**: أنشئ مجموعة مع ناسك وخطّط لفعالياتك الخاصة.\n2. **نادي صالتك**: اضغط على «القنوات».\n3. **المجموعات**: أندية صغيرة داخل الصالة: لها دردشتها وفعالياتها.\n4. **أنشئ مجموعة**: اضغط على «اقترح مجموعة».\n5. **سمّها واختر من ينضم**: مفتوحة للجميع، أو بطلب.\n6. **المجموعات تكون داخل صالة**: انضم إلى صالة أولًا، ثم أنشئ مجموعة في ناديها. أما الفعاليات فيمكنك التخطيط لها فورًا.\n7. **خطّط لفعالية**: اضغط على «+ فعالية جديدة».\n8. **من يستضيف**: أنت، أو مجموعة أو نشاط تجاري تديره.\n9. **بمفردك**: مفتوحة لأي شخص قريب، أو بالدعوة فقط عبر رابطك.\n10. **مع صالة**: في «الأماكن والمنظمون المشاركون»، اطلب من الصالة الاستضافة المشتركة عبر عنوان صفحتها.\n11. **أدِرها**: بعد النشر، تجد في «الفعاليات التي تستضيفها» الحضور وتسجيل الحضور والأرقام.\n12. **الدور لك**: أعد هذه الجولة متى شئت من الأدلة.",
+          "complete": true
+        },
+        "ru": {
+          "title": "Свой клуб и событие",
+          "summary": "Создай группу в клубе своего бокса и спланируй событие — самостоятельно или с боксом.",
+          "body": "Создай группу в клубе своего бокса и спланируй событие — самостоятельно или с боксом.\n\n1. **Сделай по-своему**: Собери группу со своими людьми и планируй свои события.\n2. **Клуб твоего бокса**: Нажми «Каналы».\n3. **Группы**: Маленькие клубы внутри бокса: свой чат и свои события.\n4. **Создай группу**: Нажми «Предложить группу».\n5. **Название и кто вступает**: Открыта для всех или по запросу.\n6. **Группы живут в боксе**: Сначала вступи в бокс, потом создай группу в его клубе. А события можно планировать сразу.\n7. **Спланируй событие**: Нажми «+ Новое событие».\n8. **Кто организатор**: Ты или группа либо бизнес, которыми ты управляешь.\n9. **Самостоятельно**: Открыто для всех поблизости или только по приглашению по твоей ссылке.\n10. **С боксом**: На шаге «Места и соорганизаторы» пригласи бокс в соорганизаторы по адресу его страницы.\n11. **Проведи его**: После публикации в «События, которые ты проводишь» будут участники, чек-ин и цифры.\n12. **Дальше — ты**: Пройди это снова в любой момент из «Гайдов».",
+          "complete": true
+        },
+        "de": {
+          "title": "Dein eigener Club und dein Event",
+          "summary": "Gründe eine Gruppe im Club deiner Box und plane ein Event, allein oder mit einer Box.",
+          "body": "Gründe eine Gruppe im Club deiner Box und plane ein Event, allein oder mit einer Box.\n\n1. **Mach es zu deinem**: Gründe eine Gruppe mit deinen Leuten und plane eigene Events.\n2. **Der Club deiner Box**: Tippe auf „Kanäle“.\n3. **Gruppen**: Kleine Clubs in der Box, mit eigenem Chat und eigenen Events.\n4. **Gruppe gründen**: Tippe auf „Gruppe vorschlagen“.\n5. **Benennen, Beitritt festlegen**: Offen für alle oder auf Anfrage.\n6. **Gruppen gehören zu einer Box**: Tritt zuerst einer Box bei, dann gründe eine Gruppe in ihrem Club. Events kannst du sofort planen.\n7. **Event planen**: Tippe auf „+ Neues Event“.\n8. **Wer veranstaltet**: Du, oder eine Gruppe oder ein Unternehmen, das du führst.\n9. **Auf eigene Faust**: Offen für alle in der Nähe oder nur mit Einladung über deinen Link.\n10. **Mit einer Box**: Unter „Plätze und Mitveranstalter“ fragst du die Box über ihre Seitenadresse als Mitveranstalter an.\n11. **Durchführen**: Nach dem Veröffentlichen findest du unter „Deine Events als Veranstalter“ Teilnehmende, Check-in und die Zahlen.\n12. **Jetzt bist du dran**: Wiederhole das jederzeit unter Anleitungen.",
+          "complete": true
+        },
+        "es": {
+          "title": "Tu propio club y evento",
+          "summary": "Crea un grupo en el club de tu box y planifica un evento, solo o con un box.",
+          "body": "Crea un grupo en el club de tu box y planifica un evento, solo o con un box.\n\n1. **Hazlo tuyo**: Crea un grupo con tu gente y planifica tus propios eventos.\n2. **El club de tu box**: Toca «Canales».\n3. **Grupos**: Pequeños clubs dentro del box: con su propio chat y eventos.\n4. **Crea un grupo**: Toca «Proponer un grupo».\n5. **Ponle nombre y elige quién entra**: Abierto a todos o con solicitud.\n6. **Los grupos viven en un box**: Únete primero a un box y luego crea un grupo en su club. Los eventos los puedes planificar ya.\n7. **Planifica un evento**: Toca «+ Nuevo evento».\n8. **Quién organiza**: Tú, o un grupo o negocio que gestionas.\n9. **Por tu cuenta**: Abierto a cualquiera cerca, o solo con invitación mediante tu enlace.\n10. **Con un box**: En «Plazas y coorganizadores», pide al box que coorganice con la dirección de su página.\n11. **Gestiónalo**: Tras publicar, en «Eventos que organizas» tienes asistentes, check-in y los números.\n12. **Ahora te toca a ti**: Repítelo cuando quieras desde Guías.",
+          "complete": true
+        },
+        "pt-PT": {
+          "title": "O teu próprio clube e evento",
+          "summary": "Cria um grupo no clube da tua box e planeia um evento, sozinho ou com uma box.",
+          "body": "Cria um grupo no clube da tua box e planeia um evento, sozinho ou com uma box.\n\n1. **Torna-o teu**: Cria um grupo com a tua malta e planeia os teus próprios eventos.\n2. **O clube da tua box**: Toca em «Canais».\n3. **Grupos**: Pequenos clubes dentro da box: com chat e eventos próprios.\n4. **Cria um grupo**: Toca em «Sugerir um grupo».\n5. **Dá-lhe um nome e escolhe quem entra**: Aberto a todos, ou por pedido.\n6. **Os grupos vivem numa box**: Junta-te primeiro a uma box e depois cria um grupo no clube dela. Eventos podes planear já.\n7. **Planeia um evento**: Toca em «+ Novo evento».\n8. **Quem organiza**: Tu, ou um grupo ou negócio que geres.\n9. **Por tua conta**: Aberto a qualquer pessoa por perto, ou só por convite com o teu link.\n10. **Com uma box**: Em «Lugares e coorganizadores», pede à box para coorganizar pelo endereço da página dela.\n11. **Gere-o**: Depois de publicares, em «Eventos que organizas» tens participantes, check-in e os números.\n12. **Agora é contigo**: Revê isto quando quiseres em Guias.",
+          "complete": true
+        },
+        "he": {
+          "title": "המועדון והאירוע שלכם",
+          "summary": "פתחו קבוצה במועדון של הבוקס ותכננו אירוע, לבד או עם בוקס.",
+          "body": "פתחו קבוצה במועדון של הבוקס ותכננו אירוע, לבד או עם בוקס.\n\n1. **שיהיה שלכם**: פתחו קבוצה עם האנשים שלכם ותכננו אירועים משלכם.\n2. **המועדון של הבוקס**: לחצו על «ערוצים».\n3. **קבוצות**: מועדונים קטנים בתוך הבוקס: עם צ׳אט ואירועים משלהם.\n4. **פתיחת קבוצה**: לחצו על «הצעת קבוצה».\n5. **תנו שם, בחרו מי מצטרף**: פתוחה לכולם, או לפי בקשה.\n6. **קבוצות נמצאות בתוך בוקס**: הצטרפו קודם לבוקס, ואז פתחו קבוצה במועדון שלו. אירועים אפשר לתכנן כבר עכשיו.\n7. **תכנון אירוע**: לחצו על «+ אירוע חדש».\n8. **מי מארח**: אתם, או קבוצה או עסק שאתם מנהלים.\n9. **לבד**: פתוח לכל מי שבסביבה, או בהזמנה בלבד עם הקישור שלכם.\n10. **עם בוקס**: ב־«מקומות ומארגנים שותפים», בקשו מהבוקס לארח יחד לפי כתובת הדף שלו.\n11. **מנהלים את זה**: אחרי הפרסום, ב־«האירועים שאת/ה מארח/ת» יש משתתפים, צ׳ק-אין והמספרים.\n12. **עכשיו תורכם**: אפשר לחזור על זה מתי שרוצים מתוך מדריכים.",
+          "complete": true
+        },
+        "it": {
+          "title": "Il tuo club e il tuo evento",
+          "summary": "Crea un gruppo nel club del tuo box e organizza un evento, in autonomia o con un box.",
+          "body": "Crea un gruppo nel club del tuo box e organizza un evento, in autonomia o con un box.\n\n1. **Fallo tuo**: Crea un gruppo con la tua gente e organizza i tuoi eventi.\n2. **Il club del tuo box**: Tocca «Canali».\n3. **Gruppi**: Piccoli club dentro il box, con chat ed eventi propri.\n4. **Crea un gruppo**: Tocca «Proponi un gruppo».\n5. **Dagli un nome, scegli chi entra**: Aperto a tutti o su richiesta.\n6. **I gruppi stanno in un box**: Prima entra in un box, poi crea un gruppo nel suo club. Gli eventi puoi organizzarli subito.\n7. **Organizza un evento**: Tocca «+ Nuovo evento».\n8. **Chi organizza**: Tu, oppure un gruppo o un'attività che gestisci.\n9. **In autonomia**: Aperto a chiunque nei dintorni, o solo su invito con il tuo link.\n10. **Con un box**: In «Posti e co-organizzatori», chiedi al box di co-organizzare tramite l'indirizzo della sua pagina.\n11. **Gestiscilo**: Dopo la pubblicazione, in «Eventi che organizzi» trovi partecipanti, check-in e numeri.\n12. **Ora tocca a te**: Rivedi questa guida quando vuoi da Guide.",
+          "complete": true
+        },
+        "bg": {
+          "title": "Твоят клуб и събитие",
+          "summary": "Създай група в клуба на своя бокс и планирай събитие, сам или с бокс.",
+          "body": "Създай група в клуба на своя бокс и планирай събитие, сам или с бокс.\n\n1. **Направи го свое**: Създай група с твоите хора и планирай свои събития.\n2. **Клубът на твоя бокс**: Докосни „Канали“.\n3. **Групи**: Малки клубове в бокса: със собствен чат и събития.\n4. **Създай група**: Докосни „Предложи група“.\n5. **Дай име, избери кой влиза**: Отворена за всички или по заявка.\n6. **Групите са в бокс**: Първо се присъедини към бокс, после създай група в клуба му. Събития можеш да планираш веднага.\n7. **Планирай събитие**: Докосни „+ Ново събитие“.\n8. **Кой организира**: Ти или група или бизнес, който управляваш.\n9. **Сам**: Отворено за всеки наблизо или само с покана чрез твоя линк.\n10. **С бокс**: В „Места и съорганизатори“ покани бокса за съорганизатор чрез адреса на страницата му.\n11. **Проведи го**: След като публикуваш, в „Събития, които организираш“ има участници, чекиране и числата.\n12. **Твой ред е**: Пусни това отново по всяко време от Ръководства.",
+          "complete": true
+        },
+        "nl": {
+          "title": "Je eigen club en evenement",
+          "summary": "Start een groep in de club van je box en plan een evenement, alleen of met een box.",
+          "body": "Start een groep in de club van je box en plan een evenement, alleen of met een box.\n\n1. **Maak het van jou**: Start een groep met je mensen en plan je eigen evenementen.\n2. **De club van je box**: Tik op „Kanalen”.\n3. **Groepen**: Kleine clubs binnen de box: met eigen chat en evenementen.\n4. **Groep starten**: Tik op „Een groep voorstellen”.\n5. **Geef een naam, kies wie erbij mag**: Open voor iedereen, of op aanvraag.\n6. **Groepen horen bij een box**: Word eerst lid van een box en start dan een groep in de club. Evenementen kun je meteen plannen.\n7. **Evenement plannen**: Tik op „+ Nieuw event”.\n8. **Wie organiseert**: Jij, of een groep of bedrijf dat je beheert.\n9. **Zelfstandig**: Open voor iedereen in de buurt, of alleen op uitnodiging met je link.\n10. **Met een box**: Vraag bij „Plaatsen en co-organisatoren” de box via het pagina-adres om mee te organiseren.\n11. **Uitvoeren**: Na het publiceren vind je bij „Events die je organiseert” deelnemers, inchecken en de cijfers.\n12. **Nu ben jij aan zet**: Bekijk dit altijd opnieuw via Gidsen.",
+          "complete": true
+        },
+        "fr": {
+          "title": "Ton club et ton événement",
+          "summary": "Crée un groupe dans le club de ta box et organise un événement, en solo ou avec une box.",
+          "body": "Crée un groupe dans le club de ta box et organise un événement, en solo ou avec une box.\n\n1. **À ta façon**: Crée un groupe avec ta bande et organise tes propres événements.\n2. **Le club de ta box**: Touche « Canaux ».\n3. **Groupes**: De petits clubs dans la box, avec leur propre chat et leurs événements.\n4. **Créer un groupe**: Touche « Proposer un groupe ».\n5. **Nomme-le, choisis qui entre**: Ouvert à tous, ou sur demande.\n6. **Les groupes vivent dans une box**: Rejoins d'abord une box, puis crée un groupe dans son club. Les événements, tu peux les organiser tout de suite.\n7. **Organiser un événement**: Touche « + Nouvel événement ».\n8. **Qui organise**: Toi, ou un groupe ou une activité que tu gères.\n9. **En solo**: Ouvert à tous près de chez toi, ou sur invitation avec ton lien.\n10. **Avec une box**: Dans « Places et co-organisateurs », demande à la box de co-organiser via l'adresse de sa page.\n11. **Gère-le**: Après publication, « Événements que tu organises » réunit participants, check-in et chiffres.\n12. **À toi de jouer**: Revois ce guide quand tu veux depuis Guides.",
+          "complete": true
+        }
+      }
+    }
+  ]
+}

@@ -88,3 +88,11 @@ config :palee, :payments_sandbox, true
 
 # ADR-280 verification: the SMS code is logged (number masked), not sent.
 config :palee, :sms_sender, Palee.Infrastructure.Sms.LogSmsSender
+
+# ADR-360..362: the deterministic model and the database help search in dev;
+# set PALEE_LLM=gemini (with GEMINI_API_KEY) to talk to the real provider.
+if System.get_env("PALEE_LLM") != "gemini" do
+  config :palee, :llm_provider, Palee.Infrastructure.Llm.SandboxLlmProvider
+end
+
+config :palee, :help_search_index, Palee.Infrastructure.HelpCentre.DatabaseHelpIndex

@@ -25,6 +25,9 @@ defmodule Palee.AiUsage.GymAiSettings do
     field :scaling_enabled, :boolean, default: false
     # ADR-175: voice logging, off by default.
     field :voice_enabled, :boolean, default: false
+    # ADR-361: staff questions over the box's data, off until the owner turns
+    # it on; runs on the platform's provider, needs no key of the gym's.
+    field :data_questions_enabled, :boolean, default: false
     field :updated_by_id, :binary_id
 
     timestamps(type: :utc_datetime_usec)
@@ -38,6 +41,7 @@ defmodule Palee.AiUsage.GymAiSettings do
     :model,
     :scaling_enabled,
     :voice_enabled,
+    :data_questions_enabled,
     :updated_by_id
   ]
 

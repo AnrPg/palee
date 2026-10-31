@@ -75,6 +75,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     user_pr_history
     training_log_entries
     ai_usage_records organization_ai_settings scaling_suggestions
+    data_questions help_desk_conversations help_desk_messages help_desk_tickets
     demo_records
   )
 

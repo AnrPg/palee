@@ -42,7 +42,14 @@ defmodule PaleeWeb.AdminAiSettingsController do
 
   def update(conn, _params) do
     params =
-      Map.take(conn.body_params, [:scaling_enabled, :voice_enabled, :api_key, :remove_key, :model])
+      Map.take(conn.body_params, [
+        :scaling_enabled,
+        :voice_enabled,
+        :data_questions_enabled,
+        :api_key,
+        :remove_key,
+        :model
+      ])
 
     case GymAiSettings.update(conn.assigns.tenant_context, params) do
       {:ok, settings} ->
@@ -55,6 +62,7 @@ defmodule PaleeWeb.AdminAiSettingsController do
              :invalid_model,
              :invalid_scaling_enabled,
              :invalid_voice_enabled,
+             :invalid_data_questions_enabled,
              :bad_request
            ] ->
         code = Atom.to_string(reason)
