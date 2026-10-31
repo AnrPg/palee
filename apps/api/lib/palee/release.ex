@@ -35,6 +35,16 @@ defmodule Palee.Release do
     IO.puts("Search reindexed: #{inspect(summary)}")
   end
 
+  @doc """
+  ADR-362: seeds the help centre's starting articles and rebuilds its
+  index; run on the live node (`bin/palee rpc "Palee.Release.seed_help_centre()"`).
+  Never overwrites an article the Palee team has edited.
+  """
+  def seed_help_centre do
+    {:ok, counts} = Palee.Application.HelpCentre.SeedHelpCentre.call()
+    IO.puts("Help centre seeded: #{inspect(counts)}")
+  end
+
   defp repos do
     Application.fetch_env!(@app, :ecto_repos)
   end
