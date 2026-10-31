@@ -22,6 +22,8 @@ defmodule Palee.Workouts.AssignedWorkout do
     field :location_ids, {:array, :binary_id}, default: []
 
     belongs_to :master_workout, MasterWorkout
+    # ADR-357: the WOD as it was when assigned or performed.
+    field :workout_snapshot_id, :binary_id
     has_many :athlete_links, AssignedWorkoutAthlete
 
     timestamps(updated_at: false)

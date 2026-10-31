@@ -5,7 +5,8 @@ defmodule Palee.Application.CompleteWorkout do
     InjuryWarningEvaluation,
     InvalidateLandingPages,
     TenantStaffRecipients,
-    TrackAnalyticsEvent
+    TrackAnalyticsEvent,
+    WorkoutSnapshots
   }
 
   alias Palee.{Execution, Gamification, Identity, Journal, Notifications, Workouts}
@@ -36,6 +37,7 @@ defmodule Palee.Application.CompleteWorkout do
              ]
            ),
          :ok <- process_inline_if_needed(execution) do
+      snapshot_performed_workout(execution, user_id)
       broadcast_completion(execution)
       publish_result(execution, execution.completed_at_utc)
 
@@ -51,6 +53,19 @@ defmodule Palee.Application.CompleteWorkout do
       {:ok, execution}
     end
   end
+
+  # ADR-357 (CP-D3): the WOD as it was when this run was completed.
+  defp snapshot_performed_workout(%{organization_id: org} = execution, user_id)
+       when is_binary(org) do
+    WorkoutSnapshots.capture_for(
+      %{organization_id: org, user_id: user_id},
+      :execution,
+      execution.id,
+      Map.get(execution, :master_workout_id)
+    )
+  end
+
+  defp snapshot_performed_workout(_execution, _user_id), do: :ok
 
   # TD-092: the projection runs from `ProcessWorkoutCompletionJob`, outside any
   # request, so it opens its own session scope: the member (user_stats,

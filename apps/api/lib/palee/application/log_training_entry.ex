@@ -17,7 +17,8 @@ defmodule Palee.Application.LogTrainingEntry do
     CompleteWorkout,
     InjuryWarningEvaluation,
     JournalComments,
-    TrackAnalyticsEvent
+    TrackAnalyticsEvent,
+    WorkoutSnapshots
   }
 
   alias Palee.{Execution, Journal, Workouts}
@@ -73,7 +74,17 @@ defmodule Palee.Application.LogTrainingEntry do
              job_builder: job_builder()
            ),
          :ok <- process_inline_if_needed(entry, outcome) do
-      if outcome == :created, do: CompleteWorkout.publish_result(entry, entry.performed_at_utc)
+      if outcome == :created do
+        CompleteWorkout.publish_result(entry, entry.performed_at_utc)
+
+        # ADR-357 (CP-D3): the WOD as it was when the score was logged.
+        WorkoutSnapshots.capture_for(
+          context,
+          :training_log,
+          entry.id,
+          Map.get(entry, :master_workout_id)
+        )
+      end
 
       TrackAnalyticsEvent.call("training_log_entry_logged", context, entry, %{
         metadata:

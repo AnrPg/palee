@@ -134,6 +134,36 @@ defmodule PaleeWeb.Schemas.TrainingFloor do
     }
   end
 
+  # -- CP-D3: WOD snapshots ----------------------------------------------------
+
+  def workout_snapshot do
+    %Schema{
+      title: "WorkoutSnapshotResponse",
+      type: :object,
+      properties: %{
+        snapshot: %Schema{
+          title: "WorkoutSnapshot",
+          type: :object,
+          properties: %{
+            id: @uuid,
+            workout_id: @uuid,
+            title: @maybe_string,
+            content_hash: %Schema{type: :string},
+            format_version: %Schema{type: :integer},
+            taken_at: @datetime,
+            content: %Schema{
+              type: :object,
+              additionalProperties: true,
+              description: "The WOD as it read then (title, type, text, sections, plans, body)"
+            }
+          },
+          required: [:content, :content_hash, :format_version, :id, :taken_at, :workout_id]
+        }
+      },
+      required: [:snapshot]
+    }
+  end
+
   @doc false
   def shared, do: %{uuid: @uuid, date: @date, maybe_date: @maybe_date, datetime: @datetime}
 end

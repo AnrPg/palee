@@ -813,6 +813,8 @@ defmodule PaleeWeb.Router do
     get("/workouts/:id/leaderboard", WorkoutLeaderboardController, :show)
     get("/me/leaderboard-profile", WorkoutLeaderboardController, :profile)
     put("/me/leaderboard-profile", WorkoutLeaderboardController, :update_profile)
+    # ADR-357 (CP-D3): the WOD as it was when assigned or performed.
+    get("/workout-snapshots/:id", WorkoutSnapshotController, :show)
   end
 
   scope "/api/org/:organization_slug", PaleeWeb do

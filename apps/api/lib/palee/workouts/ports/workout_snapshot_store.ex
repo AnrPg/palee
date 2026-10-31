@@ -1,0 +1,26 @@
+defmodule Palee.Workouts.Ports.WorkoutSnapshotStore do
+  @moduledoc "ADR-357: storage of WOD snapshots and the rows that point at them."
+
+  @type snapshot :: %{
+          id: Ecto.UUID.t(),
+          master_workout_id: Ecto.UUID.t(),
+          content_hash: String.t(),
+          format_version: pos_integer(),
+          title: String.t() | nil,
+          content: map(),
+          inserted_at: DateTime.t()
+        }
+
+  @type holder :: :assignment | :execution | :training_log
+
+  @doc "Stores the snapshot, or returns the one with the same content (idempotent)."
+  @callback put_snapshot(map(), Ecto.UUID.t(), map()) :: {:ok, snapshot()} | {:error, term()}
+  @callback get_snapshot(map(), Ecto.UUID.t()) :: snapshot() | nil
+  @callback list_for_workout(map(), Ecto.UUID.t()) :: [snapshot()]
+  @doc "Points an assignment, execution or training log entry at a snapshot."
+  @callback attach(map(), holder(), Ecto.UUID.t(), Ecto.UUID.t()) :: :ok | {:error, :not_found}
+  @doc "The snapshot id a holder points at, if any."
+  @callback snapshot_id_of(map(), holder(), Ecto.UUID.t()) :: Ecto.UUID.t() | nil
+  @doc "Whether one of the person's own assignments, runs or scores points at the snapshot."
+  @callback referenced_by?(map(), Ecto.UUID.t(), Ecto.UUID.t()) :: boolean()
+end
