@@ -57,6 +57,8 @@ defmodule Palee.Repo.Migrations.CreateAutomations do
       add :user_id, references(:users, type: :binary_id, on_delete: :delete_all)
       add :lead_id, references(:leads, type: :binary_id, on_delete: :delete_all)
       add :trigger_ref, :string, null: false
+      # What the trigger knew that the text needs ({days}, {package}...).
+      add :data, :map, null: false, default: %{}
       add :due_at, :utc_datetime_usec, null: false
       add :status, :string, null: false, default: "pending"
       add :channel, :string

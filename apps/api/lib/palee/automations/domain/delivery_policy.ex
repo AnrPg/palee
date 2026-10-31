@@ -6,6 +6,8 @@ defmodule Palee.Automations.Domain.DeliveryPolicy do
 
     * the recipe must still be on for the box;
     * the person must be someone the recipe is for, and still there;
+    * a profile must still be an active box member (except for the trial
+      follow-up, whose person is not one yet);
     * a box member who opted out of all automatic messages of this box, or
       of this recipe, gets nothing;
     * a lead needs contact consent; marketing recipes also need marketing
@@ -52,8 +54,9 @@ defmodule Palee.Automations.Domain.DeliveryPolicy do
   defp audience(recipe, %{kind: kind}),
     do: if(kind in recipe.audience, do: :ok, else: {:skip, "audience"})
 
-  defp allowed(recipe, %{kind: :member}, preferences) do
+  defp allowed(recipe, %{kind: :member} = member, preferences) do
     cond do
+      Map.get(recipe, :box_member_only, true) and member[:in_box] == false -> {:skip, "not_in_box"}
       opted_out_all?(preferences) -> {:skip, "opted_out"}
       recipe.key in opted_out_recipes(preferences) -> {:skip, "opted_out"}
       true -> :ok

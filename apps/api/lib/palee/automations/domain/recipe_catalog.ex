@@ -19,7 +19,15 @@ defmodule Palee.Automations.Domain.RecipeCatalog do
     * `delay_minutes` - after the trigger (events), before quiet hours;
     * `channels` - default order; the first one that reaches the person is
       used;
-    * `settings` - what a box may tune, with defaults and bounds.
+    * `settings` - what a box may tune, with defaults and bounds;
+    * `box_member_only` (default true) - a profile must still be an active
+      box member when the message goes;
+    * `url` - where the message opens in the app.
+
+  Two recipes sit next to notices Palee already sends in the app: the
+  trial follow-up of ADR-144 («Θέλω να γραφτώ») and the package expiry
+  reminder of ADR-112. Their recipes add the box's own words and default to
+  email only, so nobody gets the same thing twice in the bell.
 
   Texts live in `Palee.Automations.Domain.RecipeTexts`.
   """
@@ -43,8 +51,10 @@ defmodule Palee.Automations.Domain.RecipeCatalog do
       audience: [:member, :lead],
       purpose: :service,
       delay_minutes: 1_440,
-      channels: ["in_app", "email"],
-      settings: %{}
+      channels: ["email"],
+      settings: %{},
+      # A trial visitor is not a box member yet.
+      box_member_only: false
     },
     %{
       key: "missed_classes",
@@ -61,7 +71,7 @@ defmodule Palee.Automations.Domain.RecipeCatalog do
       audience: [:member],
       purpose: :service,
       delay_minutes: 0,
-      channels: ["in_app", "email"],
+      channels: ["email"],
       settings: %{"days_before" => {5, 1..30}}
     },
     %{

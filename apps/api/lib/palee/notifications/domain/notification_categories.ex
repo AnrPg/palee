@@ -40,7 +40,7 @@ defmodule Palee.Notifications.Domain.NotificationCategories do
       audience: "everyone",
       types: ~w(
         chat_message person_message message_request box_message box_inbox_message coaching_message
-        athlete_message
+        athlete_message box_automation
       )
     },
     %{
