@@ -19,7 +19,7 @@ defmodule PaleeWeb.AdminDataQuestionController do
 
   plug OpenApiSpex.Plug.CastAndValidate, json_render_error_v2: true
 
-  @slug %Parameter{name: :organization_slug, in: :path, required: true, schema: %Schema{type: :string}}
+  @slug %Parameter{name: :organization_slug, in: :path, required: false, schema: %Schema{type: :string}}
 
   operation(:catalogue,
     summary: "What this person can ask: the switch, the read queries and the daily limit",
