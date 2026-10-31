@@ -28,8 +28,19 @@ defmodule Palee.Status.Domain.SubscriberPolicyTest do
     assert SubscriberPolicy.on_request(%{confirmed_at: nil}) == :refresh
     assert SubscriberPolicy.on_request(%{confirmed_at: now}) == :already_confirmed
 
-    refute SubscriberPolicy.expired?(%{confirmed_at: nil, updated_at: DateTime.add(now, -3600)}, now)
-    assert SubscriberPolicy.expired?(%{confirmed_at: nil, updated_at: DateTime.add(now, -49 * 3600)}, now)
-    refute SubscriberPolicy.expired?(%{confirmed_at: now, updated_at: DateTime.add(now, -99 * 3600)}, now)
+    refute SubscriberPolicy.expired?(
+             %{confirmed_at: nil, updated_at: DateTime.add(now, -3600)},
+             now
+           )
+
+    assert SubscriberPolicy.expired?(
+             %{confirmed_at: nil, updated_at: DateTime.add(now, -49 * 3600)},
+             now
+           )
+
+    refute SubscriberPolicy.expired?(
+             %{confirmed_at: now, updated_at: DateTime.add(now, -99 * 3600)},
+             now
+           )
   end
 end

@@ -227,7 +227,9 @@ defmodule Palee.Infrastructure.Status.EctoStatusStore do
         select: s
       )
 
-    case Repo.update_all(query, set: [confirmed_at: now, confirm_token_digest: nil, updated_at: now]) do
+    case Repo.update_all(query,
+           set: [confirmed_at: now, confirm_token_digest: nil, updated_at: now]
+         ) do
       {1, [subscriber]} -> {:ok, subscriber}
       {0, _rows} -> {:error, :not_found}
     end

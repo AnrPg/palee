@@ -55,8 +55,7 @@ defmodule PaleeWeb.PublicStatusController do
 
   operation(:subscribe,
     summary: "Ask for status emails (a confirmation email is sent)",
-    description:
-      "The answer is the same whether the address is new or already subscribed.",
+    description: "The answer is the same whether the address is new or already subscribed.",
     security: [],
     request_body: S.subscribe_body(),
     responses: [accepted: {"Accepted", "application/json", S.accepted()}]

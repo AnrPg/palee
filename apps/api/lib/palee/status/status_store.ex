@@ -34,6 +34,7 @@ defmodule Palee.Status.StatusStore do
   @impl true
   def confirm_subscriber(digest, not_before, now),
     do: impl().confirm_subscriber(digest, not_before, now)
+
   @impl true
   def delete_subscriber(id), do: impl().delete_subscriber(id)
   @impl true

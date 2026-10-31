@@ -31,8 +31,7 @@ defmodule Palee.Status do
 
     %{
       samples: StatusStore.delete_samples_before(Date.add(today, -Uptime.max_days())),
-      unconfirmed:
-        StatusStore.delete_unconfirmed_before(SubscriberPolicy.unconfirmed_before(now))
+      unconfirmed: StatusStore.delete_unconfirmed_before(SubscriberPolicy.unconfirmed_before(now))
     }
   end
 

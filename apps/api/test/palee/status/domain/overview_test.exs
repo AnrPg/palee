@@ -33,7 +33,13 @@ defmodule Palee.Status.Domain.OverviewTest do
   end
 
   test "incidents raise a component's status; a critical one is a major outage" do
-    incident = %{kind: "incident", status: "identified", impact: "minor", components: ["payments"]}
+    incident = %{
+      kind: "incident",
+      status: "identified",
+      impact: "minor",
+      components: ["payments"]
+    }
+
     result = Overview.build(states(), [incident], @now)
     assert status_of(result, "payments") == "degraded"
     assert result.status == "degraded"

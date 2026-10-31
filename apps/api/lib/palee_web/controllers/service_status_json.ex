@@ -56,7 +56,12 @@ defmodule PaleeWeb.ServiceStatusJSON do
         |> List.wrap()
         |> Enum.sort_by(& &1.inserted_at, {:desc, DateTime})
         |> Enum.map(fn update ->
-          %{id: update.id, status: update.status, body: update.body, created_at: update.inserted_at}
+          %{
+            id: update.id,
+            status: update.status,
+            body: update.body,
+            created_at: update.inserted_at
+          }
         end)
     }
   end

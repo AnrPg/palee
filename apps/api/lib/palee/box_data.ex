@@ -49,7 +49,8 @@ defmodule Palee.BoxData do
   def export_context(%{status: "pending", id: id, organization_id: organization_id}, user_id)
       when is_binary(user_id),
       do:
-        {:ok, %BoxExportContext{organization_id: organization_id, export_id: id, user_id: user_id}}
+        {:ok,
+         %BoxExportContext{organization_id: organization_id, export_id: id, user_id: user_id}}
 
   def export_context(_export, _user_id), do: {:error, :box_export_not_found}
 

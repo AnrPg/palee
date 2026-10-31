@@ -50,6 +50,7 @@ defmodule Palee.Scheduling do
 
   @doc "ADR-341: classes held in `[from, to)` with coach and attendance counts."
   defdelegate coach_classes(context, from, to), to: Palee.Scheduling.SchedulingStore
+
   @doc "The class levels a class type can have (ADR-197 reads them for Γύρω μου)."
   defdelegate class_levels(), to: Palee.Scheduling.ClassType, as: :levels
   defdelegate create_slot(context, params), to: CreateSlot, as: :call

@@ -65,7 +65,11 @@ defmodule PaleeWeb.AdminDataExportControllerTest do
     refute Enum.any?(files, fn {_name, body} -> body =~ "credentials" end)
 
     assert %{"code" => "box_export_too_soon"} =
-             conn |> recycle() |> put_bearer_token(box.owner) |> post(path(box)) |> json_response(409)
+             conn
+             |> recycle()
+             |> put_bearer_token(box.owner)
+             |> post(path(box))
+             |> json_response(409)
   end
 
   test "staff without the owner's right and members cannot ask", %{conn: conn, box: box} do

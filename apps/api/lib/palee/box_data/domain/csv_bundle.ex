@@ -67,7 +67,8 @@ defmodule Palee.BoxData.Domain.CsvBundle do
 
   @doc "One table as CSV (BOM, header, rows)."
   def csv(rows) when is_list(rows) do
-    columns = rows |> Enum.flat_map(&Map.keys/1) |> Enum.uniq() |> Enum.map(&to_string/1) |> Enum.sort()
+    columns =
+      rows |> Enum.flat_map(&Map.keys/1) |> Enum.uniq() |> Enum.map(&to_string/1) |> Enum.sort()
 
     lines =
       [Enum.map(columns, &cell/1)] ++
@@ -80,8 +81,11 @@ defmodule Palee.BoxData.Domain.CsvBundle do
 
   defp fetch(row, column) do
     case Map.fetch(row, column) do
-      {:ok, value} -> value
-      :error -> Enum.find_value(row, fn {key, value} -> if to_string(key) == column, do: value end)
+      {:ok, value} ->
+        value
+
+      :error ->
+        Enum.find_value(row, fn {key, value} -> if to_string(key) == column, do: value end)
     end
   end
 
@@ -89,7 +93,10 @@ defmodule Palee.BoxData.Domain.CsvBundle do
   def cell(nil), do: ""
   def cell(value) when is_boolean(value), do: to_string(value)
   def cell(value) when is_integer(value) or is_float(value), do: to_string(value)
-  def cell(value) when is_map(value) or is_list(value), do: value |> Jason.encode!() |> quote_text()
+
+  def cell(value) when is_map(value) or is_list(value),
+    do: value |> Jason.encode!() |> quote_text()
+
   def cell(value) when is_atom(value), do: value |> Atom.to_string() |> cell()
 
   def cell(value) when is_binary(value) do

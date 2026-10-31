@@ -19,7 +19,6 @@ defmodule Palee.Application.TenantDataContexts do
     BoxSite,
     Buddies,
     Channels,
-
     CoachPay,
     Coaching,
     Community,
@@ -48,7 +47,6 @@ defmodule Palee.Application.TenantDataContexts do
     Perks,
     Referrals,
     Retention,
-
     ReviewAsks,
     Scaling,
     Scheduling,

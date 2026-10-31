@@ -24,7 +24,12 @@ defmodule Palee.Status.Domain.IncidentPolicyTest do
       assert attrs.components == ["app", "payments"]
       assert attrs.started_at == @now
       assert attrs.resolved_at == nil
-      assert attrs.update == %{status: "investigating", body: "We are looking into it.", notify: true}
+
+      assert attrs.update == %{
+               status: "investigating",
+               body: "We are looking into it.",
+               notify: true
+             }
     end
 
     test "a maintenance needs a window and starts when the window starts" do
@@ -55,9 +60,15 @@ defmodule Palee.Status.Domain.IncidentPolicyTest do
 
     test "refuses bad input" do
       base = %{"title" => "Slow", "body" => "Note"}
-      assert {:error, :invalid_status_kind} = IncidentPolicy.validate_new(Map.put(base, "kind", "x"), @now)
-      assert {:error, :invalid_status_title} = IncidentPolicy.validate_new(%{base | "title" => "ab"}, @now)
-      assert {:error, :invalid_status_impact} = IncidentPolicy.validate_new(Map.put(base, "impact", "huge"), @now)
+
+      assert {:error, :invalid_status_kind} =
+               IncidentPolicy.validate_new(Map.put(base, "kind", "x"), @now)
+
+      assert {:error, :invalid_status_title} =
+               IncidentPolicy.validate_new(%{base | "title" => "ab"}, @now)
+
+      assert {:error, :invalid_status_impact} =
+               IncidentPolicy.validate_new(Map.put(base, "impact", "huge"), @now)
 
       assert {:error, :unknown_status_component} =
                IncidentPolicy.validate_new(Map.put(base, "components", ["kitchen"]), @now)
@@ -65,7 +76,8 @@ defmodule Palee.Status.Domain.IncidentPolicyTest do
       assert {:error, :invalid_status_transition} =
                IncidentPolicy.validate_new(Map.put(base, "status", "scheduled"), @now)
 
-      assert {:error, :invalid_status_note} = IncidentPolicy.validate_new(%{base | "body" => " "}, @now)
+      assert {:error, :invalid_status_note} =
+               IncidentPolicy.validate_new(%{base | "body" => " "}, @now)
     end
 
     test "an incident published already resolved is closed at once" do
@@ -82,7 +94,11 @@ defmodule Palee.Status.Domain.IncidentPolicyTest do
       incident = %{kind: "incident", status: "investigating"}
 
       assert {:ok, %{status: "monitoring", resolved_at: nil}} =
-               IncidentPolicy.validate_update(incident, %{status: "monitoring", body: "Fix out"}, @now)
+               IncidentPolicy.validate_update(
+                 incident,
+                 %{status: "monitoring", body: "Fix out"},
+                 @now
+               )
 
       assert {:ok, %{status: "resolved", resolved_at: @now, notify: true}} =
                IncidentPolicy.validate_update(incident, %{status: "resolved", body: "Done"}, @now)
@@ -90,7 +106,11 @@ defmodule Palee.Status.Domain.IncidentPolicyTest do
 
     test "a closed incident takes no more steps; statuses must fit the kind" do
       assert {:error, :status_incident_closed} =
-               IncidentPolicy.validate_update(%{kind: "incident", status: "resolved"}, %{body: "x"}, @now)
+               IncidentPolicy.validate_update(
+                 %{kind: "incident", status: "resolved"},
+                 %{body: "x"},
+                 @now
+               )
 
       assert {:error, :invalid_status_transition} =
                IncidentPolicy.validate_update(
@@ -127,7 +147,12 @@ defmodule Palee.Status.Domain.IncidentPolicyTest do
     assert IncidentPolicy.active?(window, @now)
     refute IncidentPolicy.upcoming?(window, @now)
 
-    later = %{window | scheduled_for: ~U[2026-11-03 09:00:00Z], scheduled_until: ~U[2026-11-03 10:00:00Z]}
+    later = %{
+      window
+      | scheduled_for: ~U[2026-11-03 09:00:00Z],
+        scheduled_until: ~U[2026-11-03 10:00:00Z]
+    }
+
     refute IncidentPolicy.active?(later, @now)
     assert IncidentPolicy.upcoming?(later, @now)
 

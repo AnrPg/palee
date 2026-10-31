@@ -16,9 +16,30 @@ defmodule Palee.Status.Domain.UptimeTest do
     last = ~D[2026-11-02]
 
     samples = [
-      %{component: "app", day: ~D[2026-11-01], total: 1440, operational: 1440, degraded: 0, down: 0},
-      %{component: "app", day: ~D[2026-11-02], total: 600, operational: 500, degraded: 80, down: 20},
-      %{component: "search", day: ~D[2026-11-02], total: 100, operational: 90, degraded: 0, down: 10}
+      %{
+        component: "app",
+        day: ~D[2026-11-01],
+        total: 1440,
+        operational: 1440,
+        degraded: 0,
+        down: 0
+      },
+      %{
+        component: "app",
+        day: ~D[2026-11-02],
+        total: 600,
+        operational: 500,
+        degraded: 80,
+        down: 20
+      },
+      %{
+        component: "search",
+        day: ~D[2026-11-02],
+        total: 100,
+        operational: 90,
+        degraded: 0,
+        down: 10
+      }
     ]
 
     [app, search | rest] = Uptime.history(samples, last, 3)

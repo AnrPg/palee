@@ -9,7 +9,8 @@ defmodule Palee.BoxData.ExportStore do
   alias Palee.Infrastructure.Tenancy.RepoContext
 
   @impl true
-  def list(organization_id), do: tenant(organization_id, fn -> adapter().list(organization_id) end)
+  def list(organization_id),
+    do: tenant(organization_id, fn -> adapter().list(organization_id) end)
 
   @impl true
   def get(id, organization_id),

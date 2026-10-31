@@ -218,9 +218,14 @@ defmodule Palee.Status.Domain.IncidentPolicy do
 
   defp text(params, key) do
     case get(params, key) do
-      value when is_binary(value) -> value
-      value when is_atom(value) and not is_nil(value) and not is_boolean(value) -> to_string(value)
-      _other -> nil
+      value when is_binary(value) ->
+        value
+
+      value when is_atom(value) and not is_nil(value) and not is_boolean(value) ->
+        to_string(value)
+
+      _other ->
+        nil
     end
   end
 
