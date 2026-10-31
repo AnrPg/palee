@@ -91,7 +91,10 @@ config :palee, Oban,
        # ADR-252: reminders before a client's health certificate expires.
        {"45 8 * * *", Palee.Workers.HealthCertificateRemindersJob},
        # ADR-280 verification: unreviewed selfies after 7 days, SMS codes after a day.
-       {"5 4 * * *", Palee.Workers.PartnerVerificationRetention}
+       {"5 4 * * *", Palee.Workers.PartnerVerificationRetention},
+       # ADR-364: the status page probes every component each minute; a daily sweep.
+       {"* * * * *", Palee.Workers.StatusProbeJob},
+       {"33 3 * * *", Palee.Workers.StatusProbeJob, args: %{"sweep" => true}}
      ]}
   ],
   queues: [
@@ -143,6 +146,24 @@ config :palee, :start_oban, true
 config :palee, :execution_abandonment_hours, 6
 config :palee, :redis_url, System.get_env("REDIS_URL", "redis://localhost:6379")
 config :palee, :readiness_checker, Palee.Infrastructure.Readiness.Live
+
+# ADR-364: the public status page. Payments and fiscal are probed by reaching
+# the providers' APIs (no credentials are sent; any answer below 500 counts).
+# ADR-365: the box's own data export.
+config :palee, :box_data_export_store, Palee.Infrastructure.BoxData.EctoExportStore
+
+config :palee, :status_store, Palee.Infrastructure.Status.EctoStatusStore
+config :palee, :status_probe, Palee.Infrastructure.Status.LiveProbe
+config :palee, :status_clock, Palee.Infrastructure.Status.SystemClock
+config :palee, :status_http, req_options: []
+config :palee, :status_page_url, nil
+
+config :palee, :status_probe_targets, [
+  %{component: "payments", name: "stripe", url: "https://api.stripe.com/v1"},
+  %{component: "payments", name: "viva", url: "https://api.vivapayments.com"},
+  %{component: "fiscal", name: "mydata", url: "https://mydatapi.aade.gr/myDATA"}
+]
+
 config :palee, :identity_user_store, Palee.Infrastructure.Identity.EctoUserStore
 config :palee, :password_reset_store, Palee.Infrastructure.Identity.EctoPasswordResetStore
 config :palee, :login_device_store, Palee.Infrastructure.Identity.EctoLoginDeviceStore

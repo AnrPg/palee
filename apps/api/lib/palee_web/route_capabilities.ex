@@ -64,6 +64,8 @@ defmodule PaleeWeb.RouteCapabilities do
     W.InventoryController => [:manage_inventory],
     W.ShopController => [:manage_shop],
     W.OwnerOrganizationController => [:manage_organization_lifecycle],
+    # ADR-365: a copy of all the box's data is for owners.
+    W.AdminDataExportController => [:manage_organization_lifecycle],
     W.AdminWorkoutTimerPreviewController => [:manage_workouts],
     W.AdminBrandingController => [:manage_settings],
     W.AdminPublicProfileController => [:manage_settings],

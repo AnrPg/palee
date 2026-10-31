@@ -34,6 +34,8 @@ defmodule Palee.Email.Templates do
     security_signed_out_everywhere: Palee.Email.Templates.SecuritySignedOutEverywhere,
     share_link: Palee.Email.Templates.ShareLink,
     signup_attempt_existing: Palee.Email.Templates.SignupAttemptExisting,
+    status_subscription_confirm: Palee.Email.Templates.StatusSubscriptionConfirm,
+    status_update: Palee.Email.Templates.StatusUpdate,
     verify_email: Palee.Email.Templates.VerifyEmail
   }
 

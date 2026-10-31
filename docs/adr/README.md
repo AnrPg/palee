@@ -291,3 +291,6 @@ must have an ADR. See `template.md` for the format.
 | ADR-353 | Website forms (trial, contact) through an outbox to the `LeadIntake` port W2 implements; idempotent on submission id; personal fields cleared after delivery | Accepted |
 | ADR-354 | Box tags (Meta Pixel, GA4, GTM) load only after consent; equal accept/reject; 6-month choice; insert-only pseudonymous consent log; optional Meta Conversions API with hashed data and an encrypted token | Accepted |
 | ADR-355 | Google review asks at an attendance milestone for every eligible member alike; never gated by a score or rewarded; opt-out; staff see counts only | Accepted |
+
+| ADR-364 | Public status page (CP-G4): per-minute probes of app, search, files, email, payments and fiscal; incidents and maintenance from the platform console; public cacheable data API with 90-day uptime; double opt-in status emails; documented option to host it outside the cluster | Accepted |
+| ADR-365 | The box downloads all its data at any time (CP-G5): owners get one ZIP of CSV files built from every context's ADR-117 export in their own RLS session, without members' personal tables or secrets, one a day, kept 7 days | Accepted |

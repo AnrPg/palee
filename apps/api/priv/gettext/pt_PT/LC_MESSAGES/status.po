@@ -1,0 +1,56 @@
+msgid ""
+msgstr ""
+"Language: pt_PT\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Confirm your Palee status emails"
+msgstr "Confirma os teus e-mails de estado do Palee"
+
+msgid "Confirm"
+msgstr "Confirmar"
+
+msgid "Someone asked to get an email when Palee has an incident or planned maintenance. Confirm and we will write to this address only then."
+msgstr "Alguém pediu para receber um e-mail quando o Palee tiver um incidente ou uma manutenção programada. Confirma e só escreveremos para este endereço nessas alturas."
+
+msgid "If it wasn't you, ignore this email: nothing will be sent."
+msgstr "Se não foste tu, ignora este e-mail: nada será enviado."
+
+msgid "Open the status page"
+msgstr "Abrir a página de estado"
+
+msgid "Stop these emails"
+msgstr "Deixar de receber estes e-mails"
+
+msgid "Status"
+msgstr "Estado"
+
+msgid "You get these emails because you asked for them on the status page."
+msgstr "Recebes estes e-mails porque os pediste na página de estado."
+
+msgid "When"
+msgstr "Quando"
+
+msgid "Investigating"
+msgstr "Em análise"
+
+msgid "Identified"
+msgstr "Causa identificada"
+
+msgid "Monitoring"
+msgstr "Em monitorização"
+
+msgid "Resolved"
+msgstr "Resolvido"
+
+msgid "Scheduled maintenance"
+msgstr "Manutenção programada"
+
+msgid "Maintenance in progress"
+msgstr "Manutenção em curso"
+
+msgid "Maintenance completed"
+msgstr "Manutenção concluída"
+
+msgid "You get this email because this address was entered on the Palee status page."
+msgstr "Recebes este e-mail porque este endereço foi introduzido na página de estado do Palee."

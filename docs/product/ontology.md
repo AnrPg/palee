@@ -540,6 +540,7 @@ Staff screens only (Fiscal). The German and Austrian texts a receipt prints are 
 | Your data | Τα δεδομένα σου | `/me/settings#your-data` | The Settings section with «Λήψη των δεδομένων μου» and the links to the privacy policy and the terms. | Delete profile or account. |
 | Download my data | Λήψη των δεδομένων μου | `POST /me/data-exports` | One request for a copy of all of the person's own data; ready in the background, with an email when it is. | Journal export («Εξαγωγή», only the journal); accounting export. |
 | Data file | Αρχείο δεδομένων | `personal_data_exports` | The ZIP (JSON files) «Λήψη των δεδομένων μου» makes; downloadable for 7 days, one a day. | Audit archive; a box's tenant export (ADR-117). |
+| Download the box's data | Λήψη των δεδομένων του box | `POST /api/org/:slug/admin/data-exports` | For owners: one copy of all the box's own data (every table the owner may read), as a ZIP of CSV files, at any time, one a day, kept 7 days. (ADR-365) | Download my data (a person's own data); the Palee team's tenant export before a purge (ADR-117); accounting export. |
 | Sub-processor | Εκτελών την επεξεργασία | `lib/legal/sub-processors.ts` | A company that processes personal data for Palee (email, hosting, maps, payments…), listed on the privacy policy. | Payment provider (the box's own choice). |
 
 ### 4.20 Structured WOD (ADR-270)
@@ -643,6 +644,18 @@ Leaderboard filters, WOD snapshots, the fitness profile, visit badges, calendar 
 | Came through | Ήρθε μέσω | `via` (`event`, `referral`) | How a first-time visitor came: a box event or a member's invitation. | |
 | Add to calendar | Προσθήκη στο ημερολόγιο | `GET /bookings/:id/calendar.ics` | One booking as an .ics invite; a cancelled one comes as a cancellation. | Calendar subscription («Συνδρομή ημερολογίου», the personal feed URL). |
 | Staff note | Σημείωση για το staff | `coaching_notes.audience = staff` | A note about a member that every staff member of the box reads, the front desk included. | Private coach note («Ιδιωτική σημείωση», ADR-101). |
+
+### 4.25 Service status (ADR-364)
+
+| English | Ελληνικά | Code | What it is | Not to be confused with |
+|---|---|---|---|---|
+| Status page | Σελίδα κατάστασης | `/status`, `GET /api/public/status` | The public page that says whether Palee works now, what is wrong, what maintenance is planned, and the uptime of the last 90 days. No sign-in. | Box status, the business's demo/active status. |
+| Component | Υπηρεσία | `status_component_states.component` | One part of Palee on the status page: Η εφαρμογή (app), Αναζήτηση (search), Αρχεία και φωτογραφίες (files), Email, Online πληρωμές (payments), Διαβίβαση παραστατικών (fiscal). | Bounded context (code). |
+| Operational / Degraded / Down | Λειτουργεί / Με καθυστερήσεις / Εκτός λειτουργίας | `operational`, `degraded`, `down` | A component's state. Plus «Συντήρηση» during planned maintenance and «Άγνωστο» when no check ran recently. | |
+| Incident | Πρόβλημα | `status_incidents.kind: incident` | Something wrong the Palee team tells everyone about, with steps: Διερευνάται → Εντοπίστηκε → Παρακολουθείται → Επιλύθηκε. | «Αναφορά» (a member's report); injury («Τραυματισμός»). Never «Συμβάν» in member screens. |
+| Planned maintenance | Προγραμματισμένη συντήρηση | `status_incidents.kind: maintenance` | Work announced ahead with a window: Προγραμματισμένη → Σε εξέλιξη → Ολοκληρώθηκε. | Cleaning («Καθαριότητα»), machine maintenance in Inventory. |
+| Uptime | Διαθεσιμότητα | `status_daily_samples` | The share of checks that found a component working, per day and over 90 days. | |
+| Status emails | Email κατάστασης | `status_subscribers` | Emails about incidents and maintenance to anyone who asked for them on the status page (confirmed by email first; one link stops them). | Notifications of the app; marketing emails. |
 
 ## 5. Name clashes found, and proposals
 

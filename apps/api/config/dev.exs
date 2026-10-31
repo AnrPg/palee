@@ -102,3 +102,6 @@ config :palee, :box_site_lead_intake, Palee.Infrastructure.BoxSite.SandboxLeadIn
 config :palee, :box_site_dns, Palee.Infrastructure.BoxSite.SandboxDomainDns
 config :palee, :box_site_tls_probe, Palee.Infrastructure.BoxSite.SandboxTlsProbe
 config :palee, :box_site_conversions_api, Palee.Infrastructure.BoxSite.SandboxConversionsApi
+
+# ADR-364: no calls to payment or tax authority APIs from a laptop.
+config :palee, :status_probe_targets, []

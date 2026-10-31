@@ -140,3 +140,7 @@ config :palee, :box_site_dns, Palee.Infrastructure.BoxSite.SandboxDomainDns
 config :palee, :box_site_tls_probe, Palee.Infrastructure.BoxSite.SandboxTlsProbe
 config :palee, :box_site_conversions_api, Palee.Infrastructure.BoxSite.SandboxConversionsApi
 config :palee, :box_site_http, req_options: [plug: {Req.Test, Palee.BoxSiteHttp}]
+
+# ADR-364: the status page probes with the sandbox; LiveProbe tests plug Req.Test.
+config :palee, :status_probe, Palee.Infrastructure.Status.SandboxProbe
+config :palee, :status_http, req_options: [plug: {Req.Test, Palee.StatusHttp}]
