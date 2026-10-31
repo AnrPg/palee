@@ -95,7 +95,11 @@ defmodule PaleeWeb.AdminAutomationController do
   )
 
   def deliveries(conn, params) do
-    params = params |> Params.stringify() |> Map.new(fn {k, v} -> {k, if(is_integer(v), do: to_string(v), else: v)} end)
+    params =
+      params
+      |> Params.stringify()
+      |> Map.new(fn {k, v} -> {k, if(is_integer(v), do: to_string(v), else: v)} end)
+
     json(conn, %{deliveries: StaffAutomations.deliveries(context(conn), params)})
   end
 

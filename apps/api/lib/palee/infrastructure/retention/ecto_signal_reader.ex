@@ -68,8 +68,7 @@ defmodule Palee.Infrastructure.Retention.EctoSignalReader do
       where: a.organization_id == ^org and a.user_id in ^ids and a.status == "attended",
       group_by: a.user_id,
       select:
-        {a.user_id,
-         fragment("count(*) FILTER (WHERE ? >= ?)", a.marked_at, ^recent_from),
+        {a.user_id, fragment("count(*) FILTER (WHERE ? >= ?)", a.marked_at, ^recent_from),
          fragment(
            "count(*) FILTER (WHERE ? >= ? AND ? < ?)",
            a.marked_at,

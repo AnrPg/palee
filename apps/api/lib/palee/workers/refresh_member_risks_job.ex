@@ -25,7 +25,10 @@ defmodule Palee.Workers.RefreshMemberRisksJob do
     MembersAtRisk.refresh(context, now)
   rescue
     error ->
-      Logger.error("member risk refresh failed for #{context.organization_id}: #{Exception.message(error)}")
+      Logger.error(
+        "member risk refresh failed for #{context.organization_id}: #{Exception.message(error)}"
+      )
+
       %{}
   end
 end

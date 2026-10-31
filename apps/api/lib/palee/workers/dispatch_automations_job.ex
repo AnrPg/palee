@@ -25,7 +25,10 @@ defmodule Palee.Workers.DispatchAutomationsJob do
     DispatchAutomations.run(context, now)
   rescue
     error ->
-      Logger.error("automation dispatch failed for #{context.organization_id}: #{Exception.message(error)}")
+      Logger.error(
+        "automation dispatch failed for #{context.organization_id}: #{Exception.message(error)}"
+      )
+
       %{}
   end
 end

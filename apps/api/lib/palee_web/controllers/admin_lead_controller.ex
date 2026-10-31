@@ -70,7 +70,8 @@ defmodule PaleeWeb.AdminLeadController do
       }
     ],
     responses: [
-      ok: {"Tasks", "application/json", G.one(:tasks, %Schema{type: :array, items: G.lead_task()})}
+      ok:
+        {"Tasks", "application/json", G.one(:tasks, %Schema{type: :array, items: G.lead_task()})}
     ]
   )
 

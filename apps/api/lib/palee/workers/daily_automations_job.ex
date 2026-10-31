@@ -28,7 +28,10 @@ defmodule Palee.Workers.DailyAutomationsJob do
     queued
   rescue
     error ->
-      Logger.error("daily automations failed for #{context.organization_id}: #{Exception.message(error)}")
+      Logger.error(
+        "daily automations failed for #{context.organization_id}: #{Exception.message(error)}"
+      )
+
       0
   end
 end

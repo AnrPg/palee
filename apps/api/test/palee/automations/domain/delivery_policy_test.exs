@@ -40,7 +40,9 @@ defmodule Palee.Automations.Domain.DeliveryPolicyTest do
 
     assert {:skip, "opted_out"} =
              DeliveryPolicy.decide(
-               facts("birthday", %{preferences: %{opted_out_at: nil, opted_out_recipes: ["birthday"]}})
+               facts("birthday", %{
+                 preferences: %{opted_out_at: nil, opted_out_recipes: ["birthday"]}
+               })
              )
 
     assert {:skip, "recipient_gone"} = DeliveryPolicy.decide(facts("welcome", %{recipient: nil}))
@@ -71,7 +73,9 @@ defmodule Palee.Automations.Domain.DeliveryPolicyTest do
 
   test "inside quiet hours it waits" do
     night = ~U[2027-07-01 20:30:00Z]
-    assert {:defer, ~U[2027-07-02 06:00:00Z]} = DeliveryPolicy.decide(facts("welcome", %{now: night}))
+
+    assert {:defer, ~U[2027-07-02 06:00:00Z]} =
+             DeliveryPolicy.decide(facts("welcome", %{now: night}))
   end
 
   test "failures are retried with growing waits, then given up" do

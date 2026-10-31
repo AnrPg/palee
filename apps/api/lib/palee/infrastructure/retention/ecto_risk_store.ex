@@ -28,7 +28,9 @@ defmodule Palee.Infrastructure.Retention.EctoRiskStore do
 
   @impl true
   def delete_except(context, user_ids) do
-    {count, _rows} = context |> scoped() |> where([r], r.user_id not in ^user_ids) |> Repo.delete_all()
+    {count, _rows} =
+      context |> scoped() |> where([r], r.user_id not in ^user_ids) |> Repo.delete_all()
+
     count
   end
 

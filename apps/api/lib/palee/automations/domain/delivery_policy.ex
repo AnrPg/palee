@@ -56,10 +56,17 @@ defmodule Palee.Automations.Domain.DeliveryPolicy do
 
   defp allowed(recipe, %{kind: :member} = member, preferences) do
     cond do
-      Map.get(recipe, :box_member_only, true) and member[:in_box] == false -> {:skip, "not_in_box"}
-      opted_out_all?(preferences) -> {:skip, "opted_out"}
-      recipe.key in opted_out_recipes(preferences) -> {:skip, "opted_out"}
-      true -> :ok
+      Map.get(recipe, :box_member_only, true) and member[:in_box] == false ->
+        {:skip, "not_in_box"}
+
+      opted_out_all?(preferences) ->
+        {:skip, "opted_out"}
+
+      recipe.key in opted_out_recipes(preferences) ->
+        {:skip, "opted_out"}
+
+      true ->
+        :ok
     end
   end
 
@@ -100,7 +107,9 @@ defmodule Palee.Automations.Domain.DeliveryPolicy do
 
   @doc "After a failed attempt: `{:retry, at}` or `:give_up`."
   def after_failure(attempts, %DateTime{} = now) when attempts < @max_attempts,
-    do: {:retry, DateTime.add(now, @base_backoff_seconds * Integer.pow(2, max(attempts, 1) - 1), :second)}
+    do:
+      {:retry,
+       DateTime.add(now, @base_backoff_seconds * Integer.pow(2, max(attempts, 1) - 1), :second)}
 
   def after_failure(_attempts, _now), do: :give_up
 end

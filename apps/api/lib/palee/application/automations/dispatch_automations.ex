@@ -84,7 +84,8 @@ defmodule Palee.Application.Automations.DispatchAutomations do
   rescue
     error ->
       Logger.error(
-        "automation_delivery_crashed id=#{delivery.id} " <> Exception.format(:error, error, __STACKTRACE__)
+        "automation_delivery_crashed id=#{delivery.id} " <>
+          Exception.format(:error, error, __STACKTRACE__)
       )
 
       retry(context, delivery, "crashed", now)

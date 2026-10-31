@@ -95,10 +95,11 @@ defmodule Palee.Leads.GrowthRLSTest do
       assert stamped == other
     end)
 
-    assert lead_s == as_session(conn, nil, org_s, false, fn ->
-             %{rows: [[id]]} = Postgrex.query!(conn, "SELECT id FROM leads", [])
-             Ecto.UUID.load!(id)
-           end)
+    assert lead_s ==
+             as_session(conn, nil, org_s, false, fn ->
+               %{rows: [[id]]} = Postgrex.query!(conn, "SELECT id FROM leads", [])
+               Ecto.UUID.load!(id)
+             end)
 
     Postgrex.query!(conn, "DELETE FROM organizations WHERE id = ANY($1)", [[org, other]])
   end

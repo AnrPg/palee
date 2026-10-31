@@ -106,7 +106,9 @@ defmodule Palee.Repo.Migrations.CreateAutomations do
     create unique_index(:automation_member_preferences, [:organization_id, :user_id])
     create index(:automation_member_preferences, [:user_id])
 
-    create constraint(:automation_member_preferences, :automation_member_preferences_birthday_check,
+    create constraint(
+             :automation_member_preferences,
+             :automation_member_preferences_birthday_check,
              check:
                "(birthday_month IS NULL AND birthday_day IS NULL) OR " <>
                  "(birthday_month BETWEEN 1 AND 12 AND birthday_day BETWEEN 1 AND 31)"

@@ -1,7 +1,7 @@
 defmodule Palee.Application.Leads.PublicIntake do
   @moduledoc """
   ADR-345: the box's public «Ενδιαφέρομαι» form and join links
-  (`PaleeWeb.PublicLeadController`), for people without a Palee account.
+  (the public lead API), for people without a Palee account.
   Only a published box page (ADR-142) takes enquiries, by its slug or a
   former one.
 

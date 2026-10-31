@@ -52,7 +52,11 @@ defmodule PaleeWeb.Schemas.Growth do
         phone: %Schema{type: :string, maxLength: 40},
         message: %Schema{type: :string, maxLength: 4_000},
         locale: %Schema{type: :string, maxLength: 8},
-        interests: %Schema{type: :array, items: %Schema{type: :string, maxLength: 40}, maxItems: 10},
+        interests: %Schema{
+          type: :array,
+          items: %Schema{type: :string, maxLength: 40},
+          maxItems: 10
+        },
         campaign: %Schema{type: :string, maxLength: 200},
         kind: %Schema{type: :string, enum: ["trial", "contact"]},
         preferred_time: %Schema{type: :string, maxLength: 120},
@@ -390,7 +394,11 @@ defmodule PaleeWeb.Schemas.Growth do
   def recipe_preview do
     %Schema{
       type: :object,
-      properties: %{recipe: %Schema{type: :string}, subject: %Schema{type: :string}, body: %Schema{type: :string}},
+      properties: %{
+        recipe: %Schema{type: :string},
+        subject: %Schema{type: :string},
+        body: %Schema{type: :string}
+      },
       required: [:body, :recipe, :subject]
     }
   end
@@ -418,7 +426,17 @@ defmodule PaleeWeb.Schemas.Growth do
           required: [:kind, :lead_id, :name, :user_id]
         }
       },
-      required: [:attempts, :channel, :due_at, :id, :recipe, :recipient, :sent_at, :skip_reason, :status]
+      required: [
+        :attempts,
+        :channel,
+        :due_at,
+        :id,
+        :recipe,
+        :recipient,
+        :sent_at,
+        :skip_reason,
+        :status
+      ]
     }
   end
 

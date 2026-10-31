@@ -16,7 +16,8 @@ defmodule Palee.Retention.Domain.RiskScoreTest do
   }
 
   test "a steady member is low risk with no reasons" do
-    assert %{score: 0, level: "low", reasons: [], suggested_action: "none"} = RiskScore.score(@steady)
+    assert %{score: 0, level: "low", reasons: [], suggested_action: "none"} =
+             RiskScore.score(@steady)
   end
 
   test "a member who stopped coming is high risk, with every reason explained" do
@@ -29,8 +30,10 @@ defmodule Palee.Retention.Domain.RiskScoreTest do
       })
 
     assert result.level == "high"
+
     assert [%{code: "attendance_drop", points: 37} = drop, %{code: "absent", points: 35} | _] =
              result.reasons
+
     assert drop.facts == %{"per_week_now" => 0.3, "per_week_usual" => 3.0}
     assert Enum.any?(result.reasons, &(&1.code == "no_upcoming_bookings"))
     assert result.score == Enum.sum(Enum.map(result.reasons, & &1.points))
@@ -38,7 +41,13 @@ defmodule Palee.Retention.Domain.RiskScoreTest do
   end
 
   test "a package ending without renewal and an overdue invoice suggest the money conversation" do
-    result = RiskScore.score(%{@steady | package_ends_in_days: 3, package_renews: false, overdue_invoices: 1})
+    result =
+      RiskScore.score(%{
+        @steady
+        | package_ends_in_days: 3,
+          package_renews: false,
+          overdue_invoices: 1
+      })
 
     assert result.level == "medium"
     assert [%{code: "package_ending"}, %{code: "payment_overdue"}] = result.reasons

@@ -2,7 +2,7 @@ defmodule Palee.Application.Leads.CaptureLead do
   @moduledoc """
   ADR-344/345: the one way a lead enters a box, whatever brought it: the
   box's public form (`Palee.Application.Leads.PublicIntake`), the box
-  website's forms (W4, `Palee.Infrastructure.Leads.BoxSiteIntake`), the
+  website's forms (W4, through the box site intake adapter), the
   prospect assistant (W8), a join link, staff typing it in, or a CSV row.
 
   `call(context, attrs, opts)` with the box's `context`

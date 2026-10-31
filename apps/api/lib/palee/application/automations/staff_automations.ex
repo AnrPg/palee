@@ -1,6 +1,6 @@
 defmodule Palee.Application.Automations.StaffAutomations do
   @moduledoc """
-  ADR-346: the box's «Αυτοματισμοί» (`PaleeWeb.AdminAutomationController`).
+  ADR-346: the box's «Αυτοματισμοί» (the admin automations API).
   The ready recipes, each with its switch, text, channels and delay; a
   preview of the message; and what was sent lately. Switching a recipe off
   cancels what it had queued.
@@ -46,7 +46,9 @@ defmodule Palee.Application.Automations.StaffAutomations do
         Automations.cancel_pending(context, %{recipe: recipe_key, reason: "recipe_off"})
       end
 
-      stats = Automations.delivery_stats(context, DateTime.add(Automations.now(), -@stats_days, :day))
+      stats =
+        Automations.delivery_stats(context, DateTime.add(Automations.now(), -@stats_days, :day))
+
       {:ok, present(recipe, saved, Map.get(stats, recipe_key, %{}), locale)}
     end
   end
@@ -112,7 +114,11 @@ defmodule Palee.Application.Automations.StaffAutomations do
       {:ok,
        %{
          recipe: recipe.key,
-         subject: Automations.render(params["subject"] || (automation && automation.subject) || subject, vars),
+         subject:
+           Automations.render(
+             params["subject"] || (automation && automation.subject) || subject,
+             vars
+           ),
          body: Automations.render(params["body"] || (automation && automation.body) || body, vars)
        }}
     end

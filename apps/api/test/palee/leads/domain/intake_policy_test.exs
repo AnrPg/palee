@@ -46,15 +46,24 @@ defmodule Palee.Leads.Domain.IntakePolicyTest do
     end
 
     test "staff-entered leads imply contact consent; marketing is separate" do
-      assert {:ok, %{consent_contact_at: @now, consent_marketing_at: @now, consent_text_version: "v2"}} =
-               IntakePolicy.consent(%{contact: true, marketing: true, text_version: "v2"}, "manual", @now)
+      assert {:ok,
+              %{consent_contact_at: @now, consent_marketing_at: @now, consent_text_version: "v2"}} =
+               IntakePolicy.consent(
+                 %{contact: true, marketing: true, text_version: "v2"},
+                 "manual",
+                 @now
+               )
 
       assert {:ok, %{consent_marketing_at: nil}} = IntakePolicy.consent(nil, "manual", @now)
     end
 
     test "a consent time in the future is the time it arrived" do
       assert {:ok, %{consent_contact_at: @now}} =
-               IntakePolicy.consent(%{contact: true, given_at: "2099-01-01T00:00:00Z"}, "form", @now)
+               IntakePolicy.consent(
+                 %{contact: true, given_at: "2099-01-01T00:00:00Z"},
+                 "form",
+                 @now
+               )
     end
   end
 
@@ -79,7 +88,11 @@ defmodule Palee.Leads.Domain.IntakePolicyTest do
 
       assert :ok =
                IntakePolicy.spam_check(
-                 %{"name" => "Ελένη", "message" => "see https://palee.gr", "form_started_at" => started},
+                 %{
+                   "name" => "Ελένη",
+                   "message" => "see https://palee.gr",
+                   "form_started_at" => started
+                 },
                  @now
                )
     end

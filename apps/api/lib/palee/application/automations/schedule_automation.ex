@@ -14,7 +14,14 @@ defmodule Palee.Application.Automations.ScheduleAutomation do
 
   def call(context, recipe_key, recipient, trigger_ref, at, data \\ %{})
 
-  def call(%{organization_id: organization_id} = context, recipe_key, recipient, trigger_ref, at, data)
+  def call(
+        %{organization_id: organization_id} = context,
+        recipe_key,
+        recipient,
+        trigger_ref,
+        at,
+        data
+      )
       when is_binary(organization_id) and is_binary(trigger_ref) do
     with {:ok, recipe} <- Automations.fetch_recipe(recipe_key),
          %{enabled: true} = automation <- Automations.get_automation(context, recipe_key) do

@@ -51,7 +51,11 @@ defmodule PaleeWeb.AutomationControllerTest do
 
   describe "the recipes" do
     test "all off by default; only owners and admins change them", %{conn: conn} = ctx do
-      body = conn |> put_bearer_token(ctx.owner) |> get(admin(ctx, "/automations")) |> json_response(200)
+      body =
+        conn
+        |> put_bearer_token(ctx.owner)
+        |> get(admin(ctx, "/automations"))
+        |> json_response(200)
 
       assert Enum.map(body["recipes"], & &1["key"]) ==
                ~w(welcome trial_follow_up missed_classes renewal_reminder birthday win_back)
@@ -71,7 +75,10 @@ defmodule PaleeWeb.AutomationControllerTest do
                build_conn()
                |> put_bearer_token(ctx.owner)
                |> put_req_header("content-type", "application/json")
-               |> patch(admin(ctx, "/automations/welcome"), Jason.encode!(%{"body" => "Hi {name}"}))
+               |> patch(
+                 admin(ctx, "/automations/welcome"),
+                 Jason.encode!(%{"body" => "Hi {name}"})
+               )
                |> json_response(422)
 
       preview =
@@ -112,6 +119,7 @@ defmodule PaleeWeb.AutomationControllerTest do
 
       # At 23:00 on the box's clock it waits for the morning.
       night = local(Date.utc_today() |> Date.add(1), 23, ctx)
+
       Repo.query!("UPDATE automation_deliveries SET due_at = $1 WHERE id = $2", [
         DateTime.add(night, -60, :second),
         Ecto.UUID.dump!(delivery.id)
@@ -120,7 +128,9 @@ defmodule PaleeWeb.AutomationControllerTest do
       assert %{retried: 1} = DispatchAutomations.run(ctx.context, night)
       [waiting] = deliveries(ctx)
       assert waiting.status == "pending"
-      assert DateTime.compare(waiting.due_at, local(Date.utc_today() |> Date.add(2), 9, ctx)) == :eq
+
+      assert DateTime.compare(waiting.due_at, local(Date.utc_today() |> Date.add(2), 9, ctx)) ==
+               :eq
 
       assert %{sent: 1} = DispatchAutomations.run(ctx.context, waiting.due_at)
       [sent] = deliveries(ctx)
@@ -287,7 +297,10 @@ defmodule PaleeWeb.AutomationControllerTest do
         build_conn()
         |> put_bearer_token(ctx.desk)
         |> put_req_header("content-type", "application/json")
-        |> post(admin(ctx, "/members-at-risk/#{gone.id}/contacted"), Jason.encode!(%{"channel" => "phone"}))
+        |> post(
+          admin(ctx, "/members-at-risk/#{gone.id}/contacted"),
+          Jason.encode!(%{"channel" => "phone"})
+        )
         |> json_response(200)
 
       assert contacted["member"]["contacted_by"]["user_id"] == ctx.desk.id
@@ -321,7 +334,12 @@ defmodule PaleeWeb.AutomationControllerTest do
       INSERT INTO scheduled_classes (id, organization_id, class_type_id, scheduled_at, capacity, inserted_at, updated_at)
       VALUES ($1, $2, $3, $4, 10, now(), now())
       """,
-      [Ecto.UUID.dump!(class_id), Ecto.UUID.dump!(ctx.organization.id), Ecto.UUID.dump!(class_type.id), at]
+      [
+        Ecto.UUID.dump!(class_id),
+        Ecto.UUID.dump!(ctx.organization.id),
+        Ecto.UUID.dump!(class_type.id),
+        at
+      ]
     )
 
     Repo.query!(

@@ -1,7 +1,7 @@
 defmodule Palee.Application.Automations.MyAutomationPreferences do
   @moduledoc """
   ADR-346: a box member's own choices about the box's automatic messages
-  (`PaleeWeb.MyAutomationPreferencesController`): none at all, or not from
+  (their «Αυτόματα μηνύματα» settings): none at all, or not from
   some recipes, and the birthday (day and month only) they choose to share
   for the birthday greeting. Opting out cancels what was already queued.
   """
@@ -77,7 +77,9 @@ defmodule Palee.Application.Automations.MyAutomationPreferences do
     end)
   end
 
-  defp present(nil), do: present(%{opted_out_at: nil, opted_out_recipes: [], birthday_month: nil, birthday_day: nil})
+  defp present(nil),
+    do:
+      present(%{opted_out_at: nil, opted_out_recipes: [], birthday_month: nil, birthday_day: nil})
 
   defp present(preference) do
     %{
@@ -87,8 +89,7 @@ defmodule Palee.Application.Automations.MyAutomationPreferences do
         if(preference.birthday_month,
           do: %{month: preference.birthday_month, day: preference.birthday_day}
         ),
-      recipes:
-        Enum.map(Automations.recipes(), &%{key: &1.key, purpose: to_string(&1.purpose)})
+      recipes: Enum.map(Automations.recipes(), &%{key: &1.key, purpose: to_string(&1.purpose)})
     }
   end
 end

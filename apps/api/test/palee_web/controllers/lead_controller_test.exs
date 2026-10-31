@@ -30,7 +30,10 @@ defmodule PaleeWeb.LeadControllerTest do
     {:ok, owner_context} = Organizations.resolve_tenant_context(owner, organization.slug)
 
     {:ok, profile} =
-      UpdateBoxPublicProfile.call(owner_context, %{"about" => "Box", "disciplines" => ["crossfit"]})
+      UpdateBoxPublicProfile.call(owner_context, %{
+        "about" => "Box",
+        "disciplines" => ["crossfit"]
+      })
 
     {:ok, _profile} =
       PublishBoxPublicProfile.publish(owner_context, %{"lock_version" => profile.lock_version})
@@ -48,7 +51,9 @@ defmodule PaleeWeb.LeadControllerTest do
   defp admin(ctx, path), do: "/api/org/#{ctx.organization.slug}/admin#{path}"
 
   defp public_post(conn, ctx, body) do
-    ip = {10, 44, rem(System.unique_integer([:positive]), 250), rem(System.unique_integer([:positive]), 250)}
+    ip =
+      {10, 44, rem(System.unique_integer([:positive]), 250),
+       rem(System.unique_integer([:positive]), 250)}
 
     %{conn | remote_ip: ip}
     |> put_req_header("content-type", "application/json")
@@ -109,7 +114,10 @@ defmodule PaleeWeb.LeadControllerTest do
       conn |> public_post(ctx, body) |> json_response(202)
 
       build_conn()
-      |> public_post(ctx, Map.merge(body, %{"consent" => %{"contact" => true, "marketing" => true}}))
+      |> public_post(
+        ctx,
+        Map.merge(body, %{"consent" => %{"contact" => true, "marketing" => true}})
+      )
       |> json_response(202)
 
       %{"leads" => [lead]} = leads(build_conn(), ctx, ctx.owner)
@@ -121,11 +129,16 @@ defmodule PaleeWeb.LeadControllerTest do
         |> get(admin(ctx, "/leads/#{lead["id"]}"))
         |> json_response(200)
 
-      assert Enum.map(detail["events"], & &1["kind"]) |> Enum.sort() == ["created", "enquired_again"]
+      assert Enum.map(detail["events"], & &1["kind"]) |> Enum.sort() == [
+               "created",
+               "enquired_again"
+             ]
     end
 
     test "spam is answered like an enquiry and stores nothing", %{conn: conn} = ctx do
-      assert conn |> public_post(ctx, form(%{"website" => "http://spam.example"})) |> json_response(202)
+      assert conn
+             |> public_post(ctx, form(%{"website" => "http://spam.example"}))
+             |> json_response(202)
 
       fast = form(%{"form_started_at" => DateTime.to_iso8601(DateTime.utc_now())})
       assert build_conn() |> public_post(ctx, fast) |> json_response(202)
@@ -170,7 +183,9 @@ defmodule PaleeWeb.LeadControllerTest do
       call = fn method, path, body ->
         build_conn()
         |> put_bearer_token(ctx.desk)
-        |> then(&apply(Phoenix.ConnTest, :dispatch, [&1, @endpoint, method, admin(ctx, path), body]))
+        |> then(
+          &apply(Phoenix.ConnTest, :dispatch, [&1, @endpoint, method, admin(ctx, path), body])
+        )
       end
 
       assert %{"lead" => %{"stage" => "trial"}} =
@@ -211,7 +226,8 @@ defmodule PaleeWeb.LeadControllerTest do
 
       kinds = Enum.map(converted["events"], & &1["kind"])
 
-      for kind <- ~w(created owner_changed stage_changed note contacted task_added task_done converted) do
+      for kind <-
+            ~w(created owner_changed stage_changed note contacted task_added task_done converted) do
         assert kind in kinds, kind
       end
 
@@ -220,7 +236,10 @@ defmodule PaleeWeb.LeadControllerTest do
     end
 
     test "coaches have no leads; erasing a lead removes it", %{conn: conn} = ctx do
-      assert conn |> put_bearer_token(ctx.coach) |> get(admin(ctx, "/leads")) |> json_response(403)
+      assert conn
+             |> put_bearer_token(ctx.coach)
+             |> get(admin(ctx, "/leads"))
+             |> json_response(403)
 
       %{"lead" => %{"id" => id}} =
         build_conn()
@@ -236,7 +255,8 @@ defmodule PaleeWeb.LeadControllerTest do
       assert Leads.get(ctx.context, id) == nil
     end
 
-    test "CSV import: a dry run writes nothing, the real one creates and joins", %{conn: conn} = ctx do
+    test "CSV import: a dry run writes nothing, the real one creates and joins",
+         %{conn: conn} = ctx do
       csv = """
       Όνομα,Email,Τηλέφωνο
       Άννα,anna@example.com,
@@ -325,7 +345,11 @@ defmodule PaleeWeb.LeadControllerTest do
       assert lead.consent_marketing_at == ~U[2027-05-01 10:00:00.000000Z]
 
       assert {:error, {:rejected, :invalid_lead}} =
-               BoxSiteIntake.submit(ctx.context, %{intake | submission_id: Ecto.UUID.generate(), email: nil})
+               BoxSiteIntake.submit(ctx.context, %{
+                 intake
+                 | submission_id: Ecto.UUID.generate(),
+                   email: nil
+               })
 
       chat = %{
         name: "Chat Person",
@@ -333,7 +357,13 @@ defmodule PaleeWeb.LeadControllerTest do
         message: "Τιμές;",
         source_ref: "conv-1",
         language: "en",
-        consent: %{contact: true, marketing: false, text_version: "a1", text_hash: "h", given_at: ~U[2027-05-01 10:00:00Z]}
+        consent: %{
+          contact: true,
+          marketing: false,
+          text_version: "a1",
+          text_hash: "h",
+          given_at: ~U[2027-05-01 10:00:00Z]
+        }
       }
 
       assert {:ok, %{lead_id: chat_id}} = ProspectLeadSink.capture(ctx.context, chat)
@@ -350,7 +380,9 @@ defmodule PaleeWeb.LeadControllerTest do
         })
 
       {:ok, other} =
-        Organizations.create_organization(%{name: "Other Box #{System.unique_integer([:positive])}"})
+        Organizations.create_organization(%{
+          name: "Other Box #{System.unique_integer([:positive])}"
+        })
 
       assert Leads.list(%{organization_id: other.id}, %{}) == []
       assert length(Leads.list(ctx.context, %{})) == 1

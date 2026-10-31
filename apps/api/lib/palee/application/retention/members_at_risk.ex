@@ -1,6 +1,6 @@
 defmodule Palee.Application.Retention.MembersAtRisk do
   @moduledoc """
-  ADR-347: «Σε κίνδυνο» (`PaleeWeb.AdminMemberRiskController` and the daily
+  ADR-347: «Σε κίνδυνο» (the admin members-at-risk API and the daily
   job). Once a day each box's active clients get their score again from
   their own attendance, bookings, subscription packages and invoices at
   this box. Staff see who is at medium or high risk, why, and what to do;
@@ -70,8 +70,11 @@ defmodule Palee.Application.Retention.MembersAtRisk do
   defp level_since(_before, _level, now), do: now
 
   # One win-back per spell at high: announced when it started, not again.
-  defp high_spell_announced?(%Risk{level: "high", win_back_queued_at: %DateTime{} = queued}, since),
-    do: DateTime.compare(queued, since) != :lt
+  defp high_spell_announced?(
+         %Risk{level: "high", win_back_queued_at: %DateTime{} = queued},
+         since
+       ),
+       do: DateTime.compare(queued, since) != :lt
 
   defp high_spell_announced?(_before, _since), do: false
 
@@ -120,7 +123,8 @@ defmodule Palee.Application.Retention.MembersAtRisk do
   def contacted(context, user_id, params) do
     channel = params["channel"] || "phone"
 
-    with true <- channel in @contact_channels || {:error, {:invalid_fields, %{"channel" => "invalid"}}},
+    with true <-
+           channel in @contact_channels || {:error, {:invalid_fields, %{"channel" => "invalid"}}},
          %Risk{} <- Retention.get(context, user_id) || {:error, :not_found},
          {:ok, risk} <-
            Retention.put(context, user_id, %{

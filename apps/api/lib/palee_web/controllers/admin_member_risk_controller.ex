@@ -41,7 +41,11 @@ defmodule PaleeWeb.AdminMemberRiskController do
   )
 
   def index(conn, params) do
-    params = params |> Params.stringify() |> Map.new(fn {k, v} -> {k, if(is_integer(v), do: to_string(v), else: v)} end)
+    params =
+      params
+      |> Params.stringify()
+      |> Map.new(fn {k, v} -> {k, if(is_integer(v), do: to_string(v), else: v)} end)
+
     json(conn, MembersAtRisk.list(context(conn), params))
   end
 
@@ -52,7 +56,8 @@ defmodule PaleeWeb.AdminMemberRiskController do
   )
 
   def show(conn, %{user_id: user_id}) do
-    with {:ok, risk} <- MembersAtRisk.show(context(conn), user_id), do: json(conn, %{member: risk})
+    with {:ok, risk} <- MembersAtRisk.show(context(conn), user_id),
+         do: json(conn, %{member: risk})
   end
 
   operation(:contacted,

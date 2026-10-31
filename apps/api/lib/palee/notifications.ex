@@ -278,6 +278,7 @@ defmodule Palee.Notifications do
         recipe: field(payload, :recipe),
         dedupe_key: field(payload, :dedupe_key)
       })
+
   def process_event("challenge_completed", payload), do: enqueue_challenge_completed(payload)
 
   # ADR-142: follows of people.

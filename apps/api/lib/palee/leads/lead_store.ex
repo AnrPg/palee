@@ -26,7 +26,8 @@ defmodule Palee.Leads.LeadStore do
   def get_for_update(context, id), do: call(context, :get_for_update, [id])
 
   @impl true
-  def get_by_source_ref(context, source, ref), do: call(context, :get_by_source_ref, [source, ref])
+  def get_by_source_ref(context, source, ref),
+    do: call(context, :get_by_source_ref, [source, ref])
 
   @impl true
   def find_by_email(context, email), do: call(context, :find_by_email, [email])

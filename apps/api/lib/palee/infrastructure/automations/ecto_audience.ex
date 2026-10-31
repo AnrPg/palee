@@ -71,7 +71,11 @@ defmodule Palee.Infrastructure.Automations.EctoAudience do
     )
     |> Repo.all()
     |> Enum.map(fn row ->
-      %{row | user_id: Ecto.UUID.load!(row.user_id), subscription_id: Ecto.UUID.load!(row.subscription_id)}
+      %{
+        row
+        | user_id: Ecto.UUID.load!(row.user_id),
+          subscription_id: Ecto.UUID.load!(row.subscription_id)
+      }
     end)
   end
 

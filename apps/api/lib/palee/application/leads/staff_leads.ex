@@ -1,6 +1,6 @@
 defmodule Palee.Application.Leads.StaffLeads do
   @moduledoc """
-  ADR-344: the staff's «Ενδιαφερόμενοι» (`PaleeWeb.AdminLeadController`).
+  ADR-344: the staff's «Ενδιαφερόμενοι» (the admin leads API).
   One list with stages, source, owner and the next action; a lead's page
   with its tasks and history; moving a lead, notes, «Μίλησα», tasks,
   conversion to a box member, CSV import and erasure.
@@ -194,7 +194,13 @@ defmodule Palee.Application.Leads.StaffLeads do
 
     with {:ok, updated} <- Leads.update(context, lead, %{owner_id: owner_id}),
          :ok <-
-           event(context, lead.id, "owner_changed", %{"from" => lead.owner_id, "to" => owner_id}, now) do
+           event(
+             context,
+             lead.id,
+             "owner_changed",
+             %{"from" => lead.owner_id, "to" => owner_id},
+             now
+           ) do
       {:ok, updated}
     end
   end
@@ -207,7 +213,8 @@ defmodule Palee.Application.Leads.StaffLeads do
       else: {:error, {:invalid_fields, %{"owner_id" => "not_staff"}}}
   end
 
-  defp valid_owner(_context, _owner_id), do: {:error, {:invalid_fields, %{"owner_id" => "invalid"}}}
+  defp valid_owner(_context, _owner_id),
+    do: {:error, {:invalid_fields, %{"owner_id" => "invalid"}}}
 
   @doc """
   Moves a lead to another stage (`lost` needs a `lost_reason`). Announces
@@ -355,7 +362,13 @@ defmodule Palee.Application.Leads.StaffLeads do
                  done_by_id: Map.get(context, :user_id)
                }),
              :ok <-
-               event(context, lead.id, "task_done", %{"task_id" => done.id, "title" => done.title}, now) do
+               event(
+                 context,
+                 lead.id,
+                 "task_done",
+                 %{"task_id" => done.id, "title" => done.title},
+                 now
+               ) do
           {:ok, lead}
         end
       end)
