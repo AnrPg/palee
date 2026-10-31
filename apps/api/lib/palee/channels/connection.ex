@@ -21,7 +21,7 @@ defmodule Palee.Channels.Connection do
   schema "channel_connections" do
     field :organization_id, :binary_id, read_after_writes: true
     field :provider, :string
-    field :account_mode, :string, default: "own"
+    field :account_mode, :string, default: "palee"
     field :account_id, :string
     field :secret, EncryptedBinary, redact: true
     field :base_url, :string
@@ -29,7 +29,7 @@ defmodule Palee.Channels.Connection do
     field :viber_sender, :string
     field :whatsapp_sender, :string
     field :channels, {:array, :string}, default: []
-    field :channel_order, {:array, :string}, default: ["viber", "sms", "whatsapp"]
+    field :channel_order, {:array, :string}, default: ["sms", "viber", "whatsapp"]
     field :default_country, :string, default: "GR"
     field :monthly_budget_cents, :integer, default: 2000
     field :currency, :string, default: "EUR"

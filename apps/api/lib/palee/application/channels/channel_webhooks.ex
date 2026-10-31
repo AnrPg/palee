@@ -2,8 +2,8 @@ defmodule Palee.Application.Channels.ChannelWebhooks do
   @moduledoc """
   The messaging provider's calls on the box's webhook (ADR-348 §5):
   delivery receipts and inbound texts (STOP). The URL carries the box and
-  a secret token; the provider's own signature is verified where it signs
-  (Twilio). Nothing of an inbound text is stored except a STOP's effect.
+  a secret token; a provider's own signature is verified by its adapter
+  where it signs (Brevo does not). Nothing of an inbound text is stored except a STOP's effect.
   """
 
   alias Palee.Channels

@@ -32,7 +32,7 @@ defmodule Palee.Repo.Migrations.CreateChannels do
         null: false
 
       add :provider, :string, null: false
-      add :account_mode, :string, null: false, default: "own"
+      add :account_mode, :string, null: false, default: "palee"
       add :account_id, :string, size: 120
       add :secret, :binary
       add :base_url, :string, size: 200
@@ -40,7 +40,7 @@ defmodule Palee.Repo.Migrations.CreateChannels do
       add :viber_sender, :string, size: 60
       add :whatsapp_sender, :string, size: 30
       add :channels, {:array, :string}, null: false, default: []
-      add :channel_order, {:array, :string}, null: false, default: ["viber", "sms", "whatsapp"]
+      add :channel_order, {:array, :string}, null: false, default: ["sms", "viber", "whatsapp"]
       add :default_country, :string, size: 2, null: false, default: "GR"
       add :monthly_budget_cents, :integer, null: false, default: 2000
       add :currency, :string, size: 3, null: false, default: "EUR"
@@ -59,7 +59,7 @@ defmodule Palee.Repo.Migrations.CreateChannels do
 
     create constraint(:channel_connections, :channel_connections_check,
              check: """
-             provider IN ('sandbox', 'twilio', 'infobip')
+             provider IN ('sandbox', 'brevo')
              AND account_mode IN ('own', 'palee')
              AND status IN ('active', 'invalid')
              AND channels <@ ARRAY['sms', 'viber', 'whatsapp']::varchar[]

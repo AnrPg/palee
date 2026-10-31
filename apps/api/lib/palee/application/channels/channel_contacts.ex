@@ -60,6 +60,37 @@ defmodule Palee.Application.Channels.ChannelContacts do
 
   def delete(context, contact_id), do: Channels.delete_contact(context, contact_id)
 
+  @doc """
+  For other contexts (a lead form, CP-C1/C5; an import): saves a person's
+  number and the consents they gave in one go. `params`: `user_id` or
+  `lead_id`, `phone`, `locale`, `consents` (`[%{channel, purpose,
+  granted}]`), `source` (`form`, `import`, `person`) and `text_version`
+  (the consent text shown). `{:ok, %{contact}}` or `{:error, reason}`.
+  """
+  def record(context, params, now \\ DateTime.utc_now()) do
+    source = param(params, :source) || "form"
+    consents = param(params, :consents) || []
+
+    with true <- is_list(consents) || {:error, {:invalid_fields, %{consents: "invalid"}}},
+         {:ok, %{contact: %{id: id}}} <- save(context, params) do
+      Enum.reduce_while(consents, {:ok, nil}, fn consent, _acc ->
+        consent_params =
+          consent
+          |> Map.new(fn {key, value} -> {to_string(key), value} end)
+          |> Map.merge(%{"source" => source, "text_version" => param(params, :text_version)})
+
+        case set_consent(context, id, consent_params, now) do
+          {:ok, result} -> {:cont, {:ok, result}}
+          error -> {:halt, error}
+        end
+      end)
+      |> case do
+        {:ok, nil} -> show(context, params)
+        other -> other
+      end
+    end
+  end
+
   @doc false
   def default_country(context) do
     case Channels.connection(context) do

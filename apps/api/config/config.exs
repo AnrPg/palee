@@ -73,6 +73,8 @@ config :palee, Oban,
        {"*/5 * * * *", Palee.Workers.TransmitFiscalDocumentsJob},
        # ADR-250/251: Peppol sends and delivery polls; TSE/RKSV signatures.
        {"*/5 * * * *", Palee.Workers.SendEInvoicesJob},
+       # ADR-348: SMS/Viber/WhatsApp retries and messages held for quiet hours.
+       {"*/2 * * * *", Palee.Workers.DeliverChannelMessagesJob},
        {"*/2 * * * *", Palee.Workers.SignTillReceiptsJob},
        # ADR-273: «Δοκιμή σύνδεσης» of fiscal connections that are due (every 3 months, sooner after a failure).
        {"43 * * * *", Palee.Workers.CheckFiscalConnectionsJob},
@@ -99,6 +101,8 @@ config :palee, Oban,
     fiscal: 2,
     # ADR-246: provider calls for online payments.
     payments: 2,
+    # ADR-348: SMS, Viber and WhatsApp provider calls.
+    channels: 2,
     # ADR-254: CSV imports, one at a time per node (each row its own transaction).
     imports: 1
   ]
@@ -241,6 +245,23 @@ config :palee, :fiscal_cash_register_security, %{
 
 # ADR-246/247: online payments through the business's own provider account.
 config :palee, :payment_store, Palee.Infrastructure.Payments.EctoPaymentStore
+
+# ADR-348/349: SMS (Viber and WhatsApp later). Every provider sits behind
+# `Channels.Ports.MessagingChannel`; the sandbox sends nothing. Product
+# owner, 2026-10-31: Brevo SMS through Palee's own Brevo account by default
+# (`channel_managed_accounts`, runtime), a box's own Brevo key as an option.
+config :palee, :channel_store, Palee.Infrastructure.Channels.EctoChannelStore
+
+config :palee, :channel_providers, %{
+  "sandbox" => Palee.Infrastructure.Channels.SandboxChannel,
+  "brevo" => Palee.Infrastructure.Channels.BrevoChannel
+}
+
+config :palee, :channel_managed_accounts, %{}
+# nil: `Channels.Domain.CostPolicy.default_prices/0`.
+config :palee, :channel_prices, nil
+config :palee, :channels_webhook_key, "dev-only-channels-webhook-key"
+config :palee, :channels_http, []
 config :palee, :payment_fulfilment, Palee.Application.Payments.FinanceFulfilment
 config :palee, :payment_notifier, Palee.Application.Payments.FailureNotices
 

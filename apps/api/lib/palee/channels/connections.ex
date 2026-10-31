@@ -4,13 +4,12 @@ defmodule Palee.Channels.Connections do
 
   `account_mode`:
 
-    * `own` – the box's own provider account. The provider bills the box;
-      the secret (Twilio Auth Token, Infobip API key) is encrypted at rest
-      and never returned, logged or exported;
-    * `palee` – the Palee-managed account of that provider (`config
-      :palee, :channel_managed_accounts`). Palee pays the provider and
-      tracks each box's cost; who is charged and how is the product
-      owner's decision (ADR-349 §4), so it stays configuration.
+    * `palee` (the default; product owner, 2026-10-31) – Palee's own
+      Brevo account (`config :palee, :channel_managed_accounts`). Palee
+      pays Brevo and tracks each box's cost against its monthly cap; how
+      boxes are charged for it is configuration (ADR-349 §4);
+    * `own` – the box's own Brevo account. Brevo bills the box; its API
+      key is encrypted at rest and never returned, logged or exported.
 
   Delivery receipts and inbound texts reach the box's own webhook URL,
   `/api/webhooks/channels/<organization>/<token>`. The token is an HMAC of
@@ -151,11 +150,11 @@ defmodule Palee.Channels.Connections do
     value = fn key -> if Map.has_key?(params, key), do: params[key], else: Map.get(current, key) end
 
     provider = value.(:provider)
-    mode = value.(:account_mode) || "own"
+    mode = value.(:account_mode) || "palee"
     secret = clean(params[:secret]) || Map.get(current, :secret)
     adapter = Map.get(providers(), provider)
     channels = value.(:channels) || []
-    order = value.(:channel_order) || ["viber", "sms", "whatsapp"]
+    order = value.(:channel_order) || ["sms", "viber", "whatsapp"]
     country = value.(:default_country) || "GR"
     budget = value.(:monthly_budget_cents) || 2000
 
@@ -182,16 +181,6 @@ defmodule Palee.Channels.Connections do
         "not_available"
       )
       |> add(own_needs_secret? and is_nil(secret), :secret, "required")
-      |> add(
-        own_needs_secret? and provider == "twilio" and not twilio_sid?(clean(value.(:account_id))),
-        :account_id,
-        "invalid"
-      )
-      |> add(
-        own_needs_secret? and provider == "infobip" and not infobip_url?(clean(value.(:base_url))),
-        :base_url,
-        "invalid"
-      )
       |> add(is_binary(secret) and String.length(secret) > 300, :secret, "too_long")
       |> add(not channel_list?(channels, adapter), :channels, "invalid")
       |> add(not channel_list?(order, nil), :channel_order, "invalid")
@@ -255,18 +244,9 @@ defmodule Palee.Channels.Connections do
   defp sender_missing?(channels, channel, sender, _provider),
     do: is_list(channels) and channel in channels and is_nil(clean(sender))
 
-  defp twilio_sid?("AC" <> rest), do: rest =~ ~r/^[0-9a-f]{32}$/
-  defp twilio_sid?(_value), do: false
-
-  defp infobip_url?(url) when is_binary(url),
-    do: url =~ ~r{^https://[a-z0-9]+\.api(-[a-z0-9]+)?\.infobip\.com/?$}
-
-  defp infobip_url?(_url), do: false
-
   # An alphanumeric sender (up to 11 letters, digits or spaces with at least
-  # one letter), a number in E.164, or a Twilio Messaging Service (MG…).
+  # one letter) or a number in E.164.
   defp sms_sender?(nil), do: true
-  defp sms_sender?("MG" <> rest), do: rest =~ ~r/^[0-9a-f]{32}$/ or alphanumeric_sender?("MG" <> rest)
   defp sms_sender?("+" <> digits), do: digits =~ ~r/^[1-9][0-9]{7,14}$/
   defp sms_sender?(sender), do: alphanumeric_sender?(sender)
 

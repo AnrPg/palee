@@ -2,8 +2,9 @@ defmodule Palee.Channels.Ports.MessagingChannel do
   @moduledoc """
   A messaging provider that sends SMS, Viber or WhatsApp messages and
   reports their delivery (ADR-348 §3). One adapter per provider:
-  `Sandbox` (no network; dev, tests and demo boxes), `Twilio` (SMS and
-  WhatsApp) and `Infobip` (SMS, Viber Business Messages and WhatsApp).
+  `Sandbox` (no network; dev, tests and demo boxes) and `Brevo` (SMS; the
+  product owner's choice of 2026-10-31). Viber and WhatsApp stay in the
+  port for adapters to come (ADR-348 §3 lists the candidates).
   The adapter of each provider comes from `config :palee,
   :channel_providers`.
 
