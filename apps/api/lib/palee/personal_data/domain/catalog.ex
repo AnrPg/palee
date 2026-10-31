@@ -106,6 +106,11 @@ defmodule Palee.PersonalData.Domain.Catalog do
       account("training", "user_achievements", @me),
       account("training", "user_stats", @me),
       account("training", "training_goals", @me),
+      # ADR-374/375: split marks and a watch's heart rate of each workout.
+      account("training", "execution_splits", @me),
+      account("training", "execution_heart_rate_batches", @me),
+      # ADR-377: belts and levels the box awarded.
+      tenant("training", "rank_awards", @me),
       account("training", "injury_reports", @me),
       tenant("training", "nutrition_plans", @me),
       tenant("training", "reviews", @me),
@@ -122,11 +127,15 @@ defmodule Palee.PersonalData.Domain.Catalog do
       account("wellness", "user_health_consents", @me),
       account("wellness", "wellness_summary_grants", @me),
       account("wellness", "daily_stats", @me),
+      # ADR-376: the person's own foods.
+      account("wellness", "custom_foods", @me),
 
       # -- devices ---------------------------------------------------------------
       account("devices", "device_connections", @me, drop: ~w(provider_user_id)),
       account("devices", "device_activities", @me),
       account("devices", "device_imports", @me),
+      # ADR-375: paired watches.
+      account("devices", "watch_links", @me),
       account("devices", "native_push_tokens", @me),
       account("devices", "push_subscriptions", @me, drop: ~w(endpoint)),
 

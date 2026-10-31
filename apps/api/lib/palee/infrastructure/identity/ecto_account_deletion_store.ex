@@ -147,6 +147,17 @@ defmodule Palee.Infrastructure.Identity.EctoAccountDeletionStore do
     :ok
   end
 
+  # ADR-375/376: a watch's heart rate, paired watches and own foods are the
+  # person's own and leave with the account even when the profile is kept
+  # anonymised (a deleted user row takes them by cascade).
+  @own_device_rows ~w(execution_heart_rate_batches watch_links custom_foods)
+
+  defp delete_own_device_rows(user_id) do
+    id = Ecto.UUID.dump!(user_id)
+    for table <- @own_device_rows, do: Repo.query!("DELETE FROM #{table} WHERE user_id = $1", [id])
+    :ok
+  end
+
   defp anonymize(%User{} = user) do
     # A login of its own: the person's login (and email) can go, and nobody
     # knows this one's address or password.
@@ -166,6 +177,7 @@ defmodule Palee.Infrastructure.Identity.EctoAccountDeletionStore do
     |> Repo.delete_all()
 
     delete_partner_rows(user.id)
+    delete_own_device_rows(user.id)
 
     user
     |> Ecto.Changeset.change(

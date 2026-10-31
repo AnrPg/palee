@@ -683,6 +683,7 @@ defmodule Palee.Infrastructure.Scheduling.EctoSchedulingStore do
         scheduled_class_id: slot.id,
         class_name: slot.name,
         class_type_name: class_type.name,
+        class_type_id: slot.class_type_id,
         scheduled_at: slot.scheduled_at,
         duration_minutes: slot.duration_minutes,
         master_workout_id: slot.master_workout_id,

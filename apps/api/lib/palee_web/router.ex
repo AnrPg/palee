@@ -570,6 +570,9 @@ defmodule PaleeWeb.Router do
     ])
 
     get("/finance", MyFinanceController, :index)
+    # ADR-377: my belts and levels at this box.
+    get("/ranks", MyRanksController, :index)
+    get("/ranks/awards/:id/certificate", MyRanksController, :certificate)
     # ADR-246/247: paying invoices online and saved cards.
     get("/invoices/:id/payment-terms", MyPaymentsController, :terms)
     post("/invoices/:id/pay", MyPaymentsController, :pay)
@@ -918,6 +921,11 @@ defmodule PaleeWeb.Router do
     get("/clients/:user_id/coach-notes", CoachNotesController, :index)
     # ADR-229: a client's weekly goal, set by their coach or full-scope staff.
     get("/clients/:user_id/training-goal", TrainingGoalController, :client_show)
+    # ADR-377: a client's belts and levels; promotions and diplomas.
+    get("/clients/:user_id/ranks", StaffRanksController, :client)
+    post("/clients/:user_id/ranks", StaffRanksController, :award)
+    post("/rank-awards/:id/revoke", StaffRanksController, :revoke)
+    get("/rank-awards/:id/certificate", StaffRanksController, :certificate)
     put("/clients/:user_id/training-goal", TrainingGoalController, :client_update)
     get("/clients/:user_id/journal", JournalController, :client_journal)
     # ADR-158: shared body snapshots (audited in the client's access log).
@@ -1131,6 +1139,11 @@ defmodule PaleeWeb.Router do
     get("/search", AdminSearchController, :index)
     get("/analytics/summary", AdminAnalyticsController, :summary)
     get("/athletes", AdminUserController, :index_athletes)
+    # ADR-377: belts and levels per discipline.
+    get("/rank-ladders", AdminRankLaddersController, :index)
+    post("/rank-ladders", AdminRankLaddersController, :create)
+    put("/rank-ladders/:id", AdminRankLaddersController, :update)
+    delete("/rank-ladders/:id", AdminRankLaddersController, :delete)
     get("/scale-levels", AdminScaleLevelController, :index)
     put("/scale-levels", AdminScaleLevelController, :update)
     get("/class-types", AdminClassTypeController, :index)

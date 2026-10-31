@@ -76,6 +76,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     training_log_entries
     ai_usage_records organization_ai_settings scaling_suggestions
     demo_records
+    rank_ladders ranks rank_awards
   )
 
   @transitional_tenant_tables []
@@ -132,6 +133,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     user_insights guide_progress notification_preferences
     training_goals
     personal_data_exports
+    execution_splits watch_links execution_heart_rate_batches custom_foods
   )
 
   def report do
