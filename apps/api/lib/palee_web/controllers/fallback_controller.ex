@@ -93,6 +93,76 @@ defmodule PaleeWeb.FallbackController do
     too_many_machine_photos: {:unprocessable_entity, "Add at most 10 photos"}
   }
 
+  # ADR-378..381: the public API, webhooks, the email list and doors.
+  @open_platform_errors %{
+    invalid_api_key: {:unauthorized, "Send a valid API key as Authorization: Bearer <key>"},
+    api_key_required: {:forbidden, "Only an API key can manage its own webhook subscriptions"},
+    insufficient_scope: {:forbidden, "This API key does not have the scope for this"},
+    unknown_operation: {:not_found, "No such operation"},
+    preview_unsupported: {:unprocessable_entity, "Only commands can be previewed"},
+    invalid_idempotency_key:
+      {:unprocessable_entity, "Idempotency-Key is 1 to 255 visible ASCII characters"},
+    idempotency_key_in_use:
+      {:conflict, "A request with this Idempotency-Key is still running; try again shortly"},
+    invalid_api_key_name: {:unprocessable_entity, "Name the key (up to 80 characters)"},
+    invalid_api_key_expiry: {:unprocessable_entity, "The expiry must be in the future"},
+    invalid_scopes: {:unprocessable_entity, "Choose at least one known scope"},
+    too_many_api_keys: {:conflict, "A box has up to 25 active keys; revoke one first"},
+    api_key_revoked: {:conflict, "This key is revoked"},
+    invalid_webhook_url:
+      {:unprocessable_entity, "Enter an https:// address that is reachable from the internet"},
+    blocked_address:
+      {:unprocessable_entity, "This address points to a private network and cannot be used"},
+    invalid_events: {:unprocessable_entity, "Choose at least one known event"},
+    invalid_webhook_description: {:unprocessable_entity, "A description is up to 200 characters"},
+    invalid_webhook_status: {:unprocessable_entity, "Choose active or disabled"},
+    too_many_webhooks: {:conflict, "A box has up to 20 webhook endpoints; remove one first"},
+    webhook_disabled: {:conflict, "Turn the endpoint on before sending to it"},
+    delivery_pending: {:conflict, "This delivery is still being sent"},
+    invalid_audience_provider: {:unprocessable_entity, "Choose Mailchimp or Brevo"},
+    invalid_audience_list: {:unprocessable_entity, "Enter the list's id"},
+    audience_key_required: {:unprocessable_entity, "Enter the provider's API key"},
+    audience_unauthorized: {:unprocessable_entity, "The provider refused this API key"},
+    audience_list_not_found: {:unprocessable_entity, "The provider has no list with this id"},
+    audience_unavailable:
+      {:bad_gateway, "The email provider is not answering; try again in a few minutes"},
+    audience_not_connected: {:conflict, "Connect an email list first"},
+    invalid_consent: {:unprocessable_entity, "Send true or false"},
+    invalid_door_name: {:unprocessable_entity, "Name the door (up to 80 characters)"},
+    invalid_door_settings:
+      {:unprocessable_entity, "Check the controller's settings and key for this provider"},
+    invalid_door_rules: {:unprocessable_entity, "Check who may enter, the window and the hours"},
+    invalid_door_status: {:unprocessable_entity, "Choose active or disabled"},
+    invalid_location: {:unprocessable_entity, "Choose one of the box's branches"},
+    door_not_found: {:not_found, "No such door"},
+    door_disabled: {:conflict, "This door is turned off"},
+    no_door_here: {:not_found, "This branch has no door that opens from the app"},
+    door_offline:
+      {:service_unavailable, "The door is not answering; it stays locked. Ask at the desk"},
+    door_unauthorized:
+      {:bad_gateway, "The door's controller refused Palee's key; check the door's settings"},
+    door_refused: {:bad_gateway, "The door's controller refused to open"},
+    invalid_door_event: {:unprocessable_entity, "Unknown door event"}
+  }
+
+  @open_platform_detail_errors %{
+    entry_denied: {:forbidden, "This door does not open for you now"},
+    choose_door: {:conflict, "Choose which door to open"}
+  }
+
+  def call(conn, {:error, reason}) when is_map_key(@open_platform_errors, reason) do
+    {status, message} = Map.fetch!(@open_platform_errors, reason)
+
+    conn
+    |> put_status(status)
+    |> json(%{code: to_string(reason), error: message})
+  end
+
+  def call(conn, {:error, reason, details}) when is_map_key(@open_platform_detail_errors, reason) do
+    {status, message} = Map.fetch!(@open_platform_detail_errors, reason)
+    package_contract_error(conn, status, to_string(reason), message, details)
+  end
+
   def call(conn, {:error, reason}) when is_map_key(@space_errors, reason) do
     {status, message} = Map.fetch!(@space_errors, reason)
 
