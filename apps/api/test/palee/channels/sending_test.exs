@@ -184,7 +184,7 @@ defmodule Palee.Channels.SendingTest do
     assert %{status: "failed", error_code: "provider_rejected"} = Channels.get_message(ctx.context, refused.id)
 
     assert {:ok, %{status: "queued", attempts: 0}} = Channels.retry(ctx.context, refused.id, @noon)
-    assert {:error, :not_retryable} = Channels.retry(ctx.context, message.id, @noon)
+    assert {:error, :channel_not_retryable} = Channels.retry(ctx.context, message.id, @noon)
   end
 
   test "marketing SMS end with how to stop", ctx do

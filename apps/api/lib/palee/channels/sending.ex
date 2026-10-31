@@ -422,7 +422,7 @@ defmodule Palee.Channels.Sending do
 
   # ── Staff actions ───────────────────────────────────────────────────────
 
-  @doc "Sends a failed message again: `{:ok, message}` or `{:error, :not_retryable | :not_found}`."
+  @doc "Sends a failed message again: `{:ok, message}` or `{:error, :channel_not_retryable | :not_found}`."
   def retry(context, id, %DateTime{} = now) do
     case ChannelStore.get_message(context, id) do
       nil ->
@@ -431,7 +431,7 @@ defmodule Palee.Channels.Sending do
       message ->
         if DeliveryPolicy.retryable?(message),
           do: ChannelStore.update_message(context, id, DeliveryPolicy.retry(now), nil),
-          else: {:error, :not_retryable}
+          else: {:error, :channel_not_retryable}
     end
   end
 

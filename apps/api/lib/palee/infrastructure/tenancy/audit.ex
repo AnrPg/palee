@@ -60,6 +60,8 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     fiscal_till_connections fiscal_till_signatures fiscal_till_signature_attempts
     fiscal_connection_settings
     payment_accounts payment_methods payment_intents payment_refunds payment_webhook_events
+    channel_connections channel_contacts channel_consents channel_templates channel_messages
+    channel_message_events
     box_screens
     document_settings document_templates document_versions document_signature_requests
     document_signatures document_audit_events health_certificates
