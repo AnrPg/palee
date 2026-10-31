@@ -106,6 +106,7 @@ defmodule Palee.Infrastructure.Coaching.EctoNoteStore do
         :body,
         :subject_kind,
         :subject_id,
+        :audience,
         :inserted_at,
         :updated_at
       ])
