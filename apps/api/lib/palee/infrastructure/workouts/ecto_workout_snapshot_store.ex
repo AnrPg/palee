@@ -21,8 +21,9 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutSnapshotStore do
       conflict_target: [:organization_id, :master_workout_id, :content_hash]
     )
     |> case do
-      {:ok, %WorkoutSnapshotRecord{id: nil}} -> existing(context, workout_id, attrs.content_hash)
-      {:ok, record} -> {:ok, normalize(record)}
+      # With `on_conflict: :nothing` the struct keeps its client-generated id
+      # even when no row was written, so the stored row is always read back.
+      {:ok, _record} -> existing(context, workout_id, attrs.content_hash)
       {:error, changeset} -> {:error, changeset}
     end
   end

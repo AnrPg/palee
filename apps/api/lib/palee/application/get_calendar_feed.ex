@@ -139,8 +139,12 @@ defmodule Palee.Application.GetCalendarFeed do
   defp latest(moments) do
     moments
     |> Enum.reject(&is_nil/1)
+    |> Enum.map(&utc/1)
     |> Enum.max(DateTime, fn -> nil end)
   end
+
+  defp utc(%DateTime{} = at), do: at
+  defp utc(%NaiveDateTime{} = at), do: DateTime.from_naive!(at, "Etc/UTC")
 
   @doc false
   def locations(context) do

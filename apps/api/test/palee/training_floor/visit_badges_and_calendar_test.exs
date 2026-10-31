@@ -81,7 +81,7 @@ defmodule Palee.Scheduling.Domain.VisitBadgesAndCalendarTest do
 
       assert ics |> String.split("\r\n") |> Enum.all?(&(byte_size(&1) <= 75))
       # Unfolding gives the escaped description back.
-      assert String.replace(ics, "\r\n ", "") =~ "DESCRIPTION:Πολύ μεγάλη περιγραφή\; "
+      assert String.replace(ics, "\r\n ", "") =~ "DESCRIPTION:Πολύ μεγάλη περιγραφή\\; "
     end
   end
 
