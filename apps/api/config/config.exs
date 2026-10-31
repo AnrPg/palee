@@ -437,6 +437,8 @@ config :palee,
        Palee.Infrastructure.Finance.EctoFinanceAccountingStore
 
 config :palee, :workout_store, Palee.Infrastructure.Workouts.EctoWorkoutStore
+# ADR-357: WODs as they were when assigned or performed.
+config :palee, :workout_snapshot_store, Palee.Infrastructure.Workouts.EctoWorkoutSnapshotStore
 
 config :palee,
        :workout_goal_store,
