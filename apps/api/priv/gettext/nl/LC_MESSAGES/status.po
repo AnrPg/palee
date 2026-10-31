@@ -1,0 +1,53 @@
+msgid ""
+msgstr ""
+"Language: nl\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Confirm your Palee status emails"
+msgstr "Bevestig je Palee-statusmails"
+
+msgid "Confirm"
+msgstr "Bevestigen"
+
+msgid "Someone asked to get an email when Palee has an incident or planned maintenance. Confirm and we will write to this address only then."
+msgstr "Iemand vroeg om een e-mail wanneer Palee een storing of gepland onderhoud heeft. Bevestig en we schrijven dit adres alleen dan."
+
+msgid "If it wasn't you, ignore this email: nothing will be sent."
+msgstr "Was jij dit niet? Negeer deze e-mail: er wordt niets verstuurd."
+
+msgid "Open the status page"
+msgstr "Statuspagina openen"
+
+msgid "Stop these emails"
+msgstr "Stop met deze e-mails"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "You get these emails because you asked for them on the status page."
+msgstr "Je krijgt deze e-mails omdat je ze op de statuspagina hebt aangevraagd."
+
+msgid "When"
+msgstr "Wanneer"
+
+msgid "Investigating"
+msgstr "Wordt onderzocht"
+
+msgid "Identified"
+msgstr "Oorzaak gevonden"
+
+msgid "Monitoring"
+msgstr "Wordt gevolgd"
+
+msgid "Resolved"
+msgstr "Opgelost"
+
+msgid "Scheduled maintenance"
+msgstr "Gepland onderhoud"
+
+msgid "Maintenance in progress"
+msgstr "Onderhoud bezig"
+
+msgid "Maintenance completed"
+msgstr "Onderhoud voltooid"

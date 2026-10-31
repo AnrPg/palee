@@ -2800,6 +2800,35 @@ defmodule PaleeWeb.FallbackController do
     invalid_profile_audience: {:unprocessable_entity, "Use followers or private"}
   }
 
+  # ADR-364: the status page (incidents, maintenance, subscriptions) and
+  # ADR-365: the box's own data export.
+  @status_errors %{
+    invalid_status_kind: {:unprocessable_entity, "Choose incident or maintenance"},
+    invalid_status_title: {:unprocessable_entity, "A title has 3 to 140 characters"},
+    invalid_status_impact: {:unprocessable_entity, "Choose none, minor, major or critical"},
+    unknown_status_component: {:unprocessable_entity, "Choose components of the status page"},
+    invalid_maintenance_window:
+      {:unprocessable_entity, "A maintenance needs a start before its end"},
+    invalid_status_transition:
+      {:unprocessable_entity, "This status does not fit an incident or maintenance"},
+    invalid_status_note: {:unprocessable_entity, "Write a note of 1 to 2000 characters"},
+    status_incident_closed: {:conflict, "This incident is already closed"},
+    status_incident_not_found: {:not_found, "No incident matches"},
+    status_subscription_not_found:
+      {:not_found, "This link has expired or was already used"},
+    invalid_status_email: {:unprocessable_entity, "Enter a valid email address"},
+    box_export_too_soon: {:conflict, "One export of the box's data a day; try again tomorrow"},
+    box_export_not_found: {:not_found, "No export matches"}
+  }
+
+  def call(conn, {:error, reason}) when is_map_key(@status_errors, reason) do
+    {status, message} = Map.fetch!(@status_errors, reason)
+
+    conn
+    |> put_status(status)
+    |> json(%{code: Atom.to_string(reason), error: message})
+  end
+
   def call(conn, {:error, reason}) when is_map_key(@journal_errors, reason) do
     {status, message} = Map.fetch!(@journal_errors, reason)
 

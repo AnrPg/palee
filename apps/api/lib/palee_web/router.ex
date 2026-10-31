@@ -105,6 +105,11 @@ defmodule PaleeWeb.Router do
     plug(PaleeWeb.Plugs.RateLimit, max: 120, interval: 60_000, bucket: "public-referral")
   end
 
+  # ADR-364: sign-ups to status emails send an email, so few per client.
+  pipeline :public_status_write_rate_limited do
+    plug(PaleeWeb.Plugs.RateLimit, max: 10, interval: 60_000, bucket: "public-status")
+  end
+
   # ADR-191: a partner's counter opens a perk QR's link; the signed,
   # short-lived token makes guessing moot, the budget keeps scanners honest.
   pipeline :public_perk_rate_limited do
@@ -337,6 +342,22 @@ defmodule PaleeWeb.Router do
     pipe_through([:api, :public_box_rate_limited])
 
     get("/", PlatformPlanController, :index_public)
+  end
+
+  # ADR-364 (CP-G4): the public status page data and email subscriptions.
+  scope "/api/public/status", PaleeWeb do
+    pipe_through([:api, :public_box_rate_limited])
+
+    get("/", PublicStatusController, :show)
+    get("/history", PublicStatusController, :history)
+  end
+
+  scope "/api/public/status/subscriptions", PaleeWeb do
+    pipe_through([:api, :public_status_write_rate_limited])
+
+    post("/", PublicStatusController, :subscribe)
+    post("/confirm", PublicStatusController, :confirm)
+    post("/unsubscribe", PublicStatusController, :unsubscribe)
   end
 
   scope "/api/public/perk-verifications", PaleeWeb do
@@ -1809,6 +1830,11 @@ defmodule PaleeWeb.Router do
       :remove_logo
     )
 
+    # ADR-364: the status page (incidents, maintenance, probes, subscribers).
+    get("/status", PlatformStatusController, :show)
+    post("/status/incidents", PlatformStatusController, :create)
+    patch("/status/incidents/:id", PlatformStatusController, :update)
+    post("/status/incidents/:id/updates", PlatformStatusController, :add_update)
     # ADR-117 reviewed tenant export/purge workflow.
     get("/organization-purges", PlatformOrganizationPurgeController, :index)
     post("/organizations/:id/purge", PlatformOrganizationPurgeController, :create)

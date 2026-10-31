@@ -127,3 +127,6 @@ config :palee, :payments_http, req_options: [plug: {Req.Test, Palee.PaymentsHttp
 config :palee, :fiscal_http, req_options: [plug: {Req.Test, Palee.FiscalHttp}]
 # ADR-273: myDATA (saving a test or production connection checks it) too.
 config :palee, :mydata, req_options: [plug: {Req.Test, Palee.FiscalHttp}, retry: false]
+# ADR-364: the status page probes with the sandbox; LiveProbe tests plug Req.Test.
+config :palee, :status_probe, Palee.Infrastructure.Status.SandboxProbe
+config :palee, :status_http, req_options: [plug: {Req.Test, Palee.StatusHttp}]

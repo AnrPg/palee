@@ -1,0 +1,28 @@
+defmodule Palee.Status.IncidentUpdate do
+  @moduledoc "ADR-364: one step in an incident's timeline: its status then and the note people read."
+
+  use Ecto.Schema
+  import Ecto.Changeset
+
+  @primary_key {:id, :binary_id, autogenerate: true}
+  @foreign_key_type :binary_id
+
+  @type t :: %__MODULE__{}
+
+  schema "status_incident_updates" do
+    field :incident_id, :binary_id
+    field :status, :string
+    field :body, :string
+    field :notify, :boolean, default: true
+    field :created_by_id, :binary_id
+
+    timestamps(type: :utc_datetime_usec, updated_at: false)
+  end
+
+  def create_changeset(attrs) do
+    %__MODULE__{}
+    |> cast(attrs, [:incident_id, :status, :body, :notify, :created_by_id])
+    |> validate_required([:incident_id, :status, :body])
+    |> check_constraint(:body, name: :status_incident_updates_body_check)
+  end
+end

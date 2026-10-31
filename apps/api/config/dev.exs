@@ -88,3 +88,6 @@ config :palee, :payments_sandbox, true
 
 # ADR-280 verification: the SMS code is logged (number masked), not sent.
 config :palee, :sms_sender, Palee.Infrastructure.Sms.LogSmsSender
+
+# ADR-364: no calls to payment or tax authority APIs from a laptop.
+config :palee, :status_probe_targets, []

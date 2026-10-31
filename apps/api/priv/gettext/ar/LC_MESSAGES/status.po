@@ -1,0 +1,53 @@
+msgid ""
+msgstr ""
+"Language: ar\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Confirm your Palee status emails"
+msgstr "أكّد رسائل حالة Palee"
+
+msgid "Confirm"
+msgstr "تأكيد"
+
+msgid "Someone asked to get an email when Palee has an incident or planned maintenance. Confirm and we will write to this address only then."
+msgstr "طلب أحدهم تلقّي رسالة عندما يواجه Palee عطلًا أو صيانة مجدولة. أكّد وسنراسل هذا العنوان في تلك الحالات فقط."
+
+msgid "If it wasn't you, ignore this email: nothing will be sent."
+msgstr "إن لم تكن أنت، فتجاهل هذه الرسالة: لن يُرسل أي شيء."
+
+msgid "Open the status page"
+msgstr "فتح صفحة الحالة"
+
+msgid "Stop these emails"
+msgstr "إيقاف هذه الرسائل"
+
+msgid "Status"
+msgstr "الحالة"
+
+msgid "You get these emails because you asked for them on the status page."
+msgstr "تصلك هذه الرسائل لأنك طلبتها من صفحة الحالة."
+
+msgid "When"
+msgstr "متى"
+
+msgid "Investigating"
+msgstr "قيد التحقيق"
+
+msgid "Identified"
+msgstr "تم تحديد السبب"
+
+msgid "Monitoring"
+msgstr "قيد المراقبة"
+
+msgid "Resolved"
+msgstr "تم الحل"
+
+msgid "Scheduled maintenance"
+msgstr "صيانة مجدولة"
+
+msgid "Maintenance in progress"
+msgstr "الصيانة جارية"
+
+msgid "Maintenance completed"
+msgstr "اكتملت الصيانة"

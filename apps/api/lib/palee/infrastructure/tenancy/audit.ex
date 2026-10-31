@@ -93,6 +93,9 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
   # `palee_claim_demo_reminder`, `palee_mark_demo_archived`,
   # `palee_reopen_demo_business`), never by a tenant session directly.
   #
+  # `status_*` (ADR-364) are the public status page: platform data with no
+  # tenant (probes, incidents, maintenance, subscriber addresses).
+  #
   # `email_messages` (ADR-203) is the platform's email outbox: written by
   # `Palee.Email` and its worker (no session scope), never read by a tenant
   # session; its `organization_id` only records which business sent it.
@@ -103,6 +106,8 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     platform_plans organization_platform_subscriptions
     business_activation_links business_requests
     email_messages
+    status_component_states status_daily_samples status_incidents
+    status_incident_updates status_subscribers
   )
 
   # Materialized views carry denormalized tenant data but cannot have RLS

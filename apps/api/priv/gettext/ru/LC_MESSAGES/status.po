@@ -1,0 +1,53 @@
+msgid ""
+msgstr ""
+"Language: ru\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Confirm your Palee status emails"
+msgstr "Подтвердите письма о статусе Palee"
+
+msgid "Confirm"
+msgstr "Подтвердить"
+
+msgid "Someone asked to get an email when Palee has an incident or planned maintenance. Confirm and we will write to this address only then."
+msgstr "Кто-то попросил присылать письмо, когда у Palee сбой или плановое обслуживание. Подтвердите, и мы будем писать на этот адрес только в таких случаях."
+
+msgid "If it wasn't you, ignore this email: nothing will be sent."
+msgstr "Если это были не вы, просто проигнорируйте письмо: ничего не будет отправлено."
+
+msgid "Open the status page"
+msgstr "Открыть страницу статуса"
+
+msgid "Stop these emails"
+msgstr "Отписаться от этих писем"
+
+msgid "Status"
+msgstr "Статус"
+
+msgid "You get these emails because you asked for them on the status page."
+msgstr "Вы получаете эти письма, потому что подписались на странице статуса."
+
+msgid "When"
+msgstr "Когда"
+
+msgid "Investigating"
+msgstr "Выясняем"
+
+msgid "Identified"
+msgstr "Причина найдена"
+
+msgid "Monitoring"
+msgstr "Наблюдаем"
+
+msgid "Resolved"
+msgstr "Решено"
+
+msgid "Scheduled maintenance"
+msgstr "Плановое обслуживание"
+
+msgid "Maintenance in progress"
+msgstr "Идёт обслуживание"
+
+msgid "Maintenance completed"
+msgstr "Обслуживание завершено"
