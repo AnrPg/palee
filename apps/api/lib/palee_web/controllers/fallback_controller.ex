@@ -516,6 +516,11 @@ defmodule PaleeWeb.FallbackController do
   def call(conn, {:error, reason}) when is_map_key(@box_site_errors, reason) do
     {status, message} = Map.fetch!(@box_site_errors, reason)
 
+    conn
+    |> put_status(status)
+    |> json(%{code: to_string(reason), error: message})
+  end
+
   # ADR-356..359: v3.1 training and floor.
   @training_floor_errors %{
     leaderboard_not_opted_in:
@@ -533,7 +538,6 @@ defmodule PaleeWeb.FallbackController do
     |> put_status(status)
     |> json(%{code: to_string(reason), error: message})
   end
-
 
   def call(conn, {:error, {:invalid_leaderboard_filter, field}}) when is_atom(field) do
     conn

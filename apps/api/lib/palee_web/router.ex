@@ -356,6 +356,7 @@ defmodule PaleeWeb.Router do
     pipe_through([:api, :public_lead_rate_limited])
 
     post("/:slug/leads", PublicLeadController, :create)
+  end
 
   # ADR-352..354: the box's website, its custom hosts and consent log.
   scope "/api/public/sites", PaleeWeb do
@@ -394,6 +395,7 @@ defmodule PaleeWeb.Router do
     get("/articles", HelpArticleController, :index)
     get("/articles/:slug", HelpArticleController, :show)
     get("/screen", HelpArticleController, :screen)
+  end
 
   # ADR-364 (CP-G4): the public status page data and email subscriptions.
   scope "/api/public/status", PaleeWeb do

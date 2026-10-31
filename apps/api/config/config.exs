@@ -427,15 +427,16 @@ config :palee, :domain_event_handlers, %{
 config :palee, :lead_store, Palee.Infrastructure.Leads.EctoLeadStore
 config :palee, :leads_clock, Palee.Infrastructure.Leads.SystemClock
 
-# ADR-346: automations from ready recipes. Channels by name; the SMS channel
-# of CP-C3 joins this map.
+# ADR-346: automations from ready recipes. Channels by name; SMS goes through
+# the box's text-message channel (ADR-351).
 config :palee, :automation_store, Palee.Infrastructure.Automations.EctoAutomationStore
 config :palee, :automation_audience, Palee.Infrastructure.Automations.EctoAudience
 config :palee, :automations_clock, Palee.Infrastructure.Automations.SystemClock
 
 config :palee, :automation_channels, %{
   "email" => Palee.Infrastructure.Automations.EmailChannel,
-  "in_app" => Palee.Infrastructure.Automations.InAppChannel
+  "in_app" => Palee.Infrastructure.Automations.InAppChannel,
+  "sms" => Palee.Application.Channels.AutomationSmsChannel
 }
 
 # ADR-347: members at risk.
@@ -447,11 +448,10 @@ config :palee, :retention_clock, Palee.Infrastructure.Retention.SystemClock
 config :palee, :box_screen_store, Palee.Infrastructure.BoxScreens.EctoBoxScreenStore
 config :palee, :box_screen_clock, Palee.Infrastructure.BoxScreens.SystemClock
 
-# ADR-352..354: the box's website. Leads arrive through the leads context's
-# adapter (W2, CP-C1); until it is configured submissions wait (HeldLeadIntake).
+# ADR-352..354: the box's website. Form submissions become leads (ADR-345).
 config :palee, :box_site_store, Palee.Infrastructure.BoxSite.EctoBoxSiteStore
 config :palee, :box_site_clock, Palee.Infrastructure.BoxSite.SystemClock
-config :palee, :box_site_lead_intake, Palee.Infrastructure.BoxSite.HeldLeadIntake
+config :palee, :box_site_lead_intake, Palee.Infrastructure.Leads.BoxSiteIntake
 config :palee, :box_site_dns, Palee.Infrastructure.BoxSite.InetDomainDns
 config :palee, :box_site_tls_probe, Palee.Infrastructure.BoxSite.HttpTlsProbe
 config :palee, :box_site_conversions_api, Palee.Infrastructure.BoxSite.MetaConversionsApi

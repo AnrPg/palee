@@ -11,8 +11,11 @@ defmodule Palee.Infrastructure.Leads.BoxSiteIntake do
   retrying); `{:transient, reason}` is tried again.
   """
 
+  @behaviour Palee.BoxSite.Ports.LeadIntake
+
   alias Palee.Application.Leads.CaptureLead
 
+  @impl true
   def submit(%{organization_id: organization_id}, intake) when is_binary(organization_id) do
     consent = Map.get(intake, :consent) || %{}
 

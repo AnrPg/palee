@@ -2,8 +2,8 @@ defmodule Palee.Application.Channels.AutomationSmsChannel do
   @moduledoc """
   The `sms` channel of W2's automations (CP-C2, ADR-351): a thin wrapper
   that fits `Palee.Automations.Ports.Channel` (`channel/0`, `reachable?/1`,
-  `deliver/1`) over `SendThroughChannel`. The integrator registers it as
-  `config :palee, :automation_channels, %{"sms" => #{inspect(__MODULE__)}}`.
+  `deliver/1`) over `SendThroughChannel`, registered as the `"sms"` entry of
+  `config :palee, :automation_channels`.
 
   Consent, STOP, quiet hours and the box's budget are checked here, on
   the Channels side. Anything that means «SMS cannot reach this person
@@ -13,9 +13,12 @@ defmodule Palee.Application.Channels.AutomationSmsChannel do
   sees the message accepted (`{:ok, message_id}`).
   """
 
+  @behaviour Palee.Automations.Ports.Channel
+
   alias Palee.Application.Channels.SendThroughChannel
   alias Palee.Channels
 
+  @impl true
   def channel, do: "sms"
 
   @doc """
@@ -24,6 +27,7 @@ defmodule Palee.Application.Channels.AutomationSmsChannel do
   `deliver/1` decides). The purpose is unknown here, so either consent
   counts.
   """
+  @impl true
   def reachable?(%{organization_id: organization_id} = recipient)
       when is_binary(organization_id) do
     context = %{organization_id: organization_id}
@@ -35,6 +39,7 @@ defmodule Palee.Application.Channels.AutomationSmsChannel do
   def reachable?(_recipient), do: true
 
   @doc "Queues the SMS of one automation delivery (idempotent per `delivery_id`)."
+  @impl true
   def deliver(%{organization_id: organization_id, delivery_id: delivery_id} = message) do
     text =
       [message[:body], message[:url]]
