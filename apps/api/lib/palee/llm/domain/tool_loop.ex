@@ -11,7 +11,9 @@ defmodule Palee.Llm.Domain.ToolLoop do
   final response and a step log for the audit: one entry per tool call
   with its name, arguments and the executor's `audit` summary.
 
-  A tool executor returns `{:ok, content, audit}` or `{:error, code}`;
+  A tool executor gets the tool name, its arguments and the step number
+  (1, 2… across the run, handy for result refs) and returns
+  `{:ok, content, audit}` or `{:error, code}`;
   either way the model is told, and the loop goes on. The model never
   sees an exception.
   """
@@ -20,7 +22,8 @@ defmodule Palee.Llm.Domain.ToolLoop do
   alias Palee.Llm.Domain.{Request, Response}
 
   @type generate :: (Request.t() -> {:ok, Response.t()} | {:error, term()})
-  @type execute :: (String.t(), map() -> {:ok, map(), map()} | {:error, atom()})
+  @type execute ::
+          (String.t(), map(), pos_integer() -> {:ok, map(), map()} | {:error, atom()})
 
   @type result :: %{
           response: Response.t(),
@@ -32,7 +35,7 @@ defmodule Palee.Llm.Domain.ToolLoop do
 
   @spec run(Request.t(), generate(), execute(), keyword()) :: {:ok, result()} | {:error, term()}
   def run(%Request{} = request, generate, execute, opts \\ [])
-      when is_function(generate, 1) and is_function(execute, 2) do
+      when is_function(generate, 1) and is_function(execute, 3) do
     state = %{
       max_rounds: Keyword.get(opts, :max_rounds, 3),
       max_calls: Keyword.get(opts, :max_calls_per_round, 4),
@@ -100,7 +103,7 @@ defmodule Palee.Llm.Domain.ToolLoop do
 
       {content, audit} =
         if index < state.max_calls do
-          case execute.(call.name, call.args || %{}) do
+          case execute.(call.name, call.args || %{}, step_number) do
             {:ok, content, audit} -> {content, audit}
             {:error, code} -> {%{"error" => to_string(code)}, %{error: to_string(code)}}
           end

@@ -34,8 +34,8 @@ defmodule Palee.Repo.Migrations.CreateDataQuestions do
       add :answer, :text
       add :grounded, :boolean, null: false, default: false
       add :unsupported_numbers, {:array, :text}, null: false, default: []
-      add :citations, :map, null: false, default: fragment("'[]'::jsonb")
-      add :steps, :map, null: false, default: fragment("'[]'::jsonb")
+      add :citations, {:array, :map}, null: false, default: []
+      add :steps, {:array, :map}, null: false, default: []
       add :rounds, :integer, null: false, default: 0
       add :model, :text
       add :input_tokens, :integer, null: false, default: 0
@@ -54,8 +54,8 @@ defmodule Palee.Repo.Migrations.CreateDataQuestions do
              AND status IN ('answered', 'unanswerable', 'failed', 'refused')
              AND (answer IS NULL OR char_length(answer) <= 4000)
              AND (error_code IS NULL OR char_length(error_code) <= 60)
-             AND jsonb_typeof(citations) = 'array'
-             AND jsonb_typeof(steps) = 'array'
+             AND cardinality(citations) <= 20
+             AND cardinality(steps) <= 20
              AND rounds BETWEEN 0 AND 20
              """
            )

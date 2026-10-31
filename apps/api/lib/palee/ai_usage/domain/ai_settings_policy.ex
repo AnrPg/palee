@@ -16,7 +16,7 @@ defmodule Palee.AiUsage.Domain.AiSettingsPolicy do
 
   @doc """
   Changes for an update request. Accepted keys: `scaling_enabled` and
-  `voice_enabled` (booleans),
+  `voice_enabled` and `data_questions_enabled` (booleans),
   `api_key` (string, replaces the key), `remove_key` (true), `model` (string,
   or nil/blank for the default). Returns `{:ok, changes}` or `{:error, reason}`.
   """
@@ -87,8 +87,11 @@ defmodule Palee.AiUsage.Domain.AiSettingsPolicy do
   defp switch_changes(params) do
     with {:ok, scaling} <- switch_change(params, :scaling_enabled, :invalid_scaling_enabled),
          # ADR-175: voice logging has its own switch, off by default.
-         {:ok, voice} <- switch_change(params, :voice_enabled, :invalid_voice_enabled) do
-      {:ok, Map.merge(scaling, voice)}
+         {:ok, voice} <- switch_change(params, :voice_enabled, :invalid_voice_enabled),
+         # ADR-361: data questions run on the platform's provider (no key).
+         {:ok, questions} <-
+           switch_change(params, :data_questions_enabled, :invalid_data_questions_enabled) do
+      {:ok, scaling |> Map.merge(voice) |> Map.merge(questions)}
     end
   end
 
@@ -122,6 +125,10 @@ defmodule Palee.AiUsage.Domain.AiSettingsPolicy do
 
   def voice_ready?(_settings), do: false
 
+  @doc "Whether staff questions over the box's data may run (ADR-361): the owner's switch only."
+  def data_questions_ready?(%{data_questions_enabled: true}), do: true
+  def data_questions_ready?(_settings), do: false
+
   @doc "The model to call: the gym's override, else the platform default."
   def model(%{model: model}, _default) when is_binary(model) and model != "", do: model
   def model(_settings, default), do: default
@@ -132,6 +139,7 @@ defmodule Palee.AiUsage.Domain.AiSettingsPolicy do
       provider: value(settings, :provider, "anthropic"),
       scaling_enabled: value(settings, :scaling_enabled, false),
       voice_enabled: value(settings, :voice_enabled, false),
+      data_questions_enabled: value(settings, :data_questions_enabled, false),
       key_configured: present?(value(settings, :api_key, nil)),
       key_last4: value(settings, :api_key_last4, nil),
       key_status: value(settings, :key_status, "unknown"),

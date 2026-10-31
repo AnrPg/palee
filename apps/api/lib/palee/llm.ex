@@ -22,7 +22,7 @@ defmodule Palee.Llm do
 
   @doc """
   The tool loop over the configured provider: `execute` runs one tool call
-  (`fn name, args -> {:ok, content, audit} | {:error, code} end`).
+  (`fn name, args, step -> {:ok, content, audit} | {:error, code} end`).
   """
   def run_tools(%Request{} = request, execute, options \\ %{}, loop_opts \\ []) do
     ToolLoop.run(request, &generate(&1, options), execute, loop_opts)

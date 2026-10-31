@@ -61,7 +61,7 @@ defmodule Palee.Repo.Migrations.CreateHelpDesk do
       add :author, :text, null: false
       add :author_id, references(:users, type: :binary_id, on_delete: :nilify_all)
       add :body, :text, null: false
-      add :citations, :map, null: false, default: fragment("'[]'::jsonb")
+      add :citations, {:array, :map}, null: false, default: []
       add :guide_id, :text
       add :confident, :boolean
       timestamps(type: :utc_datetime_usec, updated_at: false)
@@ -80,7 +80,7 @@ defmodule Palee.Repo.Migrations.CreateHelpDesk do
              check: """
              author IN ('person', 'assistant', 'palee')
              AND char_length(body) BETWEEN 1 AND 4000
-             AND jsonb_typeof(citations) = 'array'
+             AND cardinality(citations) <= 10
              AND (guide_id IS NULL OR guide_id ~ '^[a-z][a-z0-9_]{1,47}$')
              """
            )
