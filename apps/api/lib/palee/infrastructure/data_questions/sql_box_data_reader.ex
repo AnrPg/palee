@@ -138,6 +138,7 @@ defmodule Palee.Infrastructure.DataQuestions.SqlBoxDataReader do
           ON s.id = mp.membership_package_subscription_id AND s.organization_id = $1
         LEFT JOIN membership_packages p ON p.id = s.membership_package_id
         WHERE mp.organization_id = $1 AND mp.payment_status = 'paid' AND mp.deleted_at IS NULL
+          AND COALESCE(mp.revenue_stream, 'membership') IN ('membership', 'package')
           AND mp.paid_on BETWEEN $2 AND $3
         GROUP BY 1, 2
         ORDER BY 4 DESC
@@ -164,6 +165,7 @@ defmodule Palee.Infrastructure.DataQuestions.SqlBoxDataReader do
                sum(mp.amount_cents)::bigint
         FROM membership_payments mp
         WHERE mp.organization_id = $1 AND mp.payment_status = 'paid' AND mp.deleted_at IS NULL
+          AND COALESCE(mp.revenue_stream, 'membership') IN ('membership', 'package')
           AND mp.paid_on BETWEEN $2 AND $3
         GROUP BY 1, 2
         ORDER BY 1, 2
