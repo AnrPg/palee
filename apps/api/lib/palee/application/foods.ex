@@ -228,5 +228,4 @@ defmodule Palee.Application.Foods do
   defp params_map(params) when is_map(params), do: Map.new(params, fn {k, v} -> {to_string(k), v} end)
   defp params_map(_params), do: %{}
 
-  defp param(params, key), do: Map.get(params_map(params), key)
 end

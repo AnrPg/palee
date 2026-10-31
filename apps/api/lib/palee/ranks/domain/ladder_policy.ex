@@ -124,43 +124,52 @@ defmodule Palee.Ranks.Domain.LadderPolicy do
         name: "Ζώνες BJJ",
         discipline: "bjj_grappling",
         style: "belt",
-        ranks:
-          for {name, color, days} <- [
-                {"Λευκή", "white", nil},
-                {"Μπλε", "blue", 730},
-                {"Μωβ", "purple", 540},
-                {"Καφέ", "brown", 540},
-                {"Μαύρη", "black", 365}
-              ],
-              do: %{name: name, color: color, max_stripes: 4, requirements: days_req(days)}
+        ranks: bjj_ranks()
       },
       %{
         key: "karate_kyu",
         name: "Ζώνες καράτε",
         discipline: "martial_arts",
         style: "belt",
-        ranks:
-          for {name, color} <- [
-                {"Λευκή", "white"},
-                {"Κίτρινη", "yellow"},
-                {"Πορτοκαλί", "orange"},
-                {"Πράσινη", "green"},
-                {"Μπλε", "blue"},
-                {"Καφέ", "brown"},
-                {"Μαύρη", "black"}
-              ],
-              do: %{name: name, color: color, max_stripes: 0, requirements: %{}}
+        ranks: karate_ranks()
       },
       %{
         key: "gymnastics_levels",
         name: "Επίπεδα ενόργανης",
         discipline: "gymnastics",
         style: "level",
-        ranks:
-          for level <- 1..10,
-              do: %{name: "Επίπεδο #{level}", color: nil, max_stripes: 0, requirements: %{}}
+        ranks: gymnastics_ranks()
       }
     ]
+  end
+
+  defp bjj_ranks do
+    for {name, color, days} <- [
+          {"Λευκή", "white", nil},
+          {"Μπλε", "blue", 730},
+          {"Μωβ", "purple", 540},
+          {"Καφέ", "brown", 540},
+          {"Μαύρη", "black", 365}
+        ],
+        do: %{name: name, color: color, max_stripes: 4, requirements: days_req(days)}
+  end
+
+  defp karate_ranks do
+    for {name, color} <- [
+          {"Λευκή", "white"},
+          {"Κίτρινη", "yellow"},
+          {"Πορτοκαλί", "orange"},
+          {"Πράσινη", "green"},
+          {"Μπλε", "blue"},
+          {"Καφέ", "brown"},
+          {"Μαύρη", "black"}
+        ],
+        do: %{name: name, color: color, max_stripes: 0, requirements: %{}}
+  end
+
+  defp gymnastics_ranks do
+    for level <- 1..10,
+        do: %{name: "Επίπεδο #{level}", color: nil, max_stripes: 0, requirements: %{}}
   end
 
   defp days_req(nil), do: %{}
