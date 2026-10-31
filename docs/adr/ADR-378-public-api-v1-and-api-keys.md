@@ -28,7 +28,7 @@ hand-written controllers would create the "parallel system" ADR-300 exists to pr
    OpenAPI 3.1 document generated from the specs (`PaleeWeb.PublicApiSpec`), with the webhook events
    under 3.1's `webhooks`. Palee's own OpenAPI document (ADR-134) does not include these routes.
    (The plan wrote `/public/v1`; the public base URL serves `/api`, hence `/api/public/v1`.)
-4. **API keys.** `palee_<live|test>_<12-char prefix>_<40-char secret>` (base32, 260 bits). Only
+4. **API keys.** `palee_<live|test>_<12-char prefix>_<40-char secret>` (base32; the secret alone carries 200 bits). Only
    the SHA-256 of the secret and the prefix are stored (`api_keys`); lookup by prefix through the
    SECURITY DEFINER `palee_api_key_lookup(text)`, then a constant-time compare. Shown once. Up to
    25 active keys per box, optional expiry, revoke at once. **Rotation** keeps the prefix and

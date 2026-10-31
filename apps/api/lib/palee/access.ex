@@ -191,7 +191,7 @@ defmodule Palee.Access do
       settings: door.settings,
       rules: door.rules,
       status: door.status,
-      credentials_saved: door.credentials != %{},
+      credentials_saved: door.credentials not in [nil, %{}],
       last_error: door.last_error,
       last_seen_at: door.last_seen_at,
       updated_at: door.updated_at

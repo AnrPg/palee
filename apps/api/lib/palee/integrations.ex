@@ -815,7 +815,7 @@ defmodule Palee.Integrations do
       provider: connection.provider,
       list_id: connection.list_id,
       status: connection.status,
-      key_saved: connection.credentials != %{},
+      key_saved: connection.credentials not in [nil, %{}],
       last_error: connection.last_error,
       last_synced_at: connection.last_synced_at,
       sync_requested_at: connection.sync_requested_at,
