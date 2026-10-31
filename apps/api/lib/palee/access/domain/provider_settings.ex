@@ -4,7 +4,8 @@ defmodule Palee.Access.Domain.ProviderSettings do
   saved. Settings are plain values shown back to staff; credentials are
   secrets, encrypted at rest and never returned.
 
-    * `sandbox` – no hardware (development, tests, demos);
+    * `sandbox` – no hardware (development, tests, demos); `simulate:
+      "offline"` acts as an unreachable controller;
     * `shelly` – a Shelly relay (Plus 1, Pro 1, Gen2+) on the door strike or
       the turnstile's dry contact, through the Shelly Cloud Control API v2:
       `server` (the account's cloud host, e.g. `shelly-77-eu.shelly.cloud`),
@@ -22,7 +23,12 @@ defmodule Palee.Access.Domain.ProviderSettings do
   @doc "`{:ok, settings, credentials}` or `{:error, :invalid_door_settings}`."
   def validate(provider, settings, credentials, previous_credentials \\ nil)
 
-  def validate("sandbox", _settings, _credentials, _previous), do: {:ok, %{}, %{}}
+  def validate("sandbox", settings, _credentials, _previous) do
+    case stringify(settings) do
+      %{"simulate" => "offline"} -> {:ok, %{"simulate" => "offline"}, %{}}
+      _other -> {:ok, %{}, %{}}
+    end
+  end
 
   def validate("shelly", settings, credentials, previous) do
     settings = stringify(settings)
