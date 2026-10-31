@@ -27,7 +27,7 @@ the accountant, and never appear on fiscal documents.
    `Finance.coach_sales/3` in the gym's time zone. CoachPay never reads
    another context's tables. Refunds come back as negative sales and
    become `clawback` lines; `card_surcharge` rows are excluded.
-4. **Periods** up to 92 days, no overlap: `open` → calculate (replaces all
+4. **Periods** up to 92 days, no overlap: `draft` → calculate (replaces all
    calculated lines, keeps manual `adjustment` lines) → `approved`
    (locked) → `exported` (CSV with a formula-injection guard). Reopening
    an approved period needs a reason; an exported one cannot be changed.

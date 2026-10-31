@@ -557,7 +557,7 @@ Staff screens only. Never part of a fiscal document: a pay statement is an inter
 |---|---|---|---|---|
 | Coach pay | Αμοιβές coaches | `/admin/coach-pay`, `Palee.CoachPay` | What the box owes its coaches for a period, worked out from classes, sessions and sales. | Payroll (salaries, taxes; outside Palee); tips. |
 | Pay rule | Κανόνας αμοιβής | `coach_pay_rules` (`per_class`, `per_attendee`, `per_session`, `percent_of_sales`) | How one coach earns: an amount per class, per attendee, per personal session, or a percent of the package/PT sales they made. Archived, never deleted. | Package price. |
-| Pay period | Περίοδος αμοιβών | `coach_pay_periods` (`open`, `approved`, `exported`) | The dates one calculation covers (up to 92 days). Approved periods are locked; reopening needs a reason. | Fiscal day closing. |
+| Pay period | Περίοδος αμοιβών | `coach_pay_periods` (`draft`, `approved`, `exported`) | The dates one calculation covers (up to 92 days). Approved periods are locked; reopening needs a reason. | Fiscal day closing. |
 | Pay statement | Κατάσταση αμοιβής | `coach_pay_statements`, `coach_pay_lines` | One coach's lines and total for a period; the coach sees their own under «Οι αμοιβές μου». | Receipt, invoice (fiscal documents). |
 | Adjustment | Διόρθωση | line kind `adjustment` | An amount staff add by hand to a statement (bonus, deduction), with a note. | Refund. |
 | Clawback | Αφαίρεση λόγω επιστροφής | line kind `clawback` | A negative line when a sale a commission was paid on is refunded. | Adjustment. |
