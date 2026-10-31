@@ -18,9 +18,14 @@ defmodule PaleeWeb.ChannelWebhookController do
     }
 
     case ChannelWebhooks.handle(organization_id, token, request) do
-      {:ok, _counts} -> json(conn, %{ok: true})
-      {:error, :invalid_signature} -> conn |> put_status(:unauthorized) |> json(%{code: "invalid_signature"})
-      {:error, _reason} -> conn |> put_status(:not_found) |> json(%{code: "not_found"})
+      {:ok, _counts} ->
+        json(conn, %{ok: true})
+
+      {:error, :invalid_signature} ->
+        conn |> put_status(:unauthorized) |> json(%{code: "invalid_signature"})
+
+      {:error, _reason} ->
+        conn |> put_status(:not_found) |> json(%{code: "not_found"})
     end
   end
 end

@@ -4,7 +4,13 @@ defmodule Palee.Channels.Domain.PhoneNumberTest do
   alias Palee.Channels.Domain.PhoneNumber
 
   test "Greek mobiles in every common form become E.164" do
-    for input <- ["6912345678", "69 1234 5678", "+30 691-234-5678", "0030 6912345678", "(+30) 691.234.5678"] do
+    for input <- [
+          "6912345678",
+          "69 1234 5678",
+          "+30 691-234-5678",
+          "0030 6912345678",
+          "(+30) 691.234.5678"
+        ] do
       assert {:ok, "+306912345678"} = PhoneNumber.normalize(input, "GR")
     end
   end

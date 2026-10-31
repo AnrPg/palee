@@ -23,7 +23,8 @@ defmodule Palee.Channels.Domain.MessageText do
     if text |> String.to_charlist() |> Enum.all?(&gsm?/1), do: :gsm7, else: :ucs2
   end
 
-  defp gsm?(char), do: MapSet.member?(@gsm_basic_set, char) or MapSet.member?(@gsm_extension_set, char)
+  defp gsm?(char),
+    do: MapSet.member?(@gsm_basic_set, char) or MapSet.member?(@gsm_extension_set, char)
 
   @doc "The number of billed parts of `text` on `channel`."
   def segments("sms", text) when is_binary(text) do
@@ -47,5 +48,6 @@ defmodule Palee.Channels.Domain.MessageText do
     end)
   end
 
-  defp utf16_length(text), do: text |> :unicode.characters_to_binary(:utf8, :utf16) |> byte_size() |> div(2)
+  defp utf16_length(text),
+    do: text |> :unicode.characters_to_binary(:utf8, :utf16) |> byte_size() |> div(2)
 end

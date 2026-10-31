@@ -31,8 +31,10 @@ defmodule Palee.Application.Channels.MyChannels do
       |> Map.reject(fn {_key, value} -> is_nil(value) end)
 
     with :ok <- valid_consents(consents),
-         {:ok, contact} <- Channels.save_contact(context, {:user, user_id}, contact_params, country),
-         {:ok, contact} <- apply_consents(context, contact, consents, param(params, :text_version), now) do
+         {:ok, contact} <-
+           Channels.save_contact(context, {:user, user_id}, contact_params, country),
+         {:ok, contact} <-
+           apply_consents(context, contact, consents, param(params, :text_version), now) do
       {:ok, %{contact: Channels.own_contact(contact), channels: enabled_channels(context)}}
     end
   end

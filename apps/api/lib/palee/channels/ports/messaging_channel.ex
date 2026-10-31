@@ -39,7 +39,8 @@ defmodule Palee.Channels.Ports.MessagingChannel do
           to: String.t(),
           body: String.t(),
           purpose: String.t(),
-          template: nil | %{provider_template_id: String.t(), locale: String.t(), values: [String.t()]},
+          template:
+            nil | %{provider_template_id: String.t(), locale: String.t(), values: [String.t()]},
           callback_url: String.t() | nil
         }
 
@@ -55,7 +56,12 @@ defmodule Palee.Channels.Ports.MessagingChannel do
   A webhook call: the full URL it was posted to, its decoded params, its
   headers (lower-case names) and raw body.
   """
-  @type request :: %{url: String.t(), params: map(), headers: [{String.t(), String.t()}], raw_body: String.t()}
+  @type request :: %{
+          url: String.t(),
+          params: map(),
+          headers: [{String.t(), String.t()}],
+          raw_body: String.t()
+        }
 
   @typedoc """
   What a webhook reports: a delivery receipt (`status` one of `sent`,
@@ -76,7 +82,8 @@ defmodule Palee.Channels.Ports.MessagingChannel do
           }
           | %{type: :inbound, channel: String.t(), from: String.t(), text: String.t()}
 
-  @callback send_message(account(), outgoing()) :: {:ok, accepted()} | {:error, {error_kind(), term()}}
+  @callback send_message(account(), outgoing()) ::
+              {:ok, accepted()} | {:error, {error_kind(), term()}}
 
   @doc "«Δοκιμή σύνδεσης»: a harmless authenticated call (balance or account)."
   @callback check(account()) :: {:ok, map()} | {:error, {error_kind(), term()}}

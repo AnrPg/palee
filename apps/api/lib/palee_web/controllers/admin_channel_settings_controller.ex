@@ -78,7 +78,8 @@ defmodule PaleeWeb.AdminChannelSettingsController do
     responses: [ok: {"Templates", "application/json", C.templates()}]
   )
 
-  def templates(conn, _params), do: json(conn, ChannelSettings.templates(conn.assigns.tenant_context))
+  def templates(conn, _params),
+    do: json(conn, ChannelSettings.templates(conn.assigns.tenant_context))
 
   operation(:save_template,
     summary: "Write the box's own wording of a message in one language",

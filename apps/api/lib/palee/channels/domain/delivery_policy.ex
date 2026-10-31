@@ -68,7 +68,8 @@ defmodule Palee.Channels.Domain.DeliveryPolicy do
     end
   end
 
-  def outcome(message, {:error, other}, now), do: outcome(message, {:error, {:transient, other}}, now)
+  def outcome(message, {:error, other}, now),
+    do: outcome(message, {:error, {:transient, other}}, now)
 
   defp put_cost(changes, %{cost_cents: cents} = receipt, _message) when is_integer(cents),
     do: Map.merge(changes, %{cost_cents: cents, currency: receipt[:currency] || "EUR"})

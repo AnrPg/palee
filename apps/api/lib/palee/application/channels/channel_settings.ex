@@ -84,7 +84,8 @@ defmodule Palee.Application.Channels.ChannelSettings do
     Channels.delete_template(context, key, param(params, :locale), param(params, :channel))
   end
 
-  defp has?(params, key), do: Map.has_key?(params, key) or Map.has_key?(params, Atom.to_string(key))
+  defp has?(params, key),
+    do: Map.has_key?(params, key) or Map.has_key?(params, Atom.to_string(key))
 
   defp param(params, key) when is_map(params),
     do: Map.get(params, key, Map.get(params, Atom.to_string(key)))

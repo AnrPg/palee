@@ -57,7 +57,8 @@ defmodule Palee.Infrastructure.Channels.EctoChannelStore do
   end
 
   @impl true
-  def find_contact(context, person), do: context |> contact_query(person) |> Repo.one() |> to_map()
+  def find_contact(context, person),
+    do: context |> contact_query(person) |> Repo.one() |> to_map()
 
   defp contact_query(%{organization_id: organization_id}, {:user, user_id}),
     do: where(Contact, [c], c.organization_id == ^organization_id and c.user_id == ^user_id)
@@ -377,14 +378,19 @@ defmodule Palee.Infrastructure.Channels.EctoChannelStore do
       |> where([m], m.inserted_at >= ^from and m.inserted_at < ^to)
       |> where([m], m.status in ^@counted or (m.status == "failed" and not is_nil(m.cost_cents)))
       |> group_by([m], m.channel)
-      |> select([m], {m.channel, sum(coalesce(m.cost_cents, m.estimated_cost_cents)), count(m.id)})
+      |> select(
+        [m],
+        {m.channel, sum(coalesce(m.cost_cents, m.estimated_cost_cents)), count(m.id)}
+      )
       |> Repo.all()
 
     %{
       total: rows |> Enum.map(fn {_channel, cents, _count} -> to_int(cents) end) |> Enum.sum(),
       count: rows |> Enum.map(&elem(&1, 2)) |> Enum.sum(),
       by_channel:
-        Map.new(rows, fn {channel, cents, count} -> {channel, %{cents: to_int(cents), count: count}} end)
+        Map.new(rows, fn {channel, cents, count} ->
+          {channel, %{cents: to_int(cents), count: count}}
+        end)
     }
   end
 

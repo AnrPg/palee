@@ -22,8 +22,10 @@ defmodule Palee.Channels.Domain.Templates do
     "class_cancelled" =>
       {"service", ~w(box class when),
        %{
-         "el" => "{{box}}: Το μάθημα {{class}} στις {{when}} ακυρώθηκε. Η κράτησή σου επιστράφηκε.",
-         "en" => "{{box}}: The {{class}} class on {{when}} is cancelled. Your booking was refunded."
+         "el" =>
+           "{{box}}: Το μάθημα {{class}} στις {{when}} ακυρώθηκε. Η κράτησή σου επιστράφηκε.",
+         "en" =>
+           "{{box}}: The {{class}} class on {{when}} is cancelled. Your booking was refunded."
        }},
     "class_changed" =>
       {"service", ~w(box class when),
@@ -62,11 +64,9 @@ defmodule Palee.Channels.Domain.Templates do
          "en" => "{{box}}: Your trial session is {{when}} ({{class}}). See you!"
        }},
     "lead_follow_up" =>
-      {"marketing", ~w(box text),
-       %{"el" => "{{box}}: {{text}}", "en" => "{{box}}: {{text}}"}},
+      {"marketing", ~w(box text), %{"el" => "{{box}}: {{text}}", "en" => "{{box}}: {{text}}"}},
     "win_back" =>
-      {"marketing", ~w(box text),
-       %{"el" => "{{box}}: {{text}}", "en" => "{{box}}: {{text}}"}}
+      {"marketing", ~w(box text), %{"el" => "{{box}}: {{text}}", "en" => "{{box}}: {{text}}"}}
   }
 
   @opt_out %{

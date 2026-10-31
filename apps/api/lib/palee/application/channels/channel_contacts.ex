@@ -21,7 +21,9 @@ defmodule Palee.Application.Channels.ChannelContacts do
       %{user_ids: ids(param(params, :user_ids)), lead_ids: ids(param(params, :lead_ids))}
       |> Map.reject(fn {_key, value} -> is_nil(value) end)
 
-    %{contacts: context |> Channels.list_contacts(filters) |> Enum.map(&Channels.public_contact/1)}
+    %{
+      contacts: context |> Channels.list_contacts(filters) |> Enum.map(&Channels.public_contact/1)
+    }
   end
 
   @doc "Saves the number and language: `{:ok, %{contact}}`."

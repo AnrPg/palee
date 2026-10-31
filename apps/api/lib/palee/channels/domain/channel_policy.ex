@@ -68,11 +68,20 @@ defmodule Palee.Channels.Domain.ChannelPolicy do
   @doc "`:ok` or `{:error, reason}` for one channel (see `choose/1`)."
   def allowed(channel, facts) do
     cond do
-      channel not in (facts.connection.channels || []) -> {:error, :channel_not_enabled}
-      not is_nil(facts.contact.opted_out_at) -> {:error, :channel_opted_out}
-      not consented?(facts.consents, channel, facts.purpose) -> {:error, :channel_consent_missing}
-      channel == "whatsapp" and not facts.whatsapp_template? -> {:error, :whatsapp_template_missing}
-      true -> :ok
+      channel not in (facts.connection.channels || []) ->
+        {:error, :channel_not_enabled}
+
+      not is_nil(facts.contact.opted_out_at) ->
+        {:error, :channel_opted_out}
+
+      not consented?(facts.consents, channel, facts.purpose) ->
+        {:error, :channel_consent_missing}
+
+      channel == "whatsapp" and not facts.whatsapp_template? ->
+        {:error, :whatsapp_template_missing}
+
+      true ->
+        :ok
     end
   end
 

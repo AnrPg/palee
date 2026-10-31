@@ -174,14 +174,21 @@ defmodule Palee.Channels.Contacts do
     ChannelStore.transaction(context, fn ->
       Enum.each(consents, fn consent ->
         {:ok, _consent} =
-          ChannelStore.put_consent(context, consent.contact_id, consent.channel, consent.purpose, %{
-            withdrawn_at: now,
-            source: "stop_keyword"
-          })
+          ChannelStore.put_consent(
+            context,
+            consent.contact_id,
+            consent.channel,
+            consent.purpose,
+            %{
+              withdrawn_at: now,
+              source: "stop_keyword"
+            }
+          )
       end)
 
       Enum.each(contacts, fn contact ->
-        {:ok, _contact} = ChannelStore.save_contact(context, person_of(contact), %{opted_out_at: now})
+        {:ok, _contact} =
+          ChannelStore.save_contact(context, person_of(contact), %{opted_out_at: now})
       end)
 
       {:ok, length(contacts)}

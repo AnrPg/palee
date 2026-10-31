@@ -66,11 +66,27 @@ defmodule Palee.Channels.BoxTemplates do
       |> add(locale not in Contacts.locales(), :locale, "invalid")
       |> add(channel not in ~w(any whatsapp), :channel, "invalid")
       |> add(not (is_binary(body) and String.trim(body) != ""), :body, "required")
-      |> add(is_binary(body) and String.length(body) > MessageText.max_length(), :body, "too_long")
+      |> add(
+        is_binary(body) and String.length(body) > MessageText.max_length(),
+        :body,
+        "too_long"
+      )
       |> add(approval not in @approval, :approval_status, "invalid")
-      |> add(channel == "whatsapp" and approval == "approved" and is_nil(provider_id), :provider_template_id, "required")
-      |> add(not (is_list(names) and Enum.all?(names, &(is_binary(&1) and &1 =~ ~r/^[a-z_]{1,40}$/))), :variable_names, "invalid")
-      |> add(is_binary(provider_id) and String.length(provider_id) > 120, :provider_template_id, "too_long")
+      |> add(
+        channel == "whatsapp" and approval == "approved" and is_nil(provider_id),
+        :provider_template_id,
+        "required"
+      )
+      |> add(
+        not (is_list(names) and Enum.all?(names, &(is_binary(&1) and &1 =~ ~r/^[a-z_]{1,40}$/))),
+        :variable_names,
+        "invalid"
+      )
+      |> add(
+        is_binary(provider_id) and String.length(provider_id) > 120,
+        :provider_template_id,
+        "too_long"
+      )
 
     if errors == %{} do
       with {:ok, row} <-

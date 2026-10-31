@@ -103,7 +103,9 @@ defmodule Palee.Application.Channels.SendThroughChannel do
   end
 
   defp person_params(params),
-    do: %{user_id: param(params, :user_id), lead_id: param(params, :lead_id)} |> Map.reject(&is_nil(elem(&1, 1)))
+    do:
+      %{user_id: param(params, :user_id), lead_id: param(params, :lead_id)}
+      |> Map.reject(&is_nil(elem(&1, 1)))
 
   defp stringify(variables),
     do: Map.new(variables, fn {key, value} -> {to_string(key), value} end)

@@ -37,7 +37,8 @@ defmodule PaleeWeb.AdminChannelMessagesController do
     responses: [ok: {"Messages", "application/json", C.messages()}]
   )
 
-  def index(conn, params), do: json(conn, ChannelMessages.list(conn.assigns.tenant_context, params))
+  def index(conn, params),
+    do: json(conn, ChannelMessages.list(conn.assigns.tenant_context, params))
 
   operation(:show,
     summary: "One message with its attempts and delivery receipts",

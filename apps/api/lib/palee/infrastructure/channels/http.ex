@@ -66,7 +66,12 @@ defmodule Palee.Infrastructure.Channels.Http do
   def cents(_amount), do: nil
 
   defp to_cents(decimal),
-    do: decimal |> Decimal.abs() |> Decimal.mult(100) |> Decimal.round(0, :ceiling) |> Decimal.to_integer()
+    do:
+      decimal
+      |> Decimal.abs()
+      |> Decimal.mult(100)
+      |> Decimal.round(0, :ceiling)
+      |> Decimal.to_integer()
 
   def header(headers, name) do
     Enum.find_value(headers, fn {key, value} ->

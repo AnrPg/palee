@@ -50,7 +50,13 @@ defmodule Palee.Channels.SendingTest do
         Channels.set_consent(
           ctx.context,
           contact.id,
-          %{channel: channel, purpose: purpose, granted: true, source: "person", text_version: "v1"},
+          %{
+            channel: channel,
+            purpose: purpose,
+            granted: true,
+            source: "person",
+            text_version: "v1"
+          },
           ctx.member.id,
           @noon
         )
@@ -181,9 +187,13 @@ defmodule Palee.Channels.SendingTest do
 
     {:ok, refused} = Channels.send(ctx.context, request(ctx), ctx.env)
     assert {:ok, %{failed: 1}} = Channels.deliver(ctx.context, refused.id, @noon)
-    assert %{status: "failed", error_code: "provider_rejected"} = Channels.get_message(ctx.context, refused.id)
 
-    assert {:ok, %{status: "queued", attempts: 0}} = Channels.retry(ctx.context, refused.id, @noon)
+    assert %{status: "failed", error_code: "provider_rejected"} =
+             Channels.get_message(ctx.context, refused.id)
+
+    assert {:ok, %{status: "queued", attempts: 0}} =
+             Channels.retry(ctx.context, refused.id, @noon)
+
     assert {:error, :channel_not_retryable} = Channels.retry(ctx.context, message.id, @noon)
   end
 
@@ -208,7 +218,10 @@ defmodule Palee.Channels.SendingTest do
       contact(ctx)
       {:ok, message} = Channels.send(ctx.context, request(ctx), ctx.env)
       {:ok, _counts} = Channels.deliver(ctx.context, :due, @noon)
-      token = connection |> Channels.public_connection() |> Map.fetch!(:webhook_url) |> Path.basename()
+
+      token =
+        connection |> Channels.public_connection() |> Map.fetch!(:webhook_url) |> Path.basename()
+
       %{message: message, token: token, connection: connection}
     end
 
@@ -230,7 +243,9 @@ defmodule Palee.Channels.SendingTest do
       assert {:ok, %{receipts: 1}} = webhook(ctx, ctx.token, params)
       assert {:ok, %{receipts: 0}} = webhook(ctx, ctx.token, params)
 
-      assert %{status: "delivered", events: events} = Channels.get_message(ctx.context, ctx.message.id)
+      assert %{status: "delivered", events: events} =
+               Channels.get_message(ctx.context, ctx.message.id)
+
       assert Enum.map(events, & &1.kind) == ["attempt", "receipt"]
     end
 
@@ -311,8 +326,16 @@ defmodule Palee.Channels.SendingTest do
 
       Req.Test.stub(Palee.ChannelsHttp, fn conn ->
         {:ok, body, conn} = Plug.Conn.read_body(conn)
-        send(test_pid, {:brevo, conn.request_path, Plug.Conn.get_req_header(conn, "api-key"), Jason.decode!(body)})
-        conn |> Plug.Conn.put_status(201) |> Req.Test.json(%{"messageId" => 1_234_567, "usedCredits" => 2})
+
+        send(
+          test_pid,
+          {:brevo, conn.request_path, Plug.Conn.get_req_header(conn, "api-key"),
+           Jason.decode!(body)}
+        )
+
+        conn
+        |> Plug.Conn.put_status(201)
+        |> Req.Test.json(%{"messageId" => 1_234_567, "usedCredits" => 2})
       end)
 
       {:ok, message} = Channels.send(ctx.context, request(ctx), ctx.env)
@@ -334,14 +357,29 @@ defmodule Palee.Channels.SendingTest do
       receipt = %{"messageId" => 1_234_567, "msg_status" => "delivered", "to" => "306912345678"}
 
       assert {:ok, %{receipts: 1}} =
-               Channels.handle_webhook(context, token, %{params: receipt, raw_body: "", headers: []}, @noon)
+               Channels.handle_webhook(
+                 context,
+                 token,
+                 %{params: receipt, raw_body: "", headers: []},
+                 @noon
+               )
 
       assert %{status: "delivered"} = Channels.get_message(ctx.context, message.id)
 
-      reply = %{"messageId" => 1_234_567, "msg_status" => "replied", "to" => "306912345678", "reply" => "STOP"}
+      reply = %{
+        "messageId" => 1_234_567,
+        "msg_status" => "replied",
+        "to" => "306912345678",
+        "reply" => "STOP"
+      }
 
       assert {:ok, %{stops: 1}} =
-               Channels.handle_webhook(context, token, %{params: reply, raw_body: "", headers: []}, @noon)
+               Channels.handle_webhook(
+                 context,
+                 token,
+                 %{params: reply, raw_body: "", headers: []},
+                 @noon
+               )
     end
 
     test "out of Brevo credits waits and retries", ctx do
@@ -354,7 +392,9 @@ defmodule Palee.Channels.SendingTest do
 
       {:ok, message} = Channels.send(ctx.context, request(ctx), ctx.env)
       assert {:ok, %{retrying: 1}} = Channels.deliver(ctx.context, :due, @noon)
-      assert %{status: "queued", error_code: "provider_unavailable"} = Channels.get_message(ctx.context, message.id)
+
+      assert %{status: "queued", error_code: "provider_unavailable"} =
+               Channels.get_message(ctx.context, message.id)
     end
   end
 

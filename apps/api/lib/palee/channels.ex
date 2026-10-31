@@ -34,6 +34,7 @@ defmodule Palee.Channels do
         )
     end)
   end
+
   defdelegate public_contact(contact), to: Contacts, as: :public
   defdelegate own_contact(contact), to: Contacts, as: :own
 
@@ -50,8 +51,14 @@ defmodule Palee.Channels do
   end
 
   defdelegate list_templates(context), to: Palee.Channels.BoxTemplates, as: :list
-  defdelegate save_template(context, key, params, actor_id), to: Palee.Channels.BoxTemplates, as: :save
-  defdelegate delete_template(context, key, locale, channel), to: Palee.Channels.BoxTemplates, as: :delete
+
+  defdelegate save_template(context, key, params, actor_id),
+    to: Palee.Channels.BoxTemplates,
+    as: :save
+
+  defdelegate delete_template(context, key, locale, channel),
+    to: Palee.Channels.BoxTemplates,
+    as: :delete
 
   defdelegate preview(context, request, env), to: Sending
   defdelegate send(context, request, env), to: Sending

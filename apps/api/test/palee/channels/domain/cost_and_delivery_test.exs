@@ -8,7 +8,9 @@ defmodule Palee.Channels.Domain.CostAndDeliveryTest do
   test "the estimate is the price per part times the parts" do
     assert CostPolicy.estimate(nil, "sms", "service", "GR", 2) == 14
     assert CostPolicy.estimate(nil, "sms", "service", nil, 1) == 9
-    assert CostPolicy.estimate(%{{"sms", "service"} => %{default: 5}}, "sms", "service", "GR", 3) == 15
+
+    assert CostPolicy.estimate(%{{"sms", "service"} => %{default: 5}}, "sms", "service", "GR", 3) ==
+             15
   end
 
   test "the budget cap counts what is already spent" do
@@ -74,7 +76,8 @@ defmodule Palee.Channels.Domain.CostAndDeliveryTest do
     assert {:ok, {_body, "en"}} = Templates.body("class_cancelled", "de", %{})
     assert {:error, :channel_template_missing} = Templates.body("nope", "el", %{})
 
-    assert {:ok, "Box: Το WOD"} = Templates.render("{{box}}: {{text}}", %{"box" => "Box", "text" => "Το WOD"})
+    assert {:ok, "Box: Το WOD"} =
+             Templates.render("{{box}}: {{text}}", %{"box" => "Box", "text" => "Το WOD"})
 
     assert {:error, {:invalid_fields, %{variables: "missing_text"}}} =
              Templates.render("{{box}}: {{text}}", %{"box" => "Box", "text" => "  "})

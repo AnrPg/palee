@@ -157,7 +157,10 @@ defmodule PaleeWeb.AdminChannelsControllerTest do
              })
              |> json_response(200)
 
-    assert Enum.any?(consents, &(&1["channel"] == "sms" and &1["purpose"] == "service" and &1["granted"]))
+    assert Enum.any?(
+             consents,
+             &(&1["channel"] == "sms" and &1["purpose"] == "service" and &1["granted"])
+           )
 
     assert %{"channel" => "sms", "body" => body, "segments" => 1, "estimated_cost_cents" => 7} =
              ctx.owner
@@ -168,7 +171,11 @@ defmodule PaleeWeb.AdminChannelsControllerTest do
 
     assert %{"id" => id, "status" => "queued"} =
              ctx.owner
-             |> send_json(:post, "#{ctx.base}/messages", Map.put(send_body, :idempotency_key, "click-1"))
+             |> send_json(
+               :post,
+               "#{ctx.base}/messages",
+               Map.put(send_body, :idempotency_key, "click-1")
+             )
              |> json_response(201)
 
     # Tests deliver inline (no Oban).
@@ -201,7 +208,9 @@ defmodule PaleeWeb.AdminChannelsControllerTest do
            |> json_response(401)
 
     assert %{"code" => "channel_not_retryable"} =
-             ctx.owner |> send_json(:post, "#{ctx.base}/messages/#{id}/retry", %{}) |> json_response(409)
+             ctx.owner
+             |> send_json(:post, "#{ctx.base}/messages/#{id}/retry", %{})
+             |> json_response(409)
   end
 
   test "the member keeps their own number and consents", ctx do

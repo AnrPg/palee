@@ -24,11 +24,14 @@ defmodule Palee.Channels.Domain.ChannelPolicyTest do
     do: %{channel: channel, purpose: purpose, granted_at: granted, withdrawn_at: withdrawn}
 
   test "the first switched-on channel the person agreed to wins" do
-    assert {:ok, "sms"} = ChannelPolicy.choose(facts(%{consents: [consent("sms", "service", @t1)]}))
+    assert {:ok, "sms"} =
+             ChannelPolicy.choose(facts(%{consents: [consent("sms", "service", @t1)]}))
 
     assert {:ok, "viber"} =
              ChannelPolicy.choose(
-               facts(%{consents: [consent("sms", "service", @t1), consent("viber", "service", @t1)]})
+               facts(%{
+                 consents: [consent("sms", "service", @t1), consent("viber", "service", @t1)]
+               })
              )
 
     assert {:ok, "sms"} =

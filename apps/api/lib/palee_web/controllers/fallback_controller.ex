@@ -322,8 +322,7 @@ defmodule PaleeWeb.FallbackController do
 
   # ADR-348..351: SMS, Viber and WhatsApp from the box.
   @channel_errors %{
-    channels_not_connected:
-      {:conflict, "Connect an SMS provider in the box's settings first"},
+    channels_not_connected: {:conflict, "Connect an SMS provider in the box's settings first"},
     channels_connection_invalid:
       {:conflict, "The SMS provider refused the box's credentials. Check them in the settings"},
     channel_person_required: {:unprocessable_entity, "Choose a member or a lead"},

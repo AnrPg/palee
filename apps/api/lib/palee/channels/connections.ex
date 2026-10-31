@@ -147,7 +147,10 @@ defmodule Palee.Channels.Connections do
 
   defp validate(before, params) do
     current = before || %{}
-    value = fn key -> if Map.has_key?(params, key), do: params[key], else: Map.get(current, key) end
+
+    value = fn key ->
+      if Map.has_key?(params, key), do: params[key], else: Map.get(current, key)
+    end
 
     provider = value.(:provider)
     mode = value.(:account_mode) || "palee"
@@ -194,7 +197,11 @@ defmodule Palee.Channels.Connections do
       |> add(not sms_sender?(clean(value.(:sms_sender))), :sms_sender, "invalid")
       |> add(not short_text?(clean(value.(:viber_sender)), 60), :viber_sender, "invalid")
       |> add(not short_text?(clean(value.(:whatsapp_sender)), 30), :whatsapp_sender, "invalid")
-      |> add(sender_missing?(channels, "sms", value.(:sms_sender), provider), :sms_sender, "required")
+      |> add(
+        sender_missing?(channels, "sms", value.(:sms_sender), provider),
+        :sms_sender,
+        "required"
+      )
       |> add(
         sender_missing?(channels, "viber", value.(:viber_sender), provider),
         :viber_sender,
@@ -225,7 +232,8 @@ defmodule Palee.Channels.Connections do
         quiet_end_minute: finish
       }
 
-      {:ok, if(mode == "own", do: Map.put(attrs, :secret, secret), else: Map.put(attrs, :secret, nil))}
+      {:ok,
+       if(mode == "own", do: Map.put(attrs, :secret, secret), else: Map.put(attrs, :secret, nil))}
     else
       {:error, {:invalid_fields, errors}}
     end
@@ -305,6 +313,7 @@ defmodule Palee.Channels.Connections do
   @doc "Marks the connection invalid after the provider refused its credentials."
   def mark_invalid(context, code) do
     ChannelStore.save_connection(context, %{status: "invalid", error_code: code, last_error: code})
+
     :ok
   end
 

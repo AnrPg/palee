@@ -27,7 +27,8 @@ defmodule PaleeWeb.AdminChannelContactsController do
     responses: [ok: {"Contacts", "application/json", C.contacts()}]
   )
 
-  def index(conn, params), do: json(conn, ChannelContacts.list(conn.assigns.tenant_context, params))
+  def index(conn, params),
+    do: json(conn, ChannelContacts.list(conn.assigns.tenant_context, params))
 
   operation(:lookup,
     summary: "The contact of one member (`user_id`) or lead (`lead_id`), or null",

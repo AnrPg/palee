@@ -20,6 +20,7 @@ defmodule Palee.Channels.Sending do
   """
 
   alias Palee.Channels.{ChannelStore, Connections, Contacts}
+
   alias Palee.Channels.Domain.{
     ChannelPolicy,
     CostPolicy,
@@ -247,9 +248,10 @@ defmodule Palee.Channels.Sending do
   defp same_request(existing, context, request) do
     contact = Contacts.find(context, request.person)
 
-    if existing.template_key == request.template_key and contact && contact.id == existing.contact_id,
-      do: {:ok, existing},
-      else: {:error, :idempotency_key_reused}
+    if (existing.template_key == request.template_key and contact) &&
+         contact.id == existing.contact_id,
+       do: {:ok, existing},
+       else: {:error, :idempotency_key_reused}
   end
 
   defp queue(context, request, env) do
@@ -288,7 +290,12 @@ defmodule Palee.Channels.Sending do
         # A concurrent send with the same key won the race.
         {:error, %Ecto.Changeset{errors: errors}} = error ->
           if Keyword.has_key?(errors, :organization_id),
-            do: same_request(ChannelStore.get_message_by_key(context, request.idempotency_key), context, request),
+            do:
+              same_request(
+                ChannelStore.get_message_by_key(context, request.idempotency_key),
+                context,
+                request
+              ),
             else: error
       end
     end
@@ -347,7 +354,12 @@ defmodule Palee.Channels.Sending do
       callback_url: Connections.webhook_url(connection)
     }
 
-    result = Connections.adapter(connection.provider).send_message(Connections.account(connection), outgoing)
+    result =
+      Connections.adapter(connection.provider).send_message(
+        Connections.account(connection),
+        outgoing
+      )
+
     changes = DeliveryPolicy.outcome(message, result, now)
 
     event = %{
@@ -521,7 +533,11 @@ defmodule Palee.Channels.Sending do
   end
 
   defp apply_event(context, connection, %{type: :status} = event, counts, now) do
-    case ChannelStore.get_message_by_provider_id(context, connection.provider, event.provider_message_id) do
+    case ChannelStore.get_message_by_provider_id(
+           context,
+           connection.provider,
+           event.provider_message_id
+         ) do
       nil ->
         counts
 
