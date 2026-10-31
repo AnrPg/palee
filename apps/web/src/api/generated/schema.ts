@@ -6022,6 +6022,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/data-exports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box's data exports, with download links for ready files (owners) */
+        get: operations["PaleeWeb.AdminDataExportController.index"];
+        put?: never;
+        /** Ask for a copy of all the box's data (owners; one a day) */
+        post: operations["PaleeWeb.AdminDataExportController.create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/documents/audit": {
         parameters: {
             query?: never;
@@ -16043,6 +16061,74 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/platform/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Probes with reasons, incidents of the last 90 days and subscribers (vendors) */
+        get: operations["PaleeWeb.PlatformStatusController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/platform/status/incidents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publish an incident or planned maintenance (vendors) */
+        post: operations["PaleeWeb.PlatformStatusController.create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/platform/status/incidents/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Correct an incident's title, impact or components (vendors) */
+        patch: operations["PaleeWeb.PlatformStatusController.update"];
+        trace?: never;
+    };
+    "/api/platform/status/incidents/{id}/updates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add a step to an incident's timeline (vendors) */
+        post: operations["PaleeWeb.PlatformStatusController.add_update"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/platform/subscriptions": {
         parameters: {
             query?: never;
@@ -16536,6 +16622,94 @@ export interface paths {
         get: operations["PaleeWeb.ReferralController.invite"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The status of Palee now: components, incidents, maintenance */
+        get: operations["PaleeWeb.PublicStatusController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/status/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Uptime per component and day (up to 90 days) and past incidents */
+        get: operations["PaleeWeb.PublicStatusController.history"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/status/subscriptions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Ask for status emails (a confirmation email is sent)
+         * @description The answer is the same whether the address is new or already subscribed.
+         */
+        post: operations["PaleeWeb.PublicStatusController.subscribe"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/status/subscriptions/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Confirm status emails with the token from the confirmation email */
+        post: operations["PaleeWeb.PublicStatusController.confirm"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/status/subscriptions/unsubscribe": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Stop status emails with the token from a status email */
+        post: operations["PaleeWeb.PublicStatusController.unsubscribe"];
         delete?: never;
         options?: never;
         head?: never;
@@ -21831,6 +22005,50 @@ export interface components {
                 /** Format: uuid */
                 thread_id: string;
                 unread: boolean;
+            }[];
+        };
+        /** BoxDataExport */
+        BoxDataExport: {
+            /** Format: date-time */
+            completed_at: string | null;
+            /** Format: date-time */
+            expires_at: string | null;
+            file: {
+                bytes: number;
+                download_url: string | null;
+                name: string;
+                sha256: string;
+            } | null;
+            /** Format: uuid */
+            id: string;
+            record_count: number | null;
+            /** Format: date-time */
+            requested_at: string;
+            /** @enum {string} */
+            status: "pending" | "ready" | "failed" | "expired";
+            table_count: number | null;
+        };
+        /** BoxDataExports */
+        BoxDataExports: {
+            exports: {
+                /** Format: date-time */
+                completed_at: string | null;
+                /** Format: date-time */
+                expires_at: string | null;
+                file: {
+                    bytes: number;
+                    download_url: string | null;
+                    name: string;
+                    sha256: string;
+                } | null;
+                /** Format: uuid */
+                id: string;
+                record_count: number | null;
+                /** Format: date-time */
+                requested_at: string;
+                /** @enum {string} */
+                status: "pending" | "ready" | "failed" | "expired";
+                table_count: number | null;
             }[];
         };
         /** BoxPublicProfile */
@@ -43383,6 +43601,303 @@ export interface components {
                 taxonomy_version: number;
                 unmatched_exercises: number;
             };
+        };
+        /** StatusAccepted */
+        StatusAccepted: {
+            /** @enum {string} */
+            status: "accepted" | "confirmed" | "removed";
+        };
+        /** StatusComponent */
+        StatusComponent: {
+            /** Format: date-time */
+            checked_at: string | null;
+            /** @enum {string} */
+            key: "app" | "search" | "files" | "email" | "payments" | "fiscal";
+            /** @enum {string} */
+            status: "operational" | "degraded" | "down" | "maintenance" | "unknown";
+        };
+        /** StatusComponentHistory */
+        StatusComponentHistory: {
+            days: {
+                /** Format: date */
+                date: string;
+                /** @enum {string} */
+                status: "operational" | "degraded" | "down" | "no_data";
+                uptime_percent: number | null;
+            }[];
+            /** @enum {string} */
+            key: "app" | "search" | "files" | "email" | "payments" | "fiscal";
+            uptime_percent: number | null;
+        };
+        /** StatusConsole */
+        StatusConsole: {
+            incidents: {
+                components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                impact: "none" | "minor" | "major" | "critical";
+                /** @enum {string} */
+                kind: "incident" | "maintenance";
+                /** Format: date-time */
+                resolved_at: string | null;
+                /** Format: date-time */
+                scheduled_for: string | null;
+                /** Format: date-time */
+                scheduled_until: string | null;
+                /** Format: date-time */
+                started_at: string;
+                /** @enum {string} */
+                status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                title: string;
+                updates: {
+                    body: string;
+                    /** Format: date-time */
+                    created_at: string;
+                    /** Format: uuid */
+                    id: string;
+                    /** @enum {string} */
+                    status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                }[];
+            }[];
+            probes: {
+                /** Format: date-time */
+                changed_at: string;
+                /** Format: date-time */
+                checked_at: string;
+                key: string;
+                reason: string | null;
+                /** @enum {string} */
+                status: "operational" | "degraded" | "down";
+            }[];
+            subscribers: {
+                confirmed: number;
+                waiting: number;
+            };
+        };
+        /** StatusHistory */
+        StatusHistory: {
+            components: {
+                days: {
+                    /** Format: date */
+                    date: string;
+                    /** @enum {string} */
+                    status: "operational" | "degraded" | "down" | "no_data";
+                    uptime_percent: number | null;
+                }[];
+                /** @enum {string} */
+                key: "app" | "search" | "files" | "email" | "payments" | "fiscal";
+                uptime_percent: number | null;
+            }[];
+            days: number;
+            /** Format: date */
+            from: string;
+            /** Format: date-time */
+            generated_at: string;
+            incidents: {
+                components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                impact: "none" | "minor" | "major" | "critical";
+                /** @enum {string} */
+                kind: "incident" | "maintenance";
+                /** Format: date-time */
+                resolved_at: string | null;
+                /** Format: date-time */
+                scheduled_for: string | null;
+                /** Format: date-time */
+                scheduled_until: string | null;
+                /** Format: date-time */
+                started_at: string;
+                /** @enum {string} */
+                status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                title: string;
+                updates: {
+                    body: string;
+                    /** Format: date-time */
+                    created_at: string;
+                    /** Format: uuid */
+                    id: string;
+                    /** @enum {string} */
+                    status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                }[];
+            }[];
+            /** Format: date */
+            to: string;
+        };
+        /** StatusHistoryDay */
+        StatusHistoryDay: {
+            /** Format: date */
+            date: string;
+            /** @enum {string} */
+            status: "operational" | "degraded" | "down" | "no_data";
+            uptime_percent: number | null;
+        };
+        /** StatusIncident */
+        StatusIncident: {
+            components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            impact: "none" | "minor" | "major" | "critical";
+            /** @enum {string} */
+            kind: "incident" | "maintenance";
+            /** Format: date-time */
+            resolved_at: string | null;
+            /** Format: date-time */
+            scheduled_for: string | null;
+            /** Format: date-time */
+            scheduled_until: string | null;
+            /** Format: date-time */
+            started_at: string;
+            /** @enum {string} */
+            status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+            title: string;
+            updates: {
+                body: string;
+                /** Format: date-time */
+                created_at: string;
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+            }[];
+        };
+        /** StatusIncidentCreate */
+        StatusIncidentCreate: {
+            body: string;
+            components?: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+            /** @enum {string} */
+            impact?: "none" | "minor" | "major" | "critical";
+            /** @enum {string} */
+            kind?: "incident" | "maintenance";
+            notify?: boolean;
+            /** Format: date-time */
+            scheduled_for?: string;
+            /** Format: date-time */
+            scheduled_until?: string;
+            /** @enum {string} */
+            status?: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+            title: string;
+        };
+        /** StatusIncidentEdit */
+        StatusIncidentEdit: {
+            components?: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+            /** @enum {string} */
+            impact?: "none" | "minor" | "major" | "critical";
+            title?: string;
+        };
+        /** StatusIncidentUpdate */
+        StatusIncidentUpdate: {
+            body: string;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+        };
+        /** StatusIncidentUpdateCreate */
+        StatusIncidentUpdateCreate: {
+            body: string;
+            notify?: boolean;
+            /** @enum {string} */
+            status?: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+        };
+        /** StatusOverview */
+        StatusOverview: {
+            active: {
+                components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                impact: "none" | "minor" | "major" | "critical";
+                /** @enum {string} */
+                kind: "incident" | "maintenance";
+                /** Format: date-time */
+                resolved_at: string | null;
+                /** Format: date-time */
+                scheduled_for: string | null;
+                /** Format: date-time */
+                scheduled_until: string | null;
+                /** Format: date-time */
+                started_at: string;
+                /** @enum {string} */
+                status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                title: string;
+                updates: {
+                    body: string;
+                    /** Format: date-time */
+                    created_at: string;
+                    /** Format: uuid */
+                    id: string;
+                    /** @enum {string} */
+                    status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                }[];
+            }[];
+            components: {
+                /** Format: date-time */
+                checked_at: string | null;
+                /** @enum {string} */
+                key: "app" | "search" | "files" | "email" | "payments" | "fiscal";
+                /** @enum {string} */
+                status: "operational" | "degraded" | "down" | "maintenance" | "unknown";
+            }[];
+            /** Format: date-time */
+            generated_at: string;
+            /** @enum {string} */
+            status: "operational" | "degraded" | "partial_outage" | "major_outage" | "maintenance" | "unknown";
+            upcoming: {
+                components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                impact: "none" | "minor" | "major" | "critical";
+                /** @enum {string} */
+                kind: "incident" | "maintenance";
+                /** Format: date-time */
+                resolved_at: string | null;
+                /** Format: date-time */
+                scheduled_for: string | null;
+                /** Format: date-time */
+                scheduled_until: string | null;
+                /** Format: date-time */
+                started_at: string;
+                /** @enum {string} */
+                status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                title: string;
+                updates: {
+                    body: string;
+                    /** Format: date-time */
+                    created_at: string;
+                    /** Format: uuid */
+                    id: string;
+                    /** @enum {string} */
+                    status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                }[];
+            }[];
+        };
+        /** StatusProbeState */
+        StatusProbeState: {
+            /** Format: date-time */
+            changed_at: string;
+            /** Format: date-time */
+            checked_at: string;
+            key: string;
+            reason: string | null;
+            /** @enum {string} */
+            status: "operational" | "degraded" | "down";
+        };
+        /** StatusSubscribe */
+        StatusSubscribe: {
+            /** Format: email */
+            email: string;
+            locale?: string;
+        };
+        /** StatusToken */
+        StatusToken: {
+            token: string;
         };
         /** StructuredSection */
         StructuredSection: {
@@ -77474,6 +77989,86 @@ export interface operations {
                         };
                         /** @enum {string} */
                         member_groups: "none" | "approval" | "free";
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminDataExportController.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Exports */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        exports: {
+                            /** Format: date-time */
+                            completed_at: string | null;
+                            /** Format: date-time */
+                            expires_at: string | null;
+                            file: {
+                                bytes: number;
+                                download_url: string | null;
+                                name: string;
+                                sha256: string;
+                            } | null;
+                            /** Format: uuid */
+                            id: string;
+                            record_count: number | null;
+                            /** Format: date-time */
+                            requested_at: string;
+                            /** @enum {string} */
+                            status: "pending" | "ready" | "failed" | "expired";
+                            table_count: number | null;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminDataExportController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Export */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: date-time */
+                        completed_at: string | null;
+                        /** Format: date-time */
+                        expires_at: string | null;
+                        file: {
+                            bytes: number;
+                            download_url: string | null;
+                            name: string;
+                            sha256: string;
+                        } | null;
+                        /** Format: uuid */
+                        id: string;
+                        record_count: number | null;
+                        /** Format: date-time */
+                        requested_at: string;
+                        /** @enum {string} */
+                        status: "pending" | "ready" | "failed" | "expired";
+                        table_count: number | null;
                     };
                 };
             };
@@ -130858,6 +131453,258 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.PlatformStatusController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Console */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        incidents: {
+                            components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            impact: "none" | "minor" | "major" | "critical";
+                            /** @enum {string} */
+                            kind: "incident" | "maintenance";
+                            /** Format: date-time */
+                            resolved_at: string | null;
+                            /** Format: date-time */
+                            scheduled_for: string | null;
+                            /** Format: date-time */
+                            scheduled_until: string | null;
+                            /** Format: date-time */
+                            started_at: string;
+                            /** @enum {string} */
+                            status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                            title: string;
+                            updates: {
+                                body: string;
+                                /** Format: date-time */
+                                created_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** @enum {string} */
+                                status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                            }[];
+                        }[];
+                        probes: {
+                            /** Format: date-time */
+                            changed_at: string;
+                            /** Format: date-time */
+                            checked_at: string;
+                            key: string;
+                            reason: string | null;
+                            /** @enum {string} */
+                            status: "operational" | "degraded" | "down";
+                        }[];
+                        subscribers: {
+                            confirmed: number;
+                            waiting: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PlatformStatusController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description A new incident or planned maintenance with its first note */
+        requestBody: {
+            content: {
+                "application/json": {
+                    body: string;
+                    components?: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                    /** @enum {string} */
+                    impact?: "none" | "minor" | "major" | "critical";
+                    /** @enum {string} */
+                    kind?: "incident" | "maintenance";
+                    notify?: boolean;
+                    /** Format: date-time */
+                    scheduled_for?: string;
+                    /** Format: date-time */
+                    scheduled_until?: string;
+                    /** @enum {string} */
+                    status?: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                    title: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Incident */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        impact: "none" | "minor" | "major" | "critical";
+                        /** @enum {string} */
+                        kind: "incident" | "maintenance";
+                        /** Format: date-time */
+                        resolved_at: string | null;
+                        /** Format: date-time */
+                        scheduled_for: string | null;
+                        /** Format: date-time */
+                        scheduled_until: string | null;
+                        /** Format: date-time */
+                        started_at: string;
+                        /** @enum {string} */
+                        status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                        title: string;
+                        updates: {
+                            body: string;
+                            /** Format: date-time */
+                            created_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PlatformStatusController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description A correction (no note, no email) */
+        requestBody: {
+            content: {
+                "application/json": {
+                    components?: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                    /** @enum {string} */
+                    impact?: "none" | "minor" | "major" | "critical";
+                    title?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Incident */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        impact: "none" | "minor" | "major" | "critical";
+                        /** @enum {string} */
+                        kind: "incident" | "maintenance";
+                        /** Format: date-time */
+                        resolved_at: string | null;
+                        /** Format: date-time */
+                        scheduled_for: string | null;
+                        /** Format: date-time */
+                        scheduled_until: string | null;
+                        /** Format: date-time */
+                        started_at: string;
+                        /** @enum {string} */
+                        status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                        title: string;
+                        updates: {
+                            body: string;
+                            /** Format: date-time */
+                            created_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PlatformStatusController.add_update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description A new step in the timeline */
+        requestBody: {
+            content: {
+                "application/json": {
+                    body: string;
+                    notify?: boolean;
+                    /** @enum {string} */
+                    status?: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                };
+            };
+        };
+        responses: {
+            /** @description Incident */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        impact: "none" | "minor" | "major" | "critical";
+                        /** @enum {string} */
+                        kind: "incident" | "maintenance";
+                        /** Format: date-time */
+                        resolved_at: string | null;
+                        /** Format: date-time */
+                        scheduled_for: string | null;
+                        /** Format: date-time */
+                        scheduled_until: string | null;
+                        /** Format: date-time */
+                        started_at: string;
+                        /** @enum {string} */
+                        status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                        title: string;
+                        updates: {
+                            body: string;
+                            /** Format: date-time */
+                            created_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                        }[];
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.PlatformPlanController.subscriptions": {
         parameters: {
             query?: never;
@@ -132944,6 +133791,260 @@ export interface operations {
                 };
                 content: {
                     "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicStatusController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Status */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        active: {
+                            components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            impact: "none" | "minor" | "major" | "critical";
+                            /** @enum {string} */
+                            kind: "incident" | "maintenance";
+                            /** Format: date-time */
+                            resolved_at: string | null;
+                            /** Format: date-time */
+                            scheduled_for: string | null;
+                            /** Format: date-time */
+                            scheduled_until: string | null;
+                            /** Format: date-time */
+                            started_at: string;
+                            /** @enum {string} */
+                            status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                            title: string;
+                            updates: {
+                                body: string;
+                                /** Format: date-time */
+                                created_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** @enum {string} */
+                                status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                            }[];
+                        }[];
+                        components: {
+                            /** Format: date-time */
+                            checked_at: string | null;
+                            /** @enum {string} */
+                            key: "app" | "search" | "files" | "email" | "payments" | "fiscal";
+                            /** @enum {string} */
+                            status: "operational" | "degraded" | "down" | "maintenance" | "unknown";
+                        }[];
+                        /** Format: date-time */
+                        generated_at: string;
+                        /** @enum {string} */
+                        status: "operational" | "degraded" | "partial_outage" | "major_outage" | "maintenance" | "unknown";
+                        upcoming: {
+                            components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            impact: "none" | "minor" | "major" | "critical";
+                            /** @enum {string} */
+                            kind: "incident" | "maintenance";
+                            /** Format: date-time */
+                            resolved_at: string | null;
+                            /** Format: date-time */
+                            scheduled_for: string | null;
+                            /** Format: date-time */
+                            scheduled_until: string | null;
+                            /** Format: date-time */
+                            started_at: string;
+                            /** @enum {string} */
+                            status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                            title: string;
+                            updates: {
+                                body: string;
+                                /** Format: date-time */
+                                created_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** @enum {string} */
+                                status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                            }[];
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicStatusController.history": {
+        parameters: {
+            query?: {
+                days?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description History */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        components: {
+                            days: {
+                                /** Format: date */
+                                date: string;
+                                /** @enum {string} */
+                                status: "operational" | "degraded" | "down" | "no_data";
+                                uptime_percent: number | null;
+                            }[];
+                            /** @enum {string} */
+                            key: "app" | "search" | "files" | "email" | "payments" | "fiscal";
+                            uptime_percent: number | null;
+                        }[];
+                        days: number;
+                        /** Format: date */
+                        from: string;
+                        /** Format: date-time */
+                        generated_at: string;
+                        incidents: {
+                            components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            impact: "none" | "minor" | "major" | "critical";
+                            /** @enum {string} */
+                            kind: "incident" | "maintenance";
+                            /** Format: date-time */
+                            resolved_at: string | null;
+                            /** Format: date-time */
+                            scheduled_for: string | null;
+                            /** Format: date-time */
+                            scheduled_until: string | null;
+                            /** Format: date-time */
+                            started_at: string;
+                            /** @enum {string} */
+                            status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                            title: string;
+                            updates: {
+                                body: string;
+                                /** Format: date-time */
+                                created_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** @enum {string} */
+                                status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                            }[];
+                        }[];
+                        /** Format: date */
+                        to: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicStatusController.subscribe": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The address that wants status emails */
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: email */
+                    email: string;
+                    locale?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Accepted */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        status: "accepted" | "confirmed" | "removed";
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicStatusController.confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The token from the email */
+        requestBody: {
+            content: {
+                "application/json": {
+                    token: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Confirmed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        status: "accepted" | "confirmed" | "removed";
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicStatusController.unsubscribe": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The token from the email */
+        requestBody: {
+            content: {
+                "application/json": {
+                    token: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Removed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        status: "accepted" | "confirmed" | "removed";
+                    };
                 };
             };
         };

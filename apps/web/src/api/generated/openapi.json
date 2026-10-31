@@ -16049,6 +16049,170 @@
         "title": "BoxConversationsResponse",
         "type": "object"
       },
+      "BoxDataExport": {
+        "properties": {
+          "completed_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "expires_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "file": {
+            "nullable": true,
+            "properties": {
+              "bytes": {
+                "type": "integer"
+              },
+              "download_url": {
+                "nullable": true,
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "sha256": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "bytes",
+              "download_url",
+              "name",
+              "sha256"
+            ],
+            "type": "object"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "record_count": {
+            "nullable": true,
+            "type": "integer"
+          },
+          "requested_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "ready",
+              "failed",
+              "expired"
+            ],
+            "type": "string"
+          },
+          "table_count": {
+            "nullable": true,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "completed_at",
+          "expires_at",
+          "file",
+          "id",
+          "record_count",
+          "requested_at",
+          "status",
+          "table_count"
+        ],
+        "title": "BoxDataExport",
+        "type": "object"
+      },
+      "BoxDataExports": {
+        "properties": {
+          "exports": {
+            "items": {
+              "properties": {
+                "completed_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "expires_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "file": {
+                  "nullable": true,
+                  "properties": {
+                    "bytes": {
+                      "type": "integer"
+                    },
+                    "download_url": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "sha256": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "bytes",
+                    "download_url",
+                    "name",
+                    "sha256"
+                  ],
+                  "type": "object"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "record_count": {
+                  "nullable": true,
+                  "type": "integer"
+                },
+                "requested_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "pending",
+                    "ready",
+                    "failed",
+                    "expired"
+                  ],
+                  "type": "string"
+                },
+                "table_count": {
+                  "nullable": true,
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "completed_at",
+                "expires_at",
+                "file",
+                "id",
+                "record_count",
+                "requested_at",
+                "status",
+                "table_count"
+              ],
+              "title": "BoxDataExport",
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "exports"
+        ],
+        "title": "BoxDataExports",
+        "type": "object"
+      },
       "BoxPublicProfile": {
         "properties": {
           "about": {
@@ -86877,6 +87041,1243 @@
           "suggestion"
         ],
         "title": "StaffWorkoutGoalsResponse",
+        "type": "object"
+      },
+      "StatusAccepted": {
+        "properties": {
+          "status": {
+            "enum": [
+              "accepted",
+              "confirmed",
+              "removed"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "StatusAccepted",
+        "type": "object"
+      },
+      "StatusComponent": {
+        "properties": {
+          "checked_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "key": {
+            "enum": [
+              "app",
+              "search",
+              "files",
+              "email",
+              "payments",
+              "fiscal"
+            ],
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "operational",
+              "degraded",
+              "down",
+              "maintenance",
+              "unknown"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "checked_at",
+          "key",
+          "status"
+        ],
+        "title": "StatusComponent",
+        "type": "object"
+      },
+      "StatusComponentHistory": {
+        "properties": {
+          "days": {
+            "items": {
+              "properties": {
+                "date": {
+                  "format": "date",
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "operational",
+                    "degraded",
+                    "down",
+                    "no_data"
+                  ],
+                  "type": "string"
+                },
+                "uptime_percent": {
+                  "nullable": true,
+                  "type": "number"
+                }
+              },
+              "required": [
+                "date",
+                "status",
+                "uptime_percent"
+              ],
+              "title": "StatusHistoryDay",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "key": {
+            "enum": [
+              "app",
+              "search",
+              "files",
+              "email",
+              "payments",
+              "fiscal"
+            ],
+            "type": "string"
+          },
+          "uptime_percent": {
+            "nullable": true,
+            "type": "number"
+          }
+        },
+        "required": [
+          "days",
+          "key",
+          "uptime_percent"
+        ],
+        "title": "StatusComponentHistory",
+        "type": "object"
+      },
+      "StatusConsole": {
+        "properties": {
+          "incidents": {
+            "items": {
+              "properties": {
+                "components": {
+                  "items": {
+                    "enum": [
+                      "app",
+                      "search",
+                      "files",
+                      "email",
+                      "payments",
+                      "fiscal"
+                    ],
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "impact": {
+                  "enum": [
+                    "none",
+                    "minor",
+                    "major",
+                    "critical"
+                  ],
+                  "type": "string"
+                },
+                "kind": {
+                  "enum": [
+                    "incident",
+                    "maintenance"
+                  ],
+                  "type": "string"
+                },
+                "resolved_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "scheduled_for": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "scheduled_until": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "started_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "investigating",
+                    "identified",
+                    "monitoring",
+                    "resolved",
+                    "scheduled",
+                    "in_progress",
+                    "completed"
+                  ],
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "updates": {
+                  "items": {
+                    "properties": {
+                      "body": {
+                        "type": "string"
+                      },
+                      "created_at": {
+                        "format": "date-time",
+                        "type": "string"
+                      },
+                      "id": {
+                        "format": "uuid",
+                        "type": "string"
+                      },
+                      "status": {
+                        "enum": [
+                          "investigating",
+                          "identified",
+                          "monitoring",
+                          "resolved",
+                          "scheduled",
+                          "in_progress",
+                          "completed"
+                        ],
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "body",
+                      "created_at",
+                      "id",
+                      "status"
+                    ],
+                    "title": "StatusIncidentUpdate",
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "required": [
+                "components",
+                "id",
+                "impact",
+                "kind",
+                "resolved_at",
+                "scheduled_for",
+                "scheduled_until",
+                "started_at",
+                "status",
+                "title",
+                "updates"
+              ],
+              "title": "StatusIncident",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "probes": {
+            "items": {
+              "properties": {
+                "changed_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "checked_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "key": {
+                  "type": "string"
+                },
+                "reason": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "operational",
+                    "degraded",
+                    "down"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "changed_at",
+                "checked_at",
+                "key",
+                "reason",
+                "status"
+              ],
+              "title": "StatusProbeState",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "subscribers": {
+            "properties": {
+              "confirmed": {
+                "type": "integer"
+              },
+              "waiting": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "confirmed",
+              "waiting"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "incidents",
+          "probes",
+          "subscribers"
+        ],
+        "title": "StatusConsole",
+        "type": "object"
+      },
+      "StatusHistory": {
+        "properties": {
+          "components": {
+            "items": {
+              "properties": {
+                "days": {
+                  "items": {
+                    "properties": {
+                      "date": {
+                        "format": "date",
+                        "type": "string"
+                      },
+                      "status": {
+                        "enum": [
+                          "operational",
+                          "degraded",
+                          "down",
+                          "no_data"
+                        ],
+                        "type": "string"
+                      },
+                      "uptime_percent": {
+                        "nullable": true,
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "date",
+                      "status",
+                      "uptime_percent"
+                    ],
+                    "title": "StatusHistoryDay",
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "key": {
+                  "enum": [
+                    "app",
+                    "search",
+                    "files",
+                    "email",
+                    "payments",
+                    "fiscal"
+                  ],
+                  "type": "string"
+                },
+                "uptime_percent": {
+                  "nullable": true,
+                  "type": "number"
+                }
+              },
+              "required": [
+                "days",
+                "key",
+                "uptime_percent"
+              ],
+              "title": "StatusComponentHistory",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "days": {
+            "type": "integer"
+          },
+          "from": {
+            "format": "date",
+            "type": "string"
+          },
+          "generated_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "incidents": {
+            "items": {
+              "properties": {
+                "components": {
+                  "items": {
+                    "enum": [
+                      "app",
+                      "search",
+                      "files",
+                      "email",
+                      "payments",
+                      "fiscal"
+                    ],
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "impact": {
+                  "enum": [
+                    "none",
+                    "minor",
+                    "major",
+                    "critical"
+                  ],
+                  "type": "string"
+                },
+                "kind": {
+                  "enum": [
+                    "incident",
+                    "maintenance"
+                  ],
+                  "type": "string"
+                },
+                "resolved_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "scheduled_for": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "scheduled_until": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "started_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "investigating",
+                    "identified",
+                    "monitoring",
+                    "resolved",
+                    "scheduled",
+                    "in_progress",
+                    "completed"
+                  ],
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "updates": {
+                  "items": {
+                    "properties": {
+                      "body": {
+                        "type": "string"
+                      },
+                      "created_at": {
+                        "format": "date-time",
+                        "type": "string"
+                      },
+                      "id": {
+                        "format": "uuid",
+                        "type": "string"
+                      },
+                      "status": {
+                        "enum": [
+                          "investigating",
+                          "identified",
+                          "monitoring",
+                          "resolved",
+                          "scheduled",
+                          "in_progress",
+                          "completed"
+                        ],
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "body",
+                      "created_at",
+                      "id",
+                      "status"
+                    ],
+                    "title": "StatusIncidentUpdate",
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "required": [
+                "components",
+                "id",
+                "impact",
+                "kind",
+                "resolved_at",
+                "scheduled_for",
+                "scheduled_until",
+                "started_at",
+                "status",
+                "title",
+                "updates"
+              ],
+              "title": "StatusIncident",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "to": {
+            "format": "date",
+            "type": "string"
+          }
+        },
+        "required": [
+          "components",
+          "days",
+          "from",
+          "generated_at",
+          "incidents",
+          "to"
+        ],
+        "title": "StatusHistory",
+        "type": "object"
+      },
+      "StatusHistoryDay": {
+        "properties": {
+          "date": {
+            "format": "date",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "operational",
+              "degraded",
+              "down",
+              "no_data"
+            ],
+            "type": "string"
+          },
+          "uptime_percent": {
+            "nullable": true,
+            "type": "number"
+          }
+        },
+        "required": [
+          "date",
+          "status",
+          "uptime_percent"
+        ],
+        "title": "StatusHistoryDay",
+        "type": "object"
+      },
+      "StatusIncident": {
+        "properties": {
+          "components": {
+            "items": {
+              "enum": [
+                "app",
+                "search",
+                "files",
+                "email",
+                "payments",
+                "fiscal"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "impact": {
+            "enum": [
+              "none",
+              "minor",
+              "major",
+              "critical"
+            ],
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "incident",
+              "maintenance"
+            ],
+            "type": "string"
+          },
+          "resolved_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "scheduled_for": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "scheduled_until": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "started_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "investigating",
+              "identified",
+              "monitoring",
+              "resolved",
+              "scheduled",
+              "in_progress",
+              "completed"
+            ],
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "updates": {
+            "items": {
+              "properties": {
+                "body": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "investigating",
+                    "identified",
+                    "monitoring",
+                    "resolved",
+                    "scheduled",
+                    "in_progress",
+                    "completed"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "body",
+                "created_at",
+                "id",
+                "status"
+              ],
+              "title": "StatusIncidentUpdate",
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "components",
+          "id",
+          "impact",
+          "kind",
+          "resolved_at",
+          "scheduled_for",
+          "scheduled_until",
+          "started_at",
+          "status",
+          "title",
+          "updates"
+        ],
+        "title": "StatusIncident",
+        "type": "object"
+      },
+      "StatusIncidentCreate": {
+        "properties": {
+          "body": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "type": "string"
+          },
+          "components": {
+            "items": {
+              "enum": [
+                "app",
+                "search",
+                "files",
+                "email",
+                "payments",
+                "fiscal"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "impact": {
+            "enum": [
+              "none",
+              "minor",
+              "major",
+              "critical"
+            ],
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "incident",
+              "maintenance"
+            ],
+            "type": "string"
+          },
+          "notify": {
+            "type": "boolean"
+          },
+          "scheduled_for": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "scheduled_until": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "investigating",
+              "identified",
+              "monitoring",
+              "resolved",
+              "scheduled",
+              "in_progress",
+              "completed"
+            ],
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 140,
+            "minLength": 3,
+            "type": "string"
+          }
+        },
+        "required": [
+          "body",
+          "title"
+        ],
+        "title": "StatusIncidentCreate",
+        "type": "object"
+      },
+      "StatusIncidentEdit": {
+        "properties": {
+          "components": {
+            "items": {
+              "enum": [
+                "app",
+                "search",
+                "files",
+                "email",
+                "payments",
+                "fiscal"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "impact": {
+            "enum": [
+              "none",
+              "minor",
+              "major",
+              "critical"
+            ],
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 140,
+            "minLength": 3,
+            "type": "string"
+          }
+        },
+        "title": "StatusIncidentEdit",
+        "type": "object"
+      },
+      "StatusIncidentUpdate": {
+        "properties": {
+          "body": {
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "investigating",
+              "identified",
+              "monitoring",
+              "resolved",
+              "scheduled",
+              "in_progress",
+              "completed"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "body",
+          "created_at",
+          "id",
+          "status"
+        ],
+        "title": "StatusIncidentUpdate",
+        "type": "object"
+      },
+      "StatusIncidentUpdateCreate": {
+        "properties": {
+          "body": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "type": "string"
+          },
+          "notify": {
+            "type": "boolean"
+          },
+          "status": {
+            "enum": [
+              "investigating",
+              "identified",
+              "monitoring",
+              "resolved",
+              "scheduled",
+              "in_progress",
+              "completed"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "title": "StatusIncidentUpdateCreate",
+        "type": "object"
+      },
+      "StatusOverview": {
+        "properties": {
+          "active": {
+            "items": {
+              "properties": {
+                "components": {
+                  "items": {
+                    "enum": [
+                      "app",
+                      "search",
+                      "files",
+                      "email",
+                      "payments",
+                      "fiscal"
+                    ],
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "impact": {
+                  "enum": [
+                    "none",
+                    "minor",
+                    "major",
+                    "critical"
+                  ],
+                  "type": "string"
+                },
+                "kind": {
+                  "enum": [
+                    "incident",
+                    "maintenance"
+                  ],
+                  "type": "string"
+                },
+                "resolved_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "scheduled_for": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "scheduled_until": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "started_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "investigating",
+                    "identified",
+                    "monitoring",
+                    "resolved",
+                    "scheduled",
+                    "in_progress",
+                    "completed"
+                  ],
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "updates": {
+                  "items": {
+                    "properties": {
+                      "body": {
+                        "type": "string"
+                      },
+                      "created_at": {
+                        "format": "date-time",
+                        "type": "string"
+                      },
+                      "id": {
+                        "format": "uuid",
+                        "type": "string"
+                      },
+                      "status": {
+                        "enum": [
+                          "investigating",
+                          "identified",
+                          "monitoring",
+                          "resolved",
+                          "scheduled",
+                          "in_progress",
+                          "completed"
+                        ],
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "body",
+                      "created_at",
+                      "id",
+                      "status"
+                    ],
+                    "title": "StatusIncidentUpdate",
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "required": [
+                "components",
+                "id",
+                "impact",
+                "kind",
+                "resolved_at",
+                "scheduled_for",
+                "scheduled_until",
+                "started_at",
+                "status",
+                "title",
+                "updates"
+              ],
+              "title": "StatusIncident",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "components": {
+            "items": {
+              "properties": {
+                "checked_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "key": {
+                  "enum": [
+                    "app",
+                    "search",
+                    "files",
+                    "email",
+                    "payments",
+                    "fiscal"
+                  ],
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "operational",
+                    "degraded",
+                    "down",
+                    "maintenance",
+                    "unknown"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "checked_at",
+                "key",
+                "status"
+              ],
+              "title": "StatusComponent",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "generated_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "operational",
+              "degraded",
+              "partial_outage",
+              "major_outage",
+              "maintenance",
+              "unknown"
+            ],
+            "type": "string"
+          },
+          "upcoming": {
+            "items": {
+              "properties": {
+                "components": {
+                  "items": {
+                    "enum": [
+                      "app",
+                      "search",
+                      "files",
+                      "email",
+                      "payments",
+                      "fiscal"
+                    ],
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "impact": {
+                  "enum": [
+                    "none",
+                    "minor",
+                    "major",
+                    "critical"
+                  ],
+                  "type": "string"
+                },
+                "kind": {
+                  "enum": [
+                    "incident",
+                    "maintenance"
+                  ],
+                  "type": "string"
+                },
+                "resolved_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "scheduled_for": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "scheduled_until": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "started_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "investigating",
+                    "identified",
+                    "monitoring",
+                    "resolved",
+                    "scheduled",
+                    "in_progress",
+                    "completed"
+                  ],
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "updates": {
+                  "items": {
+                    "properties": {
+                      "body": {
+                        "type": "string"
+                      },
+                      "created_at": {
+                        "format": "date-time",
+                        "type": "string"
+                      },
+                      "id": {
+                        "format": "uuid",
+                        "type": "string"
+                      },
+                      "status": {
+                        "enum": [
+                          "investigating",
+                          "identified",
+                          "monitoring",
+                          "resolved",
+                          "scheduled",
+                          "in_progress",
+                          "completed"
+                        ],
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "body",
+                      "created_at",
+                      "id",
+                      "status"
+                    ],
+                    "title": "StatusIncidentUpdate",
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "required": [
+                "components",
+                "id",
+                "impact",
+                "kind",
+                "resolved_at",
+                "scheduled_for",
+                "scheduled_until",
+                "started_at",
+                "status",
+                "title",
+                "updates"
+              ],
+              "title": "StatusIncident",
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "active",
+          "components",
+          "generated_at",
+          "status",
+          "upcoming"
+        ],
+        "title": "StatusOverview",
+        "type": "object"
+      },
+      "StatusProbeState": {
+        "properties": {
+          "changed_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "checked_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "reason": {
+            "nullable": true,
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "operational",
+              "degraded",
+              "down"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "changed_at",
+          "checked_at",
+          "key",
+          "reason",
+          "status"
+        ],
+        "title": "StatusProbeState",
+        "type": "object"
+      },
+      "StatusSubscribe": {
+        "properties": {
+          "email": {
+            "format": "email",
+            "maxLength": 254,
+            "type": "string"
+          },
+          "locale": {
+            "maxLength": 8,
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ],
+        "title": "StatusSubscribe",
+        "type": "object"
+      },
+      "StatusToken": {
+        "properties": {
+          "token": {
+            "maxLength": 512,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "token"
+        ],
+        "title": "StatusToken",
         "type": "object"
       },
       "StructuredSection": {
@@ -178997,6 +180398,218 @@
         "summary": "Whether members may start groups, and whether staff approve them first",
         "tags": [
           "Admin Community"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/data-exports": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminDataExportController.index",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "exports": {
+                      "items": {
+                        "properties": {
+                          "completed_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "expires_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "file": {
+                            "nullable": true,
+                            "properties": {
+                              "bytes": {
+                                "type": "integer"
+                              },
+                              "download_url": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "sha256": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "bytes",
+                              "download_url",
+                              "name",
+                              "sha256"
+                            ],
+                            "type": "object"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "record_count": {
+                            "nullable": true,
+                            "type": "integer"
+                          },
+                          "requested_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "pending",
+                              "ready",
+                              "failed",
+                              "expired"
+                            ],
+                            "type": "string"
+                          },
+                          "table_count": {
+                            "nullable": true,
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "completed_at",
+                          "expires_at",
+                          "file",
+                          "id",
+                          "record_count",
+                          "requested_at",
+                          "status",
+                          "table_count"
+                        ],
+                        "title": "BoxDataExport",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "exports"
+                  ],
+                  "title": "BoxDataExports",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Exports"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The box's data exports, with download links for ready files (owners)",
+        "tags": [
+          "Admin data export"
+        ]
+      },
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminDataExportController.create",
+        "parameters": [],
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "completed_at": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "expires_at": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "file": {
+                      "nullable": true,
+                      "properties": {
+                        "bytes": {
+                          "type": "integer"
+                        },
+                        "download_url": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "sha256": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "bytes",
+                        "download_url",
+                        "name",
+                        "sha256"
+                      ],
+                      "type": "object"
+                    },
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "record_count": {
+                      "nullable": true,
+                      "type": "integer"
+                    },
+                    "requested_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "status": {
+                      "enum": [
+                        "pending",
+                        "ready",
+                        "failed",
+                        "expired"
+                      ],
+                      "type": "string"
+                    },
+                    "table_count": {
+                      "nullable": true,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "completed_at",
+                    "expires_at",
+                    "file",
+                    "id",
+                    "record_count",
+                    "requested_at",
+                    "status",
+                    "table_count"
+                  ],
+                  "title": "BoxDataExport",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Export"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Ask for a copy of all the box's data (owners; one a day)",
+        "tags": [
+          "Admin data export"
         ]
       }
     },
@@ -333865,6 +335478,854 @@
         ]
       }
     },
+    "/api/platform/status": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformStatusController.show",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "incidents": {
+                      "items": {
+                        "properties": {
+                          "components": {
+                            "items": {
+                              "enum": [
+                                "app",
+                                "search",
+                                "files",
+                                "email",
+                                "payments",
+                                "fiscal"
+                              ],
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "impact": {
+                            "enum": [
+                              "none",
+                              "minor",
+                              "major",
+                              "critical"
+                            ],
+                            "type": "string"
+                          },
+                          "kind": {
+                            "enum": [
+                              "incident",
+                              "maintenance"
+                            ],
+                            "type": "string"
+                          },
+                          "resolved_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "scheduled_for": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "scheduled_until": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "started_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "investigating",
+                              "identified",
+                              "monitoring",
+                              "resolved",
+                              "scheduled",
+                              "in_progress",
+                              "completed"
+                            ],
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "updates": {
+                            "items": {
+                              "properties": {
+                                "body": {
+                                  "type": "string"
+                                },
+                                "created_at": {
+                                  "format": "date-time",
+                                  "type": "string"
+                                },
+                                "id": {
+                                  "format": "uuid",
+                                  "type": "string"
+                                },
+                                "status": {
+                                  "enum": [
+                                    "investigating",
+                                    "identified",
+                                    "monitoring",
+                                    "resolved",
+                                    "scheduled",
+                                    "in_progress",
+                                    "completed"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "body",
+                                "created_at",
+                                "id",
+                                "status"
+                              ],
+                              "title": "StatusIncidentUpdate",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "required": [
+                          "components",
+                          "id",
+                          "impact",
+                          "kind",
+                          "resolved_at",
+                          "scheduled_for",
+                          "scheduled_until",
+                          "started_at",
+                          "status",
+                          "title",
+                          "updates"
+                        ],
+                        "title": "StatusIncident",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "probes": {
+                      "items": {
+                        "properties": {
+                          "changed_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "checked_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "key": {
+                            "type": "string"
+                          },
+                          "reason": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "operational",
+                              "degraded",
+                              "down"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "changed_at",
+                          "checked_at",
+                          "key",
+                          "reason",
+                          "status"
+                        ],
+                        "title": "StatusProbeState",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "subscribers": {
+                      "properties": {
+                        "confirmed": {
+                          "type": "integer"
+                        },
+                        "waiting": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "confirmed",
+                        "waiting"
+                      ],
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "incidents",
+                    "probes",
+                    "subscribers"
+                  ],
+                  "title": "StatusConsole",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Console"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Probes with reasons, incidents of the last 90 days and subscribers (vendors)",
+        "tags": [
+          "Platform status"
+        ]
+      }
+    },
+    "/api/platform/status/incidents": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformStatusController.create",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "body": {
+                    "maxLength": 2000,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "components": {
+                    "items": {
+                      "enum": [
+                        "app",
+                        "search",
+                        "files",
+                        "email",
+                        "payments",
+                        "fiscal"
+                      ],
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "impact": {
+                    "enum": [
+                      "none",
+                      "minor",
+                      "major",
+                      "critical"
+                    ],
+                    "type": "string"
+                  },
+                  "kind": {
+                    "enum": [
+                      "incident",
+                      "maintenance"
+                    ],
+                    "type": "string"
+                  },
+                  "notify": {
+                    "type": "boolean"
+                  },
+                  "scheduled_for": {
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  "scheduled_until": {
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  "status": {
+                    "enum": [
+                      "investigating",
+                      "identified",
+                      "monitoring",
+                      "resolved",
+                      "scheduled",
+                      "in_progress",
+                      "completed"
+                    ],
+                    "type": "string"
+                  },
+                  "title": {
+                    "maxLength": 140,
+                    "minLength": 3,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "body",
+                  "title"
+                ],
+                "title": "StatusIncidentCreate",
+                "type": "object"
+              }
+            }
+          },
+          "description": "A new incident or planned maintenance with its first note",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "components": {
+                      "items": {
+                        "enum": [
+                          "app",
+                          "search",
+                          "files",
+                          "email",
+                          "payments",
+                          "fiscal"
+                        ],
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "impact": {
+                      "enum": [
+                        "none",
+                        "minor",
+                        "major",
+                        "critical"
+                      ],
+                      "type": "string"
+                    },
+                    "kind": {
+                      "enum": [
+                        "incident",
+                        "maintenance"
+                      ],
+                      "type": "string"
+                    },
+                    "resolved_at": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "scheduled_for": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "scheduled_until": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "started_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "status": {
+                      "enum": [
+                        "investigating",
+                        "identified",
+                        "monitoring",
+                        "resolved",
+                        "scheduled",
+                        "in_progress",
+                        "completed"
+                      ],
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "updates": {
+                      "items": {
+                        "properties": {
+                          "body": {
+                            "type": "string"
+                          },
+                          "created_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "investigating",
+                              "identified",
+                              "monitoring",
+                              "resolved",
+                              "scheduled",
+                              "in_progress",
+                              "completed"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "body",
+                          "created_at",
+                          "id",
+                          "status"
+                        ],
+                        "title": "StatusIncidentUpdate",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "components",
+                    "id",
+                    "impact",
+                    "kind",
+                    "resolved_at",
+                    "scheduled_for",
+                    "scheduled_until",
+                    "started_at",
+                    "status",
+                    "title",
+                    "updates"
+                  ],
+                  "title": "StatusIncident",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Incident"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Publish an incident or planned maintenance (vendors)",
+        "tags": [
+          "Platform status"
+        ]
+      }
+    },
+    "/api/platform/status/incidents/{id}": {
+      "patch": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformStatusController.update",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "components": {
+                    "items": {
+                      "enum": [
+                        "app",
+                        "search",
+                        "files",
+                        "email",
+                        "payments",
+                        "fiscal"
+                      ],
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "impact": {
+                    "enum": [
+                      "none",
+                      "minor",
+                      "major",
+                      "critical"
+                    ],
+                    "type": "string"
+                  },
+                  "title": {
+                    "maxLength": 140,
+                    "minLength": 3,
+                    "type": "string"
+                  }
+                },
+                "title": "StatusIncidentEdit",
+                "type": "object"
+              }
+            }
+          },
+          "description": "A correction (no note, no email)",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "components": {
+                      "items": {
+                        "enum": [
+                          "app",
+                          "search",
+                          "files",
+                          "email",
+                          "payments",
+                          "fiscal"
+                        ],
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "impact": {
+                      "enum": [
+                        "none",
+                        "minor",
+                        "major",
+                        "critical"
+                      ],
+                      "type": "string"
+                    },
+                    "kind": {
+                      "enum": [
+                        "incident",
+                        "maintenance"
+                      ],
+                      "type": "string"
+                    },
+                    "resolved_at": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "scheduled_for": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "scheduled_until": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "started_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "status": {
+                      "enum": [
+                        "investigating",
+                        "identified",
+                        "monitoring",
+                        "resolved",
+                        "scheduled",
+                        "in_progress",
+                        "completed"
+                      ],
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "updates": {
+                      "items": {
+                        "properties": {
+                          "body": {
+                            "type": "string"
+                          },
+                          "created_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "investigating",
+                              "identified",
+                              "monitoring",
+                              "resolved",
+                              "scheduled",
+                              "in_progress",
+                              "completed"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "body",
+                          "created_at",
+                          "id",
+                          "status"
+                        ],
+                        "title": "StatusIncidentUpdate",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "components",
+                    "id",
+                    "impact",
+                    "kind",
+                    "resolved_at",
+                    "scheduled_for",
+                    "scheduled_until",
+                    "started_at",
+                    "status",
+                    "title",
+                    "updates"
+                  ],
+                  "title": "StatusIncident",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Incident"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Correct an incident's title, impact or components (vendors)",
+        "tags": [
+          "Platform status"
+        ]
+      }
+    },
+    "/api/platform/status/incidents/{id}/updates": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformStatusController.add_update",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "body": {
+                    "maxLength": 2000,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "notify": {
+                    "type": "boolean"
+                  },
+                  "status": {
+                    "enum": [
+                      "investigating",
+                      "identified",
+                      "monitoring",
+                      "resolved",
+                      "scheduled",
+                      "in_progress",
+                      "completed"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "body"
+                ],
+                "title": "StatusIncidentUpdateCreate",
+                "type": "object"
+              }
+            }
+          },
+          "description": "A new step in the timeline",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "components": {
+                      "items": {
+                        "enum": [
+                          "app",
+                          "search",
+                          "files",
+                          "email",
+                          "payments",
+                          "fiscal"
+                        ],
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "impact": {
+                      "enum": [
+                        "none",
+                        "minor",
+                        "major",
+                        "critical"
+                      ],
+                      "type": "string"
+                    },
+                    "kind": {
+                      "enum": [
+                        "incident",
+                        "maintenance"
+                      ],
+                      "type": "string"
+                    },
+                    "resolved_at": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "scheduled_for": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "scheduled_until": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "started_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "status": {
+                      "enum": [
+                        "investigating",
+                        "identified",
+                        "monitoring",
+                        "resolved",
+                        "scheduled",
+                        "in_progress",
+                        "completed"
+                      ],
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "updates": {
+                      "items": {
+                        "properties": {
+                          "body": {
+                            "type": "string"
+                          },
+                          "created_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "investigating",
+                              "identified",
+                              "monitoring",
+                              "resolved",
+                              "scheduled",
+                              "in_progress",
+                              "completed"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "body",
+                          "created_at",
+                          "id",
+                          "status"
+                        ],
+                        "title": "StatusIncidentUpdate",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "components",
+                    "id",
+                    "impact",
+                    "kind",
+                    "resolved_at",
+                    "scheduled_for",
+                    "scheduled_until",
+                    "started_at",
+                    "status",
+                    "title",
+                    "updates"
+                  ],
+                  "title": "StatusIncident",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Incident"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Add a step to an incident's timeline (vendors)",
+        "tags": [
+          "Platform status"
+        ]
+      }
+    },
     "/api/platform/subscriptions": {
       "get": {
         "callbacks": {},
@@ -338923,6 +341384,785 @@
         "summary": "What an invite link shows: the box, who invites and the friend's gift (no sign-in)",
         "tags": [
           "Referrals"
+        ]
+      }
+    },
+    "/api/public/status": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PublicStatusController.show",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "active": {
+                      "items": {
+                        "properties": {
+                          "components": {
+                            "items": {
+                              "enum": [
+                                "app",
+                                "search",
+                                "files",
+                                "email",
+                                "payments",
+                                "fiscal"
+                              ],
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "impact": {
+                            "enum": [
+                              "none",
+                              "minor",
+                              "major",
+                              "critical"
+                            ],
+                            "type": "string"
+                          },
+                          "kind": {
+                            "enum": [
+                              "incident",
+                              "maintenance"
+                            ],
+                            "type": "string"
+                          },
+                          "resolved_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "scheduled_for": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "scheduled_until": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "started_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "investigating",
+                              "identified",
+                              "monitoring",
+                              "resolved",
+                              "scheduled",
+                              "in_progress",
+                              "completed"
+                            ],
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "updates": {
+                            "items": {
+                              "properties": {
+                                "body": {
+                                  "type": "string"
+                                },
+                                "created_at": {
+                                  "format": "date-time",
+                                  "type": "string"
+                                },
+                                "id": {
+                                  "format": "uuid",
+                                  "type": "string"
+                                },
+                                "status": {
+                                  "enum": [
+                                    "investigating",
+                                    "identified",
+                                    "monitoring",
+                                    "resolved",
+                                    "scheduled",
+                                    "in_progress",
+                                    "completed"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "body",
+                                "created_at",
+                                "id",
+                                "status"
+                              ],
+                              "title": "StatusIncidentUpdate",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "required": [
+                          "components",
+                          "id",
+                          "impact",
+                          "kind",
+                          "resolved_at",
+                          "scheduled_for",
+                          "scheduled_until",
+                          "started_at",
+                          "status",
+                          "title",
+                          "updates"
+                        ],
+                        "title": "StatusIncident",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "components": {
+                      "items": {
+                        "properties": {
+                          "checked_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "key": {
+                            "enum": [
+                              "app",
+                              "search",
+                              "files",
+                              "email",
+                              "payments",
+                              "fiscal"
+                            ],
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "operational",
+                              "degraded",
+                              "down",
+                              "maintenance",
+                              "unknown"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "checked_at",
+                          "key",
+                          "status"
+                        ],
+                        "title": "StatusComponent",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "generated_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "status": {
+                      "enum": [
+                        "operational",
+                        "degraded",
+                        "partial_outage",
+                        "major_outage",
+                        "maintenance",
+                        "unknown"
+                      ],
+                      "type": "string"
+                    },
+                    "upcoming": {
+                      "items": {
+                        "properties": {
+                          "components": {
+                            "items": {
+                              "enum": [
+                                "app",
+                                "search",
+                                "files",
+                                "email",
+                                "payments",
+                                "fiscal"
+                              ],
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "impact": {
+                            "enum": [
+                              "none",
+                              "minor",
+                              "major",
+                              "critical"
+                            ],
+                            "type": "string"
+                          },
+                          "kind": {
+                            "enum": [
+                              "incident",
+                              "maintenance"
+                            ],
+                            "type": "string"
+                          },
+                          "resolved_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "scheduled_for": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "scheduled_until": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "started_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "investigating",
+                              "identified",
+                              "monitoring",
+                              "resolved",
+                              "scheduled",
+                              "in_progress",
+                              "completed"
+                            ],
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "updates": {
+                            "items": {
+                              "properties": {
+                                "body": {
+                                  "type": "string"
+                                },
+                                "created_at": {
+                                  "format": "date-time",
+                                  "type": "string"
+                                },
+                                "id": {
+                                  "format": "uuid",
+                                  "type": "string"
+                                },
+                                "status": {
+                                  "enum": [
+                                    "investigating",
+                                    "identified",
+                                    "monitoring",
+                                    "resolved",
+                                    "scheduled",
+                                    "in_progress",
+                                    "completed"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "body",
+                                "created_at",
+                                "id",
+                                "status"
+                              ],
+                              "title": "StatusIncidentUpdate",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "required": [
+                          "components",
+                          "id",
+                          "impact",
+                          "kind",
+                          "resolved_at",
+                          "scheduled_for",
+                          "scheduled_until",
+                          "started_at",
+                          "status",
+                          "title",
+                          "updates"
+                        ],
+                        "title": "StatusIncident",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "active",
+                    "components",
+                    "generated_at",
+                    "status",
+                    "upcoming"
+                  ],
+                  "title": "StatusOverview",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Status"
+          }
+        },
+        "security": [],
+        "summary": "The status of Palee now: components, incidents, maintenance",
+        "tags": [
+          "Status"
+        ]
+      }
+    },
+    "/api/public/status/history": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PublicStatusController.history",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "days",
+            "required": false,
+            "schema": {
+              "maximum": 90,
+              "minimum": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "components": {
+                      "items": {
+                        "properties": {
+                          "days": {
+                            "items": {
+                              "properties": {
+                                "date": {
+                                  "format": "date",
+                                  "type": "string"
+                                },
+                                "status": {
+                                  "enum": [
+                                    "operational",
+                                    "degraded",
+                                    "down",
+                                    "no_data"
+                                  ],
+                                  "type": "string"
+                                },
+                                "uptime_percent": {
+                                  "nullable": true,
+                                  "type": "number"
+                                }
+                              },
+                              "required": [
+                                "date",
+                                "status",
+                                "uptime_percent"
+                              ],
+                              "title": "StatusHistoryDay",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "key": {
+                            "enum": [
+                              "app",
+                              "search",
+                              "files",
+                              "email",
+                              "payments",
+                              "fiscal"
+                            ],
+                            "type": "string"
+                          },
+                          "uptime_percent": {
+                            "nullable": true,
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "days",
+                          "key",
+                          "uptime_percent"
+                        ],
+                        "title": "StatusComponentHistory",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "days": {
+                      "type": "integer"
+                    },
+                    "from": {
+                      "format": "date",
+                      "type": "string"
+                    },
+                    "generated_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "incidents": {
+                      "items": {
+                        "properties": {
+                          "components": {
+                            "items": {
+                              "enum": [
+                                "app",
+                                "search",
+                                "files",
+                                "email",
+                                "payments",
+                                "fiscal"
+                              ],
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "impact": {
+                            "enum": [
+                              "none",
+                              "minor",
+                              "major",
+                              "critical"
+                            ],
+                            "type": "string"
+                          },
+                          "kind": {
+                            "enum": [
+                              "incident",
+                              "maintenance"
+                            ],
+                            "type": "string"
+                          },
+                          "resolved_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "scheduled_for": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "scheduled_until": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "started_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "investigating",
+                              "identified",
+                              "monitoring",
+                              "resolved",
+                              "scheduled",
+                              "in_progress",
+                              "completed"
+                            ],
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "updates": {
+                            "items": {
+                              "properties": {
+                                "body": {
+                                  "type": "string"
+                                },
+                                "created_at": {
+                                  "format": "date-time",
+                                  "type": "string"
+                                },
+                                "id": {
+                                  "format": "uuid",
+                                  "type": "string"
+                                },
+                                "status": {
+                                  "enum": [
+                                    "investigating",
+                                    "identified",
+                                    "monitoring",
+                                    "resolved",
+                                    "scheduled",
+                                    "in_progress",
+                                    "completed"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "body",
+                                "created_at",
+                                "id",
+                                "status"
+                              ],
+                              "title": "StatusIncidentUpdate",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "required": [
+                          "components",
+                          "id",
+                          "impact",
+                          "kind",
+                          "resolved_at",
+                          "scheduled_for",
+                          "scheduled_until",
+                          "started_at",
+                          "status",
+                          "title",
+                          "updates"
+                        ],
+                        "title": "StatusIncident",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "to": {
+                      "format": "date",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "components",
+                    "days",
+                    "from",
+                    "generated_at",
+                    "incidents",
+                    "to"
+                  ],
+                  "title": "StatusHistory",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "History"
+          }
+        },
+        "security": [],
+        "summary": "Uptime per component and day (up to 90 days) and past incidents",
+        "tags": [
+          "Status"
+        ]
+      }
+    },
+    "/api/public/status/subscriptions": {
+      "post": {
+        "callbacks": {},
+        "description": "The answer is the same whether the address is new or already subscribed.",
+        "operationId": "PaleeWeb.PublicStatusController.subscribe",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "email": {
+                    "format": "email",
+                    "maxLength": 254,
+                    "type": "string"
+                  },
+                  "locale": {
+                    "maxLength": 8,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email"
+                ],
+                "title": "StatusSubscribe",
+                "type": "object"
+              }
+            }
+          },
+          "description": "The address that wants status emails",
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "enum": [
+                        "accepted",
+                        "confirmed",
+                        "removed"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "status"
+                  ],
+                  "title": "StatusAccepted",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Accepted"
+          }
+        },
+        "security": [],
+        "summary": "Ask for status emails (a confirmation email is sent)",
+        "tags": [
+          "Status"
+        ]
+      }
+    },
+    "/api/public/status/subscriptions/confirm": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PublicStatusController.confirm",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "token": {
+                    "maxLength": 512,
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "token"
+                ],
+                "title": "StatusToken",
+                "type": "object"
+              }
+            }
+          },
+          "description": "The token from the email",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "enum": [
+                        "accepted",
+                        "confirmed",
+                        "removed"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "status"
+                  ],
+                  "title": "StatusAccepted",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Confirmed"
+          }
+        },
+        "security": [],
+        "summary": "Confirm status emails with the token from the confirmation email",
+        "tags": [
+          "Status"
+        ]
+      }
+    },
+    "/api/public/status/subscriptions/unsubscribe": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PublicStatusController.unsubscribe",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "token": {
+                    "maxLength": 512,
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "token"
+                ],
+                "title": "StatusToken",
+                "type": "object"
+              }
+            }
+          },
+          "description": "The token from the email",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "enum": [
+                        "accepted",
+                        "confirmed",
+                        "removed"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "status"
+                  ],
+                  "title": "StatusAccepted",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Removed"
+          }
+        },
+        "security": [],
+        "summary": "Stop status emails with the token from a status email",
+        "tags": [
+          "Status"
         ]
       }
     },
