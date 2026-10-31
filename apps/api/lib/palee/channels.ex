@@ -38,6 +38,10 @@ defmodule Palee.Channels do
     end
   end
 
+  defdelegate list_templates(context), to: Palee.Channels.BoxTemplates, as: :list
+  defdelegate save_template(context, key, params, actor_id), to: Palee.Channels.BoxTemplates, as: :save
+  defdelegate delete_template(context, key, locale, channel), to: Palee.Channels.BoxTemplates, as: :delete
+
   defdelegate preview(context, request, env), to: Sending
   defdelegate send(context, request, env), to: Sending
   defdelegate deliver(context, which, now), to: Sending
