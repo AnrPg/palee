@@ -5053,6 +5053,77 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/automations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The ready recipes as the box has them */
+        get: operations["PaleeWeb.AdminAutomationController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/automations/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Recent automatic messages, newest first */
+        get: operations["PaleeWeb.AdminAutomationController.deliveries"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/automations/{recipe}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Switch a recipe on or off, or change its text, channels, delay or settings
+         * @description Switching a recipe off cancels the messages it had queued.
+         */
+        patch: operations["PaleeWeb.AdminAutomationController.update"];
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/automations/{recipe}/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** The message as a person would get it (sample name) */
+        post: operations["PaleeWeb.AdminAutomationController.preview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/bookings/{id}/approve": {
         parameters: {
             query?: never;
@@ -8454,6 +8525,196 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/leads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box's leads, newest first, with the count per stage */
+        get: operations["PaleeWeb.AdminLeadController.index"];
+        put?: never;
+        /** A lead typed in by staff (walk-in, phone call, referral, event) */
+        post: operations["PaleeWeb.AdminLeadController.create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/leads/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Leads from a CSV file (`dry_run` reports per row without writing) */
+        post: operations["PaleeWeb.AdminLeadController.import"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/leads/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Open tasks of open leads, due first («Επόμενες ενέργειες») */
+        get: operations["PaleeWeb.AdminLeadController.tasks"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/leads/tasks/{task_id}/done": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Mark a lead's task done */
+        post: operations["PaleeWeb.AdminLeadController.complete_task"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/leads/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One lead with its tasks and history */
+        get: operations["PaleeWeb.AdminLeadController.show"];
+        put?: never;
+        post?: never;
+        /** Erase a lead with its tasks and history (an erasure request) */
+        delete: operations["PaleeWeb.AdminLeadController.delete"];
+        options?: never;
+        head?: never;
+        /** Change a lead's details or owner */
+        patch: operations["PaleeWeb.AdminLeadController.update"];
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/leads/{id}/contacted": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** «Μίλησα»: staff reached the person */
+        post: operations["PaleeWeb.AdminLeadController.contacted"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/leads/{id}/convert": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** «Έγινε μέλος»: link the lead to a box member and close it, keeping its history */
+        post: operations["PaleeWeb.AdminLeadController.convert"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/leads/{id}/move": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Move a lead to another stage (`lost` with a reason) */
+        post: operations["PaleeWeb.AdminLeadController.move"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/leads/{id}/notes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** A note in the lead's history */
+        post: operations["PaleeWeb.AdminLeadController.note"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/leads/{id}/opt-out": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** The person asked for no marketing messages */
+        post: operations["PaleeWeb.AdminLeadController.opt_out"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/leads/{id}/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** A task on the lead («Επόμενη ενέργεια») */
+        post: operations["PaleeWeb.AdminLeadController.add_task"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/locations": {
         parameters: {
             query?: never;
@@ -8500,6 +8761,74 @@ export interface paths {
         put?: never;
         /** Archive a location; its past classes keep the reference */
         post: operations["PaleeWeb.AdminFacilityController.archive_location"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/members-at-risk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Box members at risk, highest score first, with reasons */
+        get: operations["PaleeWeb.AdminMemberRiskController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/members-at-risk/{user_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One box member's risk with its reasons */
+        get: operations["PaleeWeb.AdminMemberRiskController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/members-at-risk/{user_id}/contacted": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** «Μίλησα»: staff reached the member */
+        post: operations["PaleeWeb.AdminMemberRiskController.contacted"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/members-at-risk/{user_id}/snooze": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** «Το είδα»: hide the member from the list for some days (0 shows them again) */
+        post: operations["PaleeWeb.AdminMemberRiskController.snooze"];
         delete?: never;
         options?: never;
         head?: never;
@@ -12031,6 +12360,24 @@ export interface paths {
         put?: never;
         /** Cancel an appointment; inside the cancellation cutoff the session is used */
         post: operations["PaleeWeb.AppointmentsController.cancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/automatic-messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My choices about this box's automatic messages */
+        get: operations["PaleeWeb.MyAutomationPreferencesController.show"];
+        /** Change my choices about this box's automatic messages */
+        put: operations["PaleeWeb.MyAutomationPreferencesController.update"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -16679,6 +17026,26 @@ export interface paths {
         get: operations["PaleeWeb.PublicBoxController.show"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/boxes/{slug}/leads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send an enquiry to a box («Ενδιαφέρομαι»)
+         * @description Stores a lead for the box, or joins the open one of the same email. Always answers `received`, so the answer says nothing about who is known to the box.
+         */
+        post: operations["PaleeWeb.PublicLeadController.create"];
         delete?: never;
         options?: never;
         head?: never;
@@ -71101,6 +71468,207 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminAutomationController.index": {
+        parameters: {
+            query?: {
+                /** @description Language of the default texts (default `el`) */
+                locale?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Recipes */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        channels: string[];
+                        placeholders: string[];
+                        recipes: {
+                            audience: ("member" | "lead")[];
+                            body: string | null;
+                            channels: string[];
+                            default_body: string;
+                            default_channels: string[];
+                            default_delay_minutes: number;
+                            default_subject: string;
+                            delay_minutes: number;
+                            enabled: boolean;
+                            /** @enum {string} */
+                            key: "welcome" | "trial_follow_up" | "missed_classes" | "renewal_reminder" | "birthday" | "win_back";
+                            /** @enum {string} */
+                            purpose: "service" | "marketing";
+                            settings: {
+                                [key: string]: unknown;
+                            };
+                            stats: {
+                                [key: string]: number;
+                            };
+                            subject: string | null;
+                            /** @description A domain event name, or `daily` */
+                            trigger: string;
+                            /** Format: date-time */
+                            updated_at: string | null;
+                        }[];
+                        stats_days: number;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminAutomationController.deliveries": {
+        parameters: {
+            query?: {
+                recipe?: string;
+                status?: string;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Messages */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        deliveries: {
+                            attempts: number;
+                            channel: string | null;
+                            /** Format: date-time */
+                            due_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            recipe: string;
+                            recipient: {
+                                /** @enum {string} */
+                                kind: "member" | "lead";
+                                /** Format: uuid */
+                                lead_id: string | null;
+                                name: string | null;
+                                /** Format: uuid */
+                                user_id: string | null;
+                            };
+                            /** Format: date-time */
+                            sent_at: string | null;
+                            skip_reason: string | null;
+                            /** @enum {string} */
+                            status: "pending" | "sending" | "sent" | "skipped" | "failed" | "cancelled";
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminAutomationController.update": {
+        parameters: {
+            query?: {
+                /** @description Language of the default texts (default `el`) */
+                locale?: string;
+            };
+            header?: never;
+            path: {
+                recipe: "welcome" | "trial_follow_up" | "missed_classes" | "renewal_reminder" | "birthday" | "win_back";
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    body?: string | null;
+                    channels?: string[];
+                    delay_minutes?: number | null;
+                    enabled?: boolean;
+                    settings?: {
+                        [key: string]: unknown;
+                    };
+                    subject?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Recipe */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        recipe: {
+                            audience: ("member" | "lead")[];
+                            body: string | null;
+                            channels: string[];
+                            default_body: string;
+                            default_channels: string[];
+                            default_delay_minutes: number;
+                            default_subject: string;
+                            delay_minutes: number;
+                            enabled: boolean;
+                            /** @enum {string} */
+                            key: "welcome" | "trial_follow_up" | "missed_classes" | "renewal_reminder" | "birthday" | "win_back";
+                            /** @enum {string} */
+                            purpose: "service" | "marketing";
+                            settings: {
+                                [key: string]: unknown;
+                            };
+                            stats: {
+                                [key: string]: number;
+                            };
+                            subject: string | null;
+                            /** @description A domain event name, or `daily` */
+                            trigger: string;
+                            /** Format: date-time */
+                            updated_at: string | null;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminAutomationController.preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                recipe: "welcome" | "trial_follow_up" | "missed_classes" | "renewal_reminder" | "birthday" | "win_back";
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    body?: string;
+                    first_name?: string;
+                    locale?: string;
+                    subject?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Preview */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        body: string;
+                        recipe: string;
+                        subject: string;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminScheduleController.approve_booking": {
         parameters: {
             query?: never;
@@ -88392,6 +88960,1549 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminLeadController.index": {
+        parameters: {
+            query?: {
+                /** @description A stage, several separated by commas, or `open` */
+                stage?: string;
+                /** @description `me` or a staff profile id */
+                owner?: string;
+                source?: string;
+                /** @description Name, email or phone contains */
+                q?: string;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Leads */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Leads per stage */
+                        counts: {
+                            [key: string]: number;
+                        };
+                        leads: {
+                            campaign: string | null;
+                            consent: {
+                                /** Format: date-time */
+                                contact_at: string | null;
+                                /** Format: date-time */
+                                marketing_at: string | null;
+                                /** Format: date-time */
+                                marketing_opted_out_at: string | null;
+                                text_version: string | null;
+                            };
+                            /** Format: date-time */
+                            converted_at: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            email: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            interests: string[];
+                            /** Format: date-time */
+                            last_contacted_at: string | null;
+                            locale: string | null;
+                            /** @enum {string|null} */
+                            lost_reason: "price" | "schedule" | "location" | "no_answer" | "chose_other" | "not_interested" | "other" | null;
+                            message: string | null;
+                            name: string;
+                            next_task: {
+                                assignee: {
+                                    avatar_url?: string | null;
+                                    display_name?: string | null;
+                                    handle?: string | null;
+                                    /** Format: uuid */
+                                    user_id: string;
+                                } | null;
+                                /** Format: date-time */
+                                done_at: string | null;
+                                /** Format: date-time */
+                                due_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                lead_id: string;
+                                lead_name?: string | null;
+                                title: string;
+                            } | null;
+                            owner: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            phone: string | null;
+                            /** @enum {string} */
+                            source: "website_form" | "form" | "join_link" | "manual" | "csv" | "walk_in" | "referral" | "event" | "around_me" | "trial" | "prospect_assistant";
+                            /** @enum {string} */
+                            stage: "new" | "trial" | "offer" | "converted" | "lost";
+                            /** Format: date-time */
+                            stage_changed_at: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminLeadController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    campaign?: string;
+                    email?: string;
+                    interests?: string[];
+                    locale?: string;
+                    /** @description The person said yes to marketing messages (their own words) */
+                    marketing_consent?: boolean;
+                    message?: string;
+                    name: string;
+                    /** Format: uuid */
+                    owner_id?: string;
+                    phone?: string;
+                    /** @enum {string} */
+                    source?: "manual" | "walk_in" | "referral" | "event";
+                };
+            };
+        };
+        responses: {
+            /** @description Lead with tasks and history */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        events: {
+                            actor: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            at: string;
+                            data: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "created" | "enquired_again" | "stage_changed" | "owner_changed" | "note" | "contacted" | "task_added" | "task_done" | "message_sent" | "converted" | "marketing_opted_out" | "details_changed";
+                        }[];
+                        lead: {
+                            campaign: string | null;
+                            consent: {
+                                /** Format: date-time */
+                                contact_at: string | null;
+                                /** Format: date-time */
+                                marketing_at: string | null;
+                                /** Format: date-time */
+                                marketing_opted_out_at: string | null;
+                                text_version: string | null;
+                            };
+                            /** Format: date-time */
+                            converted_at: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            email: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            interests: string[];
+                            /** Format: date-time */
+                            last_contacted_at: string | null;
+                            locale: string | null;
+                            /** @enum {string|null} */
+                            lost_reason: "price" | "schedule" | "location" | "no_answer" | "chose_other" | "not_interested" | "other" | null;
+                            message: string | null;
+                            name: string;
+                            next_task: {
+                                assignee: {
+                                    avatar_url?: string | null;
+                                    display_name?: string | null;
+                                    handle?: string | null;
+                                    /** Format: uuid */
+                                    user_id: string;
+                                } | null;
+                                /** Format: date-time */
+                                done_at: string | null;
+                                /** Format: date-time */
+                                due_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                lead_id: string;
+                                lead_name?: string | null;
+                                title: string;
+                            } | null;
+                            owner: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            phone: string | null;
+                            /** @enum {string} */
+                            source: "website_form" | "form" | "join_link" | "manual" | "csv" | "walk_in" | "referral" | "event" | "around_me" | "trial" | "prospect_assistant";
+                            /** @enum {string} */
+                            stage: "new" | "trial" | "offer" | "converted" | "lost";
+                            /** Format: date-time */
+                            stage_changed_at: string;
+                        };
+                        tasks: {
+                            assignee: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            done_at: string | null;
+                            /** Format: date-time */
+                            due_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id: string;
+                            lead_name?: string | null;
+                            title: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminLeadController.import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description The file's text (UTF-8) */
+                    csv: string;
+                    dry_run?: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Import result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        created: number;
+                        dry_run: boolean;
+                        existing: number;
+                        invalid: number;
+                        rows: {
+                            errors: {
+                                [key: string]: unknown;
+                            };
+                            /** @enum {string} */
+                            result: "created" | "existing" | "invalid" | "valid";
+                            row: number;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminLeadController.tasks": {
+        parameters: {
+            query?: {
+                mine?: boolean;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Tasks */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        tasks: {
+                            assignee: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            done_at: string | null;
+                            /** Format: date-time */
+                            due_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id: string;
+                            lead_name?: string | null;
+                            title: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminLeadController.complete_task": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                task_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Lead with tasks and history */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        events: {
+                            actor: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            at: string;
+                            data: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "created" | "enquired_again" | "stage_changed" | "owner_changed" | "note" | "contacted" | "task_added" | "task_done" | "message_sent" | "converted" | "marketing_opted_out" | "details_changed";
+                        }[];
+                        lead: {
+                            campaign: string | null;
+                            consent: {
+                                /** Format: date-time */
+                                contact_at: string | null;
+                                /** Format: date-time */
+                                marketing_at: string | null;
+                                /** Format: date-time */
+                                marketing_opted_out_at: string | null;
+                                text_version: string | null;
+                            };
+                            /** Format: date-time */
+                            converted_at: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            email: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            interests: string[];
+                            /** Format: date-time */
+                            last_contacted_at: string | null;
+                            locale: string | null;
+                            /** @enum {string|null} */
+                            lost_reason: "price" | "schedule" | "location" | "no_answer" | "chose_other" | "not_interested" | "other" | null;
+                            message: string | null;
+                            name: string;
+                            next_task: {
+                                assignee: {
+                                    avatar_url?: string | null;
+                                    display_name?: string | null;
+                                    handle?: string | null;
+                                    /** Format: uuid */
+                                    user_id: string;
+                                } | null;
+                                /** Format: date-time */
+                                done_at: string | null;
+                                /** Format: date-time */
+                                due_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                lead_id: string;
+                                lead_name?: string | null;
+                                title: string;
+                            } | null;
+                            owner: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            phone: string | null;
+                            /** @enum {string} */
+                            source: "website_form" | "form" | "join_link" | "manual" | "csv" | "walk_in" | "referral" | "event" | "around_me" | "trial" | "prospect_assistant";
+                            /** @enum {string} */
+                            stage: "new" | "trial" | "offer" | "converted" | "lost";
+                            /** Format: date-time */
+                            stage_changed_at: string;
+                        };
+                        tasks: {
+                            assignee: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            done_at: string | null;
+                            /** Format: date-time */
+                            due_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id: string;
+                            lead_name?: string | null;
+                            title: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminLeadController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Lead with tasks and history */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        events: {
+                            actor: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            at: string;
+                            data: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "created" | "enquired_again" | "stage_changed" | "owner_changed" | "note" | "contacted" | "task_added" | "task_done" | "message_sent" | "converted" | "marketing_opted_out" | "details_changed";
+                        }[];
+                        lead: {
+                            campaign: string | null;
+                            consent: {
+                                /** Format: date-time */
+                                contact_at: string | null;
+                                /** Format: date-time */
+                                marketing_at: string | null;
+                                /** Format: date-time */
+                                marketing_opted_out_at: string | null;
+                                text_version: string | null;
+                            };
+                            /** Format: date-time */
+                            converted_at: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            email: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            interests: string[];
+                            /** Format: date-time */
+                            last_contacted_at: string | null;
+                            locale: string | null;
+                            /** @enum {string|null} */
+                            lost_reason: "price" | "schedule" | "location" | "no_answer" | "chose_other" | "not_interested" | "other" | null;
+                            message: string | null;
+                            name: string;
+                            next_task: {
+                                assignee: {
+                                    avatar_url?: string | null;
+                                    display_name?: string | null;
+                                    handle?: string | null;
+                                    /** Format: uuid */
+                                    user_id: string;
+                                } | null;
+                                /** Format: date-time */
+                                done_at: string | null;
+                                /** Format: date-time */
+                                due_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                lead_id: string;
+                                lead_name?: string | null;
+                                title: string;
+                            } | null;
+                            owner: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            phone: string | null;
+                            /** @enum {string} */
+                            source: "website_form" | "form" | "join_link" | "manual" | "csv" | "walk_in" | "referral" | "event" | "around_me" | "trial" | "prospect_assistant";
+                            /** @enum {string} */
+                            stage: "new" | "trial" | "offer" | "converted" | "lost";
+                            /** Format: date-time */
+                            stage_changed_at: string;
+                        };
+                        tasks: {
+                            assignee: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            done_at: string | null;
+                            /** Format: date-time */
+                            due_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id: string;
+                            lead_name?: string | null;
+                            title: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminLeadController.delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Erased */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "PaleeWeb.AdminLeadController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    email?: string | null;
+                    interests?: string[];
+                    message?: string | null;
+                    name?: string;
+                    /** Format: uuid */
+                    owner_id?: string | null;
+                    phone?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Lead with tasks and history */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        events: {
+                            actor: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            at: string;
+                            data: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "created" | "enquired_again" | "stage_changed" | "owner_changed" | "note" | "contacted" | "task_added" | "task_done" | "message_sent" | "converted" | "marketing_opted_out" | "details_changed";
+                        }[];
+                        lead: {
+                            campaign: string | null;
+                            consent: {
+                                /** Format: date-time */
+                                contact_at: string | null;
+                                /** Format: date-time */
+                                marketing_at: string | null;
+                                /** Format: date-time */
+                                marketing_opted_out_at: string | null;
+                                text_version: string | null;
+                            };
+                            /** Format: date-time */
+                            converted_at: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            email: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            interests: string[];
+                            /** Format: date-time */
+                            last_contacted_at: string | null;
+                            locale: string | null;
+                            /** @enum {string|null} */
+                            lost_reason: "price" | "schedule" | "location" | "no_answer" | "chose_other" | "not_interested" | "other" | null;
+                            message: string | null;
+                            name: string;
+                            next_task: {
+                                assignee: {
+                                    avatar_url?: string | null;
+                                    display_name?: string | null;
+                                    handle?: string | null;
+                                    /** Format: uuid */
+                                    user_id: string;
+                                } | null;
+                                /** Format: date-time */
+                                done_at: string | null;
+                                /** Format: date-time */
+                                due_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                lead_id: string;
+                                lead_name?: string | null;
+                                title: string;
+                            } | null;
+                            owner: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            phone: string | null;
+                            /** @enum {string} */
+                            source: "website_form" | "form" | "join_link" | "manual" | "csv" | "walk_in" | "referral" | "event" | "around_me" | "trial" | "prospect_assistant";
+                            /** @enum {string} */
+                            stage: "new" | "trial" | "offer" | "converted" | "lost";
+                            /** Format: date-time */
+                            stage_changed_at: string;
+                        };
+                        tasks: {
+                            assignee: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            done_at: string | null;
+                            /** Format: date-time */
+                            due_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id: string;
+                            lead_name?: string | null;
+                            title: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminLeadController.contacted": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    channel?: "phone" | "email" | "message" | "in_person";
+                };
+            };
+        };
+        responses: {
+            /** @description Lead with tasks and history */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        events: {
+                            actor: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            at: string;
+                            data: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "created" | "enquired_again" | "stage_changed" | "owner_changed" | "note" | "contacted" | "task_added" | "task_done" | "message_sent" | "converted" | "marketing_opted_out" | "details_changed";
+                        }[];
+                        lead: {
+                            campaign: string | null;
+                            consent: {
+                                /** Format: date-time */
+                                contact_at: string | null;
+                                /** Format: date-time */
+                                marketing_at: string | null;
+                                /** Format: date-time */
+                                marketing_opted_out_at: string | null;
+                                text_version: string | null;
+                            };
+                            /** Format: date-time */
+                            converted_at: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            email: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            interests: string[];
+                            /** Format: date-time */
+                            last_contacted_at: string | null;
+                            locale: string | null;
+                            /** @enum {string|null} */
+                            lost_reason: "price" | "schedule" | "location" | "no_answer" | "chose_other" | "not_interested" | "other" | null;
+                            message: string | null;
+                            name: string;
+                            next_task: {
+                                assignee: {
+                                    avatar_url?: string | null;
+                                    display_name?: string | null;
+                                    handle?: string | null;
+                                    /** Format: uuid */
+                                    user_id: string;
+                                } | null;
+                                /** Format: date-time */
+                                done_at: string | null;
+                                /** Format: date-time */
+                                due_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                lead_id: string;
+                                lead_name?: string | null;
+                                title: string;
+                            } | null;
+                            owner: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            phone: string | null;
+                            /** @enum {string} */
+                            source: "website_form" | "form" | "join_link" | "manual" | "csv" | "walk_in" | "referral" | "event" | "around_me" | "trial" | "prospect_assistant";
+                            /** @enum {string} */
+                            stage: "new" | "trial" | "offer" | "converted" | "lost";
+                            /** Format: date-time */
+                            stage_changed_at: string;
+                        };
+                        tasks: {
+                            assignee: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            done_at: string | null;
+                            /** Format: date-time */
+                            due_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id: string;
+                            lead_name?: string | null;
+                            title: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminLeadController.convert": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    user_id: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Lead with tasks and history */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        events: {
+                            actor: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            at: string;
+                            data: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "created" | "enquired_again" | "stage_changed" | "owner_changed" | "note" | "contacted" | "task_added" | "task_done" | "message_sent" | "converted" | "marketing_opted_out" | "details_changed";
+                        }[];
+                        lead: {
+                            campaign: string | null;
+                            consent: {
+                                /** Format: date-time */
+                                contact_at: string | null;
+                                /** Format: date-time */
+                                marketing_at: string | null;
+                                /** Format: date-time */
+                                marketing_opted_out_at: string | null;
+                                text_version: string | null;
+                            };
+                            /** Format: date-time */
+                            converted_at: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            email: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            interests: string[];
+                            /** Format: date-time */
+                            last_contacted_at: string | null;
+                            locale: string | null;
+                            /** @enum {string|null} */
+                            lost_reason: "price" | "schedule" | "location" | "no_answer" | "chose_other" | "not_interested" | "other" | null;
+                            message: string | null;
+                            name: string;
+                            next_task: {
+                                assignee: {
+                                    avatar_url?: string | null;
+                                    display_name?: string | null;
+                                    handle?: string | null;
+                                    /** Format: uuid */
+                                    user_id: string;
+                                } | null;
+                                /** Format: date-time */
+                                done_at: string | null;
+                                /** Format: date-time */
+                                due_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                lead_id: string;
+                                lead_name?: string | null;
+                                title: string;
+                            } | null;
+                            owner: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            phone: string | null;
+                            /** @enum {string} */
+                            source: "website_form" | "form" | "join_link" | "manual" | "csv" | "walk_in" | "referral" | "event" | "around_me" | "trial" | "prospect_assistant";
+                            /** @enum {string} */
+                            stage: "new" | "trial" | "offer" | "converted" | "lost";
+                            /** Format: date-time */
+                            stage_changed_at: string;
+                        };
+                        tasks: {
+                            assignee: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            done_at: string | null;
+                            /** Format: date-time */
+                            due_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id: string;
+                            lead_name?: string | null;
+                            title: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminLeadController.move": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    lost_reason?: "price" | "schedule" | "location" | "no_answer" | "chose_other" | "not_interested" | "other";
+                    /** @enum {string} */
+                    stage: "new" | "trial" | "offer" | "lost";
+                };
+            };
+        };
+        responses: {
+            /** @description Lead with tasks and history */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        events: {
+                            actor: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            at: string;
+                            data: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "created" | "enquired_again" | "stage_changed" | "owner_changed" | "note" | "contacted" | "task_added" | "task_done" | "message_sent" | "converted" | "marketing_opted_out" | "details_changed";
+                        }[];
+                        lead: {
+                            campaign: string | null;
+                            consent: {
+                                /** Format: date-time */
+                                contact_at: string | null;
+                                /** Format: date-time */
+                                marketing_at: string | null;
+                                /** Format: date-time */
+                                marketing_opted_out_at: string | null;
+                                text_version: string | null;
+                            };
+                            /** Format: date-time */
+                            converted_at: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            email: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            interests: string[];
+                            /** Format: date-time */
+                            last_contacted_at: string | null;
+                            locale: string | null;
+                            /** @enum {string|null} */
+                            lost_reason: "price" | "schedule" | "location" | "no_answer" | "chose_other" | "not_interested" | "other" | null;
+                            message: string | null;
+                            name: string;
+                            next_task: {
+                                assignee: {
+                                    avatar_url?: string | null;
+                                    display_name?: string | null;
+                                    handle?: string | null;
+                                    /** Format: uuid */
+                                    user_id: string;
+                                } | null;
+                                /** Format: date-time */
+                                done_at: string | null;
+                                /** Format: date-time */
+                                due_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                lead_id: string;
+                                lead_name?: string | null;
+                                title: string;
+                            } | null;
+                            owner: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            phone: string | null;
+                            /** @enum {string} */
+                            source: "website_form" | "form" | "join_link" | "manual" | "csv" | "walk_in" | "referral" | "event" | "around_me" | "trial" | "prospect_assistant";
+                            /** @enum {string} */
+                            stage: "new" | "trial" | "offer" | "converted" | "lost";
+                            /** Format: date-time */
+                            stage_changed_at: string;
+                        };
+                        tasks: {
+                            assignee: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            done_at: string | null;
+                            /** Format: date-time */
+                            due_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id: string;
+                            lead_name?: string | null;
+                            title: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminLeadController.note": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    text: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Lead with tasks and history */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        events: {
+                            actor: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            at: string;
+                            data: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "created" | "enquired_again" | "stage_changed" | "owner_changed" | "note" | "contacted" | "task_added" | "task_done" | "message_sent" | "converted" | "marketing_opted_out" | "details_changed";
+                        }[];
+                        lead: {
+                            campaign: string | null;
+                            consent: {
+                                /** Format: date-time */
+                                contact_at: string | null;
+                                /** Format: date-time */
+                                marketing_at: string | null;
+                                /** Format: date-time */
+                                marketing_opted_out_at: string | null;
+                                text_version: string | null;
+                            };
+                            /** Format: date-time */
+                            converted_at: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            email: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            interests: string[];
+                            /** Format: date-time */
+                            last_contacted_at: string | null;
+                            locale: string | null;
+                            /** @enum {string|null} */
+                            lost_reason: "price" | "schedule" | "location" | "no_answer" | "chose_other" | "not_interested" | "other" | null;
+                            message: string | null;
+                            name: string;
+                            next_task: {
+                                assignee: {
+                                    avatar_url?: string | null;
+                                    display_name?: string | null;
+                                    handle?: string | null;
+                                    /** Format: uuid */
+                                    user_id: string;
+                                } | null;
+                                /** Format: date-time */
+                                done_at: string | null;
+                                /** Format: date-time */
+                                due_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                lead_id: string;
+                                lead_name?: string | null;
+                                title: string;
+                            } | null;
+                            owner: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            phone: string | null;
+                            /** @enum {string} */
+                            source: "website_form" | "form" | "join_link" | "manual" | "csv" | "walk_in" | "referral" | "event" | "around_me" | "trial" | "prospect_assistant";
+                            /** @enum {string} */
+                            stage: "new" | "trial" | "offer" | "converted" | "lost";
+                            /** Format: date-time */
+                            stage_changed_at: string;
+                        };
+                        tasks: {
+                            assignee: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            done_at: string | null;
+                            /** Format: date-time */
+                            due_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id: string;
+                            lead_name?: string | null;
+                            title: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminLeadController.opt_out": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Lead with tasks and history */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        events: {
+                            actor: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            at: string;
+                            data: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "created" | "enquired_again" | "stage_changed" | "owner_changed" | "note" | "contacted" | "task_added" | "task_done" | "message_sent" | "converted" | "marketing_opted_out" | "details_changed";
+                        }[];
+                        lead: {
+                            campaign: string | null;
+                            consent: {
+                                /** Format: date-time */
+                                contact_at: string | null;
+                                /** Format: date-time */
+                                marketing_at: string | null;
+                                /** Format: date-time */
+                                marketing_opted_out_at: string | null;
+                                text_version: string | null;
+                            };
+                            /** Format: date-time */
+                            converted_at: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            email: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            interests: string[];
+                            /** Format: date-time */
+                            last_contacted_at: string | null;
+                            locale: string | null;
+                            /** @enum {string|null} */
+                            lost_reason: "price" | "schedule" | "location" | "no_answer" | "chose_other" | "not_interested" | "other" | null;
+                            message: string | null;
+                            name: string;
+                            next_task: {
+                                assignee: {
+                                    avatar_url?: string | null;
+                                    display_name?: string | null;
+                                    handle?: string | null;
+                                    /** Format: uuid */
+                                    user_id: string;
+                                } | null;
+                                /** Format: date-time */
+                                done_at: string | null;
+                                /** Format: date-time */
+                                due_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                lead_id: string;
+                                lead_name?: string | null;
+                                title: string;
+                            } | null;
+                            owner: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            phone: string | null;
+                            /** @enum {string} */
+                            source: "website_form" | "form" | "join_link" | "manual" | "csv" | "walk_in" | "referral" | "event" | "around_me" | "trial" | "prospect_assistant";
+                            /** @enum {string} */
+                            stage: "new" | "trial" | "offer" | "converted" | "lost";
+                            /** Format: date-time */
+                            stage_changed_at: string;
+                        };
+                        tasks: {
+                            assignee: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            done_at: string | null;
+                            /** Format: date-time */
+                            due_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id: string;
+                            lead_name?: string | null;
+                            title: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminLeadController.add_task": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    assignee_id?: string;
+                    /** Format: date-time */
+                    due_at: string;
+                    title: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Lead with tasks and history */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        events: {
+                            actor: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            at: string;
+                            data: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "created" | "enquired_again" | "stage_changed" | "owner_changed" | "note" | "contacted" | "task_added" | "task_done" | "message_sent" | "converted" | "marketing_opted_out" | "details_changed";
+                        }[];
+                        lead: {
+                            campaign: string | null;
+                            consent: {
+                                /** Format: date-time */
+                                contact_at: string | null;
+                                /** Format: date-time */
+                                marketing_at: string | null;
+                                /** Format: date-time */
+                                marketing_opted_out_at: string | null;
+                                text_version: string | null;
+                            };
+                            /** Format: date-time */
+                            converted_at: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            email: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            interests: string[];
+                            /** Format: date-time */
+                            last_contacted_at: string | null;
+                            locale: string | null;
+                            /** @enum {string|null} */
+                            lost_reason: "price" | "schedule" | "location" | "no_answer" | "chose_other" | "not_interested" | "other" | null;
+                            message: string | null;
+                            name: string;
+                            next_task: {
+                                assignee: {
+                                    avatar_url?: string | null;
+                                    display_name?: string | null;
+                                    handle?: string | null;
+                                    /** Format: uuid */
+                                    user_id: string;
+                                } | null;
+                                /** Format: date-time */
+                                done_at: string | null;
+                                /** Format: date-time */
+                                due_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                lead_id: string;
+                                lead_name?: string | null;
+                                title: string;
+                            } | null;
+                            owner: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            phone: string | null;
+                            /** @enum {string} */
+                            source: "website_form" | "form" | "join_link" | "manual" | "csv" | "walk_in" | "referral" | "event" | "around_me" | "trial" | "prospect_assistant";
+                            /** @enum {string} */
+                            stage: "new" | "trial" | "offer" | "converted" | "lost";
+                            /** Format: date-time */
+                            stage_changed_at: string;
+                        };
+                        tasks: {
+                            assignee: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            done_at: string | null;
+                            /** Format: date-time */
+                            due_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id: string;
+                            lead_name?: string | null;
+                            title: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminFacilityController.index_locations": {
         parameters: {
             query?: never;
@@ -88664,6 +90775,282 @@ export interface operations {
                 content: {
                     "application/json": {
                         [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminMemberRiskController.index": {
+        parameters: {
+            query?: {
+                level?: "high" | "medium" | "all";
+                include_snoozed?: boolean;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Members at risk */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: date-time */
+                        computed_at: string | null;
+                        counts: {
+                            [key: string]: number;
+                        };
+                        members: {
+                            /** Format: date-time */
+                            computed_at: string;
+                            /** Format: date-time */
+                            contacted_at: string | null;
+                            contacted_by: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** @enum {string} */
+                            level: "low" | "medium" | "high";
+                            /** Format: date-time */
+                            level_since: string;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            reasons: {
+                                /** @enum {string} */
+                                code: "attendance_drop" | "absent" | "no_first_visit" | "no_upcoming_bookings" | "package_ending" | "payment_overdue" | "many_cancellations" | "new_member_slow_start";
+                                facts: {
+                                    [key: string]: unknown;
+                                };
+                                points: number;
+                            }[];
+                            score: number;
+                            /** Format: date */
+                            snoozed_until: string | null;
+                            /** @enum {string} */
+                            suggested_action: "personal_message" | "renewal_offer" | "payment_follow_up" | "check_in_call" | "none";
+                            /** Format: uuid */
+                            user_id: string;
+                            /** Format: date-time */
+                            win_back_queued_at: string | null;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminMemberRiskController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Member at risk */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        member: {
+                            /** Format: date-time */
+                            computed_at: string;
+                            /** Format: date-time */
+                            contacted_at: string | null;
+                            contacted_by: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** @enum {string} */
+                            level: "low" | "medium" | "high";
+                            /** Format: date-time */
+                            level_since: string;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            reasons: {
+                                /** @enum {string} */
+                                code: "attendance_drop" | "absent" | "no_first_visit" | "no_upcoming_bookings" | "package_ending" | "payment_overdue" | "many_cancellations" | "new_member_slow_start";
+                                facts: {
+                                    [key: string]: unknown;
+                                };
+                                points: number;
+                            }[];
+                            score: number;
+                            /** Format: date */
+                            snoozed_until: string | null;
+                            /** @enum {string} */
+                            suggested_action: "personal_message" | "renewal_offer" | "payment_follow_up" | "check_in_call" | "none";
+                            /** Format: uuid */
+                            user_id: string;
+                            /** Format: date-time */
+                            win_back_queued_at: string | null;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminMemberRiskController.contacted": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    channel?: "phone" | "email" | "message" | "in_person";
+                };
+            };
+        };
+        responses: {
+            /** @description Member at risk */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        member: {
+                            /** Format: date-time */
+                            computed_at: string;
+                            /** Format: date-time */
+                            contacted_at: string | null;
+                            contacted_by: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** @enum {string} */
+                            level: "low" | "medium" | "high";
+                            /** Format: date-time */
+                            level_since: string;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            reasons: {
+                                /** @enum {string} */
+                                code: "attendance_drop" | "absent" | "no_first_visit" | "no_upcoming_bookings" | "package_ending" | "payment_overdue" | "many_cancellations" | "new_member_slow_start";
+                                facts: {
+                                    [key: string]: unknown;
+                                };
+                                points: number;
+                            }[];
+                            score: number;
+                            /** Format: date */
+                            snoozed_until: string | null;
+                            /** @enum {string} */
+                            suggested_action: "personal_message" | "renewal_offer" | "payment_follow_up" | "check_in_call" | "none";
+                            /** Format: uuid */
+                            user_id: string;
+                            /** Format: date-time */
+                            win_back_queued_at: string | null;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminMemberRiskController.snooze": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    days: number;
+                };
+            };
+        };
+        responses: {
+            /** @description Member at risk */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        member: {
+                            /** Format: date-time */
+                            computed_at: string;
+                            /** Format: date-time */
+                            contacted_at: string | null;
+                            contacted_by: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** @enum {string} */
+                            level: "low" | "medium" | "high";
+                            /** Format: date-time */
+                            level_since: string;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            reasons: {
+                                /** @enum {string} */
+                                code: "attendance_drop" | "absent" | "no_first_visit" | "no_upcoming_bookings" | "package_ending" | "payment_overdue" | "many_cancellations" | "new_member_slow_start";
+                                facts: {
+                                    [key: string]: unknown;
+                                };
+                                points: number;
+                            }[];
+                            score: number;
+                            /** Format: date */
+                            snoozed_until: string | null;
+                            /** @enum {string} */
+                            suggested_action: "personal_message" | "renewal_offer" | "payment_follow_up" | "check_in_call" | "none";
+                            /** Format: uuid */
+                            user_id: string;
+                            /** Format: date-time */
+                            win_back_queued_at: string | null;
+                        };
                     };
                 };
             };
@@ -110045,6 +112432,80 @@ export interface operations {
                 content: {
                     "application/json": {
                         [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyAutomationPreferencesController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Preferences */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        birthday: {
+                            day: number;
+                            month: number;
+                        } | null;
+                        opted_out: boolean;
+                        opted_out_recipes: string[];
+                        recipes: {
+                            key: string;
+                            purpose: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyAutomationPreferencesController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Day and month only, never the year; null stops sharing it */
+                    birthday?: {
+                        day: number;
+                        month: number;
+                    } | null;
+                    opted_out?: boolean;
+                    opted_out_recipes?: ("welcome" | "trial_follow_up" | "missed_classes" | "renewal_reminder" | "birthday" | "win_back")[];
+                };
+            };
+        };
+        responses: {
+            /** @description Preferences */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        birthday: {
+                            day: number;
+                            month: number;
+                        } | null;
+                        opted_out: boolean;
+                        opted_out_recipes: string[];
+                        recipes: {
+                            key: string;
+                            purpose: string;
+                        }[];
                     };
                 };
             };
@@ -134577,6 +137038,68 @@ export interface operations {
                 };
             };
             /** @description No published box with this slug */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicLeadController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    campaign?: string;
+                    /** @description ADR-345: the consent the person gave on the form. `contact` is required; `marketing` is the separate yes to marketing messages */
+                    consent: {
+                        contact: boolean;
+                        marketing?: boolean;
+                        text_hash?: string;
+                        text_version?: string;
+                    };
+                    email?: string;
+                    /** @description When the form opened (ISO 8601 or unix seconds), for the spam check */
+                    form_started_at?: string;
+                    interests?: string[];
+                    /** @enum {string} */
+                    kind?: "trial" | "contact";
+                    locale?: string;
+                    message?: string;
+                    name: string;
+                    phone?: string;
+                    preferred_time?: string;
+                    /** @enum {string} */
+                    source?: "form" | "join_link";
+                    /** @description Spam trap: a hidden field people never fill. Leave empty. */
+                    website?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Received */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        status: "received";
+                    };
+                };
+            };
+            /** @description No box with this slug */
             404: {
                 headers: {
                     [name: string]: unknown;

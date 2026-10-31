@@ -171,6 +171,15 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
     }
   end
 
+  # ADR-346: the recipe's text, already written in the reader's language.
+  def build("box_automation", payload, localize) do
+    %{
+      title: payload["title"] || localize.("Message from the box", %{}),
+      body: payload["body"] || localize.("Your box sent you a message.", %{}),
+      url: payload["url"] || "/"
+    }
+  end
+
   def build("follow_requested", payload, localize) do
     %{
       title: localize.("Follow request", %{}),

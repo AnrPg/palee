@@ -101,6 +101,11 @@ defmodule PaleeWeb.Router do
   end
 
   # ADR-156: invite pages; 32^8 codes behind a tight budget make guessing moot.
+  # ADR-345: the public «Ενδιαφέρομαι» form; a person sends one or two.
+  pipeline :public_lead_rate_limited do
+    plug(PaleeWeb.Plugs.RateLimit, max: 5, interval: 600_000, bucket: "public-lead")
+  end
+
   pipeline :public_referral_rate_limited do
     plug(PaleeWeb.Plugs.RateLimit, max: 120, interval: 60_000, bucket: "public-referral")
   end
@@ -334,6 +339,13 @@ defmodule PaleeWeb.Router do
     get("/:slug", PublicBoxController, :show)
     # ADR-248: the packages a box sells online.
     get("/:slug/packages", PublicBoxController, :packages)
+  end
+
+  # ADR-345: an enquiry from the box's form or a join link (no account).
+  scope "/api/public/boxes", PaleeWeb do
+    pipe_through([:api, :public_lead_rate_limited])
+
+    post("/:slug/leads", PublicLeadController, :create)
   end
 
   # ADR-272: a walk-in's receipt behind the QR on the staff phone.
@@ -590,6 +602,9 @@ defmodule PaleeWeb.Router do
     ])
 
     get("/finance", MyFinanceController, :index)
+    # ADR-346: my choices about the box's automatic messages.
+    get("/automatic-messages", MyAutomationPreferencesController, :show)
+    put("/automatic-messages", MyAutomationPreferencesController, :update)
     # ADR-246/247: paying invoices online and saved cards.
     get("/invoices/:id/payment-terms", MyPaymentsController, :terms)
     post("/invoices/:id/pay", MyPaymentsController, :pay)
@@ -1079,6 +1094,42 @@ defmodule PaleeWeb.Router do
     post("/appointment-slots/:id/bookings", AppointmentsController, :book_for_client)
     post("/appointments/:id/attendance", AppointmentsController, :attendance)
     post("/appointments/:id/cancel", AppointmentsController, :cancel)
+  end
+
+  # ADR-344..347: leads, automations from ready recipes, members at risk.
+  scope "/api/org/:organization_slug/admin", PaleeWeb do
+    pipe_through([
+      :api,
+      :authenticated,
+      :authenticated_rate_limited,
+      :admin_only,
+      :tenant_write_rate_limited
+    ])
+
+    get("/leads", AdminLeadController, :index)
+    post("/leads", AdminLeadController, :create)
+    get("/leads/tasks", AdminLeadController, :tasks)
+    post("/leads/import", AdminLeadController, :import)
+    post("/leads/tasks/:task_id/done", AdminLeadController, :complete_task)
+    get("/leads/:id", AdminLeadController, :show)
+    patch("/leads/:id", AdminLeadController, :update)
+    delete("/leads/:id", AdminLeadController, :delete)
+    post("/leads/:id/move", AdminLeadController, :move)
+    post("/leads/:id/notes", AdminLeadController, :note)
+    post("/leads/:id/contacted", AdminLeadController, :contacted)
+    post("/leads/:id/tasks", AdminLeadController, :add_task)
+    post("/leads/:id/convert", AdminLeadController, :convert)
+    post("/leads/:id/opt-out", AdminLeadController, :opt_out)
+
+    get("/automations", AdminAutomationController, :index)
+    get("/automations/messages", AdminAutomationController, :deliveries)
+    patch("/automations/:recipe", AdminAutomationController, :update)
+    post("/automations/:recipe/preview", AdminAutomationController, :preview)
+
+    get("/members-at-risk", AdminMemberRiskController, :index)
+    get("/members-at-risk/:user_id", AdminMemberRiskController, :show)
+    post("/members-at-risk/:user_id/contacted", AdminMemberRiskController, :contacted)
+    post("/members-at-risk/:user_id/snooze", AdminMemberRiskController, :snooze)
   end
 
   # ADR-253: box screens, their pairing codes and overrides.

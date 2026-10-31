@@ -266,6 +266,19 @@ defmodule Palee.Notifications do
     do: enqueue_message_to_member(:coaching_message, payload)
 
   def process_event("box_message", payload), do: enqueue_message_to_member(:box_message, payload)
+
+  # ADR-346: a box's automatic message (welcome, birthday...) in the bell.
+  def process_event("box_automation", payload),
+    do:
+      deliver_notification(field(payload, :user_id), :box_automation, %{
+        organization_id: field(payload, :organization_id),
+        title: field(payload, :title),
+        body: field(payload, :body),
+        url: field(payload, :url) || "/",
+        recipe: field(payload, :recipe),
+        dedupe_key: field(payload, :dedupe_key)
+      })
+
   def process_event("challenge_completed", payload), do: enqueue_challenge_completed(payload)
 
   # ADR-142: follows of people.

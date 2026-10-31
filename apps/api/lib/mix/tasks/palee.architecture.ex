@@ -129,6 +129,11 @@ defmodule Mix.Tasks.Palee.Architecture do
     fiscal/till_signature_store
     payments/payment_store
     finance/package_request_store
+    leads/lead_store
+    automations/automation_store
+    automations/audience_reader
+    retention/risk_store
+    retention/signal_reader
     box_screens/box_screen_store
     documents/document_store
     setup/recipe_application_store
