@@ -127,3 +127,8 @@ config :palee, :payments_http, req_options: [plug: {Req.Test, Palee.PaymentsHttp
 config :palee, :fiscal_http, req_options: [plug: {Req.Test, Palee.FiscalHttp}]
 # ADR-273: myDATA (saving a test or production connection checks it) too.
 config :palee, :mydata, req_options: [plug: {Req.Test, Palee.FiscalHttp}, retry: false]
+
+# ADR-376: barcode lookups never leave the test run; the Open Food Facts
+# adapter's own tests use a Req.Test plug.
+config :palee, :food_database, Palee.Infrastructure.Nutrition.SandboxFoodDatabase
+config :palee, :open_food_facts, req_options: [plug: {Req.Test, Palee.OpenFoodFacts}]

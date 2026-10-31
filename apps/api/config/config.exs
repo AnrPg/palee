@@ -418,6 +418,21 @@ config :palee,
        :execution_store,
        Palee.Infrastructure.Execution.EctoExecutionStore
 
+# ADR-374..377 (v3.2 W9, body and devices): splits, watches, foods, ranks.
+config :palee, :application_clock, Palee.Infrastructure.Clock.SystemClock
+config :palee, :execution_split_store, Palee.Infrastructure.Execution.EctoSplitStore
+config :palee, :watch_store, Palee.Infrastructure.Devices.EctoWatchStore
+config :palee, :food_store, Palee.Infrastructure.Nutrition.EctoFoodStore
+config :palee, :food_database, Palee.Infrastructure.Nutrition.OpenFoodFactsClient
+
+config :palee, :open_food_facts,
+  base_url: "https://world.openfoodfacts.org",
+  user_agent: "Palee/3.2 (https://palee.app; support@palee.app)",
+  receive_timeout: 4_000,
+  req_options: []
+
+config :palee, :rank_store, Palee.Infrastructure.Ranks.EctoRankStore
+
 config :palee,
        :class_timer_store,
        Palee.Infrastructure.Execution.EctoClassTimerStore

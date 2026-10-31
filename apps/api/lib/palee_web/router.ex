@@ -2390,6 +2390,16 @@ defmodule PaleeWeb.Router do
     delete("/devices/phone/:provider", PhoneHealthController, :disconnect)
     post("/device-imports/:id/confirm", DevicesController, :confirm)
     get("/daily-stats", DevicesController, :daily_stats)
+    # ADR-375: paired watches (Apple Watch, Wear OS).
+    get("/devices/watches", WatchController, :index)
+    put("/devices/watches/:platform", WatchController, :pair)
+    delete("/devices/watches/:platform", WatchController, :unpair)
+    # ADR-376: barcode lookups and the person's own foods.
+    get("/foods/barcode/:barcode", FoodsController, :barcode)
+    get("/foods", FoodsController, :index)
+    post("/foods", FoodsController, :create)
+    patch("/foods/:id", FoodsController, :update)
+    delete("/foods/:id", FoodsController, :delete)
   end
 
   # ADR-154: Γύρω μου, «Η περιοχή μου» and the gazetteer; members only.
@@ -2449,6 +2459,12 @@ defmodule PaleeWeb.Router do
     get("/:id", ExecutionController, :show)
     patch("/:id/progress", ExecutionController, :update_progress)
     patch("/:id/complete", ExecutionController, :complete)
+    # ADR-374: race your past self; ADR-375: the watch's plan and heart rate.
+    get("/:id/pacer", ExecutionPacerController, :show)
+    post("/:id/splits", ExecutionPacerController, :splits)
+    get("/:id/watch-plan", WatchController, :plan)
+    post("/:id/heart-rate", WatchController, :heart_rate)
+    get("/:id/heart-rate", WatchController, :heart_rate_summary)
   end
 
   # ADR-123: batched client interaction analytics get their own bucket so a

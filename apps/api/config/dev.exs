@@ -88,3 +88,9 @@ config :palee, :payments_sandbox, true
 
 # ADR-280 verification: the SMS code is logged (number masked), not sent.
 config :palee, :sms_sender, Palee.Infrastructure.Sms.LogSmsSender
+
+# ADR-376: dev looks barcodes up in the sandbox catalogue; set
+# FOOD_DATABASE=open_food_facts to ask the real one.
+if System.get_env("FOOD_DATABASE") != "open_food_facts" do
+  config :palee, :food_database, Palee.Infrastructure.Nutrition.SandboxFoodDatabase
+end
