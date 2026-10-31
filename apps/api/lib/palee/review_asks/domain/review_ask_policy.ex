@@ -93,9 +93,10 @@ defmodule Palee.ReviewAsks.Domain.ReviewAskPolicy do
         {changes, errors}
 
       {:ok, list} when is_list(list) ->
-        if list != [] and length(list) <= 6 and Enum.all?(list, &(is_integer(&1) and &1 in 3..1000)),
-          do: {Map.put(changes, :milestones, list |> Enum.uniq() |> Enum.sort()), errors},
-          else: {changes, Map.put(errors, :milestones, "invalid")}
+        if list != [] and length(list) <= 6 and
+             Enum.all?(list, &(is_integer(&1) and &1 in 3..1000)),
+           do: {Map.put(changes, :milestones, list |> Enum.uniq() |> Enum.sort()), errors},
+           else: {changes, Map.put(errors, :milestones, "invalid")}
 
       {:ok, _other} ->
         {changes, Map.put(errors, :milestones, "invalid")}

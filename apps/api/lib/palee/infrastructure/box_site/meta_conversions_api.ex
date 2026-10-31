@@ -23,7 +23,9 @@ defmodule Palee.Infrastructure.BoxSite.MetaConversionsApi do
     |> Keyword.merge(Keyword.get(config, :req_options, []))
     |> Req.request()
     |> case do
-      {:ok, %Req.Response{status: status}} when status in 200..299 -> :ok
+      {:ok, %Req.Response{status: status}} when status in 200..299 ->
+        :ok
+
       {:ok, %Req.Response{status: status}} when status == 429 or status >= 500 ->
         {:error, {:transient, {:http, status}}}
 

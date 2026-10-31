@@ -300,7 +300,8 @@ defmodule PaleeWeb.Schemas.BoxSite do
         },
         timetable: %Schema{
           type: :array,
-          description: "The next 7 days' classes when the owner shows the timetable (no spots or people)",
+          description:
+            "The next 7 days' classes when the owner shows the timetable (no spots or people)",
           items: %Schema{
             title: "SiteTimetableClass",
             type: :object,

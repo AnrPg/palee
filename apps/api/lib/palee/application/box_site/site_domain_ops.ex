@@ -12,7 +12,8 @@ defmodule Palee.Application.BoxSite.SiteDomainOps do
     status = status || "pending_tls"
 
     if status in BoxSite.domain_statuses(),
-      do: {:ok, %{domains: BoxSite.domains_for_ops(status), cname_target: BoxSite.cname_target()}},
+      do:
+        {:ok, %{domains: BoxSite.domains_for_ops(status), cname_target: BoxSite.cname_target()}},
       else: {:error, :invalid_site_domain_status}
   end
 end

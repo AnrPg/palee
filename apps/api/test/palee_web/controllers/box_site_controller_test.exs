@@ -85,7 +85,10 @@ defmodule PaleeWeb.BoxSiteControllerTest do
     refute Map.has_key?(settings, "conversions_api_token")
 
     assert %{"code" => "settings_changed_meanwhile"} =
-             ctx |> owner_conn() |> put(ctx.admin, %{lock_version: 0, forms_enabled: false}) |> json_response(409)
+             ctx
+             |> owner_conn()
+             |> put(ctx.admin, %{lock_version: 0, forms_enabled: false})
+             |> json_response(409)
 
     site = build_conn() |> get(ctx.public) |> json_response(200)
 
@@ -99,11 +102,17 @@ defmodule PaleeWeb.BoxSiteControllerTest do
     refute inspect(site) =~ token
 
     assert %{"errors" => _} =
-             ctx |> owner_conn() |> put(ctx.admin, %{lock_version: 1, gtm_container_id: "nope"}) |> json_response(422)
+             ctx
+             |> owner_conn()
+             |> put(ctx.admin, %{lock_version: 1, gtm_container_id: "nope"})
+             |> json_response(422)
 
     # Members cannot change the site.
     build_conn() |> put_bearer_token(ctx.member) |> get(ctx.admin) |> json_response(403)
-    build_conn() |> get("/api/public/sites/nobody-#{System.unique_integer([:positive])}") |> json_response(404)
+
+    build_conn()
+    |> get("/api/public/sites/nobody-#{System.unique_integer([:positive])}")
+    |> json_response(404)
   end
 
   test "a visitor consents, sends the trial form and it becomes a lead", ctx do
@@ -123,12 +132,20 @@ defmodule PaleeWeb.BoxSiteControllerTest do
 
     assert %{"allowed_tags" => ["meta_pixel_id"], "marketing" => true} =
              visitor()
-             |> post("#{ctx.public}/consents", %{visitor_id: visitor, banner_version: 2, action: "accept_all"})
+             |> post("#{ctx.public}/consents", %{
+               visitor_id: visitor,
+               banner_version: 2,
+               action: "accept_all"
+             })
              |> json_response(201)
 
     assert %{"errors" => _} =
              visitor()
-             |> post("#{ctx.public}/consents", %{visitor_id: visitor, banner_version: 1, action: "accept_all"})
+             |> post("#{ctx.public}/consents", %{
+               visitor_id: visitor,
+               banner_version: 1,
+               action: "accept_all"
+             })
              |> json_response(422)
 
     assert %{"status" => "received"} =
@@ -146,11 +163,18 @@ defmodule PaleeWeb.BoxSiteControllerTest do
     # A bot's post looks accepted and is dropped.
     assert %{"status" => "received"} =
              visitor()
-             |> post("#{ctx.public}/forms/contact", %{name: "x", email: "x@y.zz", privacy_ack: true, website: "http://spam"})
+             |> post("#{ctx.public}/forms/contact", %{
+               name: "x",
+               email: "x@y.zz",
+               privacy_ack: true,
+               website: "http://spam"
+             })
              |> json_response(202)
 
     assert %{"errors" => _} =
-             visitor() |> post("#{ctx.public}/forms/contact", %{name: "Νίκος", privacy_ack: false}) |> json_response(422)
+             visitor()
+             |> post("#{ctx.public}/forms/contact", %{name: "Νίκος", privacy_ack: false})
+             |> json_response(422)
 
     # Without background jobs the outbox ran inline: delivered and redacted.
     rows =
@@ -164,28 +188,49 @@ defmodule PaleeWeb.BoxSiteControllerTest do
     assert [["delivered", nil, nil, lead_id, "sent", nil]] = rows
     assert is_binary(lead_id)
 
-    assert %{"submissions" => %{"total" => 1, "delivered" => 1}, "consents" => %{"accept_all" => 1}} =
+    assert %{
+             "submissions" => %{"total" => 1, "delivered" => 1},
+             "consents" => %{"accept_all" => 1}
+           } =
              ctx |> owner_conn() |> get("#{ctx.admin}/summary") |> json_response(200)
   end
 
   test "forms can be closed and a lead the leads side rejects fails", ctx do
-    ctx |> owner_conn() |> put(ctx.admin, %{lock_version: 0, forms_enabled: false}) |> json_response(200)
+    ctx
+    |> owner_conn()
+    |> put(ctx.admin, %{lock_version: 0, forms_enabled: false})
+    |> json_response(200)
 
     assert %{"code" => "site_forms_closed"} =
              visitor()
-             |> post("#{ctx.public}/forms/trial", %{name: "Μαρία", email: "m@example.gr", privacy_ack: true})
+             |> post("#{ctx.public}/forms/trial", %{
+               name: "Μαρία",
+               email: "m@example.gr",
+               privacy_ack: true
+             })
              |> json_response(409)
 
     refute "trial_form" in (build_conn() |> get(ctx.public) |> json_response(200))["sections"]
 
-    ctx |> owner_conn() |> put(ctx.admin, %{lock_version: 1, forms_enabled: true}) |> json_response(200)
+    ctx
+    |> owner_conn()
+    |> put(ctx.admin, %{lock_version: 1, forms_enabled: true})
+    |> json_response(200)
 
     visitor()
-    |> post("#{ctx.public}/forms/trial", %{name: "reject me", email: "m@example.gr", privacy_ack: true})
+    |> post("#{ctx.public}/forms/trial", %{
+      name: "reject me",
+      email: "m@example.gr",
+      privacy_ack: true
+    })
     |> json_response(202)
 
     visitor()
-    |> post("#{ctx.public}/forms/trial", %{name: "retry me", email: "r@example.gr", privacy_ack: true})
+    |> post("#{ctx.public}/forms/trial", %{
+      name: "retry me",
+      email: "r@example.gr",
+      privacy_ack: true
+    })
     |> json_response(202)
 
     statuses =
@@ -201,7 +246,10 @@ defmodule PaleeWeb.BoxSiteControllerTest do
 
   test "a custom domain: DNS proof, routing, TLS, host lookup and ops list", ctx do
     assert %{"code" => "platform_hostname"} =
-             ctx |> owner_conn() |> post("#{ctx.admin}/domains", %{host: "box.palee.app"}) |> json_response(422)
+             ctx
+             |> owner_conn()
+             |> post("#{ctx.admin}/domains", %{host: "box.palee.app"})
+             |> json_response(422)
 
     host = "www.site#{System.unique_integer([:positive])}.test"
 
@@ -212,11 +260,23 @@ defmodule PaleeWeb.BoxSiteControllerTest do
       |> json_response(201)
       |> Map.fetch!("domain")
 
-    assert %{"host" => ^host, "status" => "pending_dns", "primary" => true, "last_error" => "dns_txt_missing"} = domain
-    assert [%{"type" => "TXT", "value" => txt}, %{"type" => "CNAME", "value" => "sites.palee.app"}] = domain["dns_records"]
+    assert %{
+             "host" => ^host,
+             "status" => "pending_dns",
+             "primary" => true,
+             "last_error" => "dns_txt_missing"
+           } = domain
+
+    assert [
+             %{"type" => "TXT", "value" => txt},
+             %{"type" => "CNAME", "value" => "sites.palee.app"}
+           ] = domain["dns_records"]
 
     assert %{"code" => "host_taken"} =
-             ctx |> owner_conn() |> post("#{ctx.admin}/domains", %{host: host}) |> json_response(409)
+             ctx
+             |> owner_conn()
+             |> post("#{ctx.admin}/domains", %{host: host})
+             |> json_response(409)
 
     Application.put_env(:palee, :box_site_sandbox_dns, %{
       {"_palee-challenge." <> host, :txt} => [txt],
@@ -224,10 +284,15 @@ defmodule PaleeWeb.BoxSiteControllerTest do
     })
 
     assert %{"domain" => %{"status" => "pending_tls", "last_error" => "tls_not_ready"}} =
-             ctx |> owner_conn() |> post("#{ctx.admin}/domains/#{domain["id"]}/check") |> json_response(200)
+             ctx
+             |> owner_conn()
+             |> post("#{ctx.admin}/domains/#{domain["id"]}/check")
+             |> json_response(200)
 
     assert %{"allowed" => true} =
-             build_conn() |> get("/api/public/sites/tls-allowed?domain=#{host}") |> json_response(200)
+             build_conn()
+             |> get("/api/public/sites/tls-allowed?domain=#{host}")
+             |> json_response(200)
 
     build_conn() |> get("/api/public/sites/tls-allowed?domain=unknown.test") |> json_response(404)
 
@@ -241,37 +306,56 @@ defmodule PaleeWeb.BoxSiteControllerTest do
     Application.put_env(:palee, :box_site_sandbox_tls_ready, [host])
 
     assert %{"domain" => %{"status" => "active", "last_error" => nil}} =
-             ctx |> owner_conn() |> post("#{ctx.admin}/domains/#{domain["id"]}/check") |> json_response(200)
+             ctx
+             |> owner_conn()
+             |> post("#{ctx.admin}/domains/#{domain["id"]}/check")
+             |> json_response(200)
 
     assert %{"slug" => slug, "primary_host" => ^host} =
              build_conn() |> get("/api/public/sites/by-host/#{host}") |> json_response(200)
 
     assert slug == ctx.organization.slug
-    assert (build_conn() |> get(ctx.public) |> json_response(200))["canonical_url"] == "https://" <> host
+
+    assert (build_conn() |> get(ctx.public) |> json_response(200))["canonical_url"] ==
+             "https://" <> host
 
     # DNS gone: the cron job marks it broken; the lookup keeps serving.
     Application.put_env(:palee, :box_site_sandbox_dns, %{})
 
     bypass_rls(fn ->
-      Palee.Repo.query!("UPDATE box_site_domains SET next_check_at = now() - interval '1 minute' WHERE host = $1", [host])
+      Palee.Repo.query!(
+        "UPDATE box_site_domains SET next_check_at = now() - interval '1 minute' WHERE host = $1",
+        [host]
+      )
     end)
 
     assert :ok = perform_job(BoxSiteJob, %{})
 
     assert [%{"status" => "broken", "last_error" => "dns_not_pointing"}] =
-             ctx |> owner_conn() |> get("#{ctx.admin}/domains") |> json_response(200) |> Map.fetch!("domains")
+             ctx
+             |> owner_conn()
+             |> get("#{ctx.admin}/domains")
+             |> json_response(200)
+             |> Map.fetch!("domains")
 
     build_conn() |> get("/api/public/sites/by-host/#{host}") |> json_response(200)
 
     second = "shop.#{String.replace_prefix(host, "www.", "")}"
+
     %{"domain" => %{"id" => second_id, "primary" => false}} =
       ctx |> owner_conn() |> post("#{ctx.admin}/domains", %{host: second}) |> json_response(201)
 
     assert %{"code" => "too_many_domains"} =
-             ctx |> owner_conn() |> post("#{ctx.admin}/domains", %{host: "x." <> second}) |> json_response(409)
+             ctx
+             |> owner_conn()
+             |> post("#{ctx.admin}/domains", %{host: "x." <> second})
+             |> json_response(409)
 
     assert %{"domain" => %{"primary" => true}} =
-             ctx |> owner_conn() |> put("#{ctx.admin}/domains/#{second_id}/primary") |> json_response(200)
+             ctx
+             |> owner_conn()
+             |> put("#{ctx.admin}/domains/#{second_id}/primary")
+             |> json_response(200)
 
     ctx |> owner_conn() |> delete("#{ctx.admin}/domains/#{domain["id"]}") |> response(204)
     ctx |> owner_conn() |> delete("#{ctx.admin}/domains/#{domain["id"]}") |> json_response(404)
@@ -279,7 +363,11 @@ defmodule PaleeWeb.BoxSiteControllerTest do
   end
 
   test "the public timetable shows classes without people when the owner turns it on", ctx do
-    ctx |> owner_conn() |> put(ctx.admin, %{lock_version: 0, public_schedule: true}) |> json_response(200)
+    ctx
+    |> owner_conn()
+    |> put(ctx.admin, %{lock_version: 0, public_schedule: true})
+    |> json_response(200)
+
     site = build_conn() |> get(ctx.public) |> json_response(200)
     assert "schedule" in site["sections"]
     assert is_list(site["timetable"])

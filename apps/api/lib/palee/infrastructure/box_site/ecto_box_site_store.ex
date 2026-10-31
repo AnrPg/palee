@@ -181,14 +181,17 @@ defmodule Palee.Infrastructure.BoxSite.EctoBoxSiteStore do
   defp domain_row(organization_id, id) do
     case Ecto.UUID.cast(id) do
       {:ok, id} ->
-        Repo.one(from d in SiteDomain, where: d.organization_id == ^organization_id and d.id == ^id)
+        Repo.one(
+          from d in SiteDomain, where: d.organization_id == ^organization_id and d.id == ^id
+        )
 
       :error ->
         nil
     end
   end
 
-  defp domain_map(%SiteDomain{} = domain), do: domain |> Map.from_struct() |> Map.delete(:__meta__)
+  defp domain_map(%SiteDomain{} = domain),
+    do: domain |> Map.from_struct() |> Map.delete(:__meta__)
 
   # ── Form outbox ─────────────────────────────────────────────────────────
 
@@ -224,7 +227,10 @@ defmodule Palee.Infrastructure.BoxSite.EctoBoxSiteStore do
       SiteSubmission
       |> where([s], s.id in subquery(candidates))
       |> select([s], s)
-      |> Repo.update_all(set: [status: "sending", claimed_at: now, updated_at: now], inc: [attempts: 1])
+      |> Repo.update_all(
+        set: [status: "sending", claimed_at: now, updated_at: now],
+        inc: [attempts: 1]
+      )
 
     Enum.map(rows, &submission_map/1)
   end
@@ -309,7 +315,8 @@ defmodule Palee.Infrastructure.BoxSite.EctoBoxSiteStore do
     |> Map.new()
   end
 
-  defp submission_map(%SiteSubmission{} = row), do: row |> Map.from_struct() |> Map.delete(:__meta__)
+  defp submission_map(%SiteSubmission{} = row),
+    do: row |> Map.from_struct() |> Map.delete(:__meta__)
 
   # ── Consent log ─────────────────────────────────────────────────────────
 
@@ -371,7 +378,13 @@ defmodule Palee.Infrastructure.BoxSite.EctoBoxSiteStore do
            [host]
          ) do
       %{rows: [[id, slug, host, status, primary]]} ->
-        %{organization_id: Ecto.UUID.load!(id), slug: slug, host: host, status: status, primary: primary}
+        %{
+          organization_id: Ecto.UUID.load!(id),
+          slug: slug,
+          host: host,
+          status: status,
+          primary: primary
+        }
 
       _none ->
         nil

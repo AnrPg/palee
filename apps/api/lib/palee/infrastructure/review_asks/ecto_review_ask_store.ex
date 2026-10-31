@@ -70,7 +70,8 @@ defmodule Palee.Infrastructure.ReviewAsks.EctoReviewAskStore do
          %ReviewAsk{} = ask <-
            Repo.one(
              from a in ReviewAsk,
-               where: a.organization_id == ^organization_id and a.id == ^id and a.user_id == ^user_id
+               where:
+                 a.organization_id == ^organization_id and a.id == ^id and a.user_id == ^user_id
            ) do
       ask_map(ask)
     else
@@ -80,7 +81,9 @@ defmodule Palee.Infrastructure.ReviewAsks.EctoReviewAskStore do
 
   @impl true
   def update_ask(%{organization_id: organization_id}, id, changes) do
-    case Repo.one(from a in ReviewAsk, where: a.organization_id == ^organization_id and a.id == ^id) do
+    case Repo.one(
+           from a in ReviewAsk, where: a.organization_id == ^organization_id and a.id == ^id
+         ) do
       nil ->
         {:error, :review_ask_not_found}
 

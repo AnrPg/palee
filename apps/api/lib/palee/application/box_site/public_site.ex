@@ -155,7 +155,11 @@ defmodule Palee.Application.BoxSite.PublicSite do
         )
 
     if event do
-      Map.merge(attrs, %{conversion_status: "pending", conversion_payload: event, conversion_next_at: now})
+      Map.merge(attrs, %{
+        conversion_status: "pending",
+        conversion_payload: event,
+        conversion_next_at: now
+      })
     else
       attrs
     end
@@ -184,5 +188,6 @@ defmodule Palee.Application.BoxSite.PublicSite do
     end
   end
 
-  defp stringify(params), do: Map.new(params || %{}, fn {key, value} -> {to_string(key), value} end)
+  defp stringify(params),
+    do: Map.new(params || %{}, fn {key, value} -> {to_string(key), value} end)
 end

@@ -16,7 +16,12 @@ defmodule PaleeWeb.AdminSiteController do
   plug OpenApiSpex.Plug.CastAndValidate,
        [json_render_error_v2: true] when action in [:update, :add_domain]
 
-  @id %Parameter{name: :id, in: :path, required: true, schema: %Schema{type: :string, format: :uuid}}
+  @id %Parameter{
+    name: :id,
+    in: :path,
+    required: true,
+    schema: %Schema{type: :string, format: :uuid}
+  }
   @error {"Error", "application/json", %Schema{type: :object}}
 
   operation(:show,
@@ -104,7 +109,10 @@ defmodule PaleeWeb.AdminSiteController do
   operation(:remove_domain,
     summary: "Remove a custom domain; the site stays at its Palee address",
     parameters: [@id],
-    responses: [no_content: {"Removed", "application/json", %Schema{type: :object}}, not_found: @error]
+    responses: [
+      no_content: {"Removed", "application/json", %Schema{type: :object}},
+      not_found: @error
+    ]
   )
 
   def remove_domain(conn, %{"id" => id}) do

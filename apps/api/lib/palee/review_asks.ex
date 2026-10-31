@@ -23,6 +23,7 @@ defmodule Palee.ReviewAsks do
 
     with {:ok, changes} <- ReviewAskPolicy.changes(current, params) do
       lock = Map.get(params, "lock_version", current.lock_version)
+
       case ReviewAskStore.save_settings(context, Map.put(changes, :updated_by_id, user_id), lock) do
         {:error, :stale} -> {:error, :settings_changed_meanwhile}
         result -> result
@@ -55,7 +56,8 @@ defmodule Palee.ReviewAsks do
 
   @doc "Records a member's answer to their own ask."
   def respond(context, user_id, id, action, now) do
-    with %{} = ask <- ReviewAskStore.get_ask(context, id, user_id) || {:error, :review_ask_not_found},
+    with %{} = ask <-
+           ReviewAskStore.get_ask(context, id, user_id) || {:error, :review_ask_not_found},
          {:ok, changes} <- ReviewAskPolicy.respond(ask, action, now) do
       if changes == %{}, do: {:ok, ask}, else: ReviewAskStore.update_ask(context, ask.id, changes)
     end

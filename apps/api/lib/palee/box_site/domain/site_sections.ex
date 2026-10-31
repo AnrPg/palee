@@ -51,6 +51,7 @@ defmodule Palee.BoxSite.Domain.SiteSections do
   defp available?("schedule", facts), do: Map.get(facts, :public_schedule, false)
   defp available?("faq", facts), do: Map.get(facts, :faq?, false)
   defp available?("reviews", facts), do: Map.get(facts, :reviews?, false)
+
   defp available?(form, facts) when form in ["trial_form", "contact_form"],
     do: Map.get(facts, :forms_enabled, false)
 

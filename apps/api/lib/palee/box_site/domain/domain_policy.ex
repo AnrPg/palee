@@ -125,9 +125,15 @@ defmodule Palee.BoxSite.Domain.DomainPolicy do
     do: %{checked_at: now, next_check_at: nil}
 
   defp advance(%{tls_ok: true}, now),
-    do: %{status: "active", active_at: now, attempts: 0, next_check_at: DateTime.add(now, @active_recheck_seconds, :second)}
+    do: %{
+      status: "active",
+      active_at: now,
+      attempts: 0,
+      next_check_at: DateTime.add(now, @active_recheck_seconds, :second)
+    }
 
-  defp advance(_facts, now), do: %{attempts: 0, next_check_at: DateTime.add(now, hd(@backoff_seconds), :second)}
+  defp advance(_facts, now),
+    do: %{attempts: 0, next_check_at: DateTime.add(now, hd(@backoff_seconds), :second)}
 
   defp settle(changes, _domain, now) do
     changes

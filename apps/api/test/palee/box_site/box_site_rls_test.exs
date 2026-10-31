@@ -69,7 +69,11 @@ defmodule Palee.BoxSite.RLSTest do
 
     assert_raise Postgrex.Error, ~r/insert-only/, fn ->
       as_session(conn, nil, org_s, false, fn ->
-        Postgrex.query!(conn, "UPDATE box_site_consents SET marketing = false WHERE visitor_id = $1", [visitor])
+        Postgrex.query!(
+          conn,
+          "UPDATE box_site_consents SET marketing = false WHERE visitor_id = $1",
+          [visitor]
+        )
       end)
     end
 

@@ -42,7 +42,12 @@ defmodule PaleeWeb.PublicSiteController do
   operation(:by_host,
     summary: "The box behind a custom domain (the web's host rewrite and the TLS probe)",
     parameters: [
-      %Parameter{name: :host, in: :path, required: true, schema: %Schema{type: :string, maxLength: 253}}
+      %Parameter{
+        name: :host,
+        in: :path,
+        required: true,
+        schema: %Schema{type: :string, maxLength: 253}
+      }
     ],
     responses: [ok: {"Site", "application/json", S.by_host_response()}, not_found: @not_found]
   )
@@ -54,9 +59,17 @@ defmodule PaleeWeb.PublicSiteController do
   operation(:tls_allowed,
     summary: "On-demand TLS `ask`: 200 only for a verified custom domain",
     parameters: [
-      %Parameter{name: :domain, in: :query, required: true, schema: %Schema{type: :string, maxLength: 253}}
+      %Parameter{
+        name: :domain,
+        in: :query,
+        required: true,
+        schema: %Schema{type: :string, maxLength: 253}
+      }
     ],
-    responses: [ok: {"Allowed", "application/json", %Schema{type: :object}}, not_found: @not_found]
+    responses: [
+      ok: {"Allowed", "application/json", %Schema{type: :object}},
+      not_found: @not_found
+    ]
   )
 
   def tls_allowed(conn, params) do

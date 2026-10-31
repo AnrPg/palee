@@ -467,7 +467,8 @@ defmodule PaleeWeb.FallbackController do
     review_ask_not_found: {:not_found, "Review ask not found"},
     review_ask_answered: {:conflict, "This ask was already answered"},
     invalid_review_action: {:unprocessable_entity, "Choose opened, later or dismissed"},
-    settings_changed_meanwhile: {:conflict, "Someone saved these settings meanwhile; reload and try again"}
+    settings_changed_meanwhile:
+      {:conflict, "Someone saved these settings meanwhile; reload and try again"}
   }
 
   def call(conn, {:error, reason}) when is_map_key(@box_site_errors, reason) do

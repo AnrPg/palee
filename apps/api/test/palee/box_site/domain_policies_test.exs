@@ -17,7 +17,9 @@ defmodule Palee.BoxSite.DomainPoliciesTest do
 
   describe "SiteSections" do
     test "the owner's order keeps hero first and appends new keys" do
-      assert ["hero", "faq", "about" | rest] = SiteSections.normalize_order(["faq", "hero", "about", "nope"])
+      assert ["hero", "faq", "about" | rest] =
+               SiteSections.normalize_order(["faq", "hero", "about", "nope"])
+
       assert Enum.sort(["hero", "faq", "about" | rest]) == Enum.sort(SiteSections.keys())
     end
 
@@ -139,17 +141,30 @@ defmodule Palee.BoxSite.DomainPoliciesTest do
       records = DomainPolicy.dns_records(domain(%{}), false, "sites.palee.app", ["1.2.3.4"])
 
       assert [
-               %{type: "TXT", name: "_palee-challenge.www.mybox.gr", value: "palee-site-verification=tok"},
+               %{
+                 type: "TXT",
+                 name: "_palee-challenge.www.mybox.gr",
+                 value: "palee-site-verification=tok"
+               },
                %{type: "CNAME", value: "sites.palee.app"}
              ] = records
 
       assert [_txt, %{type: "A", value: "1.2.3.4"}] =
-               DomainPolicy.dns_records(domain(%{host: "mybox.gr"}), true, "sites.palee.app", ["1.2.3.4"])
+               DomainPolicy.dns_records(domain(%{host: "mybox.gr"}), true, "sites.palee.app", [
+                 "1.2.3.4"
+               ])
     end
 
     test "DNS facts: TXT proof and routing by CNAME or our A records" do
       assert %{txt_ok: true, routing_ok: true} =
-               DomainPolicy.dns_facts("tok", ["palee-site-verification=tok"], ["Sites.Palee.App."], [], "sites.palee.app", [])
+               DomainPolicy.dns_facts(
+                 "tok",
+                 ["palee-site-verification=tok"],
+                 ["Sites.Palee.App."],
+                 [],
+                 "sites.palee.app",
+                 []
+               )
 
       assert %{txt_ok: false, routing_ok: true} =
                DomainPolicy.dns_facts("tok", [], [], ["1.2.3.4"], "sites.palee.app", ["1.2.3.4"])
@@ -177,22 +192,38 @@ defmodule Palee.BoxSite.DomainPoliciesTest do
       old = domain(%{inserted_at: DateTime.add(@now, -15 * 86_400, :second)})
 
       assert %{status: "expired", next_check_at: nil} =
-               DomainPolicy.after_check(old, %{txt_ok: false, routing_ok: false, tls_ok: false}, @now)
+               DomainPolicy.after_check(
+                 old,
+                 %{txt_ok: false, routing_ok: false, tls_ok: false},
+                 @now
+               )
     end
 
     test "an active host breaks when DNS or TLS stop, and recovers" do
       active = domain(%{status: "active", active_at: @now})
 
       assert %{status: "broken", last_error: "dns_not_pointing"} =
-               DomainPolicy.after_check(active, %{txt_ok: false, routing_ok: false, tls_ok: false}, @now)
+               DomainPolicy.after_check(
+                 active,
+                 %{txt_ok: false, routing_ok: false, tls_ok: false},
+                 @now
+               )
 
       assert %{status: "broken", last_error: "tls_failed"} =
-               DomainPolicy.after_check(active, %{txt_ok: false, routing_ok: true, tls_ok: false}, @now)
+               DomainPolicy.after_check(
+                 active,
+                 %{txt_ok: false, routing_ok: true, tls_ok: false},
+                 @now
+               )
 
       broken = domain(%{status: "broken", active_at: @now, attempts: 3})
 
       assert %{status: "active", attempts: 0} =
-               DomainPolicy.after_check(broken, %{txt_ok: false, routing_ok: true, tls_ok: true}, @now)
+               DomainPolicy.after_check(
+                 broken,
+                 %{txt_ok: false, routing_ok: true, tls_ok: true},
+                 @now
+               )
     end
 
     test "a pending_tls host whose DNS is gone goes back to pending_dns" do
@@ -233,8 +264,15 @@ defmodule Palee.BoxSite.DomainPoliciesTest do
       assert {:error, {:invalid_fields, %{message: "required"}}} =
                FormPolicy.validate("contact", @valid, @now)
 
-      params = %{"name" => "Νίκος", "phone" => "+30 69 1234 5678", "message" => "Γεια", "privacy_ack" => true}
-      assert {:ok, %{phone: "+306912345678", email: nil}} = FormPolicy.validate("contact", params, @now)
+      params = %{
+        "name" => "Νίκος",
+        "phone" => "+30 69 1234 5678",
+        "message" => "Γεια",
+        "privacy_ack" => true
+      }
+
+      assert {:ok, %{phone: "+306912345678", email: nil}} =
+               FormPolicy.validate("contact", params, @now)
     end
 
     test "unknown forms, bad ids and attribution" do
@@ -244,7 +282,9 @@ defmodule Palee.BoxSite.DomainPoliciesTest do
                FormPolicy.validate("trial", Map.put(@valid, "visitor_id", "x"), @now)
 
       params = Map.put(@valid, "attribution", %{"evil" => "x", "utm_source" => "instagram"})
-      assert {:ok, %{attribution: %{"utm_source" => "instagram"}}} = FormPolicy.validate("trial", params, @now)
+
+      assert {:ok, %{attribution: %{"utm_source" => "instagram"}}} =
+               FormPolicy.validate("trial", params, @now)
     end
 
     test "bots: honeypot and too fast" do
@@ -254,7 +294,9 @@ defmodule Palee.BoxSite.DomainPoliciesTest do
     end
 
     test "the intake contract and what delivery does" do
-      {:ok, attrs} = FormPolicy.validate("trial", Map.put(@valid, "consent_text_version", "v1"), @now)
+      {:ok, attrs} =
+        FormPolicy.validate("trial", Map.put(@valid, "consent_text_version", "v1"), @now)
+
       submission = attrs |> Map.put(:id, Ecto.UUID.generate()) |> Map.put(:attempts, 1)
       intake = FormPolicy.intake(submission)
 
@@ -265,7 +307,9 @@ defmodule Palee.BoxSite.DomainPoliciesTest do
 
       lead = Ecto.UUID.generate()
       delivered = FormPolicy.after_delivery({:ok, %{lead_id: lead}}, submission, @now)
-      assert %{status: "delivered", lead_id: ^lead, name: nil, email: nil, redacted_at: @now} = delivered
+
+      assert %{status: "delivered", lead_id: ^lead, name: nil, email: nil, redacted_at: @now} =
+               delivered
 
       assert %{status: "failed"} =
                FormPolicy.after_delivery({:error, {:rejected, :invalid_lead}}, submission, @now)
@@ -275,7 +319,11 @@ defmodule Palee.BoxSite.DomainPoliciesTest do
       assert DateTime.diff(retry.next_attempt_at, @now) == 60
 
       assert %{status: "failed"} =
-               FormPolicy.after_delivery({:error, {:transient, :down}}, %{submission | attempts: 12}, @now)
+               FormPolicy.after_delivery(
+                 {:error, {:transient, :down}},
+                 %{submission | attempts: 12},
+                 @now
+               )
 
       assert FormPolicy.backoff(20) == 21_600
     end
@@ -286,11 +334,20 @@ defmodule Palee.BoxSite.DomainPoliciesTest do
 
     test "accept and reject set both categories; custom takes the choice" do
       assert {:ok, %{analytics: true, marketing: true}} =
-               ConsentPolicy.record(%{"action" => "accept_all", "visitor_id" => @visitor, "banner_version" => 2}, 2, @now)
+               ConsentPolicy.record(
+                 %{"action" => "accept_all", "visitor_id" => @visitor, "banner_version" => 2},
+                 2,
+                 @now
+               )
 
       assert {:ok, %{analytics: false, marketing: false} = row} =
                ConsentPolicy.record(
-                 %{"action" => "reject_all", "visitor_id" => @visitor, "banner_version" => 2, "analytics" => true},
+                 %{
+                   "action" => "reject_all",
+                   "visitor_id" => @visitor,
+                   "banner_version" => 2,
+                   "analytics" => true
+                 },
                  2,
                  @now
                )
@@ -299,7 +356,12 @@ defmodule Palee.BoxSite.DomainPoliciesTest do
 
       assert {:ok, %{analytics: true, marketing: false}} =
                ConsentPolicy.record(
-                 %{"action" => "custom", "visitor_id" => @visitor, "banner_version" => 2, "analytics" => true},
+                 %{
+                   "action" => "custom",
+                   "visitor_id" => @visitor,
+                   "banner_version" => 2,
+                   "analytics" => true
+                 },
                  2,
                  @now
                )
@@ -307,14 +369,24 @@ defmodule Palee.BoxSite.DomainPoliciesTest do
 
     test "a stale banner or bad input is refused" do
       assert {:error, {:invalid_fields, %{banner_version: "outdated"}}} =
-               ConsentPolicy.record(%{"action" => "accept_all", "visitor_id" => @visitor, "banner_version" => 1}, 2, @now)
+               ConsentPolicy.record(
+                 %{"action" => "accept_all", "visitor_id" => @visitor, "banner_version" => 1},
+                 2,
+                 @now
+               )
 
       assert {:error, {:invalid_fields, %{action: "invalid", visitor_id: "invalid"}}} =
                ConsentPolicy.record(%{"action" => "maybe", "banner_version" => 2}, 2, @now)
     end
 
     test "a choice lapses with time and with a new banner" do
-      consent = %{analytics: true, marketing: true, banner_version: 2, expires_at: DateTime.add(@now, 10)}
+      consent = %{
+        analytics: true,
+        marketing: true,
+        banner_version: 2,
+        expires_at: DateTime.add(@now, 10)
+      }
+
       assert %{marketing: true} = ConsentPolicy.effective(consent, 2, @now)
       assert %{marketing: false} = ConsentPolicy.effective(consent, 3, @now)
       assert %{marketing: false} = ConsentPolicy.effective(consent, 2, DateTime.add(@now, 11))
@@ -322,7 +394,11 @@ defmodule Palee.BoxSite.DomainPoliciesTest do
     end
 
     test "tags follow the categories; GTM with either" do
-      tags = %{meta_pixel_id: "1234567", ga4_measurement_id: "G-AAAA", gtm_container_id: "GTM-AAAA"}
+      tags = %{
+        meta_pixel_id: "1234567",
+        ga4_measurement_id: "G-AAAA",
+        gtm_container_id: "GTM-AAAA"
+      }
 
       assert ConsentPolicy.allowed_tags(tags, %{analytics: true, marketing: false}) ==
                [:ga4_measurement_id, :gtm_container_id]
@@ -331,7 +407,11 @@ defmodule Palee.BoxSite.DomainPoliciesTest do
                [:meta_pixel_id, :gtm_container_id]
 
       assert ConsentPolicy.allowed_tags(tags, %{analytics: false, marketing: false}) == []
-      assert ConsentPolicy.allowed_tags(%{tags | gtm_container_id: nil}, %{analytics: true, marketing: true}) ==
+
+      assert ConsentPolicy.allowed_tags(%{tags | gtm_container_id: nil}, %{
+               analytics: true,
+               marketing: true
+             }) ==
                [:ga4_measurement_id, :meta_pixel_id]
     end
   end
@@ -348,10 +428,19 @@ defmodule Palee.BoxSite.DomainPoliciesTest do
 
       assert event["event_id"] == id
       assert event["event_name"] == "Lead"
-      assert event["user_data"]["em"] == [Base.encode16(:crypto.hash(:sha256, "maria@example.gr"), case: :lower)]
-      assert event["user_data"]["ph"] == [Base.encode16(:crypto.hash(:sha256, "306912345678"), case: :lower)]
+
+      assert event["user_data"]["em"] == [
+               Base.encode16(:crypto.hash(:sha256, "maria@example.gr"), case: :lower)
+             ]
+
+      assert event["user_data"]["ph"] == [
+               Base.encode16(:crypto.hash(:sha256, "306912345678"), case: :lower)
+             ]
+
       refute inspect(event) =~ "maria"
-      assert ConversionEvent.build(%{id: id, email: nil, phone: nil, submitted_at: @now}, "u") == nil
+
+      assert ConversionEvent.build(%{id: id, email: nil, phone: nil, submitted_at: @now}, "u") ==
+               nil
     end
 
     test "phones keep their country code" do
@@ -361,10 +450,17 @@ defmodule Palee.BoxSite.DomainPoliciesTest do
     end
 
     test "send outcomes clear the payload when done" do
-      assert %{conversion_status: "sent", conversion_payload: nil} = ConversionEvent.after_send(:ok, 1, @now)
-      assert %{conversion_status: "pending"} = ConversionEvent.after_send({:error, {:transient, :x}}, 1, @now)
-      assert %{conversion_status: "failed"} = ConversionEvent.after_send({:error, {:transient, :x}}, 6, @now)
-      assert %{conversion_status: "failed"} = ConversionEvent.after_send({:error, {:rejected, :x}}, 1, @now)
+      assert %{conversion_status: "sent", conversion_payload: nil} =
+               ConversionEvent.after_send(:ok, 1, @now)
+
+      assert %{conversion_status: "pending"} =
+               ConversionEvent.after_send({:error, {:transient, :x}}, 1, @now)
+
+      assert %{conversion_status: "failed"} =
+               ConversionEvent.after_send({:error, {:transient, :x}}, 6, @now)
+
+      assert %{conversion_status: "failed"} =
+               ConversionEvent.after_send({:error, {:rejected, :x}}, 1, @now)
     end
   end
 end

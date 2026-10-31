@@ -72,9 +72,10 @@ defmodule Palee.BoxSite.Domain.ConsentPolicy do
   def effective(nil, _banner_version, _now), do: %{analytics: false, marketing: false}
 
   def effective(consent, banner_version, now) do
-    if consent.banner_version == banner_version and DateTime.compare(consent.expires_at, now) == :gt,
-      do: %{analytics: consent.analytics, marketing: consent.marketing},
-      else: %{analytics: false, marketing: false}
+    if consent.banner_version == banner_version and
+         DateTime.compare(consent.expires_at, now) == :gt,
+       do: %{analytics: consent.analytics, marketing: consent.marketing},
+       else: %{analytics: false, marketing: false}
   end
 
   @doc """

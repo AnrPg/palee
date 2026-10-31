@@ -6,7 +6,11 @@ defmodule Palee.ReviewAsks.ReviewAskPolicyTest do
   alias Palee.ReviewAsks.Domain.ReviewAskPolicy
 
   @now ~U[2026-11-02 10:00:00.000000Z]
-  @settings %{enabled: true, google_place_id: "ChIJN1t_tDeuEmsRUsoyG83frY4", milestones: [10, 50, 100]}
+  @settings %{
+    enabled: true,
+    google_place_id: "ChIJN1t_tDeuEmsRUsoyG83frY4",
+    milestones: [10, 50, 100]
+  }
   @facts %{
     active_membership: true,
     member_since: ~U[2026-01-01 00:00:00Z],
@@ -33,7 +37,10 @@ defmodule Palee.ReviewAsks.ReviewAskPolicyTest do
     assert {:skip, :new_member} = decide(%{facts: %{member_since: ~U[2026-10-20 00:00:00Z]}})
     assert {:skip, :night} = decide(%{}, [], false, 22)
     assert {:skip, :night} = decide(%{}, [], false, 7)
-    assert {:skip, :not_after_class} = decide(%{facts: %{last_attended_at: ~U[2026-10-30 08:00:00Z]}})
+
+    assert {:skip, :not_after_class} =
+             decide(%{facts: %{last_attended_at: ~U[2026-10-30 08:00:00Z]}})
+
     assert {:skip, :no_milestone} = decide(%{facts: %{attendance_count: 9}})
     assert {:skip, :no_milestone} = decide(%{facts: %{attendance_count: 15}})
   end
@@ -62,8 +69,12 @@ defmodule Palee.ReviewAsks.ReviewAskPolicyTest do
              ReviewAskPolicy.respond(%{status: "shown"}, "opened", @now)
 
     assert {:ok, %{}} = ReviewAskPolicy.respond(%{status: "opened"}, "opened", @now)
-    assert {:error, :review_ask_answered} = ReviewAskPolicy.respond(%{status: "opened"}, "later", @now)
-    assert {:error, :invalid_review_action} = ReviewAskPolicy.respond(%{status: "shown"}, "5 stars", @now)
+
+    assert {:error, :review_ask_answered} =
+             ReviewAskPolicy.respond(%{status: "opened"}, "later", @now)
+
+    assert {:error, :invalid_review_action} =
+             ReviewAskPolicy.respond(%{status: "shown"}, "5 stars", @now)
   end
 
   test "settings: a Place ID is needed to turn asks on" do
@@ -73,9 +84,13 @@ defmodule Palee.ReviewAsks.ReviewAskPolicyTest do
              ReviewAskPolicy.changes(defaults, %{"enabled" => true})
 
     assert {:error, {:invalid_fields, %{google_place_id: "invalid", milestones: "invalid"}}} =
-             ReviewAskPolicy.changes(defaults, %{"google_place_id" => "bad id!", "milestones" => [1]})
+             ReviewAskPolicy.changes(defaults, %{
+               "google_place_id" => "bad id!",
+               "milestones" => [1]
+             })
 
-    assert {:ok, %{enabled: true, google_place_id: "ChIJN1t_tDeuEmsRUsoyG83frY4", milestones: [10, 25]}} =
+    assert {:ok,
+            %{enabled: true, google_place_id: "ChIJN1t_tDeuEmsRUsoyG83frY4", milestones: [10, 25]}} =
              ReviewAskPolicy.changes(defaults, %{
                "enabled" => true,
                "google_place_id" => " ChIJN1t_tDeuEmsRUsoyG83frY4 ",

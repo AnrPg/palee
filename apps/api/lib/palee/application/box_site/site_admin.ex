@@ -130,5 +130,6 @@ defmodule Palee.Application.BoxSite.SiteAdmin do
 
   defp user_id(context), do: Map.get(context, :user_id)
 
-  defp stringify(params), do: Map.new(params || %{}, fn {key, value} -> {to_string(key), value} end)
+  defp stringify(params),
+    do: Map.new(params || %{}, fn {key, value} -> {to_string(key), value} end)
 end

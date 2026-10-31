@@ -10,7 +10,10 @@ defmodule Palee.ReviewAsks.EctoReviewSignalsTest do
 
   test "a new member without classes or a paid membership" do
     member = user_fixture()
-    {:ok, organization} = Organizations.create_organization(%{name: "Signals #{System.unique_integer([:positive])}"})
+
+    {:ok, organization} =
+      Organizations.create_organization(%{name: "Signals #{System.unique_integer([:positive])}"})
+
     joined = ~U[2026-01-05 09:00:00.000000Z]
 
     {:ok, _membership} =

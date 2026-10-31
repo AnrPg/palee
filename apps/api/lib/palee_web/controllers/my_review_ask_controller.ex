@@ -27,7 +27,12 @@ defmodule PaleeWeb.MyReviewAskController do
   operation(:respond,
     summary: "Record what the member chose: opened Google, later or dismissed",
     parameters: [
-      %Parameter{name: :id, in: :path, required: true, schema: %Schema{type: :string, format: :uuid}}
+      %Parameter{
+        name: :id,
+        in: :path,
+        required: true,
+        schema: %Schema{type: :string, format: :uuid}
+      }
     ],
     request_body: S.body(S.review_respond_request()),
     responses: [
