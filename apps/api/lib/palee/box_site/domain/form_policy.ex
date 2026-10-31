@@ -107,6 +107,8 @@ defmodule Palee.BoxSite.Domain.FormPolicy do
   defp locale(_value), do: "el"
 
   defp attribution(%{} = map) do
+    map = Map.new(map, fn {key, value} -> {to_string(key), value} end)
+
     for key <- @attribution_keys,
         value = Map.get(map, key),
         is_binary(value) and value != "",

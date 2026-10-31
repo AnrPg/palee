@@ -88,3 +88,9 @@ config :palee, :payments_sandbox, true
 
 # ADR-280 verification: the SMS code is logged (number masked), not sent.
 config :palee, :sms_sender, Palee.Infrastructure.Sms.LogSmsSender
+
+# ADR-352..354: sandbox DNS, TLS, leads and conversions in dev.
+config :palee, :box_site_lead_intake, Palee.Infrastructure.BoxSite.SandboxLeadIntake
+config :palee, :box_site_dns, Palee.Infrastructure.BoxSite.SandboxDomainDns
+config :palee, :box_site_tls_probe, Palee.Infrastructure.BoxSite.SandboxTlsProbe
+config :palee, :box_site_conversions_api, Palee.Infrastructure.BoxSite.SandboxConversionsApi

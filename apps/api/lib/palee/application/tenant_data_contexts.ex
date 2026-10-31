@@ -14,6 +14,7 @@ defmodule Palee.Application.TenantDataContexts do
     Appointments,
     Body,
     BoxScreens,
+    BoxSite,
     Buddies,
     Coaching,
     Community,
@@ -38,6 +39,7 @@ defmodule Palee.Application.TenantDataContexts do
     Payments,
     Perks,
     Referrals,
+    ReviewAsks,
     Scaling,
     Scheduling,
     Seasons,
@@ -55,6 +57,8 @@ defmodule Palee.Application.TenantDataContexts do
 
   @purgeable [
     BoxScreens,
+    BoxSite,
+    ReviewAsks,
     AiUsage,
     Imports,
     Scaling,

@@ -28,6 +28,8 @@ config :palee, Oban,
     {Oban.Plugins.Cron,
      crontab: [
        {"*/15 * * * *", Palee.Workers.RefreshLeaderboardJob},
+       # ADR-352/353: custom domain checks and the website form outbox.
+       {"*/5 * * * *", Palee.Workers.BoxSiteJob},
        {"*/15 * * * *", Palee.Workers.RefreshFinanceAggregatesJob},
        {"*/15 * * * *", Palee.Workers.RefreshCoachingAggregatesJob},
        {"0 2 * * *", Palee.Workers.MarkOverdueInvoicesJob},
@@ -100,7 +102,9 @@ config :palee, Oban,
     # ADR-246: provider calls for online payments.
     payments: 2,
     # ADR-254: CSV imports, one at a time per node (each row its own transaction).
-    imports: 1
+    imports: 1,
+    # ADR-352/353: domain checks, lead hand-off and conversions.
+    box_site: 2
   ]
 
 config :palee, Palee.Infrastructure.Auth.Guardian,
@@ -368,6 +372,25 @@ config :palee, :domain_event_handlers, %{
 # ADR-253: box screens (store and the clock they run on).
 config :palee, :box_screen_store, Palee.Infrastructure.BoxScreens.EctoBoxScreenStore
 config :palee, :box_screen_clock, Palee.Infrastructure.BoxScreens.SystemClock
+
+# ADR-352..354: the box's website. Leads arrive through the leads context's
+# adapter (W2, CP-C1); until it is configured submissions wait (HeldLeadIntake).
+config :palee, :box_site_store, Palee.Infrastructure.BoxSite.EctoBoxSiteStore
+config :palee, :box_site_clock, Palee.Infrastructure.BoxSite.SystemClock
+config :palee, :box_site_lead_intake, Palee.Infrastructure.BoxSite.HeldLeadIntake
+config :palee, :box_site_dns, Palee.Infrastructure.BoxSite.InetDomainDns
+config :palee, :box_site_tls_probe, Palee.Infrastructure.BoxSite.HttpTlsProbe
+config :palee, :box_site_conversions_api, Palee.Infrastructure.BoxSite.MetaConversionsApi
+
+config :palee, :box_site,
+  cname_target: "sites.palee.app",
+  a_records: [],
+  refused_suffixes: ["palee.app", "4kq.net", "localhost", "localdomain", "invalid", "local"]
+
+# ADR-355: Google review asks.
+config :palee, :review_ask_store, Palee.Infrastructure.ReviewAsks.EctoReviewAskStore
+config :palee, :review_signals, Palee.Infrastructure.ReviewAsks.EctoReviewSignals
+config :palee, :review_ask_clock, Palee.Infrastructure.ReviewAsks.SystemClock
 
 config :palee,
        :saved_filter_store,

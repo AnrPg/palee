@@ -127,3 +127,10 @@ config :palee, :payments_http, req_options: [plug: {Req.Test, Palee.PaymentsHttp
 config :palee, :fiscal_http, req_options: [plug: {Req.Test, Palee.FiscalHttp}]
 # ADR-273: myDATA (saving a test or production connection checks it) too.
 config :palee, :mydata, req_options: [plug: {Req.Test, Palee.FiscalHttp}, retry: false]
+
+# ADR-352..354: sandbox DNS, TLS, leads and conversions in tests.
+config :palee, :box_site_lead_intake, Palee.Infrastructure.BoxSite.SandboxLeadIntake
+config :palee, :box_site_dns, Palee.Infrastructure.BoxSite.SandboxDomainDns
+config :palee, :box_site_tls_probe, Palee.Infrastructure.BoxSite.SandboxTlsProbe
+config :palee, :box_site_conversions_api, Palee.Infrastructure.BoxSite.SandboxConversionsApi
+config :palee, :box_site_http, req_options: [plug: {Req.Test, Palee.BoxSiteHttp}]

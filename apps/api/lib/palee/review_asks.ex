@@ -23,7 +23,10 @@ defmodule Palee.ReviewAsks do
 
     with {:ok, changes} <- ReviewAskPolicy.changes(current, params) do
       lock = Map.get(params, "lock_version", current.lock_version)
-      ReviewAskStore.save_settings(context, Map.put(changes, :updated_by_id, user_id), lock)
+      case ReviewAskStore.save_settings(context, Map.put(changes, :updated_by_id, user_id), lock) do
+        {:error, :stale} -> {:error, :settings_changed_meanwhile}
+        result -> result
+      end
     end
   end
 

@@ -74,8 +74,14 @@ defmodule Palee.BoxSite do
       lock = Map.get(params, "lock_version", current.lock_version)
 
       case BoxSiteStore.save_settings(context, changes, lock) do
-        {:ok, settings} -> {:ok, Map.update!(settings, :section_order, &SiteSections.normalize_order/1)}
-        error -> error
+        {:ok, settings} ->
+          {:ok, Map.update!(settings, :section_order, &SiteSections.normalize_order/1)}
+
+        {:error, :stale} ->
+          {:error, :settings_changed_meanwhile}
+
+        error ->
+          error
       end
     end
   end
