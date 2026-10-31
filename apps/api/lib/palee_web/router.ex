@@ -815,6 +815,8 @@ defmodule PaleeWeb.Router do
     put("/me/leaderboard-profile", WorkoutLeaderboardController, :update_profile)
     # ADR-357 (CP-D3): the WOD as it was when assigned or performed.
     get("/workout-snapshots/:id", WorkoutSnapshotController, :show)
+    # ADR-359 (CP-E4): one booking as an .ics invite.
+    get("/bookings/:id/calendar.ics", BookingCalendarController, :show)
   end
 
   scope "/api/org/:organization_slug", PaleeWeb do

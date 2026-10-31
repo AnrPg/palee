@@ -60,3 +60,9 @@ msgstr "Събитие: %{title}"
 
 msgid "You're going to this event."
 msgstr "Идваш на това събитие."
+
+msgid "Waitlisted"
+msgstr "В списъка с чакащи"
+
+msgid "This class or your booking was cancelled."
+msgstr "Този клас или резервацията ти е отменена."

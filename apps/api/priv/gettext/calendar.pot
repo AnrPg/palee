@@ -60,3 +60,9 @@ msgstr ""
 
 msgid "You're going to this event."
 msgstr ""
+
+msgid "Waitlisted"
+msgstr ""
+
+msgid "This class or your booking was cancelled."
+msgstr ""
