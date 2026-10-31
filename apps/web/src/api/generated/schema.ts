@@ -5314,6 +5314,263 @@ export interface paths {
         patch: operations["PaleeWeb.AdminChallengeController.update"];
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/channels/contacts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Contacts of several members or leads */
+        get: operations["PaleeWeb.AdminChannelContactsController.index"];
+        /**
+         * Save a member's or lead's mobile number and language
+         * @description The number is normalised to E.164 with the box's country; it must be a mobile.
+         */
+        put: operations["PaleeWeb.AdminChannelContactsController.save"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/contacts/lookup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The contact of one member (`user_id`) or lead (`lead_id`), or null */
+        get: operations["PaleeWeb.AdminChannelContactsController.lookup"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/contacts/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Forget a contact with its consents and messages */
+        delete: operations["PaleeWeb.AdminChannelContactsController.delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/contacts/{id}/consents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Record a consent the person gave (or withdrew) for one channel and purpose */
+        put: operations["PaleeWeb.AdminChannelContactsController.consent"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Sent and waiting messages, newest first */
+        get: operations["PaleeWeb.AdminChannelMessagesController.index"];
+        put?: never;
+        /**
+         * Send a message to a member or lead by SMS (or another channel they agreed to)
+         * @description Queued in the outbox: quiet hours hold it unless `urgent` (service only). `idempotency_key` makes a repeated click answer the same message.
+         */
+        post: operations["PaleeWeb.AdminChannelMessagesController.create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/messages/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * What a message would be: channel, text, parts, cost, when it leaves, budget
+         * @description Nothing is queued. Same errors as sending: `channels_not_connected`, `channel_contact_missing`, `channel_consent_missing`, `channel_opted_out`, `channel_budget_exceeded`, `channel_template_missing`…
+         */
+        post: operations["PaleeWeb.AdminChannelMessagesController.preview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/messages/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One message with its attempts and delivery receipts */
+        get: operations["PaleeWeb.AdminChannelMessagesController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/messages/{id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Stop a message that has not left yet */
+        post: operations["PaleeWeb.AdminChannelMessagesController.cancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/messages/{id}/retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Send a failed message again */
+        post: operations["PaleeWeb.AdminChannelMessagesController.retry"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The SMS/Viber/WhatsApp provider, the providers on offer and this month's cost */
+        get: operations["PaleeWeb.AdminChannelSettingsController.show"];
+        /**
+         * Connect the box's messaging provider, then check it
+         * @description `account_mode` `palee` (default) sends through Palee's own Brevo account, with the box's cost tracked against `monthly_budget_cents`; `own` uses the box's own Brevo API key (`secret`, kept when not sent, never returned). `quiet_start`/`quiet_end` ("HH:MM" on the box's clock, both null for none) hold non-urgent messages. `rotate_webhook` draws a new webhook URL.
+         */
+        put: operations["PaleeWeb.AdminChannelSettingsController.save"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/settings/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** «Δοκιμή σύνδεσης»: ask the provider something harmless with the saved credentials */
+        post: operations["PaleeWeb.AdminChannelSettingsController.check"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Palee's message wording and the box's own, per language */
+        get: operations["PaleeWeb.AdminChannelSettingsController.templates"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/templates/{key}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Write the box's own wording of a message in one language
+         * @description Placeholders are `{{name}}`. Channel `whatsapp` rows carry the provider's template id and whether Meta approved it; WhatsApp only sends approved templates.
+         */
+        put: operations["PaleeWeb.AdminChannelSettingsController.save_template"];
+        post?: never;
+        /** Go back to Palee's wording for a message in one language */
+        delete: operations["PaleeWeb.AdminChannelSettingsController.delete_template"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/usage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Messages and cost of a month (the box's clock) against the budget cap */
+        get: operations["PaleeWeb.AdminChannelSettingsController.usage"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/check-in/door/{location_id}": {
         parameters: {
             query?: never;
@@ -11890,6 +12147,24 @@ export interface paths {
         put?: never;
         /** Cancel an appointment; inside the cancellation cutoff the session is used */
         post: operations["PaleeWeb.AppointmentsController.cancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/channels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My number and consents for this box's SMS messages */
+        get: operations["PaleeWeb.MyChannelsController.show"];
+        /** Save my number and language and give or withdraw consents */
+        put: operations["PaleeWeb.MyChannelsController.update"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -71516,6 +71791,1070 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminChannelContactsController.index": {
+        parameters: {
+            query?: {
+                /** @description Comma-separated ids */
+                user_ids?: string;
+                /** @description Comma-separated ids */
+                lead_ids?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Contacts */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        contacts: ({
+                            consents: {
+                                /** @enum {string} */
+                                channel: "sms" | "viber" | "whatsapp";
+                                granted: boolean;
+                                /** Format: date-time */
+                                granted_at?: string | null;
+                                /** @enum {string} */
+                                purpose: "service" | "marketing";
+                                source?: string | null;
+                                text_version?: string | null;
+                                /** Format: date-time */
+                                withdrawn_at?: string | null;
+                            }[];
+                            country?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id?: string | null;
+                            locale: string;
+                            /** Format: date-time */
+                            opted_out_at?: string | null;
+                            /** @description Masked for staff; full for the person */
+                            phone: string;
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                        } | null)[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelContactsController.save": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    lead_id?: string;
+                    /** @enum {string} */
+                    locale?: "el" | "en" | "de" | "fr" | "it" | "es" | "nl" | "pt-PT" | "bg" | "ru" | "ar" | "he";
+                    phone?: string;
+                    /** Format: uuid */
+                    user_id?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Contact */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        contact: {
+                            consents: {
+                                /** @enum {string} */
+                                channel: "sms" | "viber" | "whatsapp";
+                                granted: boolean;
+                                /** Format: date-time */
+                                granted_at?: string | null;
+                                /** @enum {string} */
+                                purpose: "service" | "marketing";
+                                source?: string | null;
+                                text_version?: string | null;
+                                /** Format: date-time */
+                                withdrawn_at?: string | null;
+                            }[];
+                            country?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id?: string | null;
+                            locale: string;
+                            /** Format: date-time */
+                            opted_out_at?: string | null;
+                            /** @description Masked for staff; full for the person */
+                            phone: string;
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelContactsController.lookup": {
+        parameters: {
+            query?: {
+                user_id?: string;
+                lead_id?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Contact */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        contact: {
+                            consents: {
+                                /** @enum {string} */
+                                channel: "sms" | "viber" | "whatsapp";
+                                granted: boolean;
+                                /** Format: date-time */
+                                granted_at?: string | null;
+                                /** @enum {string} */
+                                purpose: "service" | "marketing";
+                                source?: string | null;
+                                text_version?: string | null;
+                                /** Format: date-time */
+                                withdrawn_at?: string | null;
+                            }[];
+                            country?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id?: string | null;
+                            locale: string;
+                            /** Format: date-time */
+                            opted_out_at?: string | null;
+                            /** @description Masked for staff; full for the person */
+                            phone: string;
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelContactsController.delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelContactsController.consent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    channel: "sms" | "viber" | "whatsapp";
+                    granted: boolean;
+                    /** @enum {string} */
+                    purpose: "service" | "marketing";
+                    /** @enum {string} */
+                    source?: "staff" | "person" | "form" | "import";
+                    text_version?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Contact */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        contact: {
+                            consents: {
+                                /** @enum {string} */
+                                channel: "sms" | "viber" | "whatsapp";
+                                granted: boolean;
+                                /** Format: date-time */
+                                granted_at?: string | null;
+                                /** @enum {string} */
+                                purpose: "service" | "marketing";
+                                source?: string | null;
+                                text_version?: string | null;
+                                /** Format: date-time */
+                                withdrawn_at?: string | null;
+                            }[];
+                            country?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id?: string | null;
+                            locale: string;
+                            /** Format: date-time */
+                            opted_out_at?: string | null;
+                            /** @description Masked for staff; full for the person */
+                            phone: string;
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelMessagesController.index": {
+        parameters: {
+            query?: {
+                status?: string;
+                channel?: string;
+                contact_id?: string;
+                source_ref?: string;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Messages */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        messages: {
+                            account_mode?: string;
+                            attempts?: number;
+                            body: string;
+                            /** @enum {string} */
+                            channel: "sms" | "viber" | "whatsapp";
+                            /** Format: uuid */
+                            contact_id?: string;
+                            cost_cents?: number | null;
+                            /** Format: uuid */
+                            created_by_id?: string | null;
+                            currency?: string;
+                            /** Format: date-time */
+                            delivered_at?: string | null;
+                            error_code?: string | null;
+                            estimated_cost_cents?: number;
+                            events?: {
+                                error_code?: string | null;
+                                kind: string;
+                                /** Format: date-time */
+                                occurred_at: string;
+                                provider_status?: string | null;
+                                status: string;
+                            }[];
+                            /** Format: date-time */
+                            failed_at?: string | null;
+                            hold_reason?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            inserted_at?: string | null;
+                            locale?: string;
+                            /** Format: date-time */
+                            next_attempt_at?: string | null;
+                            provider?: string;
+                            /** @enum {string} */
+                            purpose?: "service" | "marketing";
+                            segments?: number;
+                            /** Format: date-time */
+                            sent_at?: string | null;
+                            source?: string;
+                            source_ref?: string | null;
+                            /** @enum {string} */
+                            status: "queued" | "sending" | "sent" | "delivered" | "failed" | "cancelled";
+                            template_key?: string;
+                            /** @description Masked number */
+                            to: string;
+                            urgent?: boolean;
+                        }[];
+                        total: number;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelMessagesController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    channels?: ("sms" | "viber" | "whatsapp")[];
+                    idempotency_key?: string;
+                    /** Format: uuid */
+                    lead_id?: string;
+                    /** @enum {string} */
+                    purpose?: "service" | "marketing";
+                    source_ref?: string;
+                    /** @example box_message */
+                    template_key: string;
+                    urgent?: boolean;
+                    /** Format: uuid */
+                    user_id?: string;
+                    variables?: {
+                        [key: string]: string;
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description Queued */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        channel: "sms" | "viber" | "whatsapp";
+                        currency?: string;
+                        estimated_cost_cents?: number;
+                        hold_reason?: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: date-time */
+                        next_attempt_at?: string | null;
+                        /** @enum {string} */
+                        purpose?: "service" | "marketing";
+                        /** Format: date-time */
+                        release_at?: string;
+                        segments?: number;
+                        source?: string;
+                        source_ref?: string | null;
+                        status: string;
+                        template_key?: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelMessagesController.preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    channels?: ("sms" | "viber" | "whatsapp")[];
+                    idempotency_key?: string;
+                    /** Format: uuid */
+                    lead_id?: string;
+                    /** @enum {string} */
+                    purpose?: "service" | "marketing";
+                    source_ref?: string;
+                    /** @example box_message */
+                    template_key: string;
+                    urgent?: boolean;
+                    /** Format: uuid */
+                    user_id?: string;
+                    variables?: {
+                        [key: string]: string;
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description Preview */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        body: string;
+                        budget: {
+                            cap_cents: number;
+                            currency: string;
+                            spent_cents: number;
+                        };
+                        /** @enum {string} */
+                        channel: "sms" | "viber" | "whatsapp";
+                        contact: {
+                            consents: {
+                                /** @enum {string} */
+                                channel: "sms" | "viber" | "whatsapp";
+                                granted: boolean;
+                                /** Format: date-time */
+                                granted_at?: string | null;
+                                /** @enum {string} */
+                                purpose: "service" | "marketing";
+                                source?: string | null;
+                                text_version?: string | null;
+                                /** Format: date-time */
+                                withdrawn_at?: string | null;
+                            }[];
+                            country?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id?: string | null;
+                            locale: string;
+                            /** Format: date-time */
+                            opted_out_at?: string | null;
+                            /** @description Masked for staff; full for the person */
+                            phone: string;
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                        } | null;
+                        currency?: string;
+                        /** @description gsm7 or ucs2 (SMS only) */
+                        encoding?: string | null;
+                        estimated_cost_cents: number;
+                        held_for_quiet_hours: boolean;
+                        locale?: string;
+                        /** @enum {string} */
+                        purpose?: "service" | "marketing";
+                        /** Format: date-time */
+                        release_at: string;
+                        replies_possible?: boolean;
+                        segments: number;
+                        template_key?: string;
+                        urgent?: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelMessagesController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Message */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        account_mode?: string;
+                        attempts?: number;
+                        body: string;
+                        /** @enum {string} */
+                        channel: "sms" | "viber" | "whatsapp";
+                        /** Format: uuid */
+                        contact_id?: string;
+                        cost_cents?: number | null;
+                        /** Format: uuid */
+                        created_by_id?: string | null;
+                        currency?: string;
+                        /** Format: date-time */
+                        delivered_at?: string | null;
+                        error_code?: string | null;
+                        estimated_cost_cents?: number;
+                        events?: {
+                            error_code?: string | null;
+                            kind: string;
+                            /** Format: date-time */
+                            occurred_at: string;
+                            provider_status?: string | null;
+                            status: string;
+                        }[];
+                        /** Format: date-time */
+                        failed_at?: string | null;
+                        hold_reason?: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: date-time */
+                        inserted_at?: string | null;
+                        locale?: string;
+                        /** Format: date-time */
+                        next_attempt_at?: string | null;
+                        provider?: string;
+                        /** @enum {string} */
+                        purpose?: "service" | "marketing";
+                        segments?: number;
+                        /** Format: date-time */
+                        sent_at?: string | null;
+                        source?: string;
+                        source_ref?: string | null;
+                        /** @enum {string} */
+                        status: "queued" | "sending" | "sent" | "delivered" | "failed" | "cancelled";
+                        template_key?: string;
+                        /** @description Masked number */
+                        to: string;
+                        urgent?: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelMessagesController.cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Message */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        account_mode?: string;
+                        attempts?: number;
+                        body: string;
+                        /** @enum {string} */
+                        channel: "sms" | "viber" | "whatsapp";
+                        /** Format: uuid */
+                        contact_id?: string;
+                        cost_cents?: number | null;
+                        /** Format: uuid */
+                        created_by_id?: string | null;
+                        currency?: string;
+                        /** Format: date-time */
+                        delivered_at?: string | null;
+                        error_code?: string | null;
+                        estimated_cost_cents?: number;
+                        events?: {
+                            error_code?: string | null;
+                            kind: string;
+                            /** Format: date-time */
+                            occurred_at: string;
+                            provider_status?: string | null;
+                            status: string;
+                        }[];
+                        /** Format: date-time */
+                        failed_at?: string | null;
+                        hold_reason?: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: date-time */
+                        inserted_at?: string | null;
+                        locale?: string;
+                        /** Format: date-time */
+                        next_attempt_at?: string | null;
+                        provider?: string;
+                        /** @enum {string} */
+                        purpose?: "service" | "marketing";
+                        segments?: number;
+                        /** Format: date-time */
+                        sent_at?: string | null;
+                        source?: string;
+                        source_ref?: string | null;
+                        /** @enum {string} */
+                        status: "queued" | "sending" | "sent" | "delivered" | "failed" | "cancelled";
+                        template_key?: string;
+                        /** @description Masked number */
+                        to: string;
+                        urgent?: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelMessagesController.retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Message */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        account_mode?: string;
+                        attempts?: number;
+                        body: string;
+                        /** @enum {string} */
+                        channel: "sms" | "viber" | "whatsapp";
+                        /** Format: uuid */
+                        contact_id?: string;
+                        cost_cents?: number | null;
+                        /** Format: uuid */
+                        created_by_id?: string | null;
+                        currency?: string;
+                        /** Format: date-time */
+                        delivered_at?: string | null;
+                        error_code?: string | null;
+                        estimated_cost_cents?: number;
+                        events?: {
+                            error_code?: string | null;
+                            kind: string;
+                            /** Format: date-time */
+                            occurred_at: string;
+                            provider_status?: string | null;
+                            status: string;
+                        }[];
+                        /** Format: date-time */
+                        failed_at?: string | null;
+                        hold_reason?: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: date-time */
+                        inserted_at?: string | null;
+                        locale?: string;
+                        /** Format: date-time */
+                        next_attempt_at?: string | null;
+                        provider?: string;
+                        /** @enum {string} */
+                        purpose?: "service" | "marketing";
+                        segments?: number;
+                        /** Format: date-time */
+                        sent_at?: string | null;
+                        source?: string;
+                        source_ref?: string | null;
+                        /** @enum {string} */
+                        status: "queued" | "sending" | "sent" | "delivered" | "failed" | "cancelled";
+                        template_key?: string;
+                        /** @description Masked number */
+                        to: string;
+                        urgent?: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelSettingsController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description The box's provider; the secret is never returned (`has_secret`). */
+                        connection: {
+                            account_id?: string | null;
+                            /** @enum {string} */
+                            account_mode: "palee" | "own";
+                            base_url?: string | null;
+                            channel_order: ("sms" | "viber" | "whatsapp")[];
+                            channels: ("sms" | "viber" | "whatsapp")[];
+                            /** Format: date-time */
+                            checked_at?: string | null;
+                            currency?: string;
+                            default_country: string;
+                            error_code?: string | null;
+                            has_secret: boolean;
+                            last_error?: string | null;
+                            monthly_budget_cents: number;
+                            provider: string;
+                            /** @example 09:00 */
+                            quiet_end?: string | null;
+                            /** @example 21:00 */
+                            quiet_start?: string | null;
+                            sms_sender?: string | null;
+                            /** @enum {string} */
+                            status: "active" | "invalid";
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            viber_sender?: string | null;
+                            /** @description The box's own URL for the provider's receipts and replies */
+                            webhook_url?: string | null;
+                            whatsapp_sender?: string | null;
+                        } | null;
+                        providers: {
+                            account_modes: string[];
+                            channels: ("sms" | "viber" | "whatsapp")[];
+                            provider: string;
+                        }[];
+                        /** @description Spend of one month on the box's clock against the cap (cents). */
+                        usage: {
+                            account_mode?: string | null;
+                            by_channel: {
+                                [key: string]: {
+                                    cents: number;
+                                    count: number;
+                                };
+                            };
+                            cap_cents?: number | null;
+                            currency: string;
+                            /** Format: date-time */
+                            from: string;
+                            messages: number;
+                            spent_cents: number;
+                            /** Format: date-time */
+                            to: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelSettingsController.save": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    account_id?: string | null;
+                    /** @enum {string} */
+                    account_mode?: "palee" | "own";
+                    base_url?: string | null;
+                    channel_order?: ("sms" | "viber" | "whatsapp")[];
+                    channels?: ("sms" | "viber" | "whatsapp")[];
+                    default_country?: string;
+                    monthly_budget_cents?: number;
+                    /** @enum {string} */
+                    provider: "sandbox" | "brevo";
+                    quiet_end?: string | null;
+                    quiet_start?: string | null;
+                    rotate_webhook?: boolean;
+                    /**
+                     * Format: password
+                     * @description The box's own API key (`own`); kept when not sent
+                     */
+                    secret?: string;
+                    sms_sender?: string | null;
+                    viber_sender?: string | null;
+                    whatsapp_sender?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Connection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        check: {
+                            details: {
+                                [key: string]: unknown;
+                            };
+                            error_code?: string | null;
+                            ok: boolean;
+                        };
+                        /** @description The box's provider; the secret is never returned (`has_secret`). */
+                        connection: {
+                            account_id?: string | null;
+                            /** @enum {string} */
+                            account_mode: "palee" | "own";
+                            base_url?: string | null;
+                            channel_order: ("sms" | "viber" | "whatsapp")[];
+                            channels: ("sms" | "viber" | "whatsapp")[];
+                            /** Format: date-time */
+                            checked_at?: string | null;
+                            currency?: string;
+                            default_country: string;
+                            error_code?: string | null;
+                            has_secret: boolean;
+                            last_error?: string | null;
+                            monthly_budget_cents: number;
+                            provider: string;
+                            /** @example 09:00 */
+                            quiet_end?: string | null;
+                            /** @example 21:00 */
+                            quiet_start?: string | null;
+                            sms_sender?: string | null;
+                            /** @enum {string} */
+                            status: "active" | "invalid";
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            viber_sender?: string | null;
+                            /** @description The box's own URL for the provider's receipts and replies */
+                            webhook_url?: string | null;
+                            whatsapp_sender?: string | null;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelSettingsController.check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Connection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        check: {
+                            details: {
+                                [key: string]: unknown;
+                            };
+                            error_code?: string | null;
+                            ok: boolean;
+                        };
+                        /** @description The box's provider; the secret is never returned (`has_secret`). */
+                        connection: {
+                            account_id?: string | null;
+                            /** @enum {string} */
+                            account_mode: "palee" | "own";
+                            base_url?: string | null;
+                            channel_order: ("sms" | "viber" | "whatsapp")[];
+                            channels: ("sms" | "viber" | "whatsapp")[];
+                            /** Format: date-time */
+                            checked_at?: string | null;
+                            currency?: string;
+                            default_country: string;
+                            error_code?: string | null;
+                            has_secret: boolean;
+                            last_error?: string | null;
+                            monthly_budget_cents: number;
+                            provider: string;
+                            /** @example 09:00 */
+                            quiet_end?: string | null;
+                            /** @example 21:00 */
+                            quiet_start?: string | null;
+                            sms_sender?: string | null;
+                            /** @enum {string} */
+                            status: "active" | "invalid";
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            viber_sender?: string | null;
+                            /** @description The box's own URL for the provider's receipts and replies */
+                            webhook_url?: string | null;
+                            whatsapp_sender?: string | null;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelSettingsController.templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Templates */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        templates: {
+                            builtin: boolean;
+                            custom: {
+                                /** @enum {string} */
+                                approval_status: "none" | "pending" | "approved" | "rejected";
+                                body: string;
+                                /** @enum {string} */
+                                channel: "any" | "whatsapp";
+                                locale: string;
+                                provider_template_id?: string | null;
+                                /** Format: date-time */
+                                updated_at?: string | null;
+                                variable_names: string[];
+                            }[];
+                            defaults: {
+                                [key: string]: string;
+                            };
+                            key: string;
+                            purpose?: string | null;
+                            variables: string[];
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelSettingsController.save_template": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                key: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    approval_status?: "none" | "pending" | "approved" | "rejected";
+                    body: string;
+                    /** @enum {string} */
+                    channel?: "any" | "whatsapp";
+                    /** @enum {string} */
+                    locale: "el" | "en" | "de" | "fr" | "it" | "es" | "nl" | "pt-PT" | "bg" | "ru" | "ar" | "he";
+                    provider_template_id?: string | null;
+                    variable_names?: string[];
+                };
+            };
+        };
+        responses: {
+            /** @description Template */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        approval_status: "none" | "pending" | "approved" | "rejected";
+                        body: string;
+                        /** @enum {string} */
+                        channel: "any" | "whatsapp";
+                        locale: string;
+                        provider_template_id?: string | null;
+                        /** Format: date-time */
+                        updated_at?: string | null;
+                        variable_names: string[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelSettingsController.delete_template": {
+        parameters: {
+            query: {
+                locale: string;
+                channel?: "any" | "whatsapp";
+            };
+            header?: never;
+            path: {
+                key: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelSettingsController.usage": {
+        parameters: {
+            query?: {
+                /** @description YYYY-MM; this month when left out */
+                month?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Usage */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        account_mode?: string | null;
+                        by_channel: {
+                            [key: string]: {
+                                cents: number;
+                                count: number;
+                            };
+                        };
+                        cap_cents?: number | null;
+                        currency: string;
+                        /** Format: date-time */
+                        from: string;
+                        messages: number;
+                        spent_cents: number;
+                        /** Format: date-time */
+                        to: string;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminCheckInController.door": {
         parameters: {
             query?: never;
@@ -108531,6 +109870,126 @@ export interface operations {
                 content: {
                     "application/json": {
                         [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyChannelsController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description My channels */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Channels the box uses */
+                        channels: ("sms" | "viber" | "whatsapp")[];
+                        contact: {
+                            consents: {
+                                /** @enum {string} */
+                                channel: "sms" | "viber" | "whatsapp";
+                                granted: boolean;
+                                /** Format: date-time */
+                                granted_at?: string | null;
+                                /** @enum {string} */
+                                purpose: "service" | "marketing";
+                                source?: string | null;
+                                text_version?: string | null;
+                                /** Format: date-time */
+                                withdrawn_at?: string | null;
+                            }[];
+                            country?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id?: string | null;
+                            locale: string;
+                            /** Format: date-time */
+                            opted_out_at?: string | null;
+                            /** @description Masked for staff; full for the person */
+                            phone: string;
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyChannelsController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    consents?: {
+                        /** @enum {string} */
+                        channel: "sms" | "viber" | "whatsapp";
+                        granted: boolean;
+                        /** @enum {string} */
+                        purpose: "service" | "marketing";
+                    }[];
+                    /** @enum {string} */
+                    locale?: "el" | "en" | "de" | "fr" | "it" | "es" | "nl" | "pt-PT" | "bg" | "ru" | "ar" | "he";
+                    phone?: string;
+                    text_version?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description My channels */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Channels the box uses */
+                        channels: ("sms" | "viber" | "whatsapp")[];
+                        contact: {
+                            consents: {
+                                /** @enum {string} */
+                                channel: "sms" | "viber" | "whatsapp";
+                                granted: boolean;
+                                /** Format: date-time */
+                                granted_at?: string | null;
+                                /** @enum {string} */
+                                purpose: "service" | "marketing";
+                                source?: string | null;
+                                text_version?: string | null;
+                                /** Format: date-time */
+                                withdrawn_at?: string | null;
+                            }[];
+                            country?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id?: string | null;
+                            locale: string;
+                            /** Format: date-time */
+                            opted_out_at?: string | null;
+                            /** @description Masked for staff; full for the person */
+                            phone: string;
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                        } | null;
                     };
                 };
             };
