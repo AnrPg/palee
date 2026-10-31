@@ -82,7 +82,11 @@ config :palee, Oban,
        # ADR-252: reminders before a client's health certificate expires.
        {"45 8 * * *", Palee.Workers.HealthCertificateRemindersJob},
        # ADR-280 verification: unreviewed selfies after 7 days, SMS codes after a day.
-       {"5 4 * * *", Palee.Workers.PartnerVerificationRetention}
+       {"5 4 * * *", Palee.Workers.PartnerVerificationRetention},
+       # ADR-379: webhook deliveries that are due (only boxes with something to send).
+       {"* * * * *", Palee.Workers.DeliverWebhooksJob},
+       # ADR-378..381: idempotency records, the access log, audience syncs.
+       {"33 * * * *", Palee.Workers.OpenPlatformSweepJob}
      ]}
   ],
   queues: [
@@ -100,7 +104,9 @@ config :palee, Oban,
     # ADR-246: provider calls for online payments.
     payments: 2,
     # ADR-254: CSV imports, one at a time per node (each row its own transaction).
-    imports: 1
+    imports: 1,
+    # ADR-379/380: webhook deliveries and email-list syncs (HTTP to receivers).
+    integrations: 3
   ]
 
 config :palee, Palee.Infrastructure.Auth.Guardian,
@@ -254,6 +260,43 @@ config :palee, :payment_gateways, %{
   "stripe" => Palee.Infrastructure.Payments.StripeGateway
 }
 
+# ADR-378..381: the open platform (public API, webhooks, email lists) and door access.
+config :palee, :integration_store, Palee.Infrastructure.Integrations.EctoIntegrationStore
+config :palee, :access_store, Palee.Infrastructure.Access.EctoAccessStore
+config :palee, :webhook_transport, Palee.Infrastructure.Integrations.HttpWebhookTransport
+
+config :palee, :audience_providers, %{
+  "sandbox" => Palee.Infrastructure.Integrations.SandboxAudience,
+  "mailchimp" => Palee.Infrastructure.Integrations.MailchimpAudience,
+  "brevo" => Palee.Infrastructure.Integrations.BrevoAudience
+}
+
+config :palee, :door_controllers, %{
+  "sandbox" => Palee.Infrastructure.Access.SandboxDoorController,
+  "shelly" => Palee.Infrastructure.Access.ShellyDoorController,
+  "kisi" => Palee.Infrastructure.Access.KisiDoorController
+}
+
+# ADR-300 (first step): the operations of the public API v1. Each module is
+# one use case; routes, the OpenAPI document and checks come from its spec.
+config :palee, :operations, [
+  Palee.Application.Operations.MembersList,
+  Palee.Application.Operations.MembersGet,
+  Palee.Application.Operations.MembersInvite,
+  Palee.Application.Operations.ClassesList,
+  Palee.Application.Operations.ClassesGet,
+  Palee.Application.Operations.ClassesCreate,
+  Palee.Application.Operations.BookingsList,
+  Palee.Application.Operations.BookingsCreate,
+  Palee.Application.Operations.BookingsCancel,
+  Palee.Application.Operations.PackagesList,
+  Palee.Application.Operations.MemberPackagesAssign,
+  Palee.Application.Operations.PaymentsList,
+  Palee.Application.Operations.WebhookSubscriptionsCreate,
+  Palee.Application.Operations.WebhookSubscriptionsDelete,
+  Palee.Application.Operations.KeyDescribe
+]
+
 # ADR-252: documents and signatures. The evidence store is where an advanced
 # e-signature provider plugs in later.
 config :palee, :documents_store, Palee.Infrastructure.Documents.EctoDocumentStore
@@ -343,24 +386,36 @@ config :palee, :domain_event_handlers, %{
   membership_activated: [
     Palee.Application.TrialReactions,
     Palee.Application.EventReactions,
-    Palee.Application.ReferralReactions
+    Palee.Application.ReferralReactions,
+    # ADR-379: domain events with a public form feed the box's webhooks.
+    Palee.Application.Integrations.WebhookEvents
   ],
   attendance_recorded: [
     Palee.Application.TrialReactions,
     Palee.Application.ReferralReactions,
     Palee.Application.WalletReactions,
-    Palee.Application.BoxScreenReactions
+    Palee.Application.BoxScreenReactions,
+    Palee.Application.Integrations.WebhookEvents
   ],
   # ADR-156: the invite funnel follows events, trials, joining and paying.
   event_attendance_recorded: [Palee.Application.ReferralReactions],
-  membership_payment_recorded: [Palee.Application.ReferralReactions],
+  membership_payment_recorded: [Palee.Application.ReferralReactions, Palee.Application.Integrations.WebhookEvents],
   booking_cancelled: [
     Palee.Application.TrialReactions,
     Palee.Application.WalletReactions,
-    Palee.Application.BoxScreenReactions
+    Palee.Application.BoxScreenReactions,
+    Palee.Application.Integrations.WebhookEvents
   ],
-  booking_made: [Palee.Application.WalletReactions, Palee.Application.BoxScreenReactions],
-  class_cancelled: [Palee.Application.TrialReactions, Palee.Application.BoxScreenReactions],
+  booking_made: [
+    Palee.Application.WalletReactions,
+    Palee.Application.BoxScreenReactions,
+    Palee.Application.Integrations.WebhookEvents
+  ],
+  class_cancelled: [
+    Palee.Application.TrialReactions,
+    Palee.Application.BoxScreenReactions,
+    Palee.Application.Integrations.WebhookEvents
+  ],
   # ADR-253: box screens refresh their leaderboards.
   workout_result_recorded: [Palee.Application.BoxScreenReactions]
 }

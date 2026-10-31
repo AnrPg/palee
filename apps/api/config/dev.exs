@@ -86,5 +86,11 @@ config :palee, Palee.Infrastructure.Fiscal.Ed25519JournalSigner,
 # ADR-246: the sandbox payment provider (never enabled in prod).
 config :palee, :payments_sandbox, true
 
+# ADR-378..381: sandbox email lists and doors, local webhooks logged not sent.
+config :palee, :open_platform_sandbox, true
+config :palee, :webhook_transport, Palee.Infrastructure.Integrations.SandboxWebhookTransport
+config :palee, :webhook_urls, allow_http: true, allow_private: true
+config :palee, :api_key_env, "test"
+
 # ADR-280 verification: the SMS code is logged (number masked), not sent.
 config :palee, :sms_sender, Palee.Infrastructure.Sms.LogSmsSender

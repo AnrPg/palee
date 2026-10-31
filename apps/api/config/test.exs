@@ -123,6 +123,12 @@ config :palee, :stripe_connect, %{
 }
 
 config :palee, :payments_http, req_options: [plug: {Req.Test, Palee.PaymentsHttp}]
+# ADR-378..381: open platform and doors: sandboxes on, provider HTTP stubbed.
+config :palee, :open_platform_sandbox, true
+config :palee, :webhook_http, req_options: [plug: {Req.Test, Palee.WebhookHttp}]
+config :palee, :audience_http, req_options: [plug: {Req.Test, Palee.AudienceHttp}]
+config :palee, :door_http, req_options: [plug: {Req.Test, Palee.DoorHttp}]
+config :palee, :api_key_env, "test"
 # ADR-250/251/266: fiskaly calls go to a test plug.
 config :palee, :fiscal_http, req_options: [plug: {Req.Test, Palee.FiscalHttp}]
 # ADR-273: myDATA (saving a test or production connection checks it) too.
