@@ -55,16 +55,17 @@ defmodule Palee.BoxSite.RLSTest do
     assert as_session(conn, nil, other_s, false, fn -> Enum.map(tables, count) end) == [0, 0, 0]
     assert as_session(conn, nil, nil, false, fn -> Enum.map(tables, count) end) == [0, 0, 0]
 
-    # Another box cannot write into this box.
-    assert_raise Postgrex.Error, fn ->
-      as_session(conn, nil, other_s, false, fn ->
-        Postgrex.query!(
-          conn,
-          "INSERT INTO box_site_consents (id, organization_id, visitor_id, banner_version, analytics, marketing, action, recorded_at, expires_at) VALUES (gen_random_uuid(), $1, $2, 1, false, false, 'reject_all', now(), now() + interval '1 day')",
-          [org, visitor]
-        )
-      end)
-    end
+    # Another box cannot write into this box: the row lands in its own box.
+    as_session(conn, nil, other_s, false, fn ->
+      Postgrex.query!(
+        conn,
+        "INSERT INTO box_site_consents (id, organization_id, visitor_id, banner_version, analytics, marketing, action, recorded_at, expires_at) VALUES (gen_random_uuid(), $1, $2, 1, false, false, 'reject_all', now(), now() + interval '1 day')",
+        [org, visitor]
+      )
+    end)
+
+    assert as_session(conn, nil, org_s, false, fn -> count.("box_site_consents") end) == 1
+    assert as_session(conn, nil, other_s, false, fn -> count.("box_site_consents") end) == 1
 
     assert_raise Postgrex.Error, ~r/insert-only/, fn ->
       as_session(conn, nil, org_s, false, fn ->

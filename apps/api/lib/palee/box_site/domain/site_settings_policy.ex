@@ -100,6 +100,9 @@ defmodule Palee.BoxSite.Domain.SiteSettingsPolicy do
   defp faq({changes, errors}, %{"faq" => _other}), do: {changes, Map.put(errors, :faq, "invalid")}
   defp faq(acc, _params), do: acc
 
+  defp faq_entry(%{question: question, answer: answer}),
+    do: faq_entry(%{"question" => question, "answer" => answer})
+
   defp faq_entry(%{"question" => question, "answer" => answer})
        when is_binary(question) and is_binary(answer) do
     {question, answer} = {String.trim(question), String.trim(answer)}

@@ -37,7 +37,7 @@ defmodule Palee.BoxSite.SiteSettings do
   def changeset(settings, attrs) do
     settings
     |> cast(attrs, @fields)
-    |> optimistic_lock(:lock_version)
+    |> then(&if(&1.data.__meta__.state == :loaded, do: optimistic_lock(&1, :lock_version), else: &1))
     |> check_constraint(:meta_pixel_id, name: :box_site_settings_check)
     |> unique_constraint(:organization_id)
   end

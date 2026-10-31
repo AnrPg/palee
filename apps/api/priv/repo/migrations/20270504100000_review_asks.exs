@@ -31,7 +31,7 @@ defmodule Palee.Repo.Migrations.ReviewAsks do
 
     create constraint(:review_ask_settings, :review_ask_settings_check,
              check: """
-             (google_place_id IS NULL OR google_place_id ~ '^[A-Za-z0-9_-]{10,300}$')
+             (google_place_id IS NULL OR (google_place_id ~ '^[A-Za-z0-9_-]+$' AND char_length(google_place_id) BETWEEN 10 AND 300))
              AND (NOT enabled OR google_place_id IS NOT NULL)
              AND cardinality(milestones) BETWEEN 1 AND 6
              """

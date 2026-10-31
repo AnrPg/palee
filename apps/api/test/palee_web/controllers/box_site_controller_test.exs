@@ -57,6 +57,7 @@ defmodule PaleeWeb.BoxSiteControllerTest do
   end
 
   defp owner_conn(ctx), do: put_bearer_token(build_conn(), ctx.owner)
+  defp visitor, do: build_conn() |> put_req_header("content-type", "application/json")
 
   test "staff set the site; visitors see only what is public", ctx do
     assert %{"settings" => %{"lock_version" => 0, "public_schedule" => false}, "domains" => []} =
@@ -121,17 +122,17 @@ defmodule PaleeWeb.BoxSiteControllerTest do
     visitor = Ecto.UUID.generate()
 
     assert %{"allowed_tags" => ["meta_pixel_id"], "marketing" => true} =
-             build_conn()
+             visitor()
              |> post("#{ctx.public}/consents", %{visitor_id: visitor, banner_version: 2, action: "accept_all"})
              |> json_response(201)
 
     assert %{"errors" => _} =
-             build_conn()
+             visitor()
              |> post("#{ctx.public}/consents", %{visitor_id: visitor, banner_version: 1, action: "accept_all"})
              |> json_response(422)
 
     assert %{"status" => "received"} =
-             build_conn()
+             visitor()
              |> post("#{ctx.public}/forms/trial", %{
                name: "Μαρία",
                email: "maria@example.gr",
@@ -144,12 +145,12 @@ defmodule PaleeWeb.BoxSiteControllerTest do
 
     # A bot's post looks accepted and is dropped.
     assert %{"status" => "received"} =
-             build_conn()
+             visitor()
              |> post("#{ctx.public}/forms/contact", %{name: "x", email: "x@y.zz", privacy_ack: true, website: "http://spam"})
              |> json_response(202)
 
     assert %{"errors" => _} =
-             build_conn() |> post("#{ctx.public}/forms/contact", %{name: "Νίκος", privacy_ack: false}) |> json_response(422)
+             visitor() |> post("#{ctx.public}/forms/contact", %{name: "Νίκος", privacy_ack: false}) |> json_response(422)
 
     # Without background jobs the outbox ran inline: delivered and redacted.
     rows =
@@ -171,7 +172,7 @@ defmodule PaleeWeb.BoxSiteControllerTest do
     ctx |> owner_conn() |> put(ctx.admin, %{lock_version: 0, forms_enabled: false}) |> json_response(200)
 
     assert %{"code" => "site_forms_closed"} =
-             build_conn()
+             visitor()
              |> post("#{ctx.public}/forms/trial", %{name: "Μαρία", email: "m@example.gr", privacy_ack: true})
              |> json_response(409)
 
@@ -179,11 +180,11 @@ defmodule PaleeWeb.BoxSiteControllerTest do
 
     ctx |> owner_conn() |> put(ctx.admin, %{lock_version: 1, forms_enabled: true}) |> json_response(200)
 
-    build_conn()
+    visitor()
     |> post("#{ctx.public}/forms/trial", %{name: "reject me", email: "m@example.gr", privacy_ack: true})
     |> json_response(202)
 
-    build_conn()
+    visitor()
     |> post("#{ctx.public}/forms/trial", %{name: "retry me", email: "r@example.gr", privacy_ack: true})
     |> json_response(202)
 

@@ -243,7 +243,7 @@ defmodule Palee.BoxSite.DomainPoliciesTest do
       assert {:error, {:invalid_fields, %{visitor_id: "invalid"}}} =
                FormPolicy.validate("trial", Map.put(@valid, "visitor_id", "x"), @now)
 
-      params = Map.put(@valid, "attribution", %{utm_source: "instagram", "evil" => "x"})
+      params = Map.put(@valid, "attribution", %{"evil" => "x", "utm_source" => "instagram"})
       assert {:ok, %{attribution: %{"utm_source" => "instagram"}}} = FormPolicy.validate("trial", params, @now)
     end
 
