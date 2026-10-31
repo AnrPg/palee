@@ -194,7 +194,7 @@ defmodule Palee.Infrastructure.BoxSite.EctoBoxSiteStore do
 
   @impl true
   def insert_submission(%{organization_id: organization_id}, attrs) do
-    %SiteSubmission{organization_id: organization_id}
+    %SiteSubmission{organization_id: organization_id, id: Map.get(attrs, :id)}
     |> SiteSubmission.changeset(attrs)
     |> Repo.insert()
     |> case do

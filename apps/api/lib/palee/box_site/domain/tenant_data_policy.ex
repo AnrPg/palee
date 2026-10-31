@@ -13,6 +13,8 @@ defmodule Palee.BoxSite.Domain.TenantDataPolicy do
             context: "box_site",
             purge_order: 6,
             disposition: :purge,
+            # The Conversions API token and domain proofs never leave the database.
+            excluded_columns: ["conversions_api_token", "verification_token", "conversion_payload"],
             basis:
               "Website settings, custom domains, the form outbox and the pseudonymous consent log are operational data with no retention obligation; personal fields of submissions are cleared once delivered to leads.",
             tables: [
