@@ -542,6 +542,28 @@ never mix (flow, set structure, add-ons); presets only fill them in. Code names 
 | Per round | Ανά γύρο | `PlanRow.perRound` | Values that change round by round (Alt+V) in every flow other than Σετ, where they change per set («ανά σετ»). «Ίδιες τιμές σε κάθε γύρο» turns it off. | Different round (other exercises, not other values). |
 | Rest row | Ξεκούραση | `PlanRow.kind: "rest"` | A rest written as a row between exercises (e.g. inside a superset). | The flow Ξεκούραση (a whole rest section). |
 
+### 4.21 Training and floor (ADR-356..359)
+
+Leaderboard filters, WOD snapshots, the fitness profile, visit badges, calendar invites and staff notes
+(v3.1, CP-D2/D3/D6/E1/E4/E5).
+
+| English | Ελληνικά | Code | What it is | Not to be confused with |
+|---|---|---|---|---|
+| Division | Κατηγορία | `leaderboard_opt_ins.division` (`women`, `men`) | What a person who opted in to the box's leaderboards says so results are compared fairly. Optional; set only by the person. Shown as «Γυναίκες» / «Άνδρες». | Scale level («Επίπεδο», RX/Scaled); class type. |
+| Age group | Ηλικιακή ομάδα | `age_group` (`18_34`, `35_39` … `65_plus`) | Masters-style group from the birth year, by the age reached during the year. | Age confirmation at sign-up. |
+| Percentile | Ποσοστημόριο | `percentile`, `top_percent` | Where a score stands in the slice shown: «καλύτερος από το 80%» / «στο top 20%». Only with five results or more, only for people who opted in. | XP level, Βελτίωση δύναμης (self comparison, Journal). |
+| WOD snapshot | Στιγμιότυπο WOD | `workout_snapshots` | The WOD exactly as it read when it was assigned or a score was logged. Later edits never change it. Shown as «Όπως ήταν στις …». | Version (ADR-031 draft/published); the class's copy filed in the Classes folder. |
+| Not assigned / Mixed / All assigned | Χωρίς WOD / Μικτό / Όλα με WOD | `days[].tag` (`not_assigned`, `mixed`, `all_assigned`) | The tag of a gym day in programming: none, some or all of its classes have their WOD. | Draft class («Πρόχειρο», a class without a WOD, ADR-176). |
+| Fitness profile | Επίπεδο φυσικής κατάστασης | `GET /me/fitness-profile`, `fitness-profile` v1 | A 0–100 score per domain from the person's own PRs, with the reasoning shown and «Τι να δουλέψεις». Journal only, never compared with others. | Επίπεδο XP (gamification); Επίπεδο (scale level). |
+| Domain | Πεδίο | `strength`, `power`, `gymnastics`, `monostructural`, `metcon` | Δύναμη, Ισχύς, Γυμναστική, Αντοχή (monostructural), Metcon. | Fitness qualities (the ten of the radar, ADR-163). |
+| What to work on | Τι να δουλέψεις | `focus` | Up to three suggestions: the weakest domain, a domain never tested, a quality trained little, a benchmark to test again. Never a domain hurt by an active injury. | Coach's programming. |
+| First visit | Πρώτη επίσκεψη | badge `first_visit` | No earlier visit to the box (class that took place or check-in). | Trial («Δοκιμαστικό», a seat kind). |
+| First time in this class | Πρώτη φορά σε αυτό το τμήμα | badge `first_in_class_type` | Visited before, never this kind of class. | First visit. |
+| Brought by a member | Καλεσμένος μέλους | badge `brought_by_member` | A member's guest pass seat (guest's name on the booking). | Guest («Επισκέπτης», a box role, ADR-272). |
+| Came through | Ήρθε μέσω | `via` (`event`, `referral`) | How a first-time visitor came: a box event or a member's invitation. | |
+| Add to calendar | Προσθήκη στο ημερολόγιο | `GET /bookings/:id/calendar.ics` | One booking as an .ics invite; a cancelled one comes as a cancellation. | Calendar subscription («Συνδρομή ημερολογίου», the personal feed URL). |
+| Staff note | Σημείωση για το staff | `coaching_notes.audience = staff` | A note about a member that every staff member of the box reads, the front desk included. | Private coach note («Ιδιωτική σημείωση», ADR-101). |
+
 ## 5. Name clashes found, and proposals
 
 Each needs ANR's choice before the UI changes. The recommended option is first.
