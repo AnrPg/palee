@@ -2840,6 +2840,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/me/fitness-profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Your fitness score per domain, its reasoning and what to work on */
+        get: operations["PaleeWeb.FitnessProfileController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me/follow-requests": {
         parameters: {
             query?: never;
@@ -9548,6 +9565,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/schedule/slots/{id}/visit-badges": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Visit badges of every seat of a class (first visit, guest, trial, how they came) */
+        get: operations["PaleeWeb.AdminVisitBadgesController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/schedule/slots/{id}/workout": {
         parameters: {
             query?: never;
@@ -11131,6 +11165,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/bookings/{id}/calendar.ics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Your booking as an iCalendar invite (METHOD:CANCEL once it is cancelled) */
+        get: operations["PaleeWeb.BookingCalendarController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/bookings/{id}/check-in": {
         parameters: {
             query?: never;
@@ -12275,6 +12326,24 @@ export interface paths {
         /** What paying this invoice online costs, and the text to agree to when saving the card */
         get: operations["PaleeWeb.MyPaymentsController.terms"];
         put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/leaderboard-profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Your division and birth year for this box's leaderboards */
+        get: operations["PaleeWeb.WorkoutLeaderboardController.profile"];
+        /** Set your division and birth year (only after opting in to leaderboards) */
+        put: operations["PaleeWeb.WorkoutLeaderboardController.update_profile"];
         post?: never;
         delete?: never;
         options?: never;
@@ -15054,6 +15123,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/workout-snapshots/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A WOD snapshot (staff who program or follow training, or its own athlete) */
+        get: operations["PaleeWeb.WorkoutSnapshotController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/workouts/{id}": {
         parameters: {
             query?: never;
@@ -15083,6 +15169,23 @@ export interface paths {
          * @description goals is null when none are saved or the coach keeps them hidden.
          */
         get: operations["PaleeWeb.WorkoutGoalsController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/workouts/{id}/leaderboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A WOD's leaderboard, filtered, with a percentile for each score */
+        get: operations["PaleeWeb.WorkoutLeaderboardController.show"];
         put?: never;
         post?: never;
         delete?: never;
@@ -23860,6 +23963,24 @@ export interface components {
                 unlimited?: boolean;
             } | null;
             problems: ("frozen" | "package_expired" | "unpaid" | "no_spots" | "nothing_to_check_in")[];
+            /** VisitBadges */
+            visit?: {
+                badges: ("first_visit" | "first_in_class_type" | "guest" | "trial" | "brought_by_member" | "came_via_event" | "came_via_referral")[];
+                /**
+                 * VisitVia
+                 * @description How a first-time visitor came (referral attribution)
+                 */
+                via: {
+                    by_nickname?: string | null;
+                    /** Format: uuid */
+                    by_user_id?: string | null;
+                    channel?: string | null;
+                    /** Format: uuid */
+                    event_id?: string | null;
+                    /** @enum {string} */
+                    kind: "event" | "referral";
+                } | null;
+            };
             warnings?: "payment_due"[];
         };
         /** CheckInDeskScanRequest */
@@ -24484,6 +24605,66 @@ export interface components {
             /** Format: uuid */
             workout_id?: string | null;
         };
+        /** ClassVisitBadges */
+        ClassVisitBadges: {
+            people: {
+                badges: ("first_visit" | "first_in_class_type" | "guest" | "trial" | "brought_by_member" | "came_via_event" | "came_via_referral")[];
+                /** Format: uuid */
+                booking_id: string;
+                brought_by: {
+                    nickname?: string | null;
+                    /** Format: uuid */
+                    user_id: string;
+                } | null;
+                guest_name: string | null;
+                /** Format: uuid */
+                user_id: string;
+                /**
+                 * VisitVia
+                 * @description How a first-time visitor came (referral attribution)
+                 */
+                via: {
+                    by_nickname?: string | null;
+                    /** Format: uuid */
+                    by_user_id?: string | null;
+                    channel?: string | null;
+                    /** Format: uuid */
+                    event_id?: string | null;
+                    /** @enum {string} */
+                    kind: "event" | "referral";
+                } | null;
+            }[];
+            /** Format: uuid */
+            slot_id: string;
+        };
+        /** ClassVisitPerson */
+        ClassVisitPerson: {
+            badges: ("first_visit" | "first_in_class_type" | "guest" | "trial" | "brought_by_member" | "came_via_event" | "came_via_referral")[];
+            /** Format: uuid */
+            booking_id: string;
+            brought_by: {
+                nickname?: string | null;
+                /** Format: uuid */
+                user_id: string;
+            } | null;
+            guest_name: string | null;
+            /** Format: uuid */
+            user_id: string;
+            /**
+             * VisitVia
+             * @description How a first-time visitor came (referral attribution)
+             */
+            via: {
+                by_nickname?: string | null;
+                /** Format: uuid */
+                by_user_id?: string | null;
+                channel?: string | null;
+                /** Format: uuid */
+                event_id?: string | null;
+                /** @enum {string} */
+                kind: "event" | "referral";
+            } | null;
+        };
         /** CleaningArea */
         CleaningArea: {
             /** Format: date-time */
@@ -24803,6 +24984,11 @@ export interface components {
         };
         /** CoachNote */
         CoachNote: {
+            /**
+             * @description ADR-359: private coach note (ADR-101) or a note every staff member reads
+             * @enum {string}
+             */
+            audience?: "private" | "staff";
             body: string;
             /** Format: uuid */
             client_user_id: string;
@@ -29373,6 +29559,15 @@ export interface components {
             /** Format: date */
             to: string;
         };
+        /** DayAssignmentTag */
+        DayAssignmentTag: {
+            classes: number;
+            /** Format: date */
+            date: string;
+            /** @enum {string} */
+            tag: "none" | "not_assigned" | "mixed" | "all_assigned";
+            with_wod: number;
+        };
         /**
          * DepthBalance
          * @description Exercise sets by primary muscles; a ratio only once both sides have sets and reach 4 together
@@ -30609,6 +30804,127 @@ export interface components {
                 /** Format: uuid */
                 user_id: string;
             };
+        };
+        /** FitnessDomain */
+        FitnessDomain: {
+            /** @enum {string|null} */
+            confidence: "low" | "medium" | "high" | null;
+            /** @enum {string} */
+            domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+            reasons: {
+                age_days: number;
+                anchors: {
+                    points: number;
+                    value: number;
+                }[];
+                /** Format: date */
+                beaten_on: string;
+                benchmark: string;
+                /** @enum {string} */
+                domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+                /** @description 1RM estimated from a multi-rep set */
+                estimated: boolean;
+                /** @description The PR as the person named it */
+                name: string;
+                points: number;
+                stale: boolean;
+                /** @enum {string} */
+                unit: "kg" | "reps" | "mins_secs";
+                /** @description kg (1RM), reps or seconds */
+                value: number;
+            }[];
+            score: number | null;
+            stale: boolean;
+        };
+        /** FitnessFocus */
+        FitnessFocus: {
+            /** @enum {string} */
+            domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+            /** @enum {string} */
+            kind: "weakest_domain" | "undertrained_quality" | "stale_benchmark" | "untested_domain";
+        } & {
+            [key: string]: unknown;
+        };
+        /** FitnessProfile */
+        FitnessProfile: {
+            algorithm: {
+                id: string;
+                version: number;
+            };
+            benchmarks_known: number;
+            /** @enum {string|null} */
+            division: "women" | "men" | null;
+            domains: {
+                /** @enum {string|null} */
+                confidence: "low" | "medium" | "high" | null;
+                /** @enum {string} */
+                domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+                reasons: {
+                    age_days: number;
+                    anchors: {
+                        points: number;
+                        value: number;
+                    }[];
+                    /** Format: date */
+                    beaten_on: string;
+                    benchmark: string;
+                    /** @enum {string} */
+                    domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+                    /** @description 1RM estimated from a multi-rep set */
+                    estimated: boolean;
+                    /** @description The PR as the person named it */
+                    name: string;
+                    points: number;
+                    stale: boolean;
+                    /** @enum {string} */
+                    unit: "kg" | "reps" | "mins_secs";
+                    /** @description kg (1RM), reps or seconds */
+                    value: number;
+                }[];
+                score: number | null;
+                stale: boolean;
+            }[];
+            focus: ({
+                /** @enum {string} */
+                domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+                /** @enum {string} */
+                kind: "weakest_domain" | "undertrained_quality" | "stale_benchmark" | "untested_domain";
+            } & {
+                [key: string]: unknown;
+            })[];
+            injury_caution: boolean;
+            neutral_standards: boolean;
+            overall: {
+                domains_scored: number;
+                reason: string;
+                score: number;
+            } | null;
+        };
+        /**
+         * FitnessReason
+         * @description One benchmark PR and the points it gave
+         */
+        FitnessReason: {
+            age_days: number;
+            anchors: {
+                points: number;
+                value: number;
+            }[];
+            /** Format: date */
+            beaten_on: string;
+            benchmark: string;
+            /** @enum {string} */
+            domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+            /** @description 1RM estimated from a multi-rep set */
+            estimated: boolean;
+            /** @description The PR as the person named it */
+            name: string;
+            points: number;
+            stale: boolean;
+            /** @enum {string} */
+            unit: "kg" | "reps" | "mins_secs";
+            /** @description kg (1RM), reps or seconds */
+            value: number;
         };
         /** FloorPlan */
         FloorPlan: {
@@ -31981,6 +32297,19 @@ export interface components {
                 /** Format: uuid */
                 thread_id?: string;
             } | null;
+        };
+        /** LeaderboardProfile */
+        LeaderboardProfile: {
+            birth_year: number | null;
+            /** @enum {string|null} */
+            division: "women" | "men" | null;
+            opted_in: boolean;
+        };
+        /** LeaderboardProfileRequest */
+        LeaderboardProfileRequest: {
+            birth_year?: number | null;
+            /** @enum {string|null} */
+            division?: "women" | "men" | null;
         };
         /** MachinePlacement */
         MachinePlacement: {
@@ -44487,6 +44816,38 @@ export interface components {
                 [key: string]: unknown;
             };
         };
+        /** VisitBadges */
+        VisitBadges: {
+            badges: ("first_visit" | "first_in_class_type" | "guest" | "trial" | "brought_by_member" | "came_via_event" | "came_via_referral")[];
+            /**
+             * VisitVia
+             * @description How a first-time visitor came (referral attribution)
+             */
+            via: {
+                by_nickname?: string | null;
+                /** Format: uuid */
+                by_user_id?: string | null;
+                channel?: string | null;
+                /** Format: uuid */
+                event_id?: string | null;
+                /** @enum {string} */
+                kind: "event" | "referral";
+            } | null;
+        };
+        /**
+         * VisitVia
+         * @description How a first-time visitor came (referral attribution)
+         */
+        VisitVia: {
+            by_nickname?: string | null;
+            /** Format: uuid */
+            by_user_id?: string | null;
+            channel?: string | null;
+            /** Format: uuid */
+            event_id?: string | null;
+            /** @enum {string} */
+            kind: "event" | "referral";
+        } | null;
         /** VoiceLogAvailability */
         VoiceLogAvailability: {
             available: boolean;
@@ -45717,6 +46078,129 @@ export interface components {
             qualities: string[];
             taxonomy_version: number;
             unmatched_exercises: number;
+        };
+        /** WorkoutLeaderboard */
+        WorkoutLeaderboard: {
+            filters: {
+                age_group?: string | null;
+                buddies: boolean;
+                /** Format: date */
+                date: string;
+                division?: string | null;
+                /** Format: uuid */
+                location_id?: string | null;
+                scale?: string | null;
+                /** @enum {string} */
+                scope: "box" | "branch";
+                /** @enum {string} */
+                window: "day" | "week" | "month" | "year" | "all";
+            };
+            me: {
+                avatar_url?: string | null;
+                me: boolean;
+                nickname?: string | null;
+                /** @description Share of the other results of the slice this one beat (0-100) */
+                percentile: number | null;
+                rank: number | null;
+                scale_level_slug?: string | null;
+                /** @description «Top X%»: share of results at this place or better, rounded up */
+                top_percent: number | null;
+                unit?: string | null;
+                /** Format: uuid */
+                user_id: string;
+                value?: string | null;
+            } | null;
+            /** @description Whether the viewer opted in; without it no comparison is shown */
+            opted_in: boolean;
+            options: {
+                age_groups: string[];
+                divisions: string[];
+                scales: {
+                    label: string;
+                    slug: string;
+                }[];
+                scopes: string[];
+                windows: string[];
+            };
+            profile?: {
+                birth_year?: number | null;
+                division?: string | null;
+            } | null;
+            rows: {
+                avatar_url?: string | null;
+                me: boolean;
+                nickname?: string | null;
+                /** @description Share of the other results of the slice this one beat (0-100) */
+                percentile: number | null;
+                rank: number | null;
+                scale_level_slug?: string | null;
+                /** @description «Top X%»: share of results at this place or better, rounded up */
+                top_percent: number | null;
+                unit?: string | null;
+                /** Format: uuid */
+                user_id: string;
+                value?: string | null;
+            }[];
+            section?: {
+                [key: string]: unknown;
+            } | null;
+            total: number;
+            workout: {
+                /** Format: uuid */
+                id: string;
+                title?: string | null;
+            };
+        };
+        /** WorkoutLeaderboardRow */
+        WorkoutLeaderboardRow: {
+            avatar_url?: string | null;
+            me: boolean;
+            nickname?: string | null;
+            /** @description Share of the other results of the slice this one beat (0-100) */
+            percentile: number | null;
+            rank: number | null;
+            scale_level_slug?: string | null;
+            /** @description «Top X%»: share of results at this place or better, rounded up */
+            top_percent: number | null;
+            unit?: string | null;
+            /** Format: uuid */
+            user_id: string;
+            value?: string | null;
+        };
+        /** WorkoutSnapshot */
+        WorkoutSnapshot: {
+            /** @description The WOD as it read then (title, type, text, sections, plans, body) */
+            content: {
+                [key: string]: unknown;
+            };
+            content_hash: string;
+            format_version: number;
+            /** Format: uuid */
+            id: string;
+            /** Format: date-time */
+            taken_at: string;
+            title?: string | null;
+            /** Format: uuid */
+            workout_id: string;
+        };
+        /** WorkoutSnapshotResponse */
+        WorkoutSnapshotResponse: {
+            /** WorkoutSnapshot */
+            snapshot: {
+                /** @description The WOD as it read then (title, type, text, sections, plans, body) */
+                content: {
+                    [key: string]: unknown;
+                };
+                content_hash: string;
+                format_version: number;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                taken_at: string;
+                title?: string | null;
+                /** Format: uuid */
+                workout_id: string;
+            };
         };
     };
     responses: never;
@@ -62136,6 +62620,93 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.FitnessProfileController.show": {
+        parameters: {
+            query?: {
+                /** @description Standards to read the PRs with (neutral mean when absent) */
+                division?: "women" | "men";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Fitness profile */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        algorithm: {
+                            id: string;
+                            version: number;
+                        };
+                        benchmarks_known: number;
+                        /** @enum {string|null} */
+                        division: "women" | "men" | null;
+                        domains: {
+                            /** @enum {string|null} */
+                            confidence: "low" | "medium" | "high" | null;
+                            /** @enum {string} */
+                            domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+                            reasons: {
+                                age_days: number;
+                                anchors: {
+                                    points: number;
+                                    value: number;
+                                }[];
+                                /** Format: date */
+                                beaten_on: string;
+                                benchmark: string;
+                                /** @enum {string} */
+                                domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+                                /** @description 1RM estimated from a multi-rep set */
+                                estimated: boolean;
+                                /** @description The PR as the person named it */
+                                name: string;
+                                points: number;
+                                stale: boolean;
+                                /** @enum {string} */
+                                unit: "kg" | "reps" | "mins_secs";
+                                /** @description kg (1RM), reps or seconds */
+                                value: number;
+                            }[];
+                            score: number | null;
+                            stale: boolean;
+                        }[];
+                        focus: ({
+                            /** @enum {string} */
+                            domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+                            /** @enum {string} */
+                            kind: "weakest_domain" | "undertrained_quality" | "stale_benchmark" | "untested_domain";
+                        } & {
+                            [key: string]: unknown;
+                        })[];
+                        injury_caution: boolean;
+                        neutral_standards: boolean;
+                        overall: {
+                            domains_scored: number;
+                            reason: string;
+                            score: number;
+                        } | null;
+                    };
+                };
+            };
+            /** @description Unknown division */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.FollowController.requests": {
         parameters: {
             query?: {
@@ -72071,6 +72642,24 @@ export interface operations {
                             unlimited?: boolean;
                         } | null;
                         problems: ("frozen" | "package_expired" | "unpaid" | "no_spots" | "nothing_to_check_in")[];
+                        /** VisitBadges */
+                        visit?: {
+                            badges: ("first_visit" | "first_in_class_type" | "guest" | "trial" | "brought_by_member" | "came_via_event" | "came_via_referral")[];
+                            /**
+                             * VisitVia
+                             * @description How a first-time visitor came (referral attribution)
+                             */
+                            via: {
+                                by_nickname?: string | null;
+                                /** Format: uuid */
+                                by_user_id?: string | null;
+                                channel?: string | null;
+                                /** Format: uuid */
+                                event_id?: string | null;
+                                /** @enum {string} */
+                                kind: "event" | "referral";
+                            } | null;
+                        };
                         warnings?: "payment_due"[];
                     };
                 };
@@ -72229,6 +72818,24 @@ export interface operations {
                             unlimited?: boolean;
                         } | null;
                         problems: ("frozen" | "package_expired" | "unpaid" | "no_spots" | "nothing_to_check_in")[];
+                        /** VisitBadges */
+                        visit?: {
+                            badges: ("first_visit" | "first_in_class_type" | "guest" | "trial" | "brought_by_member" | "came_via_event" | "came_via_referral")[];
+                            /**
+                             * VisitVia
+                             * @description How a first-time visitor came (referral attribution)
+                             */
+                            via: {
+                                by_nickname?: string | null;
+                                /** Format: uuid */
+                                by_user_id?: string | null;
+                                channel?: string | null;
+                                /** Format: uuid */
+                                event_id?: string | null;
+                                /** @enum {string} */
+                                kind: "event" | "referral";
+                            } | null;
+                        };
                         warnings?: "payment_due"[];
                     };
                 };
@@ -92242,6 +92849,15 @@ export interface operations {
                         } & {
                             [key: string]: unknown;
                         })[];
+                        /** @description ADR-357: the assignment tag of every gym day of the range */
+                        days: {
+                            classes: number;
+                            /** Format: date */
+                            date: string;
+                            /** @enum {string} */
+                            tag: "none" | "not_assigned" | "mixed" | "all_assigned";
+                            with_wod: number;
+                        }[];
                     };
                 };
             };
@@ -92825,6 +93441,80 @@ export interface operations {
                         slots: {
                             [key: string]: unknown;
                         }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminVisitBadgesController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Badges */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        people: {
+                            badges: ("first_visit" | "first_in_class_type" | "guest" | "trial" | "brought_by_member" | "came_via_event" | "came_via_referral")[];
+                            /** Format: uuid */
+                            booking_id: string;
+                            brought_by: {
+                                nickname?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            guest_name: string | null;
+                            /** Format: uuid */
+                            user_id: string;
+                            /**
+                             * VisitVia
+                             * @description How a first-time visitor came (referral attribution)
+                             */
+                            via: {
+                                by_nickname?: string | null;
+                                /** Format: uuid */
+                                by_user_id?: string | null;
+                                channel?: string | null;
+                                /** Format: uuid */
+                                event_id?: string | null;
+                                /** @enum {string} */
+                                kind: "event" | "referral";
+                            } | null;
+                        }[];
+                        /** Format: uuid */
+                        slot_id: string;
+                    };
+                };
+            };
+            /** @description Not one of your branches */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description No such class */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
                     };
                 };
             };
@@ -104166,6 +104856,39 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.BookingCalendarController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description iCalendar invite */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/calendar": string;
+                };
+            };
+            /** @description No such booking of yours */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.ScheduleController.check_in_class": {
         parameters: {
             query?: never;
@@ -109877,6 +110600,86 @@ export interface operations {
                         currency: string;
                         /** @description The provider members pay through, or null when online payment is off */
                         provider: string | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.WorkoutLeaderboardController.profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Profile */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        birth_year: number | null;
+                        /** @enum {string|null} */
+                        division: "women" | "men" | null;
+                        opted_in: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.WorkoutLeaderboardController.update_profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    birth_year?: number | null;
+                    /** @enum {string|null} */
+                    division?: "women" | "men" | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Profile */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        birth_year: number | null;
+                        /** @enum {string|null} */
+                        division: "women" | "men" | null;
+                        opted_in: boolean;
+                    };
+                };
+            };
+            /** @description Not opted in to leaderboards */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Invalid values */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
                     };
                 };
             };
@@ -116020,6 +116823,11 @@ export interface operations {
                 content: {
                     "application/json": {
                         notes: {
+                            /**
+                             * @description ADR-359: private coach note (ADR-101) or a note every staff member reads
+                             * @enum {string}
+                             */
+                            audience?: "private" | "staff";
                             body: string;
                             /** Format: uuid */
                             client_user_id: string;
@@ -116054,6 +116862,11 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    /**
+                     * @default private
+                     * @enum {string}
+                     */
+                    audience?: "private" | "staff";
                     body: string;
                     /** Format: uuid */
                     subject_id?: string;
@@ -116072,6 +116885,11 @@ export interface operations {
                     "application/json": {
                         /** CoachNote */
                         note: {
+                            /**
+                             * @description ADR-359: private coach note (ADR-101) or a note every staff member reads
+                             * @enum {string}
+                             */
+                            audience?: "private" | "staff";
                             body: string;
                             /** Format: uuid */
                             client_user_id: string;
@@ -116669,6 +117487,11 @@ export interface operations {
                     "application/json": {
                         /** CoachNote */
                         note: {
+                            /**
+                             * @description ADR-359: private coach note (ADR-101) or a note every staff member reads
+                             * @enum {string}
+                             */
+                            audience?: "private" | "staff";
                             body: string;
                             /** Format: uuid */
                             client_user_id: string;
@@ -122798,6 +123621,56 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.WorkoutSnapshotController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Snapshot */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** WorkoutSnapshot */
+                        snapshot: {
+                            /** @description The WOD as it read then (title, type, text, sections, plans, body) */
+                            content: {
+                                [key: string]: unknown;
+                            };
+                            content_hash: string;
+                            format_version: number;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            taken_at: string;
+                            title?: string | null;
+                            /** Format: uuid */
+                            workout_id: string;
+                        };
+                    };
+                };
+            };
+            /** @description No such snapshot, or not yours */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.WorkoutController.show": {
         parameters: {
             query?: never;
@@ -124198,6 +125071,137 @@ export interface operations {
                 content: {
                     "application/json": {
                         error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.WorkoutLeaderboardController.show": {
+        parameters: {
+            query?: {
+                /** @description Only this division */
+                division?: "women" | "men";
+                /** @description Only this age group (age reached during the year) */
+                age_group?: "under_18" | "18_34" | "35_39" | "40_44" | "45_49" | "50_54" | "55_59" | "60_64" | "65_plus";
+                /** @description Only this scale level slug */
+                scale?: string;
+                /** @description Whole box or one branch */
+                scope?: "box" | "branch";
+                /** @description The branch, with scope=branch */
+                location_id?: string;
+                /** @description Time window around `date` (default day) */
+                window?: "day" | "week" | "month" | "year" | "all";
+                /** @description Gym date (default today) */
+                date?: string;
+                /** @description Only the viewer and their buddies */
+                buddies?: boolean;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Leaderboard */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        filters: {
+                            age_group?: string | null;
+                            buddies: boolean;
+                            /** Format: date */
+                            date: string;
+                            division?: string | null;
+                            /** Format: uuid */
+                            location_id?: string | null;
+                            scale?: string | null;
+                            /** @enum {string} */
+                            scope: "box" | "branch";
+                            /** @enum {string} */
+                            window: "day" | "week" | "month" | "year" | "all";
+                        };
+                        me: {
+                            avatar_url?: string | null;
+                            me: boolean;
+                            nickname?: string | null;
+                            /** @description Share of the other results of the slice this one beat (0-100) */
+                            percentile: number | null;
+                            rank: number | null;
+                            scale_level_slug?: string | null;
+                            /** @description «Top X%»: share of results at this place or better, rounded up */
+                            top_percent: number | null;
+                            unit?: string | null;
+                            /** Format: uuid */
+                            user_id: string;
+                            value?: string | null;
+                        } | null;
+                        /** @description Whether the viewer opted in; without it no comparison is shown */
+                        opted_in: boolean;
+                        options: {
+                            age_groups: string[];
+                            divisions: string[];
+                            scales: {
+                                label: string;
+                                slug: string;
+                            }[];
+                            scopes: string[];
+                            windows: string[];
+                        };
+                        profile?: {
+                            birth_year?: number | null;
+                            division?: string | null;
+                        } | null;
+                        rows: {
+                            avatar_url?: string | null;
+                            me: boolean;
+                            nickname?: string | null;
+                            /** @description Share of the other results of the slice this one beat (0-100) */
+                            percentile: number | null;
+                            rank: number | null;
+                            scale_level_slug?: string | null;
+                            /** @description «Top X%»: share of results at this place or better, rounded up */
+                            top_percent: number | null;
+                            unit?: string | null;
+                            /** Format: uuid */
+                            user_id: string;
+                            value?: string | null;
+                        }[];
+                        section?: {
+                            [key: string]: unknown;
+                        } | null;
+                        total: number;
+                        workout: {
+                            /** Format: uuid */
+                            id: string;
+                            title?: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description No such WOD */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description A filter does not read */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
                     };
                 };
             };

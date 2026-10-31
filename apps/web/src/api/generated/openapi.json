@@ -23603,6 +23603,67 @@
             },
             "type": "array"
           },
+          "visit": {
+            "properties": {
+              "badges": {
+                "items": {
+                  "enum": [
+                    "first_visit",
+                    "first_in_class_type",
+                    "guest",
+                    "trial",
+                    "brought_by_member",
+                    "came_via_event",
+                    "came_via_referral"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "via": {
+                "description": "How a first-time visitor came (referral attribution)",
+                "nullable": true,
+                "properties": {
+                  "by_nickname": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "by_user_id": {
+                    "format": "uuid",
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "channel": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "event_id": {
+                    "format": "uuid",
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "kind": {
+                    "enum": [
+                      "event",
+                      "referral"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "kind"
+                ],
+                "title": "VisitVia",
+                "type": "object"
+              }
+            },
+            "required": [
+              "badges",
+              "via"
+            ],
+            "title": "VisitBadges",
+            "type": "object"
+          },
           "warnings": {
             "items": {
               "enum": [
@@ -25517,6 +25578,211 @@
         "title": "ClassSlotInjuryWarnings",
         "type": "object"
       },
+      "ClassVisitBadges": {
+        "properties": {
+          "people": {
+            "items": {
+              "properties": {
+                "badges": {
+                  "items": {
+                    "enum": [
+                      "first_visit",
+                      "first_in_class_type",
+                      "guest",
+                      "trial",
+                      "brought_by_member",
+                      "came_via_event",
+                      "came_via_referral"
+                    ],
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "booking_id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "brought_by": {
+                  "nullable": true,
+                  "properties": {
+                    "nickname": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "user_id": {
+                      "format": "uuid",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "user_id"
+                  ],
+                  "type": "object"
+                },
+                "guest_name": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "user_id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "via": {
+                  "description": "How a first-time visitor came (referral attribution)",
+                  "nullable": true,
+                  "properties": {
+                    "by_nickname": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "by_user_id": {
+                      "format": "uuid",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "channel": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "event_id": {
+                      "format": "uuid",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "kind": {
+                      "enum": [
+                        "event",
+                        "referral"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "kind"
+                  ],
+                  "title": "VisitVia",
+                  "type": "object"
+                }
+              },
+              "required": [
+                "badges",
+                "booking_id",
+                "brought_by",
+                "guest_name",
+                "user_id",
+                "via"
+              ],
+              "title": "ClassVisitPerson",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "slot_id": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "people",
+          "slot_id"
+        ],
+        "title": "ClassVisitBadges",
+        "type": "object"
+      },
+      "ClassVisitPerson": {
+        "properties": {
+          "badges": {
+            "items": {
+              "enum": [
+                "first_visit",
+                "first_in_class_type",
+                "guest",
+                "trial",
+                "brought_by_member",
+                "came_via_event",
+                "came_via_referral"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "booking_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "brought_by": {
+            "nullable": true,
+            "properties": {
+              "nickname": {
+                "nullable": true,
+                "type": "string"
+              },
+              "user_id": {
+                "format": "uuid",
+                "type": "string"
+              }
+            },
+            "required": [
+              "user_id"
+            ],
+            "type": "object"
+          },
+          "guest_name": {
+            "nullable": true,
+            "type": "string"
+          },
+          "user_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "via": {
+            "description": "How a first-time visitor came (referral attribution)",
+            "nullable": true,
+            "properties": {
+              "by_nickname": {
+                "nullable": true,
+                "type": "string"
+              },
+              "by_user_id": {
+                "format": "uuid",
+                "nullable": true,
+                "type": "string"
+              },
+              "channel": {
+                "nullable": true,
+                "type": "string"
+              },
+              "event_id": {
+                "format": "uuid",
+                "nullable": true,
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "event",
+                  "referral"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind"
+            ],
+            "title": "VisitVia",
+            "type": "object"
+          }
+        },
+        "required": [
+          "badges",
+          "booking_id",
+          "brought_by",
+          "guest_name",
+          "user_id",
+          "via"
+        ],
+        "title": "ClassVisitPerson",
+        "type": "object"
+      },
       "CleaningArea": {
         "properties": {
           "archived_at": {
@@ -26564,6 +26830,14 @@
       },
       "CoachNote": {
         "properties": {
+          "audience": {
+            "description": "ADR-359: private coach note (ADR-101) or a note every staff member reads",
+            "enum": [
+              "private",
+              "staff"
+            ],
+            "type": "string"
+          },
           "body": {
             "type": "string"
           },
@@ -40521,6 +40795,37 @@
         "title": "DailyStats",
         "type": "object"
       },
+      "DayAssignmentTag": {
+        "properties": {
+          "classes": {
+            "type": "integer"
+          },
+          "date": {
+            "format": "date",
+            "type": "string"
+          },
+          "tag": {
+            "enum": [
+              "none",
+              "not_assigned",
+              "mixed",
+              "all_assigned"
+            ],
+            "type": "string"
+          },
+          "with_wod": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "classes",
+          "date",
+          "tag",
+          "with_wod"
+        ],
+        "title": "DayAssignmentTag",
+        "type": "object"
+      },
       "DepthBalance": {
         "description": "Exercise sets by primary muscles; a ratio only once both sides have sets and reach 4 together",
         "properties": {
@@ -44616,6 +44921,479 @@
           "refund_receipt"
         ],
         "title": "FinanceRefundReceiptResponse",
+        "type": "object"
+      },
+      "FitnessDomain": {
+        "properties": {
+          "confidence": {
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              null
+            ],
+            "nullable": true,
+            "type": "string"
+          },
+          "domain": {
+            "enum": [
+              "strength",
+              "power",
+              "gymnastics",
+              "monostructural",
+              "metcon"
+            ],
+            "type": "string"
+          },
+          "reasons": {
+            "items": {
+              "description": "One benchmark PR and the points it gave",
+              "properties": {
+                "age_days": {
+                  "type": "integer"
+                },
+                "anchors": {
+                  "items": {
+                    "properties": {
+                      "points": {
+                        "type": "integer"
+                      },
+                      "value": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "points",
+                      "value"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "beaten_on": {
+                  "format": "date",
+                  "type": "string"
+                },
+                "benchmark": {
+                  "type": "string"
+                },
+                "domain": {
+                  "enum": [
+                    "strength",
+                    "power",
+                    "gymnastics",
+                    "monostructural",
+                    "metcon"
+                  ],
+                  "type": "string"
+                },
+                "estimated": {
+                  "description": "1RM estimated from a multi-rep set",
+                  "type": "boolean"
+                },
+                "name": {
+                  "description": "The PR as the person named it",
+                  "type": "string"
+                },
+                "points": {
+                  "type": "number"
+                },
+                "stale": {
+                  "type": "boolean"
+                },
+                "unit": {
+                  "enum": [
+                    "kg",
+                    "reps",
+                    "mins_secs"
+                  ],
+                  "type": "string"
+                },
+                "value": {
+                  "description": "kg (1RM), reps or seconds",
+                  "type": "number"
+                }
+              },
+              "required": [
+                "age_days",
+                "anchors",
+                "beaten_on",
+                "benchmark",
+                "domain",
+                "estimated",
+                "name",
+                "points",
+                "stale",
+                "unit",
+                "value"
+              ],
+              "title": "FitnessReason",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "score": {
+            "nullable": true,
+            "type": "integer"
+          },
+          "stale": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "confidence",
+          "domain",
+          "reasons",
+          "score",
+          "stale"
+        ],
+        "title": "FitnessDomain",
+        "type": "object"
+      },
+      "FitnessFocus": {
+        "additionalProperties": true,
+        "properties": {
+          "domain": {
+            "enum": [
+              "strength",
+              "power",
+              "gymnastics",
+              "monostructural",
+              "metcon"
+            ],
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "weakest_domain",
+              "undertrained_quality",
+              "stale_benchmark",
+              "untested_domain"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "domain",
+          "kind"
+        ],
+        "title": "FitnessFocus",
+        "type": "object"
+      },
+      "FitnessProfile": {
+        "properties": {
+          "algorithm": {
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "version": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "id",
+              "version"
+            ],
+            "type": "object"
+          },
+          "benchmarks_known": {
+            "type": "integer"
+          },
+          "division": {
+            "enum": [
+              "women",
+              "men",
+              null
+            ],
+            "nullable": true,
+            "type": "string"
+          },
+          "domains": {
+            "items": {
+              "properties": {
+                "confidence": {
+                  "enum": [
+                    "low",
+                    "medium",
+                    "high",
+                    null
+                  ],
+                  "nullable": true,
+                  "type": "string"
+                },
+                "domain": {
+                  "enum": [
+                    "strength",
+                    "power",
+                    "gymnastics",
+                    "monostructural",
+                    "metcon"
+                  ],
+                  "type": "string"
+                },
+                "reasons": {
+                  "items": {
+                    "description": "One benchmark PR and the points it gave",
+                    "properties": {
+                      "age_days": {
+                        "type": "integer"
+                      },
+                      "anchors": {
+                        "items": {
+                          "properties": {
+                            "points": {
+                              "type": "integer"
+                            },
+                            "value": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "points",
+                            "value"
+                          ],
+                          "type": "object"
+                        },
+                        "type": "array"
+                      },
+                      "beaten_on": {
+                        "format": "date",
+                        "type": "string"
+                      },
+                      "benchmark": {
+                        "type": "string"
+                      },
+                      "domain": {
+                        "enum": [
+                          "strength",
+                          "power",
+                          "gymnastics",
+                          "monostructural",
+                          "metcon"
+                        ],
+                        "type": "string"
+                      },
+                      "estimated": {
+                        "description": "1RM estimated from a multi-rep set",
+                        "type": "boolean"
+                      },
+                      "name": {
+                        "description": "The PR as the person named it",
+                        "type": "string"
+                      },
+                      "points": {
+                        "type": "number"
+                      },
+                      "stale": {
+                        "type": "boolean"
+                      },
+                      "unit": {
+                        "enum": [
+                          "kg",
+                          "reps",
+                          "mins_secs"
+                        ],
+                        "type": "string"
+                      },
+                      "value": {
+                        "description": "kg (1RM), reps or seconds",
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "age_days",
+                      "anchors",
+                      "beaten_on",
+                      "benchmark",
+                      "domain",
+                      "estimated",
+                      "name",
+                      "points",
+                      "stale",
+                      "unit",
+                      "value"
+                    ],
+                    "title": "FitnessReason",
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "score": {
+                  "nullable": true,
+                  "type": "integer"
+                },
+                "stale": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "confidence",
+                "domain",
+                "reasons",
+                "score",
+                "stale"
+              ],
+              "title": "FitnessDomain",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "focus": {
+            "items": {
+              "additionalProperties": true,
+              "properties": {
+                "domain": {
+                  "enum": [
+                    "strength",
+                    "power",
+                    "gymnastics",
+                    "monostructural",
+                    "metcon"
+                  ],
+                  "type": "string"
+                },
+                "kind": {
+                  "enum": [
+                    "weakest_domain",
+                    "undertrained_quality",
+                    "stale_benchmark",
+                    "untested_domain"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "domain",
+                "kind"
+              ],
+              "title": "FitnessFocus",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "injury_caution": {
+            "type": "boolean"
+          },
+          "neutral_standards": {
+            "type": "boolean"
+          },
+          "overall": {
+            "nullable": true,
+            "properties": {
+              "domains_scored": {
+                "type": "integer"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "score": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "domains_scored",
+              "reason",
+              "score"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "algorithm",
+          "benchmarks_known",
+          "division",
+          "domains",
+          "focus",
+          "injury_caution",
+          "neutral_standards",
+          "overall"
+        ],
+        "title": "FitnessProfile",
+        "type": "object"
+      },
+      "FitnessReason": {
+        "description": "One benchmark PR and the points it gave",
+        "properties": {
+          "age_days": {
+            "type": "integer"
+          },
+          "anchors": {
+            "items": {
+              "properties": {
+                "points": {
+                  "type": "integer"
+                },
+                "value": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "points",
+                "value"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "beaten_on": {
+            "format": "date",
+            "type": "string"
+          },
+          "benchmark": {
+            "type": "string"
+          },
+          "domain": {
+            "enum": [
+              "strength",
+              "power",
+              "gymnastics",
+              "monostructural",
+              "metcon"
+            ],
+            "type": "string"
+          },
+          "estimated": {
+            "description": "1RM estimated from a multi-rep set",
+            "type": "boolean"
+          },
+          "name": {
+            "description": "The PR as the person named it",
+            "type": "string"
+          },
+          "points": {
+            "type": "number"
+          },
+          "stale": {
+            "type": "boolean"
+          },
+          "unit": {
+            "enum": [
+              "kg",
+              "reps",
+              "mins_secs"
+            ],
+            "type": "string"
+          },
+          "value": {
+            "description": "kg (1RM), reps or seconds",
+            "type": "number"
+          }
+        },
+        "required": [
+          "age_days",
+          "anchors",
+          "beaten_on",
+          "benchmark",
+          "domain",
+          "estimated",
+          "name",
+          "points",
+          "stale",
+          "unit",
+          "value"
+        ],
+        "title": "FitnessReason",
         "type": "object"
       },
       "FloorPlan": {
@@ -49134,6 +49912,54 @@
           "choosable_visibilities"
         ],
         "title": "JournalVisibilityResponse",
+        "type": "object"
+      },
+      "LeaderboardProfile": {
+        "properties": {
+          "birth_year": {
+            "nullable": true,
+            "type": "integer"
+          },
+          "division": {
+            "enum": [
+              "women",
+              "men",
+              null
+            ],
+            "nullable": true,
+            "type": "string"
+          },
+          "opted_in": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "birth_year",
+          "division",
+          "opted_in"
+        ],
+        "title": "LeaderboardProfile",
+        "type": "object"
+      },
+      "LeaderboardProfileRequest": {
+        "properties": {
+          "birth_year": {
+            "maximum": 2100,
+            "minimum": 1900,
+            "nullable": true,
+            "type": "integer"
+          },
+          "division": {
+            "enum": [
+              "women",
+              "men",
+              null
+            ],
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "title": "LeaderboardProfileRequest",
         "type": "object"
       },
       "MachinePlacement": {
@@ -90566,6 +91392,103 @@
         ],
         "type": "object"
       },
+      "VisitBadges": {
+        "properties": {
+          "badges": {
+            "items": {
+              "enum": [
+                "first_visit",
+                "first_in_class_type",
+                "guest",
+                "trial",
+                "brought_by_member",
+                "came_via_event",
+                "came_via_referral"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "via": {
+            "description": "How a first-time visitor came (referral attribution)",
+            "nullable": true,
+            "properties": {
+              "by_nickname": {
+                "nullable": true,
+                "type": "string"
+              },
+              "by_user_id": {
+                "format": "uuid",
+                "nullable": true,
+                "type": "string"
+              },
+              "channel": {
+                "nullable": true,
+                "type": "string"
+              },
+              "event_id": {
+                "format": "uuid",
+                "nullable": true,
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "event",
+                  "referral"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind"
+            ],
+            "title": "VisitVia",
+            "type": "object"
+          }
+        },
+        "required": [
+          "badges",
+          "via"
+        ],
+        "title": "VisitBadges",
+        "type": "object"
+      },
+      "VisitVia": {
+        "description": "How a first-time visitor came (referral attribution)",
+        "nullable": true,
+        "properties": {
+          "by_nickname": {
+            "nullable": true,
+            "type": "string"
+          },
+          "by_user_id": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "channel": {
+            "nullable": true,
+            "type": "string"
+          },
+          "event_id": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "event",
+              "referral"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind"
+        ],
+        "title": "VisitVia",
+        "type": "object"
+      },
       "VoiceLogAvailability": {
         "properties": {
           "available": {
@@ -94868,6 +95791,430 @@
           "taxonomy_version"
         ],
         "title": "WorkoutGoalSuggestion",
+        "type": "object"
+      },
+      "WorkoutLeaderboard": {
+        "properties": {
+          "filters": {
+            "properties": {
+              "age_group": {
+                "nullable": true,
+                "type": "string"
+              },
+              "buddies": {
+                "type": "boolean"
+              },
+              "date": {
+                "format": "date",
+                "type": "string"
+              },
+              "division": {
+                "nullable": true,
+                "type": "string"
+              },
+              "location_id": {
+                "format": "uuid",
+                "nullable": true,
+                "type": "string"
+              },
+              "scale": {
+                "nullable": true,
+                "type": "string"
+              },
+              "scope": {
+                "enum": [
+                  "box",
+                  "branch"
+                ],
+                "type": "string"
+              },
+              "window": {
+                "enum": [
+                  "day",
+                  "week",
+                  "month",
+                  "year",
+                  "all"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "buddies",
+              "date",
+              "scope",
+              "window"
+            ],
+            "type": "object"
+          },
+          "me": {
+            "allOf": [
+              {
+                "properties": {
+                  "avatar_url": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "me": {
+                    "type": "boolean"
+                  },
+                  "nickname": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "percentile": {
+                    "description": "Share of the other results of the slice this one beat (0-100)",
+                    "nullable": true,
+                    "type": "integer"
+                  },
+                  "rank": {
+                    "nullable": true,
+                    "type": "integer"
+                  },
+                  "scale_level_slug": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "top_percent": {
+                    "description": "«Top X%»: share of results at this place or better, rounded up",
+                    "nullable": true,
+                    "type": "integer"
+                  },
+                  "unit": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "user_id": {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "value": {
+                    "nullable": true,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "me",
+                  "percentile",
+                  "rank",
+                  "top_percent",
+                  "user_id"
+                ],
+                "title": "WorkoutLeaderboardRow",
+                "type": "object"
+              }
+            ],
+            "nullable": true
+          },
+          "opted_in": {
+            "description": "Whether the viewer opted in; without it no comparison is shown",
+            "type": "boolean"
+          },
+          "options": {
+            "properties": {
+              "age_groups": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "divisions": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "scales": {
+                "items": {
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "slug": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label",
+                    "slug"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "scopes": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "windows": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "age_groups",
+              "divisions",
+              "scales",
+              "scopes",
+              "windows"
+            ],
+            "type": "object"
+          },
+          "profile": {
+            "nullable": true,
+            "properties": {
+              "birth_year": {
+                "nullable": true,
+                "type": "integer"
+              },
+              "division": {
+                "nullable": true,
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "rows": {
+            "items": {
+              "properties": {
+                "avatar_url": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "me": {
+                  "type": "boolean"
+                },
+                "nickname": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "percentile": {
+                  "description": "Share of the other results of the slice this one beat (0-100)",
+                  "nullable": true,
+                  "type": "integer"
+                },
+                "rank": {
+                  "nullable": true,
+                  "type": "integer"
+                },
+                "scale_level_slug": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "top_percent": {
+                  "description": "«Top X%»: share of results at this place or better, rounded up",
+                  "nullable": true,
+                  "type": "integer"
+                },
+                "unit": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "user_id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "value": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "me",
+                "percentile",
+                "rank",
+                "top_percent",
+                "user_id"
+              ],
+              "title": "WorkoutLeaderboardRow",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "section": {
+            "additionalProperties": true,
+            "nullable": true,
+            "type": "object"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "workout": {
+            "properties": {
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "title": {
+                "nullable": true,
+                "type": "string"
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "filters",
+          "me",
+          "opted_in",
+          "options",
+          "rows",
+          "total",
+          "workout"
+        ],
+        "title": "WorkoutLeaderboard",
+        "type": "object"
+      },
+      "WorkoutLeaderboardRow": {
+        "properties": {
+          "avatar_url": {
+            "nullable": true,
+            "type": "string"
+          },
+          "me": {
+            "type": "boolean"
+          },
+          "nickname": {
+            "nullable": true,
+            "type": "string"
+          },
+          "percentile": {
+            "description": "Share of the other results of the slice this one beat (0-100)",
+            "nullable": true,
+            "type": "integer"
+          },
+          "rank": {
+            "nullable": true,
+            "type": "integer"
+          },
+          "scale_level_slug": {
+            "nullable": true,
+            "type": "string"
+          },
+          "top_percent": {
+            "description": "«Top X%»: share of results at this place or better, rounded up",
+            "nullable": true,
+            "type": "integer"
+          },
+          "unit": {
+            "nullable": true,
+            "type": "string"
+          },
+          "user_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "value": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "me",
+          "percentile",
+          "rank",
+          "top_percent",
+          "user_id"
+        ],
+        "title": "WorkoutLeaderboardRow",
+        "type": "object"
+      },
+      "WorkoutSnapshot": {
+        "properties": {
+          "content": {
+            "additionalProperties": true,
+            "description": "The WOD as it read then (title, type, text, sections, plans, body)",
+            "type": "object"
+          },
+          "content_hash": {
+            "type": "string"
+          },
+          "format_version": {
+            "type": "integer"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "taken_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "title": {
+            "nullable": true,
+            "type": "string"
+          },
+          "workout_id": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "content",
+          "content_hash",
+          "format_version",
+          "id",
+          "taken_at",
+          "workout_id"
+        ],
+        "title": "WorkoutSnapshot",
+        "type": "object"
+      },
+      "WorkoutSnapshotResponse": {
+        "properties": {
+          "snapshot": {
+            "properties": {
+              "content": {
+                "additionalProperties": true,
+                "description": "The WOD as it read then (title, type, text, sections, plans, body)",
+                "type": "object"
+              },
+              "content_hash": {
+                "type": "string"
+              },
+              "format_version": {
+                "type": "integer"
+              },
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "taken_at": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "title": {
+                "nullable": true,
+                "type": "string"
+              },
+              "workout_id": {
+                "format": "uuid",
+                "type": "string"
+              }
+            },
+            "required": [
+              "content",
+              "content_hash",
+              "format_version",
+              "id",
+              "taken_at",
+              "workout_id"
+            ],
+            "title": "WorkoutSnapshot",
+            "type": "object"
+          }
+        },
+        "required": [
+          "snapshot"
+        ],
+        "title": "WorkoutSnapshotResponse",
         "type": "object"
       }
     },
@@ -138150,6 +139497,288 @@
         ]
       }
     },
+    "/api/me/fitness-profile": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.FitnessProfileController.show",
+        "parameters": [
+          {
+            "description": "Standards to read the PRs with (neutral mean when absent)",
+            "in": "query",
+            "name": "division",
+            "required": false,
+            "schema": {
+              "enum": [
+                "women",
+                "men"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "algorithm": {
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "version": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "version"
+                      ],
+                      "type": "object"
+                    },
+                    "benchmarks_known": {
+                      "type": "integer"
+                    },
+                    "division": {
+                      "enum": [
+                        "women",
+                        "men",
+                        null
+                      ],
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "domains": {
+                      "items": {
+                        "properties": {
+                          "confidence": {
+                            "enum": [
+                              "low",
+                              "medium",
+                              "high",
+                              null
+                            ],
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "domain": {
+                            "enum": [
+                              "strength",
+                              "power",
+                              "gymnastics",
+                              "monostructural",
+                              "metcon"
+                            ],
+                            "type": "string"
+                          },
+                          "reasons": {
+                            "items": {
+                              "description": "One benchmark PR and the points it gave",
+                              "properties": {
+                                "age_days": {
+                                  "type": "integer"
+                                },
+                                "anchors": {
+                                  "items": {
+                                    "properties": {
+                                      "points": {
+                                        "type": "integer"
+                                      },
+                                      "value": {
+                                        "type": "number"
+                                      }
+                                    },
+                                    "required": [
+                                      "points",
+                                      "value"
+                                    ],
+                                    "type": "object"
+                                  },
+                                  "type": "array"
+                                },
+                                "beaten_on": {
+                                  "format": "date",
+                                  "type": "string"
+                                },
+                                "benchmark": {
+                                  "type": "string"
+                                },
+                                "domain": {
+                                  "enum": [
+                                    "strength",
+                                    "power",
+                                    "gymnastics",
+                                    "monostructural",
+                                    "metcon"
+                                  ],
+                                  "type": "string"
+                                },
+                                "estimated": {
+                                  "description": "1RM estimated from a multi-rep set",
+                                  "type": "boolean"
+                                },
+                                "name": {
+                                  "description": "The PR as the person named it",
+                                  "type": "string"
+                                },
+                                "points": {
+                                  "type": "number"
+                                },
+                                "stale": {
+                                  "type": "boolean"
+                                },
+                                "unit": {
+                                  "enum": [
+                                    "kg",
+                                    "reps",
+                                    "mins_secs"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "description": "kg (1RM), reps or seconds",
+                                  "type": "number"
+                                }
+                              },
+                              "required": [
+                                "age_days",
+                                "anchors",
+                                "beaten_on",
+                                "benchmark",
+                                "domain",
+                                "estimated",
+                                "name",
+                                "points",
+                                "stale",
+                                "unit",
+                                "value"
+                              ],
+                              "title": "FitnessReason",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "score": {
+                            "nullable": true,
+                            "type": "integer"
+                          },
+                          "stale": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "confidence",
+                          "domain",
+                          "reasons",
+                          "score",
+                          "stale"
+                        ],
+                        "title": "FitnessDomain",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "focus": {
+                      "items": {
+                        "additionalProperties": true,
+                        "properties": {
+                          "domain": {
+                            "enum": [
+                              "strength",
+                              "power",
+                              "gymnastics",
+                              "monostructural",
+                              "metcon"
+                            ],
+                            "type": "string"
+                          },
+                          "kind": {
+                            "enum": [
+                              "weakest_domain",
+                              "undertrained_quality",
+                              "stale_benchmark",
+                              "untested_domain"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "domain",
+                          "kind"
+                        ],
+                        "title": "FitnessFocus",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "injury_caution": {
+                      "type": "boolean"
+                    },
+                    "neutral_standards": {
+                      "type": "boolean"
+                    },
+                    "overall": {
+                      "nullable": true,
+                      "properties": {
+                        "domains_scored": {
+                          "type": "integer"
+                        },
+                        "reason": {
+                          "type": "string"
+                        },
+                        "score": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "domains_scored",
+                        "reason",
+                        "score"
+                      ],
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "algorithm",
+                    "benchmarks_known",
+                    "division",
+                    "domains",
+                    "focus",
+                    "injury_caution",
+                    "neutral_standards",
+                    "overall"
+                  ],
+                  "title": "FitnessProfile",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Fitness profile"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unknown division"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Your fitness score per domain, its reasoning and what to work on",
+        "tags": [
+          "Progress"
+        ]
+      }
+    },
     "/api/me/follow-requests": {
       "get": {
         "callbacks": {},
@@ -163876,6 +165505,67 @@
                       },
                       "type": "array"
                     },
+                    "visit": {
+                      "properties": {
+                        "badges": {
+                          "items": {
+                            "enum": [
+                              "first_visit",
+                              "first_in_class_type",
+                              "guest",
+                              "trial",
+                              "brought_by_member",
+                              "came_via_event",
+                              "came_via_referral"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "via": {
+                          "description": "How a first-time visitor came (referral attribution)",
+                          "nullable": true,
+                          "properties": {
+                            "by_nickname": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "by_user_id": {
+                              "format": "uuid",
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "channel": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "event_id": {
+                              "format": "uuid",
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "kind": {
+                              "enum": [
+                                "event",
+                                "referral"
+                              ],
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "kind"
+                          ],
+                          "title": "VisitVia",
+                          "type": "object"
+                        }
+                      },
+                      "required": [
+                        "badges",
+                        "via"
+                      ],
+                      "title": "VisitBadges",
+                      "type": "object"
+                    },
                     "warnings": {
                       "items": {
                         "enum": [
@@ -164289,6 +165979,67 @@
                         "type": "string"
                       },
                       "type": "array"
+                    },
+                    "visit": {
+                      "properties": {
+                        "badges": {
+                          "items": {
+                            "enum": [
+                              "first_visit",
+                              "first_in_class_type",
+                              "guest",
+                              "trial",
+                              "brought_by_member",
+                              "came_via_event",
+                              "came_via_referral"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "via": {
+                          "description": "How a first-time visitor came (referral attribution)",
+                          "nullable": true,
+                          "properties": {
+                            "by_nickname": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "by_user_id": {
+                              "format": "uuid",
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "channel": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "event_id": {
+                              "format": "uuid",
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "kind": {
+                              "enum": [
+                                "event",
+                                "referral"
+                              ],
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "kind"
+                          ],
+                          "title": "VisitVia",
+                          "type": "object"
+                        }
+                      },
+                      "required": [
+                        "badges",
+                        "via"
+                      ],
+                      "title": "VisitBadges",
+                      "type": "object"
                     },
                     "warnings": {
                       "items": {
@@ -219860,10 +221611,46 @@
                         "type": "object"
                       },
                       "type": "array"
+                    },
+                    "days": {
+                      "description": "ADR-357: the assignment tag of every gym day of the range",
+                      "items": {
+                        "properties": {
+                          "classes": {
+                            "type": "integer"
+                          },
+                          "date": {
+                            "format": "date",
+                            "type": "string"
+                          },
+                          "tag": {
+                            "enum": [
+                              "none",
+                              "not_assigned",
+                              "mixed",
+                              "all_assigned"
+                            ],
+                            "type": "string"
+                          },
+                          "with_wod": {
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "classes",
+                          "date",
+                          "tag",
+                          "with_wod"
+                        ],
+                        "title": "DayAssignmentTag",
+                        "type": "object"
+                      },
+                      "type": "array"
                     }
                   },
                   "required": [
-                    "day_workouts"
+                    "day_workouts",
+                    "days"
                   ],
                   "type": "object"
                 }
@@ -221271,6 +223058,175 @@
           }
         ],
         "summary": "Pause, resume, cancel, restore or delete a class",
+        "tags": [
+          "Admin Schedule"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/schedule/slots/{id}/visit-badges": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminVisitBadgesController.show",
+        "parameters": [
+          {
+            "description": "",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "people": {
+                      "items": {
+                        "properties": {
+                          "badges": {
+                            "items": {
+                              "enum": [
+                                "first_visit",
+                                "first_in_class_type",
+                                "guest",
+                                "trial",
+                                "brought_by_member",
+                                "came_via_event",
+                                "came_via_referral"
+                              ],
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "booking_id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "brought_by": {
+                            "nullable": true,
+                            "properties": {
+                              "nickname": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "user_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "user_id"
+                            ],
+                            "type": "object"
+                          },
+                          "guest_name": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "user_id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "via": {
+                            "description": "How a first-time visitor came (referral attribution)",
+                            "nullable": true,
+                            "properties": {
+                              "by_nickname": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "by_user_id": {
+                                "format": "uuid",
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "channel": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "event_id": {
+                                "format": "uuid",
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "kind": {
+                                "enum": [
+                                  "event",
+                                  "referral"
+                                ],
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "kind"
+                            ],
+                            "title": "VisitVia",
+                            "type": "object"
+                          }
+                        },
+                        "required": [
+                          "badges",
+                          "booking_id",
+                          "brought_by",
+                          "guest_name",
+                          "user_id",
+                          "via"
+                        ],
+                        "title": "ClassVisitPerson",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "slot_id": {
+                      "format": "uuid",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "people",
+                    "slot_id"
+                  ],
+                  "title": "ClassVisitBadges",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Badges"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not one of your branches"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No such class"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Visit badges of every seat of a class (first visit, guest, trial, how they came)",
         "tags": [
           "Admin Schedule"
         ]
@@ -256632,6 +258588,56 @@
         ]
       }
     },
+    "/api/org/{organization_slug}/bookings/{id}/calendar.ics": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.BookingCalendarController.show",
+        "parameters": [
+          {
+            "description": "",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/calendar": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "iCalendar invite"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No such booking of yours"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Your booking as an iCalendar invite (METHOD:CANCEL once it is cancelled)",
+        "tags": [
+          "Calendar"
+        ]
+      }
+    },
     "/api/org/{organization_slug}/bookings/{id}/check-in": {
       "post": {
         "callbacks": {},
@@ -271716,6 +273722,158 @@
         "summary": "What paying this invoice online costs, and the text to agree to when saving the card",
         "tags": [
           "Member Finance"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/me/leaderboard-profile": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.WorkoutLeaderboardController.profile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "birth_year": {
+                      "nullable": true,
+                      "type": "integer"
+                    },
+                    "division": {
+                      "enum": [
+                        "women",
+                        "men",
+                        null
+                      ],
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "opted_in": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "birth_year",
+                    "division",
+                    "opted_in"
+                  ],
+                  "title": "LeaderboardProfile",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Profile"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Your division and birth year for this box's leaderboards",
+        "tags": [
+          "Leaderboards"
+        ]
+      },
+      "put": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.WorkoutLeaderboardController.update_profile",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "birth_year": {
+                    "maximum": 2100,
+                    "minimum": 1900,
+                    "nullable": true,
+                    "type": "integer"
+                  },
+                  "division": {
+                    "enum": [
+                      "women",
+                      "men",
+                      null
+                    ],
+                    "nullable": true,
+                    "type": "string"
+                  }
+                },
+                "title": "LeaderboardProfileRequest",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "birth_year": {
+                      "nullable": true,
+                      "type": "integer"
+                    },
+                    "division": {
+                      "enum": [
+                        "women",
+                        "men",
+                        null
+                      ],
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "opted_in": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "birth_year",
+                    "division",
+                    "opted_in"
+                  ],
+                  "title": "LeaderboardProfile",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Profile"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not opted in to leaderboards"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Invalid values"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Set your division and birth year (only after opting in to leaderboards)",
+        "tags": [
+          "Leaderboards"
         ]
       }
     },
@@ -287637,6 +289795,14 @@
                     "notes": {
                       "items": {
                         "properties": {
+                          "audience": {
+                            "description": "ADR-359: private coach note (ADR-101) or a note every staff member reads",
+                            "enum": [
+                              "private",
+                              "staff"
+                            ],
+                            "type": "string"
+                          },
                           "body": {
                             "type": "string"
                           },
@@ -287733,6 +289899,14 @@
             "application/json": {
               "schema": {
                 "properties": {
+                  "audience": {
+                    "default": "private",
+                    "enum": [
+                      "private",
+                      "staff"
+                    ],
+                    "type": "string"
+                  },
                   "body": {
                     "maxLength": 5000,
                     "minLength": 1,
@@ -287771,6 +289945,14 @@
                   "properties": {
                     "note": {
                       "properties": {
+                        "audience": {
+                          "description": "ADR-359: private coach note (ADR-101) or a note every staff member reads",
+                          "enum": [
+                            "private",
+                            "staff"
+                          ],
+                          "type": "string"
+                        },
                         "body": {
                           "type": "string"
                         },
@@ -289346,6 +291528,14 @@
                   "properties": {
                     "note": {
                       "properties": {
+                        "audience": {
+                          "description": "ADR-359: private coach note (ADR-101) or a note every staff member reads",
+                          "enum": [
+                            "private",
+                            "staff"
+                          ],
+                          "type": "string"
+                        },
                         "body": {
                           "type": "string"
                         },
@@ -307189,6 +309379,102 @@
         ]
       }
     },
+    "/api/org/{organization_slug}/workout-snapshots/{id}": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.WorkoutSnapshotController.show",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "snapshot": {
+                      "properties": {
+                        "content": {
+                          "additionalProperties": true,
+                          "description": "The WOD as it read then (title, type, text, sections, plans, body)",
+                          "type": "object"
+                        },
+                        "content_hash": {
+                          "type": "string"
+                        },
+                        "format_version": {
+                          "type": "integer"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "taken_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "title": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "workout_id": {
+                          "format": "uuid",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "content",
+                        "content_hash",
+                        "format_version",
+                        "id",
+                        "taken_at",
+                        "workout_id"
+                      ],
+                      "title": "WorkoutSnapshot",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "snapshot"
+                  ],
+                  "title": "WorkoutSnapshotResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Snapshot"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No such snapshot, or not yours"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "A WOD snapshot (staff who program or follow training, or its own athlete)",
+        "tags": [
+          "Workouts"
+        ]
+      }
+    },
     "/api/org/{organization_slug}/workouts/{id}": {
       "get": {
         "callbacks": {},
@@ -312561,6 +314847,444 @@
         "summary": "A published workout's WOD goals, when the coach made them visible",
         "tags": [
           "Workouts"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/workouts/{id}/leaderboard": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.WorkoutLeaderboardController.show",
+        "parameters": [
+          {
+            "description": "",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Only this division",
+            "in": "query",
+            "name": "division",
+            "required": false,
+            "schema": {
+              "enum": [
+                "women",
+                "men"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "Only this age group (age reached during the year)",
+            "in": "query",
+            "name": "age_group",
+            "required": false,
+            "schema": {
+              "enum": [
+                "under_18",
+                "18_34",
+                "35_39",
+                "40_44",
+                "45_49",
+                "50_54",
+                "55_59",
+                "60_64",
+                "65_plus"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "Only this scale level slug",
+            "in": "query",
+            "name": "scale",
+            "required": false,
+            "schema": {
+              "maxLength": 64,
+              "type": "string"
+            }
+          },
+          {
+            "description": "Whole box or one branch",
+            "in": "query",
+            "name": "scope",
+            "required": false,
+            "schema": {
+              "enum": [
+                "box",
+                "branch"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "The branch, with scope=branch",
+            "in": "query",
+            "name": "location_id",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Time window around `date` (default day)",
+            "in": "query",
+            "name": "window",
+            "required": false,
+            "schema": {
+              "enum": [
+                "day",
+                "week",
+                "month",
+                "year",
+                "all"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "Gym date (default today)",
+            "in": "query",
+            "name": "date",
+            "required": false,
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Only the viewer and their buddies",
+            "in": "query",
+            "name": "buddies",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "filters": {
+                      "properties": {
+                        "age_group": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "buddies": {
+                          "type": "boolean"
+                        },
+                        "date": {
+                          "format": "date",
+                          "type": "string"
+                        },
+                        "division": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "location_id": {
+                          "format": "uuid",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "scale": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "scope": {
+                          "enum": [
+                            "box",
+                            "branch"
+                          ],
+                          "type": "string"
+                        },
+                        "window": {
+                          "enum": [
+                            "day",
+                            "week",
+                            "month",
+                            "year",
+                            "all"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "buddies",
+                        "date",
+                        "scope",
+                        "window"
+                      ],
+                      "type": "object"
+                    },
+                    "me": {
+                      "allOf": [
+                        {
+                          "properties": {
+                            "avatar_url": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "me": {
+                              "type": "boolean"
+                            },
+                            "nickname": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "percentile": {
+                              "description": "Share of the other results of the slice this one beat (0-100)",
+                              "nullable": true,
+                              "type": "integer"
+                            },
+                            "rank": {
+                              "nullable": true,
+                              "type": "integer"
+                            },
+                            "scale_level_slug": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "top_percent": {
+                              "description": "«Top X%»: share of results at this place or better, rounded up",
+                              "nullable": true,
+                              "type": "integer"
+                            },
+                            "unit": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "user_id": {
+                              "format": "uuid",
+                              "type": "string"
+                            },
+                            "value": {
+                              "nullable": true,
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "me",
+                            "percentile",
+                            "rank",
+                            "top_percent",
+                            "user_id"
+                          ],
+                          "title": "WorkoutLeaderboardRow",
+                          "type": "object"
+                        }
+                      ],
+                      "nullable": true
+                    },
+                    "opted_in": {
+                      "description": "Whether the viewer opted in; without it no comparison is shown",
+                      "type": "boolean"
+                    },
+                    "options": {
+                      "properties": {
+                        "age_groups": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "divisions": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "scales": {
+                          "items": {
+                            "properties": {
+                              "label": {
+                                "type": "string"
+                              },
+                              "slug": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "label",
+                              "slug"
+                            ],
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
+                        "scopes": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "windows": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        }
+                      },
+                      "required": [
+                        "age_groups",
+                        "divisions",
+                        "scales",
+                        "scopes",
+                        "windows"
+                      ],
+                      "type": "object"
+                    },
+                    "profile": {
+                      "nullable": true,
+                      "properties": {
+                        "birth_year": {
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "division": {
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "rows": {
+                      "items": {
+                        "properties": {
+                          "avatar_url": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "me": {
+                            "type": "boolean"
+                          },
+                          "nickname": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "percentile": {
+                            "description": "Share of the other results of the slice this one beat (0-100)",
+                            "nullable": true,
+                            "type": "integer"
+                          },
+                          "rank": {
+                            "nullable": true,
+                            "type": "integer"
+                          },
+                          "scale_level_slug": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "top_percent": {
+                            "description": "«Top X%»: share of results at this place or better, rounded up",
+                            "nullable": true,
+                            "type": "integer"
+                          },
+                          "unit": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "user_id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "value": {
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "me",
+                          "percentile",
+                          "rank",
+                          "top_percent",
+                          "user_id"
+                        ],
+                        "title": "WorkoutLeaderboardRow",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "section": {
+                      "additionalProperties": true,
+                      "nullable": true,
+                      "type": "object"
+                    },
+                    "total": {
+                      "type": "integer"
+                    },
+                    "workout": {
+                      "properties": {
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "title": {
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id"
+                      ],
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "filters",
+                    "me",
+                    "opted_in",
+                    "options",
+                    "rows",
+                    "total",
+                    "workout"
+                  ],
+                  "title": "WorkoutLeaderboard",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Leaderboard"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No such WOD"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "A filter does not read"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "A WOD's leaderboard, filtered, with a percentile for each score",
+        "tags": [
+          "Leaderboards"
         ]
       }
     },
