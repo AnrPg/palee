@@ -46,7 +46,8 @@ defmodule Palee.Infrastructure.HelpDesk.EctoHelpDeskStore do
   def list_messages(%{organization_id: organization_id}, conversation_id) do
     Message
     |> where([m], m.organization_id == ^organization_id and m.conversation_id == ^conversation_id)
-    |> order_by([m], asc: m.inserted_at, asc: m.id)
+    # A reply written in the same instant as the question still comes after it.
+    |> order_by([m], asc: m.inserted_at, desc: m.author == "person", asc: m.id)
     |> Repo.all()
   end
 

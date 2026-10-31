@@ -179,6 +179,27 @@ defmodule PaleeWeb.AiHelpControllerTest do
       assert %{"conversations" => [_]} = conn |> recycle() |> put_bearer_token(owner) |> get("#{base}/help-desk/conversations") |> json_response(200)
     end
 
+    test "provider down or past the daily limit: the hand-off is offered", %{conn: conn, owner: owner, base: base} do
+      SandboxLlmProvider.script(fn _request -> {:error, :llm_unavailable} end)
+      ask = %{message: "How do I start a campaign with coupons?", screen_path: "/admin/finance", locale: "en"}
+
+      down = conn |> put_bearer_token(owner) |> post("#{base}/help-desk/conversations", ask) |> json_response(200)
+      assert down["assistant"] == "unavailable"
+      assert down["can_hand_off"]
+      assert Enum.map(down["messages"], & &1["author"]) == ["person"]
+
+      SandboxLlmProvider.script(nil)
+      previous = Application.get_env(:palee, :ai_features)
+      on_exit(fn -> Application.put_env(:palee, :ai_features, previous) end)
+
+      Application.put_env(:palee, :ai_features,
+        Keyword.put(previous, :help_desk, monthly_budget_nano_usd: 3_000_000_000, daily_per_person: 1)
+      )
+
+      limited = conn |> recycle() |> put_bearer_token(owner) |> post("#{base}/help-desk/conversations", ask) |> json_response(200)
+      assert limited["assistant"] == "limit_reached"
+    end
+
     test "only vendors see the queue", %{conn: conn, owner: owner} do
       assert %{"code" => "vendor_required"} =
                conn |> put_bearer_token(owner) |> get("/api/platform/help-desk/tickets") |> json_response(403)
