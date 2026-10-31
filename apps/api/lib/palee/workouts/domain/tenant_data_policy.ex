@@ -17,6 +17,8 @@ defmodule Palee.Workouts.Domain.TenantDataPolicy do
             tables: [
               %{table: "assigned_workout_athletes"},
               %{table: "assigned_workouts"},
+              # ADR-357: after assigned_workouts, which reference it.
+              %{table: "workout_snapshots"},
               %{table: "exercise_variations"},
               %{table: "workout_exercises"},
               %{table: "workout_sections"},

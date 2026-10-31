@@ -1,6 +1,7 @@
 defmodule Palee.Application.GetCalendarFeed do
   alias Palee.Application.{CalendarFeedToken, Trials}
-  alias Palee.{Community, Organizations, Scheduling}
+  alias Palee.{Community, Facility, Organizations, Scheduling}
+  alias Palee.Scheduling.Domain.ICalendar
   alias Palee.Workouts.WorkoutStore
   alias Palee.Localization
 
@@ -71,6 +72,8 @@ defmodule Palee.Application.GetCalendarFeed do
       })
       |> Enum.filter(&include_slot?(&1, user, organization_admin?(context)))
 
+    locations = locations(context)
+
     if organization_admin?(context) do
       recurring_events =
         slots
@@ -87,8 +90,77 @@ defmodule Palee.Application.GetCalendarFeed do
 
       recurring_events ++ one_off_events
     else
-      Enum.map(slots, &class_event(&1, user, locale, false))
+      Enum.map(slots, &seat_event(&1, user, locale, locations))
     end
+  end
+
+  # ADR-359 (CP-E4): a seat keeps the class's UID for good; its status and
+  # SEQUENCE follow the booking and the class, so a cancelled seat or class
+  # stays in the window as CANCELLED and subscribed calendars drop it.
+  @doc "One seat as a calendar event (also the single booking invite)."
+  def seat_event(slot, user, locale, locations) do
+    booking = own_booking(slot, user)
+    status = ICalendar.status(booking && booking.status, slot.cancelled_at)
+
+    slot
+    |> class_event(user, locale, false)
+    |> Map.merge(%{
+      status: status,
+      sequence:
+        ICalendar.sequence([
+          slot[:updated_at],
+          slot.cancelled_at,
+          booking && booking[:updated_at]
+        ]),
+      last_modified: latest([slot[:updated_at], booking && booking[:updated_at]]),
+      location: Map.get(locations, slot.location_id),
+      description:
+        if(status == "CANCELLED",
+          do: translate(locale, "This class or your booking was cancelled."),
+          else: class_description(slot, user, locale, false)
+        )
+    })
+  end
+
+  @doc false
+  def own_booking(slot, user) do
+    (slot.bookings || [])
+    |> Enum.filter(&(&1.user_id == user.id and blank?(Map.get(&1, :guest_name))))
+    |> Enum.sort_by(&live_rank/1)
+    |> List.first()
+  end
+
+  # A live seat beats an old cancelled one of the same class.
+  defp live_rank(%{status: status}) when status in [:approved, :pending, :waitlisted], do: 0
+  defp live_rank(_booking), do: 1
+
+  defp blank?(value), do: value in [nil, ""]
+
+  defp latest(moments) do
+    moments
+    |> Enum.reject(&is_nil/1)
+    |> Enum.map(&utc/1)
+    |> Enum.max(DateTime, fn -> nil end)
+  end
+
+  defp utc(%DateTime{} = at), do: at
+  defp utc(%NaiveDateTime{} = at), do: DateTime.from_naive!(at, "Etc/UTC")
+
+  @doc false
+  def locations(context) do
+    context
+    |> Facility.list_locations()
+    |> case do
+      list when is_list(list) -> Map.new(list, &{&1.id, location_text(&1)})
+      _unavailable -> %{}
+    end
+  end
+
+  defp location_text(location) do
+    [Map.get(location, :name), Map.get(location, :address), Map.get(location, :city)]
+    |> Enum.reject(&blank?/1)
+    |> Enum.uniq()
+    |> Enum.join(", ")
   end
 
   defp class_event(slot, user, locale, admin?) do
@@ -210,9 +282,12 @@ defmodule Palee.Application.GetCalendarFeed do
 
   defp include_slot?(_slot, _user, true = _admin?), do: true
 
+  # ADR-359: every seat of the person in the window, cancelled ones too
+  # (as CANCELLED), so a subscribed calendar removes them.
   defp include_slot?(slot, user, _admin?) do
     Enum.any?(slot.bookings || [], fn booking ->
-      booking.user_id == user.id and booking.status in [:pending, :approved]
+      booking.user_id == user.id and
+        booking.status in [:pending, :approved, :waitlisted, :cancelled, :rejected]
     end)
   end
 
@@ -223,7 +298,7 @@ defmodule Palee.Application.GetCalendarFeed do
   defp class_description(slot, user, locale, _admin?) do
     booking =
       Enum.find(slot.bookings || [], fn booking ->
-        booking.user_id == user.id and booking.status in [:pending, :approved]
+        booking.user_id == user.id and booking.status in [:pending, :approved, :waitlisted]
       end)
 
     status = if booking, do: booking.status, else: "scheduled"
@@ -234,64 +309,7 @@ defmodule Palee.Application.GetCalendarFeed do
     })
   end
 
-  defp render_ics(events, now) do
-    lines =
-      [
-        "BEGIN:VCALENDAR",
-        "VERSION:2.0",
-        "PRODID:-//Palee//Calendar Feed//EN",
-        "CALSCALE:GREGORIAN",
-        "METHOD:PUBLISH",
-        "X-WR-CALNAME:Palee",
-        Enum.map(events, &event_lines(&1, now)),
-        "END:VCALENDAR"
-      ]
-      |> List.flatten()
-
-    Enum.join(lines, "\r\n") <> "\r\n"
-  end
-
-  defp event_lines(%{starts_at: starts_at, ends_at: ends_at} = event, now) do
-    [
-      "BEGIN:VEVENT",
-      "UID:#{escape(event.uid)}",
-      "DTSTAMP:#{format_datetime(now)}",
-      "DTSTART:#{format_datetime(starts_at)}",
-      "DTEND:#{format_datetime(ends_at)}",
-      "SUMMARY:#{escape(event.title)}",
-      "DESCRIPTION:#{escape(event.description)}",
-      "END:VEVENT"
-    ]
-  end
-
-  defp event_lines(%{recurrence: series, starts_at: starts_at} = event, now) do
-    [
-      "BEGIN:VEVENT",
-      "UID:#{escape(event.uid)}",
-      "DTSTAMP:#{format_datetime(now)}",
-      "DTSTART;TZID=#{escape(series.timezone)}:#{format_zoned_datetime(starts_at, series.timezone)}",
-      "DURATION:PT#{event.duration_minutes}M",
-      recurrence_rule(series),
-      excluded_dates(series),
-      "SUMMARY:#{escape(event.title)}",
-      "DESCRIPTION:#{escape(event.description)}",
-      "END:VEVENT"
-    ]
-    |> Enum.reject(&is_nil/1)
-  end
-
-  defp event_lines(%{starts_on: starts_on, ends_on: ends_on} = event, now) do
-    [
-      "BEGIN:VEVENT",
-      "UID:#{escape(event.uid)}",
-      "DTSTAMP:#{format_datetime(now)}",
-      "DTSTART;VALUE=DATE:#{format_date(starts_on)}",
-      "DTEND;VALUE=DATE:#{format_date(ends_on)}",
-      "SUMMARY:#{escape(event.title)}",
-      "DESCRIPTION:#{escape(event.description)}",
-      "END:VEVENT"
-    ]
-  end
+  defp render_ics(events, now), do: ICalendar.render(events, now)
 
   defp class_type_name(%{class_type: %{name: name}}) when is_binary(name), do: name
   defp class_type_name(_slot), do: "—"
@@ -299,64 +317,12 @@ defmodule Palee.Application.GetCalendarFeed do
   defp class_name(%{name: name}) when is_binary(name) and name != "Class", do: name
   defp class_name(slot), do: class_type_name(slot)
 
-  defp recurrence_rule(series) do
-    byday = series.weekdays |> Enum.map(&weekday_code/1) |> Enum.join(",")
-    until_part = if series.ends_on, do: ";UNTIL=#{format_date(series.ends_on)}T235959Z", else: ""
-    "RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=#{byday}#{until_part}"
-  end
-
-  defp excluded_dates(%{excluded_dates: []}), do: nil
-  defp excluded_dates(%{excluded_dates: nil}), do: nil
-
-  defp excluded_dates(series) do
-    dates =
-      series.excluded_dates
-      |> Enum.map(&format_local_datetime(&1, series.local_start_time))
-      |> Enum.join(",")
-
-    "EXDATE;TZID=#{escape(series.timezone)}:#{dates}"
-  end
-
-  defp weekday_code(1), do: "MO"
-  defp weekday_code(2), do: "TU"
-  defp weekday_code(3), do: "WE"
-  defp weekday_code(4), do: "TH"
-  defp weekday_code(5), do: "FR"
-  defp weekday_code(6), do: "SA"
-  defp weekday_code(7), do: "SU"
-
   defp status_message(:pending), do: "Pending"
   defp status_message(:approved), do: "Approved"
+  defp status_message(:waitlisted), do: "Waitlisted"
   defp status_message("scheduled"), do: "Scheduled"
   defp status_message(status), do: to_string(status)
 
   defp translate(locale, message, bindings \\ %{}),
     do: Localization.translate(locale, message, bindings, "calendar")
-
-  defp format_datetime(datetime) do
-    datetime
-    |> DateTime.shift_zone!("Etc/UTC")
-    |> Calendar.strftime("%Y%m%dT%H%M%SZ")
-  end
-
-  defp format_date(date), do: Calendar.strftime(date, "%Y%m%d")
-
-  defp format_local_datetime(date, time) do
-    Calendar.strftime(date, "%Y%m%d") <> "T" <> Calendar.strftime(time, "%H%M%S")
-  end
-
-  defp format_zoned_datetime(datetime, timezone) do
-    datetime
-    |> DateTime.shift_zone!(timezone)
-    |> Calendar.strftime("%Y%m%dT%H%M%S")
-  end
-
-  defp escape(value) do
-    value
-    |> to_string()
-    |> String.replace("\\", "\\\\")
-    |> String.replace(";", "\\;")
-    |> String.replace(",", "\\,")
-    |> String.replace("\n", "\\n")
-  end
 end

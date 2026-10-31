@@ -60,3 +60,9 @@ msgstr "Event: %{title}"
 
 msgid "You're going to this event."
 msgstr "Θα έρθεις σε αυτό το event."
+
+msgid "Waitlisted"
+msgstr "Σε λίστα αναμονής"
+
+msgid "This class or your booking was cancelled."
+msgstr "Το τμήμα ή η κράτησή σου ακυρώθηκε."

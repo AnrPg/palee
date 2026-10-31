@@ -19,6 +19,11 @@ defmodule PaleeWeb.Schemas.CoachNotes do
         body: %Schema{type: :string},
         subject_kind: %Schema{type: :string, enum: subject_kinds(), nullable: true},
         subject_id: %Schema{type: :string, format: :uuid, nullable: true},
+        audience: %Schema{
+          type: :string,
+          enum: ~w(private staff),
+          description: "ADR-359: private coach note (ADR-101) or a note every staff member reads"
+        },
         inserted_at: %Schema{type: :string, format: :"date-time"},
         updated_at: %Schema{type: :string, format: :"date-time"}
       },
@@ -52,7 +57,8 @@ defmodule PaleeWeb.Schemas.CoachNotes do
       properties: %{
         body: %Schema{type: :string, minLength: 1, maxLength: 5000},
         subject_kind: %Schema{type: :string, enum: subject_kinds()},
-        subject_id: @uuid
+        subject_id: @uuid,
+        audience: %Schema{type: :string, enum: ~w(private staff), default: "private"}
       },
       required: [:body]
     }

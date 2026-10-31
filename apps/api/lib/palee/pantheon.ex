@@ -22,6 +22,9 @@ defmodule Palee.Pantheon do
     to: Palee.Pantheon.Queries.GetStrengthTrend,
     as: :call
 
+  @doc "ADR-358 (CP-D6): the explainable fitness profile (versioned algorithm)."
+  defdelegate fitness_profile(input), to: Palee.Pantheon.Domain.FitnessProfile, as: :build
+
   # Bounded-context API used by cross-context application orchestration. These
   # operations expose Pantheon capabilities without leaking its store port.
   defdelegate list_records(user_id), to: Palee.Pantheon.PRStore, as: :list_user_prs

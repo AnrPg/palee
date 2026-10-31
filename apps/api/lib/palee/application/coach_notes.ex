@@ -32,18 +32,40 @@ defmodule Palee.Application.CoachNotes do
     end
   end
 
-  @doc "`subject` is `%{kind, id}` when the note is about one thing (ADR-140 §5)."
-  def create(context, client_id, body, subject \\ nil) do
+  @doc """
+  `subject` is `%{kind, id}` when the note is about one thing (ADR-140 §5).
+  `audience` (ADR-359): `private` (default, a coach's note, ADR-101) or
+  `staff` (an internal comment the box's staff read, front desk included,
+  written by anyone who sees the member in the directory).
+  """
+  def create(context, client_id, body, subject \\ nil, audience \\ "private")
+
+  def create(context, client_id, body, subject, audience) when audience in [nil, "private"] do
     with :ok <- Organizations.authorize_capability(context, :write_coach_notes),
          :ok <- AuthorizeClientAccess.call(context, :manage_coaching, client_id) do
-      Coaching.create_note(context, %{
-        coach_user_id: context.user_id,
-        client_user_id: client_id,
-        body: body,
-        subject_kind: subject && subject.kind,
-        subject_id: subject && subject.id
-      })
+      insert(context, client_id, body, subject, "private")
     end
+  end
+
+  def create(context, client_id, body, subject, "staff") do
+    with :ok <- Organizations.authorize_capability(context, :view_directory),
+         :ok <- AuthorizeClientAccess.call(context, :view_directory, client_id) do
+      insert(context, client_id, body, subject, "staff")
+    end
+  end
+
+  def create(_context, _client_id, _body, _subject, _audience),
+    do: {:error, :invalid_note_audience}
+
+  defp insert(context, client_id, body, subject, audience) do
+    Coaching.create_note(context, %{
+      coach_user_id: context.user_id,
+      client_user_id: client_id,
+      body: body,
+      subject_kind: subject && subject.kind,
+      subject_id: subject && subject.id,
+      audience: audience
+    })
   end
 
   def update(context, id, body) do
@@ -87,6 +109,11 @@ defmodule Palee.Application.CoachNotes do
 
       Organizations.can?(context, :write_coach_notes) ->
         AuthorizeClientAccess.call(context, :manage_coaching, client_id)
+
+      # ADR-359: the front desk reads the box's staff notes (the policy
+      # keeps private notes from them).
+      Organizations.can?(context, :view_directory) ->
+        AuthorizeClientAccess.call(context, :view_directory, client_id)
 
       true ->
         {:error, :forbidden}

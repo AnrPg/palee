@@ -86,6 +86,13 @@ defmodule Palee.Gamification.GamificationStore do
     do: adapter().leaderboard_opted_in_user_ids(user_ids)
 
   @impl true
+  def leaderboard_profiles(user_ids), do: adapter().leaderboard_profiles(user_ids)
+
+  @impl true
+  def put_leaderboard_profile(user_id, params),
+    do: adapter().put_leaderboard_profile(user_id, params)
+
+  @impl true
   def get_leaderboard(period, limit), do: adapter().get_leaderboard(period, limit)
 
   @impl true

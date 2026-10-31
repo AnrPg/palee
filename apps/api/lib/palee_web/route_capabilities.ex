@@ -20,6 +20,8 @@ defmodule PaleeWeb.RouteCapabilities do
     W.AdminWorkoutChoiceController => [:manage_schedule, :manage_workouts],
     # ADR-230: the day's WOD, like linking a WOD to one class.
     W.AdminDayWorkoutController => [:manage_schedule, :manage_workouts],
+    # ADR-359: whoever runs classes or the desk sees who is new.
+    W.AdminVisitBadgesController => [:run_classes, :check_in, :manage_schedule],
     W.AdminWorkoutDslController => [:manage_workouts],
     W.AdminWorkoutFolderController => [:manage_workouts],
     W.AdminWorkoutGoalsController => [:manage_workouts],
@@ -502,10 +504,13 @@ defmodule PaleeWeb.RouteCapabilities do
     {W.TrainingDepthController, :client} => [:view_client_training],
 
     # Private coach notes (ADR-101)
-    {W.CoachNotesController, :index} => [:write_coach_notes, :read_coach_notes],
-    {W.CoachNotesController, :create} => [:write_coach_notes],
-    {W.CoachNotesController, :update} => [:write_coach_notes],
-    {W.CoachNotesController, :delete} => [:write_coach_notes],
+    # ADR-359 (CP-E5): staff notes are read and written by anyone who sees
+    # the member in the directory (front desk included); the service keeps
+    # private notes to ADR-101's readers and edits to the author.
+    {W.CoachNotesController, :index} => [:write_coach_notes, :read_coach_notes, :view_directory],
+    {W.CoachNotesController, :create} => [:write_coach_notes, :view_directory],
+    {W.CoachNotesController, :update} => [:write_coach_notes, :view_directory],
+    {W.CoachNotesController, :delete} => [:write_coach_notes, :view_directory],
     {W.CoachNotesController, :reads} => [:write_coach_notes],
     {W.CoachNotesController, :visibility} => [:write_coach_notes],
 

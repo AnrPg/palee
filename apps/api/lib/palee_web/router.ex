@@ -881,6 +881,14 @@ defmodule PaleeWeb.Router do
     post("/check-ins", ScheduleController, :check_in)
     get("/workouts/:id", WorkoutController, :show)
     get("/workouts/:id/scales", WorkoutController, :scales)
+    # ADR-356 (CP-D2): filtered WOD leaderboards with percentiles.
+    get("/workouts/:id/leaderboard", WorkoutLeaderboardController, :show)
+    get("/me/leaderboard-profile", WorkoutLeaderboardController, :profile)
+    put("/me/leaderboard-profile", WorkoutLeaderboardController, :update_profile)
+    # ADR-357 (CP-D3): the WOD as it was when assigned or performed.
+    get("/workout-snapshots/:id", WorkoutSnapshotController, :show)
+    # ADR-359 (CP-E4): one booking as an .ics invite.
+    get("/bookings/:id/calendar.ics", BookingCalendarController, :show)
   end
 
   scope "/api/org/:organization_slug", PaleeWeb do
@@ -1453,6 +1461,8 @@ defmodule PaleeWeb.Router do
     put("/schedule/day-workouts", AdminDayWorkoutController, :put)
     delete("/schedule/day-workouts/:id", AdminDayWorkoutController, :delete)
     post("/schedule/slots/:id/state", AdminScheduleController, :change_state)
+    # ADR-359 (CP-E1): first visit, guest and how they came.
+    get("/schedule/slots/:id/visit-badges", AdminVisitBadgesController, :show)
     delete("/schedule/slots/:id", AdminScheduleController, :delete_slot)
 
     get(
@@ -2202,6 +2212,8 @@ defmodule PaleeWeb.Router do
     get("/me/progress", AccountTrainingController, :progress)
     # ADR-165: coverage summary, qualities radar and training load.
     get("/me/progress/depth", TrainingDepthController, :show)
+    # ADR-358 (CP-D6): fitness score per domain and what to work on.
+    get("/me/fitness-profile", FitnessProfileController, :show)
     # ADR-166: the Πρόοδος insights slot.
     get("/me/insights", InsightsController, :show)
     post("/me/insights/restore", InsightsController, :restore)

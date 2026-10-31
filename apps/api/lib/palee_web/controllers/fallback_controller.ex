@@ -516,9 +516,33 @@ defmodule PaleeWeb.FallbackController do
   def call(conn, {:error, reason}) when is_map_key(@box_site_errors, reason) do
     {status, message} = Map.fetch!(@box_site_errors, reason)
 
+  # ADR-356..359: v3.1 training and floor.
+  @training_floor_errors %{
+    leaderboard_not_opted_in:
+      {:conflict, "Join the box's leaderboards first, then choose your division"},
+    workout_snapshot_not_found: {:not_found, "This version of the WOD was not found"},
+    invalid_day_range: {:unprocessable_entity, "Choose up to 62 days, the end after the start"},
+    booking_not_found: {:not_found, "Booking not found"},
+    invalid_note_audience: {:unprocessable_entity, "Choose who reads the note"}
+  }
+
+  def call(conn, {:error, reason}) when is_map_key(@training_floor_errors, reason) do
+    {status, message} = Map.fetch!(@training_floor_errors, reason)
+
     conn
     |> put_status(status)
     |> json(%{code: to_string(reason), error: message})
+  end
+
+
+  def call(conn, {:error, {:invalid_leaderboard_filter, field}}) when is_atom(field) do
+    conn
+    |> put_status(:unprocessable_entity)
+    |> json(%{
+      code: "invalid_leaderboard_filter",
+      field: to_string(field),
+      error: "This leaderboard filter does not read"
+    })
   end
 
   # ADR-253: box screens.

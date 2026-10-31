@@ -352,6 +352,37 @@ defmodule Palee.Infrastructure.Gamification.EctoGamificationStore do
   end
 
   @impl true
+  def leaderboard_profiles([]), do: %{}
+
+  def leaderboard_profiles(user_ids) do
+    LeaderboardOptIn
+    |> scoped_to_tenant()
+    |> where([opt_in], opt_in.user_id in ^user_ids)
+    |> select([opt_in], {opt_in.user_id, opt_in.division, opt_in.birth_year})
+    |> Repo.all()
+    |> Map.new(fn {user_id, division, birth_year} ->
+      {user_id, %{division: division, birth_year: birth_year}}
+    end)
+  end
+
+  @impl true
+  def put_leaderboard_profile(user_id, params) do
+    case LeaderboardOptIn |> scoped_to_tenant() |> Repo.get_by(user_id: user_id) do
+      nil ->
+        {:error, :not_opted_in}
+
+      %LeaderboardOptIn{} = opt_in ->
+        opt_in
+        |> LeaderboardOptIn.profile_changeset(params)
+        |> Repo.update()
+        |> case do
+          {:ok, saved} -> {:ok, %{division: saved.division, birth_year: saved.birth_year}}
+          error -> error
+        end
+    end
+  end
+
+  @impl true
   def leaderboard_opted_in?(user_id) do
     LeaderboardOptIn
     |> scoped_to_tenant()

@@ -513,6 +513,8 @@ config :palee,
        Palee.Infrastructure.Finance.EctoFinanceAccountingStore
 
 config :palee, :workout_store, Palee.Infrastructure.Workouts.EctoWorkoutStore
+# ADR-357: WODs as they were when assigned or performed.
+config :palee, :workout_snapshot_store, Palee.Infrastructure.Workouts.EctoWorkoutSnapshotStore
 
 config :palee,
        :workout_goal_store,
@@ -532,6 +534,8 @@ config :palee,
 
 # ADR-230: day WODs and their inheritance by the day's classes.
 config :palee, :day_workout_store, Palee.Infrastructure.Scheduling.EctoDayWorkoutStore
+# ADR-359: earlier visits and referrals behind the visit badges.
+config :palee, :visit_facts_store, Palee.Infrastructure.Scheduling.EctoVisitFactsStore
 
 config :palee, :pr_store, Palee.Infrastructure.Pantheon.EctoPRStore
 config :palee, :journal_store, Palee.Infrastructure.Journal.EctoJournalStore

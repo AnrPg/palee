@@ -6,6 +6,7 @@ defmodule Palee.Coaching.Note do
 
   # ADR-140 §5: what the note is about, when it is about one thing.
   @subject_kinds ~w(execution training_log pr injury form_review assignment)
+  @audiences ~w(private staff)
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -17,6 +18,8 @@ defmodule Palee.Coaching.Note do
     field :body, :string
     field :subject_kind, :string
     field :subject_id, :binary_id
+    # ADR-359 (CP-E5): `private` (ADR-101) or `staff` (every staff member).
+    field :audience, :string, default: "private"
 
     timestamps(type: :utc_datetime_usec)
   end
@@ -29,18 +32,22 @@ defmodule Palee.Coaching.Note do
       :client_user_id,
       :body,
       :subject_kind,
-      :subject_id
+      :subject_id,
+      :audience
     ])
     |> update_change(:body, &String.trim/1)
     |> validate_required([:coach_user_id, :client_user_id, :body])
     |> validate_length(:body, min: 1, max: 5_000)
     |> validate_inclusion(:subject_kind, @subject_kinds)
+    |> validate_inclusion(:audience, @audiences)
+    |> check_constraint(:audience, name: :coaching_notes_audience_check)
     |> validate_subject_pair()
     |> check_constraint(:subject_kind, name: :coaching_notes_subject_check)
     |> check_constraint(:subject_id, name: :coaching_notes_subject_owner_check)
   end
 
   def subject_kinds, do: @subject_kinds
+  def audiences, do: @audiences
 
   defp validate_subject_pair(changeset) do
     case {get_field(changeset, :subject_kind), get_field(changeset, :subject_id)} do

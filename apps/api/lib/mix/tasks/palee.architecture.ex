@@ -63,6 +63,8 @@ defmodule Mix.Tasks.Palee.Architecture do
     scheduling/scheduling_store
     workouts/workout_store
     workouts/goal_store
+    workouts/workout_snapshot_store
+    scheduling/visit_facts_store
     messaging/thread_store
     feedback/feedback_store
     analytics/analytics_store

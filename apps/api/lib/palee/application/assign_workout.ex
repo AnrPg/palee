@@ -16,7 +16,8 @@ defmodule Palee.Application.AssignWorkout do
     CoveringBranches,
     TenantAssigneeRoles,
     TenantStaffRecipients,
-    TrackAnalyticsEvent
+    TrackAnalyticsEvent,
+    WorkoutSnapshots
   }
 
   alias Palee.{Finance, Identity, Notifications, Scheduling, Workouts}
@@ -58,6 +59,14 @@ defmodule Palee.Application.AssignWorkout do
       with {:ok, reservations} <- reserve_touchpoints(context, metered, delivery_id),
            {:ok, assignment} <- create_assignment(context, params, reservations),
            :ok <- finalize_touchpoints(context, reservations, assignment, delivery_id) do
+        # ADR-357 (CP-D3): the WOD as it was when it was assigned.
+        WorkoutSnapshots.capture_for(
+          context,
+          :assignment,
+          assignment.id,
+          Map.get(assignment, :master_workout_id) || get_in(assignment, [:workout, :id])
+        )
+
         broadcast_assignment_refresh(context, assignment)
         dispatch_assignment_notification(context, assignment)
 

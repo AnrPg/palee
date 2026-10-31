@@ -270,6 +270,11 @@ must have an ADR. See `template.md` for the format.
 | ADR-345 | Public lead intake: published boxes only, rate limit + honeypot + timing + link rules (spam answered like an enquiry), required contact consent with text version, separate marketing consent, lost leads purged after two years | Accepted |
 | ADR-346 | Automations from six ready recipes (welcome, trial follow-up, missed classes, renewal, birthday, win-back), off by default; outbox with SKIP LOCKED, quiet hours in the box's zone, opt-out, consent; channel port with in-app and email now, SMS (Brevo, W3) later | Accepted |
 | ADR-347 | Members at risk («Σε κίνδυνο»): nightly rule-based 0–100 score with reasons and points, levels, suggested action, staff list with «Επικοινώνησα» and snooze; entering high starts the win-back recipe | Accepted |
+
+| ADR-356 | WOD leaderboard filters (division, age group, scale, branch, window, buddies) and a percentile per score (≥ 5 results); division and birth year on the per-box opt-in; comparison only for those who opted in | Accepted |
+| ADR-357 | Content-addressed WOD snapshots on assignment, run completion and logged score; day tags Χωρίς WOD / Μικτό / Όλα με WOD in day-workouts | Accepted |
+| ADR-358 | Explainable fitness profile v1: benchmark PRs → points per domain with reasons, overall from ≥ 2 domains, «Τι να δουλέψεις», own data only | Accepted |
+| ADR-359 | Visit badges on class lists and check-in; calendar feed with stable UIDs, SEQUENCE, CANCELLED seats and a per-booking invite; staff notes the front desk reads | Accepted |
 | ADR-300 | Operation registry: one spec per use case generates REST, MCP and LLM tools; previewable commands, problem details, idempotency keys, ETags (v4) | Proposed |
 | ADR-301 | AI agents as delegated principals: rights intersected on every call, durable runs, Rule-of-Two policy, approvals, one LLM provider port, multi-agent via delegation (v4) | Proposed |
 | ADR-360 | One LLM provider port (Gemini now, Claude drop-in later; sandbox for tests), a bounded read-only tool loop, tool results and documents as untrusted data, per-feature monthly budget per box and daily count per person | Accepted |
