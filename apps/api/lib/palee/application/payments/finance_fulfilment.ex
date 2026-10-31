@@ -24,11 +24,12 @@ defmodule Palee.Application.Payments.FinanceFulfilment do
     do: TerminalFulfilment.fulfil(context, intent)
 
   # ADR-340: a card surcharge the member was shown is revenue of the sale:
-  # its own Finance row and a line of the sale's receipt.
+  # its own Finance row and a line of the sale's receipt. The row comes first
+  # (idempotent per intent) so the money taken is recorded even while the
+  # sale's receipt is retried.
   def fulfil(context, intent) do
-    with {:ok, result} <- fulfil_sale(context, intent),
-         :ok <- CardSurcharges.record(context, intent, intent.user_id) do
-      {:ok, result}
+    with :ok <- CardSurcharges.record(context, intent, intent.user_id) do
+      fulfil_sale(context, intent)
     end
   end
 

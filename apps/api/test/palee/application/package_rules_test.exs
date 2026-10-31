@@ -117,8 +117,17 @@ defmodule Palee.Application.PackageRulesTest do
     assert {:error, :booking_open_limit_reached, %{limit: 1}} =
              SubmitBooking.call(context, member, second.id)
 
-    assert {:ok, _} =
-             SubmitBooking.call(context, member, second.id, booking_window: false)
+    # Staff placing the member (PlaceMemberInClass) are not limited.
+    assert {:ok, _booking} =
+             Scheduling.transaction(context, fn ->
+               with {:ok, _slot, booking} <-
+                      SubmitBooking.write(context, member, second.id,
+                        approved: true,
+                        booking_window: false,
+                        documents_gate: false
+                      ),
+                    do: {:ok, booking}
+             end)
   end
 
   test "purchase rules: staff only, purchases per person and a needed package", %{

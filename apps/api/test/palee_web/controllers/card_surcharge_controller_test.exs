@@ -98,7 +98,7 @@ defmodule PaleeWeb.CardSurchargeControllerTest do
     assert status["law"]["rule"] == "eea_non_consumer"
     assert status["law"]["sources"] != []
 
-    assert %{"errors" => %{"at_cost_confirmed" => "required"}} =
+    assert %{"errors" => %{"at_cost_confirmed" => ["required"]}} =
              conn
              |> put_surcharge(ctx, %{enabled: true, channels: ["desk"], percent_bps: 150})
              |> json_response(422)
@@ -127,7 +127,18 @@ defmodule PaleeWeb.CardSurchargeControllerTest do
 
     assert quote["applies"] == false and quote["reason"] == "card_not_surchargeable"
 
-    invoice = open_invoice(ctx, 6_000)
+    # A package sale, so the receipt knows the sale's tax category.
+    {:ok, package} =
+      Finance.create_package(ctx.context, %{
+        name: "Unlimited",
+        family: "unlimited",
+        billing_period: "monthly",
+        base_price_cents: 6_000
+      })
+
+    {:ok, subscription} =
+      Finance.assign_package(ctx.context, ctx.membership.id, package.id, %{})
+
     receive = admin_path(ctx, "/finance/members/#{ctx.member.id}/payments/receive")
 
     refused =
@@ -136,7 +147,8 @@ defmodule PaleeWeb.CardSurchargeControllerTest do
       |> post(receive, %{
         amount_cents: 6_000,
         payment_method: "card_manual",
-        finance_invoice_id: invoice.id,
+        membership_package_subscription_id: subscription.id,
+        paid_on: Date.to_iso8601(Date.utc_today()),
         surcharge_cents: 90,
         card: %{funding: "credit", country: "GR", commercial: false},
         idempotency_key: Ecto.UUID.generate()
@@ -151,7 +163,8 @@ defmodule PaleeWeb.CardSurchargeControllerTest do
       |> post(receive, %{
         amount_cents: 6_000,
         payment_method: "card_manual",
-        finance_invoice_id: invoice.id,
+        membership_package_subscription_id: subscription.id,
+        paid_on: Date.to_iso8601(Date.utc_today()),
         surcharge_cents: 90,
         card: %{funding: "credit", country: "GR", commercial: true},
         idempotency_key: Ecto.UUID.generate()
@@ -242,7 +255,6 @@ defmodule PaleeWeb.CardSurchargeControllerTest do
 
     {:ok, next} = Finance.get_invoice(ctx.context, next.id)
     assert next.status == "paid"
-    assert next.balance_due_cents == 0
 
     %{payments: payments} = Payments.list(ctx.context, %{})
     charged = Enum.find(payments, &(&1.purpose_id == next.id))

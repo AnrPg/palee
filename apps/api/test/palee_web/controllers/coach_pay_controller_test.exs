@@ -6,7 +6,7 @@ defmodule PaleeWeb.CoachPayControllerTest do
   """
   use PaleeWeb.ConnCase, async: false
 
-  alias Palee.Organizations
+  alias Palee.{Organizations, Repo}
   alias Palee.Scheduling.{ClassAttendanceRecord, ScheduledClass}
 
   import Palee.TestFixtures
@@ -30,7 +30,7 @@ defmodule PaleeWeb.CoachPayControllerTest do
     }
   end
 
-  defp path(ctx, rest), do: "/api/org/#{ctx.organization.slug}/admin/coach-pay#{rest}"
+  defp pay_path(ctx, rest), do: "/api/org/#{ctx.organization.slug}/admin/coach-pay#{rest}"
   defp as(conn, user), do: put_bearer_token(conn, user)
 
   defp led_class(ctx, attendees) do
@@ -62,7 +62,7 @@ defmodule PaleeWeb.CoachPayControllerTest do
   defp rule(conn, ctx, body) do
     conn
     |> as(ctx.admin)
-    |> post(path(ctx, "/rules"), Map.merge(%{coach_user_id: ctx.coach.id, starts_on: start(-30)}, body))
+    |> post(pay_path(ctx, "/rules"), Map.merge(%{coach_user_id: ctx.coach.id, starts_on: start(-30)}, body))
     |> json_response(201)
   end
 
@@ -80,7 +80,7 @@ defmodule PaleeWeb.CoachPayControllerTest do
 
     assert conn
            |> as(ctx.admin)
-           |> post(path(ctx, "/rules"), %{
+           |> post(pay_path(ctx, "/rules"), %{
              coach_user_id: outsider.id,
              kind: "per_class",
              amount_cents: 100,
@@ -91,18 +91,18 @@ defmodule PaleeWeb.CoachPayControllerTest do
     %{"period" => %{"id" => id, "status" => "draft"}} =
       conn
       |> as(ctx.admin)
-      |> post(path(ctx, "/periods"), %{starts_on: start(-10), ends_on: start(1)})
+      |> post(pay_path(ctx, "/periods"), %{starts_on: start(-10), ends_on: start(1)})
       |> json_response(201)
 
     # Overlapping dates are refused.
     assert %{"code" => "coach_pay_period_overlaps"} =
              conn
              |> as(ctx.admin)
-             |> post(path(ctx, "/periods"), %{starts_on: start(-3), ends_on: start(3)})
+             |> post(pay_path(ctx, "/periods"), %{starts_on: start(-3), ends_on: start(3)})
              |> json_response(409)
 
     %{"period" => period} =
-      conn |> as(ctx.admin) |> post(path(ctx, "/periods/#{id}/calculate")) |> json_response(200)
+      conn |> as(ctx.admin) |> post(pay_path(ctx, "/periods/#{id}/calculate")) |> json_response(200)
 
     [statement] = period["statements"]
     assert statement["coach_user_id"] == ctx.coach.id
@@ -113,7 +113,7 @@ defmodule PaleeWeb.CoachPayControllerTest do
     %{"period" => period} =
       conn
       |> as(ctx.admin)
-      |> post(path(ctx, "/periods/#{id}/adjustments"), %{
+      |> post(pay_path(ctx, "/periods/#{id}/adjustments"), %{
         coach_user_id: ctx.coach.id,
         amount_cents: 500,
         description: "Κάλυψη τμήματος"
@@ -124,45 +124,47 @@ defmodule PaleeWeb.CoachPayControllerTest do
 
     # Calculating again keeps the adjustment.
     %{"period" => period} =
-      conn |> as(ctx.admin) |> post(path(ctx, "/periods/#{id}/calculate")) |> json_response(200)
+      conn |> as(ctx.admin) |> post(pay_path(ctx, "/periods/#{id}/calculate")) |> json_response(200)
 
     assert [%{"total_cents" => 2_400}] = period["statements"]
 
     # The coach sees nothing before approval, and cannot read the admin side.
     assert %{"statements" => []} =
-             conn |> as(ctx.coach) |> get(path(ctx, "/mine")) |> json_response(200)
+             conn |> as(ctx.coach) |> get(pay_path(ctx, "/mine")) |> json_response(200)
 
-    assert conn |> as(ctx.coach) |> get(path(ctx, "/periods/#{id}")) |> response(403)
+    assert conn |> as(ctx.coach) |> get(pay_path(ctx, "/periods/#{id}")) |> response(403)
 
     assert %{"code" => "coach_pay_period_not_approved"} =
-             conn |> as(ctx.admin) |> get(path(ctx, "/periods/#{id}/export")) |> json_response(409)
+             conn |> as(ctx.admin) |> get(pay_path(ctx, "/periods/#{id}/export")) |> json_response(409)
 
     %{"period" => %{"status" => "approved"}} =
-      conn |> as(ctx.admin) |> post(path(ctx, "/periods/#{id}/approve")) |> json_response(200)
+      conn |> as(ctx.admin) |> post(pay_path(ctx, "/periods/#{id}/approve")) |> json_response(200)
 
     assert %{"code" => "coach_pay_period_locked"} =
              conn
              |> as(ctx.admin)
-             |> post(path(ctx, "/periods/#{id}/calculate"))
+             |> post(pay_path(ctx, "/periods/#{id}/calculate"))
              |> json_response(409)
 
     assert %{"statements" => [%{"total_cents" => 2_400, "lines" => lines}]} =
-             conn |> as(ctx.coach) |> get(path(ctx, "/mine")) |> json_response(200)
+             conn |> as(ctx.coach) |> get(pay_path(ctx, "/mine")) |> json_response(200)
 
     assert length(lines) == 3
 
-    export = conn |> as(ctx.admin) |> get(path(ctx, "/periods/#{id}/export"))
-    assert response(export, 200) =~ "24.00"
+    export = conn |> as(ctx.admin) |> get(pay_path(ctx, "/periods/#{id}/export"))
+    csv = response(export, 200)
+    assert csv =~ ",per_class,Class,1,15.00,,,15.00,EUR,scheduled_class,"
+    assert csv =~ ",adjustment,Κάλυψη τμήματος,1,,,,5.00,EUR,manual,"
     assert [content_type | _] = get_resp_header(export, "content-type")
     assert content_type =~ "text/csv"
 
     %{"period" => %{"status" => "exported"}} =
-      conn |> as(ctx.admin) |> get(path(ctx, "/periods/#{id}")) |> json_response(200)
+      conn |> as(ctx.admin) |> get(pay_path(ctx, "/periods/#{id}")) |> json_response(200)
 
     assert %{"code" => "coach_pay_period_exported"} =
              conn
              |> as(ctx.admin)
-             |> post(path(ctx, "/periods/#{id}/reopen"), %{reason: "Λάθος"})
+             |> post(pay_path(ctx, "/periods/#{id}/reopen"), %{reason: "Λάθος"})
              |> json_response(409)
   end
 
