@@ -59,6 +59,9 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     fiscal_network_connections fiscal_einvoice_submissions fiscal_einvoice_attempts
     fiscal_till_connections fiscal_till_signatures fiscal_till_signature_attempts
     fiscal_connection_settings
+    api_keys idempotency_records webhook_endpoints webhook_deliveries webhook_delivery_attempts
+    audience_connections integration_marketing_consents audience_members
+    door_controllers access_events
     payment_accounts payment_methods payment_intents payment_refunds payment_webhook_events
     box_screens
     document_settings document_templates document_versions document_signature_requests

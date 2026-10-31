@@ -86,6 +86,10 @@ defmodule Palee.PersonalData.Domain.Catalog do
       account("profile", "buddy_settings", @me),
       account("profile", "media_account_objects", @me),
       account("profile", "notifications", @me),
+      # ADR-380: the yes or no to each box's marketing email, and the list
+      # the box's email list was told.
+      tenant("profile", "integration_marketing_consents", @me),
+      tenant("profile", "audience_members", @me, drop: ~w(email_hash)),
 
       # -- bookings and visits ---------------------------------------------------
       tenant("bookings", "bookings", @me, drop: ~w(timeout_job_id)),
@@ -95,6 +99,8 @@ defmodule Palee.PersonalData.Domain.Catalog do
       tenant("bookings", "season_enrollments", @me),
       tenant("bookings", "scheduling_trial_requests", @me),
       tenant("bookings", "community_event_attendees", @me),
+      # ADR-381: the doors the person opened or was refused at.
+      tenant("bookings", "access_events", @me, drop: ~w(actor_id)),
 
       # -- training and journal --------------------------------------------------
       account("training", "journal_notes", @me),

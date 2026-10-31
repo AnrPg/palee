@@ -35,6 +35,8 @@ defmodule Palee.Application.AccountDeletion do
     SecurityNotices
   }
 
+  alias Palee.Application.Integrations.AudienceSync
+
   alias Palee.{Email, Identity}
   alias Palee.Email.LinkTokens
   alias Palee.Identity.AccountDeletionStore
@@ -330,6 +332,8 @@ defmodule Palee.Application.AccountDeletion do
     # ADR-280: the Partners check's selfies and rows (anonymising keeps the
     # profile row, so they are removed here rather than by the cascade).
     :ok = PartnerVerificationRetention.purge_person(profile.id)
+    # ADR-380: boxes' email lists drop the address while it is still known.
+    :ok = AudienceSync.forget_person(profile)
 
     if AccountDeletionStore.has_retained_records?(profile.id) do
       :ok = AccountDeletionStore.anonymize_profile(profile.id)

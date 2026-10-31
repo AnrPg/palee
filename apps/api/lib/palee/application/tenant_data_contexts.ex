@@ -9,6 +9,7 @@ defmodule Palee.Application.TenantDataContexts do
   """
 
   alias Palee.{
+    Access,
     AiUsage,
     Analytics,
     Appointments,
@@ -28,6 +29,7 @@ defmodule Palee.Application.TenantDataContexts do
     Gamification,
     Housekeeping,
     Imports,
+    Integrations,
     Inventory,
     Journal,
     Media,
@@ -54,6 +56,8 @@ defmodule Palee.Application.TenantDataContexts do
   alias Palee.TenantData.Domain.RetentionReview
 
   @purgeable [
+    Integrations,
+    Access,
     BoxScreens,
     AiUsage,
     Imports,

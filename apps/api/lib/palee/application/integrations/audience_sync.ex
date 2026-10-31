@@ -47,6 +47,37 @@ defmodule Palee.Application.Integrations.AudienceSync do
     end
   end
 
+  @doc """
+  Account deletion (ADR-380, GDPR art. 17): before the account and its
+  rows go, every box list the person is subscribed to is told, by the
+  address that only the account still knows. Best effort: a provider that
+  does not answer is logged, never blocks the deletion.
+  """
+  def forget_person(%{id: user_id, email: email}) when is_binary(user_id) and is_binary(email) do
+    [user_id]
+    |> Organizations.list_membership_organization_ids()
+    |> Map.get(user_id, [])
+    |> Enum.each(&forget_in(%{organization_id: &1}, user_id, email))
+  end
+
+  def forget_person(_profile), do: :ok
+
+  defp forget_in(context, user_id, email) do
+    with %{} = connection <- Integrations.connection_for_sync(context),
+         true <-
+           context
+           |> Integrations.audience_members(connection.id)
+           |> Enum.any?(&(&1.user_id == user_id and &1.status == "subscribed")),
+         {:error, reason} <-
+           Integrations.audience_provider(connection.provider).unsubscribe(connection, email) do
+      Logger.warning("audience unsubscribe on account deletion failed: #{inspect(reason)}")
+    end
+
+    :ok
+  rescue
+    error -> Logger.error("audience unsubscribe on account deletion: #{Exception.message(error)}")
+  end
+
   @doc "Whether the box's list is due a sync (asked for, or a day since the last)."
   def due?(%{sync_requested_at: requested, last_synced_at: synced}, now) do
     cond do
