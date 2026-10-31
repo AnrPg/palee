@@ -275,7 +275,10 @@ defmodule Palee.Channels.Sending do
         currency: plan.currency,
         source: request.source,
         source_ref: request[:source_ref],
-        created_by_id: request[:actor_id]
+        created_by_id: request[:actor_id],
+        # The month a message counts against is the one it was queued in,
+        # on the same clock as the budget check.
+        inserted_at: env.now
       }
 
       case ChannelStore.insert_message(context, attrs) do

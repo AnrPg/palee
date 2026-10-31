@@ -206,6 +206,7 @@ defmodule Palee.Infrastructure.Channels.EctoChannelStore do
   def insert_message(_context, attrs) do
     %Message{}
     |> Message.changeset(attrs)
+    |> Ecto.Changeset.put_change(:inserted_at, attrs[:inserted_at])
     |> Repo.insert()
     |> result()
   end
@@ -304,15 +305,28 @@ defmodule Palee.Infrastructure.Channels.EctoChannelStore do
     end
   end
 
+  # `on_conflict: :nothing` through insert_all: with a client-generated id,
+  # Repo.insert cannot tell a skipped row from an inserted one.
   @impl true
   def record_event(_context, attrs) do
-    attrs
-    |> MessageEvent.changeset()
-    |> Repo.insert(on_conflict: :nothing, conflict_target: {:unsafe_fragment, conflict_target()})
-    |> case do
-      {:ok, %MessageEvent{id: nil}} -> {:ok, :duplicate}
-      {:ok, event} -> {:ok, to_map(event)}
-      error -> error
+    case attrs |> MessageEvent.changeset() |> Ecto.Changeset.apply_action(:insert) do
+      {:ok, event} ->
+        row =
+          event
+          |> Map.take(MessageEvent.__schema__(:fields) -- [:organization_id])
+          |> Map.merge(%{id: Ecto.UUID.generate(), inserted_at: DateTime.utc_now()})
+
+        case Repo.insert_all(MessageEvent, [row],
+               on_conflict: :nothing,
+               conflict_target: {:unsafe_fragment, conflict_target()},
+               returning: true
+             ) do
+          {1, [inserted]} -> {:ok, to_map(inserted)}
+          {0, []} -> {:ok, :duplicate}
+        end
+
+      error ->
+        error
     end
   end
 
