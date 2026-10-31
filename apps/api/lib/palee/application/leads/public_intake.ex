@@ -2,6 +2,8 @@ defmodule Palee.Application.Leads.PublicIntake do
   @moduledoc """
   ADR-345: the box's public «Ενδιαφέρομαι» form and join links
   (`PaleeWeb.PublicLeadController`), for people without a Palee account.
+  Only a published box page (ADR-142) takes enquiries, by its slug or a
+  former one.
 
   What protects it: a rate limit per address in front (router), the spam
   rules of `IntakePolicy.spam_check/2` (hidden field, too fast, links), and
@@ -19,15 +21,14 @@ defmodule Palee.Application.Leads.PublicIntake do
 
   @doc "`{:ok, :received}` or `{:error, :not_found | {:invalid_fields, map}}`."
   def call(slug, params, now \\ Leads.now()) when is_binary(slug) and is_map(params) do
-    with %{id: organization_id, status: :active} <-
-           Organizations.get_by_slug(slug) || {:error, :not_found},
+    with %{organization_id: organization_id} <-
+           Organizations.public_box_by_slug(slug) || {:error, :not_found},
          :ok <- not_spam(params, now),
          {:ok, _result} <-
            CaptureLead.call(%{organization_id: organization_id}, attrs(params), now: now) do
       {:ok, :received}
     else
       :spam -> {:ok, :received}
-      %{} -> {:error, :not_found}
       {:error, _reason} = error -> error
     end
   end
