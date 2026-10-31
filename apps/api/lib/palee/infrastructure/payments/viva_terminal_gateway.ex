@@ -31,20 +31,21 @@ defmodule Palee.Infrastructure.Payments.VivaTerminalGateway do
   def app_request(_account, sale) do
     %{
       scheme: @scheme,
-      params: skip_surcharge(sale, %{
-        "appId" => sale.app_id,
-        "action" => "sale",
-        "clientTransactionId" => sale.reference,
-        "amount" => Integer.to_string(sale.amount_cents),
-        "customerTrns" => sale.description,
-        "callback" => sale.callback,
-        "paymentMethod" => "CardPresent",
-        "show_receipt" => "false",
-        "show_transaction_result" => "true",
-        "show_rating" => "false",
-        # iOS: deprecated, any value is accepted.
-        "merchantKey" => "palee"
-      })
+      params:
+        skip_surcharge(sale, %{
+          "appId" => sale.app_id,
+          "action" => "sale",
+          "clientTransactionId" => sale.reference,
+          "amount" => Integer.to_string(sale.amount_cents),
+          "customerTrns" => sale.description,
+          "callback" => sale.callback,
+          "paymentMethod" => "CardPresent",
+          "show_receipt" => "false",
+          "show_transaction_result" => "true",
+          "show_rating" => "false",
+          # iOS: deprecated, any value is accepted.
+          "merchantKey" => "palee"
+        })
     }
   end
 

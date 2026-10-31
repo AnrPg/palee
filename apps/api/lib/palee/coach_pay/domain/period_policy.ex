@@ -18,10 +18,17 @@ defmodule Palee.CoachPay.Domain.PeriodPolicy do
   @doc "Checks a new period's dates against the box's other periods."
   def validate_new(%Date{} = starts_on, %Date{} = ends_on, existing) do
     cond do
-      Date.compare(ends_on, starts_on) == :lt -> {:error, {:invalid_fields, %{"ends_on" => "invalid"}}}
-      Date.diff(ends_on, starts_on) > @max_days -> {:error, {:invalid_fields, %{"ends_on" => "too_long"}}}
-      Enum.any?(existing, &overlaps?(&1, starts_on, ends_on)) -> {:error, :coach_pay_period_overlaps}
-      true -> :ok
+      Date.compare(ends_on, starts_on) == :lt ->
+        {:error, {:invalid_fields, %{"ends_on" => "invalid"}}}
+
+      Date.diff(ends_on, starts_on) > @max_days ->
+        {:error, {:invalid_fields, %{"ends_on" => "too_long"}}}
+
+      Enum.any?(existing, &overlaps?(&1, starts_on, ends_on)) ->
+        {:error, :coach_pay_period_overlaps}
+
+      true ->
+        :ok
     end
   end
 
@@ -38,7 +45,8 @@ defmodule Palee.CoachPay.Domain.PeriodPolicy do
   def editable?(_period), do: {:error, :coach_pay_period_locked}
 
   def approve(%{status: "draft"}, actor_id, now),
-    do: {:ok, %{status: "approved", approved_at: now, approved_by_id: actor_id, reopen_reason: nil}}
+    do:
+      {:ok, %{status: "approved", approved_at: now, approved_by_id: actor_id, reopen_reason: nil}}
 
   def approve(_period, _actor_id, _now), do: {:error, :coach_pay_period_locked}
 
@@ -47,7 +55,8 @@ defmodule Palee.CoachPay.Domain.PeriodPolicy do
 
     if reason == "" or String.length(reason) > 200,
       do: {:error, {:invalid_fields, %{"reason" => "required"}}},
-      else: {:ok, %{status: "draft", approved_at: nil, approved_by_id: nil, reopen_reason: reason}}
+      else:
+        {:ok, %{status: "draft", approved_at: nil, approved_by_id: nil, reopen_reason: reason}}
   end
 
   def reopen(%{status: "approved"}, _reason),

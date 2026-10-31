@@ -55,7 +55,9 @@ defmodule Palee.Payments.Domain.SurchargePolicyTest do
   describe "settings" do
     test "off by default; off is always allowed" do
       assert %{enabled: false, channels: []} = SurchargePolicy.resolve(nil)
-      assert {:ok, %{enabled: false}} = SurchargePolicy.change(nil, %{enabled: false}, "ZZ", @today)
+
+      assert {:ok, %{enabled: false}} =
+               SurchargePolicy.change(nil, %{enabled: false}, "ZZ", @today)
     end
 
     test "refused where the law forbids any surcharge" do
@@ -80,10 +82,20 @@ defmodule Palee.Payments.Domain.SurchargePolicyTest do
 
     test "the US needs the state, the EEA the at-cost confirmation" do
       assert {:error, {:invalid_fields, %{"region_code" => "required"}}} =
-               SurchargePolicy.change(nil, %{enabled: true, channels: ["online"], percent_bps: 100}, "US", @today)
+               SurchargePolicy.change(
+                 nil,
+                 %{enabled: true, channels: ["online"], percent_bps: 100},
+                 "US",
+                 @today
+               )
 
       assert {:error, {:invalid_fields, %{"at_cost_confirmed" => "required"}}} =
-               SurchargePolicy.change(nil, %{enabled: true, channels: ["desk"], percent_bps: 100}, "GR", @today)
+               SurchargePolicy.change(
+                 nil,
+                 %{enabled: true, channels: ["desk"], percent_bps: 100},
+                 "GR",
+                 @today
+               )
 
       assert {:ok, %{region_code: "US-NY", percent_bps: 250}} =
                SurchargePolicy.change(
@@ -96,9 +108,18 @@ defmodule Palee.Payments.Domain.SurchargePolicyTest do
 
     test "unknown keys and bad values are refused field by field" do
       assert {:error, {:invalid_fields, errors}} =
-               SurchargePolicy.change(nil, %{"colour" => 1, "percent_bps" => -1, "channels" => ["fax"]}, "GR", @today)
+               SurchargePolicy.change(
+                 nil,
+                 %{"colour" => 1, "percent_bps" => -1, "channels" => ["fax"]},
+                 "GR",
+                 @today
+               )
 
-      assert errors == %{"colour" => "unknown", "percent_bps" => "invalid", "channels" => "invalid"}
+      assert errors == %{
+               "colour" => "unknown",
+               "percent_bps" => "invalid",
+               "channels" => "invalid"
+             }
     end
   end
 
@@ -131,12 +152,20 @@ defmodule Palee.Payments.Domain.SurchargePolicyTest do
 
     test "the cap limits a fixed part too", %{us: us} do
       settings = %{enabled: true, channels: ["online"], percent_bps: 300, fixed_cents: 50}
-      assert %{surcharge_cents: 30} = SurchargePolicy.quote(settings, us, "online", 1_000, @us_card)
+
+      assert %{surcharge_cents: 30} =
+               SurchargePolicy.quote(settings, us, "online", 1_000, @us_card)
     end
 
     test "a channel left out or the setting off", %{settings: settings, us: us} do
       assert %{reason: "channel_off"} =
-               SurchargePolicy.quote(%{settings | channels: ["desk"]}, us, "online", 100, @us_card)
+               SurchargePolicy.quote(
+                 %{settings | channels: ["desk"]},
+                 us,
+                 "online",
+                 100,
+                 @us_card
+               )
 
       assert %{reason: "off"} = SurchargePolicy.quote(nil, us, "online", 100, @us_card)
     end

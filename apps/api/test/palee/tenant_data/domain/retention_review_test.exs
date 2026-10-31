@@ -131,7 +131,15 @@ defmodule Palee.TenantData.Domain.RetentionReviewTest do
     assert by_context["coach_pay"].retain_years == by_context["finance"].retain_years
 
     assert by_context
-           |> Map.drop(["finance", "shop", "fiscal", "payments", "documents", "analytics", "coach_pay"])
+           |> Map.drop([
+             "finance",
+             "shop",
+             "fiscal",
+             "payments",
+             "documents",
+             "analytics",
+             "coach_pay"
+           ])
            |> Map.values()
            |> Enum.all?(&(&1.disposition == :purge))
   end

@@ -150,7 +150,10 @@ defmodule Palee.Infrastructure.CoachPay.EctoCoachPayStore do
       Enum.map(rows, fn {statement, period} ->
         lines
         |> Map.fetch!(statement.id)
-        |> Map.put(:period, Map.take(plain(period), [:id, :starts_on, :ends_on, :status, :currency]))
+        |> Map.put(
+          :period,
+          Map.take(plain(period), [:id, :starts_on, :ends_on, :status, :currency])
+        )
       end)
     end)
   end
@@ -181,7 +184,9 @@ defmodule Palee.Infrastructure.CoachPay.EctoCoachPayStore do
     |> Repo.delete_all()
 
     Enum.each(lines_by_coach, fn {coach_user_id, lines} ->
-      statement_id = Map.get(statements, coach_user_id) || insert_statement!(period_id, coach_user_id)
+      statement_id =
+        Map.get(statements, coach_user_id) || insert_statement!(period_id, coach_user_id)
+
       insert_lines!(statement_id, lines, now)
     end)
 
@@ -192,7 +197,8 @@ defmodule Palee.Infrastructure.CoachPay.EctoCoachPayStore do
   @impl true
   def add_line(period_id, coach_user_id, attrs) do
     statement_id =
-      Map.get(statement_map(period_id), coach_user_id) || insert_statement!(period_id, coach_user_id)
+      Map.get(statement_map(period_id), coach_user_id) ||
+        insert_statement!(period_id, coach_user_id)
 
     %Line{}
     |> Line.changeset(Map.put(attrs, :statement_id, statement_id))

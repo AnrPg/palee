@@ -440,9 +440,10 @@ defmodule Palee.Application.Payments.OnlinePayments do
   defp autopay_surcharge(context, method, amount_cents) do
     surcharge = CardSurcharges.for_saved_card(context, method, amount_cents)
 
-    if is_integer(method[:max_amount_cents]) and amount_cents + surcharge > method.max_amount_cents,
-      do: 0,
-      else: surcharge
+    if is_integer(method[:max_amount_cents]) and
+         amount_cents + surcharge > method.max_amount_cents,
+       do: 0,
+       else: surcharge
   end
 
   defp due_invoices(context, today) do

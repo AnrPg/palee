@@ -59,7 +59,8 @@ defmodule PaleeWeb.CardSurchargeControllerTest do
   defp as(conn, user), do: put_bearer_token(conn, user)
 
   defp identity(ctx, identity) do
-    {:ok, _identity} = Fiscal.save_identity(ctx.context, identity, ctx.admin.id, DateTime.utc_now())
+    {:ok, _identity} =
+      Fiscal.save_identity(ctx.context, identity, ctx.admin.id, DateTime.utc_now())
   end
 
   defp open_invoice(ctx, cents) do
@@ -78,7 +79,9 @@ defmodule PaleeWeb.CardSurchargeControllerTest do
     do: conn |> as(ctx.admin) |> put(admin_path(ctx, "/payments/surcharge"), body)
 
   test "a box with no known country cannot pass the fee on", %{conn: conn} = ctx do
-    status = conn |> as(ctx.admin) |> get(admin_path(ctx, "/payments/surcharge")) |> json_response(200)
+    status =
+      conn |> as(ctx.admin) |> get(admin_path(ctx, "/payments/surcharge")) |> json_response(200)
+
     assert status["settings"]["enabled"] == false
     assert status["allowed"] == false
     assert status["law"]["rule"] == "none"
@@ -91,10 +94,13 @@ defmodule PaleeWeb.CardSurchargeControllerTest do
     assert body["code"] == "card_surcharge_not_allowed"
   end
 
-  test "Greece: only a commercial or non-EEA card at the desk, on the receipt", %{conn: conn} = ctx do
+  test "Greece: only a commercial or non-EEA card at the desk, on the receipt",
+       %{conn: conn} = ctx do
     identity(ctx, @greek)
 
-    status = conn |> as(ctx.admin) |> get(admin_path(ctx, "/payments/surcharge")) |> json_response(200)
+    status =
+      conn |> as(ctx.admin) |> get(admin_path(ctx, "/payments/surcharge")) |> json_response(200)
+
     assert status["law"]["rule"] == "eea_non_consumer"
     assert status["law"]["sources"] != []
 
@@ -244,7 +250,9 @@ defmodule PaleeWeb.CardSurchargeControllerTest do
     quote =
       conn
       |> as(ctx.member)
-      |> get(me_path(ctx, "/payments/surcharge-quote?amount_cents=5000&payment_method_id=#{method.id}"))
+      |> get(
+        me_path(ctx, "/payments/surcharge-quote?amount_cents=5000&payment_method_id=#{method.id}")
+      )
       |> json_response(200)
 
     assert quote["applies"] and quote["surcharge_cents"] == 125 and quote["total_cents"] == 5_125

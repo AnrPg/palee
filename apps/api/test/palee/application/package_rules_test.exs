@@ -82,13 +82,16 @@ defmodule Palee.Application.PackageRulesTest do
 
     monday = next_monday()
 
-    assert {:ok, _} = SubmitBooking.call(context, member, slot_on(workout, monday, ~T[09:00:00]).id)
+    assert {:ok, _} =
+             SubmitBooking.call(context, member, slot_on(workout, monday, ~T[09:00:00]).id)
 
     assert {:error, :booking_daily_limit_reached, %{limit: 1}} =
              SubmitBooking.call(context, member, slot_on(workout, monday, ~T[18:00:00]).id)
 
     tuesday = Date.add(monday, 1)
-    assert {:ok, _} = SubmitBooking.call(context, member, slot_on(workout, tuesday, ~T[09:00:00]).id)
+
+    assert {:ok, _} =
+             SubmitBooking.call(context, member, slot_on(workout, tuesday, ~T[09:00:00]).id)
 
     assert {:error, :booking_weekly_limit_reached, %{limit: 2}} =
              SubmitBooking.call(
@@ -110,7 +113,8 @@ defmodule Palee.Application.PackageRulesTest do
     {member, context} = member_with(%{"booking.open_bookings_limit" => 1})
     monday = next_monday()
 
-    assert {:ok, _} = SubmitBooking.call(context, member, slot_on(workout, monday, ~T[09:00:00]).id)
+    assert {:ok, _} =
+             SubmitBooking.call(context, member, slot_on(workout, monday, ~T[09:00:00]).id)
 
     second = slot_on(workout, Date.add(monday, 2), ~T[09:00:00])
 

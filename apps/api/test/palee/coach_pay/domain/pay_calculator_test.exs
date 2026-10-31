@@ -43,7 +43,12 @@ defmodule Palee.CoachPay.Domain.PayCalculatorTest do
   defp work(attrs), do: Map.merge(%{classes: [], sessions: [], sales: []}, attrs)
 
   test "per class: one line per class with enough people, of the chosen types" do
-    rule = rule("per_class", %{"amount_cents" => 2_500, "class_type_ids" => [@crossfit], "min_attendees" => 3})
+    rule =
+      rule("per_class", %{
+        "amount_cents" => 2_500,
+        "class_type_ids" => [@crossfit],
+        "min_attendees" => 3
+      })
 
     work =
       work(%{
@@ -70,7 +75,11 @@ defmodule Palee.CoachPay.Domain.PayCalculatorTest do
       })
 
     assert %{@coach => [line]} =
-             PayCalculator.calculate([rule], work(%{classes: [class(Ecto.UUID.generate(), %{})]}), "EUR")
+             PayCalculator.calculate(
+               [rule],
+               work(%{classes: [class(Ecto.UUID.generate(), %{})]}),
+               "EUR"
+             )
 
     assert line.quantity == 8 and line.amount_cents == 2_400
   end
@@ -79,8 +88,20 @@ defmodule Palee.CoachPay.Domain.PayCalculatorTest do
     rule = rule("per_session", %{"amount_cents" => 1_500})
 
     sessions = [
-      %{slot_id: Ecto.UUID.generate(), coach_user_id: @coach, kind: "pt_session", occurred_on: ~D[2027-05-04], bookings: %{"attended" => 1}},
-      %{slot_id: Ecto.UUID.generate(), coach_user_id: @coach, kind: "pt_session", occurred_on: ~D[2027-05-05], bookings: %{"no_show" => 1}}
+      %{
+        slot_id: Ecto.UUID.generate(),
+        coach_user_id: @coach,
+        kind: "pt_session",
+        occurred_on: ~D[2027-05-04],
+        bookings: %{"attended" => 1}
+      },
+      %{
+        slot_id: Ecto.UUID.generate(),
+        coach_user_id: @coach,
+        kind: "pt_session",
+        occurred_on: ~D[2027-05-05],
+        bookings: %{"no_show" => 1}
+      }
     ]
 
     assert %{@coach => [%{amount_cents: 1_500, source_type: "appointment_slot"}]} =
@@ -88,17 +109,58 @@ defmodule Palee.CoachPay.Domain.PayCalculatorTest do
   end
 
   test "a percent of attributed sales, with refunds taken back" do
-    rule = rule("percent_of_sales", %{"percent_bps" => 1_000, "sales_scope" => "personal_training"})
+    rule =
+      rule("percent_of_sales", %{"percent_bps" => 1_000, "sales_scope" => "personal_training"})
 
     sales = [
-      %{kind: "payment", id: Ecto.UUID.generate(), occurred_on: ~D[2027-05-06], amount_cents: 20_000, currency: "EUR", package_name: "PT 10", pt_coach_id: @coach, sold_by_id: nil},
-      %{kind: "reversal", id: Ecto.UUID.generate(), occurred_on: ~D[2027-05-07], amount_cents: -5_005, currency: "EUR", package_name: "PT 10", pt_coach_id: @coach, sold_by_id: nil},
-      %{kind: "payment", id: Ecto.UUID.generate(), occurred_on: ~D[2027-05-06], amount_cents: 9_000, currency: "EUR", package_name: "Monthly", pt_coach_id: nil, sold_by_id: @coach},
-      %{kind: "payment", id: Ecto.UUID.generate(), occurred_on: ~D[2027-05-06], amount_cents: 9_000, currency: "USD", package_name: "PT", pt_coach_id: @coach, sold_by_id: nil}
+      %{
+        kind: "payment",
+        id: Ecto.UUID.generate(),
+        occurred_on: ~D[2027-05-06],
+        amount_cents: 20_000,
+        currency: "EUR",
+        package_name: "PT 10",
+        pt_coach_id: @coach,
+        sold_by_id: nil
+      },
+      %{
+        kind: "reversal",
+        id: Ecto.UUID.generate(),
+        occurred_on: ~D[2027-05-07],
+        amount_cents: -5_005,
+        currency: "EUR",
+        package_name: "PT 10",
+        pt_coach_id: @coach,
+        sold_by_id: nil
+      },
+      %{
+        kind: "payment",
+        id: Ecto.UUID.generate(),
+        occurred_on: ~D[2027-05-06],
+        amount_cents: 9_000,
+        currency: "EUR",
+        package_name: "Monthly",
+        pt_coach_id: nil,
+        sold_by_id: @coach
+      },
+      %{
+        kind: "payment",
+        id: Ecto.UUID.generate(),
+        occurred_on: ~D[2027-05-06],
+        amount_cents: 9_000,
+        currency: "USD",
+        package_name: "PT",
+        pt_coach_id: @coach,
+        sold_by_id: nil
+      }
     ]
 
-    assert %{@coach => [sale, clawback]} = PayCalculator.calculate([rule], work(%{sales: sales}), "EUR")
-    assert sale.kind == "percent_of_sales" and sale.amount_cents == 2_000 and sale.base_cents == 20_000
+    assert %{@coach => [sale, clawback]} =
+             PayCalculator.calculate([rule], work(%{sales: sales}), "EUR")
+
+    assert sale.kind == "percent_of_sales" and sale.amount_cents == 2_000 and
+             sale.base_cents == 20_000
+
     assert clawback.kind == "clawback" and clawback.amount_cents == -501
     assert clawback.source_type == "finance_reversal"
     assert PayCalculator.total([sale, clawback]) == 1_499
@@ -106,20 +168,46 @@ defmodule Palee.CoachPay.Domain.PayCalculatorTest do
 
   test "a rule in another currency, or outside its dates, pays nothing" do
     rule = rule("per_class", %{"amount_cents" => 100, "currency" => "usd"})
-    assert PayCalculator.calculate([rule], work(%{classes: [class(Ecto.UUID.generate(), %{})]}), "EUR") == %{}
+
+    assert PayCalculator.calculate(
+             [rule],
+             work(%{classes: [class(Ecto.UUID.generate(), %{})]}),
+             "EUR"
+           ) == %{}
 
     dated = rule("per_class", %{"amount_cents" => 100, "starts_on" => "2027-05-04"})
-    assert PayCalculator.calculate([dated], work(%{classes: [class(Ecto.UUID.generate(), %{})]}), "EUR") == %{}
+
+    assert PayCalculator.calculate(
+             [dated],
+             work(%{classes: [class(Ecto.UUID.generate(), %{})]}),
+             "EUR"
+           ) == %{}
   end
 
   test "rules are checked field by field" do
     assert {:error, {:invalid_fields, errors}} =
-             RulePolicy.change(%{}, %{"kind" => "percent_of_sales", "coach_user_id" => "x", "currency" => "EUR", "starts_on" => "2027-05-01"})
+             RulePolicy.change(%{}, %{
+               "kind" => "percent_of_sales",
+               "coach_user_id" => "x",
+               "currency" => "EUR",
+               "starts_on" => "2027-05-01"
+             })
 
-    assert errors == %{"coach_user_id" => "required", "percent_bps" => "invalid", "sales_scope" => "invalid"}
+    assert errors == %{
+             "coach_user_id" => "required",
+             "percent_bps" => "invalid",
+             "sales_scope" => "invalid"
+           }
 
     assert {:error, {:invalid_fields, %{"ends_on" => "invalid"}}} =
-             RulePolicy.change(%{}, %{"kind" => "per_class", "amount_cents" => 1, "coach_user_id" => @coach, "currency" => "EUR", "starts_on" => "2027-05-01", "ends_on" => "2027-04-01"})
+             RulePolicy.change(%{}, %{
+               "kind" => "per_class",
+               "amount_cents" => 1,
+               "coach_user_id" => @coach,
+               "currency" => "EUR",
+               "starts_on" => "2027-05-01",
+               "ends_on" => "2027-04-01"
+             })
   end
 
   test "archiving ends a rule today, or at its start when it has not begun" do
@@ -143,10 +231,19 @@ defmodule Palee.CoachPay.Domain.PayCalculatorTest do
     assert {:ok, %{status: "approved"}} = PeriodPolicy.approve(%{status: "draft"}, @coach, now)
     assert {:error, :coach_pay_period_locked} = PeriodPolicy.editable?(%{status: "approved"})
     assert {:error, {:invalid_fields, _}} = PeriodPolicy.reopen(%{status: "approved"}, " ")
-    assert {:ok, %{status: "draft", reopen_reason: "typo"}} = PeriodPolicy.reopen(%{status: "approved"}, "typo")
+
+    assert {:ok, %{status: "draft", reopen_reason: "typo"}} =
+             PeriodPolicy.reopen(%{status: "approved"}, "typo")
+
     assert {:error, :coach_pay_period_exported} = PeriodPolicy.reopen(%{status: "exported"}, "x")
     assert {:error, :coach_pay_period_not_approved} = PeriodPolicy.export(%{status: "draft"}, now)
-    assert {:error, {:invalid_fields, _}} = PeriodPolicy.adjustment(%{"amount_cents" => 0, "description" => "x"}, ~D[2027-05-31], nil)
+
+    assert {:error, {:invalid_fields, _}} =
+             PeriodPolicy.adjustment(
+               %{"amount_cents" => 0, "description" => "x"},
+               ~D[2027-05-31],
+               nil
+             )
   end
 
   test "the CSV names every line and is safe in a spreadsheet" do
@@ -156,8 +253,30 @@ defmodule Palee.CoachPay.Domain.PayCalculatorTest do
       %{
         coach_user_id: @coach,
         lines: [
-          %{occurred_on: ~D[2027-05-03], kind: "per_class", description: "=HYPERLINK(1)", quantity: 1, unit_cents: 2_500, base_cents: nil, percent_bps: nil, amount_cents: 2_500, source_type: "scheduled_class", source_id: @crossfit},
-          %{occurred_on: ~D[2027-05-07], kind: "clawback", description: "PT, 10", quantity: 1, unit_cents: nil, base_cents: -5_005, percent_bps: 1_000, amount_cents: -501, source_type: "finance_reversal", source_id: nil}
+          %{
+            occurred_on: ~D[2027-05-03],
+            kind: "per_class",
+            description: "=HYPERLINK(1)",
+            quantity: 1,
+            unit_cents: 2_500,
+            base_cents: nil,
+            percent_bps: nil,
+            amount_cents: 2_500,
+            source_type: "scheduled_class",
+            source_id: @crossfit
+          },
+          %{
+            occurred_on: ~D[2027-05-07],
+            kind: "clawback",
+            description: "PT, 10",
+            quantity: 1,
+            unit_cents: nil,
+            base_cents: -5_005,
+            percent_bps: 1_000,
+            amount_cents: -501,
+            source_type: "finance_reversal",
+            source_id: nil
+          }
         ]
       }
     ]

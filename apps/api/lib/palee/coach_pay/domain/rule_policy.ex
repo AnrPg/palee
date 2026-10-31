@@ -50,7 +50,8 @@ defmodule Palee.CoachPay.Domain.RulePolicy do
         "invalid"
       )
       |> check(
-        is_list(merged["class_type_ids"] || []) and Enum.all?(merged["class_type_ids"] || [], &uuid?/1),
+        is_list(merged["class_type_ids"] || []) and
+          Enum.all?(merged["class_type_ids"] || [], &uuid?/1),
         "class_type_ids",
         "invalid"
       )
@@ -68,13 +69,16 @@ defmodule Palee.CoachPay.Domain.RulePolicy do
         "invalid"
       )
       |> check(
-        is_nil(merged["note"]) or (is_binary(merged["note"]) and String.length(merged["note"]) <= 200),
+        is_nil(merged["note"]) or
+          (is_binary(merged["note"]) and String.length(merged["note"]) <= 200),
         "note",
         "invalid"
       )
       |> kind_errors(kind, merged)
 
-    if errors == %{}, do: {:ok, normalize(kind, merged)}, else: {:error, {:invalid_fields, errors}}
+    if errors == %{},
+      do: {:ok, normalize(kind, merged)},
+      else: {:error, {:invalid_fields, errors}}
   end
 
   def change(_current, _params), do: {:error, {:invalid_fields, %{"rule" => "invalid"}}}

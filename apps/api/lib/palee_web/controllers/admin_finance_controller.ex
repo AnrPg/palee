@@ -642,7 +642,11 @@ defmodule PaleeWeb.AdminFinanceController do
               nullable: true,
               additionalProperties: false,
               properties: %{
-                funding: %Schema{type: :string, enum: ["credit", "debit", "prepaid"], nullable: true},
+                funding: %Schema{
+                  type: :string,
+                  enum: ["credit", "debit", "prepaid"],
+                  nullable: true
+                },
                 country: %Schema{type: :string, minLength: 2, maxLength: 2, nullable: true},
                 commercial: %Schema{type: :boolean, nullable: true}
               }

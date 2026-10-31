@@ -36,20 +36,24 @@ defmodule Palee.Application.Payments.FinanceFulfilment do
   defp fulfil_sale(context, %{purpose_type: "finance_invoice"} = intent) do
     with {:ok, invoice} <- Finance.get_invoice(context, intent.purpose_id),
          {:ok, received} <-
-           ReceiveFinancePayment.record_online(context, invoice.user_id, %{
-             "finance_invoice_id" => invoice.id,
-             "amount_cents" => intent.amount_cents,
-             "currency" => intent.currency,
-             "paid_on" =>
-               context.organization_id
-               |> Organizations.local_today(intent.succeeded_at || DateTime.utc_now())
-               |> Date.to_iso8601(),
-             "idempotency_key" => "payment-intent:" <> intent.id,
-             "payment_intent_id" => intent.id,
-             "provider" => intent.provider,
-             "provider_transaction_id" => intent.provider_transaction_id
-           }
-           |> Map.merge(CardSurcharges.receipt_params(context, intent))) do
+           ReceiveFinancePayment.record_online(
+             context,
+             invoice.user_id,
+             %{
+               "finance_invoice_id" => invoice.id,
+               "amount_cents" => intent.amount_cents,
+               "currency" => intent.currency,
+               "paid_on" =>
+                 context.organization_id
+                 |> Organizations.local_today(intent.succeeded_at || DateTime.utc_now())
+                 |> Date.to_iso8601(),
+               "idempotency_key" => "payment-intent:" <> intent.id,
+               "payment_intent_id" => intent.id,
+               "provider" => intent.provider,
+               "provider_transaction_id" => intent.provider_transaction_id
+             }
+             |> Map.merge(CardSurcharges.receipt_params(context, intent))
+           ) do
       {:ok, fulfilled(received)}
     end
   end

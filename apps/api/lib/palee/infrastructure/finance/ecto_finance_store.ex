@@ -2618,7 +2618,6 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
       |> Enum.map(fn {_reversal, payment} -> payment.id end)
       |> Enum.uniq()
       |> then(fn ids ->
-
         MembershipPayment
         |> tenant_scope()
         |> where([payment], payment.id in ^ids)

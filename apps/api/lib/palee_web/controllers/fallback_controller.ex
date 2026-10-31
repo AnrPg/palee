@@ -3110,7 +3110,8 @@ defmodule PaleeWeb.FallbackController do
       {:conflict, "You have bought this package as many times as it allows"},
     package_prerequisite_missing:
       {:conflict, "This package needs another package of the box first"},
-    package_active_members_only: {:conflict, "This package is for members with an active package"},
+    package_active_members_only:
+      {:conflict, "This package is for members with an active package"},
     booking_daily_limit_reached: {:conflict, "Your package allows no more classes that day"},
     booking_weekly_limit_reached: {:conflict, "Your package allows no more classes that week"},
     booking_open_limit_reached: {:conflict, "Your package allows no more upcoming bookings"},

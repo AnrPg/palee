@@ -62,7 +62,10 @@ defmodule PaleeWeb.CoachPayControllerTest do
   defp rule(conn, ctx, body) do
     conn
     |> as(ctx.admin)
-    |> post(pay_path(ctx, "/rules"), Map.merge(%{coach_user_id: ctx.coach.id, starts_on: start(-30)}, body))
+    |> post(
+      pay_path(ctx, "/rules"),
+      Map.merge(%{coach_user_id: ctx.coach.id, starts_on: start(-30)}, body)
+    )
     |> json_response(201)
   end
 
@@ -102,7 +105,10 @@ defmodule PaleeWeb.CoachPayControllerTest do
              |> json_response(409)
 
     %{"period" => period} =
-      conn |> as(ctx.admin) |> post(pay_path(ctx, "/periods/#{id}/calculate")) |> json_response(200)
+      conn
+      |> as(ctx.admin)
+      |> post(pay_path(ctx, "/periods/#{id}/calculate"))
+      |> json_response(200)
 
     [statement] = period["statements"]
     assert statement["coach_user_id"] == ctx.coach.id
@@ -124,7 +130,10 @@ defmodule PaleeWeb.CoachPayControllerTest do
 
     # Calculating again keeps the adjustment.
     %{"period" => period} =
-      conn |> as(ctx.admin) |> post(pay_path(ctx, "/periods/#{id}/calculate")) |> json_response(200)
+      conn
+      |> as(ctx.admin)
+      |> post(pay_path(ctx, "/periods/#{id}/calculate"))
+      |> json_response(200)
 
     assert [%{"total_cents" => 2_400}] = period["statements"]
 
@@ -135,7 +144,10 @@ defmodule PaleeWeb.CoachPayControllerTest do
     assert conn |> as(ctx.coach) |> get(pay_path(ctx, "/periods/#{id}")) |> response(403)
 
     assert %{"code" => "coach_pay_period_not_approved"} =
-             conn |> as(ctx.admin) |> get(pay_path(ctx, "/periods/#{id}/export")) |> json_response(409)
+             conn
+             |> as(ctx.admin)
+             |> get(pay_path(ctx, "/periods/#{id}/export"))
+             |> json_response(409)
 
     %{"period" => %{"status" => "approved"}} =
       conn |> as(ctx.admin) |> post(pay_path(ctx, "/periods/#{id}/approve")) |> json_response(200)

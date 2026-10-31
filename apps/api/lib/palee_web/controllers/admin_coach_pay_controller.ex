@@ -15,7 +15,12 @@ defmodule PaleeWeb.AdminCoachPayController do
 
   plug OpenApiSpex.Plug.CastAndValidate, json_render_error_v2: true
 
-  @id %Parameter{name: :id, in: :path, required: true, schema: %Schema{type: :string, format: :uuid}}
+  @id %Parameter{
+    name: :id,
+    in: :path,
+    required: true,
+    schema: %Schema{type: :string, format: :uuid}
+  }
 
   operation(:rules,
     summary: "Coach pay rules (active ones unless `include_archived`)",
@@ -26,12 +31,18 @@ defmodule PaleeWeb.AdminCoachPayController do
         required: false,
         schema: %Schema{type: :string, format: :uuid}
       },
-      %Parameter{name: :include_archived, in: :query, required: false, schema: %Schema{type: :boolean}}
+      %Parameter{
+        name: :include_archived,
+        in: :query,
+        required: false,
+        schema: %Schema{type: :boolean}
+      }
     ],
     responses: [ok: {"Rules", "application/json", S.rules()}]
   )
 
-  def rules(conn, params), do: json(conn, CoachPayService.rules(conn.assigns.tenant_context, params))
+  def rules(conn, params),
+    do: json(conn, CoachPayService.rules(conn.assigns.tenant_context, params))
 
   operation(:create_rule,
     summary: "Add a pay rule for a coach",

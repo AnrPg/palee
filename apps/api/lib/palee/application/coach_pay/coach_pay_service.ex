@@ -39,7 +39,13 @@ defmodule Palee.Application.CoachPay.CoachPayService do
 
   def archive_rule(context, id) do
     now = now()
-    CoachPay.archive_rule(context, id, Organizations.local_today(context.organization_id, now), now)
+
+    CoachPay.archive_rule(
+      context,
+      id,
+      Organizations.local_today(context.organization_id, now),
+      now
+    )
   end
 
   # ── Periods ─────────────────────────────────────────────────────────────
@@ -107,7 +113,8 @@ defmodule Palee.Application.CoachPay.CoachPayService do
     {:ok,
      %{
        period
-       | statements: Enum.map(statements, &Map.put(&1, :coach_name, Map.get(names, &1.coach_user_id)))
+       | statements:
+           Enum.map(statements, &Map.put(&1, :coach_name, Map.get(names, &1.coach_user_id)))
      }}
   end
 
@@ -132,9 +139,10 @@ defmodule Palee.Application.CoachPay.CoachPayService do
       |> Organizations.member_roles_by_user()
       |> Map.get(user_id)
 
-    if roles && Enum.any?(roles.roles, &(&1 in [:owner, :admin, :coach, "owner", "admin", "coach"])),
-      do: :ok,
-      else: {:error, {:invalid_fields, %{"coach_user_id" => "not_a_coach"}}}
+    if roles &&
+         Enum.any?(roles.roles, &(&1 in [:owner, :admin, :coach, "owner", "admin", "coach"])),
+       do: :ok,
+       else: {:error, {:invalid_fields, %{"coach_user_id" => "not_a_coach"}}}
   end
 
   defp coach_of_box(_context, _user_id),

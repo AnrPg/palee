@@ -43,6 +43,7 @@ defmodule Palee.CoachPay.Domain.StatementExport do
   def money(cents) when is_integer(cents) do
     sign = if cents < 0, do: "-", else: ""
     abs = abs(cents)
+
     "#{sign}#{div(abs, 100)}.#{abs |> rem(100) |> Integer.to_string() |> String.pad_leading(2, "0")}"
   end
 

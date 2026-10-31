@@ -225,7 +225,7 @@ defmodule Palee.Payments.Domain.SurchargePolicy do
 
   defp cast(key, _value) when key in ~w(enabled channels percent_bps fixed_cents region_code
                                          at_cost_confirmed),
-       do: {:error, "invalid"}
+    do: {:error, "invalid"}
 
   defp cast(_key, _value), do: {:error, "unknown"}
 

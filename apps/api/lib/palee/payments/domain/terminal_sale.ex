@@ -138,6 +138,7 @@ defmodule Palee.Payments.Domain.TerminalSale do
 
   # ADR-340: the same surcharge row for a card online or at the desk's own machine.
   defp payment_method(%{initiation: "desk"}), do: "card_manual"
+
   defp payment_method(%{initiation: initiation}) when initiation in ["payer", "merchant"],
     do: "online"
 

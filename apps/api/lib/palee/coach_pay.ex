@@ -31,7 +31,9 @@ defmodule Palee.CoachPay do
 
   def create_rule(context, params, actor_id) do
     with {:ok, attrs} <- RulePolicy.change(%{}, params) do
-      scoped(context, fn -> CoachPayStore.insert_rule(Map.put(attrs, :created_by_id, actor_id)) end)
+      scoped(context, fn ->
+        CoachPayStore.insert_rule(Map.put(attrs, :created_by_id, actor_id))
+      end)
     end
   end
 

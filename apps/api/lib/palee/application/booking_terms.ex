@@ -86,7 +86,9 @@ defmodule Palee.Application.BookingTerms do
     end
   end
 
-  defp zone(%{organization_id: id}) when is_binary(id), do: Organizations.organization_timezone(id)
+  defp zone(%{organization_id: id}) when is_binary(id),
+    do: Organizations.organization_timezone(id)
+
   defp zone(_context), do: "Etc/UTC"
 
   defp settings(nil), do: %{}

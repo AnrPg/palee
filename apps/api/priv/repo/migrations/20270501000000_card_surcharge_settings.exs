@@ -33,8 +33,7 @@ defmodule Palee.Repo.Migrations.CardSurchargeSettings do
     create unique_index(:payment_surcharge_settings, [:organization_id])
 
     create constraint(:payment_surcharge_settings, :payment_surcharge_settings_amounts_check,
-             check:
-               "percent_bps BETWEEN 0 AND 1000 AND fixed_cents BETWEEN 0 AND 10000"
+             check: "percent_bps BETWEEN 0 AND 1000 AND fixed_cents BETWEEN 0 AND 10000"
            )
 
     create constraint(:payment_surcharge_settings, :payment_surcharge_settings_channels_check,
