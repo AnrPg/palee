@@ -34,7 +34,10 @@ defmodule Palee.Infrastructure.Llm.GeminiLlmProvider do
     if blank?(Keyword.get(config, :api_key)) do
       {:error, :llm_not_configured}
     else
-      model = Keyword.get(config, :assistant_model) || Keyword.get(config, :model) || @default_model
+      model =
+        [Keyword.get(config, :assistant_model), Keyword.get(config, :model)]
+        |> Enum.reject(&blank?/1)
+        |> List.first(@default_model)
       post(body(request, config), model, config, options)
     end
   end
