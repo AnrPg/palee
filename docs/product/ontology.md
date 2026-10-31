@@ -542,6 +542,24 @@ never mix (flow, set structure, add-ons); presets only fill them in. Code names 
 | Per round | Ανά γύρο | `PlanRow.perRound` | Values that change round by round (Alt+V) in every flow other than Σετ, where they change per set («ανά σετ»). «Ίδιες τιμές σε κάθε γύρο» turns it off. | Different round (other exercises, not other values). |
 | Rest row | Ξεκούραση | `PlanRow.kind: "rest"` | A rest written as a row between exercises (e.g. inside a superset). | The flow Ξεκούραση (a whole rest section). |
 
+### 4.21 Body and devices (ADR-374..377, v3.2)
+
+| English | Ελληνικά | Code | What it is | Not to be confused with |
+|---|---|---|---|---|
+| Past self | Ο προηγούμενος εαυτός σου | `execution_splits`, `/executions/:id/pacer` | The person's previous attempt at the same WOD or benchmark, running beside the timer as a pace line and compared in the results. Only ever with themself (vision §4.4). (ADR-374) | Leaderboard (others, opt-in, clubs). |
+| Split | Ενδιάμεσος χρόνος | `execution_splits` | When a round or a segment of the WOD ended, in active time from the start. | Section time (the whole section). |
+| Ahead / Behind | Μπροστά / Πίσω | `delta_ms` | Seconds ahead of (negative) or behind the previous attempt at the same split. | |
+| Watch | Ρολόι | `watch_links` | An Apple Watch or Wear OS watch paired through the phone app, showing the timer, round, movements, heart rate and pace. In Εγώ › Συνδεδεμένες συσκευές. (ADR-375) | Garmin (a connected device that syncs finished workouts, ADR-161). |
+| Heart rate | Καρδιακοί παλμοί | `execution_heart_rate_batches` | Beats per minute a watch recorded during a workout; health data, private, only with the health-data consent. | Resting heart rate (Πρόοδος, from devices). |
+| Scan barcode | Σάρωση barcode | `/me/foods/barcode/:barcode` | Inside a meal: reads a product's barcode and names the food with a suggested hand portion. Never calories. (ADR-376) | Check-in QR. |
+| My food | Δικό μου τρόφιμο | `custom_foods` | A food the person wrote down themselves (the manual entry after a scan that found nothing). Theirs only. | A coach's nutrition plan. |
+| Rank | Βαθμός | `ranks` | A step on a box's ladder: a belt (martial arts) or a level (gymnastics). (ADR-377) | Scale level (Rx/Scaled); XP level («Επίπεδο XP»). |
+| Belt | Ζώνη | `ranks.color` | A rank shown as a coloured belt, optionally with stripes. | |
+| Stripe | Ρίγα | `rank_awards.stripes` | A mark of progress inside a belt (up to the rank's maximum). | |
+| Rank ladder | Κλίμακα βαθμών | `rank_ladders` | A box's ordered ranks for one discipline (a workout type), e.g. «Ζώνες BJJ», «Επίπεδα ενόργανης». | Class types. |
+| Promotion | Προαγωγή | `rank_awards` | A coach gives a person the next rank or a stripe; always the coach's decision. Withdrawn with a reason, never deleted. | |
+| Diploma | Δίπλωμα | `/rank-awards/:id/certificate` | The PDF of a promotion with its number. | Health certificate («Πιστοποιητικό υγείας», ADR-252). |
+
 ## 5. Name clashes found, and proposals
 
 Each needs ANR's choice before the UI changes. The recommended option is first.
