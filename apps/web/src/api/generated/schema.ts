@@ -9281,6 +9281,41 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/review-asks/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box's Google Place ID, milestones and whether members are asked */
+        get: operations["PaleeWeb.AdminReviewAsksController.show"];
+        /** Set the Google Place ID, milestones and turn asks on or off */
+        put: operations["PaleeWeb.AdminReviewAsksController.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/review-asks/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** How many members were asked and what they chose (counts only) */
+        get: operations["PaleeWeb.AdminReviewAsksController.summary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/reviews": {
         parameters: {
             query?: never;
@@ -9967,6 +10002,110 @@ export interface paths {
         };
         /** Shop sales per gym-local day: gross, refunds, net, orders and AOV */
         get: operations["PaleeWeb.AdminShopReportController.sales"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/site": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The website's settings, section keys and custom domains */
+        get: operations["PaleeWeb.AdminSiteController.show"];
+        /** Change the website's sections, FAQ, forms and tags; live at once */
+        put: operations["PaleeWeb.AdminSiteController.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/site/domains": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The website's custom domains with the DNS records to add */
+        get: operations["PaleeWeb.AdminSiteController.domains"];
+        put?: never;
+        /** Add a custom domain (up to 2); it is checked at once */
+        post: operations["PaleeWeb.AdminSiteController.add_domain"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/site/domains/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove a custom domain; the site stays at its Palee address */
+        delete: operations["PaleeWeb.AdminSiteController.remove_domain"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/site/domains/{id}/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** «Έλεγχος τώρα»: check a custom domain's DNS and HTTPS now */
+        post: operations["PaleeWeb.AdminSiteController.check_domain"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/site/domains/{id}/primary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Make a custom domain the site's main address */
+        put: operations["PaleeWeb.AdminSiteController.make_primary"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/site/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** What the website brought in over the last 30 days (counts only) */
+        get: operations["PaleeWeb.AdminSiteController.summary"];
         put?: never;
         post?: never;
         delete?: never;
@@ -12643,6 +12782,58 @@ export interface paths {
         get: operations["PaleeWeb.MyFinanceController.refund_receipt_document"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/review-ask": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The review ask to show now, or null */
+        get: operations["PaleeWeb.MyReviewAskController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/review-asks/opt-out": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Never ask me for a review at this box again */
+        put: operations["PaleeWeb.MyReviewAskController.opt_out"];
+        post?: never;
+        /** Allow review asks at this box again */
+        delete: operations["PaleeWeb.MyReviewAskController.opt_in"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/review-asks/{id}/respond": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Record what the member chose: opened Google, later or dismissed */
+        post: operations["PaleeWeb.MyReviewAskController.respond"];
         delete?: never;
         options?: never;
         head?: never;
@@ -16043,6 +16234,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/platform/site-domains": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Custom domains in a state (default pending_tls: they need an Ingress) */
+        get: operations["PaleeWeb.PlatformSiteDomainsController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/platform/subscriptions": {
         parameters: {
             query?: never;
@@ -16536,6 +16744,91 @@ export interface paths {
         get: operations["PaleeWeb.ReferralController.invite"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/sites/by-host/{host}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box behind a custom domain (the web's host rewrite and the TLS probe) */
+        get: operations["PaleeWeb.PublicSiteController.by_host"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/sites/tls-allowed": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** On-demand TLS `ask`: 200 only for a verified custom domain */
+        get: operations["PaleeWeb.PublicSiteController.tls_allowed"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/sites/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A published box's website: sections, FAQ, forms, tags and timetable */
+        get: operations["PaleeWeb.PublicSiteController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/sites/{slug}/consents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Record a visitor's cookie choice; answers which tags may load */
+        post: operations["PaleeWeb.PublicSiteController.consent"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/sites/{slug}/forms/{kind}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Send the trial or contact form; it reaches the box as a lead */
+        post: operations["PaleeWeb.PublicSiteController.submit_form"];
         delete?: never;
         options?: never;
         head?: never;
@@ -17104,6 +17397,53 @@ export interface components {
             }[];
             total: number;
             tour_completed: boolean;
+        };
+        /** AdminSiteResponse */
+        AdminSiteResponse: {
+            domains: {
+                /** Format: date-time */
+                active_at: string | null;
+                /** Format: date-time */
+                checked_at: string | null;
+                dns_records: {
+                    name: string;
+                    /** @enum {string} */
+                    type: "TXT" | "CNAME" | "A";
+                    value: string;
+                }[];
+                host: string;
+                /** Format: uuid */
+                id: string;
+                /** @enum {string|null} */
+                last_error: "dns_txt_missing" | "dns_not_pointing" | "tls_not_ready" | "tls_failed" | null;
+                /** Format: date-time */
+                next_check_at: string | null;
+                primary: boolean;
+                /** @enum {string} */
+                status: "pending_dns" | "pending_tls" | "active" | "broken" | "expired";
+                /** Format: date-time */
+                verified_at: string | null;
+            }[];
+            section_keys: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            /** SiteSettings */
+            settings: {
+                banner_version: number;
+                conversions_api_enabled: boolean;
+                faq: {
+                    answer: string;
+                    question: string;
+                }[];
+                forms_enabled: boolean;
+                ga4_measurement_id: string | null;
+                gtm_container_id: string | null;
+                /** @description A token is saved; the token itself is never returned */
+                has_conversions_api_token: boolean;
+                hidden_sections: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                lock_version: number;
+                meta_pixel_id: string | null;
+                public_schedule: boolean;
+                section_order: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            };
         };
         /** AnatomyNode */
         AnatomyNode: {
@@ -38287,6 +38627,52 @@ export interface components {
                 } | null;
             } | null;
         };
+        /** PublicSiteResponse */
+        PublicSiteResponse: {
+            canonical_url: string;
+            faq: {
+                answer: string;
+                question: string;
+            }[];
+            forms: {
+                contact: boolean;
+                kinds: ("trial" | "contact")[];
+                trial: boolean;
+            };
+            reviews: {
+                google_reviews_url: string | null;
+            };
+            sections: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            slug: string;
+            /** @description The next 7 days' classes when the owner shows the timetable (no spots or people) */
+            timetable: {
+                /** Format: uuid */
+                class_type_id: string | null;
+                duration_minutes: number;
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                location_id: string | null;
+                name: string;
+                /** Format: date-time */
+                scheduled_at: string;
+            }[];
+            tracking: {
+                banner_version: number;
+                categories: ("necessary" | "analytics" | "marketing")[];
+                consent_required: boolean;
+                /**
+                 * SiteTags
+                 * @description Public tag ids; none loads before the visitor's consent (ADR-354)
+                 */
+                tags: {
+                    ga4_measurement_id: string | null;
+                    gtm_container_id: string | null;
+                    meta_pixel_id: string | null;
+                };
+                validity_days: number;
+            };
+        };
         /** ReferralClaim */
         ReferralClaim: {
             /** @enum {string} */
@@ -38936,6 +39322,80 @@ export interface components {
             }[];
             /** Format: date */
             to?: string | null;
+        };
+        /** ReviewAsk */
+        ReviewAsk: {
+            actions: ("opened" | "later" | "dismissed")[];
+            google_review_url: string | null;
+            /** Format: uuid */
+            id: string;
+            milestone: number;
+            /** Format: date-time */
+            shown_at: string;
+            /** @enum {string} */
+            status: "shown" | "opened" | "later" | "dismissed";
+        } | null;
+        /** ReviewAskOptOutResponse */
+        ReviewAskOptOutResponse: {
+            opted_out: boolean;
+        };
+        /** ReviewAskRespondRequest */
+        ReviewAskRespondRequest: {
+            /** @enum {string} */
+            action: "opened" | "later" | "dismissed";
+        };
+        /** ReviewAskResponse */
+        ReviewAskResponse: {
+            /** ReviewAsk */
+            ask: {
+                actions: ("opened" | "later" | "dismissed")[];
+                google_review_url: string | null;
+                /** Format: uuid */
+                id: string;
+                milestone: number;
+                /** Format: date-time */
+                shown_at: string;
+                /** @enum {string} */
+                status: "shown" | "opened" | "later" | "dismissed";
+            } | null;
+        };
+        /** ReviewAskSettings */
+        ReviewAskSettings: {
+            enabled: boolean;
+            google_place_id: string | null;
+            google_review_url: string | null;
+            lock_version: number;
+            milestones: number[];
+        };
+        /** ReviewAskSettingsResponse */
+        ReviewAskSettingsResponse: {
+            /** ReviewAskSettings */
+            settings: {
+                enabled: boolean;
+                google_place_id: string | null;
+                google_review_url: string | null;
+                lock_version: number;
+                milestones: number[];
+            };
+        };
+        /** ReviewAskSettingsUpdate */
+        ReviewAskSettingsUpdate: {
+            enabled?: boolean;
+            google_place_id?: string | null;
+            lock_version: number;
+            milestones?: number[];
+        };
+        /** ReviewAskSummaryResponse */
+        ReviewAskSummaryResponse: {
+            counts: {
+                asked: number;
+                dismissed: number;
+                later: number;
+                opened: number;
+                opted_out: number;
+                unanswered: number;
+            };
+            days: number;
         };
         /** SaveFilterRequest */
         SaveFilterRequest: {
@@ -41079,6 +41539,276 @@ export interface components {
             }[];
             on_hand: number;
             reserved: number;
+        };
+        /** SiteByHostResponse */
+        SiteByHostResponse: {
+            host: string;
+            primary: boolean;
+            primary_host: string | null;
+            slug: string;
+        };
+        /** SiteConsentRequest */
+        SiteConsentRequest: {
+            /** @enum {string} */
+            action: "accept_all" | "reject_all" | "custom" | "withdraw";
+            analytics?: boolean;
+            banner_version: number;
+            marketing?: boolean;
+            /** Format: uuid */
+            visitor_id: string;
+        };
+        /** SiteConsentResponse */
+        SiteConsentResponse: {
+            allowed_tags: ("ga4_measurement_id" | "meta_pixel_id" | "gtm_container_id")[];
+            analytics: boolean;
+            banner_version: number;
+            /** Format: date-time */
+            expires_at: string;
+            marketing: boolean;
+        };
+        /** SiteDnsRecord */
+        SiteDnsRecord: {
+            name: string;
+            /** @enum {string} */
+            type: "TXT" | "CNAME" | "A";
+            value: string;
+        };
+        /** SiteDomain */
+        SiteDomain: {
+            /** Format: date-time */
+            active_at: string | null;
+            /** Format: date-time */
+            checked_at: string | null;
+            dns_records: {
+                name: string;
+                /** @enum {string} */
+                type: "TXT" | "CNAME" | "A";
+                value: string;
+            }[];
+            host: string;
+            /** Format: uuid */
+            id: string;
+            /** @enum {string|null} */
+            last_error: "dns_txt_missing" | "dns_not_pointing" | "tls_not_ready" | "tls_failed" | null;
+            /** Format: date-time */
+            next_check_at: string | null;
+            primary: boolean;
+            /** @enum {string} */
+            status: "pending_dns" | "pending_tls" | "active" | "broken" | "expired";
+            /** Format: date-time */
+            verified_at: string | null;
+        };
+        /** SiteDomainRequest */
+        SiteDomainRequest: {
+            host: string;
+        };
+        /** SiteDomainResponse */
+        SiteDomainResponse: {
+            /** SiteDomain */
+            domain: {
+                /** Format: date-time */
+                active_at: string | null;
+                /** Format: date-time */
+                checked_at: string | null;
+                dns_records: {
+                    name: string;
+                    /** @enum {string} */
+                    type: "TXT" | "CNAME" | "A";
+                    value: string;
+                }[];
+                host: string;
+                /** Format: uuid */
+                id: string;
+                /** @enum {string|null} */
+                last_error: "dns_txt_missing" | "dns_not_pointing" | "tls_not_ready" | "tls_failed" | null;
+                /** Format: date-time */
+                next_check_at: string | null;
+                primary: boolean;
+                /** @enum {string} */
+                status: "pending_dns" | "pending_tls" | "active" | "broken" | "expired";
+                /** Format: date-time */
+                verified_at: string | null;
+            };
+        };
+        /** SiteDomainsResponse */
+        SiteDomainsResponse: {
+            domains: {
+                /** Format: date-time */
+                active_at: string | null;
+                /** Format: date-time */
+                checked_at: string | null;
+                dns_records: {
+                    name: string;
+                    /** @enum {string} */
+                    type: "TXT" | "CNAME" | "A";
+                    value: string;
+                }[];
+                host: string;
+                /** Format: uuid */
+                id: string;
+                /** @enum {string|null} */
+                last_error: "dns_txt_missing" | "dns_not_pointing" | "tls_not_ready" | "tls_failed" | null;
+                /** Format: date-time */
+                next_check_at: string | null;
+                primary: boolean;
+                /** @enum {string} */
+                status: "pending_dns" | "pending_tls" | "active" | "broken" | "expired";
+                /** Format: date-time */
+                verified_at: string | null;
+            }[];
+        };
+        /** SiteFaqEntry */
+        SiteFaqEntry: {
+            answer: string;
+            question: string;
+        };
+        /** SiteFormRequest */
+        SiteFormRequest: {
+            attribution?: {
+                landing_path?: string;
+                referrer_host?: string;
+                utm_campaign?: string;
+                utm_content?: string;
+                utm_medium?: string;
+                utm_source?: string;
+                utm_term?: string;
+            };
+            /** Format: uuid */
+            class_type_id?: string | null;
+            consent_text_hash?: string | null;
+            consent_text_version?: string | null;
+            /** @description Time spent on the form */
+            elapsed_ms?: number | null;
+            email?: string | null;
+            locale?: string | null;
+            /** @description Separate, unticked opt-in to marketing follow-ups */
+            marketing_opt_in?: boolean;
+            message?: string | null;
+            name: string;
+            phone?: string | null;
+            preferred_time?: string | null;
+            /** @description Must be true */
+            privacy_ack: boolean;
+            /** Format: uuid */
+            visitor_id?: string | null;
+            /** @description Honeypot: leave empty */
+            website?: string | null;
+        };
+        /** SiteFormResponse */
+        SiteFormResponse: {
+            /** @enum {string} */
+            status: "received";
+        };
+        /** SiteOpsDomainsResponse */
+        SiteOpsDomainsResponse: {
+            cname_target: string;
+            domains: {
+                host: string;
+                slug: string;
+                /** @enum {string} */
+                status: "pending_dns" | "pending_tls" | "active" | "broken" | "expired";
+                /** Format: date-time */
+                updated_at: string | null;
+                /** Format: date-time */
+                verified_at: string | null;
+            }[];
+        };
+        /** SiteSettings */
+        SiteSettings: {
+            banner_version: number;
+            conversions_api_enabled: boolean;
+            faq: {
+                answer: string;
+                question: string;
+            }[];
+            forms_enabled: boolean;
+            ga4_measurement_id: string | null;
+            gtm_container_id: string | null;
+            /** @description A token is saved; the token itself is never returned */
+            has_conversions_api_token: boolean;
+            hidden_sections: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            lock_version: number;
+            meta_pixel_id: string | null;
+            public_schedule: boolean;
+            section_order: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+        };
+        /** SiteSettingsResponse */
+        SiteSettingsResponse: {
+            /** SiteSettings */
+            settings: {
+                banner_version: number;
+                conversions_api_enabled: boolean;
+                faq: {
+                    answer: string;
+                    question: string;
+                }[];
+                forms_enabled: boolean;
+                ga4_measurement_id: string | null;
+                gtm_container_id: string | null;
+                /** @description A token is saved; the token itself is never returned */
+                has_conversions_api_token: boolean;
+                hidden_sections: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                lock_version: number;
+                meta_pixel_id: string | null;
+                public_schedule: boolean;
+                section_order: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            };
+        };
+        /** SiteSettingsUpdate */
+        SiteSettingsUpdate: {
+            conversions_api_enabled?: boolean;
+            /** @description Meta Conversions API access token (write-only; empty removes it) */
+            conversions_api_token?: string | null;
+            faq?: {
+                answer: string;
+                question: string;
+            }[];
+            forms_enabled?: boolean;
+            ga4_measurement_id?: string | null;
+            gtm_container_id?: string | null;
+            hidden_sections?: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            lock_version: number;
+            meta_pixel_id?: string | null;
+            public_schedule?: boolean;
+            section_order?: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+        };
+        /** SiteSummaryResponse */
+        SiteSummaryResponse: {
+            consents: {
+                accept_all: number;
+                custom: number;
+                reject_all: number;
+                withdraw: number;
+            };
+            days: number;
+            submissions: {
+                delivered: number;
+                failed: number;
+                total: number;
+                waiting: number;
+            };
+        };
+        /**
+         * SiteTags
+         * @description Public tag ids; none loads before the visitor's consent (ADR-354)
+         */
+        SiteTags: {
+            ga4_measurement_id: string | null;
+            gtm_container_id: string | null;
+            meta_pixel_id: string | null;
+        };
+        /** SiteTimetableClass */
+        SiteTimetableClass: {
+            /** Format: uuid */
+            class_type_id: string | null;
+            duration_minutes: number;
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            location_id: string | null;
+            name: string;
+            /** Format: date-time */
+            scheduled_at: string;
         };
         /**
          * SocialPrivacy
@@ -91888,6 +92618,121 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminReviewAsksController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** ReviewAskSettings */
+                        settings: {
+                            enabled: boolean;
+                            google_place_id: string | null;
+                            google_review_url: string | null;
+                            lock_version: number;
+                            milestones: number[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminReviewAsksController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    enabled?: boolean;
+                    google_place_id?: string | null;
+                    lock_version: number;
+                    milestones?: number[];
+                };
+            };
+        };
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** ReviewAskSettings */
+                        settings: {
+                            enabled: boolean;
+                            google_place_id: string | null;
+                            google_review_url: string | null;
+                            lock_version: number;
+                            milestones: number[];
+                        };
+                    };
+                };
+            };
+            /** @description Saved meanwhile */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Invalid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminReviewAsksController.summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Summary */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        counts: {
+                            asked: number;
+                            dismissed: number;
+                            later: number;
+                            opened: number;
+                            opted_out: number;
+                            unanswered: number;
+                        };
+                        days: number;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminReviewController.index": {
         parameters: {
             query?: {
@@ -95151,6 +95996,443 @@ export interface operations {
                             time_zone: string;
                             /** Format: date */
                             to: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Site */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        domains: {
+                            /** Format: date-time */
+                            active_at: string | null;
+                            /** Format: date-time */
+                            checked_at: string | null;
+                            dns_records: {
+                                name: string;
+                                /** @enum {string} */
+                                type: "TXT" | "CNAME" | "A";
+                                value: string;
+                            }[];
+                            host: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string|null} */
+                            last_error: "dns_txt_missing" | "dns_not_pointing" | "tls_not_ready" | "tls_failed" | null;
+                            /** Format: date-time */
+                            next_check_at: string | null;
+                            primary: boolean;
+                            /** @enum {string} */
+                            status: "pending_dns" | "pending_tls" | "active" | "broken" | "expired";
+                            /** Format: date-time */
+                            verified_at: string | null;
+                        }[];
+                        section_keys: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                        /** SiteSettings */
+                        settings: {
+                            banner_version: number;
+                            conversions_api_enabled: boolean;
+                            faq: {
+                                answer: string;
+                                question: string;
+                            }[];
+                            forms_enabled: boolean;
+                            ga4_measurement_id: string | null;
+                            gtm_container_id: string | null;
+                            /** @description A token is saved; the token itself is never returned */
+                            has_conversions_api_token: boolean;
+                            hidden_sections: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                            lock_version: number;
+                            meta_pixel_id: string | null;
+                            public_schedule: boolean;
+                            section_order: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    conversions_api_enabled?: boolean;
+                    /** @description Meta Conversions API access token (write-only; empty removes it) */
+                    conversions_api_token?: string | null;
+                    faq?: {
+                        answer: string;
+                        question: string;
+                    }[];
+                    forms_enabled?: boolean;
+                    ga4_measurement_id?: string | null;
+                    gtm_container_id?: string | null;
+                    hidden_sections?: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                    lock_version: number;
+                    meta_pixel_id?: string | null;
+                    public_schedule?: boolean;
+                    section_order?: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                };
+            };
+        };
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** SiteSettings */
+                        settings: {
+                            banner_version: number;
+                            conversions_api_enabled: boolean;
+                            faq: {
+                                answer: string;
+                                question: string;
+                            }[];
+                            forms_enabled: boolean;
+                            ga4_measurement_id: string | null;
+                            gtm_container_id: string | null;
+                            /** @description A token is saved; the token itself is never returned */
+                            has_conversions_api_token: boolean;
+                            hidden_sections: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                            lock_version: number;
+                            meta_pixel_id: string | null;
+                            public_schedule: boolean;
+                            section_order: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                        };
+                    };
+                };
+            };
+            /** @description Saved meanwhile */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.domains": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Domains */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        domains: {
+                            /** Format: date-time */
+                            active_at: string | null;
+                            /** Format: date-time */
+                            checked_at: string | null;
+                            dns_records: {
+                                name: string;
+                                /** @enum {string} */
+                                type: "TXT" | "CNAME" | "A";
+                                value: string;
+                            }[];
+                            host: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string|null} */
+                            last_error: "dns_txt_missing" | "dns_not_pointing" | "tls_not_ready" | "tls_failed" | null;
+                            /** Format: date-time */
+                            next_check_at: string | null;
+                            primary: boolean;
+                            /** @enum {string} */
+                            status: "pending_dns" | "pending_tls" | "active" | "broken" | "expired";
+                            /** Format: date-time */
+                            verified_at: string | null;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.add_domain": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    host: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Domain */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** SiteDomain */
+                        domain: {
+                            /** Format: date-time */
+                            active_at: string | null;
+                            /** Format: date-time */
+                            checked_at: string | null;
+                            dns_records: {
+                                name: string;
+                                /** @enum {string} */
+                                type: "TXT" | "CNAME" | "A";
+                                value: string;
+                            }[];
+                            host: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string|null} */
+                            last_error: "dns_txt_missing" | "dns_not_pointing" | "tls_not_ready" | "tls_failed" | null;
+                            /** Format: date-time */
+                            next_check_at: string | null;
+                            primary: boolean;
+                            /** @enum {string} */
+                            status: "pending_dns" | "pending_tls" | "active" | "broken" | "expired";
+                            /** Format: date-time */
+                            verified_at: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description Error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.remove_domain": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.check_domain": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Domain */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** SiteDomain */
+                        domain: {
+                            /** Format: date-time */
+                            active_at: string | null;
+                            /** Format: date-time */
+                            checked_at: string | null;
+                            dns_records: {
+                                name: string;
+                                /** @enum {string} */
+                                type: "TXT" | "CNAME" | "A";
+                                value: string;
+                            }[];
+                            host: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string|null} */
+                            last_error: "dns_txt_missing" | "dns_not_pointing" | "tls_not_ready" | "tls_failed" | null;
+                            /** Format: date-time */
+                            next_check_at: string | null;
+                            primary: boolean;
+                            /** @enum {string} */
+                            status: "pending_dns" | "pending_tls" | "active" | "broken" | "expired";
+                            /** Format: date-time */
+                            verified_at: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description Error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.make_primary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Domain */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** SiteDomain */
+                        domain: {
+                            /** Format: date-time */
+                            active_at: string | null;
+                            /** Format: date-time */
+                            checked_at: string | null;
+                            dns_records: {
+                                name: string;
+                                /** @enum {string} */
+                                type: "TXT" | "CNAME" | "A";
+                                value: string;
+                            }[];
+                            host: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string|null} */
+                            last_error: "dns_txt_missing" | "dns_not_pointing" | "tls_not_ready" | "tls_failed" | null;
+                            /** Format: date-time */
+                            next_check_at: string | null;
+                            primary: boolean;
+                            /** @enum {string} */
+                            status: "pending_dns" | "pending_tls" | "active" | "broken" | "expired";
+                            /** Format: date-time */
+                            verified_at: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description Error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Summary */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        consents: {
+                            accept_all: number;
+                            custom: number;
+                            reject_all: number;
+                            withdraw: number;
+                        };
+                        days: number;
+                        submissions: {
+                            delivered: number;
+                            failed: number;
+                            total: number;
+                            waiting: number;
                         };
                     };
                 };
@@ -111185,6 +112467,143 @@ export interface operations {
             };
             /** @description Not found */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyReviewAskController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ask */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** ReviewAsk */
+                        ask: {
+                            actions: ("opened" | "later" | "dismissed")[];
+                            google_review_url: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            milestone: number;
+                            /** Format: date-time */
+                            shown_at: string;
+                            /** @enum {string} */
+                            status: "shown" | "opened" | "later" | "dismissed";
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyReviewAskController.opt_out": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Opted out */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        opted_out: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyReviewAskController.opt_in": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Opted in */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        opted_out: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyReviewAskController.respond": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    action: "opened" | "later" | "dismissed";
+                };
+            };
+        };
+        responses: {
+            /** @description Ask */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** ReviewAsk */
+                        ask: {
+                            actions: ("opened" | "later" | "dismissed")[];
+                            google_review_url: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            milestone: number;
+                            /** Format: date-time */
+                            shown_at: string;
+                            /** @enum {string} */
+                            status: "shown" | "opened" | "later" | "dismissed";
+                        } | null;
+                    };
+                };
+            };
+            /** @description No such ask */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Already answered */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -130858,6 +132277,49 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.PlatformSiteDomainsController.index": {
+        parameters: {
+            query?: {
+                status?: "pending_dns" | "pending_tls" | "active" | "broken" | "expired";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Domains */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        cname_target: string;
+                        domains: {
+                            host: string;
+                            slug: string;
+                            /** @enum {string} */
+                            status: "pending_dns" | "pending_tls" | "active" | "broken" | "expired";
+                            /** Format: date-time */
+                            updated_at: string | null;
+                            /** Format: date-time */
+                            verified_at: string | null;
+                        }[];
+                    };
+                };
+            };
+            /** @description Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
     "PaleeWeb.PlatformPlanController.subscriptions": {
         parameters: {
             query?: never;
@@ -132939,6 +134401,297 @@ export interface operations {
             };
             /** @description No live invite with this code */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicSiteController.by_host": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                host: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Site */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        host: string;
+                        primary: boolean;
+                        primary_host: string | null;
+                        slug: string;
+                    };
+                };
+            };
+            /** @description No published box */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicSiteController.tls_allowed": {
+        parameters: {
+            query: {
+                domain: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Allowed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description No published box */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicSiteController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The box's slug or one of its former slugs */
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Site */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        canonical_url: string;
+                        faq: {
+                            answer: string;
+                            question: string;
+                        }[];
+                        forms: {
+                            contact: boolean;
+                            kinds: ("trial" | "contact")[];
+                            trial: boolean;
+                        };
+                        reviews: {
+                            google_reviews_url: string | null;
+                        };
+                        sections: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                        slug: string;
+                        /** @description The next 7 days' classes when the owner shows the timetable (no spots or people) */
+                        timetable: {
+                            /** Format: uuid */
+                            class_type_id: string | null;
+                            duration_minutes: number;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            location_id: string | null;
+                            name: string;
+                            /** Format: date-time */
+                            scheduled_at: string;
+                        }[];
+                        tracking: {
+                            banner_version: number;
+                            categories: ("necessary" | "analytics" | "marketing")[];
+                            consent_required: boolean;
+                            /**
+                             * SiteTags
+                             * @description Public tag ids; none loads before the visitor's consent (ADR-354)
+                             */
+                            tags: {
+                                ga4_measurement_id: string | null;
+                                gtm_container_id: string | null;
+                                meta_pixel_id: string | null;
+                            };
+                            validity_days: number;
+                        };
+                    };
+                };
+            };
+            /** @description No published box */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicSiteController.consent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The box's slug or one of its former slugs */
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    action: "accept_all" | "reject_all" | "custom" | "withdraw";
+                    analytics?: boolean;
+                    banner_version: number;
+                    marketing?: boolean;
+                    /** Format: uuid */
+                    visitor_id: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Recorded */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        allowed_tags: ("ga4_measurement_id" | "meta_pixel_id" | "gtm_container_id")[];
+                        analytics: boolean;
+                        banner_version: number;
+                        /** Format: date-time */
+                        expires_at: string;
+                        marketing: boolean;
+                    };
+                };
+            };
+            /** @description No published box */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicSiteController.submit_form": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The box's slug or one of its former slugs */
+                slug: string;
+                kind: "trial" | "contact";
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    attribution?: {
+                        landing_path?: string;
+                        referrer_host?: string;
+                        utm_campaign?: string;
+                        utm_content?: string;
+                        utm_medium?: string;
+                        utm_source?: string;
+                        utm_term?: string;
+                    };
+                    /** Format: uuid */
+                    class_type_id?: string | null;
+                    consent_text_hash?: string | null;
+                    consent_text_version?: string | null;
+                    /** @description Time spent on the form */
+                    elapsed_ms?: number | null;
+                    email?: string | null;
+                    locale?: string | null;
+                    /** @description Separate, unticked opt-in to marketing follow-ups */
+                    marketing_opt_in?: boolean;
+                    message?: string | null;
+                    name: string;
+                    phone?: string | null;
+                    preferred_time?: string | null;
+                    /** @description Must be true */
+                    privacy_ack: boolean;
+                    /** Format: uuid */
+                    visitor_id?: string | null;
+                    /** @description Honeypot: leave empty */
+                    website?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Received */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        status: "received";
+                    };
+                };
+            };
+            /** @description No published box */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Error */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
