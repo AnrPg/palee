@@ -1099,6 +1099,24 @@ export interface paths {
         patch: operations["PaleeWeb.ExecutionController.complete"];
         trace?: never;
     };
+    "/api/executions/{id}/heart-rate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Heart rate of this execution: average, highest, per section and zones */
+        get: operations["PaleeWeb.WatchController.heart_rate_summary"];
+        put?: never;
+        /** Numbered heart-rate batches from the watch; a resent batch is stored once */
+        post: operations["PaleeWeb.WatchController.heart_rate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/executions/{id}/interactions": {
         parameters: {
             query?: never;
@@ -1113,6 +1131,23 @@ export interface paths {
          * @description Batched, idempotent ingestion of execution interaction signals the server cannot observe (pause sheet, manual skip, round taps, adjusts, ready screen, finish wizard, cast mode). Each event dedupes on its client_event_id; retries are accepted and counted as duplicates. Any invalid event rejects the batch.
          */
         post: operations["PaleeWeb.ExecutionController.record_interactions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/executions/{id}/pacer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The previous attempt at the same WOD or benchmark as a pace line beside this one */
+        get: operations["PaleeWeb.ExecutionPacerController.show"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1134,6 +1169,40 @@ export interface paths {
         head?: never;
         /** Persist execution progress */
         patch: operations["PaleeWeb.ExecutionController.update_progress"];
+        trace?: never;
+    };
+    "/api/executions/{id}/splits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Record split marks (segment ends and rounds); repeats are ignored */
+        post: operations["PaleeWeb.ExecutionPacerController.splits"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/executions/{id}/watch-plan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** What the watch runs for this execution: segments, progress and the pace line */
+        get: operations["PaleeWeb.WatchController.plan"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/gamification/goal": {
@@ -2591,6 +2660,41 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/me/devices/watches": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The person's paired watches and the contract version the server speaks */
+        get: operations["PaleeWeb.WatchController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/devices/watches/{platform}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Pair a watch (or refresh its app version and settings) */
+        put: operations["PaleeWeb.WatchController.pair"];
+        post?: never;
+        /** Unpair a watch; heart rate already recorded stays with its workouts */
+        delete: operations["PaleeWeb.WatchController.unpair"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me/email-change": {
         parameters: {
             query?: never;
@@ -2975,6 +3079,59 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/api/me/foods": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The person's own foods */
+        get: operations["PaleeWeb.FoodsController.index"];
+        put?: never;
+        /** Write down a food (the manual entry after a scan, or any time) */
+        post: operations["PaleeWeb.FoodsController.create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/foods/barcode/{barcode}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Look a scanned barcode up: own foods, then Open Food Facts; else the manual entry */
+        get: operations["PaleeWeb.FoodsController.barcode"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/foods/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete an own food (meals that named it keep the name) */
+        delete: operations["PaleeWeb.FoodsController.delete"];
+        options?: never;
+        head?: never;
+        /** Change an own food */
+        patch: operations["PaleeWeb.FoodsController.update"];
         trace?: never;
     };
     "/api/me/guides": {
@@ -9179,6 +9336,42 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/rank-ladders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box's ladders, the templates and the belt palette */
+        get: operations["PaleeWeb.AdminRankLaddersController.index"];
+        put?: never;
+        /** Create a ladder, from a template or from scratch */
+        post: operations["PaleeWeb.AdminRankLaddersController.create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/rank-ladders/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Change a ladder and its ranks (a rank someone holds cannot be removed) */
+        put: operations["PaleeWeb.AdminRankLaddersController.update"];
+        post?: never;
+        /** Archive a ladder; its promotions stay in people's history */
+        delete: operations["PaleeWeb.AdminRankLaddersController.delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/referrals": {
         parameters: {
             query?: never;
@@ -12564,6 +12757,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/me/ranks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My rank on each of the box's ladders, progress and history */
+        get: operations["PaleeWeb.MyRanksController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/ranks/awards/{id}/certificate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My diploma for an award, as a PDF */
+        get: operations["PaleeWeb.MyRanksController.certificate"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/me/referrals": {
         parameters: {
             query?: never;
@@ -13805,6 +14032,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/staff/clients/{user_id}/ranks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A client's rank on each ladder, progress to the next and history */
+        get: operations["PaleeWeb.StaffRanksController.client"];
+        put?: never;
+        /** Promote a client, or add a stripe, ticking the skills shown */
+        post: operations["PaleeWeb.StaffRanksController.award"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/staff/clients/{user_id}/training-goal": {
         parameters: {
             query?: never;
@@ -14287,6 +14532,40 @@ export interface paths {
         get: operations["PaleeWeb.CoachingExtrasController.my_client_stats"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/staff/rank-awards/{id}/certificate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The award's diploma as a PDF */
+        get: operations["PaleeWeb.StaffRanksController.certificate"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/staff/rank-awards/{id}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Withdraw an award with a reason; it stays in the history */
+        post: operations["PaleeWeb.StaffRanksController.revoke"];
         delete?: never;
         options?: never;
         head?: never;
@@ -20519,6 +20798,62 @@ export interface components {
             exercise_ref: string;
             label: string;
             sets: number;
+        };
+        /** BarcodeLookup */
+        BarcodeLookup: {
+            /**
+             * FoodAttribution
+             * @description Shown with every Open Food Facts product (ODbL 1.0)
+             */
+            attribution?: {
+                images_licence: string;
+                licence: string;
+                licence_url: string;
+                source: string;
+                url: string;
+            } | null;
+            barcode: string;
+            food?: {
+                barcode?: string | null;
+                brand?: string | null;
+                /**
+                 * Format: uuid
+                 * @description Own foods only
+                 */
+                id?: string | null;
+                image_url?: string | null;
+                name: string;
+                note?: string | null;
+                /**
+                 * FoodNutrients
+                 * @description Grams per 100 g. Only when a coach's plan sets macros and macros are not hidden; never energy
+                 */
+                nutrients: {
+                    carbohydrates?: number;
+                    fat?: number;
+                    fiber?: number;
+                    proteins?: number;
+                    salt?: number;
+                    sugars?: number;
+                } | null;
+                /** @enum {string|null} */
+                portion_hint: "protein" | "carbs" | "veg" | "fat" | null;
+                quantity?: string | null;
+                serving_size?: string | null;
+            } | null;
+            macros_visible: boolean;
+            /**
+             * @description Why the manual entry
+             * @enum {string|null}
+             */
+            reason?: "not_found" | "failed" | "in_store_code" | null;
+            /** @enum {string|null} */
+            source?: "open_food_facts" | "custom" | null;
+            /**
+             * @description `pending`: still asking, scan again in a few seconds; `manual`: write it down yourself
+             * @enum {string}
+             */
+            status: "found" | "pending" | "manual";
         };
         /** BillingActions */
         BillingActions: {
@@ -29310,6 +29645,64 @@ export interface components {
                 updated_at?: string;
             };
         };
+        /** CustomFoodCreateRequest */
+        CustomFoodCreateRequest: {
+            barcode?: string | null;
+            brand?: string | null;
+            name: string;
+            note?: string | null;
+            nutrients?: {
+                [key: string]: number;
+            } | null;
+            /** @enum {string|null} */
+            portion_hint?: "protein" | "carbs" | "veg" | "fat" | null;
+            serving_label?: string | null;
+        };
+        /** CustomFoodRequest */
+        CustomFoodRequest: {
+            barcode?: string | null;
+            brand?: string | null;
+            name?: string;
+            note?: string | null;
+            nutrients?: {
+                [key: string]: number;
+            } | null;
+            /** @enum {string|null} */
+            portion_hint?: "protein" | "carbs" | "veg" | "fat" | null;
+            serving_label?: string | null;
+        };
+        /** CustomFoodsResponse */
+        CustomFoodsResponse: {
+            foods: {
+                barcode?: string | null;
+                brand?: string | null;
+                /**
+                 * Format: uuid
+                 * @description Own foods only
+                 */
+                id?: string | null;
+                image_url?: string | null;
+                name: string;
+                note?: string | null;
+                /**
+                 * FoodNutrients
+                 * @description Grams per 100 g. Only when a coach's plan sets macros and macros are not hidden; never energy
+                 */
+                nutrients: {
+                    carbohydrates?: number;
+                    fat?: number;
+                    fiber?: number;
+                    proteins?: number;
+                    salt?: number;
+                    sugars?: number;
+                } | null;
+                /** @enum {string|null} */
+                portion_hint: "protein" | "carbs" | "veg" | "fat" | null;
+                quantity?: string | null;
+                serving_size?: string | null;
+            }[];
+            macros_visible: boolean;
+        };
         /** DailyStatLatest */
         DailyStatLatest: {
             /** Format: date */
@@ -30720,6 +31113,90 @@ export interface components {
             /** @enum {string} */
             status: "none" | "requested" | "active";
         };
+        /** Food */
+        Food: {
+            barcode?: string | null;
+            brand?: string | null;
+            /**
+             * Format: uuid
+             * @description Own foods only
+             */
+            id?: string | null;
+            image_url?: string | null;
+            name: string;
+            note?: string | null;
+            /**
+             * FoodNutrients
+             * @description Grams per 100 g. Only when a coach's plan sets macros and macros are not hidden; never energy
+             */
+            nutrients: {
+                carbohydrates?: number;
+                fat?: number;
+                fiber?: number;
+                proteins?: number;
+                salt?: number;
+                sugars?: number;
+            } | null;
+            /** @enum {string|null} */
+            portion_hint: "protein" | "carbs" | "veg" | "fat" | null;
+            quantity?: string | null;
+            serving_size?: string | null;
+        };
+        /**
+         * FoodAttribution
+         * @description Shown with every Open Food Facts product (ODbL 1.0)
+         */
+        FoodAttribution: {
+            images_licence: string;
+            licence: string;
+            licence_url: string;
+            source: string;
+            url: string;
+        } | null;
+        /**
+         * FoodNutrients
+         * @description Grams per 100 g. Only when a coach's plan sets macros and macros are not hidden; never energy
+         */
+        FoodNutrients: {
+            carbohydrates?: number;
+            fat?: number;
+            fiber?: number;
+            proteins?: number;
+            salt?: number;
+            sugars?: number;
+        } | null;
+        /** FoodResponse */
+        FoodResponse: {
+            /** Food */
+            food: {
+                barcode?: string | null;
+                brand?: string | null;
+                /**
+                 * Format: uuid
+                 * @description Own foods only
+                 */
+                id?: string | null;
+                image_url?: string | null;
+                name: string;
+                note?: string | null;
+                /**
+                 * FoodNutrients
+                 * @description Grams per 100 g. Only when a coach's plan sets macros and macros are not hidden; never energy
+                 */
+                nutrients: {
+                    carbohydrates?: number;
+                    fat?: number;
+                    fiber?: number;
+                    proteins?: number;
+                    salt?: number;
+                    sugars?: number;
+                } | null;
+                /** @enum {string|null} */
+                portion_hint: "protein" | "carbs" | "veg" | "fat" | null;
+                quantity?: string | null;
+                serving_size?: string | null;
+            };
+        };
         /** FormReview */
         FormReview: {
             /** Format: uuid */
@@ -31242,6 +31719,61 @@ export interface components {
                 /** Format: date-time */
                 withdrawn_at?: string | null;
             }[];
+        };
+        /** HeartRateBatchesRequest */
+        HeartRateBatchesRequest: {
+            batches: {
+                bpm: number[];
+                interval_ms: number;
+                sequence: number;
+                started_offset_ms: number;
+            }[];
+            /** @enum {string} */
+            platform: "apple_watch" | "wear_os";
+        };
+        /** HeartRateStoredResponse */
+        HeartRateStoredResponse: {
+            stored: number;
+            total: number;
+        };
+        /** HeartRateSummary */
+        HeartRateSummary: {
+            average_bpm?: number | null;
+            /** Format: uuid */
+            execution_id: string;
+            max_bpm?: number | null;
+            min_bpm?: number | null;
+            samples: number;
+            sections: {
+                average_bpm?: number | null;
+                max_bpm?: number | null;
+                section_ordinal: number;
+            }[];
+            zones: {
+                ms: number;
+                zone: number;
+            }[];
+        };
+        /** HeartRateSummaryResponse */
+        HeartRateSummaryResponse: {
+            /** HeartRateSummary */
+            heart_rate: {
+                average_bpm?: number | null;
+                /** Format: uuid */
+                execution_id: string;
+                max_bpm?: number | null;
+                min_bpm?: number | null;
+                samples: number;
+                sections: {
+                    average_bpm?: number | null;
+                    max_bpm?: number | null;
+                    section_ordinal: number;
+                }[];
+                zones: {
+                    ms: number;
+                    zone: number;
+                }[];
+            };
         };
         /** InjuryAccessLog */
         InjuryAccessLog: {
@@ -33509,6 +34041,215 @@ export interface components {
             previous_score?: number | null;
             score: number;
             unit: string;
+        };
+        /** PaceCheckpoint */
+        PaceCheckpoint: {
+            at_ms?: number | null;
+            /** @description This attempt minus the previous one: negative is ahead */
+            delta_ms: number | null;
+            ghost_at_ms: number;
+            ghost_lap_ms: number;
+            /** @description <section ordinal>:<phase>:<round>:<n> */
+            key: string;
+            lap_ms?: number | null;
+            /** @enum {string} */
+            phase: "work" | "rest" | "transition";
+            round: number;
+            section_id?: string | null;
+            section_name?: string | null;
+            section_ordinal: number;
+        };
+        /** PaceSection */
+        PaceSection: {
+            current_ms?: number | null;
+            delta_ms: number | null;
+            ghost_ms: number;
+            section_id?: string | null;
+            section_name?: string | null;
+            section_ordinal: number;
+        };
+        /** Pacer */
+        Pacer: {
+            checkpoints: {
+                at_ms?: number | null;
+                /** @description This attempt minus the previous one: negative is ahead */
+                delta_ms: number | null;
+                ghost_at_ms: number;
+                ghost_lap_ms: number;
+                /** @description <section ordinal>:<phase>:<round>:<n> */
+                key: string;
+                lap_ms?: number | null;
+                /** @enum {string} */
+                phase: "work" | "rest" | "transition";
+                round: number;
+                section_id?: string | null;
+                section_name?: string | null;
+                section_ordinal: number;
+            }[];
+            current_total_ms?: number | null;
+            /** Format: uuid */
+            execution_id: string;
+            ghost_total_ms?: number | null;
+            /** @enum {string|null} */
+            precision?: "rounds" | "segments" | "sections" | "finish" | null;
+            /** @description The attempt raced against; null when there is none */
+            previous: {
+                completed_at_tz?: string | null;
+                /** Format: date-time */
+                completed_at_utc: string;
+                /** Format: uuid */
+                execution_id: string;
+                /** @description False when it is the same benchmark from another workout */
+                same_workout: boolean;
+                scale_level_slug?: string | null;
+            } | null;
+            sections: {
+                current_ms?: number | null;
+                delta_ms: number | null;
+                ghost_ms: number;
+                section_id?: string | null;
+                section_name?: string | null;
+                section_ordinal: number;
+            }[];
+            total_delta_ms?: number | null;
+        };
+        /** PacerResponse */
+        PacerResponse: {
+            /** Pacer */
+            pacer: {
+                checkpoints: {
+                    at_ms?: number | null;
+                    /** @description This attempt minus the previous one: negative is ahead */
+                    delta_ms: number | null;
+                    ghost_at_ms: number;
+                    ghost_lap_ms: number;
+                    /** @description <section ordinal>:<phase>:<round>:<n> */
+                    key: string;
+                    lap_ms?: number | null;
+                    /** @enum {string} */
+                    phase: "work" | "rest" | "transition";
+                    round: number;
+                    section_id?: string | null;
+                    section_name?: string | null;
+                    section_ordinal: number;
+                }[];
+                current_total_ms?: number | null;
+                /** Format: uuid */
+                execution_id: string;
+                ghost_total_ms?: number | null;
+                /** @enum {string|null} */
+                precision?: "rounds" | "segments" | "sections" | "finish" | null;
+                /** @description The attempt raced against; null when there is none */
+                previous: {
+                    completed_at_tz?: string | null;
+                    /** Format: date-time */
+                    completed_at_utc: string;
+                    /** Format: uuid */
+                    execution_id: string;
+                    /** @description False when it is the same benchmark from another workout */
+                    same_workout: boolean;
+                    scale_level_slug?: string | null;
+                } | null;
+                sections: {
+                    current_ms?: number | null;
+                    delta_ms: number | null;
+                    ghost_ms: number;
+                    section_id?: string | null;
+                    section_name?: string | null;
+                    section_ordinal: number;
+                }[];
+                total_delta_ms?: number | null;
+            };
+        };
+        /** PairWatchRequest */
+        PairWatchRequest: {
+            app_version?: string;
+            contract_version: number;
+            device_name?: string;
+            /** WatchSettings */
+            settings?: {
+                haptics?: boolean;
+                /** @description Only with it the results show heart-rate zones */
+                max_hr?: number | null;
+                show_heart_rate?: boolean;
+                /** @description The previous attempt's pace line */
+                show_pace?: boolean;
+            };
+        };
+        /** PairedWatch */
+        PairedWatch: {
+            app_version?: string | null;
+            contract_version: number;
+            device_name?: string | null;
+            /** Format: date-time */
+            last_seen_at: string;
+            needs_upgrade: boolean;
+            /** Format: date-time */
+            paired_at: string;
+            /** @enum {string} */
+            platform: "apple_watch" | "wear_os";
+            /** WatchSettings */
+            settings: {
+                haptics?: boolean;
+                /** @description Only with it the results show heart-rate zones */
+                max_hr?: number | null;
+                show_heart_rate?: boolean;
+                /** @description The previous attempt's pace line */
+                show_pace?: boolean;
+            };
+        };
+        /** PairedWatchResponse */
+        PairedWatchResponse: {
+            /** PairedWatch */
+            watch: {
+                app_version?: string | null;
+                contract_version: number;
+                device_name?: string | null;
+                /** Format: date-time */
+                last_seen_at: string;
+                needs_upgrade: boolean;
+                /** Format: date-time */
+                paired_at: string;
+                /** @enum {string} */
+                platform: "apple_watch" | "wear_os";
+                /** WatchSettings */
+                settings: {
+                    haptics?: boolean;
+                    /** @description Only with it the results show heart-rate zones */
+                    max_hr?: number | null;
+                    show_heart_rate?: boolean;
+                    /** @description The previous attempt's pace line */
+                    show_pace?: boolean;
+                };
+            };
+        };
+        /** PairedWatchesResponse */
+        PairedWatchesResponse: {
+            contract: {
+                platforms: ("apple_watch" | "wear_os")[];
+                version: number;
+            };
+            watches: {
+                app_version?: string | null;
+                contract_version: number;
+                device_name?: string | null;
+                /** Format: date-time */
+                last_seen_at: string;
+                needs_upgrade: boolean;
+                /** Format: date-time */
+                paired_at: string;
+                /** @enum {string} */
+                platform: "apple_watch" | "wear_os";
+                /** WatchSettings */
+                settings: {
+                    haptics?: boolean;
+                    /** @description Only with it the results show heart-rate zones */
+                    max_hr?: number | null;
+                    show_heart_rate?: boolean;
+                    /** @description The previous attempt's pace line */
+                    show_pace?: boolean;
+                };
+            }[];
         };
         /** PartnerBadge */
         PartnerBadge: {
@@ -38287,6 +39028,491 @@ export interface components {
                 } | null;
             } | null;
         };
+        /** Rank */
+        Rank: {
+            /**
+             * @description Belt palette key; the screen maps it to the theme's --belt-* token
+             * @enum {string|null}
+             */
+            color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+            /** Format: uuid */
+            id: string;
+            max_stripes: number;
+            name: string;
+            position: number;
+            /** RankRequirements */
+            requirements: {
+                min_classes?: number;
+                min_days?: number;
+                skills?: string[];
+            };
+            scale_level_slug?: string | null;
+        };
+        /** RankAward */
+        RankAward: {
+            /** Format: date */
+            awarded_on: string;
+            certificate_number: string;
+            /**
+             * @description Belt palette key; the screen maps it to the theme's --belt-* token
+             * @enum {string|null}
+             */
+            color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            ladder_id: string;
+            note?: string | null;
+            /** Format: uuid */
+            rank_id: string;
+            rank_name?: string | null;
+            revoke_reason?: string | null;
+            revoked: boolean;
+            skills_checked: string[];
+            stripes: number;
+        };
+        /** RankAwardRequest */
+        RankAwardRequest: {
+            /** Format: date */
+            awarded_on?: string;
+            /** Format: uuid */
+            ladder_id: string;
+            note?: string;
+            /** Format: uuid */
+            rank_id: string;
+            skills_checked?: string[];
+            stripes?: number;
+        };
+        /** RankAwardResponse */
+        RankAwardResponse: {
+            /** RankAward */
+            award: {
+                /** Format: date */
+                awarded_on: string;
+                certificate_number: string;
+                /**
+                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                 * @enum {string|null}
+                 */
+                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                ladder_id: string;
+                note?: string | null;
+                /** Format: uuid */
+                rank_id: string;
+                rank_name?: string | null;
+                revoke_reason?: string | null;
+                revoked: boolean;
+                skills_checked: string[];
+                stripes: number;
+            };
+        };
+        /** RankAwardRevokeRequest */
+        RankAwardRevokeRequest: {
+            reason: string;
+        };
+        /** RankInput */
+        RankInput: {
+            /**
+             * @description Belt palette key; the screen maps it to the theme's --belt-* token
+             * @enum {string|null}
+             */
+            color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+            /**
+             * Format: uuid
+             * @description Keep an existing rank
+             */
+            id?: string | null;
+            max_stripes?: number;
+            name: string;
+            /** RankRequirements */
+            requirements?: {
+                min_classes?: number;
+                min_days?: number;
+                skills?: string[];
+            };
+            scale_level_slug?: string | null;
+        };
+        /** RankLadder */
+        RankLadder: {
+            class_type_ids: string[];
+            /** @description A workout type (ADR-275) */
+            discipline: string;
+            family?: string | null;
+            /** Format: uuid */
+            id: string;
+            name: string;
+            ranks: {
+                /**
+                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                 * @enum {string|null}
+                 */
+                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                /** Format: uuid */
+                id: string;
+                max_stripes: number;
+                name: string;
+                position: number;
+                /** RankRequirements */
+                requirements: {
+                    min_classes?: number;
+                    min_days?: number;
+                    skills?: string[];
+                };
+                scale_level_slug?: string | null;
+            }[];
+            /** @enum {string} */
+            style: "belt" | "level";
+        };
+        /** RankLadderRequest */
+        RankLadderRequest: {
+            class_type_ids?: string[];
+            discipline?: string;
+            name?: string;
+            position?: number;
+            ranks?: {
+                /**
+                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                 * @enum {string|null}
+                 */
+                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                /**
+                 * Format: uuid
+                 * @description Keep an existing rank
+                 */
+                id?: string | null;
+                max_stripes?: number;
+                name: string;
+                /** RankRequirements */
+                requirements?: {
+                    min_classes?: number;
+                    min_days?: number;
+                    skills?: string[];
+                };
+                scale_level_slug?: string | null;
+            }[];
+            /** @enum {string} */
+            style?: "belt" | "level";
+            /** @description Start from a template («Πρότυπα»); fields sent override it */
+            template?: string;
+        };
+        /** RankLadderResponse */
+        RankLadderResponse: {
+            /** RankLadder */
+            ladder: {
+                class_type_ids: string[];
+                /** @description A workout type (ADR-275) */
+                discipline: string;
+                family?: string | null;
+                /** Format: uuid */
+                id: string;
+                name: string;
+                ranks: {
+                    /**
+                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                     * @enum {string|null}
+                     */
+                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                    /** Format: uuid */
+                    id: string;
+                    max_stripes: number;
+                    name: string;
+                    position: number;
+                    /** RankRequirements */
+                    requirements: {
+                        min_classes?: number;
+                        min_days?: number;
+                        skills?: string[];
+                    };
+                    scale_level_slug?: string | null;
+                }[];
+                /** @enum {string} */
+                style: "belt" | "level";
+            };
+        };
+        /** RankLaddersResponse */
+        RankLaddersResponse: {
+            colors: string[];
+            ladders: {
+                class_type_ids: string[];
+                /** @description A workout type (ADR-275) */
+                discipline: string;
+                family?: string | null;
+                /** Format: uuid */
+                id: string;
+                name: string;
+                ranks: {
+                    /**
+                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                     * @enum {string|null}
+                     */
+                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                    /** Format: uuid */
+                    id: string;
+                    max_stripes: number;
+                    name: string;
+                    position: number;
+                    /** RankRequirements */
+                    requirements: {
+                        min_classes?: number;
+                        min_days?: number;
+                        skills?: string[];
+                    };
+                    scale_level_slug?: string | null;
+                }[];
+                /** @enum {string} */
+                style: "belt" | "level";
+            }[];
+            templates: {
+                [key: string]: unknown;
+            }[];
+        };
+        /** RankRequirements */
+        RankRequirements: {
+            min_classes?: number;
+            min_days?: number;
+            skills?: string[];
+        };
+        /** RankStanding */
+        RankStanding: {
+            current: {
+                /** Format: uuid */
+                award_id: string;
+                /** Format: date */
+                awarded_on: string;
+                /** Rank */
+                rank: {
+                    /**
+                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                     * @enum {string|null}
+                     */
+                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                    /** Format: uuid */
+                    id: string;
+                    max_stripes: number;
+                    name: string;
+                    position: number;
+                    /** RankRequirements */
+                    requirements: {
+                        min_classes?: number;
+                        min_days?: number;
+                        skills?: string[];
+                    };
+                    scale_level_slug?: string | null;
+                };
+                stripes: number;
+            } | null;
+            history: {
+                /** Format: date */
+                awarded_on: string;
+                certificate_number: string;
+                /**
+                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                 * @enum {string|null}
+                 */
+                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                ladder_id: string;
+                note?: string | null;
+                /** Format: uuid */
+                rank_id: string;
+                rank_name?: string | null;
+                revoke_reason?: string | null;
+                revoked: boolean;
+                skills_checked: string[];
+                stripes: number;
+            }[];
+            /** RankLadder */
+            ladder: {
+                class_type_ids: string[];
+                /** @description A workout type (ADR-275) */
+                discipline: string;
+                family?: string | null;
+                /** Format: uuid */
+                id: string;
+                name: string;
+                ranks: {
+                    /**
+                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                     * @enum {string|null}
+                     */
+                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                    /** Format: uuid */
+                    id: string;
+                    max_stripes: number;
+                    name: string;
+                    position: number;
+                    /** RankRequirements */
+                    requirements: {
+                        min_classes?: number;
+                        min_days?: number;
+                        skills?: string[];
+                    };
+                    scale_level_slug?: string | null;
+                }[];
+                /** @enum {string} */
+                style: "belt" | "level";
+            };
+            next: {
+                /**
+                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                 * @enum {string|null}
+                 */
+                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                /** Format: uuid */
+                id: string;
+                max_stripes: number;
+                name: string;
+                position: number;
+                /** RankRequirements */
+                requirements: {
+                    min_classes?: number;
+                    min_days?: number;
+                    skills?: string[];
+                };
+                scale_level_slug?: string | null;
+            } | null;
+            /** @description Towards the next rank; `ready` only says the counted requirements are met */
+            progress: {
+                classes: {
+                    done: number | null;
+                    needed: number | null;
+                };
+                days: {
+                    done: number | null;
+                    needed: number | null;
+                };
+                /** Format: uuid */
+                rank_id: string;
+                ready: boolean;
+                skills: string[];
+            } | null;
+        };
+        /** RankStandingsResponse */
+        RankStandingsResponse: {
+            ladders: {
+                current: {
+                    /** Format: uuid */
+                    award_id: string;
+                    /** Format: date */
+                    awarded_on: string;
+                    /** Rank */
+                    rank: {
+                        /**
+                         * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                         * @enum {string|null}
+                         */
+                        color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                        /** Format: uuid */
+                        id: string;
+                        max_stripes: number;
+                        name: string;
+                        position: number;
+                        /** RankRequirements */
+                        requirements: {
+                            min_classes?: number;
+                            min_days?: number;
+                            skills?: string[];
+                        };
+                        scale_level_slug?: string | null;
+                    };
+                    stripes: number;
+                } | null;
+                history: {
+                    /** Format: date */
+                    awarded_on: string;
+                    certificate_number: string;
+                    /**
+                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                     * @enum {string|null}
+                     */
+                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    ladder_id: string;
+                    note?: string | null;
+                    /** Format: uuid */
+                    rank_id: string;
+                    rank_name?: string | null;
+                    revoke_reason?: string | null;
+                    revoked: boolean;
+                    skills_checked: string[];
+                    stripes: number;
+                }[];
+                /** RankLadder */
+                ladder: {
+                    class_type_ids: string[];
+                    /** @description A workout type (ADR-275) */
+                    discipline: string;
+                    family?: string | null;
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                    ranks: {
+                        /**
+                         * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                         * @enum {string|null}
+                         */
+                        color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                        /** Format: uuid */
+                        id: string;
+                        max_stripes: number;
+                        name: string;
+                        position: number;
+                        /** RankRequirements */
+                        requirements: {
+                            min_classes?: number;
+                            min_days?: number;
+                            skills?: string[];
+                        };
+                        scale_level_slug?: string | null;
+                    }[];
+                    /** @enum {string} */
+                    style: "belt" | "level";
+                };
+                next: {
+                    /**
+                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                     * @enum {string|null}
+                     */
+                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                    /** Format: uuid */
+                    id: string;
+                    max_stripes: number;
+                    name: string;
+                    position: number;
+                    /** RankRequirements */
+                    requirements: {
+                        min_classes?: number;
+                        min_days?: number;
+                        skills?: string[];
+                    };
+                    scale_level_slug?: string | null;
+                } | null;
+                /** @description Towards the next rank; `ready` only says the counted requirements are met */
+                progress: {
+                    classes: {
+                        done: number | null;
+                        needed: number | null;
+                    };
+                    days: {
+                        done: number | null;
+                        needed: number | null;
+                    };
+                    /** Format: uuid */
+                    rank_id: string;
+                    ready: boolean;
+                    skills: string[];
+                } | null;
+            }[];
+            /** Format: uuid */
+            user_id?: string;
+        };
         /** ReferralClaim */
         ReferralClaim: {
             /** @enum {string} */
@@ -41322,6 +42548,31 @@ export interface components {
             space_id: string;
             /** Format: date-time */
             starts_at: string;
+        };
+        /** SplitMark */
+        SplitMark: {
+            /** @description Active time since the start, pauses excluded */
+            elapsed_ms: number;
+            /** @description 0 or absent: the segment ended; ≥ 1: that round was finished */
+            round?: number | null;
+            segment_index: number;
+        };
+        /** SplitMarksRequest */
+        SplitMarksRequest: {
+            marks: {
+                /** @description Active time since the start, pauses excluded */
+                elapsed_ms: number;
+                /** @description 0 or absent: the segment ended; ≥ 1: that round was finished */
+                round?: number | null;
+                segment_index: number;
+            }[];
+        };
+        /** SplitMarksResponse */
+        SplitMarksResponse: {
+            /** @description Marks that were new */
+            stored: number;
+            /** @description Marks the execution has now */
+            total: number;
         };
         /** StaffCommunityEvent */
         StaffCommunityEvent: {
@@ -44634,6 +45885,147 @@ export interface components {
                 revoked_at?: string | null;
             };
         };
+        /**
+         * WatchPlan
+         * @description What the phone hands the watch for one execution (contract version 1)
+         */
+        WatchPlan: {
+            commands: ("next" | "round" | "pause" | "resume" | "finish")[];
+            contract_version: number;
+            /** Format: uuid */
+            execution_id: string;
+            haptics: boolean;
+            heart_rate: {
+                enabled: boolean;
+                interval_ms: number;
+                max_hr?: number | null;
+            };
+            pace: {
+                at_ms: number;
+                key: string;
+                phase: string;
+                round: number;
+                section_ordinal: number;
+            }[];
+            progress: {
+                current_segment_index: number;
+                lock_version: number;
+                paused_elapsed_ms: number;
+                /** Format: date-time */
+                segment_started_at_utc?: string | null;
+                total_elapsed_ms: number;
+            };
+            segments: {
+                duration_seconds?: number | null;
+                index: number;
+                kind: string;
+                label?: string | null;
+                label_key?: string | null;
+                label_params: {
+                    [key: string]: unknown;
+                };
+                movements: {
+                    amount?: (number | string) | null;
+                    name: string;
+                    unit?: string | null;
+                }[];
+                phase: string;
+                round?: number | null;
+                scoreable: boolean;
+                section_name?: string | null;
+                total_rounds?: number | null;
+            }[];
+            /** @enum {string} */
+            status: "active" | "paused" | "completed";
+            title?: string | null;
+        };
+        /** WatchPlanResponse */
+        WatchPlanResponse: {
+            /**
+             * WatchPlan
+             * @description What the phone hands the watch for one execution (contract version 1)
+             */
+            plan: {
+                commands: ("next" | "round" | "pause" | "resume" | "finish")[];
+                contract_version: number;
+                /** Format: uuid */
+                execution_id: string;
+                haptics: boolean;
+                heart_rate: {
+                    enabled: boolean;
+                    interval_ms: number;
+                    max_hr?: number | null;
+                };
+                pace: {
+                    at_ms: number;
+                    key: string;
+                    phase: string;
+                    round: number;
+                    section_ordinal: number;
+                }[];
+                progress: {
+                    current_segment_index: number;
+                    lock_version: number;
+                    paused_elapsed_ms: number;
+                    /** Format: date-time */
+                    segment_started_at_utc?: string | null;
+                    total_elapsed_ms: number;
+                };
+                segments: {
+                    duration_seconds?: number | null;
+                    index: number;
+                    kind: string;
+                    label?: string | null;
+                    label_key?: string | null;
+                    label_params: {
+                        [key: string]: unknown;
+                    };
+                    movements: {
+                        amount?: (number | string) | null;
+                        name: string;
+                        unit?: string | null;
+                    }[];
+                    phase: string;
+                    round?: number | null;
+                    scoreable: boolean;
+                    section_name?: string | null;
+                    total_rounds?: number | null;
+                }[];
+                /** @enum {string} */
+                status: "active" | "paused" | "completed";
+                title?: string | null;
+            };
+        };
+        /** WatchPlanSegment */
+        WatchPlanSegment: {
+            duration_seconds?: number | null;
+            index: number;
+            kind: string;
+            label?: string | null;
+            label_key?: string | null;
+            label_params: {
+                [key: string]: unknown;
+            };
+            movements: {
+                amount?: (number | string) | null;
+                name: string;
+                unit?: string | null;
+            }[];
+            phase: string;
+            round?: number | null;
+            scoreable: boolean;
+            section_name?: string | null;
+            total_rounds?: number | null;
+        };
+        /** WatchSettings */
+        WatchSettings: {
+            haptics?: boolean;
+            /** @description Only with it the results show heart-rate zones */
+            max_hr?: number | null;
+            show_heart_rate?: boolean;
+            /** @description The previous attempt's pace line */
+            show_pace?: boolean;
+        };
         /** WellnessAccessLog */
         WellnessAccessLog: {
             entries: {
@@ -44671,7 +46063,8 @@ export interface components {
              *     (minutes or quality required; both ends give minutes). meal: {slot?
              *     (breakfast, lunch, dinner, snack or a plan slot such as pre_workout), plan_fit?
              *     in_plan|off_plan, note?, media_id?,
-             *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5}.
+             *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5,
+             *     foods? [{name, barcode?, custom_food_id?, portion?}] up to 10 (ADR-376)}.
              */
             value?: {
                 [key: string]: unknown;
@@ -44695,7 +46088,8 @@ export interface components {
              *     (minutes or quality required; both ends give minutes). meal: {slot?
              *     (breakfast, lunch, dinner, snack or a plan slot such as pre_workout), plan_fit?
              *     in_plan|off_plan, note?, media_id?,
-             *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5}.
+             *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5,
+             *     foods? [{name, barcode?, custom_food_id?, portion?}] up to 10 (ADR-376)}.
              */
             value: {
                 [key: string]: unknown;
@@ -44729,7 +46123,8 @@ export interface components {
                  *     (minutes or quality required; both ends give minutes). meal: {slot?
                  *     (breakfast, lunch, dinner, snack or a plan slot such as pre_workout), plan_fit?
                  *     in_plan|off_plan, note?, media_id?,
-                 *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5}.
+                 *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5,
+                 *     foods? [{name, barcode?, custom_food_id?, portion?}] up to 10 (ADR-376)}.
                  */
                 value: {
                     [key: string]: unknown;
@@ -44817,7 +46212,8 @@ export interface components {
                          *     (minutes or quality required; both ends give minutes). meal: {slot?
                          *     (breakfast, lunch, dinner, snack or a plan slot such as pre_workout), plan_fit?
                          *     in_plan|off_plan, note?, media_id?,
-                         *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5}.
+                         *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5,
+                         *     foods? [{name, barcode?, custom_food_id?, portion?}] up to 10 (ADR-376)}.
                          */
                         value: {
                             [key: string]: unknown;
@@ -44934,7 +46330,8 @@ export interface components {
                  *     (minutes or quality required; both ends give minutes). meal: {slot?
                  *     (breakfast, lunch, dinner, snack or a plan slot such as pre_workout), plan_fit?
                  *     in_plan|off_plan, note?, media_id?,
-                 *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5}.
+                 *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5,
+                 *     foods? [{name, barcode?, custom_food_id?, portion?}] up to 10 (ADR-376)}.
                  */
                 value: {
                     [key: string]: unknown;
@@ -51693,6 +53090,129 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.WatchController.heart_rate_summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Summary */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** HeartRateSummary */
+                        heart_rate: {
+                            average_bpm?: number | null;
+                            /** Format: uuid */
+                            execution_id: string;
+                            max_bpm?: number | null;
+                            min_bpm?: number | null;
+                            samples: number;
+                            sections: {
+                                average_bpm?: number | null;
+                                max_bpm?: number | null;
+                                section_ordinal: number;
+                            }[];
+                            zones: {
+                                ms: number;
+                                zone: number;
+                            }[];
+                        };
+                    };
+                };
+            };
+            /** @description Not your execution */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.WatchController.heart_rate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    batches: {
+                        bpm: number[];
+                        interval_ms: number;
+                        sequence: number;
+                        started_offset_ms: number;
+                    }[];
+                    /** @enum {string} */
+                    platform: "apple_watch" | "wear_os";
+                };
+            };
+        };
+        responses: {
+            /** @description Stored */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        stored: number;
+                        total: number;
+                    };
+                };
+            };
+            /** @description Health-data consent needed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Not your execution */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Invalid batch */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.ExecutionController.record_interactions": {
         parameters: {
             query?: never;
@@ -51775,6 +53295,85 @@ export interface operations {
                             index: number;
                             reason: string;
                         }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.ExecutionPacerController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Pace line */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Pacer */
+                        pacer: {
+                            checkpoints: {
+                                at_ms?: number | null;
+                                /** @description This attempt minus the previous one: negative is ahead */
+                                delta_ms: number | null;
+                                ghost_at_ms: number;
+                                ghost_lap_ms: number;
+                                /** @description <section ordinal>:<phase>:<round>:<n> */
+                                key: string;
+                                lap_ms?: number | null;
+                                /** @enum {string} */
+                                phase: "work" | "rest" | "transition";
+                                round: number;
+                                section_id?: string | null;
+                                section_name?: string | null;
+                                section_ordinal: number;
+                            }[];
+                            current_total_ms?: number | null;
+                            /** Format: uuid */
+                            execution_id: string;
+                            ghost_total_ms?: number | null;
+                            /** @enum {string|null} */
+                            precision?: "rounds" | "segments" | "sections" | "finish" | null;
+                            /** @description The attempt raced against; null when there is none */
+                            previous: {
+                                completed_at_tz?: string | null;
+                                /** Format: date-time */
+                                completed_at_utc: string;
+                                /** Format: uuid */
+                                execution_id: string;
+                                /** @description False when it is the same benchmark from another workout */
+                                same_workout: boolean;
+                                scale_level_slug?: string | null;
+                            } | null;
+                            sections: {
+                                current_ms?: number | null;
+                                delta_ms: number | null;
+                                ghost_ms: number;
+                                section_id?: string | null;
+                                section_name?: string | null;
+                                section_ordinal: number;
+                            }[];
+                            total_delta_ms?: number | null;
+                        };
+                    };
+                };
+            };
+            /** @description Not your execution */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
                     };
                 };
             };
@@ -51868,6 +53467,157 @@ export interface operations {
                 };
                 content: {
                     "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.ExecutionPacerController.splits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    marks: {
+                        /** @description Active time since the start, pauses excluded */
+                        elapsed_ms: number;
+                        /** @description 0 or absent: the segment ended; ≥ 1: that round was finished */
+                        round?: number | null;
+                        segment_index: number;
+                    }[];
+                };
+            };
+        };
+        responses: {
+            /** @description Stored */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Marks that were new */
+                        stored: number;
+                        /** @description Marks the execution has now */
+                        total: number;
+                    };
+                };
+            };
+            /** @description Not your execution */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Marks don't fit the timer */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.WatchController.plan": {
+        parameters: {
+            query?: {
+                platform?: "apple_watch" | "wear_os";
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Watch plan */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * WatchPlan
+                         * @description What the phone hands the watch for one execution (contract version 1)
+                         */
+                        plan: {
+                            commands: ("next" | "round" | "pause" | "resume" | "finish")[];
+                            contract_version: number;
+                            /** Format: uuid */
+                            execution_id: string;
+                            haptics: boolean;
+                            heart_rate: {
+                                enabled: boolean;
+                                interval_ms: number;
+                                max_hr?: number | null;
+                            };
+                            pace: {
+                                at_ms: number;
+                                key: string;
+                                phase: string;
+                                round: number;
+                                section_ordinal: number;
+                            }[];
+                            progress: {
+                                current_segment_index: number;
+                                lock_version: number;
+                                paused_elapsed_ms: number;
+                                /** Format: date-time */
+                                segment_started_at_utc?: string | null;
+                                total_elapsed_ms: number;
+                            };
+                            segments: {
+                                duration_seconds?: number | null;
+                                index: number;
+                                kind: string;
+                                label?: string | null;
+                                label_key?: string | null;
+                                label_params: {
+                                    [key: string]: unknown;
+                                };
+                                movements: {
+                                    amount?: (number | string) | null;
+                                    name: string;
+                                    unit?: string | null;
+                                }[];
+                                phase: string;
+                                round?: number | null;
+                                scoreable: boolean;
+                                section_name?: string | null;
+                                total_rounds?: number | null;
+                            }[];
+                            /** @enum {string} */
+                            status: "active" | "paused" | "completed";
+                            title?: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description Not your execution */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
                 };
             };
         };
@@ -59748,6 +61498,167 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.WatchController.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Watches */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        contract: {
+                            platforms: ("apple_watch" | "wear_os")[];
+                            version: number;
+                        };
+                        watches: {
+                            app_version?: string | null;
+                            contract_version: number;
+                            device_name?: string | null;
+                            /** Format: date-time */
+                            last_seen_at: string;
+                            needs_upgrade: boolean;
+                            /** Format: date-time */
+                            paired_at: string;
+                            /** @enum {string} */
+                            platform: "apple_watch" | "wear_os";
+                            /** WatchSettings */
+                            settings: {
+                                haptics?: boolean;
+                                /** @description Only with it the results show heart-rate zones */
+                                max_hr?: number | null;
+                                show_heart_rate?: boolean;
+                                /** @description The previous attempt's pace line */
+                                show_pace?: boolean;
+                            };
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.WatchController.pair": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                platform: "apple_watch" | "wear_os";
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    app_version?: string;
+                    contract_version: number;
+                    device_name?: string;
+                    /** WatchSettings */
+                    settings?: {
+                        haptics?: boolean;
+                        /** @description Only with it the results show heart-rate zones */
+                        max_hr?: number | null;
+                        show_heart_rate?: boolean;
+                        /** @description The previous attempt's pace line */
+                        show_pace?: boolean;
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description The watch */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** PairedWatch */
+                        watch: {
+                            app_version?: string | null;
+                            contract_version: number;
+                            device_name?: string | null;
+                            /** Format: date-time */
+                            last_seen_at: string;
+                            needs_upgrade: boolean;
+                            /** Format: date-time */
+                            paired_at: string;
+                            /** @enum {string} */
+                            platform: "apple_watch" | "wear_os";
+                            /** WatchSettings */
+                            settings: {
+                                haptics?: boolean;
+                                /** @description Only with it the results show heart-rate zones */
+                                max_hr?: number | null;
+                                show_heart_rate?: boolean;
+                                /** @description The previous attempt's pace line */
+                                show_pace?: boolean;
+                            };
+                        };
+                    };
+                };
+            };
+            /** @description Invalid settings */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description The watch app is too old */
+            426: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.WatchController.unpair": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                platform: "apple_watch" | "wear_os";
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Unpaired */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description No such watch */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.EmailChangeController.show": {
         parameters: {
             query?: never;
@@ -62442,6 +64353,341 @@ export interface operations {
                     "application/json": {
                         /** @enum {string} */
                         status: "none" | "requested" | "active";
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.FoodsController.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Own foods */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        foods: {
+                            barcode?: string | null;
+                            brand?: string | null;
+                            /**
+                             * Format: uuid
+                             * @description Own foods only
+                             */
+                            id?: string | null;
+                            image_url?: string | null;
+                            name: string;
+                            note?: string | null;
+                            /**
+                             * FoodNutrients
+                             * @description Grams per 100 g. Only when a coach's plan sets macros and macros are not hidden; never energy
+                             */
+                            nutrients: {
+                                carbohydrates?: number;
+                                fat?: number;
+                                fiber?: number;
+                                proteins?: number;
+                                salt?: number;
+                                sugars?: number;
+                            } | null;
+                            /** @enum {string|null} */
+                            portion_hint: "protein" | "carbs" | "veg" | "fat" | null;
+                            quantity?: string | null;
+                            serving_size?: string | null;
+                        }[];
+                        macros_visible: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.FoodsController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    barcode?: string | null;
+                    brand?: string | null;
+                    name: string;
+                    note?: string | null;
+                    nutrients?: {
+                        [key: string]: number;
+                    } | null;
+                    /** @enum {string|null} */
+                    portion_hint?: "protein" | "carbs" | "veg" | "fat" | null;
+                    serving_label?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Own food */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Food */
+                        food: {
+                            barcode?: string | null;
+                            brand?: string | null;
+                            /**
+                             * Format: uuid
+                             * @description Own foods only
+                             */
+                            id?: string | null;
+                            image_url?: string | null;
+                            name: string;
+                            note?: string | null;
+                            /**
+                             * FoodNutrients
+                             * @description Grams per 100 g. Only when a coach's plan sets macros and macros are not hidden; never energy
+                             */
+                            nutrients: {
+                                carbohydrates?: number;
+                                fat?: number;
+                                fiber?: number;
+                                proteins?: number;
+                                salt?: number;
+                                sugars?: number;
+                            } | null;
+                            /** @enum {string|null} */
+                            portion_hint: "protein" | "carbs" | "veg" | "fat" | null;
+                            quantity?: string | null;
+                            serving_size?: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description Invalid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.FoodsController.barcode": {
+        parameters: {
+            query?: {
+                language?: string;
+            };
+            header?: never;
+            path: {
+                barcode: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Lookup */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * FoodAttribution
+                         * @description Shown with every Open Food Facts product (ODbL 1.0)
+                         */
+                        attribution?: {
+                            images_licence: string;
+                            licence: string;
+                            licence_url: string;
+                            source: string;
+                            url: string;
+                        } | null;
+                        barcode: string;
+                        food?: {
+                            barcode?: string | null;
+                            brand?: string | null;
+                            /**
+                             * Format: uuid
+                             * @description Own foods only
+                             */
+                            id?: string | null;
+                            image_url?: string | null;
+                            name: string;
+                            note?: string | null;
+                            /**
+                             * FoodNutrients
+                             * @description Grams per 100 g. Only when a coach's plan sets macros and macros are not hidden; never energy
+                             */
+                            nutrients: {
+                                carbohydrates?: number;
+                                fat?: number;
+                                fiber?: number;
+                                proteins?: number;
+                                salt?: number;
+                                sugars?: number;
+                            } | null;
+                            /** @enum {string|null} */
+                            portion_hint: "protein" | "carbs" | "veg" | "fat" | null;
+                            quantity?: string | null;
+                            serving_size?: string | null;
+                        } | null;
+                        macros_visible: boolean;
+                        /**
+                         * @description Why the manual entry
+                         * @enum {string|null}
+                         */
+                        reason?: "not_found" | "failed" | "in_store_code" | null;
+                        /** @enum {string|null} */
+                        source?: "open_food_facts" | "custom" | null;
+                        /**
+                         * @description `pending`: still asking, scan again in a few seconds; `manual`: write it down yourself
+                         * @enum {string}
+                         */
+                        status: "found" | "pending" | "manual";
+                    };
+                };
+            };
+            /** @description Not a valid barcode */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.FoodsController.delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description No such food */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.FoodsController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    barcode?: string | null;
+                    brand?: string | null;
+                    name?: string;
+                    note?: string | null;
+                    nutrients?: {
+                        [key: string]: number;
+                    } | null;
+                    /** @enum {string|null} */
+                    portion_hint?: "protein" | "carbs" | "veg" | "fat" | null;
+                    serving_label?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Own food */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Food */
+                        food: {
+                            barcode?: string | null;
+                            brand?: string | null;
+                            /**
+                             * Format: uuid
+                             * @description Own foods only
+                             */
+                            id?: string | null;
+                            image_url?: string | null;
+                            name: string;
+                            note?: string | null;
+                            /**
+                             * FoodNutrients
+                             * @description Grams per 100 g. Only when a coach's plan sets macros and macros are not hidden; never energy
+                             */
+                            nutrients: {
+                                carbohydrates?: number;
+                                fat?: number;
+                                fiber?: number;
+                                proteins?: number;
+                                salt?: number;
+                                sugars?: number;
+                            } | null;
+                            /** @enum {string|null} */
+                            portion_hint: "protein" | "carbs" | "veg" | "fat" | null;
+                            quantity?: string | null;
+                            serving_size?: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description No such food */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Invalid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
                     };
                 };
             };
@@ -68019,7 +70265,8 @@ export interface operations {
                              *     (minutes or quality required; both ends give minutes). meal: {slot?
                              *     (breakfast, lunch, dinner, snack or a plan slot such as pre_workout), plan_fit?
                              *     in_plan|off_plan, note?, media_id?,
-                             *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5}.
+                             *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5,
+                             *     foods? [{name, barcode?, custom_food_id?, portion?}] up to 10 (ADR-376)}.
                              */
                             value: {
                                 [key: string]: unknown;
@@ -68415,7 +70662,8 @@ export interface operations {
                      *     (minutes or quality required; both ends give minutes). meal: {slot?
                      *     (breakfast, lunch, dinner, snack or a plan slot such as pre_workout), plan_fit?
                      *     in_plan|off_plan, note?, media_id?,
-                     *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5}.
+                     *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5,
+                     *     foods? [{name, barcode?, custom_food_id?, portion?}] up to 10 (ADR-376)}.
                      */
                     value: {
                         [key: string]: unknown;
@@ -68457,7 +70705,8 @@ export interface operations {
                              *     (minutes or quality required; both ends give minutes). meal: {slot?
                              *     (breakfast, lunch, dinner, snack or a plan slot such as pre_workout), plan_fit?
                              *     in_plan|off_plan, note?, media_id?,
-                             *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5}.
+                             *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5,
+                             *     foods? [{name, barcode?, custom_food_id?, portion?}] up to 10 (ADR-376)}.
                              */
                             value: {
                                 [key: string]: unknown;
@@ -68512,7 +70761,8 @@ export interface operations {
                      *     (minutes or quality required; both ends give minutes). meal: {slot?
                      *     (breakfast, lunch, dinner, snack or a plan slot such as pre_workout), plan_fit?
                      *     in_plan|off_plan, note?, media_id?,
-                     *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5}.
+                     *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5,
+                     *     foods? [{name, barcode?, custom_food_id?, portion?}] up to 10 (ADR-376)}.
                      */
                     value?: {
                         [key: string]: unknown;
@@ -68554,7 +70804,8 @@ export interface operations {
                              *     (minutes or quality required; both ends give minutes). meal: {slot?
                              *     (breakfast, lunch, dinner, snack or a plan slot such as pre_workout), plan_fit?
                              *     in_plan|off_plan, note?, media_id?,
-                             *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5}.
+                             *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5,
+                             *     foods? [{name, barcode?, custom_food_id?, portion?}] up to 10 (ADR-376)}.
                              */
                             value: {
                                 [key: string]: unknown;
@@ -68656,7 +70907,8 @@ export interface operations {
                                      *     (minutes or quality required; both ends give minutes). meal: {slot?
                                      *     (breakfast, lunch, dinner, snack or a plan slot such as pre_workout), plan_fit?
                                      *     in_plan|off_plan, note?, media_id?,
-                                     *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5}.
+                                     *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5,
+                                     *     foods? [{name, barcode?, custom_food_id?, portion?}] up to 10 (ADR-376)}.
                                      */
                                     value: {
                                         [key: string]: unknown;
@@ -91073,6 +93325,310 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminRankLaddersController.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ladders */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        colors: string[];
+                        ladders: {
+                            class_type_ids: string[];
+                            /** @description A workout type (ADR-275) */
+                            discipline: string;
+                            family?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            name: string;
+                            ranks: {
+                                /**
+                                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                 * @enum {string|null}
+                                 */
+                                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                /** Format: uuid */
+                                id: string;
+                                max_stripes: number;
+                                name: string;
+                                position: number;
+                                /** RankRequirements */
+                                requirements: {
+                                    min_classes?: number;
+                                    min_days?: number;
+                                    skills?: string[];
+                                };
+                                scale_level_slug?: string | null;
+                            }[];
+                            /** @enum {string} */
+                            style: "belt" | "level";
+                        }[];
+                        templates: {
+                            [key: string]: unknown;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminRankLaddersController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    class_type_ids?: string[];
+                    discipline?: string;
+                    name?: string;
+                    position?: number;
+                    ranks?: {
+                        /**
+                         * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                         * @enum {string|null}
+                         */
+                        color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                        /**
+                         * Format: uuid
+                         * @description Keep an existing rank
+                         */
+                        id?: string | null;
+                        max_stripes?: number;
+                        name: string;
+                        /** RankRequirements */
+                        requirements?: {
+                            min_classes?: number;
+                            min_days?: number;
+                            skills?: string[];
+                        };
+                        scale_level_slug?: string | null;
+                    }[];
+                    /** @enum {string} */
+                    style?: "belt" | "level";
+                    /** @description Start from a template («Πρότυπα»); fields sent override it */
+                    template?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Ladder */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** RankLadder */
+                        ladder: {
+                            class_type_ids: string[];
+                            /** @description A workout type (ADR-275) */
+                            discipline: string;
+                            family?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            name: string;
+                            ranks: {
+                                /**
+                                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                 * @enum {string|null}
+                                 */
+                                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                /** Format: uuid */
+                                id: string;
+                                max_stripes: number;
+                                name: string;
+                                position: number;
+                                /** RankRequirements */
+                                requirements: {
+                                    min_classes?: number;
+                                    min_days?: number;
+                                    skills?: string[];
+                                };
+                                scale_level_slug?: string | null;
+                            }[];
+                            /** @enum {string} */
+                            style: "belt" | "level";
+                        };
+                    };
+                };
+            };
+            /** @description Invalid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminRankLaddersController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    class_type_ids?: string[];
+                    discipline?: string;
+                    name?: string;
+                    position?: number;
+                    ranks?: {
+                        /**
+                         * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                         * @enum {string|null}
+                         */
+                        color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                        /**
+                         * Format: uuid
+                         * @description Keep an existing rank
+                         */
+                        id?: string | null;
+                        max_stripes?: number;
+                        name: string;
+                        /** RankRequirements */
+                        requirements?: {
+                            min_classes?: number;
+                            min_days?: number;
+                            skills?: string[];
+                        };
+                        scale_level_slug?: string | null;
+                    }[];
+                    /** @enum {string} */
+                    style?: "belt" | "level";
+                    /** @description Start from a template («Πρότυπα»); fields sent override it */
+                    template?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Ladder */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** RankLadder */
+                        ladder: {
+                            class_type_ids: string[];
+                            /** @description A workout type (ADR-275) */
+                            discipline: string;
+                            family?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            name: string;
+                            ranks: {
+                                /**
+                                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                 * @enum {string|null}
+                                 */
+                                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                /** Format: uuid */
+                                id: string;
+                                max_stripes: number;
+                                name: string;
+                                position: number;
+                                /** RankRequirements */
+                                requirements: {
+                                    min_classes?: number;
+                                    min_days?: number;
+                                    skills?: string[];
+                                };
+                                scale_level_slug?: string | null;
+                            }[];
+                            /** @enum {string} */
+                            style: "belt" | "level";
+                        };
+                    };
+                };
+            };
+            /** @description No such ladder */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description A removed rank is held */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Invalid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminRankLaddersController.delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Archived */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description No such ladder */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminReferralController.index": {
         parameters: {
             query?: {
@@ -110876,6 +113432,178 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.MyRanksController.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Standing */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        ladders: {
+                            current: {
+                                /** Format: uuid */
+                                award_id: string;
+                                /** Format: date */
+                                awarded_on: string;
+                                /** Rank */
+                                rank: {
+                                    /**
+                                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                     * @enum {string|null}
+                                     */
+                                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                    /** Format: uuid */
+                                    id: string;
+                                    max_stripes: number;
+                                    name: string;
+                                    position: number;
+                                    /** RankRequirements */
+                                    requirements: {
+                                        min_classes?: number;
+                                        min_days?: number;
+                                        skills?: string[];
+                                    };
+                                    scale_level_slug?: string | null;
+                                };
+                                stripes: number;
+                            } | null;
+                            history: {
+                                /** Format: date */
+                                awarded_on: string;
+                                certificate_number: string;
+                                /**
+                                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                 * @enum {string|null}
+                                 */
+                                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                ladder_id: string;
+                                note?: string | null;
+                                /** Format: uuid */
+                                rank_id: string;
+                                rank_name?: string | null;
+                                revoke_reason?: string | null;
+                                revoked: boolean;
+                                skills_checked: string[];
+                                stripes: number;
+                            }[];
+                            /** RankLadder */
+                            ladder: {
+                                class_type_ids: string[];
+                                /** @description A workout type (ADR-275) */
+                                discipline: string;
+                                family?: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                name: string;
+                                ranks: {
+                                    /**
+                                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                     * @enum {string|null}
+                                     */
+                                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                    /** Format: uuid */
+                                    id: string;
+                                    max_stripes: number;
+                                    name: string;
+                                    position: number;
+                                    /** RankRequirements */
+                                    requirements: {
+                                        min_classes?: number;
+                                        min_days?: number;
+                                        skills?: string[];
+                                    };
+                                    scale_level_slug?: string | null;
+                                }[];
+                                /** @enum {string} */
+                                style: "belt" | "level";
+                            };
+                            next: {
+                                /**
+                                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                 * @enum {string|null}
+                                 */
+                                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                /** Format: uuid */
+                                id: string;
+                                max_stripes: number;
+                                name: string;
+                                position: number;
+                                /** RankRequirements */
+                                requirements: {
+                                    min_classes?: number;
+                                    min_days?: number;
+                                    skills?: string[];
+                                };
+                                scale_level_slug?: string | null;
+                            } | null;
+                            /** @description Towards the next rank; `ready` only says the counted requirements are met */
+                            progress: {
+                                classes: {
+                                    done: number | null;
+                                    needed: number | null;
+                                };
+                                days: {
+                                    done: number | null;
+                                    needed: number | null;
+                                };
+                                /** Format: uuid */
+                                rank_id: string;
+                                ready: boolean;
+                                skills: string[];
+                            } | null;
+                        }[];
+                        /** Format: uuid */
+                        user_id?: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyRanksController.certificate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description PDF */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": string;
+                };
+            };
+            /** @description No such award */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.ReferralController.mine": {
         parameters: {
             query?: never;
@@ -116415,6 +119143,240 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.StaffRanksController.client": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Standing */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        ladders: {
+                            current: {
+                                /** Format: uuid */
+                                award_id: string;
+                                /** Format: date */
+                                awarded_on: string;
+                                /** Rank */
+                                rank: {
+                                    /**
+                                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                     * @enum {string|null}
+                                     */
+                                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                    /** Format: uuid */
+                                    id: string;
+                                    max_stripes: number;
+                                    name: string;
+                                    position: number;
+                                    /** RankRequirements */
+                                    requirements: {
+                                        min_classes?: number;
+                                        min_days?: number;
+                                        skills?: string[];
+                                    };
+                                    scale_level_slug?: string | null;
+                                };
+                                stripes: number;
+                            } | null;
+                            history: {
+                                /** Format: date */
+                                awarded_on: string;
+                                certificate_number: string;
+                                /**
+                                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                 * @enum {string|null}
+                                 */
+                                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                ladder_id: string;
+                                note?: string | null;
+                                /** Format: uuid */
+                                rank_id: string;
+                                rank_name?: string | null;
+                                revoke_reason?: string | null;
+                                revoked: boolean;
+                                skills_checked: string[];
+                                stripes: number;
+                            }[];
+                            /** RankLadder */
+                            ladder: {
+                                class_type_ids: string[];
+                                /** @description A workout type (ADR-275) */
+                                discipline: string;
+                                family?: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                name: string;
+                                ranks: {
+                                    /**
+                                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                     * @enum {string|null}
+                                     */
+                                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                    /** Format: uuid */
+                                    id: string;
+                                    max_stripes: number;
+                                    name: string;
+                                    position: number;
+                                    /** RankRequirements */
+                                    requirements: {
+                                        min_classes?: number;
+                                        min_days?: number;
+                                        skills?: string[];
+                                    };
+                                    scale_level_slug?: string | null;
+                                }[];
+                                /** @enum {string} */
+                                style: "belt" | "level";
+                            };
+                            next: {
+                                /**
+                                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                 * @enum {string|null}
+                                 */
+                                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                /** Format: uuid */
+                                id: string;
+                                max_stripes: number;
+                                name: string;
+                                position: number;
+                                /** RankRequirements */
+                                requirements: {
+                                    min_classes?: number;
+                                    min_days?: number;
+                                    skills?: string[];
+                                };
+                                scale_level_slug?: string | null;
+                            } | null;
+                            /** @description Towards the next rank; `ready` only says the counted requirements are met */
+                            progress: {
+                                classes: {
+                                    done: number | null;
+                                    needed: number | null;
+                                };
+                                days: {
+                                    done: number | null;
+                                    needed: number | null;
+                                };
+                                /** Format: uuid */
+                                rank_id: string;
+                                ready: boolean;
+                                skills: string[];
+                            } | null;
+                        }[];
+                        /** Format: uuid */
+                        user_id?: string;
+                    };
+                };
+            };
+            /** @description Not your client */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.StaffRanksController.award": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: date */
+                    awarded_on?: string;
+                    /** Format: uuid */
+                    ladder_id: string;
+                    note?: string;
+                    /** Format: uuid */
+                    rank_id: string;
+                    skills_checked?: string[];
+                    stripes?: number;
+                };
+            };
+        };
+        responses: {
+            /** @description Award */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** RankAward */
+                        award: {
+                            /** Format: date */
+                            awarded_on: string;
+                            certificate_number: string;
+                            /**
+                             * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                             * @enum {string|null}
+                             */
+                            color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            ladder_id: string;
+                            note?: string | null;
+                            /** Format: uuid */
+                            rank_id: string;
+                            rank_name?: string | null;
+                            revoke_reason?: string | null;
+                            revoked: boolean;
+                            skills_checked: string[];
+                            stripes: number;
+                        };
+                    };
+                };
+            };
+            /** @description Not your client */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Not a step up, or invalid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.TrainingGoalController.client_show": {
         parameters: {
             query?: never;
@@ -118462,6 +121424,113 @@ export interface operations {
                         awaiting_reply: number;
                         client_count: number;
                         coaching_messages_this_week: number;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.StaffRanksController.certificate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description PDF */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": string;
+                };
+            };
+            /** @description No such award */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.StaffRanksController.revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    reason: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Award */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** RankAward */
+                        award: {
+                            /** Format: date */
+                            awarded_on: string;
+                            certificate_number: string;
+                            /**
+                             * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                             * @enum {string|null}
+                             */
+                            color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            ladder_id: string;
+                            note?: string | null;
+                            /** Format: uuid */
+                            rank_id: string;
+                            rank_name?: string | null;
+                            revoke_reason?: string | null;
+                            revoked: boolean;
+                            skills_checked: string[];
+                            stripes: number;
+                        };
+                    };
+                };
+            };
+            /** @description No such award */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Already withdrawn */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
                     };
                 };
             };
