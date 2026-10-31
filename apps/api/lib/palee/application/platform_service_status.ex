@@ -1,7 +1,7 @@
 defmodule Palee.Application.PlatformServiceStatus do
   @moduledoc """
   ADR-364: the status page in the platform console (vendors), for
-  `PaleeWeb.PlatformStatusController`: the live probe of every component
+  its platform controller: the live probe of every component
   with its internal reason, incidents and maintenance with their timeline,
   and the number of subscribers. A new incident or update with `notify`
   queues the email to confirmed subscribers.

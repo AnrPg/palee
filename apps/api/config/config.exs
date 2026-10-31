@@ -150,6 +150,7 @@ config :palee, :status_probe_targets, [
   %{component: "payments", name: "viva", url: "https://api.vivapayments.com"},
   %{component: "fiscal", name: "mydata", url: "https://mydatapi.aade.gr/myDATA"}
 ]
+
 config :palee, :identity_user_store, Palee.Infrastructure.Identity.EctoUserStore
 config :palee, :password_reset_store, Palee.Infrastructure.Identity.EctoPasswordResetStore
 config :palee, :login_device_store, Palee.Infrastructure.Identity.EctoLoginDeviceStore

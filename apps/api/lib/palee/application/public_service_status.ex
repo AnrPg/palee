@@ -1,7 +1,7 @@
 defmodule Palee.Application.PublicServiceStatus do
   @moduledoc """
   ADR-364: the public status page data and its email subscriptions, for
-  `PaleeWeb.PublicStatusController`. No session: anyone may read the page,
+  its public controller. No session: anyone may read the page,
   from the Palee web app or from a host outside the cluster.
 
   Sign-ups are double opt-in: `subscribe/1` always answers the same
