@@ -92,6 +92,12 @@ defmodule Palee.Infrastructure.Channels.EctoChannelStore do
   end
 
   @impl true
+  def delete_person(context, person) do
+    context |> contact_query(person) |> Repo.delete_all()
+    :ok
+  end
+
+  @impl true
   def contacts_by_phone(%{organization_id: organization_id}, phone) do
     Contact
     |> where([c], c.organization_id == ^organization_id and c.phone_e164 == ^phone)

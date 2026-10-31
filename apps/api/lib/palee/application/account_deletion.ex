@@ -35,7 +35,7 @@ defmodule Palee.Application.AccountDeletion do
     SecurityNotices
   }
 
-  alias Palee.{Email, Identity}
+  alias Palee.{Channels, Email, Identity, Organizations}
   alias Palee.Email.LinkTokens
   alias Palee.Identity.AccountDeletionStore
   alias Palee.Identity.Domain.AccountDeletionPolicy, as: Policy
@@ -330,6 +330,9 @@ defmodule Palee.Application.AccountDeletion do
     # ADR-280: the Partners check's selfies and rows (anonymising keeps the
     # profile row, so they are removed here rather than by the cascade).
     :ok = PartnerVerificationRetention.purge_person(profile.id)
+    # ADR-348: the box's SMS number, consents and messages (tenant rows,
+    # removed in each box's own session; an anonymised profile keeps none).
+    :ok = forget_channel_contacts(profile.id)
 
     if AccountDeletionStore.has_retained_records?(profile.id) do
       :ok = AccountDeletionStore.anonymize_profile(profile.id)
@@ -341,6 +344,13 @@ defmodule Palee.Application.AccountDeletion do
         {:error, _reason} -> :ok = AccountDeletionStore.anonymize_profile(profile.id)
       end
     end
+  end
+
+  defp forget_channel_contacts(user_id) do
+    [user_id]
+    |> Organizations.list_membership_organization_ids()
+    |> Map.get(user_id, [])
+    |> Channels.forget_user(user_id)
   end
 
   # SecurityNotices gains these two events in the security-notices change

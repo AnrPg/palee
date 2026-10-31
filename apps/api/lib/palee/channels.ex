@@ -23,6 +23,17 @@ defmodule Palee.Channels do
   defdelegate save_contact(context, person, params, default_country), to: Contacts, as: :save
   defdelegate set_consent(context, contact_id, params, actor_id, now), to: Contacts
   defdelegate delete_contact(context, id), to: Contacts, as: :delete
+
+  @doc "ADR-211: forgets a person's number, consents and messages in each box (account deletion)."
+  def forget_user(organization_ids, user_id) do
+    Enum.each(organization_ids, fn organization_id ->
+      :ok =
+        Palee.Channels.ChannelStore.delete_person(
+          %{organization_id: organization_id},
+          {:user, user_id}
+        )
+    end)
+  end
   defdelegate public_contact(contact), to: Contacts, as: :public
   defdelegate own_contact(contact), to: Contacts, as: :own
 

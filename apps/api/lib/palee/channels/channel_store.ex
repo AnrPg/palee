@@ -39,6 +39,10 @@ defmodule Palee.Channels.ChannelStore do
     do: tenant_call(context, :delete_contact, [id])
 
   @impl true
+  def delete_person(context, person),
+    do: tenant_call(context, :delete_person, [person])
+
+  @impl true
   def contacts_by_phone(context, phone),
     do: tenant_call(context, :contacts_by_phone, [phone])
 

@@ -24,6 +24,8 @@ defmodule Palee.Channels.Ports.ChannelStore do
   @callback find_contact(context(), person()) :: map() | nil
   @callback save_contact(context(), person(), map()) :: {:ok, map()} | {:error, term()}
   @callback delete_contact(context(), id()) :: :ok
+  @doc "Deletes the person's contact (with its consents and messages), if any."
+  @callback delete_person(context(), person()) :: :ok
   @callback contacts_by_phone(context(), String.t()) :: [map()]
   @callback list_contacts(context(), map()) :: [map()]
   @callback list_consents(context(), [id()]) :: [map()]
