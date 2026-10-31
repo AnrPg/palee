@@ -10,7 +10,8 @@ defmodule Palee.BoxSite.Domain.FormPolicy do
   @max_attempts 12
   @max_backoff 21_600
   @failed_retention_days 30
-  @attribution_keys ~w(utm_source utm_medium utm_campaign utm_term utm_content referrer_host landing_path)
+  @attribution_atoms ~w(utm_source utm_medium utm_campaign utm_term utm_content referrer_host landing_path)a
+  @attribution_keys Enum.map(@attribution_atoms, &Atom.to_string/1)
   @locales ~w(el en de fr es it pt nl ru uk ar tr)
   @email ~r/^[^\s@]{1,64}@[^\s@]+\.[^\s@]{2,}$/
   @phone ~r/^\+?[0-9 ()\-.]{6,24}$/
@@ -142,7 +143,7 @@ defmodule Palee.BoxSite.Domain.FormPolicy do
   end
 
   defp atomize(map) do
-    Map.new(@attribution_keys, fn key -> {String.to_existing_atom(key), Map.get(map, key)} end)
+    Map.new(@attribution_atoms, fn key -> {key, Map.get(map, Atom.to_string(key))} end)
   end
 
   @doc "Changes after the leads port answered."

@@ -16,7 +16,8 @@ defmodule PaleeWeb.BoxSiteControllerTest do
   setup do
     owner = admin_fixture()
     member = user_fixture()
-    vendor = admin_fixture()
+    vendor = user_fixture()
+    {:ok, _vendor} = Organizations.grant_vendor(vendor.id)
 
     {:ok, organization} =
       Organizations.create_organization(%{name: "Site Box #{System.unique_integer([:positive])}"})
