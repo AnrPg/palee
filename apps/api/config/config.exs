@@ -82,7 +82,9 @@ config :palee, Oban,
        # ADR-252: reminders before a client's health certificate expires.
        {"45 8 * * *", Palee.Workers.HealthCertificateRemindersJob},
        # ADR-280 verification: unreviewed selfies after 7 days, SMS codes after a day.
-       {"5 4 * * *", Palee.Workers.PartnerVerificationRetention}
+       {"5 4 * * *", Palee.Workers.PartnerVerificationRetention},
+       # ADR-376: barcode lookups left pending (Open Food Facts outbox).
+       {"*/5 * * * *", Palee.Workers.LookUpFoodsJob}
      ]}
   ],
   queues: [

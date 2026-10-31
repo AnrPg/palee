@@ -122,6 +122,19 @@ defmodule Palee.Devices do
   defdelegate delete_daily_stats(user_id, source), to: DeviceStore
   defdelegate transaction(fun), to: DeviceStore
 
+  # ADR-375: the watch companion.
+  alias Palee.Devices.Domain.{HeartRate, WatchContract}
+
+  defdelegate watch_contract_version(), to: WatchContract, as: :version
+  defdelegate watch_platforms(), to: WatchContract, as: :platforms
+  defdelegate watch_settings_defaults(), to: WatchContract, as: :settings_defaults
+  defdelegate watch_supported?(version), to: WatchContract, as: :supported?
+  defdelegate merge_watch_settings(current, changes), to: WatchContract, as: :merge_settings
+  defdelegate watch_plan(execution, segments, pace, settings), to: WatchContract, as: :plan
+  defdelegate cast_heart_rate(batches, platform), to: HeartRate, as: :cast_batches
+  defdelegate heart_rate_summary(batches, sections, max_hr), to: HeartRate, as: :summary
+  defdelegate heart_rate_windows(section_times), to: HeartRate, as: :section_windows
+
   # Ports.
   def garmin, do: GarminClient
   def sync_queue, do: SyncQueue
