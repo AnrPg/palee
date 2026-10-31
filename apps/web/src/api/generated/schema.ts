@@ -2840,6 +2840,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/me/fitness-profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Your fitness score per domain, its reasoning and what to work on */
+        get: operations["PaleeWeb.FitnessProfileController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me/follow-requests": {
         parameters: {
             query?: never;
@@ -5385,6 +5402,263 @@ export interface paths {
         patch: operations["PaleeWeb.AdminChallengeController.update"];
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/channels/contacts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Contacts of several members or leads */
+        get: operations["PaleeWeb.AdminChannelContactsController.index"];
+        /**
+         * Save a member's or lead's mobile number and language
+         * @description The number is normalised to E.164 with the box's country; it must be a mobile.
+         */
+        put: operations["PaleeWeb.AdminChannelContactsController.save"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/contacts/lookup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The contact of one member (`user_id`) or lead (`lead_id`), or null */
+        get: operations["PaleeWeb.AdminChannelContactsController.lookup"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/contacts/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Forget a contact with its consents and messages */
+        delete: operations["PaleeWeb.AdminChannelContactsController.delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/contacts/{id}/consents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Record a consent the person gave (or withdrew) for one channel and purpose */
+        put: operations["PaleeWeb.AdminChannelContactsController.consent"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Sent and waiting messages, newest first */
+        get: operations["PaleeWeb.AdminChannelMessagesController.index"];
+        put?: never;
+        /**
+         * Send a message to a member or lead by SMS (or another channel they agreed to)
+         * @description Queued in the outbox: quiet hours hold it unless `urgent` (service only). `idempotency_key` makes a repeated click answer the same message.
+         */
+        post: operations["PaleeWeb.AdminChannelMessagesController.create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/messages/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * What a message would be: channel, text, parts, cost, when it leaves, budget
+         * @description Nothing is queued. Same errors as sending: `channels_not_connected`, `channel_contact_missing`, `channel_consent_missing`, `channel_opted_out`, `channel_budget_exceeded`, `channel_template_missing`…
+         */
+        post: operations["PaleeWeb.AdminChannelMessagesController.preview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/messages/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One message with its attempts and delivery receipts */
+        get: operations["PaleeWeb.AdminChannelMessagesController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/messages/{id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Stop a message that has not left yet */
+        post: operations["PaleeWeb.AdminChannelMessagesController.cancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/messages/{id}/retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Send a failed message again */
+        post: operations["PaleeWeb.AdminChannelMessagesController.retry"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The SMS/Viber/WhatsApp provider, the providers on offer and this month's cost */
+        get: operations["PaleeWeb.AdminChannelSettingsController.show"];
+        /**
+         * Connect the box's messaging provider, then check it
+         * @description `account_mode` `palee` (default) sends through Palee's own Brevo account, with the box's cost tracked against `monthly_budget_cents`; `own` uses the box's own Brevo API key (`secret`, kept when not sent, never returned). `quiet_start`/`quiet_end` ("HH:MM" on the box's clock, both null for none) hold non-urgent messages. `rotate_webhook` draws a new webhook URL.
+         */
+        put: operations["PaleeWeb.AdminChannelSettingsController.save"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/settings/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** «Δοκιμή σύνδεσης»: ask the provider something harmless with the saved credentials */
+        post: operations["PaleeWeb.AdminChannelSettingsController.check"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Palee's message wording and the box's own, per language */
+        get: operations["PaleeWeb.AdminChannelSettingsController.templates"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/templates/{key}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Write the box's own wording of a message in one language
+         * @description Placeholders are `{{name}}`. Channel `whatsapp` rows carry the provider's template id and whether Meta approved it; WhatsApp only sends approved templates.
+         */
+        put: operations["PaleeWeb.AdminChannelSettingsController.save_template"];
+        post?: never;
+        /** Go back to Palee's wording for a message in one language */
+        delete: operations["PaleeWeb.AdminChannelSettingsController.delete_template"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/usage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Messages and cost of a month (the box's clock) against the budget cap */
+        get: operations["PaleeWeb.AdminChannelSettingsController.usage"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/check-in/door/{location_id}": {
         parameters: {
             query?: never;
@@ -6296,6 +6570,24 @@ export interface paths {
         /** Whether members may start groups, and whether staff approve them first */
         put: operations["PaleeWeb.AdminCommunityController.update_settings"];
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/data-exports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box's data exports, with download links for ready files (owners) */
+        get: operations["PaleeWeb.AdminDataExportController.index"];
+        put?: never;
+        /** Ask for a copy of all the box's data (owners; one a day) */
+        post: operations["PaleeWeb.AdminDataExportController.create"];
         delete?: never;
         options?: never;
         head?: never;
@@ -10303,6 +10595,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/schedule/slots/{id}/visit-badges": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Visit badges of every seat of a class (first visit, guest, trial, how they came) */
+        get: operations["PaleeWeb.AdminVisitBadgesController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/schedule/slots/{id}/workout": {
         parameters: {
             query?: never;
@@ -11990,6 +12299,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/bookings/{id}/calendar.ics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Your booking as an iCalendar invite (METHOD:CANCEL once it is cancelled) */
+        get: operations["PaleeWeb.BookingCalendarController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/bookings/{id}/check-in": {
         parameters: {
             query?: never;
@@ -12773,6 +13099,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/me/channels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My number and consents for this box's SMS messages */
+        get: operations["PaleeWeb.MyChannelsController.show"];
+        /** Save my number and language and give or withdraw consents */
+        put: operations["PaleeWeb.MyChannelsController.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/me/check-in/code": {
         parameters: {
             query?: never;
@@ -13152,6 +13496,24 @@ export interface paths {
         /** What paying this invoice online costs, and the text to agree to when saving the card */
         get: operations["PaleeWeb.MyPaymentsController.terms"];
         put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/leaderboard-profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Your division and birth year for this box's leaderboards */
+        get: operations["PaleeWeb.WorkoutLeaderboardController.profile"];
+        /** Set your division and birth year (only after opting in to leaderboards) */
+        put: operations["PaleeWeb.WorkoutLeaderboardController.update_profile"];
         post?: never;
         delete?: never;
         options?: never;
@@ -16003,6 +16365,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/workout-snapshots/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A WOD snapshot (staff who program or follow training, or its own athlete) */
+        get: operations["PaleeWeb.WorkoutSnapshotController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/workouts/{id}": {
         parameters: {
             query?: never;
@@ -16032,6 +16411,23 @@ export interface paths {
          * @description goals is null when none are saved or the coach keeps them hidden.
          */
         get: operations["PaleeWeb.WorkoutGoalsController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/workouts/{id}/leaderboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A WOD's leaderboard, filtered, with a percentile for each score */
+        get: operations["PaleeWeb.WorkoutLeaderboardController.show"];
         put?: never;
         post?: never;
         delete?: never;
@@ -17113,6 +17509,74 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/platform/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Probes with reasons, incidents of the last 90 days and subscribers (vendors) */
+        get: operations["PaleeWeb.PlatformStatusController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/platform/status/incidents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publish an incident or planned maintenance (vendors) */
+        post: operations["PaleeWeb.PlatformStatusController.create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/platform/status/incidents/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Correct an incident's title, impact or components (vendors) */
+        patch: operations["PaleeWeb.PlatformStatusController.update"];
+        trace?: never;
+    };
+    "/api/platform/status/incidents/{id}/updates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add a step to an incident's timeline (vendors) */
+        post: operations["PaleeWeb.PlatformStatusController.add_update"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/platform/subscriptions": {
         parameters: {
             query?: never;
@@ -17762,6 +18226,94 @@ export interface paths {
         put?: never;
         /** Send the trial or contact form; it reaches the box as a lead */
         post: operations["PaleeWeb.PublicSiteController.submit_form"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The status of Palee now: components, incidents, maintenance */
+        get: operations["PaleeWeb.PublicStatusController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/status/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Uptime per component and day (up to 90 days) and past incidents */
+        get: operations["PaleeWeb.PublicStatusController.history"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/status/subscriptions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Ask for status emails (a confirmation email is sent)
+         * @description The answer is the same whether the address is new or already subscribed.
+         */
+        post: operations["PaleeWeb.PublicStatusController.subscribe"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/status/subscriptions/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Confirm status emails with the token from the confirmation email */
+        post: operations["PaleeWeb.PublicStatusController.confirm"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/status/subscriptions/unsubscribe": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Stop status emails with the token from a status email */
+        post: operations["PaleeWeb.PublicStatusController.unsubscribe"];
         delete?: never;
         options?: never;
         head?: never;
@@ -23106,6 +23658,50 @@ export interface components {
                 unread: boolean;
             }[];
         };
+        /** BoxDataExport */
+        BoxDataExport: {
+            /** Format: date-time */
+            completed_at: string | null;
+            /** Format: date-time */
+            expires_at: string | null;
+            file: {
+                bytes: number;
+                download_url: string | null;
+                name: string;
+                sha256: string;
+            } | null;
+            /** Format: uuid */
+            id: string;
+            record_count: number | null;
+            /** Format: date-time */
+            requested_at: string;
+            /** @enum {string} */
+            status: "pending" | "ready" | "failed" | "expired";
+            table_count: number | null;
+        };
+        /** BoxDataExports */
+        BoxDataExports: {
+            exports: {
+                /** Format: date-time */
+                completed_at: string | null;
+                /** Format: date-time */
+                expires_at: string | null;
+                file: {
+                    bytes: number;
+                    download_url: string | null;
+                    name: string;
+                    sha256: string;
+                } | null;
+                /** Format: uuid */
+                id: string;
+                record_count: number | null;
+                /** Format: date-time */
+                requested_at: string;
+                /** @enum {string} */
+                status: "pending" | "ready" | "failed" | "expired";
+                table_count: number | null;
+            }[];
+        };
         /** BoxPublicProfile */
         BoxPublicProfile: {
             about: string | null;
@@ -25133,6 +25729,24 @@ export interface components {
                 unlimited?: boolean;
             } | null;
             problems: ("frozen" | "package_expired" | "unpaid" | "no_spots" | "nothing_to_check_in")[];
+            /** VisitBadges */
+            visit?: {
+                badges: ("first_visit" | "first_in_class_type" | "guest" | "trial" | "brought_by_member" | "came_via_event" | "came_via_referral")[];
+                /**
+                 * VisitVia
+                 * @description How a first-time visitor came (referral attribution)
+                 */
+                via: {
+                    by_nickname?: string | null;
+                    /** Format: uuid */
+                    by_user_id?: string | null;
+                    channel?: string | null;
+                    /** Format: uuid */
+                    event_id?: string | null;
+                    /** @enum {string} */
+                    kind: "event" | "referral";
+                } | null;
+            };
             warnings?: "payment_due"[];
         };
         /** CheckInDeskScanRequest */
@@ -25757,6 +26371,66 @@ export interface components {
             /** Format: uuid */
             workout_id?: string | null;
         };
+        /** ClassVisitBadges */
+        ClassVisitBadges: {
+            people: {
+                badges: ("first_visit" | "first_in_class_type" | "guest" | "trial" | "brought_by_member" | "came_via_event" | "came_via_referral")[];
+                /** Format: uuid */
+                booking_id: string;
+                brought_by: {
+                    nickname?: string | null;
+                    /** Format: uuid */
+                    user_id: string;
+                } | null;
+                guest_name: string | null;
+                /** Format: uuid */
+                user_id: string;
+                /**
+                 * VisitVia
+                 * @description How a first-time visitor came (referral attribution)
+                 */
+                via: {
+                    by_nickname?: string | null;
+                    /** Format: uuid */
+                    by_user_id?: string | null;
+                    channel?: string | null;
+                    /** Format: uuid */
+                    event_id?: string | null;
+                    /** @enum {string} */
+                    kind: "event" | "referral";
+                } | null;
+            }[];
+            /** Format: uuid */
+            slot_id: string;
+        };
+        /** ClassVisitPerson */
+        ClassVisitPerson: {
+            badges: ("first_visit" | "first_in_class_type" | "guest" | "trial" | "brought_by_member" | "came_via_event" | "came_via_referral")[];
+            /** Format: uuid */
+            booking_id: string;
+            brought_by: {
+                nickname?: string | null;
+                /** Format: uuid */
+                user_id: string;
+            } | null;
+            guest_name: string | null;
+            /** Format: uuid */
+            user_id: string;
+            /**
+             * VisitVia
+             * @description How a first-time visitor came (referral attribution)
+             */
+            via: {
+                by_nickname?: string | null;
+                /** Format: uuid */
+                by_user_id?: string | null;
+                channel?: string | null;
+                /** Format: uuid */
+                event_id?: string | null;
+                /** @enum {string} */
+                kind: "event" | "referral";
+            } | null;
+        };
         /** CleaningArea */
         CleaningArea: {
             /** Format: date-time */
@@ -26076,6 +26750,11 @@ export interface components {
         };
         /** CoachNote */
         CoachNote: {
+            /**
+             * @description ADR-359: private coach note (ADR-101) or a note every staff member reads
+             * @enum {string}
+             */
+            audience?: "private" | "staff";
             body: string;
             /** Format: uuid */
             client_user_id: string;
@@ -30807,6 +31486,15 @@ export interface components {
                 [key: string]: unknown;
             }[];
         };
+        /** DayAssignmentTag */
+        DayAssignmentTag: {
+            classes: number;
+            /** Format: date */
+            date: string;
+            /** @enum {string} */
+            tag: "none" | "not_assigned" | "mixed" | "all_assigned";
+            with_wod: number;
+        };
         /**
          * DepthBalance
          * @description Exercise sets by primary muscles; a ratio only once both sides have sets and reach 4 together
@@ -32043,6 +32731,127 @@ export interface components {
                 /** Format: uuid */
                 user_id: string;
             };
+        };
+        /** FitnessDomain */
+        FitnessDomain: {
+            /** @enum {string|null} */
+            confidence: "low" | "medium" | "high" | null;
+            /** @enum {string} */
+            domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+            reasons: {
+                age_days: number;
+                anchors: {
+                    points: number;
+                    value: number;
+                }[];
+                /** Format: date */
+                beaten_on: string;
+                benchmark: string;
+                /** @enum {string} */
+                domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+                /** @description 1RM estimated from a multi-rep set */
+                estimated: boolean;
+                /** @description The PR as the person named it */
+                name: string;
+                points: number;
+                stale: boolean;
+                /** @enum {string} */
+                unit: "kg" | "reps" | "mins_secs";
+                /** @description kg (1RM), reps or seconds */
+                value: number;
+            }[];
+            score: number | null;
+            stale: boolean;
+        };
+        /** FitnessFocus */
+        FitnessFocus: {
+            /** @enum {string} */
+            domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+            /** @enum {string} */
+            kind: "weakest_domain" | "undertrained_quality" | "stale_benchmark" | "untested_domain";
+        } & {
+            [key: string]: unknown;
+        };
+        /** FitnessProfile */
+        FitnessProfile: {
+            algorithm: {
+                id: string;
+                version: number;
+            };
+            benchmarks_known: number;
+            /** @enum {string|null} */
+            division: "women" | "men" | null;
+            domains: {
+                /** @enum {string|null} */
+                confidence: "low" | "medium" | "high" | null;
+                /** @enum {string} */
+                domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+                reasons: {
+                    age_days: number;
+                    anchors: {
+                        points: number;
+                        value: number;
+                    }[];
+                    /** Format: date */
+                    beaten_on: string;
+                    benchmark: string;
+                    /** @enum {string} */
+                    domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+                    /** @description 1RM estimated from a multi-rep set */
+                    estimated: boolean;
+                    /** @description The PR as the person named it */
+                    name: string;
+                    points: number;
+                    stale: boolean;
+                    /** @enum {string} */
+                    unit: "kg" | "reps" | "mins_secs";
+                    /** @description kg (1RM), reps or seconds */
+                    value: number;
+                }[];
+                score: number | null;
+                stale: boolean;
+            }[];
+            focus: ({
+                /** @enum {string} */
+                domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+                /** @enum {string} */
+                kind: "weakest_domain" | "undertrained_quality" | "stale_benchmark" | "untested_domain";
+            } & {
+                [key: string]: unknown;
+            })[];
+            injury_caution: boolean;
+            neutral_standards: boolean;
+            overall: {
+                domains_scored: number;
+                reason: string;
+                score: number;
+            } | null;
+        };
+        /**
+         * FitnessReason
+         * @description One benchmark PR and the points it gave
+         */
+        FitnessReason: {
+            age_days: number;
+            anchors: {
+                points: number;
+                value: number;
+            }[];
+            /** Format: date */
+            beaten_on: string;
+            benchmark: string;
+            /** @enum {string} */
+            domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+            /** @description 1RM estimated from a multi-rep set */
+            estimated: boolean;
+            /** @description The PR as the person named it */
+            name: string;
+            points: number;
+            stale: boolean;
+            /** @enum {string} */
+            unit: "kg" | "reps" | "mins_secs";
+            /** @description kg (1RM), reps or seconds */
+            value: number;
         };
         /** FloorPlan */
         FloorPlan: {
@@ -33837,6 +34646,19 @@ export interface components {
                 /** Format: uuid */
                 thread_id?: string;
             } | null;
+        };
+        /** LeaderboardProfile */
+        LeaderboardProfile: {
+            birth_year: number | null;
+            /** @enum {string|null} */
+            division: "women" | "men" | null;
+            opted_in: boolean;
+        };
+        /** LeaderboardProfileRequest */
+        LeaderboardProfileRequest: {
+            birth_year?: number | null;
+            /** @enum {string|null} */
+            division?: "women" | "men" | null;
         };
         /** MachinePlacement */
         MachinePlacement: {
@@ -45630,6 +46452,303 @@ export interface components {
                 unmatched_exercises: number;
             };
         };
+        /** StatusAccepted */
+        StatusAccepted: {
+            /** @enum {string} */
+            status: "accepted" | "confirmed" | "removed";
+        };
+        /** StatusComponent */
+        StatusComponent: {
+            /** Format: date-time */
+            checked_at: string | null;
+            /** @enum {string} */
+            key: "app" | "search" | "files" | "email" | "payments" | "fiscal";
+            /** @enum {string} */
+            status: "operational" | "degraded" | "down" | "maintenance" | "unknown";
+        };
+        /** StatusComponentHistory */
+        StatusComponentHistory: {
+            days: {
+                /** Format: date */
+                date: string;
+                /** @enum {string} */
+                status: "operational" | "degraded" | "down" | "no_data";
+                uptime_percent: number | null;
+            }[];
+            /** @enum {string} */
+            key: "app" | "search" | "files" | "email" | "payments" | "fiscal";
+            uptime_percent: number | null;
+        };
+        /** StatusConsole */
+        StatusConsole: {
+            incidents: {
+                components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                impact: "none" | "minor" | "major" | "critical";
+                /** @enum {string} */
+                kind: "incident" | "maintenance";
+                /** Format: date-time */
+                resolved_at: string | null;
+                /** Format: date-time */
+                scheduled_for: string | null;
+                /** Format: date-time */
+                scheduled_until: string | null;
+                /** Format: date-time */
+                started_at: string;
+                /** @enum {string} */
+                status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                title: string;
+                updates: {
+                    body: string;
+                    /** Format: date-time */
+                    created_at: string;
+                    /** Format: uuid */
+                    id: string;
+                    /** @enum {string} */
+                    status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                }[];
+            }[];
+            probes: {
+                /** Format: date-time */
+                changed_at: string;
+                /** Format: date-time */
+                checked_at: string;
+                key: string;
+                reason: string | null;
+                /** @enum {string} */
+                status: "operational" | "degraded" | "down";
+            }[];
+            subscribers: {
+                confirmed: number;
+                waiting: number;
+            };
+        };
+        /** StatusHistory */
+        StatusHistory: {
+            components: {
+                days: {
+                    /** Format: date */
+                    date: string;
+                    /** @enum {string} */
+                    status: "operational" | "degraded" | "down" | "no_data";
+                    uptime_percent: number | null;
+                }[];
+                /** @enum {string} */
+                key: "app" | "search" | "files" | "email" | "payments" | "fiscal";
+                uptime_percent: number | null;
+            }[];
+            days: number;
+            /** Format: date */
+            from: string;
+            /** Format: date-time */
+            generated_at: string;
+            incidents: {
+                components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                impact: "none" | "minor" | "major" | "critical";
+                /** @enum {string} */
+                kind: "incident" | "maintenance";
+                /** Format: date-time */
+                resolved_at: string | null;
+                /** Format: date-time */
+                scheduled_for: string | null;
+                /** Format: date-time */
+                scheduled_until: string | null;
+                /** Format: date-time */
+                started_at: string;
+                /** @enum {string} */
+                status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                title: string;
+                updates: {
+                    body: string;
+                    /** Format: date-time */
+                    created_at: string;
+                    /** Format: uuid */
+                    id: string;
+                    /** @enum {string} */
+                    status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                }[];
+            }[];
+            /** Format: date */
+            to: string;
+        };
+        /** StatusHistoryDay */
+        StatusHistoryDay: {
+            /** Format: date */
+            date: string;
+            /** @enum {string} */
+            status: "operational" | "degraded" | "down" | "no_data";
+            uptime_percent: number | null;
+        };
+        /** StatusIncident */
+        StatusIncident: {
+            components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            impact: "none" | "minor" | "major" | "critical";
+            /** @enum {string} */
+            kind: "incident" | "maintenance";
+            /** Format: date-time */
+            resolved_at: string | null;
+            /** Format: date-time */
+            scheduled_for: string | null;
+            /** Format: date-time */
+            scheduled_until: string | null;
+            /** Format: date-time */
+            started_at: string;
+            /** @enum {string} */
+            status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+            title: string;
+            updates: {
+                body: string;
+                /** Format: date-time */
+                created_at: string;
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+            }[];
+        };
+        /** StatusIncidentCreate */
+        StatusIncidentCreate: {
+            body: string;
+            components?: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+            /** @enum {string} */
+            impact?: "none" | "minor" | "major" | "critical";
+            /** @enum {string} */
+            kind?: "incident" | "maintenance";
+            notify?: boolean;
+            /** Format: date-time */
+            scheduled_for?: string;
+            /** Format: date-time */
+            scheduled_until?: string;
+            /** @enum {string} */
+            status?: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+            title: string;
+        };
+        /** StatusIncidentEdit */
+        StatusIncidentEdit: {
+            components?: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+            /** @enum {string} */
+            impact?: "none" | "minor" | "major" | "critical";
+            title?: string;
+        };
+        /** StatusIncidentUpdate */
+        StatusIncidentUpdate: {
+            body: string;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+        };
+        /** StatusIncidentUpdateCreate */
+        StatusIncidentUpdateCreate: {
+            body: string;
+            notify?: boolean;
+            /** @enum {string} */
+            status?: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+        };
+        /** StatusOverview */
+        StatusOverview: {
+            active: {
+                components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                impact: "none" | "minor" | "major" | "critical";
+                /** @enum {string} */
+                kind: "incident" | "maintenance";
+                /** Format: date-time */
+                resolved_at: string | null;
+                /** Format: date-time */
+                scheduled_for: string | null;
+                /** Format: date-time */
+                scheduled_until: string | null;
+                /** Format: date-time */
+                started_at: string;
+                /** @enum {string} */
+                status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                title: string;
+                updates: {
+                    body: string;
+                    /** Format: date-time */
+                    created_at: string;
+                    /** Format: uuid */
+                    id: string;
+                    /** @enum {string} */
+                    status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                }[];
+            }[];
+            components: {
+                /** Format: date-time */
+                checked_at: string | null;
+                /** @enum {string} */
+                key: "app" | "search" | "files" | "email" | "payments" | "fiscal";
+                /** @enum {string} */
+                status: "operational" | "degraded" | "down" | "maintenance" | "unknown";
+            }[];
+            /** Format: date-time */
+            generated_at: string;
+            /** @enum {string} */
+            status: "operational" | "degraded" | "partial_outage" | "major_outage" | "maintenance" | "unknown";
+            upcoming: {
+                components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                impact: "none" | "minor" | "major" | "critical";
+                /** @enum {string} */
+                kind: "incident" | "maintenance";
+                /** Format: date-time */
+                resolved_at: string | null;
+                /** Format: date-time */
+                scheduled_for: string | null;
+                /** Format: date-time */
+                scheduled_until: string | null;
+                /** Format: date-time */
+                started_at: string;
+                /** @enum {string} */
+                status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                title: string;
+                updates: {
+                    body: string;
+                    /** Format: date-time */
+                    created_at: string;
+                    /** Format: uuid */
+                    id: string;
+                    /** @enum {string} */
+                    status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                }[];
+            }[];
+        };
+        /** StatusProbeState */
+        StatusProbeState: {
+            /** Format: date-time */
+            changed_at: string;
+            /** Format: date-time */
+            checked_at: string;
+            key: string;
+            reason: string | null;
+            /** @enum {string} */
+            status: "operational" | "degraded" | "down";
+        };
+        /** StatusSubscribe */
+        StatusSubscribe: {
+            /** Format: email */
+            email: string;
+            locale?: string;
+        };
+        /** StatusToken */
+        StatusToken: {
+            token: string;
+        };
         /** StructuredSection */
         StructuredSection: {
             /** @description Every exercise with its full prescription (the WorkoutItem shape) */
@@ -46733,6 +47852,38 @@ export interface components {
                 [key: string]: unknown;
             };
         };
+        /** VisitBadges */
+        VisitBadges: {
+            badges: ("first_visit" | "first_in_class_type" | "guest" | "trial" | "brought_by_member" | "came_via_event" | "came_via_referral")[];
+            /**
+             * VisitVia
+             * @description How a first-time visitor came (referral attribution)
+             */
+            via: {
+                by_nickname?: string | null;
+                /** Format: uuid */
+                by_user_id?: string | null;
+                channel?: string | null;
+                /** Format: uuid */
+                event_id?: string | null;
+                /** @enum {string} */
+                kind: "event" | "referral";
+            } | null;
+        };
+        /**
+         * VisitVia
+         * @description How a first-time visitor came (referral attribution)
+         */
+        VisitVia: {
+            by_nickname?: string | null;
+            /** Format: uuid */
+            by_user_id?: string | null;
+            channel?: string | null;
+            /** Format: uuid */
+            event_id?: string | null;
+            /** @enum {string} */
+            kind: "event" | "referral";
+        } | null;
         /** VoiceLogAvailability */
         VoiceLogAvailability: {
             available: boolean;
@@ -47963,6 +49114,129 @@ export interface components {
             qualities: string[];
             taxonomy_version: number;
             unmatched_exercises: number;
+        };
+        /** WorkoutLeaderboard */
+        WorkoutLeaderboard: {
+            filters: {
+                age_group?: string | null;
+                buddies: boolean;
+                /** Format: date */
+                date: string;
+                division?: string | null;
+                /** Format: uuid */
+                location_id?: string | null;
+                scale?: string | null;
+                /** @enum {string} */
+                scope: "box" | "branch";
+                /** @enum {string} */
+                window: "day" | "week" | "month" | "year" | "all";
+            };
+            me: {
+                avatar_url?: string | null;
+                me: boolean;
+                nickname?: string | null;
+                /** @description Share of the other results of the slice this one beat (0-100) */
+                percentile: number | null;
+                rank: number | null;
+                scale_level_slug?: string | null;
+                /** @description «Top X%»: share of results at this place or better, rounded up */
+                top_percent: number | null;
+                unit?: string | null;
+                /** Format: uuid */
+                user_id: string;
+                value?: string | null;
+            } | null;
+            /** @description Whether the viewer opted in; without it no comparison is shown */
+            opted_in: boolean;
+            options: {
+                age_groups: string[];
+                divisions: string[];
+                scales: {
+                    label: string;
+                    slug: string;
+                }[];
+                scopes: string[];
+                windows: string[];
+            };
+            profile?: {
+                birth_year?: number | null;
+                division?: string | null;
+            } | null;
+            rows: {
+                avatar_url?: string | null;
+                me: boolean;
+                nickname?: string | null;
+                /** @description Share of the other results of the slice this one beat (0-100) */
+                percentile: number | null;
+                rank: number | null;
+                scale_level_slug?: string | null;
+                /** @description «Top X%»: share of results at this place or better, rounded up */
+                top_percent: number | null;
+                unit?: string | null;
+                /** Format: uuid */
+                user_id: string;
+                value?: string | null;
+            }[];
+            section?: {
+                [key: string]: unknown;
+            } | null;
+            total: number;
+            workout: {
+                /** Format: uuid */
+                id: string;
+                title?: string | null;
+            };
+        };
+        /** WorkoutLeaderboardRow */
+        WorkoutLeaderboardRow: {
+            avatar_url?: string | null;
+            me: boolean;
+            nickname?: string | null;
+            /** @description Share of the other results of the slice this one beat (0-100) */
+            percentile: number | null;
+            rank: number | null;
+            scale_level_slug?: string | null;
+            /** @description «Top X%»: share of results at this place or better, rounded up */
+            top_percent: number | null;
+            unit?: string | null;
+            /** Format: uuid */
+            user_id: string;
+            value?: string | null;
+        };
+        /** WorkoutSnapshot */
+        WorkoutSnapshot: {
+            /** @description The WOD as it read then (title, type, text, sections, plans, body) */
+            content: {
+                [key: string]: unknown;
+            };
+            content_hash: string;
+            format_version: number;
+            /** Format: uuid */
+            id: string;
+            /** Format: date-time */
+            taken_at: string;
+            title?: string | null;
+            /** Format: uuid */
+            workout_id: string;
+        };
+        /** WorkoutSnapshotResponse */
+        WorkoutSnapshotResponse: {
+            /** WorkoutSnapshot */
+            snapshot: {
+                /** @description The WOD as it read then (title, type, text, sections, plans, body) */
+                content: {
+                    [key: string]: unknown;
+                };
+                content_hash: string;
+                format_version: number;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                taken_at: string;
+                title?: string | null;
+                /** Format: uuid */
+                workout_id: string;
+            };
         };
     };
     responses: never;
@@ -64382,6 +65656,93 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.FitnessProfileController.show": {
+        parameters: {
+            query?: {
+                /** @description Standards to read the PRs with (neutral mean when absent) */
+                division?: "women" | "men";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Fitness profile */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        algorithm: {
+                            id: string;
+                            version: number;
+                        };
+                        benchmarks_known: number;
+                        /** @enum {string|null} */
+                        division: "women" | "men" | null;
+                        domains: {
+                            /** @enum {string|null} */
+                            confidence: "low" | "medium" | "high" | null;
+                            /** @enum {string} */
+                            domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+                            reasons: {
+                                age_days: number;
+                                anchors: {
+                                    points: number;
+                                    value: number;
+                                }[];
+                                /** Format: date */
+                                beaten_on: string;
+                                benchmark: string;
+                                /** @enum {string} */
+                                domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+                                /** @description 1RM estimated from a multi-rep set */
+                                estimated: boolean;
+                                /** @description The PR as the person named it */
+                                name: string;
+                                points: number;
+                                stale: boolean;
+                                /** @enum {string} */
+                                unit: "kg" | "reps" | "mins_secs";
+                                /** @description kg (1RM), reps or seconds */
+                                value: number;
+                            }[];
+                            score: number | null;
+                            stale: boolean;
+                        }[];
+                        focus: ({
+                            /** @enum {string} */
+                            domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+                            /** @enum {string} */
+                            kind: "weakest_domain" | "undertrained_quality" | "stale_benchmark" | "untested_domain";
+                        } & {
+                            [key: string]: unknown;
+                        })[];
+                        injury_caution: boolean;
+                        neutral_standards: boolean;
+                        overall: {
+                            domains_scored: number;
+                            reason: string;
+                            score: number;
+                        } | null;
+                    };
+                };
+            };
+            /** @description Unknown division */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.FollowController.requests": {
         parameters: {
             query?: {
@@ -73968,6 +75329,1070 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminChannelContactsController.index": {
+        parameters: {
+            query?: {
+                /** @description Comma-separated ids */
+                user_ids?: string;
+                /** @description Comma-separated ids */
+                lead_ids?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Contacts */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        contacts: ({
+                            consents: {
+                                /** @enum {string} */
+                                channel: "sms" | "viber" | "whatsapp";
+                                granted: boolean;
+                                /** Format: date-time */
+                                granted_at?: string | null;
+                                /** @enum {string} */
+                                purpose: "service" | "marketing";
+                                source?: string | null;
+                                text_version?: string | null;
+                                /** Format: date-time */
+                                withdrawn_at?: string | null;
+                            }[];
+                            country?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id?: string | null;
+                            locale: string;
+                            /** Format: date-time */
+                            opted_out_at?: string | null;
+                            /** @description Masked for staff; full for the person */
+                            phone: string;
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                        } | null)[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelContactsController.save": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    lead_id?: string;
+                    /** @enum {string} */
+                    locale?: "el" | "en" | "de" | "fr" | "it" | "es" | "nl" | "pt-PT" | "bg" | "ru" | "ar" | "he";
+                    phone?: string;
+                    /** Format: uuid */
+                    user_id?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Contact */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        contact: {
+                            consents: {
+                                /** @enum {string} */
+                                channel: "sms" | "viber" | "whatsapp";
+                                granted: boolean;
+                                /** Format: date-time */
+                                granted_at?: string | null;
+                                /** @enum {string} */
+                                purpose: "service" | "marketing";
+                                source?: string | null;
+                                text_version?: string | null;
+                                /** Format: date-time */
+                                withdrawn_at?: string | null;
+                            }[];
+                            country?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id?: string | null;
+                            locale: string;
+                            /** Format: date-time */
+                            opted_out_at?: string | null;
+                            /** @description Masked for staff; full for the person */
+                            phone: string;
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelContactsController.lookup": {
+        parameters: {
+            query?: {
+                user_id?: string;
+                lead_id?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Contact */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        contact: {
+                            consents: {
+                                /** @enum {string} */
+                                channel: "sms" | "viber" | "whatsapp";
+                                granted: boolean;
+                                /** Format: date-time */
+                                granted_at?: string | null;
+                                /** @enum {string} */
+                                purpose: "service" | "marketing";
+                                source?: string | null;
+                                text_version?: string | null;
+                                /** Format: date-time */
+                                withdrawn_at?: string | null;
+                            }[];
+                            country?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id?: string | null;
+                            locale: string;
+                            /** Format: date-time */
+                            opted_out_at?: string | null;
+                            /** @description Masked for staff; full for the person */
+                            phone: string;
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelContactsController.delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelContactsController.consent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    channel: "sms" | "viber" | "whatsapp";
+                    granted: boolean;
+                    /** @enum {string} */
+                    purpose: "service" | "marketing";
+                    /** @enum {string} */
+                    source?: "staff" | "person" | "form" | "import";
+                    text_version?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Contact */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        contact: {
+                            consents: {
+                                /** @enum {string} */
+                                channel: "sms" | "viber" | "whatsapp";
+                                granted: boolean;
+                                /** Format: date-time */
+                                granted_at?: string | null;
+                                /** @enum {string} */
+                                purpose: "service" | "marketing";
+                                source?: string | null;
+                                text_version?: string | null;
+                                /** Format: date-time */
+                                withdrawn_at?: string | null;
+                            }[];
+                            country?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id?: string | null;
+                            locale: string;
+                            /** Format: date-time */
+                            opted_out_at?: string | null;
+                            /** @description Masked for staff; full for the person */
+                            phone: string;
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelMessagesController.index": {
+        parameters: {
+            query?: {
+                status?: string;
+                channel?: string;
+                contact_id?: string;
+                source_ref?: string;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Messages */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        messages: {
+                            account_mode?: string;
+                            attempts?: number;
+                            body: string;
+                            /** @enum {string} */
+                            channel: "sms" | "viber" | "whatsapp";
+                            /** Format: uuid */
+                            contact_id?: string;
+                            cost_cents?: number | null;
+                            /** Format: uuid */
+                            created_by_id?: string | null;
+                            currency?: string;
+                            /** Format: date-time */
+                            delivered_at?: string | null;
+                            error_code?: string | null;
+                            estimated_cost_cents?: number;
+                            events?: {
+                                error_code?: string | null;
+                                kind: string;
+                                /** Format: date-time */
+                                occurred_at: string;
+                                provider_status?: string | null;
+                                status: string;
+                            }[];
+                            /** Format: date-time */
+                            failed_at?: string | null;
+                            hold_reason?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            inserted_at?: string | null;
+                            locale?: string;
+                            /** Format: date-time */
+                            next_attempt_at?: string | null;
+                            provider?: string;
+                            /** @enum {string} */
+                            purpose?: "service" | "marketing";
+                            segments?: number;
+                            /** Format: date-time */
+                            sent_at?: string | null;
+                            source?: string;
+                            source_ref?: string | null;
+                            /** @enum {string} */
+                            status: "queued" | "sending" | "sent" | "delivered" | "failed" | "cancelled";
+                            template_key?: string;
+                            /** @description Masked number */
+                            to: string;
+                            urgent?: boolean;
+                        }[];
+                        total: number;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelMessagesController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    channels?: ("sms" | "viber" | "whatsapp")[];
+                    idempotency_key?: string;
+                    /** Format: uuid */
+                    lead_id?: string;
+                    /** @enum {string} */
+                    purpose?: "service" | "marketing";
+                    source_ref?: string;
+                    /** @example box_message */
+                    template_key: string;
+                    urgent?: boolean;
+                    /** Format: uuid */
+                    user_id?: string;
+                    variables?: {
+                        [key: string]: string;
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description Queued */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        channel: "sms" | "viber" | "whatsapp";
+                        currency?: string;
+                        estimated_cost_cents?: number;
+                        hold_reason?: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: date-time */
+                        next_attempt_at?: string | null;
+                        /** @enum {string} */
+                        purpose?: "service" | "marketing";
+                        /** Format: date-time */
+                        release_at?: string;
+                        segments?: number;
+                        source?: string;
+                        source_ref?: string | null;
+                        status: string;
+                        template_key?: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelMessagesController.preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    channels?: ("sms" | "viber" | "whatsapp")[];
+                    idempotency_key?: string;
+                    /** Format: uuid */
+                    lead_id?: string;
+                    /** @enum {string} */
+                    purpose?: "service" | "marketing";
+                    source_ref?: string;
+                    /** @example box_message */
+                    template_key: string;
+                    urgent?: boolean;
+                    /** Format: uuid */
+                    user_id?: string;
+                    variables?: {
+                        [key: string]: string;
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description Preview */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        body: string;
+                        budget: {
+                            cap_cents: number;
+                            currency: string;
+                            spent_cents: number;
+                        };
+                        /** @enum {string} */
+                        channel: "sms" | "viber" | "whatsapp";
+                        contact: {
+                            consents: {
+                                /** @enum {string} */
+                                channel: "sms" | "viber" | "whatsapp";
+                                granted: boolean;
+                                /** Format: date-time */
+                                granted_at?: string | null;
+                                /** @enum {string} */
+                                purpose: "service" | "marketing";
+                                source?: string | null;
+                                text_version?: string | null;
+                                /** Format: date-time */
+                                withdrawn_at?: string | null;
+                            }[];
+                            country?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id?: string | null;
+                            locale: string;
+                            /** Format: date-time */
+                            opted_out_at?: string | null;
+                            /** @description Masked for staff; full for the person */
+                            phone: string;
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                        } | null;
+                        currency?: string;
+                        /** @description gsm7 or ucs2 (SMS only) */
+                        encoding?: string | null;
+                        estimated_cost_cents: number;
+                        held_for_quiet_hours: boolean;
+                        locale?: string;
+                        /** @enum {string} */
+                        purpose?: "service" | "marketing";
+                        /** Format: date-time */
+                        release_at: string;
+                        replies_possible?: boolean;
+                        segments: number;
+                        template_key?: string;
+                        urgent?: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelMessagesController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Message */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        account_mode?: string;
+                        attempts?: number;
+                        body: string;
+                        /** @enum {string} */
+                        channel: "sms" | "viber" | "whatsapp";
+                        /** Format: uuid */
+                        contact_id?: string;
+                        cost_cents?: number | null;
+                        /** Format: uuid */
+                        created_by_id?: string | null;
+                        currency?: string;
+                        /** Format: date-time */
+                        delivered_at?: string | null;
+                        error_code?: string | null;
+                        estimated_cost_cents?: number;
+                        events?: {
+                            error_code?: string | null;
+                            kind: string;
+                            /** Format: date-time */
+                            occurred_at: string;
+                            provider_status?: string | null;
+                            status: string;
+                        }[];
+                        /** Format: date-time */
+                        failed_at?: string | null;
+                        hold_reason?: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: date-time */
+                        inserted_at?: string | null;
+                        locale?: string;
+                        /** Format: date-time */
+                        next_attempt_at?: string | null;
+                        provider?: string;
+                        /** @enum {string} */
+                        purpose?: "service" | "marketing";
+                        segments?: number;
+                        /** Format: date-time */
+                        sent_at?: string | null;
+                        source?: string;
+                        source_ref?: string | null;
+                        /** @enum {string} */
+                        status: "queued" | "sending" | "sent" | "delivered" | "failed" | "cancelled";
+                        template_key?: string;
+                        /** @description Masked number */
+                        to: string;
+                        urgent?: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelMessagesController.cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Message */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        account_mode?: string;
+                        attempts?: number;
+                        body: string;
+                        /** @enum {string} */
+                        channel: "sms" | "viber" | "whatsapp";
+                        /** Format: uuid */
+                        contact_id?: string;
+                        cost_cents?: number | null;
+                        /** Format: uuid */
+                        created_by_id?: string | null;
+                        currency?: string;
+                        /** Format: date-time */
+                        delivered_at?: string | null;
+                        error_code?: string | null;
+                        estimated_cost_cents?: number;
+                        events?: {
+                            error_code?: string | null;
+                            kind: string;
+                            /** Format: date-time */
+                            occurred_at: string;
+                            provider_status?: string | null;
+                            status: string;
+                        }[];
+                        /** Format: date-time */
+                        failed_at?: string | null;
+                        hold_reason?: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: date-time */
+                        inserted_at?: string | null;
+                        locale?: string;
+                        /** Format: date-time */
+                        next_attempt_at?: string | null;
+                        provider?: string;
+                        /** @enum {string} */
+                        purpose?: "service" | "marketing";
+                        segments?: number;
+                        /** Format: date-time */
+                        sent_at?: string | null;
+                        source?: string;
+                        source_ref?: string | null;
+                        /** @enum {string} */
+                        status: "queued" | "sending" | "sent" | "delivered" | "failed" | "cancelled";
+                        template_key?: string;
+                        /** @description Masked number */
+                        to: string;
+                        urgent?: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelMessagesController.retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Message */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        account_mode?: string;
+                        attempts?: number;
+                        body: string;
+                        /** @enum {string} */
+                        channel: "sms" | "viber" | "whatsapp";
+                        /** Format: uuid */
+                        contact_id?: string;
+                        cost_cents?: number | null;
+                        /** Format: uuid */
+                        created_by_id?: string | null;
+                        currency?: string;
+                        /** Format: date-time */
+                        delivered_at?: string | null;
+                        error_code?: string | null;
+                        estimated_cost_cents?: number;
+                        events?: {
+                            error_code?: string | null;
+                            kind: string;
+                            /** Format: date-time */
+                            occurred_at: string;
+                            provider_status?: string | null;
+                            status: string;
+                        }[];
+                        /** Format: date-time */
+                        failed_at?: string | null;
+                        hold_reason?: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: date-time */
+                        inserted_at?: string | null;
+                        locale?: string;
+                        /** Format: date-time */
+                        next_attempt_at?: string | null;
+                        provider?: string;
+                        /** @enum {string} */
+                        purpose?: "service" | "marketing";
+                        segments?: number;
+                        /** Format: date-time */
+                        sent_at?: string | null;
+                        source?: string;
+                        source_ref?: string | null;
+                        /** @enum {string} */
+                        status: "queued" | "sending" | "sent" | "delivered" | "failed" | "cancelled";
+                        template_key?: string;
+                        /** @description Masked number */
+                        to: string;
+                        urgent?: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelSettingsController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description The box's provider; the secret is never returned (`has_secret`). */
+                        connection: {
+                            account_id?: string | null;
+                            /** @enum {string} */
+                            account_mode: "palee" | "own";
+                            base_url?: string | null;
+                            channel_order: ("sms" | "viber" | "whatsapp")[];
+                            channels: ("sms" | "viber" | "whatsapp")[];
+                            /** Format: date-time */
+                            checked_at?: string | null;
+                            currency?: string;
+                            default_country: string;
+                            error_code?: string | null;
+                            has_secret: boolean;
+                            last_error?: string | null;
+                            monthly_budget_cents: number;
+                            provider: string;
+                            /** @example 09:00 */
+                            quiet_end?: string | null;
+                            /** @example 21:00 */
+                            quiet_start?: string | null;
+                            sms_sender?: string | null;
+                            /** @enum {string} */
+                            status: "active" | "invalid";
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            viber_sender?: string | null;
+                            /** @description The box's own URL for the provider's receipts and replies */
+                            webhook_url?: string | null;
+                            whatsapp_sender?: string | null;
+                        } | null;
+                        providers: {
+                            account_modes: string[];
+                            channels: ("sms" | "viber" | "whatsapp")[];
+                            provider: string;
+                        }[];
+                        /** @description Spend of one month on the box's clock against the cap (cents). */
+                        usage: {
+                            account_mode?: string | null;
+                            by_channel: {
+                                [key: string]: {
+                                    cents: number;
+                                    count: number;
+                                };
+                            };
+                            cap_cents?: number | null;
+                            currency: string;
+                            /** Format: date-time */
+                            from: string;
+                            messages: number;
+                            spent_cents: number;
+                            /** Format: date-time */
+                            to: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelSettingsController.save": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    account_id?: string | null;
+                    /** @enum {string} */
+                    account_mode?: "palee" | "own";
+                    base_url?: string | null;
+                    channel_order?: ("sms" | "viber" | "whatsapp")[];
+                    channels?: ("sms" | "viber" | "whatsapp")[];
+                    default_country?: string;
+                    monthly_budget_cents?: number;
+                    /** @enum {string} */
+                    provider: "sandbox" | "brevo";
+                    quiet_end?: string | null;
+                    quiet_start?: string | null;
+                    rotate_webhook?: boolean;
+                    /**
+                     * Format: password
+                     * @description The box's own API key (`own`); kept when not sent
+                     */
+                    secret?: string;
+                    sms_sender?: string | null;
+                    viber_sender?: string | null;
+                    whatsapp_sender?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Connection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        check: {
+                            details: {
+                                [key: string]: unknown;
+                            };
+                            error_code?: string | null;
+                            ok: boolean;
+                        };
+                        /** @description The box's provider; the secret is never returned (`has_secret`). */
+                        connection: {
+                            account_id?: string | null;
+                            /** @enum {string} */
+                            account_mode: "palee" | "own";
+                            base_url?: string | null;
+                            channel_order: ("sms" | "viber" | "whatsapp")[];
+                            channels: ("sms" | "viber" | "whatsapp")[];
+                            /** Format: date-time */
+                            checked_at?: string | null;
+                            currency?: string;
+                            default_country: string;
+                            error_code?: string | null;
+                            has_secret: boolean;
+                            last_error?: string | null;
+                            monthly_budget_cents: number;
+                            provider: string;
+                            /** @example 09:00 */
+                            quiet_end?: string | null;
+                            /** @example 21:00 */
+                            quiet_start?: string | null;
+                            sms_sender?: string | null;
+                            /** @enum {string} */
+                            status: "active" | "invalid";
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            viber_sender?: string | null;
+                            /** @description The box's own URL for the provider's receipts and replies */
+                            webhook_url?: string | null;
+                            whatsapp_sender?: string | null;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelSettingsController.check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Connection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        check: {
+                            details: {
+                                [key: string]: unknown;
+                            };
+                            error_code?: string | null;
+                            ok: boolean;
+                        };
+                        /** @description The box's provider; the secret is never returned (`has_secret`). */
+                        connection: {
+                            account_id?: string | null;
+                            /** @enum {string} */
+                            account_mode: "palee" | "own";
+                            base_url?: string | null;
+                            channel_order: ("sms" | "viber" | "whatsapp")[];
+                            channels: ("sms" | "viber" | "whatsapp")[];
+                            /** Format: date-time */
+                            checked_at?: string | null;
+                            currency?: string;
+                            default_country: string;
+                            error_code?: string | null;
+                            has_secret: boolean;
+                            last_error?: string | null;
+                            monthly_budget_cents: number;
+                            provider: string;
+                            /** @example 09:00 */
+                            quiet_end?: string | null;
+                            /** @example 21:00 */
+                            quiet_start?: string | null;
+                            sms_sender?: string | null;
+                            /** @enum {string} */
+                            status: "active" | "invalid";
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            viber_sender?: string | null;
+                            /** @description The box's own URL for the provider's receipts and replies */
+                            webhook_url?: string | null;
+                            whatsapp_sender?: string | null;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelSettingsController.templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Templates */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        templates: {
+                            builtin: boolean;
+                            custom: {
+                                /** @enum {string} */
+                                approval_status: "none" | "pending" | "approved" | "rejected";
+                                body: string;
+                                /** @enum {string} */
+                                channel: "any" | "whatsapp";
+                                locale: string;
+                                provider_template_id?: string | null;
+                                /** Format: date-time */
+                                updated_at?: string | null;
+                                variable_names: string[];
+                            }[];
+                            defaults: {
+                                [key: string]: string;
+                            };
+                            key: string;
+                            purpose?: string | null;
+                            variables: string[];
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelSettingsController.save_template": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                key: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    approval_status?: "none" | "pending" | "approved" | "rejected";
+                    body: string;
+                    /** @enum {string} */
+                    channel?: "any" | "whatsapp";
+                    /** @enum {string} */
+                    locale: "el" | "en" | "de" | "fr" | "it" | "es" | "nl" | "pt-PT" | "bg" | "ru" | "ar" | "he";
+                    provider_template_id?: string | null;
+                    variable_names?: string[];
+                };
+            };
+        };
+        responses: {
+            /** @description Template */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        approval_status: "none" | "pending" | "approved" | "rejected";
+                        body: string;
+                        /** @enum {string} */
+                        channel: "any" | "whatsapp";
+                        locale: string;
+                        provider_template_id?: string | null;
+                        /** Format: date-time */
+                        updated_at?: string | null;
+                        variable_names: string[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelSettingsController.delete_template": {
+        parameters: {
+            query: {
+                locale: string;
+                channel?: "any" | "whatsapp";
+            };
+            header?: never;
+            path: {
+                key: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelSettingsController.usage": {
+        parameters: {
+            query?: {
+                /** @description YYYY-MM; this month when left out */
+                month?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Usage */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        account_mode?: string | null;
+                        by_channel: {
+                            [key: string]: {
+                                cents: number;
+                                count: number;
+                            };
+                        };
+                        cap_cents?: number | null;
+                        currency: string;
+                        /** Format: date-time */
+                        from: string;
+                        messages: number;
+                        spent_cents: number;
+                        /** Format: date-time */
+                        to: string;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminCheckInController.door": {
         parameters: {
             query?: never;
@@ -74523,6 +76948,24 @@ export interface operations {
                             unlimited?: boolean;
                         } | null;
                         problems: ("frozen" | "package_expired" | "unpaid" | "no_spots" | "nothing_to_check_in")[];
+                        /** VisitBadges */
+                        visit?: {
+                            badges: ("first_visit" | "first_in_class_type" | "guest" | "trial" | "brought_by_member" | "came_via_event" | "came_via_referral")[];
+                            /**
+                             * VisitVia
+                             * @description How a first-time visitor came (referral attribution)
+                             */
+                            via: {
+                                by_nickname?: string | null;
+                                /** Format: uuid */
+                                by_user_id?: string | null;
+                                channel?: string | null;
+                                /** Format: uuid */
+                                event_id?: string | null;
+                                /** @enum {string} */
+                                kind: "event" | "referral";
+                            } | null;
+                        };
                         warnings?: "payment_due"[];
                     };
                 };
@@ -74681,6 +77124,24 @@ export interface operations {
                             unlimited?: boolean;
                         } | null;
                         problems: ("frozen" | "package_expired" | "unpaid" | "no_spots" | "nothing_to_check_in")[];
+                        /** VisitBadges */
+                        visit?: {
+                            badges: ("first_visit" | "first_in_class_type" | "guest" | "trial" | "brought_by_member" | "came_via_event" | "came_via_referral")[];
+                            /**
+                             * VisitVia
+                             * @description How a first-time visitor came (referral attribution)
+                             */
+                            via: {
+                                by_nickname?: string | null;
+                                /** Format: uuid */
+                                by_user_id?: string | null;
+                                channel?: string | null;
+                                /** Format: uuid */
+                                event_id?: string | null;
+                                /** @enum {string} */
+                                kind: "event" | "referral";
+                            } | null;
+                        };
                         warnings?: "payment_due"[];
                     };
                 };
@@ -80851,6 +83312,86 @@ export interface operations {
                         };
                         /** @enum {string} */
                         member_groups: "none" | "approval" | "free";
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminDataExportController.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Exports */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        exports: {
+                            /** Format: date-time */
+                            completed_at: string | null;
+                            /** Format: date-time */
+                            expires_at: string | null;
+                            file: {
+                                bytes: number;
+                                download_url: string | null;
+                                name: string;
+                                sha256: string;
+                            } | null;
+                            /** Format: uuid */
+                            id: string;
+                            record_count: number | null;
+                            /** Format: date-time */
+                            requested_at: string;
+                            /** @enum {string} */
+                            status: "pending" | "ready" | "failed" | "expired";
+                            table_count: number | null;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminDataExportController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Export */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: date-time */
+                        completed_at: string | null;
+                        /** Format: date-time */
+                        expires_at: string | null;
+                        file: {
+                            bytes: number;
+                            download_url: string | null;
+                            name: string;
+                            sha256: string;
+                        } | null;
+                        /** Format: uuid */
+                        id: string;
+                        record_count: number | null;
+                        /** Format: date-time */
+                        requested_at: string;
+                        /** @enum {string} */
+                        status: "pending" | "ready" | "failed" | "expired";
+                        table_count: number | null;
                     };
                 };
             };
@@ -98360,6 +100901,15 @@ export interface operations {
                         } & {
                             [key: string]: unknown;
                         })[];
+                        /** @description ADR-357: the assignment tag of every gym day of the range */
+                        days: {
+                            classes: number;
+                            /** Format: date */
+                            date: string;
+                            /** @enum {string} */
+                            tag: "none" | "not_assigned" | "mixed" | "all_assigned";
+                            with_wod: number;
+                        }[];
                     };
                 };
             };
@@ -98943,6 +101493,80 @@ export interface operations {
                         slots: {
                             [key: string]: unknown;
                         }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminVisitBadgesController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Badges */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        people: {
+                            badges: ("first_visit" | "first_in_class_type" | "guest" | "trial" | "brought_by_member" | "came_via_event" | "came_via_referral")[];
+                            /** Format: uuid */
+                            booking_id: string;
+                            brought_by: {
+                                nickname?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            guest_name: string | null;
+                            /** Format: uuid */
+                            user_id: string;
+                            /**
+                             * VisitVia
+                             * @description How a first-time visitor came (referral attribution)
+                             */
+                            via: {
+                                by_nickname?: string | null;
+                                /** Format: uuid */
+                                by_user_id?: string | null;
+                                channel?: string | null;
+                                /** Format: uuid */
+                                event_id?: string | null;
+                                /** @enum {string} */
+                                kind: "event" | "referral";
+                            } | null;
+                        }[];
+                        /** Format: uuid */
+                        slot_id: string;
+                    };
+                };
+            };
+            /** @description Not one of your branches */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description No such class */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
                     };
                 };
             };
@@ -110721,6 +113345,39 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.BookingCalendarController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description iCalendar invite */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/calendar": string;
+                };
+            };
+            /** @description No such booking of yours */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.ScheduleController.check_in_class": {
         parameters: {
             query?: never;
@@ -115165,6 +117822,126 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.MyChannelsController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description My channels */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Channels the box uses */
+                        channels: ("sms" | "viber" | "whatsapp")[];
+                        contact: {
+                            consents: {
+                                /** @enum {string} */
+                                channel: "sms" | "viber" | "whatsapp";
+                                granted: boolean;
+                                /** Format: date-time */
+                                granted_at?: string | null;
+                                /** @enum {string} */
+                                purpose: "service" | "marketing";
+                                source?: string | null;
+                                text_version?: string | null;
+                                /** Format: date-time */
+                                withdrawn_at?: string | null;
+                            }[];
+                            country?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id?: string | null;
+                            locale: string;
+                            /** Format: date-time */
+                            opted_out_at?: string | null;
+                            /** @description Masked for staff; full for the person */
+                            phone: string;
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyChannelsController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    consents?: {
+                        /** @enum {string} */
+                        channel: "sms" | "viber" | "whatsapp";
+                        granted: boolean;
+                        /** @enum {string} */
+                        purpose: "service" | "marketing";
+                    }[];
+                    /** @enum {string} */
+                    locale?: "el" | "en" | "de" | "fr" | "it" | "es" | "nl" | "pt-PT" | "bg" | "ru" | "ar" | "he";
+                    phone?: string;
+                    text_version?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description My channels */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Channels the box uses */
+                        channels: ("sms" | "viber" | "whatsapp")[];
+                        contact: {
+                            consents: {
+                                /** @enum {string} */
+                                channel: "sms" | "viber" | "whatsapp";
+                                granted: boolean;
+                                /** Format: date-time */
+                                granted_at?: string | null;
+                                /** @enum {string} */
+                                purpose: "service" | "marketing";
+                                source?: string | null;
+                                text_version?: string | null;
+                                /** Format: date-time */
+                                withdrawn_at?: string | null;
+                            }[];
+                            country?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id?: string | null;
+                            locale: string;
+                            /** Format: date-time */
+                            opted_out_at?: string | null;
+                            /** @description Masked for staff; full for the person */
+                            phone: string;
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.MyCheckInController.code": {
         parameters: {
             query?: never;
@@ -116519,6 +119296,86 @@ export interface operations {
                             surcharge_cents: number;
                             total_cents: number;
                         };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.WorkoutLeaderboardController.profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Profile */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        birth_year: number | null;
+                        /** @enum {string|null} */
+                        division: "women" | "men" | null;
+                        opted_in: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.WorkoutLeaderboardController.update_profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    birth_year?: number | null;
+                    /** @enum {string|null} */
+                    division?: "women" | "men" | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Profile */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        birth_year: number | null;
+                        /** @enum {string|null} */
+                        division: "women" | "men" | null;
+                        opted_in: boolean;
+                    };
+                };
+            };
+            /** @description Not opted in to leaderboards */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Invalid values */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
                     };
                 };
             };
@@ -122870,6 +125727,11 @@ export interface operations {
                 content: {
                     "application/json": {
                         notes: {
+                            /**
+                             * @description ADR-359: private coach note (ADR-101) or a note every staff member reads
+                             * @enum {string}
+                             */
+                            audience?: "private" | "staff";
                             body: string;
                             /** Format: uuid */
                             client_user_id: string;
@@ -122904,6 +125766,11 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    /**
+                     * @default private
+                     * @enum {string}
+                     */
+                    audience?: "private" | "staff";
                     body: string;
                     /** Format: uuid */
                     subject_id?: string;
@@ -122922,6 +125789,11 @@ export interface operations {
                     "application/json": {
                         /** CoachNote */
                         note: {
+                            /**
+                             * @description ADR-359: private coach note (ADR-101) or a note every staff member reads
+                             * @enum {string}
+                             */
+                            audience?: "private" | "staff";
                             body: string;
                             /** Format: uuid */
                             client_user_id: string;
@@ -123519,6 +126391,11 @@ export interface operations {
                     "application/json": {
                         /** CoachNote */
                         note: {
+                            /**
+                             * @description ADR-359: private coach note (ADR-101) or a note every staff member reads
+                             * @enum {string}
+                             */
+                            audience?: "private" | "staff";
                             body: string;
                             /** Format: uuid */
                             client_user_id: string;
@@ -129648,6 +132525,56 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.WorkoutSnapshotController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Snapshot */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** WorkoutSnapshot */
+                        snapshot: {
+                            /** @description The WOD as it read then (title, type, text, sections, plans, body) */
+                            content: {
+                                [key: string]: unknown;
+                            };
+                            content_hash: string;
+                            format_version: number;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            taken_at: string;
+                            title?: string | null;
+                            /** Format: uuid */
+                            workout_id: string;
+                        };
+                    };
+                };
+            };
+            /** @description No such snapshot, or not yours */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.WorkoutController.show": {
         parameters: {
             query?: never;
@@ -131048,6 +133975,137 @@ export interface operations {
                 content: {
                     "application/json": {
                         error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.WorkoutLeaderboardController.show": {
+        parameters: {
+            query?: {
+                /** @description Only this division */
+                division?: "women" | "men";
+                /** @description Only this age group (age reached during the year) */
+                age_group?: "under_18" | "18_34" | "35_39" | "40_44" | "45_49" | "50_54" | "55_59" | "60_64" | "65_plus";
+                /** @description Only this scale level slug */
+                scale?: string;
+                /** @description Whole box or one branch */
+                scope?: "box" | "branch";
+                /** @description The branch, with scope=branch */
+                location_id?: string;
+                /** @description Time window around `date` (default day) */
+                window?: "day" | "week" | "month" | "year" | "all";
+                /** @description Gym date (default today) */
+                date?: string;
+                /** @description Only the viewer and their buddies */
+                buddies?: boolean;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Leaderboard */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        filters: {
+                            age_group?: string | null;
+                            buddies: boolean;
+                            /** Format: date */
+                            date: string;
+                            division?: string | null;
+                            /** Format: uuid */
+                            location_id?: string | null;
+                            scale?: string | null;
+                            /** @enum {string} */
+                            scope: "box" | "branch";
+                            /** @enum {string} */
+                            window: "day" | "week" | "month" | "year" | "all";
+                        };
+                        me: {
+                            avatar_url?: string | null;
+                            me: boolean;
+                            nickname?: string | null;
+                            /** @description Share of the other results of the slice this one beat (0-100) */
+                            percentile: number | null;
+                            rank: number | null;
+                            scale_level_slug?: string | null;
+                            /** @description «Top X%»: share of results at this place or better, rounded up */
+                            top_percent: number | null;
+                            unit?: string | null;
+                            /** Format: uuid */
+                            user_id: string;
+                            value?: string | null;
+                        } | null;
+                        /** @description Whether the viewer opted in; without it no comparison is shown */
+                        opted_in: boolean;
+                        options: {
+                            age_groups: string[];
+                            divisions: string[];
+                            scales: {
+                                label: string;
+                                slug: string;
+                            }[];
+                            scopes: string[];
+                            windows: string[];
+                        };
+                        profile?: {
+                            birth_year?: number | null;
+                            division?: string | null;
+                        } | null;
+                        rows: {
+                            avatar_url?: string | null;
+                            me: boolean;
+                            nickname?: string | null;
+                            /** @description Share of the other results of the slice this one beat (0-100) */
+                            percentile: number | null;
+                            rank: number | null;
+                            scale_level_slug?: string | null;
+                            /** @description «Top X%»: share of results at this place or better, rounded up */
+                            top_percent: number | null;
+                            unit?: string | null;
+                            /** Format: uuid */
+                            user_id: string;
+                            value?: string | null;
+                        }[];
+                        section?: {
+                            [key: string]: unknown;
+                        } | null;
+                        total: number;
+                        workout: {
+                            /** Format: uuid */
+                            id: string;
+                            title?: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description No such WOD */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description A filter does not read */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
                     };
                 };
             };
@@ -138225,6 +141283,258 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.PlatformStatusController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Console */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        incidents: {
+                            components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            impact: "none" | "minor" | "major" | "critical";
+                            /** @enum {string} */
+                            kind: "incident" | "maintenance";
+                            /** Format: date-time */
+                            resolved_at: string | null;
+                            /** Format: date-time */
+                            scheduled_for: string | null;
+                            /** Format: date-time */
+                            scheduled_until: string | null;
+                            /** Format: date-time */
+                            started_at: string;
+                            /** @enum {string} */
+                            status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                            title: string;
+                            updates: {
+                                body: string;
+                                /** Format: date-time */
+                                created_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** @enum {string} */
+                                status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                            }[];
+                        }[];
+                        probes: {
+                            /** Format: date-time */
+                            changed_at: string;
+                            /** Format: date-time */
+                            checked_at: string;
+                            key: string;
+                            reason: string | null;
+                            /** @enum {string} */
+                            status: "operational" | "degraded" | "down";
+                        }[];
+                        subscribers: {
+                            confirmed: number;
+                            waiting: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PlatformStatusController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description A new incident or planned maintenance with its first note */
+        requestBody: {
+            content: {
+                "application/json": {
+                    body: string;
+                    components?: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                    /** @enum {string} */
+                    impact?: "none" | "minor" | "major" | "critical";
+                    /** @enum {string} */
+                    kind?: "incident" | "maintenance";
+                    notify?: boolean;
+                    /** Format: date-time */
+                    scheduled_for?: string;
+                    /** Format: date-time */
+                    scheduled_until?: string;
+                    /** @enum {string} */
+                    status?: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                    title: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Incident */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        impact: "none" | "minor" | "major" | "critical";
+                        /** @enum {string} */
+                        kind: "incident" | "maintenance";
+                        /** Format: date-time */
+                        resolved_at: string | null;
+                        /** Format: date-time */
+                        scheduled_for: string | null;
+                        /** Format: date-time */
+                        scheduled_until: string | null;
+                        /** Format: date-time */
+                        started_at: string;
+                        /** @enum {string} */
+                        status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                        title: string;
+                        updates: {
+                            body: string;
+                            /** Format: date-time */
+                            created_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PlatformStatusController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description A correction (no note, no email) */
+        requestBody: {
+            content: {
+                "application/json": {
+                    components?: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                    /** @enum {string} */
+                    impact?: "none" | "minor" | "major" | "critical";
+                    title?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Incident */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        impact: "none" | "minor" | "major" | "critical";
+                        /** @enum {string} */
+                        kind: "incident" | "maintenance";
+                        /** Format: date-time */
+                        resolved_at: string | null;
+                        /** Format: date-time */
+                        scheduled_for: string | null;
+                        /** Format: date-time */
+                        scheduled_until: string | null;
+                        /** Format: date-time */
+                        started_at: string;
+                        /** @enum {string} */
+                        status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                        title: string;
+                        updates: {
+                            body: string;
+                            /** Format: date-time */
+                            created_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PlatformStatusController.add_update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description A new step in the timeline */
+        requestBody: {
+            content: {
+                "application/json": {
+                    body: string;
+                    notify?: boolean;
+                    /** @enum {string} */
+                    status?: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                };
+            };
+        };
+        responses: {
+            /** @description Incident */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        impact: "none" | "minor" | "major" | "critical";
+                        /** @enum {string} */
+                        kind: "incident" | "maintenance";
+                        /** Format: date-time */
+                        resolved_at: string | null;
+                        /** Format: date-time */
+                        scheduled_for: string | null;
+                        /** Format: date-time */
+                        scheduled_until: string | null;
+                        /** Format: date-time */
+                        started_at: string;
+                        /** @enum {string} */
+                        status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                        title: string;
+                        updates: {
+                            body: string;
+                            /** Format: date-time */
+                            created_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                        }[];
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.PlatformPlanController.subscriptions": {
         parameters: {
             query?: never;
@@ -140812,6 +144122,260 @@ export interface operations {
                 };
                 content: {
                     "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicStatusController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Status */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        active: {
+                            components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            impact: "none" | "minor" | "major" | "critical";
+                            /** @enum {string} */
+                            kind: "incident" | "maintenance";
+                            /** Format: date-time */
+                            resolved_at: string | null;
+                            /** Format: date-time */
+                            scheduled_for: string | null;
+                            /** Format: date-time */
+                            scheduled_until: string | null;
+                            /** Format: date-time */
+                            started_at: string;
+                            /** @enum {string} */
+                            status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                            title: string;
+                            updates: {
+                                body: string;
+                                /** Format: date-time */
+                                created_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** @enum {string} */
+                                status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                            }[];
+                        }[];
+                        components: {
+                            /** Format: date-time */
+                            checked_at: string | null;
+                            /** @enum {string} */
+                            key: "app" | "search" | "files" | "email" | "payments" | "fiscal";
+                            /** @enum {string} */
+                            status: "operational" | "degraded" | "down" | "maintenance" | "unknown";
+                        }[];
+                        /** Format: date-time */
+                        generated_at: string;
+                        /** @enum {string} */
+                        status: "operational" | "degraded" | "partial_outage" | "major_outage" | "maintenance" | "unknown";
+                        upcoming: {
+                            components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            impact: "none" | "minor" | "major" | "critical";
+                            /** @enum {string} */
+                            kind: "incident" | "maintenance";
+                            /** Format: date-time */
+                            resolved_at: string | null;
+                            /** Format: date-time */
+                            scheduled_for: string | null;
+                            /** Format: date-time */
+                            scheduled_until: string | null;
+                            /** Format: date-time */
+                            started_at: string;
+                            /** @enum {string} */
+                            status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                            title: string;
+                            updates: {
+                                body: string;
+                                /** Format: date-time */
+                                created_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** @enum {string} */
+                                status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                            }[];
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicStatusController.history": {
+        parameters: {
+            query?: {
+                days?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description History */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        components: {
+                            days: {
+                                /** Format: date */
+                                date: string;
+                                /** @enum {string} */
+                                status: "operational" | "degraded" | "down" | "no_data";
+                                uptime_percent: number | null;
+                            }[];
+                            /** @enum {string} */
+                            key: "app" | "search" | "files" | "email" | "payments" | "fiscal";
+                            uptime_percent: number | null;
+                        }[];
+                        days: number;
+                        /** Format: date */
+                        from: string;
+                        /** Format: date-time */
+                        generated_at: string;
+                        incidents: {
+                            components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            impact: "none" | "minor" | "major" | "critical";
+                            /** @enum {string} */
+                            kind: "incident" | "maintenance";
+                            /** Format: date-time */
+                            resolved_at: string | null;
+                            /** Format: date-time */
+                            scheduled_for: string | null;
+                            /** Format: date-time */
+                            scheduled_until: string | null;
+                            /** Format: date-time */
+                            started_at: string;
+                            /** @enum {string} */
+                            status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                            title: string;
+                            updates: {
+                                body: string;
+                                /** Format: date-time */
+                                created_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** @enum {string} */
+                                status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                            }[];
+                        }[];
+                        /** Format: date */
+                        to: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicStatusController.subscribe": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The address that wants status emails */
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: email */
+                    email: string;
+                    locale?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Accepted */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        status: "accepted" | "confirmed" | "removed";
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicStatusController.confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The token from the email */
+        requestBody: {
+            content: {
+                "application/json": {
+                    token: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Confirmed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        status: "accepted" | "confirmed" | "removed";
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicStatusController.unsubscribe": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The token from the email */
+        requestBody: {
+            content: {
+                "application/json": {
+                    token: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Removed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        status: "accepted" | "confirmed" | "removed";
+                    };
                 };
             };
         };
