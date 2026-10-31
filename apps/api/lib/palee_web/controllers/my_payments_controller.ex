@@ -84,6 +84,39 @@ defmodule PaleeWeb.MyPaymentsController do
     end
   end
 
+  operation(:surcharge_quote,
+    summary: "The card surcharge I would pay, shown before paying (ADR-340)",
+    description:
+      "With `payment_method_id`, for one of my saved cards; without, for a new card " <>
+        "(which never carries one: Palee does not know yet whether the law allows it).",
+    parameters: [
+      %Parameter{
+        name: :amount_cents,
+        in: :query,
+        required: true,
+        schema: %Schema{type: :integer, minimum: 1, maximum: 10_000_000}
+      },
+      %Parameter{
+        name: :payment_method_id,
+        in: :query,
+        required: false,
+        schema: %Schema{type: :string, format: :uuid}
+      }
+    ],
+    responses: [ok: {"Quote", "application/json", PaleeWeb.Schemas.CardSurcharges.quote()}]
+  )
+
+  def surcharge_quote(conn, params) do
+    with {:ok, quote} <-
+           OnlinePayments.surcharge_quote(
+             conn.assigns.tenant_context,
+             params.amount_cents,
+             params[:payment_method_id]
+           ) do
+      json(conn, quote)
+    end
+  end
+
   operation(:methods,
     summary: "My saved cards",
     responses: [

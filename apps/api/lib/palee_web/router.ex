@@ -575,6 +575,8 @@ defmodule PaleeWeb.Router do
     post("/invoices/:id/pay", MyPaymentsController, :pay)
     post("/payments/return", MyPaymentsController, :returned)
     post("/payments/sandbox/complete", MyPaymentsController, :sandbox_complete)
+    # ADR-340: the card surcharge shown before paying.
+    get("/payments/surcharge-quote", MyPaymentsController, :surcharge_quote)
     get("/payments/:id", MyPaymentsController, :show)
     get("/payment-methods", MyPaymentsController, :methods)
     delete("/payment-methods/:id", MyPaymentsController, :revoke_method)
@@ -902,6 +904,8 @@ defmodule PaleeWeb.Router do
     get("/users/:id/prs", AdminUserController, :prs)
     # ADR-132: how a coach finds those members (client scope does not narrow it).
     get("/pr-members", AdminUserController, :pr_members)
+    # ADR-341: a coach's own approved pay statements.
+    get("/coach-pay/mine", MyCoachPayController, :index)
   end
 
   # Staff work that coaches share with owners and admins (ADR-098).
@@ -1428,6 +1432,30 @@ defmodule PaleeWeb.Router do
     post("/fiscal/till-signatures/:id/retry", AdminFiscalTillSigningController, :retry)
 
     # ADR-246/247: online payments through the business's provider account.
+    # ADR-341: coach pay and commissions.
+    get("/coach-pay/rules", AdminCoachPayController, :rules)
+    post("/coach-pay/rules", AdminCoachPayController, :create_rule)
+    patch("/coach-pay/rules/:id", AdminCoachPayController, :update_rule)
+    post("/coach-pay/rules/:id/archive", AdminCoachPayController, :archive_rule)
+    get("/coach-pay/periods", AdminCoachPayController, :periods)
+    post("/coach-pay/periods", AdminCoachPayController, :create_period)
+    get("/coach-pay/periods/:id", AdminCoachPayController, :period)
+    post("/coach-pay/periods/:id/calculate", AdminCoachPayController, :calculate)
+    post("/coach-pay/periods/:id/adjustments", AdminCoachPayController, :add_adjustment)
+
+    delete(
+      "/coach-pay/periods/:id/adjustments/:line_id",
+      AdminCoachPayController,
+      :delete_adjustment
+    )
+
+    post("/coach-pay/periods/:id/approve", AdminCoachPayController, :approve)
+    post("/coach-pay/periods/:id/reopen", AdminCoachPayController, :reopen)
+    get("/coach-pay/periods/:id/export", AdminCoachPayController, :export)
+    # ADR-340: the card surcharge passed on to the person paying.
+    get("/payments/surcharge", AdminCardSurchargeController, :show)
+    put("/payments/surcharge", AdminCardSurchargeController, :update)
+    post("/payments/surcharge/quote", AdminCardSurchargeController, :quote)
     get("/payments/account", AdminPaymentsController, :account)
     put("/payments/account", AdminPaymentsController, :save_account)
     put("/payments/account/options", AdminPaymentsController, :save_options)

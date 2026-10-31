@@ -63,6 +63,40 @@ defmodule Palee.Infrastructure.Appointments.EctoAppointmentStore do
   end
 
   @impl true
+  def coach_sessions(%{organization_id: organization_id}, %DateTime{} = from, %DateTime{} = to) do
+    slots =
+      Slot
+      |> where(
+        [slot],
+        slot.organization_id == ^organization_id and is_nil(slot.cancelled_at) and
+          slot.starts_at >= ^from and slot.starts_at < ^to
+      )
+      |> select([slot], %{
+        slot_id: slot.id,
+        coach_user_id: slot.coach_id,
+        kind: slot.kind,
+        format: slot.format,
+        starts_at: slot.starts_at,
+        duration_minutes: slot.duration_minutes
+      })
+      |> Repo.all()
+
+    ids = Enum.map(slots, & &1.slot_id)
+
+    counts =
+      Booking
+      |> where([booking], booking.organization_id == ^organization_id and booking.slot_id in ^ids)
+      |> group_by([booking], [booking.slot_id, booking.status])
+      |> select([booking], {booking.slot_id, booking.status, count(booking.id)})
+      |> Repo.all()
+      |> Enum.reduce(%{}, fn {slot_id, status, count}, acc ->
+        Map.update(acc, slot_id, %{status => count}, &Map.put(&1, status, count))
+      end)
+
+    Enum.map(slots, &Map.put(&1, :bookings, Map.get(counts, &1.slot_id, %{})))
+  end
+
+  @impl true
   def cancel_slot(%{organization_id: organization_id}, id) do
     case fetch(Slot, organization_id, id) do
       nil ->

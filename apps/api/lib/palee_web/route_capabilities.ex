@@ -300,6 +300,26 @@ defmodule PaleeWeb.RouteCapabilities do
     {W.AdminDeskBuyersController, :options} => [:take_payments],
     {W.AdminDeskBuyersController, :make_guest} => [:take_payments],
     {W.AdminTipsController, :index} => [:view_finance_reports, :manage_billing],
+    # ADR-341: coach pay and commissions (pay is billing staff's business).
+    {W.AdminCoachPayController, :rules} => [:view_finance_reports, :manage_billing],
+    {W.AdminCoachPayController, :create_rule} => [:manage_billing],
+    {W.AdminCoachPayController, :update_rule} => [:manage_billing],
+    {W.AdminCoachPayController, :archive_rule} => [:manage_billing],
+    {W.AdminCoachPayController, :periods} => [:view_finance_reports, :manage_billing],
+    {W.AdminCoachPayController, :create_period} => [:manage_billing],
+    {W.AdminCoachPayController, :period} => [:view_finance_reports, :manage_billing],
+    {W.AdminCoachPayController, :calculate} => [:manage_billing],
+    {W.AdminCoachPayController, :add_adjustment} => [:manage_billing],
+    {W.AdminCoachPayController, :delete_adjustment} => [:manage_billing],
+    {W.AdminCoachPayController, :approve} => [:manage_billing],
+    {W.AdminCoachPayController, :reopen} => [:manage_billing],
+    {W.AdminCoachPayController, :export} => [:view_finance_reports, :manage_billing],
+    # A coach's own statements: whoever runs classes or sessions.
+    {W.MyCoachPayController, :index} => [:run_classes, :manage_appointments],
+    # ADR-340: the card surcharge.
+    {W.AdminCardSurchargeController, :show} => [:view_finance_reports, :manage_billing],
+    {W.AdminCardSurchargeController, :update} => [:manage_billing],
+    {W.AdminCardSurchargeController, :quote} => [:take_payments, :manage_billing],
     # ADR-252: documents are box rules (manage_settings: which are
     # mandatory, their text, the booking gate); asking clients to sign and
     # reading who signed is membership work too, and front desk work

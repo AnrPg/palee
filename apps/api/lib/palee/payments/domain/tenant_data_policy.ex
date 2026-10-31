@@ -24,6 +24,7 @@ defmodule Palee.Payments.Domain.TenantDataPolicy do
               %{table: "payment_refunds"},
               %{table: "payment_intents"},
               %{table: "payment_methods"},
+              %{table: "payment_surcharge_settings"},
               %{table: "payment_accounts"}
             ]
           })

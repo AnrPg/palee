@@ -126,6 +126,7 @@ defmodule Mix.Tasks.Palee.Architecture do
     fiscal/till_signature_store
     payments/payment_store
     finance/package_request_store
+    coach_pay/coach_pay_store
     box_screens/box_screen_store
     documents/document_store
     setup/recipe_application_store

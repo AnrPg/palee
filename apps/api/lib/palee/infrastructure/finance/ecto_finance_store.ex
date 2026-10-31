@@ -2582,6 +2582,122 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
   end
 
   @impl true
+  def coach_sales(%Date{} = from, %Date{} = to) do
+    payments =
+      MembershipPayment
+      |> tenant_scope()
+      |> where(
+        [payment],
+        is_nil(payment.deleted_at) and payment.payment_status == "paid" and
+          payment.paid_on >= ^from and payment.paid_on <= ^to and
+          (is_nil(payment.source_type) or payment.source_type != "card_surcharge")
+      )
+      |> coach_sale_rows()
+      |> Enum.map(&coach_sale(&1, "payment"))
+
+    reversals =
+      FinancePaymentReversal
+      |> tenant_scope()
+      |> where(
+        [reversal],
+        is_nil(reversal.deleted_at) and reversal.occurred_on >= ^from and
+          reversal.occurred_on <= ^to
+      )
+      |> join(:inner, [reversal], payment in MembershipPayment,
+        on: payment.id == reversal.membership_payment_id
+      )
+      |> where(
+        [_reversal, payment],
+        is_nil(payment.source_type) or payment.source_type != "card_surcharge"
+      )
+      |> select([reversal, payment], {reversal, payment})
+      |> Repo.all()
+
+    attributions =
+      reversals
+      |> Enum.map(fn {_reversal, payment} -> payment.id end)
+      |> Enum.uniq()
+      |> then(fn ids ->
+
+        MembershipPayment
+        |> tenant_scope()
+        |> where([payment], payment.id in ^ids)
+        |> coach_sale_rows()
+        |> Map.new(&{&1.payment.id, &1})
+      end)
+
+    refunds =
+      Enum.flat_map(reversals, fn {reversal, payment} ->
+        case Map.get(attributions, payment.id) do
+          nil ->
+            []
+
+          row ->
+            [
+              row
+              |> coach_sale("reversal")
+              |> Map.merge(%{
+                id: reversal.id,
+                occurred_on: reversal.occurred_on,
+                amount_cents: -reversal.amount_cents
+              })
+            ]
+        end
+      end)
+
+    payments ++ refunds
+  end
+
+  defp coach_sale_rows(query) do
+    query
+    |> join(:left, [payment], invoice in FinanceInvoice,
+      on: invoice.id == payment.finance_invoice_id
+    )
+    |> join(:left, [payment, invoice], subscription in MembershipPackageSubscription,
+      on:
+        subscription.id ==
+          coalesce(
+            payment.membership_package_subscription_id,
+            invoice.membership_package_subscription_id
+          )
+    )
+    |> join(:left, [_payment, _invoice, subscription], package in MembershipPackage,
+      on: package.id == subscription.membership_package_id
+    )
+    |> join(:left, [payment], membership in Membership,
+      on: membership.id == payment.membership_id
+    )
+    |> select([payment, invoice, subscription, package, membership], %{
+      payment: payment,
+      params_snapshot: subscription.params_snapshot,
+      package_name: package.name,
+      member_user_id: membership.user_id
+    })
+    |> Repo.all()
+  end
+
+  defp coach_sale(row, kind) do
+    payment = row.payment
+    fields = if row.params_snapshot, do: PackageContract.fields_from_params(row.params_snapshot)
+
+    %{
+      kind: kind,
+      id: payment.id,
+      payment_id: payment.id,
+      occurred_on: payment.paid_on,
+      amount_cents: payment.amount_cents,
+      currency: payment.currency,
+      revenue_stream: payment.revenue_stream,
+      payment_method: payment.payment_method,
+      package_name: row.package_name,
+      member_user_id: row.member_user_id,
+      pt_coach_id: fields && fields["personal_training.coach_id"],
+      personal_training: (fields && fields["personal_training.included"]) == true,
+      sold_by_id: (payment.params || %{})["created_by_id"]
+    }
+  end
+
+  @impl true
   def purchase_eligibility(user_id, package_id, channel, %Date{} = today) do
     with %MembershipPackage{} = package <-
            tenant_scope(MembershipPackage)
