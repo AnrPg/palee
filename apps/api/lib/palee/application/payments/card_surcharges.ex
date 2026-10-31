@@ -43,6 +43,13 @@ defmodule Palee.Application.Payments.CardSurcharges do
   def save(context, params) when is_map(params) do
     current = Payments.surcharge_settings(context)
 
+    params = Map.new(params, fn {key, value} -> {to_string(key), value} end)
+
+    params =
+      if Map.has_key?(params, "region_code") or SurchargePolicy.resolve(current).region_code,
+        do: params,
+        else: Map.put(params, "region_code", identity_region(context))
+
     with {:ok, settings} <-
            SurchargePolicy.change(current, params, country(context), today(context)),
          {:ok, _saved} <-
@@ -162,12 +169,27 @@ defmodule Palee.Application.Payments.CardSurcharges do
     end
   end
 
-  defp regime(context, region), do: SurchargeLaw.regime(country(context), region, today(context))
+  defp regime(context, region),
+    do: SurchargeLaw.regime(country(context), region || identity_region(context), today(context))
 
   defp country(context) do
     case Fiscal.identity_status(context) do
       %{identity: %{country_code: code}} when is_binary(code) -> code
       _none -> nil
+    end
+  end
+
+  # The state or province of the business's fiscal identity (ISO 3166-2).
+  defp identity_region(context) do
+    case Fiscal.identity_status(context) do
+      %{identity: %{country_code: country, region: region}}
+      when is_binary(country) and is_binary(region) and region != "" ->
+        if String.contains?(region, "-"),
+          do: String.upcase(region),
+          else: String.upcase(country <> "-" <> region)
+
+      _none ->
+        nil
     end
   end
 
