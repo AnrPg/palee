@@ -13,7 +13,7 @@ defmodule Palee.Channels.Domain.TenantDataPolicy do
             context: "channels",
             purge_order: 68,
             disposition: :purge,
-            excluded_columns: ["secret", "webhook_token_hash"],
+            excluded_columns: ["secret", "webhook_salt"],
             basis:
               "SMS, Viber and WhatsApp messages, the numbers they went to and the people's consents are communication data with no retention obligation; the box's provider secret is encrypted at rest and purged with the tenant.",
             tables: [

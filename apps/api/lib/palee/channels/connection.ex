@@ -15,7 +15,7 @@ defmodule Palee.Channels.Connection do
 
   @fields ~w(provider account_mode account_id secret base_url sms_sender viber_sender
              whatsapp_sender channels channel_order default_country monthly_budget_cents
-             currency quiet_start_minute quiet_end_minute webhook_token_hash status error_code
+             currency quiet_start_minute quiet_end_minute webhook_salt status error_code
              last_error checked_at updated_by_id)a
 
   schema "channel_connections" do
@@ -35,7 +35,7 @@ defmodule Palee.Channels.Connection do
     field :currency, :string, default: "EUR"
     field :quiet_start_minute, :integer
     field :quiet_end_minute, :integer
-    field :webhook_token_hash, :binary, redact: true
+    field :webhook_salt, :binary, redact: true
     field :status, :string, default: "active"
     field :error_code, :string
     field :last_error, :string

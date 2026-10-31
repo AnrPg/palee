@@ -46,7 +46,7 @@ defmodule Palee.Repo.Migrations.CreateChannels do
       add :currency, :string, size: 3, null: false, default: "EUR"
       add :quiet_start_minute, :integer
       add :quiet_end_minute, :integer
-      add :webhook_token_hash, :binary
+      add :webhook_salt, :binary
       add :status, :string, null: false, default: "active"
       add :error_code, :string, size: 60
       add :last_error, :string, size: 500
@@ -66,8 +66,7 @@ defmodule Palee.Repo.Migrations.CreateChannels do
              AND monthly_budget_cents >= 0
              AND (quiet_start_minute IS NULL OR quiet_start_minute BETWEEN 0 AND 1439)
              AND (quiet_end_minute IS NULL OR quiet_end_minute BETWEEN 0 AND 1439)
-             AND (provider = 'sandbox' OR account_mode = 'palee'
-                  OR (account_id IS NOT NULL AND secret IS NOT NULL))
+             AND (provider = 'sandbox' OR account_mode = 'palee' OR secret IS NOT NULL)
              """
            )
 
@@ -181,6 +180,7 @@ defmodule Palee.Repo.Migrations.CreateChannels do
       add :template_key, :string, size: 60, null: false
       add :locale, :string, size: 10, null: false
       add :body, :string, size: 1600, null: false
+      add :template_values, {:array, :string}, null: false, default: []
       add :to_phone, :string, size: 16, null: false
       add :idempotency_key, :string, size: 120, null: false
       add :status, :string, null: false, default: "queued"

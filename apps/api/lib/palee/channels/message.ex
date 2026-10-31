@@ -6,7 +6,7 @@ defmodule Palee.Channels.Message do
 
   @primary_key {:id, :binary_id, autogenerate: true}
 
-  @fields ~w(contact_id channel purpose template_key locale body to_phone idempotency_key status
+  @fields ~w(contact_id channel purpose template_key locale body template_values to_phone idempotency_key status
              hold_reason urgent attempts next_attempt_at claimed_at provider account_mode
              provider_message_id segments estimated_cost_cents cost_cents currency error_code
              error_message source source_ref created_by_id sent_at delivered_at failed_at)a
@@ -19,6 +19,8 @@ defmodule Palee.Channels.Message do
     field :template_key, :string
     field :locale, :string
     field :body, :string
+    # ADR-350: the values of an approved WhatsApp template, in its order.
+    field :template_values, {:array, :string}, default: []
     field :to_phone, :string
     field :idempotency_key, :string
     field :status, :string, default: "queued"
