@@ -168726,6 +168726,540 @@
         ]
       }
     },
+    "/api/org/{organization_slug}/admin/channels/email": {
+      "delete": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminChannelEmailController.delete",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "Removed"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Remove the box's own email provider: Palee sends the box's email again",
+        "tags": [
+          "Channels"
+        ]
+      },
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminChannelEmailController.show",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "connection": {
+                      "description": "The box's own SMTP provider; null when Palee sends the box's email (the default). The password is never returned (`has_secret`).",
+                      "nullable": true,
+                      "properties": {
+                        "checked_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "enabled": {
+                          "type": "boolean"
+                        },
+                        "error_code": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "from_address": {
+                          "format": "email",
+                          "type": "string"
+                        },
+                        "from_name": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "has_secret": {
+                          "type": "boolean"
+                        },
+                        "host": {
+                          "type": "string"
+                        },
+                        "in_use": {
+                          "type": "boolean"
+                        },
+                        "port": {
+                          "type": "integer"
+                        },
+                        "reply_to": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "status": {
+                          "description": "Mail goes through it only when `enabled` and `active` (`in_use`)",
+                          "enum": [
+                            "unchecked",
+                            "active",
+                            "invalid"
+                          ],
+                          "type": "string"
+                        },
+                        "tls_mode": {
+                          "enum": [
+                            "starttls",
+                            "tls"
+                          ],
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "username": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "enabled",
+                        "from_address",
+                        "has_secret",
+                        "host",
+                        "in_use",
+                        "port",
+                        "status",
+                        "tls_mode",
+                        "username"
+                      ],
+                      "type": "object"
+                    },
+                    "dns_guidance": {
+                      "description": "The DNS records the guide reminds the box of; `key` is a message key (`email_dns.*`) the screen translates",
+                      "properties": {
+                        "domain": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "steps": {
+                          "items": {
+                            "properties": {
+                              "host": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "key": {
+                                "type": "string"
+                              },
+                              "record": {
+                                "nullable": true,
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "host",
+                              "key",
+                              "record"
+                            ],
+                            "type": "object"
+                          },
+                          "type": "array"
+                        }
+                      },
+                      "required": [
+                        "domain",
+                        "steps"
+                      ],
+                      "type": "object"
+                    },
+                    "ports": {
+                      "items": {
+                        "type": "integer"
+                      },
+                      "type": "array"
+                    },
+                    "tls_modes": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "connection",
+                    "dns_guidance",
+                    "ports",
+                    "tls_modes"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Email provider"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The box's own email provider (null: Palee sends), the options and the DNS guide",
+        "tags": [
+          "Channels"
+        ]
+      },
+      "put": {
+        "callbacks": {},
+        "description": "Every email provider speaks SMTP. `secret` (the password) is kept when not sent and never returned. A change to the host, port, TLS mode, user name or password needs «Δοκιμή σύνδεσης» before the box's email goes through it. Platform email (verification, password reset, security notices) always goes through Palee.",
+        "operationId": "PaleeWeb.AdminChannelEmailController.save",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "enabled": {
+                    "type": "boolean"
+                  },
+                  "from_address": {
+                    "maxLength": 254,
+                    "type": "string"
+                  },
+                  "from_name": {
+                    "maxLength": 120,
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "host": {
+                    "maxLength": 253,
+                    "type": "string"
+                  },
+                  "port": {
+                    "enum": [
+                      25,
+                      465,
+                      587,
+                      2525
+                    ],
+                    "type": "integer"
+                  },
+                  "reply_to": {
+                    "maxLength": 254,
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "secret": {
+                    "description": "The SMTP password; kept when not sent, never returned",
+                    "format": "password",
+                    "maxLength": 500,
+                    "type": "string"
+                  },
+                  "tls_mode": {
+                    "enum": [
+                      "starttls",
+                      "tls"
+                    ],
+                    "type": "string"
+                  },
+                  "username": {
+                    "maxLength": 254,
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "connection": {
+                      "description": "The box's own SMTP provider; null when Palee sends the box's email (the default). The password is never returned (`has_secret`).",
+                      "nullable": true,
+                      "properties": {
+                        "checked_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "enabled": {
+                          "type": "boolean"
+                        },
+                        "error_code": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "from_address": {
+                          "format": "email",
+                          "type": "string"
+                        },
+                        "from_name": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "has_secret": {
+                          "type": "boolean"
+                        },
+                        "host": {
+                          "type": "string"
+                        },
+                        "in_use": {
+                          "type": "boolean"
+                        },
+                        "port": {
+                          "type": "integer"
+                        },
+                        "reply_to": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "status": {
+                          "description": "Mail goes through it only when `enabled` and `active` (`in_use`)",
+                          "enum": [
+                            "unchecked",
+                            "active",
+                            "invalid"
+                          ],
+                          "type": "string"
+                        },
+                        "tls_mode": {
+                          "enum": [
+                            "starttls",
+                            "tls"
+                          ],
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "username": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "enabled",
+                        "from_address",
+                        "has_secret",
+                        "host",
+                        "in_use",
+                        "port",
+                        "status",
+                        "tls_mode",
+                        "username"
+                      ],
+                      "type": "object"
+                    },
+                    "dns_guidance": {
+                      "description": "The DNS records the guide reminds the box of; `key` is a message key (`email_dns.*`) the screen translates",
+                      "properties": {
+                        "domain": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "steps": {
+                          "items": {
+                            "properties": {
+                              "host": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "key": {
+                                "type": "string"
+                              },
+                              "record": {
+                                "nullable": true,
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "host",
+                              "key",
+                              "record"
+                            ],
+                            "type": "object"
+                          },
+                          "type": "array"
+                        }
+                      },
+                      "required": [
+                        "domain",
+                        "steps"
+                      ],
+                      "type": "object"
+                    },
+                    "ports": {
+                      "items": {
+                        "type": "integer"
+                      },
+                      "type": "array"
+                    },
+                    "tls_modes": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "connection",
+                    "dns_guidance",
+                    "ports",
+                    "tls_modes"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Email provider"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Connect the box's own email provider over SMTP",
+        "tags": [
+          "Channels"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/channels/email/check": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminChannelEmailController.check",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "check": {
+                      "properties": {
+                        "error_code": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "ok": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "error_code",
+                        "ok"
+                      ],
+                      "type": "object"
+                    },
+                    "connection": {
+                      "description": "The box's own SMTP provider; null when Palee sends the box's email (the default). The password is never returned (`has_secret`).",
+                      "nullable": true,
+                      "properties": {
+                        "checked_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "enabled": {
+                          "type": "boolean"
+                        },
+                        "error_code": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "from_address": {
+                          "format": "email",
+                          "type": "string"
+                        },
+                        "from_name": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "has_secret": {
+                          "type": "boolean"
+                        },
+                        "host": {
+                          "type": "string"
+                        },
+                        "in_use": {
+                          "type": "boolean"
+                        },
+                        "port": {
+                          "type": "integer"
+                        },
+                        "reply_to": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "status": {
+                          "description": "Mail goes through it only when `enabled` and `active` (`in_use`)",
+                          "enum": [
+                            "unchecked",
+                            "active",
+                            "invalid"
+                          ],
+                          "type": "string"
+                        },
+                        "tls_mode": {
+                          "enum": [
+                            "starttls",
+                            "tls"
+                          ],
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "username": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "enabled",
+                        "from_address",
+                        "has_secret",
+                        "host",
+                        "in_use",
+                        "port",
+                        "status",
+                        "tls_mode",
+                        "username"
+                      ],
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "check",
+                    "connection"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Check"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "«Δοκιμή σύνδεσης»: connect, start TLS and log in, then quit; nothing is sent",
+        "tags": [
+          "Channels"
+        ]
+      }
+    },
     "/api/org/{organization_slug}/admin/channels/messages": {
       "get": {
         "callbacks": {},
@@ -169351,6 +169885,7 @@
                       "type": "string"
                     },
                     "estimated_cost_cents": {
+                      "description": "The box's price: the provider's estimate plus Palee's margin on Palee's account (ADR-369)",
                       "type": "integer"
                     },
                     "held_for_quiet_hours": {
@@ -170203,6 +170738,10 @@
                         "messages": {
                           "type": "integer"
                         },
+                        "palee_charge_cents": {
+                          "description": "ADR-369: what Palee bills the box for the month (messages sent on Palee's account, at the box's price)",
+                          "type": "integer"
+                        },
                         "spent_cents": {
                           "type": "integer"
                         },
@@ -170216,6 +170755,7 @@
                         "currency",
                         "from",
                         "messages",
+                        "palee_charge_cents",
                         "spent_cents",
                         "to"
                       ],
@@ -171088,6 +171628,10 @@
                     "messages": {
                       "type": "integer"
                     },
+                    "palee_charge_cents": {
+                      "description": "ADR-369: what Palee bills the box for the month (messages sent on Palee's account, at the box's price)",
+                      "type": "integer"
+                    },
                     "spent_cents": {
                       "type": "integer"
                     },
@@ -171101,6 +171645,7 @@
                     "currency",
                     "from",
                     "messages",
+                    "palee_charge_cents",
                     "spent_cents",
                     "to"
                   ],
@@ -348723,6 +349268,189 @@
         ]
       }
     },
+    "/api/platform/channel-margins": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformChannelMarginsController.show",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "margins_bps": {
+                      "description": "Basis points per channel (2500 = 25 %)",
+                      "properties": {
+                        "email": {
+                          "maximum": 100000,
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "sms": {
+                          "maximum": 100000,
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "viber": {
+                          "maximum": 100000,
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "whatsapp": {
+                          "maximum": 100000,
+                          "minimum": 0,
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "email",
+                        "sms",
+                        "viber",
+                        "whatsapp"
+                      ],
+                      "type": "object"
+                    },
+                    "updated_at": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "margins_bps",
+                    "updated_at"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Margins"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Palee's margin per channel on Palee-managed messages (basis points)",
+        "tags": [
+          "Platform"
+        ]
+      },
+      "put": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformChannelMarginsController.update",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "margins_bps": {
+                    "additionalProperties": false,
+                    "description": "Basis points per channel (2500 = 25 %)",
+                    "properties": {
+                      "email": {
+                        "maximum": 100000,
+                        "minimum": 0,
+                        "type": "integer"
+                      },
+                      "sms": {
+                        "maximum": 100000,
+                        "minimum": 0,
+                        "type": "integer"
+                      },
+                      "viber": {
+                        "maximum": 100000,
+                        "minimum": 0,
+                        "type": "integer"
+                      },
+                      "whatsapp": {
+                        "maximum": 100000,
+                        "minimum": 0,
+                        "type": "integer"
+                      }
+                    },
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "margins_bps"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "margins_bps": {
+                      "description": "Basis points per channel (2500 = 25 %)",
+                      "properties": {
+                        "email": {
+                          "maximum": 100000,
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "sms": {
+                          "maximum": 100000,
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "viber": {
+                          "maximum": 100000,
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "whatsapp": {
+                          "maximum": 100000,
+                          "minimum": 0,
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "email",
+                        "sms",
+                        "viber",
+                        "whatsapp"
+                      ],
+                      "type": "object"
+                    },
+                    "updated_at": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "margins_bps",
+                    "updated_at"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Margins"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Set Palee's margin per channel; channels not sent keep theirs",
+        "tags": [
+          "Platform"
+        ]
+      }
+    },
     "/api/platform/organization-purges": {
       "get": {
         "callbacks": {},
@@ -349522,6 +350250,118 @@
         "summary": "Create a constrained presigned upload for an organization logo",
         "tags": [
           "Platform Organizations"
+        ]
+      }
+    },
+    "/api/platform/organizations/{id}/channel-charges": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformChannelMarginsController.charges",
+        "parameters": [
+          {
+            "description": "",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "description": "YYYY-MM on the box's clock; this month when left out",
+            "in": "query",
+            "name": "month",
+            "required": false,
+            "schema": {
+              "pattern": "^[0-9]{4}-[0-9]{2}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "What Palee charges the box for a month's messages on Palee's account, with the providers' cost (Palee team only)",
+                  "properties": {
+                    "by_channel": {
+                      "additionalProperties": {
+                        "properties": {
+                          "charge_cents": {
+                            "type": "integer"
+                          },
+                          "count": {
+                            "type": "integer"
+                          },
+                          "provider_cost_cents": {
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "charge_cents",
+                          "count",
+                          "provider_cost_cents"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "object"
+                    },
+                    "charge_cents": {
+                      "type": "integer"
+                    },
+                    "currency": {
+                      "type": "string"
+                    },
+                    "from": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "margin_cents": {
+                      "type": "integer"
+                    },
+                    "messages": {
+                      "type": "integer"
+                    },
+                    "month": {
+                      "example": "2026-11",
+                      "type": "string"
+                    },
+                    "provider_cost_cents": {
+                      "type": "integer"
+                    },
+                    "to": {
+                      "format": "date-time",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "by_channel",
+                    "charge_cents",
+                    "currency",
+                    "from",
+                    "margin_cents",
+                    "messages",
+                    "month",
+                    "provider_cost_cents",
+                    "to"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Charge"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "What Palee charges a box for a month's messages, with the providers' cost",
+        "tags": [
+          "Platform"
         ]
       }
     },
