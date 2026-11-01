@@ -5,10 +5,13 @@ defmodule Palee.CoachPay.Domain.StatementExport do
   the accountant can tie every amount to the class, session or payment
   behind it. Amounts are decimal with two places, in the period's currency.
   Cells that would start a spreadsheet formula are quoted harmless.
+
+  ADR-382: two columns at the end, `amount_basis` (`gross` or `net`) and
+  the line's `note`; every line is exported, whatever its kind or basis.
   """
 
   @header ~w(period_start period_end coach coach_id date kind description quantity unit
-             base percent amount currency source_type source_id)
+             base percent amount currency source_type source_id note amount_basis)
 
   def csv(period, statements, names) do
     rows =
@@ -28,7 +31,9 @@ defmodule Palee.CoachPay.Domain.StatementExport do
           money(line.amount_cents),
           period.currency,
           line.source_type,
-          line.source_id || ""
+          line.source_id || "",
+          Map.get(line, :note) || "",
+          Map.get(line, :amount_basis) || "gross"
         ]
       end
 

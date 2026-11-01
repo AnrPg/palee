@@ -180,6 +180,259 @@ defmodule PaleeWeb.CoachPayControllerTest do
              |> json_response(409)
   end
 
+  describe "ADR-382" do
+    setup ctx do
+      desk = user_fixture(%{role: :member, nickname: "pay_desk"})
+      add_tenant_member(ctx.organization, desk, :front_desk)
+      %{desk: desk}
+    end
+
+    defp item(conn, ctx, body) do
+      conn
+      |> as(ctx.admin)
+      |> post(pay_path(ctx, "/items"), body)
+      |> json_response(201)
+      |> Map.fetch!("item")
+    end
+
+    test "the catalogue of overtime and allowances is a setting, readable by Finance",
+         %{conn: conn} = ctx do
+      overtime =
+        item(conn, ctx, %{
+          kind: "overtime",
+          name: "Υπερωρία",
+          amount_cents: 2_000,
+          unit: "per_hour",
+          roles: ["coach", "head_coach"],
+          weekly_threshold: 10
+        })
+
+      assert %{"currency" => "EUR", "amount_basis" => "gross", "roles" => ["head_coach", "coach"]} =
+               overtime
+
+      # Overtime needs its weekly threshold.
+      assert %{"errors" => _errors} =
+               conn
+               |> as(ctx.admin)
+               |> post(pay_path(ctx, "/items"), %{
+                 kind: "overtime",
+                 name: "Χωρίς όριο",
+                 amount_cents: 2_000,
+                 unit: "per_hour",
+                 roles: ["coach"]
+               })
+               |> json_response(422)
+
+      # A coach can neither change nor read the catalogue.
+      assert conn
+             |> as(ctx.coach)
+             |> post(pay_path(ctx, "/items"), %{
+               kind: "allowance",
+               name: "x",
+               amount_cents: 1,
+               unit: "per_period",
+               roles: ["coach"]
+             })
+             |> response(403)
+
+      assert conn |> as(ctx.coach) |> get(pay_path(ctx, "/items")) |> response(403)
+
+      %{"item" => %{"name" => "Υπερωρία 2"}} =
+        conn
+        |> as(ctx.admin)
+        |> patch(pay_path(ctx, "/items/#{overtime["id"]}"), %{name: "Υπερωρία 2"})
+        |> json_response(200)
+
+      %{"item" => %{"archived_at" => archived}} =
+        conn
+        |> as(ctx.admin)
+        |> post(pay_path(ctx, "/items/#{overtime["id"]}/archive"))
+        |> json_response(200)
+
+      assert archived
+
+      assert %{"code" => "coach_pay_item_archived"} =
+               conn
+               |> as(ctx.admin)
+               |> patch(pay_path(ctx, "/items/#{overtime["id"]}"), %{name: "x"})
+               |> json_response(409)
+
+      assert %{"items" => []} =
+               conn |> as(ctx.admin) |> get(pay_path(ctx, "/items")) |> json_response(200)
+    end
+
+    test "fixed pay, lines by hand, gross and net, the PDF and the summaries",
+         %{conn: conn} = ctx do
+      led_class(ctx, ["attended"])
+
+      rule(conn, ctx, %{kind: "per_class", amount_cents: 1_500, amount_basis: "net"})
+      rule(conn, ctx, %{kind: "fixed", amount_cents: 1_000, frequency: "daily"})
+
+      allowance =
+        item(conn, ctx, %{
+          kind: "allowance",
+          name: "Επίδομα μετακίνησης",
+          amount_cents: 2_500,
+          unit: "per_occurrence",
+          roles: ["front_desk"]
+        })
+
+      %{"period" => %{"id" => id}} =
+        conn
+        |> as(ctx.admin)
+        |> post(pay_path(ctx, "/periods"), %{starts_on: start(-9), ends_on: start(2)})
+        |> json_response(201)
+
+      %{"period" => period} =
+        conn
+        |> as(ctx.admin)
+        |> post(pay_path(ctx, "/periods/#{id}/calculate"))
+        |> json_response(200)
+
+      [statement] = period["statements"]
+      # 12 days × 10,00 gross; one class at 15,00 net.
+      assert %{"gross_cents" => 12_000, "net_cents" => 1_500, "net_line_count" => 1} = statement
+
+      assert [
+               %{"kind" => "fixed", "amount_basis" => "gross", "quantity" => 12},
+               %{"kind" => "per_class", "amount_basis" => "net", "amount_cents" => 1_500}
+             ] = statement["groups"]
+
+      assert hd(statement["groups"])["terms"]["frequency"] == "daily"
+
+      per_class = Enum.find(statement["lines"], &(&1["kind"] == "per_class"))
+      assert per_class["deviates_from_default"] == true
+
+      # A payment by hand needs its reason; a reimbursement too.
+      assert conn
+             |> as(ctx.admin)
+             |> post(pay_path(ctx, "/periods/#{id}/adjustments"), %{
+               coach_user_id: ctx.coach.id,
+               kind: "ad_hoc",
+               amount_cents: 3_000
+             })
+             |> json_response(422)
+
+      %{"period" => _period} =
+        conn
+        |> as(ctx.admin)
+        |> post(pay_path(ctx, "/periods/#{id}/adjustments"), %{
+          coach_user_id: ctx.coach.id,
+          kind: "ad_hoc",
+          amount_cents: 3_000,
+          note: "Κάλυψη Σαββάτου"
+        })
+        |> json_response(200)
+
+      %{"period" => _period} =
+        conn
+        |> as(ctx.admin)
+        |> post(pay_path(ctx, "/periods/#{id}/adjustments"), %{
+          coach_user_id: ctx.coach.id,
+          kind: "non_taxable_reimbursement",
+          amount_cents: 2_000,
+          note: "Βενζίνη για αγώνες",
+          amount_basis: "net"
+        })
+        |> json_response(200)
+
+      %{"period" => period} =
+        conn
+        |> as(ctx.admin)
+        |> post(pay_path(ctx, "/periods/#{id}/pay-items"), %{
+          pay_item_id: allowance["id"],
+          user_id: ctx.desk.id,
+          quantity: 2
+        })
+        |> json_response(200)
+
+      coach_statement = Enum.find(period["statements"], &(&1["coach_user_id"] == ctx.coach.id))
+      ad_hoc = Enum.find(coach_statement["lines"], &(&1["kind"] == "ad_hoc"))
+      assert ad_hoc["note"] == "Κάλυψη Σαββάτου"
+      assert ad_hoc["created_by_id"] == ctx.admin.id
+
+      # Staff mark the payment by hand net.
+      %{"period" => period} =
+        conn
+        |> as(ctx.admin)
+        |> patch(pay_path(ctx, "/periods/#{id}/lines/#{ad_hoc["id"]}"), %{amount_basis: "net"})
+        |> json_response(200)
+
+      coach_statement = Enum.find(period["statements"], &(&1["coach_user_id"] == ctx.coach.id))
+
+      assert %{"gross_cents" => 12_000, "net_cents" => 6_500, "net_line_count" => 3} =
+               coach_statement
+
+      assert %{"gross_cents" => 17_000, "net_cents" => 6_500} = period
+
+      %{"period" => %{"status" => "approved"}} =
+        conn
+        |> as(ctx.admin)
+        |> post(pay_path(ctx, "/periods/#{id}/approve"))
+        |> json_response(200)
+
+      # The PDF: staff for anyone, the coach for their own.
+      pdf =
+        conn
+        |> as(ctx.admin)
+        |> get(pay_path(ctx, "/periods/#{id}/statements/#{ctx.coach.id}/pdf?language=en"))
+
+      assert "%PDF-" <> _rest = response(pdf, 200)
+      assert [content_type | _] = get_resp_header(pdf, "content-type")
+      assert content_type =~ "application/pdf"
+
+      assert %{"code" => "unsupported_language"} =
+               conn
+               |> as(ctx.admin)
+               |> get(pay_path(ctx, "/periods/#{id}/statements/#{ctx.coach.id}/pdf?language=xx"))
+               |> json_response(422)
+
+      assert "%PDF-" <> _rest =
+               conn |> as(ctx.coach) |> get(pay_path(ctx, "/mine/#{id}/pdf")) |> response(200)
+
+      assert conn
+             |> as(ctx.coach)
+             |> get(pay_path(ctx, "/periods/#{id}/statements/#{ctx.desk.id}/pdf"))
+             |> response(403)
+
+      # The front desk reads their own allowance, with totals.
+      assert %{
+               "statements" => [%{"net_cents" => 0, "gross_cents" => 5_000}],
+               "totals" => [
+                 %{"currency" => "EUR", "gross_cents" => 5_000, "statement_count" => 1}
+               ]
+             } = conn |> as(ctx.desk) |> get(pay_path(ctx, "/mine")) |> json_response(200)
+
+      # The coach's staff profile and Finance's summary.
+      assert %{"totals" => [%{"gross_cents" => 12_000, "net_cents" => 6_500}]} =
+               conn
+               |> as(ctx.admin)
+               |> get(pay_path(ctx, "/people/#{ctx.coach.id}/statements"))
+               |> json_response(200)
+
+      assert conn
+             |> as(ctx.coach)
+             |> get(pay_path(ctx, "/people/#{ctx.coach.id}/statements"))
+             |> response(403)
+
+      assert %{"periods" => [%{"id" => ^id, "statements" => statements}]} =
+               conn |> as(ctx.admin) |> get(pay_path(ctx, "/summary")) |> json_response(200)
+
+      assert Enum.map(statements, & &1["coach_name"]) |> Enum.sort() == ["pay_coach", "pay_desk"]
+
+      assert %{"periods" => []} =
+               conn
+               |> as(ctx.admin)
+               |> get(pay_path(ctx, "/summary?from=#{start(30)}"))
+               |> json_response(200)
+
+      # The CSV keeps every line with its basis.
+      csv = conn |> as(ctx.admin) |> get(pay_path(ctx, "/periods/#{id}/export")) |> response(200)
+      assert csv =~ ",non_taxable_reimbursement,Βενζίνη για αγώνες,"
+      assert csv =~ ",net\r\n"
+    end
+  end
+
   defp tenant_fixture(user, name) do
     {:ok, organization} =
       Organizations.create_organization(%{name: "#{name} #{System.unique_integer([:positive])}"})

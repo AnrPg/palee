@@ -986,10 +986,6 @@ defmodule PaleeWeb.Router do
     get("/users/:id/prs", AdminUserController, :prs)
     # ADR-132: how a coach finds those members (client scope does not narrow it).
     get("/pr-members", AdminUserController, :pr_members)
-    # ADR-341: a coach's own approved pay statements.
-    get("/coach-pay/mine", MyCoachPayController, :index)
-    # ADR-382: my pay statement of an approved period as PDF.
-    get("/coach-pay/mine/:period_id/pdf", MyCoachPayController, :payslip)
   end
 
   # Staff work that coaches share with owners and admins (ADR-098).
@@ -1609,6 +1605,10 @@ defmodule PaleeWeb.Router do
     post("/coach-pay/periods/:id/approve", AdminCoachPayController, :approve)
     post("/coach-pay/periods/:id/reopen", AdminCoachPayController, :reopen)
     get("/coach-pay/periods/:id/export", AdminCoachPayController, :export)
+    # ADR-341/382: a staff member's own approved pay statements and their PDF
+    # (capability-checked, so every staff role that may be paid reaches them).
+    get("/coach-pay/mine", MyCoachPayController, :index)
+    get("/coach-pay/mine/:period_id/pdf", MyCoachPayController, :payslip)
     # ADR-382: pay items, lines by hand, gross/net, PDF, profile and summary.
     post("/coach-pay/periods/:id/pay-items", AdminCoachPayController, :add_pay_item_line)
     patch("/coach-pay/periods/:id/lines/:line_id", AdminCoachPayController, :set_line_basis)
