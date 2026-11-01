@@ -1,0 +1,119 @@
+msgid ""
+msgstr ""
+"Language: en\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Pay statement"
+msgstr ""
+
+msgid "Internal pay statement"
+msgstr ""
+
+msgid "An internal record of the business for paying its staff, not an official payroll document."
+msgstr ""
+
+msgid "Business"
+msgstr ""
+
+msgid "Paid to"
+msgstr ""
+
+msgid "Period"
+msgstr ""
+
+msgid "Approved on"
+msgstr ""
+
+msgid "Item"
+msgstr ""
+
+msgid "Terms"
+msgstr ""
+
+msgid "Quantity × rate"
+msgstr ""
+
+msgid "Amount"
+msgstr ""
+
+msgid "Added by hand"
+msgstr ""
+
+msgid "Note"
+msgstr ""
+
+msgid "Total"
+msgstr ""
+
+msgid "Gross"
+msgstr ""
+
+msgid "Net"
+msgstr ""
+
+msgid "Page"
+msgstr ""
+
+msgid "Fixed pay"
+msgstr ""
+
+msgid "Per class"
+msgstr ""
+
+msgid "Per attendee"
+msgstr ""
+
+msgid "Per personal session"
+msgstr ""
+
+msgid "Percent of sales"
+msgstr ""
+
+msgid "Overtime"
+msgstr ""
+
+msgid "Allowance"
+msgstr ""
+
+msgid "Ad hoc payment"
+msgstr ""
+
+msgid "Non-taxable reimbursement"
+msgstr ""
+
+msgid "Adjustment"
+msgstr ""
+
+msgid "per month"
+msgstr ""
+
+msgid "per week"
+msgstr ""
+
+msgid "per day"
+msgstr ""
+
+msgid "personal training packages they coach"
+msgstr ""
+
+msgid "sales they recorded"
+msgstr ""
+
+msgid "subscriptions of their own clients"
+msgstr ""
+
+msgid "all subscriptions of the box"
+msgstr ""
+
+msgid "per hour"
+msgstr ""
+
+msgid "per period"
+msgstr ""
+
+msgid "per occurrence"
+msgstr ""
+
+msgid "Weekly hours before overtime"
+msgstr ""

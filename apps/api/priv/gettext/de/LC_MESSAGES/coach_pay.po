@@ -1,0 +1,119 @@
+msgid ""
+msgstr ""
+"Language: de\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Pay statement"
+msgstr "Lohnabrechnung"
+
+msgid "Internal pay statement"
+msgstr "Interne Vergütungsaufstellung"
+
+msgid "An internal record of the business for paying its staff, not an official payroll document."
+msgstr "Eine interne Aufzeichnung des Unternehmens zur Bezahlung seines Personals, keine offizielle Lohnabrechnung."
+
+msgid "Business"
+msgstr "Unternehmen"
+
+msgid "Paid to"
+msgstr "Bezahlt an"
+
+msgid "Period"
+msgstr "Zeitraum"
+
+msgid "Approved on"
+msgstr "Freigegeben am"
+
+msgid "Item"
+msgstr "Posten"
+
+msgid "Terms"
+msgstr "Bedingungen"
+
+msgid "Quantity × rate"
+msgstr "Menge × Satz"
+
+msgid "Amount"
+msgstr "Betrag"
+
+msgid "Added by hand"
+msgstr "Manuell hinzugefügt"
+
+msgid "Note"
+msgstr "Notiz"
+
+msgid "Total"
+msgstr "Summe"
+
+msgid "Gross"
+msgstr "Brutto"
+
+msgid "Net"
+msgstr "Netto"
+
+msgid "Page"
+msgstr "Seite"
+
+msgid "Fixed pay"
+msgstr "Festgehalt"
+
+msgid "Per class"
+msgstr "Pro Kurs"
+
+msgid "Per attendee"
+msgstr "Pro Teilnehmer"
+
+msgid "Per personal session"
+msgstr "Pro Personal Training"
+
+msgid "Percent of sales"
+msgstr "Prozent vom Umsatz"
+
+msgid "Overtime"
+msgstr "Überstunden"
+
+msgid "Allowance"
+msgstr "Zulage"
+
+msgid "Ad hoc payment"
+msgstr "Sonderzahlung"
+
+msgid "Non-taxable reimbursement"
+msgstr "Steuerfreie Erstattung"
+
+msgid "Adjustment"
+msgstr "Korrektur"
+
+msgid "per month"
+msgstr "pro Monat"
+
+msgid "per week"
+msgstr "pro Woche"
+
+msgid "per day"
+msgstr "pro Tag"
+
+msgid "personal training packages they coach"
+msgstr "betreute Personal-Training-Pakete"
+
+msgid "sales they recorded"
+msgstr "selbst erfasste Verkäufe"
+
+msgid "subscriptions of their own clients"
+msgstr "Abos der eigenen Kunden"
+
+msgid "all subscriptions of the box"
+msgstr "alle Abos des Studios"
+
+msgid "per hour"
+msgstr "pro Stunde"
+
+msgid "per period"
+msgstr "pro Zeitraum"
+
+msgid "per occurrence"
+msgstr "pro Anlass"
+
+msgid "Weekly hours before overtime"
+msgstr "Wochenstunden vor Überstunden"
