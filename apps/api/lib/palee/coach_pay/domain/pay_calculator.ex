@@ -218,7 +218,8 @@ defmodule Palee.CoachPay.Domain.PayCalculator do
         percent_bps: nil,
         pay_item_id: nil,
         quantity_divisor: nil,
-        note: nil
+        note: nil,
+        amount_basis: Map.get(rule, :amount_basis) || "gross"
       },
       amounts
     )

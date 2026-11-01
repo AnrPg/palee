@@ -4,11 +4,9 @@ defmodule Palee.CoachPay.Domain.Overtime do
 
   For every overtime item with a `weekly_threshold` (`PayItemPolicy.computed?/1`)
   and every person holding one of its roles, the classes they led in the
-  period are grouped by week (Monday to Sunday, gym-local days):
-
-    * `per_extra_class` – classes led above the threshold that week;
-    * `per_hour` – minutes led (the classes' durations) above the
-      threshold × 60 that week, paid `amount × minutes ÷ 60`.
+  period are grouped by week (Monday to Sunday, gym-local days). The
+  minutes led (the classes' scheduled durations) above `threshold × 60`
+  that week are paid `amount × minutes ÷ 60` (product owner, 2026-11-01).
 
   A week the period cuts (its first or last) gets a threshold prorated by
   its days inside the period, rounded down (`threshold × days ÷ 7`), so a
@@ -55,15 +53,9 @@ defmodule Palee.CoachPay.Domain.Overtime do
     last = if Date.compare(week_end, to) == :gt, do: to, else: week_end
     days = Date.diff(last, first) + 1
 
-    {quantity, divisor} =
-      case item.unit do
-        "per_hour" ->
-          minutes = led |> Enum.map(&(Map.get(&1, :duration_minutes) || 0)) |> Enum.sum()
-          {minutes - div(item.weekly_threshold * 60 * days, 7), 60}
-
-        "per_extra_class" ->
-          {length(led) - div(item.weekly_threshold * days, 7), 1}
-      end
+    minutes = led |> Enum.map(&(Map.get(&1, :duration_minutes) || 0)) |> Enum.sum()
+    quantity = minutes - div(item.weekly_threshold * 60 * days, 7)
+    divisor = 60
 
     if quantity > 0 do
       %{
@@ -81,7 +73,8 @@ defmodule Palee.CoachPay.Domain.Overtime do
         unit_cents: item.amount_cents,
         base_cents: nil,
         percent_bps: nil,
-        amount_cents: Proration.amount(item.amount_cents, quantity, divisor)
+        amount_cents: Proration.amount(item.amount_cents, quantity, divisor),
+        amount_basis: Map.get(item, :amount_basis) || "gross"
       }
     end
   end

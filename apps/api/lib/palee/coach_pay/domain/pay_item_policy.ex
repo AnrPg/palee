@@ -2,28 +2,29 @@ defmodule Palee.CoachPay.Domain.PayItemPolicy do
   @moduledoc """
   ADR-382: the box's catalogue of overtime and allowances, pure.
 
-    * `overtime` – `amount_cents` `per_hour` or `per_extra_class`. With a
-      `weekly_threshold` (hours or classes a week) it is counted from the
-      classes the person led (`Palee.CoachPay.Domain.Overtime`); without
-      one (nil, the default) staff add it to a period by hand.
+    * `overtime` – `amount_cents` `per_hour` for the hours led above
+      `weekly_threshold` hours a week (both required, product owner
+      2026-11-01), counted from the classes the person led
+      (`Palee.CoachPay.Domain.Overtime`); never added by hand.
     * `allowance` – `amount_cents` `per_period` (once a period) or
       `per_occurrence` (times the number of occurrences); always added to
       a period by hand, per person.
+
+  `amount_basis` (`gross` default, or `net`) is inherited by its lines.
 
   `roles` are the box's roles the item applies to: `owner`, `admin`,
   `head_coach` (a coach who coaches every client), `coach`, `front_desk`,
   `accountant`, `janitor`. A head coach also holds `coach`.
   """
 
-  alias Palee.CoachPay.Domain.Proration
+  alias Palee.CoachPay.Domain.{AmountBasis, Proration}
 
   @kinds ~w(overtime allowance)
-  @units %{"overtime" => ~w(per_hour per_extra_class), "allowance" => ~w(per_period per_occurrence)}
+  @units %{"overtime" => ~w(per_hour), "allowance" => ~w(per_period per_occurrence)}
   @roles ~w(owner admin head_coach coach front_desk accountant janitor)
   @max_amount 10_000_000
   @max_threshold 168
   @max_quantity 1_000
-  @max_minutes 10_080
 
   def kinds, do: @kinds
   def units, do: @units |> Map.values() |> List.flatten()
@@ -53,6 +54,11 @@ defmodule Palee.CoachPay.Domain.PayItemPolicy do
       )
       |> check(threshold_ok?(kind, merged["weekly_threshold"]), "weekly_threshold", "invalid")
       |> check(currency?(merged["currency"]), "currency", "invalid")
+      |> check(
+        is_nil(merged["amount_basis"]) or AmountBasis.valid?(merged["amount_basis"]),
+        "amount_basis",
+        "invalid"
+      )
 
     if errors == %{} do
       {:ok,
@@ -63,7 +69,8 @@ defmodule Palee.CoachPay.Domain.PayItemPolicy do
          unit: merged["unit"],
          roles: Enum.filter(@roles, &(&1 in roles)),
          weekly_threshold: merged["weekly_threshold"],
-         currency: String.upcase(merged["currency"])
+         currency: String.upcase(merged["currency"]),
+         amount_basis: merged["amount_basis"] || AmountBasis.default()
        }}
     else
       {:error, {:invalid_fields, errors}}
@@ -72,14 +79,12 @@ defmodule Palee.CoachPay.Domain.PayItemPolicy do
 
   def change(_current, _params), do: {:error, {:invalid_fields, %{"item" => "invalid"}}}
 
-  defp threshold_ok?(_kind, nil), do: true
-
   defp threshold_ok?("overtime", value),
     do: is_integer(value) and value >= 0 and value <= @max_threshold
 
-  defp threshold_ok?(_kind, _value), do: false
+  defp threshold_ok?(_kind, value), do: is_nil(value)
 
-  @doc "Whether the item is counted from the classes (overtime with a threshold)."
+  @doc "Whether the item is counted from the classes (active overtime)."
   def computed?(%{kind: "overtime", weekly_threshold: threshold, archived_at: nil})
       when is_integer(threshold),
       do: true
@@ -100,10 +105,9 @@ defmodule Palee.CoachPay.Domain.PayItemPolicy do
   def applies_to?(item, roles), do: Enum.any?(item.roles, &(&1 in roles))
 
   @doc """
-  A pay item added to a period by hand for one person: an allowance, or
-  overtime that has no threshold. `quantity` counts occurrences or extra
-  classes (default 1; `per_period` is always 1), `minutes` the extra time
-  of `per_hour` overtime. `note` is optional (at most 500 characters).
+  An allowance added to a period by hand for one person. `quantity` counts
+  occurrences (default 1; `per_period` is always 1); `note` is optional
+  (at most 500 characters); `amount_basis` defaults to the item's.
   """
   def manual_line(item, params, %Date{} = occurred_on, actor_id) do
     params = Map.new(params, fn {key, value} -> {to_string(key), value} end)
@@ -111,7 +115,8 @@ defmodule Palee.CoachPay.Domain.PayItemPolicy do
 
     with :ok <- usable(item),
          {:ok, quantity, divisor} <- quantity(item.unit, params),
-         :ok <- note_ok(note) do
+         :ok <- note_ok(note),
+         {:ok, basis} <- basis(params["amount_basis"], item) do
       {:ok,
        %{
          rule_id: nil,
@@ -128,6 +133,7 @@ defmodule Palee.CoachPay.Domain.PayItemPolicy do
          base_cents: nil,
          percent_bps: nil,
          amount_cents: Proration.amount(item.amount_cents, quantity, divisor),
+         amount_basis: basis,
          created_by_id: actor_id
        }}
     end
@@ -136,24 +142,23 @@ defmodule Palee.CoachPay.Domain.PayItemPolicy do
   defp usable(%{archived_at: archived}) when not is_nil(archived),
     do: {:error, :coach_pay_item_archived}
 
-  defp usable(item) do
-    if computed?(item),
-      do: {:error, {:invalid_fields, %{"pay_item_id" => "counted_from_classes"}}},
-      else: :ok
+  defp usable(%{kind: "overtime"}),
+    do: {:error, {:invalid_fields, %{"pay_item_id" => "counted_from_classes"}}}
+
+  defp usable(_item), do: :ok
+
+  defp basis(nil, item), do: {:ok, Map.get(item, :amount_basis) || AmountBasis.default()}
+
+  defp basis(value, _item) do
+    if AmountBasis.valid?(value),
+      do: {:ok, value},
+      else: {:error, {:invalid_fields, %{"amount_basis" => "invalid"}}}
   end
 
   defp quantity("per_period", params) do
     if params["quantity"] in [nil, 1],
       do: {:ok, 1, 1},
       else: {:error, {:invalid_fields, %{"quantity" => "invalid"}}}
-  end
-
-  defp quantity("per_hour", params) do
-    minutes = params["minutes"]
-
-    if is_integer(minutes) and minutes > 0 and minutes <= @max_minutes,
-      do: {:ok, minutes, 60},
-      else: {:error, {:invalid_fields, %{"minutes" => "required"}}}
   end
 
   defp quantity(_unit, params) do
@@ -182,7 +187,8 @@ defmodule Palee.CoachPay.Domain.PayItemPolicy do
       "amount_cents" => item.amount_cents,
       "unit" => item.unit,
       "weekly_threshold" => item.weekly_threshold,
-      "currency" => item.currency
+      "currency" => item.currency,
+      "amount_basis" => Map.get(item, :amount_basis) || AmountBasis.default()
     }
   end
 

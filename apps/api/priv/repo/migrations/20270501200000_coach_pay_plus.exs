@@ -14,8 +14,9 @@ defmodule Palee.Repo.Migrations.CoachPayPlus do
       items and lines: whether an amount is before or after the person's
       taxes and contributions (Palee computes neither). Statements and
       periods keep `gross_cents` and `net_cents` apart.
-    * `coach_pay_lines` – kinds `fixed`, `overtime`, `allowance` and
-      `ad_hoc` (a payment by hand with its reason), the line's `note`, the
+    * `coach_pay_lines` – kinds `fixed`, `overtime`, `allowance`, `ad_hoc`
+      (a payment by hand with its reason) and `non_taxable_reimbursement`
+      (an expense paid back, with its required note), the line's `note`, the
       pay item it comes from and the `quantity_divisor` of prorated and
       hourly lines (amount = unit × quantity ÷ divisor, rounded half up).
     * `coach_pay_statements.rule_terms` – the terms of each rule as it was
@@ -31,7 +32,8 @@ defmodule Palee.Repo.Migrations.CoachPayPlus do
   @kinds_before "'per_class', 'per_attendee', 'per_session', 'percent_of_sales'"
   @kinds "'per_class', 'per_attendee', 'per_session', 'percent_of_sales', 'fixed'"
   @line_kinds_before @kinds_before <> ", 'clawback', 'adjustment'"
-  @line_kinds @kinds <> ", 'clawback', 'adjustment', 'overtime', 'allowance', 'ad_hoc'"
+  @line_kinds @kinds <>
+                ", 'clawback', 'adjustment', 'overtime', 'allowance', 'ad_hoc', 'non_taxable_reimbursement'"
   @sources_before "'scheduled_class', 'appointment_slot', 'finance_payment', 'finance_reversal', 'manual'"
   @sources @sources_before <> ", 'rule', 'pay_item'"
 

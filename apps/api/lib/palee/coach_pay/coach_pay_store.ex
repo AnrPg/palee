@@ -49,6 +49,10 @@ defmodule Palee.CoachPay.CoachPayStore do
     do: adapter().add_line(period_id, coach_user_id, attrs, terms)
 
   @impl true
+  def update_line_basis(period_id, line_id, basis),
+    do: adapter().update_line_basis(period_id, line_id, basis)
+
+  @impl true
   def delete_adjustment(period_id, line_id), do: adapter().delete_adjustment(period_id, line_id)
   @impl true
   def list_items(filters), do: adapter().list_items(filters)

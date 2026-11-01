@@ -11,6 +11,8 @@ defmodule Palee.CoachPay.Domain.PeriodPolicy do
   change under them. Periods are at most 92 days and never overlap.
   """
 
+  alias Palee.CoachPay.Domain.AmountBasis
+
   @max_days 92
 
   def max_days, do: @max_days
@@ -78,13 +80,33 @@ defmodule Palee.CoachPay.Domain.PeriodPolicy do
       `description`;
     * `ad_hoc` (ADR-382, «Έκτακτη πληρωμή») – a payment by hand: a
       positive amount and its reason (`note`, required, at most 500
-      characters; the description is its first 250).
+      characters; the description is its first 250);
+    * `non_taxable_reimbursement` (ADR-382, «Μη φορολογητέο») – money paid
+      back to the person, e.g. an expense: a positive amount and a
+      required `note`, like `ad_hoc`. Whether it is taxable is the
+      accountant's call; Palee only labels it.
 
-  Who added it (`created_by_id`) and when (`inserted_at`) stay on the line.
+  `amount_basis` is `gross` (default) or `net`. Who added it
+  (`created_by_id`) and when (`inserted_at`) stay on the line.
   """
   def adjustment(params, %Date{} = occurred_on, actor_id) do
     params = Map.new(params, fn {key, value} -> {to_string(key), value} end)
-    manual(params["kind"] || "adjustment", params, occurred_on, actor_id)
+    basis = params["amount_basis"] || AmountBasis.default()
+
+    if AmountBasis.valid?(basis) do
+      with {:ok, line} <- manual(params["kind"] || "adjustment", params, occurred_on, actor_id) do
+        {:ok, Map.put(line, :amount_basis, basis)}
+      end
+    else
+      {:error, {:invalid_fields, %{"amount_basis" => "invalid"}}}
+    end
+  end
+
+  @doc "ADR-382: a changed basis for a line of a draft period."
+  def basis_change(value) do
+    if AmountBasis.valid?(value),
+      do: {:ok, %{amount_basis: value}},
+      else: {:error, {:invalid_fields, %{"amount_basis" => "invalid"}}}
   end
 
   defp manual("adjustment", params, occurred_on, actor_id) do
@@ -104,7 +126,8 @@ defmodule Palee.CoachPay.Domain.PeriodPolicy do
     end
   end
 
-  defp manual("ad_hoc", params, occurred_on, actor_id) do
+  defp manual(kind, params, occurred_on, actor_id)
+       when kind in ["ad_hoc", "non_taxable_reimbursement"] do
     amount = params["amount_cents"]
     note = if is_binary(params["note"]), do: String.trim(params["note"])
 
@@ -116,7 +139,7 @@ defmodule Palee.CoachPay.Domain.PeriodPolicy do
         {:error, {:invalid_fields, %{"note" => "required"}}}
 
       true ->
-        {:ok, line("ad_hoc", String.slice(note, 0, 250), note, amount, occurred_on, actor_id)}
+        {:ok, line(kind, String.slice(note, 0, 250), note, amount, occurred_on, actor_id)}
     end
   end
 
@@ -143,5 +166,5 @@ defmodule Palee.CoachPay.Domain.PeriodPolicy do
     }
 
   @doc "Kinds of lines staff add by hand to a period (`adjustment/3`)."
-  def manual_kinds, do: ~w(adjustment ad_hoc)
+  def manual_kinds, do: ~w(adjustment ad_hoc non_taxable_reimbursement)
 end

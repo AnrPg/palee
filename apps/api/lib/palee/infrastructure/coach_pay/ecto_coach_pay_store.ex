@@ -170,6 +170,8 @@ defmodule Palee.Infrastructure.CoachPay.EctoCoachPayStore do
       period_id: statement.period_id,
       coach_user_id: statement.coach_user_id,
       total_cents: statement.total_cents,
+      gross_cents: statement.gross_cents,
+      net_cents: statement.net_cents,
       line_count: statement.line_count
     })
     |> Repo.all()
@@ -212,7 +214,7 @@ defmodule Palee.Infrastructure.CoachPay.EctoCoachPayStore do
     end)
 
     refresh_totals(period_id)
-    update_period(period_id, %{calculated_at: now, total_cents: period_total(period_id)})
+    update_period(period_id, Map.put(period_totals(period_id), :calculated_at, now))
   end
 
   @impl true
@@ -228,12 +230,32 @@ defmodule Palee.Infrastructure.CoachPay.EctoCoachPayStore do
       {:ok, line} ->
         merge_terms!(statement_id, terms)
         refresh_totals(period_id)
-        update_period(period_id, %{total_cents: period_total(period_id)})
+        update_period(period_id, period_totals(period_id))
         {:ok, plain(line)}
 
       error ->
         error
     end
+  end
+
+  @impl true
+  def update_line_basis(period_id, line_id, basis) do
+    with_uuid(line_id, fn id ->
+      Line
+      |> tenant_scope()
+      |> where([line], line.id == ^id and line.statement_id in ^Map.values(statement_map(period_id)))
+      |> Repo.one()
+      |> case do
+        nil ->
+          {:error, :not_found}
+
+        line ->
+          line |> Line.changeset(%{amount_basis: basis}) |> Repo.update!()
+          refresh_totals(period_id)
+          update_period(period_id, period_totals(period_id))
+          :ok
+      end
+    end) || {:error, :not_found}
   end
 
   @impl true
@@ -251,7 +273,7 @@ defmodule Palee.Infrastructure.CoachPay.EctoCoachPayStore do
 
       if count == 1 do
         refresh_totals(period_id)
-        update_period(period_id, %{total_cents: period_total(period_id)})
+        update_period(period_id, period_totals(period_id))
         :ok
       else
         {:error, :not_found}
@@ -345,7 +367,8 @@ defmodule Palee.Infrastructure.CoachPay.EctoCoachPayStore do
           :amount_cents,
           :pay_item_id,
           :quantity_divisor,
-          :note
+          :note,
+          :amount_basis
         ])
         |> Map.merge(%{
           id: Ecto.UUID.generate(),
@@ -369,9 +392,16 @@ defmodule Palee.Infrastructure.CoachPay.EctoCoachPayStore do
       |> join(:inner, [line], statement in Statement, on: statement.id == line.statement_id)
       |> where([_line, statement], statement.period_id == ^period_id)
       |> group_by([line], line.statement_id)
-      |> select([line], {line.statement_id, sum(line.amount_cents), count(line.id)})
+      |> select([line], {
+        line.statement_id,
+        sum(line.amount_cents),
+        count(line.id),
+        filter(sum(line.amount_cents), line.amount_basis == "net")
+      })
       |> Repo.all()
-      |> Map.new(fn {id, total, count} -> {id, {to_integer(total), count}} end)
+      |> Map.new(fn {id, total, count, net} ->
+        {id, {to_integer(total), count, to_integer(net)}}
+      end)
 
     Statement
     |> tenant_scope()
@@ -382,21 +412,32 @@ defmodule Palee.Infrastructure.CoachPay.EctoCoachPayStore do
         nil ->
           Repo.delete!(statement)
 
-        {total, count} ->
+        {total, count, net} ->
           statement
-          |> Statement.changeset(%{total_cents: total, line_count: count})
+          |> Statement.changeset(%{
+            total_cents: total,
+            line_count: count,
+            gross_cents: total - net,
+            net_cents: net
+          })
           |> Repo.update!()
       end
     end)
   end
 
-  defp period_total(period_id) do
-    Statement
-    |> tenant_scope()
-    |> where([statement], statement.period_id == ^period_id)
-    |> select([statement], sum(statement.total_cents))
-    |> Repo.one()
-    |> to_integer()
+  # Period totals: all lines, and gross and net apart (ADR-382).
+  defp period_totals(period_id) do
+    {total, gross, net} =
+      Statement
+      |> tenant_scope()
+      |> where([statement], statement.period_id == ^period_id)
+      |> select(
+        [statement],
+        {sum(statement.total_cents), sum(statement.gross_cents), sum(statement.net_cents)}
+      )
+      |> Repo.one()
+
+    %{total_cents: to_integer(total), gross_cents: to_integer(gross), net_cents: to_integer(net)}
   end
 
   defp to_integer(nil), do: 0

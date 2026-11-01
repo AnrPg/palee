@@ -46,6 +46,9 @@ defmodule Palee.CoachPay.Ports.CoachPayStore do
   @doc "Adds a line by hand, merging `terms` (`%{id => terms}`) into the statement's."
   @callback add_line(period_id :: id(), coach_user_id :: id(), map(), terms :: map()) ::
               {:ok, map()} | {:error, term()}
+  @doc "ADR-382: changes a line's amount basis and the totals."
+  @callback update_line_basis(period_id :: id(), line_id :: id(), String.t()) ::
+              :ok | {:error, term()}
   @doc "Removes a line added by hand (`source_type = manual`)."
   @callback delete_adjustment(period_id :: id(), line_id :: id()) :: :ok | {:error, term()}
 

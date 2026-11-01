@@ -5,15 +5,17 @@ defmodule Palee.CoachPay.Domain.StatementGroups do
   paid by, the quantity × rate and the group's total, pure.
 
   A rule's clawbacks fall in that rule's group, so the group shows what the
-  rule paid net. Groups come in a fixed order: rules (by kind), overtime,
-  allowances, payments by hand, adjustments.
+  rule paid after refunds. Lines of one rule with different amount bases
+  (`gross`, `net`) form separate groups: they are never summed together.
+  Groups come in a fixed order: rules (by kind), overtime, allowances,
+  payments by hand, reimbursements, adjustments.
   """
 
   @order ~w(fixed per_class per_attendee per_session percent_of_sales overtime allowance
-            ad_hoc adjustment)
+            ad_hoc non_taxable_reimbursement adjustment)
 
   @doc """
-  `[%{key, kind, rule_id, pay_item_id, terms, line_count, quantity,
+  `[%{key, kind, rule_id, pay_item_id, amount_basis, terms, line_count, quantity,
   quantity_divisor, unit_cents, base_cents, amount_cents}]`. `unit_cents`
   and `quantity_divisor` are nil when the group's lines differ in them;
   `quantity` sums the lines' quantities (minutes for hourly overtime,
@@ -23,10 +25,12 @@ defmodule Palee.CoachPay.Domain.StatementGroups do
     terms = Map.get(statement, :rule_terms) || %{}
 
     lines
-    |> Enum.group_by(&key/1)
+    |> Enum.group_by(&(key(&1) <> ":" <> basis(&1)))
     |> Enum.map(fn {key, lines} -> group(key, lines, terms) end)
     |> Enum.sort_by(&{rank(&1.kind), &1.key})
   end
+
+  defp basis(line), do: Map.get(line, :amount_basis) || "gross"
 
   defp key(%{rule_id: rule_id}) when is_binary(rule_id), do: "rule:" <> rule_id
 
@@ -45,6 +49,7 @@ defmodule Palee.CoachPay.Domain.StatementGroups do
       kind: kind,
       rule_id: first.rule_id,
       pay_item_id: Map.get(first, :pay_item_id),
+      amount_basis: basis(first),
       terms: id && Map.get(terms, id),
       line_count: length(lines),
       quantity: lines |> Enum.map(&(&1.quantity || 0)) |> Enum.sum(),

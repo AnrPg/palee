@@ -24,9 +24,14 @@ defmodule Palee.CoachPay.Domain.RulePolicy do
   A coach may hold any number of rules of any kinds at once; each pays on
   its own and the statement shows one group per rule.
 
+  `amount_basis` (`gross` default, or `net`): what the rule's amounts are,
+  inherited by its lines (`Palee.CoachPay.Domain.AmountBasis`).
+
   Who counts in a class (`count_statuses`): `attended` by default; a box
   may also pay for `late_cancel` and `no_show` (the place was held).
   """
+
+  alias Palee.CoachPay.Domain.AmountBasis
 
   @kinds ~w(per_class per_attendee per_session percent_of_sales fixed)
   @statuses ~w(attended late_cancel no_show)
@@ -84,6 +89,11 @@ defmodule Palee.CoachPay.Domain.RulePolicy do
         is_nil(merged["note"]) or
           (is_binary(merged["note"]) and String.length(merged["note"]) <= 200),
         "note",
+        "invalid"
+      )
+      |> check(
+        is_nil(merged["amount_basis"]) or AmountBasis.valid?(merged["amount_basis"]),
+        "amount_basis",
         "invalid"
       )
       |> kind_errors(kind, merged)
@@ -153,6 +163,7 @@ defmodule Palee.CoachPay.Domain.RulePolicy do
       count_statuses: (merged["count_statuses"] || ["attended"]) |> Enum.uniq() |> Enum.sort(),
       min_attendees: merged["min_attendees"] || 0,
       max_attendees: merged["max_attendees"],
+      amount_basis: merged["amount_basis"] || AmountBasis.default(),
       note: merged["note"]
     }
   end
@@ -193,6 +204,7 @@ defmodule Palee.CoachPay.Domain.RulePolicy do
       "min_attendees" => rule.min_attendees,
       "max_attendees" => rule.max_attendees,
       "currency" => rule.currency,
+      "amount_basis" => Map.get(rule, :amount_basis) || AmountBasis.default(),
       "starts_on" => iso(rule.starts_on),
       "ends_on" => iso(rule.ends_on),
       "note" => rule.note

@@ -18,6 +18,7 @@ defmodule Palee.CoachPay do
 
   alias Palee.CoachPay.CoachPayStore
   alias Palee.CoachPay.Domain.{
+    AmountBasis,
     PayCalculator,
     PayItemPolicy,
     PeriodPolicy,
@@ -39,6 +40,7 @@ defmodule Palee.CoachPay do
   def rule_count_statuses, do: RulePolicy.count_statuses()
   def rule_sales_scopes, do: RulePolicy.sales_scopes()
   def rule_frequencies, do: RulePolicy.frequencies()
+  def amount_bases, do: AmountBasis.bases()
 
   @doc "Pay item kinds, units and roles (ADR-382, for the API's enums)."
   def pay_item_kinds, do: PayItemPolicy.kinds()
@@ -222,6 +224,28 @@ defmodule Palee.CoachPay do
       else: {:error, {:invalid_fields, %{"user_id" => "role_not_covered"}}}
   end
 
+  @doc """
+  ADR-382: whether a line of a draft period is gross or net. A calculated
+  line takes its rule's basis again when the period is calculated again;
+  a line added by hand keeps it.
+  """
+  def set_line_basis(context, id, line_id, basis) do
+    scoped(context, fn ->
+      CoachPayStore.transaction(fn ->
+        with %{} = period <- CoachPayStore.lock_period(id) || {:error, :not_found},
+             :ok <- PeriodPolicy.editable?(period),
+             {:ok, %{amount_basis: basis}} <- PeriodPolicy.basis_change(basis),
+             :ok <- CoachPayStore.update_line_basis(id, line_id, basis) do
+          {:ok, :updated}
+        end
+      end)
+    end)
+    |> then(fn
+      {:ok, _updated} -> get_period(context, id)
+      error -> error
+    end)
+  end
+
   def delete_adjustment(context, id, line_id) do
     scoped(context, fn ->
       CoachPayStore.transaction(fn ->
@@ -322,9 +346,18 @@ defmodule Palee.CoachPay do
       (is_nil(from) or Date.compare(period.starts_on, from) != :lt) and
         (is_nil(to) or Date.compare(period.starts_on, to) != :gt)
 
-  @doc "A statement with its groups per rule (ADR-382)."
-  def with_groups(%{lines: _lines} = statement),
-    do: Map.put(statement, :groups, StatementGroups.groups(statement))
+  @doc """
+  A statement with its groups per rule (ADR-382), each line marked when its
+  amount is `net` (`deviates_from_default`) and the count of such lines.
+  """
+  def with_groups(%{lines: lines} = statement) do
+    lines = Enum.map(lines, &Map.put(&1, :deviates_from_default, AmountBasis.deviates?(&1)))
+
+    statement
+    |> Map.put(:lines, lines)
+    |> Map.put(:groups, StatementGroups.groups(statement))
+    |> Map.put(:net_line_count, Enum.count(lines, & &1.deviates_from_default))
+  end
 
   def with_groups(statement), do: statement
 

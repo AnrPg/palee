@@ -65,7 +65,6 @@ defmodule Palee.CoachPay.Domain.Payslip do
     own_clients: "subscriptions of their own clients",
     box_all: "all subscriptions of the box",
     per_hour: "per hour",
-    per_extra_class: "per extra class",
     per_period: "per period",
     per_occurrence: "per occurrence",
     weekly_threshold: "above %{threshold} a week"
