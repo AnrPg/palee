@@ -7,7 +7,7 @@ defmodule Palee.Application.Channels.ChannelMessages do
 
   alias Palee.Application.Channels.SendThroughChannel
   alias Palee.Channels
-  alias Palee.Channels.Domain.{DeliveryPolicy, PhoneNumber}
+  alias Palee.Channels.Domain.{CostPolicy, DeliveryPolicy, PhoneNumber}
 
   def preview(context, params, now \\ DateTime.utc_now()),
     do: SendThroughChannel.preview(context, staff(params), now)
@@ -81,8 +81,14 @@ defmodule Palee.Application.Channels.ChannelMessages do
              cost_cents currency error_code source source_ref created_by_id sent_at delivered_at
              failed_at inserted_at)a
 
+  # ADR-369: the box sees its price, never the provider's: the charged
+  # provider price comes back with the message's margin on it.
   defp view(message),
-    do: message |> Map.take(@public) |> Map.put(:to, PhoneNumber.mask(message.to_phone))
+    do:
+      message
+      |> Map.take(@public)
+      |> Map.put(:to, PhoneNumber.mask(message.to_phone))
+      |> Map.put(:cost_cents, message.cost_cents && CostPolicy.counted(message))
 
   defp uuid(nil), do: nil
 

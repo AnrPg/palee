@@ -77,9 +77,15 @@ defmodule PaleeWeb.Schemas.Channels do
         },
         cap_cents: %Schema{type: :integer, nullable: true},
         currency: %Schema{type: :string},
-        account_mode: %Schema{type: :string, nullable: true}
+        account_mode: %Schema{type: :string, nullable: true},
+        palee_charge_cents: %Schema{
+          type: :integer,
+          description:
+            "ADR-369: what Palee bills the box for the month (messages sent on Palee's account, " <>
+              "at the box's price)"
+        }
       },
-      required: [:by_channel, :currency, :from, :messages, :spent_cents, :to]
+      required: [:by_channel, :currency, :from, :messages, :palee_charge_cents, :spent_cents, :to]
     }
   end
 
@@ -348,7 +354,11 @@ defmodule PaleeWeb.Schemas.Channels do
         body: %Schema{type: :string},
         segments: %Schema{type: :integer},
         encoding: %Schema{type: :string, nullable: true, description: "gsm7 or ucs2 (SMS only)"},
-        estimated_cost_cents: %Schema{type: :integer},
+        estimated_cost_cents: %Schema{
+          type: :integer,
+          description:
+            "The box's price: the provider's estimate plus Palee's margin on Palee's account (ADR-369)"
+        },
         currency: %Schema{type: :string},
         urgent: %Schema{type: :boolean},
         release_at: %Schema{type: :string, format: :"date-time"},
@@ -461,6 +471,196 @@ defmodule PaleeWeb.Schemas.Channels do
         total: %Schema{type: :integer}
       },
       required: [:messages, :total]
+    }
+  end
+
+  # ── ADR-368: the box's own SMTP email provider ─────────────────────────
+
+  def email_connection do
+    %Schema{
+      type: :object,
+      nullable: true,
+      description:
+        "The box's own SMTP provider; null when Palee sends the box's email (the default). " <>
+          "The password is never returned (`has_secret`).",
+      properties: %{
+        host: %Schema{type: :string},
+        port: %Schema{type: :integer},
+        tls_mode: %Schema{type: :string, enum: ["starttls", "tls"]},
+        username: %Schema{type: :string},
+        from_address: %Schema{type: :string, format: :email},
+        from_name: @text,
+        reply_to: @text,
+        enabled: %Schema{type: :boolean},
+        status: %Schema{
+          type: :string,
+          enum: ["unchecked", "active", "invalid"],
+          description: "Mail goes through it only when `enabled` and `active` (`in_use`)"
+        },
+        in_use: %Schema{type: :boolean},
+        error_code: @text,
+        checked_at: @time,
+        has_secret: %Schema{type: :boolean},
+        updated_at: @time
+      },
+      required: [
+        :enabled,
+        :from_address,
+        :has_secret,
+        :host,
+        :in_use,
+        :port,
+        :status,
+        :tls_mode,
+        :username
+      ]
+    }
+  end
+
+  def email_settings do
+    %Schema{
+      type: :object,
+      properties: %{
+        connection: email_connection(),
+        ports: %Schema{type: :array, items: %Schema{type: :integer}},
+        tls_modes: %Schema{type: :array, items: %Schema{type: :string}},
+        dns_guidance: %Schema{
+          type: :object,
+          description:
+            "The DNS records the guide reminds the box of; `key` is a message key " <>
+              "(`email_dns.*`) the screen translates",
+          properties: %{
+            domain: @text,
+            steps: %Schema{
+              type: :array,
+              items: %Schema{
+                type: :object,
+                properties: %{
+                  key: %Schema{type: :string},
+                  record: @text,
+                  host: @text
+                },
+                required: [:host, :key, :record]
+              }
+            }
+          },
+          required: [:domain, :steps]
+        }
+      },
+      required: [:connection, :dns_guidance, :ports, :tls_modes]
+    }
+  end
+
+  def email_settings_body do
+    %Schema{
+      type: :object,
+      additionalProperties: false,
+      properties: %{
+        host: %Schema{type: :string, maxLength: 253},
+        port: %Schema{type: :integer, enum: [25, 465, 587, 2525]},
+        tls_mode: %Schema{type: :string, enum: ["starttls", "tls"]},
+        username: %Schema{type: :string, maxLength: 254},
+        secret: %Schema{
+          type: :string,
+          maxLength: 500,
+          format: :password,
+          description: "The SMTP password; kept when not sent, never returned"
+        },
+        from_address: %Schema{type: :string, maxLength: 254},
+        from_name: %Schema{type: :string, maxLength: 120, nullable: true},
+        reply_to: %Schema{type: :string, maxLength: 254, nullable: true},
+        enabled: %Schema{type: :boolean}
+      }
+    }
+  end
+
+  def email_check_result do
+    %Schema{
+      type: :object,
+      properties: %{
+        connection: email_connection(),
+        check: %Schema{
+          type: :object,
+          properties: %{ok: %Schema{type: :boolean}, error_code: @text},
+          required: [:error_code, :ok]
+        }
+      },
+      required: [:check, :connection]
+    }
+  end
+
+  # ── ADR-369: Palee's margin (Palee team only) ──────────────────────────
+
+  @margins %Schema{
+    type: :object,
+    description: "Basis points per channel (2500 = 25 %)",
+    properties: %{
+      email: %Schema{type: :integer, minimum: 0, maximum: 100_000},
+      sms: %Schema{type: :integer, minimum: 0, maximum: 100_000},
+      viber: %Schema{type: :integer, minimum: 0, maximum: 100_000},
+      whatsapp: %Schema{type: :integer, minimum: 0, maximum: 100_000}
+    }
+  }
+
+  def margins do
+    %Schema{
+      type: :object,
+      properties: %{
+        margins_bps: %Schema{@margins | required: [:email, :sms, :viber, :whatsapp]},
+        updated_at: @time
+      },
+      required: [:margins_bps, :updated_at]
+    }
+  end
+
+  def margins_body do
+    %Schema{
+      type: :object,
+      additionalProperties: false,
+      properties: %{margins_bps: %Schema{@margins | additionalProperties: false}},
+      required: [:margins_bps]
+    }
+  end
+
+  def monthly_charge do
+    %Schema{
+      type: :object,
+      description:
+        "What Palee charges the box for a month's messages on Palee's account, with the " <>
+          "providers' cost (Palee team only)",
+      properties: %{
+        month: %Schema{type: :string, example: "2026-11"},
+        from: %Schema{type: :string, format: :"date-time"},
+        to: %Schema{type: :string, format: :"date-time"},
+        currency: %Schema{type: :string},
+        charge_cents: %Schema{type: :integer},
+        provider_cost_cents: %Schema{type: :integer},
+        margin_cents: %Schema{type: :integer},
+        messages: %Schema{type: :integer},
+        by_channel: %Schema{
+          type: :object,
+          additionalProperties: %Schema{
+            type: :object,
+            properties: %{
+              charge_cents: %Schema{type: :integer},
+              provider_cost_cents: %Schema{type: :integer},
+              count: %Schema{type: :integer}
+            },
+            required: [:charge_cents, :count, :provider_cost_cents]
+          }
+        }
+      },
+      required: [
+        :by_channel,
+        :charge_cents,
+        :currency,
+        :from,
+        :margin_cents,
+        :messages,
+        :month,
+        :provider_cost_cents,
+        :to
+      ]
     }
   end
 end

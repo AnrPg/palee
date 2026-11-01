@@ -292,6 +292,13 @@ config :palee, :channel_managed_accounts, %{}
 config :palee, :channel_prices, nil
 config :palee, :channels_webhook_key, "dev-only-channels-webhook-key"
 config :palee, :channels_http, []
+
+# ADR-368: a box's own email provider over SMTP (the advanced option; Palee
+# sends the box's email by default). The box's own messages (templates with
+# `origin: :box`) go through it when connected and checked. Dev and test use
+# the sandbox transport, which sends nothing.
+config :palee, :channel_email_transport, Palee.Infrastructure.Channels.SmtpEmailTransport
+config :palee, :email_box_sender, Palee.Application.Channels.BoxEmailSender
 config :palee, :payment_fulfilment, Palee.Application.Payments.FinanceFulfilment
 config :palee, :payment_notifier, Palee.Application.Payments.FailureNotices
 

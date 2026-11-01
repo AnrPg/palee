@@ -65,7 +65,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     fiscal_connection_settings
     payment_accounts payment_methods payment_intents payment_refunds payment_webhook_events
     channel_connections channel_contacts channel_consents channel_templates channel_messages
-    channel_message_events
+    channel_message_events channel_email_connections
 
     payment_surcharge_settings
     coach_pay_rules coach_pay_periods coach_pay_statements coach_pay_lines

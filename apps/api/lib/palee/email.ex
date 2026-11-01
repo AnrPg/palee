@@ -266,6 +266,10 @@ defmodule Palee.Email do
   def sender, do: Application.fetch_env!(:palee, :email_sender)
 
   @doc false
+  # ADR-368: the box's own SMTP provider, for emails whose template is `origin: :box`.
+  def box_sender, do: Application.fetch_env!(:palee, :email_box_sender)
+
+  @doc false
   # A Message-ID on the sender's domain, chosen at enqueue so every retry
   # carries the same one (Palee.Mailer keeps an existing Message-ID).
   def new_message_id do

@@ -42,6 +42,8 @@ defmodule PaleeWeb.RouteCapabilities do
     # ADR-348..351: the provider, budget and wording are settings; numbers,
     # consents and sending belong to whoever messages from the box.
     W.AdminChannelSettingsController => [:manage_settings],
+    # ADR-368: the box's own SMTP email provider.
+    W.AdminChannelEmailController => [:manage_settings],
     W.AdminChannelContactsController => [:message_from_box],
     W.AdminChannelMessagesController => [:message_from_box],
     W.CoachingRelationshipsController => [:assign_coaches, :manage_coaching],

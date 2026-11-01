@@ -13,6 +13,11 @@ defmodule Palee.Email.Commands.DeliverEmail do
 
   The body is cleared once the email is sent or given up on, so the outbox
   keeps no readable link longer than it must.
+
+  ADR-368: a box's own email (template `origin: :box`) goes through the
+  box's own SMTP provider when it has one in use (`sent_via: own`), outside
+  Palee's daily budget; otherwise, and for all platform mail, through
+  Palee's mailer (`sent_via: palee`).
   """
 
   require Logger
@@ -34,22 +39,57 @@ defmodule Palee.Email.Commands.DeliverEmail do
   end
 
   defp attempt(store, message, last?, now) do
-    if refused?(store, message) do
-      {:ok, message} = store.update(message, %{status: "suppressed", encrypted_body: nil})
-      Palee.Email.emit(:suppressed, message)
-      :ok
-    else
-      case on_send(store, String.to_existing_atom(message.category), now) do
-        {:send, sent_today} ->
-          with :ok <- send(store, message, last?, now) do
-            warn_budget(sent_today + 1)
-          end
+    cond do
+      refused?(store, message) ->
+        {:ok, message} = store.update(message, %{status: "suppressed", encrypted_body: nil})
+        Palee.Email.emit(:suppressed, message)
+        :ok
 
-        {:defer, until} ->
-          {:ok, message} = store.update(message, %{status: "deferred", scheduled_at: until})
-          Palee.Email.emit(:deferred, message)
-          {:snooze, max(DateTime.diff(until, now), 1)}
-      end
+      box_mail?(message) ->
+        through_box(store, message, last?, now)
+
+      true ->
+        through_palee(store, message, last?, now)
+    end
+  end
+
+  # ADR-368: the box's own message goes through the box's own SMTP provider
+  # when it has one in use; it is not Palee's mail, so Palee's daily budget
+  # does not apply. Without one it goes through Palee's mailer.
+  defp box_mail?(%Message{organization_id: organization_id, kind: kind})
+       when is_binary(organization_id) do
+    case Palee.Email.Templates.fetch(kind) do
+      {:ok, template} -> template.origin() == :box
+      {:error, _unknown} -> false
+    end
+  end
+
+  defp box_mail?(_message), do: false
+
+  defp through_box(store, message, last?, now) do
+    case body(message) do
+      {:ok, body} ->
+        case Palee.Email.box_sender().deliver(message.organization_id, outgoing(message, body)) do
+          :unavailable -> through_palee(store, message, last?, now)
+          result -> settle(store, message, result, "own", last?, now)
+        end
+
+      error ->
+        settle(store, message, error, "own", last?, now)
+    end
+  end
+
+  defp through_palee(store, message, last?, now) do
+    case on_send(store, String.to_existing_atom(message.category), now) do
+      {:send, sent_today} ->
+        with :ok <- send(store, message, last?, now) do
+          warn_budget(sent_today + 1)
+        end
+
+      {:defer, until} ->
+        {:ok, message} = store.update(message, %{status: "deferred", scheduled_at: until})
+        Palee.Email.emit(:deferred, message)
+        {:snooze, max(DateTime.diff(until, now), 1)}
     end
   end
 
@@ -87,26 +127,33 @@ defmodule Palee.Email.Commands.DeliverEmail do
 
   defp send(store, message, last?, now) do
     result =
-      with {:ok, %{"text" => text, "html" => html} = body} <- body(message) do
-        headers = Map.get(body, "headers") || %{}
-
-        Palee.Email.sender().deliver(%{
-          to: message.to_address,
-          subject: message.subject,
-          text: text,
-          html: html,
-          message_id: message.message_id,
-          headers: headers,
-          attachments: attachments(body)
-        })
+      with {:ok, body} <- body(message) do
+        Palee.Email.sender().deliver(outgoing(message, body))
       end
 
+    settle(store, message, result, "palee", last?, now)
+  end
+
+  defp outgoing(message, %{"text" => text, "html" => html} = body) do
+    %{
+      to: message.to_address,
+      subject: message.subject,
+      text: text,
+      html: html,
+      message_id: message.message_id,
+      headers: Map.get(body, "headers") || %{},
+      attachments: attachments(body)
+    }
+  end
+
+  defp settle(store, message, result, via, last?, now) do
     case result do
       {:ok, _metadata} ->
         {:ok, message} =
           store.update(message, %{
             status: "sent",
             sent_at: now,
+            sent_via: via,
             attempts: message.attempts + 1,
             last_error: nil,
             encrypted_body: nil,
