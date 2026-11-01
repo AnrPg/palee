@@ -14,13 +14,15 @@ defmodule Palee.CoachPay.Statement do
     field :line_count, :integer, default: 0
     # ADR-382: each paying rule's terms when the statement was calculated.
     field :rule_terms, :map, default: %{}
+    field :gross_cents, :integer, default: 0
+    field :net_cents, :integer, default: 0
 
     timestamps(type: :utc_datetime_usec)
   end
 
   def changeset(statement, attrs) do
     statement
-    |> cast(attrs, [:period_id, :coach_user_id, :total_cents, :line_count, :rule_terms])
+    |> cast(attrs, [:period_id, :coach_user_id, :total_cents, :line_count, :rule_terms, :gross_cents, :net_cents])
     |> validate_required([:period_id, :coach_user_id])
     |> unique_constraint([:period_id, :coach_user_id])
   end

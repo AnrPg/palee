@@ -6,7 +6,7 @@ defmodule Palee.CoachPay.Period do
 
   @primary_key {:id, :binary_id, autogenerate: true}
 
-  @fields ~w(starts_on ends_on status currency total_cents calculated_at approved_at
+  @fields ~w(starts_on ends_on status currency total_cents gross_cents net_cents calculated_at approved_at
              approved_by_id exported_at reopen_reason created_by_id)a
 
   schema "coach_pay_periods" do
@@ -16,6 +16,8 @@ defmodule Palee.CoachPay.Period do
     field :status, :string, default: "draft"
     field :currency, :string
     field :total_cents, :integer, default: 0
+    field :gross_cents, :integer, default: 0
+    field :net_cents, :integer, default: 0
     field :calculated_at, :utc_datetime_usec
     field :approved_at, :utc_datetime_usec
     field :approved_by_id, :binary_id

@@ -12,7 +12,7 @@ defmodule Palee.CoachPay.Line do
   @primary_key {:id, :binary_id, autogenerate: true}
 
   @fields ~w(statement_id rule_id kind source_type source_id occurred_on description quantity
-             unit_cents base_cents percent_bps amount_cents created_by_id pay_item_id quantity_divisor note)a
+             unit_cents base_cents percent_bps amount_cents created_by_id pay_item_id quantity_divisor note amount_basis)a
 
   schema "coach_pay_lines" do
     field :organization_id, :binary_id, read_after_writes: true
@@ -32,6 +32,7 @@ defmodule Palee.CoachPay.Line do
     field :pay_item_id, :binary_id
     field :quantity_divisor, :integer
     field :note, :string
+    field :amount_basis, :string, default: "gross"
 
     timestamps(type: :utc_datetime_usec)
   end
@@ -45,5 +46,6 @@ defmodule Palee.CoachPay.Line do
     |> check_constraint(:source_type, name: :coach_pay_lines_source_check)
     |> check_constraint(:quantity_divisor, name: :coach_pay_lines_divisor_check)
     |> check_constraint(:note, name: :coach_pay_lines_note_check)
+    |> check_constraint(:amount_basis, name: :coach_pay_lines_basis_check)
   end
 end

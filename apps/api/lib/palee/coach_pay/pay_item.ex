@@ -1,8 +1,8 @@
 defmodule Palee.CoachPay.PayItem do
   @moduledoc """
   ADR-382: one entry of the box's catalogue of overtime and allowances:
-  what it pays, per what, to which roles and, for overtime, above how many
-  hours or classes a week (nil: added to a period by hand only).
+  what it pays, per what, to which roles, whether gross or net and, for
+  overtime, above how many hours a week.
   """
 
   use Ecto.Schema
@@ -10,7 +10,7 @@ defmodule Palee.CoachPay.PayItem do
 
   @primary_key {:id, :binary_id, autogenerate: true}
 
-  @fields ~w(kind name amount_cents unit roles weekly_threshold currency archived_at
+  @fields ~w(kind name amount_cents unit roles weekly_threshold currency amount_basis archived_at
              created_by_id)a
 
   schema "coach_pay_items" do
@@ -22,6 +22,7 @@ defmodule Palee.CoachPay.PayItem do
     field :roles, {:array, :string}, default: []
     field :weekly_threshold, :integer
     field :currency, :string
+    field :amount_basis, :string, default: "gross"
     field :archived_at, :utc_datetime_usec
     field :created_by_id, :binary_id
 
@@ -36,5 +37,6 @@ defmodule Palee.CoachPay.PayItem do
     |> check_constraint(:amount_cents, name: :coach_pay_items_amount_check)
     |> check_constraint(:weekly_threshold, name: :coach_pay_items_threshold_check)
     |> check_constraint(:roles, name: :coach_pay_items_roles_check)
+    |> check_constraint(:amount_basis, name: :coach_pay_items_basis_check)
   end
 end

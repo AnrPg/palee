@@ -1,14 +1,19 @@
 defmodule Palee.Repo.Migrations.CoachPayPlus do
   @moduledoc """
-  ADR-382: coach pay, additions to ADR-341.
+  ADR-382: coach pay, additions to ADR-341 (product owner, 2026-11-01).
 
     * `coach_pay_rules` – kind `fixed` (an amount per month, week or day,
       prorated by the calendar days it is valid in the period) with its
       `frequency`; `percent_of_sales` also on the payments of the coach's
       own clients (`own_clients`) or of the whole box (`box_all`).
-    * `coach_pay_items` – the box's catalogue of overtime and allowances,
-      with the roles each applies to and, for overtime, the weekly
-      threshold above which it is counted (nil: added by hand only).
+    * `coach_pay_items` – the box's catalogue of overtime (an amount per
+      hour above a weekly threshold of hours, both required) and
+      allowances (per period or per occurrence, added by hand), with the
+      roles each applies to.
+    * `amount_basis` (`gross` | `net`, default `gross`) on rules, pay
+      items and lines: whether an amount is before or after the person's
+      taxes and contributions (Palee computes neither). Statements and
+      periods keep `gross_cents` and `net_cents` apart.
     * `coach_pay_lines` – kinds `fixed`, `overtime`, `allowance` and
       `ad_hoc` (a payment by hand with its reason), the line's `note`, the
       pay item it comes from and the `quantity_divisor` of prorated and
@@ -34,7 +39,12 @@ defmodule Palee.Repo.Migrations.CoachPayPlus do
     # ── Rules ───────────────────────────────────────────────────────────────
     alter table(:coach_pay_rules) do
       add :frequency, :string
+      add :amount_basis, :string, null: false, default: "gross"
     end
+
+    create constraint(:coach_pay_rules, :coach_pay_rules_basis_check,
+             check: "amount_basis IN ('gross', 'net')"
+           )
 
     replace_check(
       :coach_pay_rules,
@@ -71,6 +81,7 @@ defmodule Palee.Repo.Migrations.CoachPayPlus do
       add :roles, {:array, :string}, null: false
       add :weekly_threshold, :integer
       add :currency, :string, size: 3, null: false
+      add :amount_basis, :string, null: false, default: "gross"
       add :archived_at, :utc_datetime_usec
       add :created_by_id, references(:users, type: :binary_id, on_delete: :nilify_all)
 
@@ -79,9 +90,13 @@ defmodule Palee.Repo.Migrations.CoachPayPlus do
 
     create constraint(:coach_pay_items, :coach_pay_items_unit_check,
              check: """
-             (kind = 'overtime' AND unit IN ('per_hour', 'per_extra_class'))
+             (kind = 'overtime' AND unit = 'per_hour')
              OR (kind = 'allowance' AND unit IN ('per_period', 'per_occurrence'))
              """
+           )
+
+    create constraint(:coach_pay_items, :coach_pay_items_basis_check,
+             check: "amount_basis IN ('gross', 'net')"
            )
 
     create constraint(:coach_pay_items, :coach_pay_items_amount_check,
@@ -89,8 +104,10 @@ defmodule Palee.Repo.Migrations.CoachPayPlus do
            )
 
     create constraint(:coach_pay_items, :coach_pay_items_threshold_check,
-             check:
-               "weekly_threshold IS NULL OR (kind = 'overtime' AND weekly_threshold BETWEEN 0 AND 168)"
+             check: """
+             (kind = 'overtime' AND weekly_threshold BETWEEN 0 AND 168)
+             OR (kind = 'allowance' AND weekly_threshold IS NULL)
+             """
            )
 
     create constraint(:coach_pay_items, :coach_pay_items_roles_check,
@@ -104,7 +121,12 @@ defmodule Palee.Repo.Migrations.CoachPayPlus do
       add :pay_item_id, references(:coach_pay_items, type: :binary_id, on_delete: :nilify_all)
       add :quantity_divisor, :integer
       add :note, :text
+      add :amount_basis, :string, null: false, default: "gross"
     end
+
+    create constraint(:coach_pay_lines, :coach_pay_lines_basis_check,
+             check: "amount_basis IN ('gross', 'net')"
+           )
 
     replace_check(
       :coach_pay_lines,
@@ -130,6 +152,13 @@ defmodule Palee.Repo.Migrations.CoachPayPlus do
 
     alter table(:coach_pay_statements) do
       add :rule_terms, :map, null: false, default: %{}
+      add :gross_cents, :bigint, null: false, default: 0
+      add :net_cents, :bigint, null: false, default: 0
+    end
+
+    alter table(:coach_pay_periods) do
+      add :gross_cents, :bigint, null: false, default: 0
+      add :net_cents, :bigint, null: false, default: 0
     end
 
     # ── Tenant isolation of the new table ──────────────────────────────────
