@@ -19,7 +19,9 @@ defmodule PaleeWeb.ChannelsOwnVendorsControllerTest do
     {:ok, _vendor} = Organizations.grant_vendor(vendor.id)
 
     {:ok, organization} =
-      Organizations.create_organization(%{name: "Own vendors #{System.unique_integer([:positive])}"})
+      Organizations.create_organization(%{
+        name: "Own vendors #{System.unique_integer([:positive])}"
+      })
 
     for {user, role} <- [{owner, :owner}, {coach, :coach}] do
       {:ok, _} =
@@ -101,7 +103,10 @@ defmodule PaleeWeb.ChannelsOwnVendorsControllerTest do
 
       checked = ctx.owner |> send_json(:post, ctx.email <> "/check", %{}) |> json_response(200)
 
-      assert %{"check" => %{"ok" => true}, "connection" => %{"status" => "active", "in_use" => true}} =
+      assert %{
+               "check" => %{"ok" => true},
+               "connection" => %{"status" => "active", "in_use" => true}
+             } =
                checked
 
       refute Jason.encode!(checked) =~ "s3cret-smtp"

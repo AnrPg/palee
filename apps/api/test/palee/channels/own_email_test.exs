@@ -86,6 +86,7 @@ defmodule Palee.Channels.OwnEmailTest do
     assert public.status == "unchecked"
     refute public.in_use
     assert guidance.domain == "cfathina.gr"
+
     assert Enum.map(guidance.steps, & &1.key) ==
              ~w(email_dns.spf email_dns.dkim email_dns.dmarc email_dns.same_domain)
 
@@ -233,6 +234,7 @@ defmodule Palee.Channels.OwnEmailTest do
       })
 
     later = box_email(ctx)
+
     assert {:error, {:transient, :unreachable}} =
              Email.deliver(later.id, %{attempt: 1, max_attempts: 8}, @now)
 

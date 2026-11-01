@@ -87,7 +87,8 @@ defmodule Palee.Repo.Migrations.ChannelsOwnEmailAndPaleeMargin do
     end
 
     create constraint(:channel_messages, :channel_messages_margin_check,
-             check: "margin_bps >= 0 AND (provider_cost_cents IS NULL OR provider_cost_cents >= 0)"
+             check:
+               "margin_bps >= 0 AND (provider_cost_cents IS NULL OR provider_cost_cents >= 0)"
            )
 
     alter table(:email_messages) do

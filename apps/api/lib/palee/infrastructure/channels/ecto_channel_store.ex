@@ -15,6 +15,7 @@ defmodule Palee.Infrastructure.Channels.EctoChannelStore do
     PlatformSetting,
     Template
   }
+
   alias Palee.Channels.Domain.DeliveryPolicy
   alias Palee.Repo
 
@@ -450,7 +451,13 @@ defmodule Palee.Infrastructure.Channels.EctoChannelStore do
       )
       |> Repo.all()
       |> Enum.map(fn {channel, mode, cents, provider, count} ->
-        %{channel: channel, mode: mode, cents: to_int(cents), provider: to_int(provider), count: count}
+        %{
+          channel: channel,
+          mode: mode,
+          cents: to_int(cents),
+          provider: to_int(provider),
+          count: count
+        }
       end)
 
     palee = Enum.filter(rows, &(&1.mode == "palee"))
@@ -463,14 +470,18 @@ defmodule Palee.Infrastructure.Channels.EctoChannelStore do
         |> Enum.group_by(& &1.channel)
         |> Map.new(fn {channel, group} ->
           {channel,
-           %{cents: group |> Enum.map(& &1.cents) |> Enum.sum(), count: group |> Enum.map(& &1.count) |> Enum.sum()}}
+           %{
+             cents: group |> Enum.map(& &1.cents) |> Enum.sum(),
+             count: group |> Enum.map(& &1.count) |> Enum.sum()
+           }}
         end),
       palee_charge: palee |> Enum.map(& &1.cents) |> Enum.sum(),
       provider_total: palee |> Enum.map(& &1.provider) |> Enum.sum(),
       palee_by_channel:
         palee
         |> Map.new(fn row ->
-          {row.channel, %{charge_cents: row.cents, provider_cost_cents: row.provider, count: row.count}}
+          {row.channel,
+           %{charge_cents: row.cents, provider_cost_cents: row.provider, count: row.count}}
         end)
     }
   end

@@ -163,7 +163,9 @@ defmodule Palee.Infrastructure.Channels.SmtpEmailTransport do
   # gen_smtp's errors (Swoosh wraps `{:error, type, detail}` as
   # `{:error, {type, detail}}`) reduced to the port's.
   defp reduce({_type, {:permanent_failure, _host, :auth_failed}}), do: :unauthorized
-  defp reduce({_type, {:permanent_failure, _host, :ssl_not_started}}), do: {:transient, :tls_failed}
+
+  defp reduce({_type, {:permanent_failure, _host, :ssl_not_started}}),
+    do: {:transient, :tls_failed}
 
   defp reduce({_type, {:permanent_failure, _host, message}}) when is_binary(message),
     do: {:permanent_failure, String.slice(message, 0, 200)}

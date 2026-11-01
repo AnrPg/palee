@@ -55,7 +55,11 @@ defmodule Palee.Channels.Domain.EmailConnectionPolicy do
     from_address = value.(:from_address) |> downcase()
     from_name = value.(:from_name)
     reply_to = value.(:reply_to) |> downcase()
-    enabled = if is_boolean(params[:enabled]), do: params[:enabled], else: Map.get(current, :enabled, true)
+
+    enabled =
+      if is_boolean(params[:enabled]),
+        do: params[:enabled],
+        else: Map.get(current, :enabled, true)
 
     errors =
       %{}
@@ -158,7 +162,11 @@ defmodule Palee.Channels.Domain.EmailConnectionPolicy do
       domain: domain,
       steps: [
         %{key: "email_dns.spf", record: "TXT", host: domain},
-        %{key: "email_dns.dkim", record: "TXT", host: domain && "<selector>._domainkey." <> domain},
+        %{
+          key: "email_dns.dkim",
+          record: "TXT",
+          host: domain && "<selector>._domainkey." <> domain
+        },
         %{key: "email_dns.dmarc", record: "TXT", host: domain && "_dmarc." <> domain},
         %{key: "email_dns.same_domain", record: nil, host: nil}
       ]
@@ -169,7 +177,8 @@ defmodule Palee.Channels.Domain.EmailConnectionPolicy do
   def address?(value) when is_binary(value),
     do:
       byte_size(value) <= 254 and
-        value =~ ~r/^[a-z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/
+        value =~
+          ~r/^[a-z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/
 
   def address?(_value), do: false
 

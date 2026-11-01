@@ -33,7 +33,13 @@ defmodule Palee.Channels.PaleeMarginTest do
       Channels.set_consent(
         context,
         contact.id,
-        %{channel: "sms", purpose: "service", granted: true, source: "person", text_version: "v1"},
+        %{
+          channel: "sms",
+          purpose: "service",
+          granted: true,
+          source: "person",
+          text_version: "v1"
+        },
         member.id,
         @noon
       )
@@ -105,7 +111,9 @@ defmodule Palee.Channels.PaleeMarginTest do
 
     # The provider says what it charged: the box's price follows it.
     connection = Channels.connection(ctx.context)
-    token = connection |> Channels.public_connection() |> Map.fetch!(:webhook_url) |> Path.basename()
+
+    token =
+      connection |> Channels.public_connection() |> Map.fetch!(:webhook_url) |> Path.basename()
 
     params = %{"message_id" => "sbx_" <> message.id, "status" => "delivered", "cost_cents" => 10}
     raw = Jason.encode!(params)
