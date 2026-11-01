@@ -71,10 +71,25 @@ defmodule Palee.CoachPay.Domain.PeriodPolicy do
 
   def export(_period, _now), do: {:error, :coach_pay_period_not_approved}
 
-  @doc "A staff adjustment line (a bonus, a correction): any non-zero amount with a reason."
+  @doc """
+  A line staff add by hand (`kind`, default `adjustment`):
+
+    * `adjustment` – a bonus or a correction: any non-zero amount with a
+      `description`;
+    * `ad_hoc` (ADR-382, «Έκτακτη πληρωμή») – a payment by hand: a
+      positive amount and its reason (`note`, required, at most 500
+      characters; the description is its first 250).
+
+  Who added it (`created_by_id`) and when (`inserted_at`) stay on the line.
+  """
   def adjustment(params, %Date{} = occurred_on, actor_id) do
-    amount = params["amount_cents"] || params[:amount_cents]
-    description = params["description"] || params[:description]
+    params = Map.new(params, fn {key, value} -> {to_string(key), value} end)
+    manual(params["kind"] || "adjustment", params, occurred_on, actor_id)
+  end
+
+  defp manual("adjustment", params, occurred_on, actor_id) do
+    amount = params["amount_cents"]
+    description = params["description"]
 
     cond do
       not (is_integer(amount) and amount != 0 and abs(amount) <= 10_000_000) ->
@@ -85,21 +100,48 @@ defmodule Palee.CoachPay.Domain.PeriodPolicy do
         {:error, {:invalid_fields, %{"description" => "required"}}}
 
       true ->
-        {:ok,
-         %{
-           rule_id: nil,
-           kind: "adjustment",
-           source_type: "manual",
-           source_id: nil,
-           occurred_on: occurred_on,
-           description: String.trim(description),
-           quantity: 1,
-           unit_cents: nil,
-           base_cents: nil,
-           percent_bps: nil,
-           amount_cents: amount,
-           created_by_id: actor_id
-         }}
+        {:ok, line("adjustment", String.trim(description), nil, amount, occurred_on, actor_id)}
     end
   end
+
+  defp manual("ad_hoc", params, occurred_on, actor_id) do
+    amount = params["amount_cents"]
+    note = if is_binary(params["note"]), do: String.trim(params["note"])
+
+    cond do
+      not (is_integer(amount) and amount > 0 and amount <= 10_000_000) ->
+        {:error, {:invalid_fields, %{"amount_cents" => "invalid"}}}
+
+      not (is_binary(note) and note != "" and String.length(note) <= 500) ->
+        {:error, {:invalid_fields, %{"note" => "required"}}}
+
+      true ->
+        {:ok, line("ad_hoc", String.slice(note, 0, 250), note, amount, occurred_on, actor_id)}
+    end
+  end
+
+  defp manual(_kind, _params, _occurred_on, _actor_id),
+    do: {:error, {:invalid_fields, %{"kind" => "invalid"}}}
+
+  defp line(kind, description, note, amount, occurred_on, actor_id),
+    do: %{
+      rule_id: nil,
+      pay_item_id: nil,
+      kind: kind,
+      source_type: "manual",
+      source_id: nil,
+      occurred_on: occurred_on,
+      description: description,
+      note: note,
+      quantity: 1,
+      quantity_divisor: nil,
+      unit_cents: nil,
+      base_cents: nil,
+      percent_bps: nil,
+      amount_cents: amount,
+      created_by_id: actor_id
+    }
+
+  @doc "Kinds of lines staff add by hand to a period (`adjustment/3`)."
+  def manual_kinds, do: ~w(adjustment ad_hoc)
 end
