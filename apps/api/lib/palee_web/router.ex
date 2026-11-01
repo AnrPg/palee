@@ -274,17 +274,6 @@ defmodule PaleeWeb.Router do
     )
   end
 
-  # ADR-360: model calls cost money; a tight per-person budget on top of the
-  # daily counts the services enforce.
-  pipeline :ai_rate_limited do
-    plug(PaleeWeb.Plugs.RateLimit,
-      max: 20,
-      interval: 60_000,
-      bucket: "ai-assistants",
-      methods: ["POST"]
-    )
-  end
-
   # Staff routes need the capability RouteCapabilities lists for the action
   # (ADR-099); data scope is enforced by the application services.
   pipeline :admin_only do
@@ -386,15 +375,6 @@ defmodule PaleeWeb.Router do
     pipe_through([:api, :public_box_rate_limited])
 
     get("/", PlatformPlanController, :index_public)
-  end
-
-  # ADR-362: the public help centre.
-  scope "/api/public/help", PaleeWeb do
-    pipe_through([:api, :public_box_rate_limited])
-
-    get("/articles", HelpArticleController, :index)
-    get("/articles/:slug", HelpArticleController, :show)
-    get("/screen", HelpArticleController, :screen)
   end
 
   # ADR-364 (CP-G4): the public status page data and email subscriptions.
@@ -2454,51 +2434,6 @@ defmodule PaleeWeb.Router do
     get("/settings", PartnersController, :settings)
     put("/settings", PartnersController, :put_settings)
     post("/reports", PartnersController, :report)
-  end
-
-  # ADR-361 (questions over the box's data) and ADR-363 (in-app support).
-  scope "/api/org/:organization_slug/admin", PaleeWeb do
-    pipe_through([
-      :api,
-      :authenticated,
-      :authenticated_rate_limited,
-      :admin_only,
-      :tenant_write_rate_limited,
-      :ai_rate_limited
-    ])
-
-    get("/data-questions/catalogue", AdminDataQuestionController, :catalogue)
-    get("/data-questions", AdminDataQuestionController, :index)
-    post("/data-questions", AdminDataQuestionController, :create)
-    get("/data-questions/:id", AdminDataQuestionController, :show)
-
-    get("/help-desk/conversations", AdminHelpDeskController, :index)
-    post("/help-desk/conversations", AdminHelpDeskController, :create)
-    get("/help-desk/conversations/:id", AdminHelpDeskController, :show)
-    post("/help-desk/conversations/:id/messages", AdminHelpDeskController, :message)
-    post("/help-desk/conversations/:id/hand-off", AdminHelpDeskController, :hand_off)
-    post("/help-desk/conversations/:id/resolve", AdminHelpDeskController, :resolve)
-  end
-
-  # ADR-362 / ADR-363: the help centre's articles and the support queue (vendors).
-  scope "/api/platform", PaleeWeb do
-    pipe_through([
-      :api,
-      :authenticated,
-      :authenticated_rate_limited,
-      :vendor,
-      :platform_write_rate_limited
-    ])
-
-    get("/help/articles", PlatformHelpArticleController, :index)
-    put("/help/articles/:slug/:locale", PlatformHelpArticleController, :save)
-    delete("/help/articles/:slug/:locale", PlatformHelpArticleController, :delete)
-    post("/help/reindex", PlatformHelpArticleController, :reindex)
-
-    get("/help-desk/tickets", PlatformHelpDeskController, :index)
-    get("/help-desk/tickets/:id", PlatformHelpDeskController, :show)
-    post("/help-desk/tickets/:id/replies", PlatformHelpDeskController, :reply)
-    patch("/help-desk/tickets/:id", PlatformHelpDeskController, :update)
   end
 
   # ADR-280 deck: the Palee team's Partners reports queue.

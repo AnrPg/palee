@@ -26,21 +26,6 @@ defmodule PaleeWeb.RouteCapabilities do
     W.AdminWorkoutFolderController => [:manage_workouts],
     W.AdminWorkoutGoalsController => [:manage_workouts],
     W.AdminChallengeController => [:manage_challenges],
-    # ADR-361: any one of the rights some data query needs; each query
-    # checks its own capability again (at gym-wide scope) before it runs.
-    W.AdminDataQuestionController => [
-      :view_business_analytics,
-      :view_finance_reports,
-      :view_directory,
-      :view_membership_status
-    ],
-    # ADR-363: support for every staff role (one right each role holds).
-    W.AdminHelpDeskController => [
-      :view_directory,
-      :view_package_catalog,
-      :record_cleaning,
-      :report_inventory
-    ],
     W.AdminAssignedWorkoutController => [:manage_coaching],
     W.AdminContentController => [:manage_content],
     W.AdminCoachingController => [:view_client_training],

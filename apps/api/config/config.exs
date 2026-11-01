@@ -793,29 +793,6 @@ config :palee, :abandoned_demos,
   archive_after_days: 90,
   touch_interval_seconds: 3_600
 
-# ADR-360: every model call goes through Palee.Llm.Ports.LlmProvider. Gemini
-# is the default provider (product owner, 2026-10-31: Gemini now, Claude
-# later); `:llm_routes` may send one feature to another adapter.
-config :palee, :llm_provider, Palee.Infrastructure.Llm.GeminiLlmProvider
-config :palee, :llm_routes, %{}
-
-# ADR-360: cost limits per AI feature: a monthly budget per box (nano-USD,
-# metered by ADR-152) and a daily count per person.
-config :palee, :ai_features,
-  data_questions: [monthly_budget_nano_usd: 5_000_000_000, daily_per_person: 30],
-  help_desk: [monthly_budget_nano_usd: 3_000_000_000, daily_per_person: 40]
-
-# ADR-361: data questions (audit log and the box data reader).
-config :palee, :data_question_store, Palee.Infrastructure.DataQuestions.EctoQuestionStore
-config :palee, :box_data_reader, Palee.Infrastructure.DataQuestions.SqlBoxDataReader
-
-# ADR-362: the help centre; Meilisearch searches it, the database stands in.
-config :palee, :help_article_store, Palee.Infrastructure.HelpCentre.EctoArticleStore
-config :palee, :help_search_index, Palee.Infrastructure.HelpCentre.MeilisearchHelpIndex
-
-# ADR-363: in-app support conversations and the Palee team's tickets.
-config :palee, :help_desk_store, Palee.Infrastructure.HelpDesk.EctoHelpDeskStore
-
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

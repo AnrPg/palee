@@ -571,27 +571,7 @@ never mix (flow, set structure, add-ons); presets only fill them in. Code names 
 | Per round | Ανά γύρο | `PlanRow.perRound` | Values that change round by round (Alt+V) in every flow other than Σετ, where they change per set («ανά σετ»). «Ίδιες τιμές σε κάθε γύρο» turns it off. | Different round (other exercises, not other values). |
 | Rest row | Ξεκούραση | `PlanRow.kind: "rest"` | A rest written as a row between exercises (e.g. inside a superset). | The flow Ξεκούραση (a whole rest section). |
 
-### 4.21 Help and AI questions (ADR-360, ADR-361, ADR-362, ADR-363)
-
-Help for the people who use Palee, and plain-language questions over a box's own data. The AI never
-writes, never sees names, and always shows where an answer came from.
-
-| English | Ελληνικά | Code | What it is | Not to be confused with |
-|---|---|---|---|---|
-| Help centre | Κέντρο βοήθειας | `help_articles`, `/api/public/help` | Palee's articles on how to use the app, in all 12 languages, searchable, public. Written by the Palee team. (ADR-362) | Guides («Οδηγοί», the in-app walk-throughs an article can open). |
-| Help article | Άρθρο βοήθειας | `help_articles` row (`slug` + `locale`) | One topic of the help centre: title, summary, steps. Can be linked from screens and open a guide. Shown in English with a note when not yet translated. | A box's announcement or document. |
-| Screen help | Βοήθεια οθόνης | «?» button, `GET /public/help/screen` | The articles linked from the screen the person is on, under the «?» of that screen. | The help centre's search. |
-| Palee support | Υποστήριξη Palee | `help_desk_conversations` | A staff member's own conversation with Palee from inside the app: first the support assistant, then the Palee team if needed. Nobody else in the box reads it. (ADR-363) | Messages («Μηνύματα», between people); Check-in buddy chat («Συνομιλία στήριξης»); a box's inbox. |
-| Support assistant | Βοηθός υποστήριξης | AI first line, `HelpDesk.Assistant` | The AI that answers in Palee support only from help articles, citing them; says so when unsure. Never sees the box's data. | Data questions; the WOD assistant. |
-| Talk to the Palee team | Μίλα με την ομάδα Palee | `hand_off`, `help_desk_tickets` | Hands the conversation to the Palee team with the screen, the articles tried and the app version. Always offered. | — |
-| Support request | Αίτημα υποστήριξης | `help_desk_tickets` | What the Palee team sees and works on in the vendor console after a hand-off: Ανοιχτό (open), Περιμένει το box (waiting on box), Λύθηκε (solved); Επείγον (urgent) on top. | Payment request; «Αίτημα» in bookings. |
-| Data questions | Ερωτήσεις στα δεδομένα | `data_questions`, `organization_ai_settings.data_questions_enabled` | Staff ask about their box in plain words («Ποιοι δεν ήρθαν 3 εβδομάδες;»); the answer cites the figures it used and lists the people only on screen. Off until the box turns it on. Each question is kept in the box's log. (ADR-361) | Analytics («Αναλυτικά», the fixed reports); the support assistant. |
-| Ask | Ρώτα | `POST /admin/data-questions` | The action of data questions. | — |
-| Source | Πηγή | `citations`, `[q1]` | Which read the answer used (e.g. «Μέλη που λείπουν, 21 ημέρες») with its totals. Every answer has at least one. | — |
-| Checked figures | Ελεγμένα νούμερα | `grounded` | Every number in the answer was found in its sources. When not, the screen says «Έλεγξε τα νούμερα». | — |
-| AI limits | Όρια AI | `:ai_features` (monthly budget per box, daily per person) | How much a box can spend on AI each month and how many questions a person asks a day; past them the screen says so and support offers the Palee team. | Credits of the AI meter (ADR-152). |
-
-### 4.22 Leads, automatic messages and members at risk (ADR-344..347)
+### 4.21 Leads, automatic messages and members at risk (ADR-344..347)
 
 How a box looks after people who asked about it, the messages Palee sends for the box on its own,
 and the box members who may be leaving. A lead is never called a «μέλος» until they become a box member.
@@ -615,7 +595,7 @@ and the box members who may be leaving. A lead is never called a «μέλος» 
 | Contacted | Επικοινώνησα | `contacted_at` | Staff noted they reached out. | Lead «Επικοινωνία» event. |
 | Snooze | Αργότερα | `snoozed_until` | Hide a box member from «Σε κίνδυνο» for some days. | — |
 
-### 4.23 Box website and Google reviews (ADR-352..355)
+### 4.22 Box website and Google reviews (ADR-352..355)
 
 | English | Ελληνικά | Code | What it is | Not to be confused with |
 |---|---|---|---|---|
@@ -630,7 +610,7 @@ and the box members who may be leaving. A lead is never called a «μέλος» 
 | Google review ask | Αίτημα κριτικής Google | `review_asks` | At an attendance milestone, right after a class, every member alike sees «Γράψε κριτική στο Google» and «Πες κάτι στο box». Never depends on their opinion, never rewarded. «Να μη ρωτηθώ ξανά» stops it. | Box feedback questionnaires (Αξιολογήσεις, ADR-015). |
 | Place ID | Place ID | `google_place_id` | Google's id of the box's listing; it builds the review link. | |
 
-### 4.24 Training and floor (ADR-356..359)
+### 4.23 Training and floor (ADR-356..359)
 
 Leaderboard filters, WOD snapshots, the fitness profile, visit badges, calendar invites and staff notes
 (v3.1, CP-D2/D3/D6/E1/E4/E5).
@@ -652,7 +632,7 @@ Leaderboard filters, WOD snapshots, the fitness profile, visit badges, calendar 
 | Add to calendar | Προσθήκη στο ημερολόγιο | `GET /bookings/:id/calendar.ics` | One booking as an .ics invite; a cancelled one comes as a cancellation. | Calendar subscription («Συνδρομή ημερολογίου», the personal feed URL). |
 | Staff note | Σημείωση για το staff | `coaching_notes.audience = staff` | A note about a member that every staff member of the box reads, the front desk included. | Private coach note («Ιδιωτική σημείωση», ADR-101). |
 
-### 4.25 Service status (ADR-364)
+### 4.24 Service status (ADR-364)
 
 | English | Ελληνικά | Code | What it is | Not to be confused with |
 |---|---|---|---|---|
@@ -664,7 +644,7 @@ Leaderboard filters, WOD snapshots, the fitness profile, visit badges, calendar 
 | Uptime | Διαθεσιμότητα | `status_daily_samples` | The share of checks that found a component working, per day and over 90 days. | |
 | Status emails | Email κατάστασης | `status_subscribers` | Emails about incidents and maintenance to anyone who asked for them on the status page (confirmed by email first; one link stops them). | Notifications of the app; marketing emails. |
 
-### 4.26 Coach pay (ADR-341)
+### 4.25 Coach pay (ADR-341)
 
 Staff screens only. Never part of a fiscal document: a pay statement is an internal record for paying coaches.
 

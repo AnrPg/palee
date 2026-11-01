@@ -46,7 +46,6 @@ defmodule Palee.AiUsage do
 
   defdelegate scaling_ready?(settings), to: AiSettingsPolicy
   defdelegate voice_ready?(settings), to: AiSettingsPolicy
-  defdelegate data_questions_ready?(settings), to: AiSettingsPolicy
   defdelegate settings_model(settings, default), to: AiSettingsPolicy, as: :model
   defdelegate public_settings(settings, default_model), to: AiSettingsPolicy, as: :public
 

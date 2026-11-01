@@ -88,8 +88,6 @@ config :palee, :gemini,
   parser_thinking_level: System.get_env("GEMINI_PARSER_THINKING_LEVEL", "medium"),
   # Workout library icons (ADR-136) use their own small, cheap model.
   icon_model: System.get_env("GEMINI_ICON_MODEL", "gemini-2.5-flash-lite"),
-  # ADR-360: data questions and the support assistant; empty uses `model`.
-  assistant_model: System.get_env("GEMINI_ASSISTANT_MODEL"),
   # ADR-157: alt text suggestions (vision).
   vision_model: System.get_env("GEMINI_VISION_MODEL", "gemini-2.5-flash-lite"),
   # ADR-175: voice logging speech to text (audio in, transcript out).
@@ -158,8 +156,7 @@ meili_api_key =
 config :palee, :meilisearch,
   url: meili_url,
   api_key: meili_api_key,
-  admin_member_index: System.get_env("MEILI_ADMIN_MEMBER_INDEX", "admin_members"),
-  help_index: System.get_env("MEILI_HELP_INDEX", "help_articles")
+  admin_member_index: System.get_env("MEILI_ADMIN_MEMBER_INDEX", "admin_members")
 
 # Compose passes optional observability variables through as empty strings
 # when they are unset in .env, so blank values must mean "not configured".

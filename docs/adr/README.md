@@ -281,10 +281,6 @@ must have an ADR. See `template.md` for the format.
 | ADR-342 | Purchase and booking rules per package (who may buy, purchases per person, prerequisites, bookings per day/week/open) enforced by the API at purchase and booking | Accepted |
 | ADR-300 | Operation registry: one spec per use case generates REST, MCP and LLM tools; previewable commands, problem details, idempotency keys, ETags (v4) | Proposed |
 | ADR-301 | AI agents as delegated principals: rights intersected on every call, durable runs, Rule-of-Two policy, approvals, one LLM provider port, multi-agent via delegation (v4) | Proposed |
-| ADR-360 | One LLM provider port (Gemini now, Claude drop-in later; sandbox for tests), a bounded read-only tool loop, tool results and documents as untrusted data, per-feature monthly budget per box and daily count per person | Accepted |
-| ADR-361 | Questions over a box's data: the model picks from a catalogue of typed, permission-checked read queries (no SQL), sees people only as refs, answers cite and are checked against the figures, every question audited; off until the box turns it on | Accepted |
-| ADR-362 | Help centre: articles per slug and locale in 12 languages seeded from the feature catalogue and guides, Meilisearch search with a database fallback, linked from screens, edited by the Palee team | Accepted |
-| ADR-363 | In-app support: an AI first line answering only from help articles with citations, hand-off to a Palee-team ticket with screen, articles tried and app facts; per-person conversations; audited vendor queue | Accepted |
 
 | ADR-348 | SMS (Viber, WhatsApp later) from the box through one `MessagingChannel` port: sandbox and Brevo SMS adapters (ANR's choice), an idempotent outbox with row-locked claims, retries and receipts, one tokened webhook URL per box, E.164 numbers; provider comparison with prices | Accepted |
 | ADR-349 | Palee's Brevo account by default (the box's own key under «Προχωρημένα»), estimated and charged cost per message, monthly budget cap per box, quiet hours on the box's clock (21:00–09:00), SMS parts | Accepted |
