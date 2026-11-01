@@ -1,0 +1,119 @@
+msgid ""
+msgstr ""
+"Language: en\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Pay statement"
+msgstr "Pay statement"
+
+msgid "Internal pay statement"
+msgstr "Internal pay statement"
+
+msgid "An internal record of the business for paying its staff, not an official payroll document."
+msgstr "An internal record of the business for paying its staff, not an official payroll document."
+
+msgid "Business"
+msgstr "Business"
+
+msgid "Paid to"
+msgstr "Paid to"
+
+msgid "Period"
+msgstr "Period"
+
+msgid "Approved on"
+msgstr "Approved on"
+
+msgid "Item"
+msgstr "Item"
+
+msgid "Terms"
+msgstr "Terms"
+
+msgid "Quantity × rate"
+msgstr "Quantity × rate"
+
+msgid "Amount"
+msgstr "Amount"
+
+msgid "Added by hand"
+msgstr "Added by hand"
+
+msgid "Note"
+msgstr "Note"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Gross"
+msgstr "Gross"
+
+msgid "Net"
+msgstr "Net"
+
+msgid "Page"
+msgstr "Page"
+
+msgid "Fixed pay"
+msgstr "Fixed pay"
+
+msgid "Per class"
+msgstr "Per class"
+
+msgid "Per attendee"
+msgstr "Per attendee"
+
+msgid "Per personal session"
+msgstr "Per personal session"
+
+msgid "Percent of sales"
+msgstr "Percent of sales"
+
+msgid "Overtime"
+msgstr "Overtime"
+
+msgid "Allowance"
+msgstr "Allowance"
+
+msgid "Ad hoc payment"
+msgstr "Ad hoc payment"
+
+msgid "Non-taxable reimbursement"
+msgstr "Non-taxable reimbursement"
+
+msgid "Adjustment"
+msgstr "Adjustment"
+
+msgid "per month"
+msgstr "per month"
+
+msgid "per week"
+msgstr "per week"
+
+msgid "per day"
+msgstr "per day"
+
+msgid "personal training packages they coach"
+msgstr "personal training packages they coach"
+
+msgid "sales they recorded"
+msgstr "sales they recorded"
+
+msgid "subscriptions of their own clients"
+msgstr "subscriptions of their own clients"
+
+msgid "all subscriptions of the box"
+msgstr "all subscriptions of the box"
+
+msgid "per hour"
+msgstr "per hour"
+
+msgid "per period"
+msgstr "per period"
+
+msgid "per occurrence"
+msgstr "per occurrence"
+
+msgid "Weekly hours before overtime"
+msgstr "Weekly hours before overtime"

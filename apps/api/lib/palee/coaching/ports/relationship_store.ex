@@ -6,4 +6,6 @@ defmodule Palee.Coaching.Ports.RelationshipStore do
   @callback list(map(), map()) :: [map()]
   @callback active?(map(), binary(), binary()) :: boolean()
   @callback client_ids(map(), binary()) :: [binary()]
+  @doc "ADR-382: relationships, ended ones included, that held at any time in `[from, to)`."
+  @callback between(map(), DateTime.t(), DateTime.t()) :: [map()]
 end

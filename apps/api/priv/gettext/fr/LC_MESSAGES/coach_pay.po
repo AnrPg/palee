@@ -1,0 +1,119 @@
+msgid ""
+msgstr ""
+"Language: fr\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Pay statement"
+msgstr "Bulletin de rémunération"
+
+msgid "Internal pay statement"
+msgstr "Relevé interne de rémunération"
+
+msgid "An internal record of the business for paying its staff, not an official payroll document."
+msgstr "Document interne de l'entreprise pour rémunérer son personnel, pas un bulletin de paie officiel."
+
+msgid "Business"
+msgstr "Entreprise"
+
+msgid "Paid to"
+msgstr "Payé à"
+
+msgid "Period"
+msgstr "Période"
+
+msgid "Approved on"
+msgstr "Approuvé le"
+
+msgid "Item"
+msgstr "Élément"
+
+msgid "Terms"
+msgstr "Conditions"
+
+msgid "Quantity × rate"
+msgstr "Quantité × taux"
+
+msgid "Amount"
+msgstr "Montant"
+
+msgid "Added by hand"
+msgstr "Ajouté manuellement"
+
+msgid "Note"
+msgstr "Note"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Gross"
+msgstr "Brut"
+
+msgid "Net"
+msgstr "Net"
+
+msgid "Page"
+msgstr "Page"
+
+msgid "Fixed pay"
+msgstr "Salaire fixe"
+
+msgid "Per class"
+msgstr "Par cours"
+
+msgid "Per attendee"
+msgstr "Par participant"
+
+msgid "Per personal session"
+msgstr "Par séance individuelle"
+
+msgid "Percent of sales"
+msgstr "Pourcentage des ventes"
+
+msgid "Overtime"
+msgstr "Heures supplémentaires"
+
+msgid "Allowance"
+msgstr "Indemnité"
+
+msgid "Ad hoc payment"
+msgstr "Paiement exceptionnel"
+
+msgid "Non-taxable reimbursement"
+msgstr "Remboursement non imposable"
+
+msgid "Adjustment"
+msgstr "Correction"
+
+msgid "per month"
+msgstr "par mois"
+
+msgid "per week"
+msgstr "par semaine"
+
+msgid "per day"
+msgstr "par jour"
+
+msgid "personal training packages they coach"
+msgstr "forfaits de coaching personnel qu'il encadre"
+
+msgid "sales they recorded"
+msgstr "ventes qu'il a enregistrées"
+
+msgid "subscriptions of their own clients"
+msgstr "abonnements de ses propres clients"
+
+msgid "all subscriptions of the box"
+msgstr "tous les abonnements de la salle"
+
+msgid "per hour"
+msgstr "par heure"
+
+msgid "per period"
+msgstr "par période"
+
+msgid "per occurrence"
+msgstr "par occurrence"
+
+msgid "Weekly hours before overtime"
+msgstr "Heures hebdomadaires avant heures supplémentaires"

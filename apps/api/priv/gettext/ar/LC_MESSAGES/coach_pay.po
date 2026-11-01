@@ -1,0 +1,119 @@
+msgid ""
+msgstr ""
+"Language: ar\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Pay statement"
+msgstr "كشف الأجر"
+
+msgid "Internal pay statement"
+msgstr "كشف أجر داخلي"
+
+msgid "An internal record of the business for paying its staff, not an official payroll document."
+msgstr "سجل داخلي للنشاط لدفع أجور موظفيه، وليس مستند رواتب رسميًا."
+
+msgid "Business"
+msgstr "النشاط"
+
+msgid "Paid to"
+msgstr "مدفوع إلى"
+
+msgid "Period"
+msgstr "الفترة"
+
+msgid "Approved on"
+msgstr "تمت الموافقة في"
+
+msgid "Item"
+msgstr "البند"
+
+msgid "Terms"
+msgstr "الشروط"
+
+msgid "Quantity × rate"
+msgstr "الكمية × السعر"
+
+msgid "Amount"
+msgstr "المبلغ"
+
+msgid "Added by hand"
+msgstr "أُضيف يدويًا"
+
+msgid "Note"
+msgstr "ملاحظة"
+
+msgid "Total"
+msgstr "الإجمالي"
+
+msgid "Gross"
+msgstr "إجمالي قبل الاستقطاع"
+
+msgid "Net"
+msgstr "صافٍ"
+
+msgid "Page"
+msgstr "صفحة"
+
+msgid "Fixed pay"
+msgstr "أجر ثابت"
+
+msgid "Per class"
+msgstr "لكل حصة"
+
+msgid "Per attendee"
+msgstr "لكل مشارك"
+
+msgid "Per personal session"
+msgstr "لكل جلسة شخصية"
+
+msgid "Percent of sales"
+msgstr "نسبة من المبيعات"
+
+msgid "Overtime"
+msgstr "عمل إضافي"
+
+msgid "Allowance"
+msgstr "بدل"
+
+msgid "Ad hoc payment"
+msgstr "دفعة استثنائية"
+
+msgid "Non-taxable reimbursement"
+msgstr "تعويض غير خاضع للضريبة"
+
+msgid "Adjustment"
+msgstr "تصحيح"
+
+msgid "per month"
+msgstr "شهريًا"
+
+msgid "per week"
+msgstr "أسبوعيًا"
+
+msgid "per day"
+msgstr "يوميًا"
+
+msgid "personal training packages they coach"
+msgstr "باقات التدريب الشخصي التي يتولاها"
+
+msgid "sales they recorded"
+msgstr "المبيعات التي سجّلها"
+
+msgid "subscriptions of their own clients"
+msgstr "اشتراكات عملائه"
+
+msgid "all subscriptions of the box"
+msgstr "جميع اشتراكات النادي"
+
+msgid "per hour"
+msgstr "لكل ساعة"
+
+msgid "per period"
+msgstr "لكل فترة"
+
+msgid "per occurrence"
+msgstr "لكل مرة"
+
+msgid "Weekly hours before overtime"
+msgstr "الساعات الأسبوعية قبل العمل الإضافي"

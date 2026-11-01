@@ -1,0 +1,119 @@
+msgid ""
+msgstr ""
+"Language: el\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Pay statement"
+msgstr "Εκκαθαριστικό"
+
+msgid "Internal pay statement"
+msgstr "Εσωτερική κατάσταση αμοιβής"
+
+msgid "An internal record of the business for paying its staff, not an official payroll document."
+msgstr "Εσωτερικό έγγραφο της επιχείρησης για την αμοιβή του προσωπικού της· δεν είναι επίσημο έγγραφο μισθοδοσίας."
+
+msgid "Business"
+msgstr "Επιχείρηση"
+
+msgid "Paid to"
+msgstr "Δικαιούχος"
+
+msgid "Period"
+msgstr "Περίοδος"
+
+msgid "Approved on"
+msgstr "Εγκρίθηκε στις"
+
+msgid "Item"
+msgstr "Στοιχείο"
+
+msgid "Terms"
+msgstr "Όροι"
+
+msgid "Quantity × rate"
+msgstr "Ποσότητα × τιμή"
+
+msgid "Amount"
+msgstr "Ποσό"
+
+msgid "Added by hand"
+msgstr "Προστέθηκαν χειροκίνητα"
+
+msgid "Note"
+msgstr "Σημείωση"
+
+msgid "Total"
+msgstr "Σύνολο"
+
+msgid "Gross"
+msgstr "Μικτά"
+
+msgid "Net"
+msgstr "Καθαρά"
+
+msgid "Page"
+msgstr "Σελίδα"
+
+msgid "Fixed pay"
+msgstr "Σταθερός μισθός"
+
+msgid "Per class"
+msgstr "Ανά μάθημα"
+
+msgid "Per attendee"
+msgstr "Ανά συμμετέχοντα"
+
+msgid "Per personal session"
+msgstr "Ανά προσωπική προπόνηση"
+
+msgid "Percent of sales"
+msgstr "Ποσοστό επί πωλήσεων"
+
+msgid "Overtime"
+msgstr "Υπερωρία"
+
+msgid "Allowance"
+msgstr "Επίδομα"
+
+msgid "Ad hoc payment"
+msgstr "Έκτακτη πληρωμή"
+
+msgid "Non-taxable reimbursement"
+msgstr "Μη φορολογητέο"
+
+msgid "Adjustment"
+msgstr "Διόρθωση"
+
+msgid "per month"
+msgstr "ανά μήνα"
+
+msgid "per week"
+msgstr "ανά εβδομάδα"
+
+msgid "per day"
+msgstr "ανά ημέρα"
+
+msgid "personal training packages they coach"
+msgstr "πακέτα προσωπικής προπόνησης που αναλαμβάνει"
+
+msgid "sales they recorded"
+msgstr "πωλήσεις που κατέγραψε"
+
+msgid "subscriptions of their own clients"
+msgstr "συνδρομές των δικών του πελατών"
+
+msgid "all subscriptions of the box"
+msgstr "όλες οι συνδρομές του box"
+
+msgid "per hour"
+msgstr "ανά ώρα"
+
+msgid "per period"
+msgstr "ανά περίοδο"
+
+msgid "per occurrence"
+msgstr "ανά φορά"
+
+msgid "Weekly hours before overtime"
+msgstr "Εβδομαδιαίες ώρες πριν από την υπερωρία"

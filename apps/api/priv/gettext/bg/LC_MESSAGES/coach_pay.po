@@ -1,0 +1,119 @@
+msgid ""
+msgstr ""
+"Language: bg\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Pay statement"
+msgstr "Фиш за възнаграждение"
+
+msgid "Internal pay statement"
+msgstr "Вътрешна справка за възнаграждение"
+
+msgid "An internal record of the business for paying its staff, not an official payroll document."
+msgstr "Вътрешен документ на бизнеса за заплащане на персонала, а не официален документ за заплати."
+
+msgid "Business"
+msgstr "Бизнес"
+
+msgid "Paid to"
+msgstr "Платено на"
+
+msgid "Period"
+msgstr "Период"
+
+msgid "Approved on"
+msgstr "Одобрено на"
+
+msgid "Item"
+msgstr "Перо"
+
+msgid "Terms"
+msgstr "Условия"
+
+msgid "Quantity × rate"
+msgstr "Количество × ставка"
+
+msgid "Amount"
+msgstr "Сума"
+
+msgid "Added by hand"
+msgstr "Добавено ръчно"
+
+msgid "Note"
+msgstr "Бележка"
+
+msgid "Total"
+msgstr "Общо"
+
+msgid "Gross"
+msgstr "Бруто"
+
+msgid "Net"
+msgstr "Нето"
+
+msgid "Page"
+msgstr "Страница"
+
+msgid "Fixed pay"
+msgstr "Фиксирано възнаграждение"
+
+msgid "Per class"
+msgstr "На клас"
+
+msgid "Per attendee"
+msgstr "На участник"
+
+msgid "Per personal session"
+msgstr "На персонална тренировка"
+
+msgid "Percent of sales"
+msgstr "Процент от продажбите"
+
+msgid "Overtime"
+msgstr "Извънреден труд"
+
+msgid "Allowance"
+msgstr "Добавка"
+
+msgid "Ad hoc payment"
+msgstr "Еднократно плащане"
+
+msgid "Non-taxable reimbursement"
+msgstr "Необлагаемо възстановяване"
+
+msgid "Adjustment"
+msgstr "Корекция"
+
+msgid "per month"
+msgstr "на месец"
+
+msgid "per week"
+msgstr "на седмица"
+
+msgid "per day"
+msgstr "на ден"
+
+msgid "personal training packages they coach"
+msgstr "пакети персонални тренировки, които води"
+
+msgid "sales they recorded"
+msgstr "продажби, които е записал"
+
+msgid "subscriptions of their own clients"
+msgstr "абонаменти на собствените му клиенти"
+
+msgid "all subscriptions of the box"
+msgstr "всички абонаменти на залата"
+
+msgid "per hour"
+msgstr "на час"
+
+msgid "per period"
+msgstr "на период"
+
+msgid "per occurrence"
+msgstr "на повод"
+
+msgid "Weekly hours before overtime"
+msgstr "Часове седмично преди извънреден труд"

@@ -11,6 +11,8 @@ defmodule Palee.CoachPay.Domain.PeriodPolicy do
   change under them. Periods are at most 92 days and never overlap.
   """
 
+  alias Palee.CoachPay.Domain.AmountBasis
+
   @max_days 92
 
   def max_days, do: @max_days
@@ -71,10 +73,45 @@ defmodule Palee.CoachPay.Domain.PeriodPolicy do
 
   def export(_period, _now), do: {:error, :coach_pay_period_not_approved}
 
-  @doc "A staff adjustment line (a bonus, a correction): any non-zero amount with a reason."
+  @doc """
+  A line staff add by hand (`kind`, default `adjustment`):
+
+    * `adjustment` – a bonus or a correction: any non-zero amount with a
+      `description`;
+    * `ad_hoc` (ADR-382, «Έκτακτη πληρωμή») – a payment by hand: a
+      positive amount and its reason (`note`, required, at most 500
+      characters; the description is its first 250);
+    * `non_taxable_reimbursement` (ADR-382, «Μη φορολογητέο») – money paid
+      back to the person, e.g. an expense: a positive amount and a
+      required `note`, like `ad_hoc`. Whether it is taxable is the
+      accountant's call; Palee only labels it.
+
+  `amount_basis` is `gross` (default) or `net`. Who added it
+  (`created_by_id`) and when (`inserted_at`) stay on the line.
+  """
   def adjustment(params, %Date{} = occurred_on, actor_id) do
-    amount = params["amount_cents"] || params[:amount_cents]
-    description = params["description"] || params[:description]
+    params = Map.new(params, fn {key, value} -> {to_string(key), value} end)
+    basis = params["amount_basis"] || AmountBasis.default()
+
+    if AmountBasis.valid?(basis) do
+      with {:ok, line} <- manual(params["kind"] || "adjustment", params, occurred_on, actor_id) do
+        {:ok, Map.put(line, :amount_basis, basis)}
+      end
+    else
+      {:error, {:invalid_fields, %{"amount_basis" => "invalid"}}}
+    end
+  end
+
+  @doc "ADR-382: a changed basis for a line of a draft period."
+  def basis_change(value) do
+    if AmountBasis.valid?(value),
+      do: {:ok, %{amount_basis: value}},
+      else: {:error, {:invalid_fields, %{"amount_basis" => "invalid"}}}
+  end
+
+  defp manual("adjustment", params, occurred_on, actor_id) do
+    amount = params["amount_cents"]
+    description = params["description"]
 
     cond do
       not (is_integer(amount) and amount != 0 and abs(amount) <= 10_000_000) ->
@@ -85,21 +122,49 @@ defmodule Palee.CoachPay.Domain.PeriodPolicy do
         {:error, {:invalid_fields, %{"description" => "required"}}}
 
       true ->
-        {:ok,
-         %{
-           rule_id: nil,
-           kind: "adjustment",
-           source_type: "manual",
-           source_id: nil,
-           occurred_on: occurred_on,
-           description: String.trim(description),
-           quantity: 1,
-           unit_cents: nil,
-           base_cents: nil,
-           percent_bps: nil,
-           amount_cents: amount,
-           created_by_id: actor_id
-         }}
+        {:ok, line("adjustment", String.trim(description), nil, amount, occurred_on, actor_id)}
     end
   end
+
+  defp manual(kind, params, occurred_on, actor_id)
+       when kind in ["ad_hoc", "non_taxable_reimbursement"] do
+    amount = params["amount_cents"]
+    note = if is_binary(params["note"]), do: String.trim(params["note"])
+
+    cond do
+      not (is_integer(amount) and amount > 0 and amount <= 10_000_000) ->
+        {:error, {:invalid_fields, %{"amount_cents" => "invalid"}}}
+
+      not (is_binary(note) and note != "" and String.length(note) <= 500) ->
+        {:error, {:invalid_fields, %{"note" => "required"}}}
+
+      true ->
+        {:ok, line(kind, String.slice(note, 0, 250), note, amount, occurred_on, actor_id)}
+    end
+  end
+
+  defp manual(_kind, _params, _occurred_on, _actor_id),
+    do: {:error, {:invalid_fields, %{"kind" => "invalid"}}}
+
+  defp line(kind, description, note, amount, occurred_on, actor_id),
+    do: %{
+      rule_id: nil,
+      pay_item_id: nil,
+      kind: kind,
+      source_type: "manual",
+      source_id: nil,
+      occurred_on: occurred_on,
+      description: description,
+      note: note,
+      quantity: 1,
+      quantity_divisor: nil,
+      unit_cents: nil,
+      base_cents: nil,
+      percent_bps: nil,
+      amount_cents: amount,
+      created_by_id: actor_id
+    }
+
+  @doc "Kinds of lines staff add by hand to a period (`adjustment/3`)."
+  def manual_kinds, do: ~w(adjustment ad_hoc non_taxable_reimbursement)
 end

@@ -1,0 +1,119 @@
+msgid ""
+msgstr ""
+"Language: he\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Pay statement"
+msgstr "תלוש תשלום"
+
+msgid "Internal pay statement"
+msgstr "דוח תגמול פנימי"
+
+msgid "An internal record of the business for paying its staff, not an official payroll document."
+msgstr "רשומה פנימית של העסק לתשלום לצוות שלו, ואינה מסמך שכר רשמי."
+
+msgid "Business"
+msgstr "עסק"
+
+msgid "Paid to"
+msgstr "שולם ל"
+
+msgid "Period"
+msgstr "תקופה"
+
+msgid "Approved on"
+msgstr "אושר בתאריך"
+
+msgid "Item"
+msgstr "פריט"
+
+msgid "Terms"
+msgstr "תנאים"
+
+msgid "Quantity × rate"
+msgstr "כמות × תעריף"
+
+msgid "Amount"
+msgstr "סכום"
+
+msgid "Added by hand"
+msgstr "נוסף ידנית"
+
+msgid "Note"
+msgstr "הערה"
+
+msgid "Total"
+msgstr "סה״כ"
+
+msgid "Gross"
+msgstr "ברוטו"
+
+msgid "Net"
+msgstr "נטו"
+
+msgid "Page"
+msgstr "עמוד"
+
+msgid "Fixed pay"
+msgstr "שכר קבוע"
+
+msgid "Per class"
+msgstr "לשיעור"
+
+msgid "Per attendee"
+msgstr "למשתתף"
+
+msgid "Per personal session"
+msgstr "לאימון אישי"
+
+msgid "Percent of sales"
+msgstr "אחוז מהמכירות"
+
+msgid "Overtime"
+msgstr "שעות נוספות"
+
+msgid "Allowance"
+msgstr "תוספת"
+
+msgid "Ad hoc payment"
+msgstr "תשלום חד־פעמי"
+
+msgid "Non-taxable reimbursement"
+msgstr "החזר פטור ממס"
+
+msgid "Adjustment"
+msgstr "תיקון"
+
+msgid "per month"
+msgstr "לחודש"
+
+msgid "per week"
+msgstr "לשבוע"
+
+msgid "per day"
+msgstr "ליום"
+
+msgid "personal training packages they coach"
+msgstr "חבילות אימון אישי שהוא מלווה"
+
+msgid "sales they recorded"
+msgstr "מכירות שרשם"
+
+msgid "subscriptions of their own clients"
+msgstr "מנויים של הלקוחות שלו"
+
+msgid "all subscriptions of the box"
+msgstr "כל המנויים של המכון"
+
+msgid "per hour"
+msgstr "לשעה"
+
+msgid "per period"
+msgstr "לתקופה"
+
+msgid "per occurrence"
+msgstr "לכל פעם"
+
+msgid "Weekly hours before overtime"
+msgstr "שעות שבועיות לפני שעות נוספות"

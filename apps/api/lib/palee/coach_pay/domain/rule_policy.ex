@@ -13,19 +13,36 @@ defmodule Palee.CoachPay.Domain.RulePolicy do
       coach (`sales_scope`): `personal_training` (packages whose personal
       trainer is the coach) or `sold_by` (sales the coach recorded at the
       desk). A refund takes its share back (a clawback line).
+      ADR-382: also `own_clients` (subscription and package payments of
+      the members the coach coaches, ADR-100, or whose personal trainer
+      they are) and `box_all` (every subscription and package payment of
+      the box); these two count only `membership` and `package` revenue;
+    * `fixed` (ADR-382) – `amount_cents` per `frequency` (`monthly`,
+      `weekly`, `daily`), prorated by the calendar days the rule is valid
+      in the period (`Palee.CoachPay.Domain.Proration`).
+
+  A coach may hold any number of rules of any kinds at once; each pays on
+  its own and the statement shows one group per rule.
+
+  `amount_basis` (`gross` default, or `net`): what the rule's amounts are,
+  inherited by its lines (`Palee.CoachPay.Domain.AmountBasis`).
 
   Who counts in a class (`count_statuses`): `attended` by default; a box
   may also pay for `late_cancel` and `no_show` (the place was held).
   """
 
-  @kinds ~w(per_class per_attendee per_session percent_of_sales)
+  alias Palee.CoachPay.Domain.AmountBasis
+
+  @kinds ~w(per_class per_attendee per_session percent_of_sales fixed)
   @statuses ~w(attended late_cancel no_show)
-  @scopes ~w(personal_training sold_by)
+  @scopes ~w(personal_training sold_by own_clients box_all)
+  @frequencies ~w(monthly weekly daily)
   @max_amount 10_000_000
 
   def kinds, do: @kinds
   def count_statuses, do: @statuses
   def sales_scopes, do: @scopes
+  def frequencies, do: @frequencies
 
   @doc """
   Checks and normalizes a new rule or a change (`current` is the stored
@@ -74,6 +91,11 @@ defmodule Palee.CoachPay.Domain.RulePolicy do
         "note",
         "invalid"
       )
+      |> check(
+        is_nil(merged["amount_basis"]) or AmountBasis.valid?(merged["amount_basis"]),
+        "amount_basis",
+        "invalid"
+      )
       |> kind_errors(kind, merged)
 
     if errors == %{},
@@ -89,6 +111,12 @@ defmodule Palee.CoachPay.Domain.RulePolicy do
     |> check(merged["sales_scope"] in @scopes, "sales_scope", "invalid")
   end
 
+  defp kind_errors(errors, "fixed", merged) do
+    errors
+    |> check(positive?(merged["amount_cents"], @max_amount), "amount_cents", "invalid")
+    |> check(merged["frequency"] in @frequencies, "frequency", "invalid")
+  end
+
   defp kind_errors(errors, kind, merged) when kind in @kinds,
     do: check(errors, positive?(merged["amount_cents"], @max_amount), "amount_cents", "invalid")
 
@@ -99,13 +127,29 @@ defmodule Palee.CoachPay.Domain.RulePolicy do
     |> Map.merge(%{
       percent_bps: merged["percent_bps"],
       sales_scope: merged["sales_scope"],
-      amount_cents: nil
+      amount_cents: nil,
+      frequency: nil
+    })
+  end
+
+  defp normalize("fixed" = kind, merged) do
+    base(kind, merged)
+    |> Map.merge(%{
+      amount_cents: merged["amount_cents"],
+      frequency: merged["frequency"],
+      percent_bps: nil,
+      sales_scope: nil
     })
   end
 
   defp normalize(kind, merged) do
     base(kind, merged)
-    |> Map.merge(%{amount_cents: merged["amount_cents"], percent_bps: nil, sales_scope: nil})
+    |> Map.merge(%{
+      amount_cents: merged["amount_cents"],
+      percent_bps: nil,
+      sales_scope: nil,
+      frequency: nil
+    })
   end
 
   defp base(kind, merged) do
@@ -119,6 +163,7 @@ defmodule Palee.CoachPay.Domain.RulePolicy do
       count_statuses: (merged["count_statuses"] || ["attended"]) |> Enum.uniq() |> Enum.sort(),
       min_attendees: merged["min_attendees"] || 0,
       max_attendees: merged["max_attendees"],
+      amount_basis: merged["amount_basis"] || AmountBasis.default(),
       note: merged["note"]
     }
   end
@@ -140,6 +185,34 @@ defmodule Palee.CoachPay.Domain.RulePolicy do
 
     %{ends_on: ends_on}
   end
+
+  @doc """
+  ADR-382: what a rule pays by, as a statement keeps it (string keys,
+  ISO dates), so an approved statement shows the terms it was paid by
+  even after the rule changes.
+  """
+  def terms(rule) do
+    %{
+      "source" => "rule",
+      "kind" => rule.kind,
+      "amount_cents" => rule.amount_cents,
+      "percent_bps" => rule.percent_bps,
+      "frequency" => Map.get(rule, :frequency),
+      "sales_scope" => rule.sales_scope,
+      "class_type_ids" => rule.class_type_ids || [],
+      "count_statuses" => rule.count_statuses || [],
+      "min_attendees" => rule.min_attendees,
+      "max_attendees" => rule.max_attendees,
+      "currency" => rule.currency,
+      "amount_basis" => Map.get(rule, :amount_basis) || AmountBasis.default(),
+      "starts_on" => iso(rule.starts_on),
+      "ends_on" => iso(rule.ends_on),
+      "note" => rule.note
+    }
+  end
+
+  defp iso(nil), do: nil
+  defp iso(%Date{} = date), do: Date.to_iso8601(date)
 
   defp check(errors, true, _field, _code), do: errors
   defp check(errors, _false, field, code), do: Map.put_new(errors, field, code)

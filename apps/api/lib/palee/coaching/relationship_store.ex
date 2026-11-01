@@ -25,4 +25,7 @@ defmodule Palee.Coaching.RelationshipStore do
 
   @impl true
   def client_ids(context, coach_id), do: tenant_call(context, :client_ids, [coach_id])
+
+  @impl true
+  def between(context, from, to), do: tenant_call(context, :between, [from, to])
 end
