@@ -6,6 +6,11 @@ defmodule Palee.Channels do
 
   Other contexts and W2's automations use `Palee.Application.Channels.SendThroughChannel`;
   this module is the context's public API for the application layer.
+
+  Palee sends a box's SMS and email by default; the box's own provider is
+  the advanced option (ADR-349 for SMS, ADR-368 for email over SMTP). On
+  Palee's account the box pays the provider's price plus Palee's margin
+  (ADR-369).
   """
 
   alias Palee.Channels.{Connections, Contacts, EmailConnections, Margins, Sending}
