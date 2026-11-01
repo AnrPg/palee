@@ -57,6 +57,21 @@ defmodule Palee.Channels.OwnEmailTest do
     message
   end
 
+  test "only the box's own messages may take its route; platform mail never does" do
+    box_kinds =
+      Palee.Email.Templates.all()
+      |> Enum.filter(fn {_kind, template} -> template.origin() == :box end)
+      |> Enum.map(&elem(&1, 0))
+      |> Enum.sort()
+
+    assert box_kinds ==
+             ~w(box_automation corporate_invoice_issued corporate_invoice_reminder fiscal_document)a
+
+    for {kind, template} <- Palee.Email.Templates.all(), template.category() != :transactional do
+      assert template.origin() == :platform, "#{kind} is platform mail"
+    end
+  end
+
   test "the password is stored encrypted and never shown; a connection change needs a check",
        ctx do
     assert %{connection: nil, ports: [25, 465, 587, 2525], tls_modes: ["starttls", "tls"]} =
