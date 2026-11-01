@@ -9,14 +9,16 @@ defmodule Palee.CoachPay.Domain.Payslip do
   document. Content: the business (name, address, tax ids), the person,
   the period, one row per group of the statement with its terms and
   quantity × rate, then each line added by hand (payments by hand,
-  allowances, adjustments) with its note, and the total in the period's
-  currency.
+  allowances, reimbursements, adjustments) with its note, and the totals
+  in the period's currency. Gross and net amounts are never added into one
+  figure: every `net` row is marked «Καθαρά» and the total line reads
+  «Μικτά X · Καθαρά Y» (product owner, 2026-11-01).
 
   `view` (built by the application service):
 
       %{business: %{name, lines: [String.t()], ids: [{term, value}]},
         person: String.t(), period: %{starts_on, ends_on, approved_at},
-        currency: String.t(), total_cents: integer(),
+        currency: String.t(), gross_cents: integer(), net_cents: integer(),
         groups: [StatementGroups group of the calculated lines],
         manual: [line added by hand], language: String.t()}
 
@@ -47,6 +49,8 @@ defmodule Palee.CoachPay.Domain.Payslip do
     added_by_hand: "Added by hand",
     note: "Note",
     total: "Total",
+    gross: "Gross",
+    net: "Net",
     page: "Page",
     fixed: "Fixed pay",
     per_class: "Per class",
@@ -56,6 +60,7 @@ defmodule Palee.CoachPay.Domain.Payslip do
     overtime: "Overtime",
     allowance: "Allowance",
     ad_hoc: "Ad hoc payment",
+    non_taxable_reimbursement: "Non-taxable reimbursement",
     adjustment: "Adjustment",
     monthly: "per month",
     weekly: "per week",
@@ -67,7 +72,7 @@ defmodule Palee.CoachPay.Domain.Payslip do
     per_hour: "per hour",
     per_period: "per period",
     per_occurrence: "per occurrence",
-    weekly_threshold: "above %{threshold} a week"
+    weekly_threshold: "Weekly hours before overtime"
   ]
 
   @doc "`[{key, English message}]`: the gettext msgids (domain `coach_pay`)."
@@ -204,6 +209,7 @@ defmodule Palee.CoachPay.Domain.Payslip do
         s =
           s
           |> text(@left, s.y, group_title(group, s.l), font: :bold, size: 9)
+          |> net_marker(group, 144)
           |> text(140, s.y, quantity_rate(group, view), size: 9, align: :right)
           |> text(@right, s.y, money(group.amount_cents, view), size: 9, align: :right)
 
@@ -256,6 +262,7 @@ defmodule Palee.CoachPay.Domain.Payslip do
           text(s, @left, s.y + index * 4, row, size: 9)
         end)
         |> text(@right, s.y, money(line.amount_cents, view), size: 9, align: :right)
+        |> net_marker(line, 144)
 
       s =
         note_lines
@@ -269,15 +276,25 @@ defmodule Palee.CoachPay.Domain.Payslip do
     end)
   end
 
+  # «Μικτά X · Καθαρά Y»: the two subtotals, never one sum of both.
   defp total(%{view: view, l: l} = s) do
     s = ensure(s, 14)
     s = hline(s, s.y, 1.0)
 
+    figure =
+      "#{l.gross} #{money(view.gross_cents, view)} · #{l.net} #{money(view.net_cents, view)}"
+
     s
-    |> text(140, s.y + 6, l.total, font: :bold, size: 11, align: :right)
-    |> text(@right, s.y + 6, money(view.total_cents, view), font: :bold, size: 11, align: :right)
+    |> text(@left, s.y + 6, l.total, font: :bold, size: 11)
+    |> text(@right, s.y + 6, figure, font: :bold, size: 11, align: :right)
     |> Map.put(:y, s.y + 14)
   end
+
+  # A visible marker on rows whose amount is net (not the gross default).
+  defp net_marker(%{l: l} = s, %{amount_basis: "net"}, x),
+    do: text(s, x, s.y, l.net, font: :bold, size: 8, color: {0.75, 0.35, 0.0})
+
+  defp net_marker(s, _row, _x), do: s
 
   defp footer(%{l: l} = s) do
     s
@@ -302,8 +319,7 @@ defmodule Palee.CoachPay.Domain.Payslip do
   defp terms_text(%{terms: %{"source" => "pay_item"} = terms}, l, view) do
     [
       "#{money(terms["amount_cents"], view)} #{label(l, terms["unit"])}",
-      terms["weekly_threshold"] &&
-        String.replace(l.weekly_threshold, "%{threshold}", to_string(terms["weekly_threshold"]))
+      terms["weekly_threshold"] && "#{l.weekly_threshold}: #{terms["weekly_threshold"]}"
     ]
     |> Enum.reject(&is_nil/1)
     |> Enum.join(" · ")
