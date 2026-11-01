@@ -294,3 +294,4 @@ must have an ADR. See `template.md` for the format.
 
 | ADR-364 | Public status page (CP-G4): per-minute probes of app, search, files, email, payments and fiscal; incidents and maintenance from the platform console; public cacheable data API with 90-day uptime; double opt-in status emails; documented option to host it outside the cluster | Accepted |
 | ADR-365 | The box downloads all its data at any time (CP-G5): owners get one ZIP of CSV files built from every context's ADR-117 export in their own RLS session, without members' personal tables or secrets, one a day, kept 7 days | Accepted |
+| ADR-382 | Coach pay additions: fixed pay prorated by days, % of own clients' or all subscriptions, groups per rule, payments by hand and non-taxable reimbursements with notes, overtime (hours above a weekly threshold) and allowances catalogue, gross/net per line with separate subtotals, internal pay statement PDF, profile and Finance summary | Accepted |

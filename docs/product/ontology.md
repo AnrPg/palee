@@ -644,9 +644,9 @@ Leaderboard filters, WOD snapshots, the fitness profile, visit badges, calendar 
 | Uptime | Διαθεσιμότητα | `status_daily_samples` | The share of checks that found a component working, per day and over 90 days. | |
 | Status emails | Email κατάστασης | `status_subscribers` | Emails about incidents and maintenance to anyone who asked for them on the status page (confirmed by email first; one link stops them). | Notifications of the app; marketing emails. |
 
-### 4.25 Coach pay (ADR-341)
+### 4.25 Coach pay (ADR-341, ADR-382)
 
-Staff screens only. Never part of a fiscal document: a pay statement is an internal record for paying coaches.
+Staff screens only. Never part of a fiscal document: a pay statement is an internal record for paying coaches. Since ADR-382 any staff member (front desk, accountant, ...) may have a statement.
 
 | English | Ελληνικά | Code | What it is | Not to be confused with |
 |---|---|---|---|---|
@@ -656,6 +656,15 @@ Staff screens only. Never part of a fiscal document: a pay statement is an inter
 | Pay statement | Κατάσταση αμοιβής | `coach_pay_statements`, `coach_pay_lines` | One coach's lines and total for a period; the coach sees their own under «Οι αμοιβές μου». | Receipt, invoice (fiscal documents). |
 | Adjustment | Διόρθωση | line kind `adjustment` | An amount staff add by hand to a statement (bonus, deduction), with a note. | Refund. |
 | Clawback | Αφαίρεση λόγω επιστροφής | line kind `clawback` | A negative line when a sale a commission was paid on is refunded. | Adjustment. |
+| Fixed pay | Σταθερός μισθός | rule kind `fixed`, `frequency` (`monthly`, `weekly`, `daily`) | A set amount per month, week or day, prorated by the calendar days the rule holds in the period (ADR-382). | Payroll salary (taxes and contributions stay outside Palee). |
+| Own clients (commission basis) | Συνδρομές των δικών του πελατών | `sales_scope: own_clients` | A percent of the subscription and package payments of the members the coach coaches (or whose personal training they give). Also `box_all` «Όλες οι συνδρομές του box». (ADR-382) | Sales they recorded («Πωλήσεις που κατέγραψε», `sold_by`). |
+| Ad hoc payment | Έκτακτη πληρωμή | line kind `ad_hoc` | A positive amount staff add by hand to a statement, with its reason; who added it and when stay on it (ADR-382). | Adjustment («Διόρθωση», a correction that may be negative). |
+| Non-taxable reimbursement | Μη φορολογητέο | line kind `non_taxable_reimbursement` | Money paid back to the person, e.g. an expense, with a required note. Palee only labels it; the accountant decides how it is treated (ADR-382). | Refund to a member. |
+| Overtime | Υπερωρία | `coach_pay_items.kind: overtime` | An amount per hour for the hours a person led classes above a weekly threshold (Monday–Sunday) the box sets (ADR-382). | Extra class (a class, not pay). |
+| Allowance | Επίδομα | `coach_pay_items.kind: allowance` (`per_period`, `per_occurrence`) | A set amount from the box's catalogue, added by hand to a person's statement for a period, once or per occurrence (ADR-382). | Tip. |
+| Pay items | Υπερωρίες και επιδόματα | `coach_pay_items` | The box's catalogue of overtime and allowances with the roles each applies to; Settings (ADR-382). | Pay rule (per person). |
+| Gross / Net | Μικτά / Καθαρά | `amount_basis: gross \| net` | Whether an amount is before or after the person's taxes and contributions, as staff say; Palee computes neither. Gross is the default; net lines are marked «Καθαρά» and the two are always shown as separate subtotals («Μικτά X · Καθαρά Y»). (ADR-382) | Total (never one sum of both without labels). |
+| Pay statement (PDF) | Εκκαθαριστικό | `GET …/coach-pay/periods/:id/statements/:user_id/pdf`, `GET …/coach-pay/mine/:period_id/pdf` | One person's approved statement as PDF, headed «Εσωτερική κατάσταση αμοιβής» (Internal pay statement): an internal record, not an official payroll document (ADR-382). | Payslip issued by payroll; receipt. |
 
 ## 5. Name clashes found, and proposals
 
