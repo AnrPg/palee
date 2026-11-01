@@ -7,7 +7,7 @@ defmodule Palee.Application.CoachPay.WorkSource do
 
   @behaviour Palee.CoachPay.Ports.WorkSource
 
-  alias Palee.{Appointments, Finance, Organizations, Scheduling}
+  alias Palee.{Appointments, CoachPay, Coaching, Finance, Organizations, Scheduling}
   alias Palee.TimeZones.ZonedTime
 
   @impl true
@@ -24,6 +24,7 @@ defmodule Palee.Application.CoachPay.WorkSource do
         class_type_id: class.class_type_id,
         name: class.name,
         occurred_on: ZonedTime.local_date(class.scheduled_at, zone),
+        duration_minutes: Map.get(class, :duration_minutes),
         attendance: class.attendance
       }
     end)
@@ -49,6 +50,33 @@ defmodule Palee.Application.CoachPay.WorkSource do
 
   @impl true
   def sales(context, %Date{} = from, %Date{} = to), do: Finance.coach_sales(context, from, to)
+
+  @impl true
+  def coach_clients(context, %Date{} = from, %Date{} = to) do
+    zone = zone(context)
+    {from_at, to_at} = range(from, to, zone)
+
+    context
+    |> Coaching.relationships_between(from_at, to_at)
+    |> Enum.map(fn relation ->
+      %{
+        coach_user_id: relation.coach_user_id,
+        client_user_id: relation.client_user_id,
+        from: ZonedTime.local_date(relation.started_at, zone),
+        to: relation.ended_at && ZonedTime.local_date(relation.ended_at, zone)
+      }
+    end)
+  end
+
+  @impl true
+  def staff_roles(context) do
+    context
+    |> Organizations.member_roles_by_user()
+    |> Map.new(fn {user_id, member} ->
+      {user_id, CoachPay.person_roles(member.roles, Map.get(member, :coach_scope))}
+    end)
+    |> Map.reject(fn {_user_id, roles} -> roles == [] end)
+  end
 
   defp range(from, to, zone),
     do: {ZonedTime.start_of_day(from, zone), ZonedTime.start_of_day(Date.add(to, 1), zone)}

@@ -5,7 +5,7 @@ defmodule Palee.Infrastructure.CoachPay.EctoCoachPayStore do
 
   import Ecto.Query
 
-  alias Palee.CoachPay.{Line, Period, Rule, Statement}
+  alias Palee.CoachPay.{Line, PayItem, Period, Rule, Statement}
   alias Palee.Infrastructure.Tenancy.RepoContext
   alias Palee.Repo
 
@@ -158,6 +158,23 @@ defmodule Palee.Infrastructure.CoachPay.EctoCoachPayStore do
     end)
   end
 
+  @impl true
+  def statement_totals([]), do: []
+
+  def statement_totals(period_ids) do
+    Statement
+    |> tenant_scope()
+    |> where([statement], statement.period_id in ^period_ids)
+    |> order_by([statement], desc: statement.total_cents, asc: statement.coach_user_id)
+    |> select([statement], %{
+      period_id: statement.period_id,
+      coach_user_id: statement.coach_user_id,
+      total_cents: statement.total_cents,
+      line_count: statement.line_count
+    })
+    |> Repo.all()
+  end
+
   defp with_lines(statements) do
     ids = Enum.map(statements, & &1.id)
 
@@ -174,13 +191,16 @@ defmodule Palee.Infrastructure.CoachPay.EctoCoachPayStore do
   end
 
   @impl true
-  def replace_lines(period_id, lines_by_coach, %DateTime{} = now) do
+  def replace_lines(period_id, lines_by_coach, terms_by_coach, %DateTime{} = now) do
     statements = statement_map(period_id)
 
-    # Calculated lines go; staff adjustments stay.
+    # Calculated lines go; lines staff added by hand stay.
     Line
     |> tenant_scope()
-    |> where([line], line.statement_id in ^Map.values(statements) and line.kind != "adjustment")
+    |> where(
+      [line],
+      line.statement_id in ^Map.values(statements) and line.source_type != "manual"
+    )
     |> Repo.delete_all()
 
     Enum.each(lines_by_coach, fn {coach_user_id, lines} ->
@@ -188,6 +208,7 @@ defmodule Palee.Infrastructure.CoachPay.EctoCoachPayStore do
         Map.get(statements, coach_user_id) || insert_statement!(period_id, coach_user_id)
 
       insert_lines!(statement_id, lines, now)
+      merge_terms!(statement_id, Map.get(terms_by_coach, coach_user_id, %{}))
     end)
 
     refresh_totals(period_id)
@@ -195,7 +216,7 @@ defmodule Palee.Infrastructure.CoachPay.EctoCoachPayStore do
   end
 
   @impl true
-  def add_line(period_id, coach_user_id, attrs) do
+  def add_line(period_id, coach_user_id, attrs, terms) do
     statement_id =
       Map.get(statement_map(period_id), coach_user_id) ||
         insert_statement!(period_id, coach_user_id)
@@ -205,6 +226,7 @@ defmodule Palee.Infrastructure.CoachPay.EctoCoachPayStore do
     |> Repo.insert()
     |> case do
       {:ok, line} ->
+        merge_terms!(statement_id, terms)
         refresh_totals(period_id)
         update_period(period_id, %{total_cents: period_total(period_id)})
         {:ok, plain(line)}
@@ -222,7 +244,7 @@ defmodule Palee.Infrastructure.CoachPay.EctoCoachPayStore do
         |> tenant_scope()
         |> where(
           [line],
-          line.id == ^id and line.kind == "adjustment" and
+          line.id == ^id and line.source_type == "manual" and
             line.statement_id in ^Map.values(statement_map(period_id))
         )
         |> Repo.delete_all()
@@ -235,6 +257,42 @@ defmodule Palee.Infrastructure.CoachPay.EctoCoachPayStore do
         {:error, :not_found}
       end
     end) || {:error, :not_found}
+  end
+
+  # ── Pay items (ADR-382) ──────────────────────────────────────────────────
+
+  @impl true
+  def list_items(filters) do
+    PayItem
+    |> tenant_scope()
+    |> maybe(:kind, filters[:kind] || filters["kind"])
+    |> then(fn query ->
+      if (filters[:include_archived] || filters["include_archived"]) in [true, "true"],
+        do: query,
+        else: where(query, [item], is_nil(item.archived_at))
+    end)
+    |> order_by([item], asc: item.kind, asc: item.name, asc: item.inserted_at)
+    |> Repo.all()
+    |> Enum.map(&plain/1)
+  end
+
+  @impl true
+  def get_item(id), do: with_uuid(id, &(PayItem |> tenant_scope() |> Repo.get(&1) |> plain()))
+
+  @impl true
+  def insert_item(attrs) do
+    %PayItem{}
+    |> PayItem.changeset(attrs)
+    |> Repo.insert()
+    |> plain_result()
+  end
+
+  @impl true
+  def update_item(id, attrs) do
+    case PayItem |> tenant_scope() |> Repo.get(id) do
+      nil -> {:error, :not_found}
+      item -> item |> PayItem.changeset(attrs) |> Repo.update() |> plain_result()
+    end
   end
 
   defp statement_map(period_id) do
@@ -251,6 +309,18 @@ defmodule Palee.Infrastructure.CoachPay.EctoCoachPayStore do
     |> Statement.changeset(%{period_id: period_id, coach_user_id: coach_user_id})
     |> Repo.insert!()
     |> Map.fetch!(:id)
+  end
+
+  defp merge_terms!(_statement_id, terms) when terms == %{}, do: :ok
+
+  defp merge_terms!(statement_id, terms) do
+    statement = Statement |> tenant_scope() |> Repo.get!(statement_id)
+
+    statement
+    |> Statement.changeset(%{rule_terms: Map.merge(statement.rule_terms || %{}, terms)})
+    |> Repo.update!()
+
+    :ok
   end
 
   defp insert_lines!(_statement_id, [], _now), do: :ok
@@ -272,7 +342,10 @@ defmodule Palee.Infrastructure.CoachPay.EctoCoachPayStore do
           :unit_cents,
           :base_cents,
           :percent_bps,
-          :amount_cents
+          :amount_cents,
+          :pay_item_id,
+          :quantity_divisor,
+          :note
         ])
         |> Map.merge(%{
           id: Ecto.UUID.generate(),

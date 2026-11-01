@@ -27,14 +27,33 @@ defmodule Palee.CoachPay.Ports.CoachPayStore do
   @callback statements(period_id :: id()) :: [map()]
   @callback statements_for_coach(coach_user_id :: id(), statuses :: [String.t()]) :: [map()]
   @doc """
-  Replaces the calculated lines of a draft period (adjustments stay) and
-  updates the statement and period totals, in one transaction.
+  Totals of the statements of these periods, without their lines:
+  `[%{period_id, coach_user_id, total_cents, line_count}]` (ADR-382).
   """
-  @callback replace_lines(period_id :: id(), %{id() => [map()]}, DateTime.t()) ::
+  @callback statement_totals(period_ids :: [id()]) :: [map()]
+  @doc """
+  Replaces the calculated lines of a draft period (lines added by hand,
+  `source_type = manual`, stay), merges each coach's rule terms into the
+  statement and updates the statement and period totals.
+  """
+  @callback replace_lines(
+              period_id :: id(),
+              %{id() => [map()]},
+              terms :: %{id() => map()},
+              DateTime.t()
+            ) ::
               {:ok, map()} | {:error, term()}
-  @callback add_line(period_id :: id(), coach_user_id :: id(), map()) ::
+  @doc "Adds a line by hand, merging `terms` (`%{id => terms}`) into the statement's."
+  @callback add_line(period_id :: id(), coach_user_id :: id(), map(), terms :: map()) ::
               {:ok, map()} | {:error, term()}
+  @doc "Removes a line added by hand (`source_type = manual`)."
   @callback delete_adjustment(period_id :: id(), line_id :: id()) :: :ok | {:error, term()}
+
+  # Pay items (ADR-382)
+  @callback list_items(filters :: map()) :: [map()]
+  @callback get_item(id()) :: map() | nil
+  @callback insert_item(map()) :: {:ok, map()} | {:error, term()}
+  @callback update_item(id(), map()) :: {:ok, map()} | {:error, term()}
 
   @callback transaction((-> {:ok, term()} | {:error, term()})) :: {:ok, term()} | {:error, term()}
 end

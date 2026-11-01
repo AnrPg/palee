@@ -2684,6 +2684,8 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
       id: payment.id,
       payment_id: payment.id,
       occurred_on: payment.paid_on,
+      # ADR-382: a refund's commission follows the day of the payment it takes back.
+      paid_on: payment.paid_on,
       amount_cents: payment.amount_cents,
       currency: payment.currency,
       revenue_stream: payment.revenue_stream,

@@ -38,13 +38,26 @@ defmodule Palee.CoachPay.CoachPayStore do
     do: adapter().statements_for_coach(coach_user_id, statuses)
 
   @impl true
-  def replace_lines(period_id, lines, now), do: adapter().replace_lines(period_id, lines, now)
+  def statement_totals(period_ids), do: adapter().statement_totals(period_ids)
+
   @impl true
-  def add_line(period_id, coach_user_id, attrs),
-    do: adapter().add_line(period_id, coach_user_id, attrs)
+  def replace_lines(period_id, lines, terms, now),
+    do: adapter().replace_lines(period_id, lines, terms, now)
+
+  @impl true
+  def add_line(period_id, coach_user_id, attrs, terms),
+    do: adapter().add_line(period_id, coach_user_id, attrs, terms)
 
   @impl true
   def delete_adjustment(period_id, line_id), do: adapter().delete_adjustment(period_id, line_id)
+  @impl true
+  def list_items(filters), do: adapter().list_items(filters)
+  @impl true
+  def get_item(id), do: adapter().get_item(id)
+  @impl true
+  def insert_item(attrs), do: adapter().insert_item(attrs)
+  @impl true
+  def update_item(id, attrs), do: adapter().update_item(id, attrs)
   @impl true
   def transaction(fun), do: adapter().transaction(fun)
 end
