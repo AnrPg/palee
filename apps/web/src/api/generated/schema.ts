@@ -5903,6 +5903,61 @@ export interface paths {
         patch: operations["PaleeWeb.AdminClassTypeController.update"];
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/coach-pay/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box's overtime and allowances (active ones unless `include_archived`) */
+        get: operations["PaleeWeb.AdminCoachPayController.items"];
+        put?: never;
+        /**
+         * Add overtime or an allowance to the box's catalogue
+         * @description Overtime: an amount per hour above `weekly_threshold` hours a week (both required), counted from the classes the person led. Allowance: per period or per occurrence, added to a period by hand. `roles`: the staff roles it applies to.
+         */
+        post: operations["PaleeWeb.AdminCoachPayController.create_item"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/items/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Change overtime or an allowance (statements keep the terms they paid by) */
+        patch: operations["PaleeWeb.AdminCoachPayController.update_item"];
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/items/{id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Stop overtime or an allowance (lines already made stay) */
+        post: operations["PaleeWeb.AdminCoachPayController.archive_item"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/coach-pay/mine": {
         parameters: {
             query?: never;
@@ -5910,8 +5965,42 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** My pay statements (approved periods only), newest first */
+        /** My pay statements (approved periods only), newest first, with totals */
         get: operations["PaleeWeb.MyCoachPayController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/mine/{period_id}/pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My pay statement of an approved period as PDF («Εκκαθαριστικό») */
+        get: operations["PaleeWeb.MyCoachPayController.payslip"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/people/{user_id}/statements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A staff member's pay statements for their profile, with totals */
+        get: operations["PaleeWeb.AdminCoachPayController.person_statements"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5964,7 +6053,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Add a bonus or correction to a coach's statement (draft periods only) */
+        /**
+         * Add a line by hand to a person's statement (draft periods only)
+         * @description `adjustment` (default): a bonus or correction with a description; `ad_hoc` («Έκτακτη πληρωμή») and `non_taxable_reimbursement` («Μη φορολογητέο»): a positive amount with a required note. Who added it and when stay on the line.
+         */
         post: operations["PaleeWeb.AdminCoachPayController.add_adjustment"];
         delete?: never;
         options?: never;
@@ -5982,7 +6074,7 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
-        /** Remove an adjustment (draft periods only) */
+        /** Remove a line added by hand (draft periods only) */
         delete: operations["PaleeWeb.AdminCoachPayController.delete_adjustment"];
         options?: never;
         head?: never;
@@ -6040,6 +6132,43 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/lines/{line_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Mark a line gross or net (draft periods only)
+         * @description A calculated line takes its rule's basis again when the period is recalculated; a line added by hand keeps it.
+         */
+        patch: operations["PaleeWeb.AdminCoachPayController.set_line_basis"];
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/pay-items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add an allowance from the catalogue to a person's statement (draft periods only) */
+        post: operations["PaleeWeb.AdminCoachPayController.add_pay_item_line"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/reopen": {
         parameters: {
             query?: never;
@@ -6051,6 +6180,26 @@ export interface paths {
         put?: never;
         /** Reopen an approved period, with a reason (an exported one stays as it is) */
         post: operations["PaleeWeb.AdminCoachPayController.reopen"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/statements/{user_id}/pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A person's pay statement of an approved period as PDF («Εκκαθαριστικό»)
+         * @description An internal record of the business («Εσωτερική κατάσταση αμοιβής»), not an official payroll document. Gross and net amounts are shown apart.
+         */
+        get: operations["PaleeWeb.AdminCoachPayController.payslip"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -6069,7 +6218,7 @@ export interface paths {
         put?: never;
         /**
          * Add a pay rule for a coach
-         * @description Per class, per attendee, per personal-training session, or a percent of the sales attributed to the coach (`personal_training`: packages they train; `sold_by`: sales they recorded). The currency defaults to the business's.
+         * @description Per class, per attendee, per personal-training session, a fixed amount per month, week or day (prorated by calendar days), or a percent of the sales attributed to the coach (`personal_training`: packages they train; `sold_by`: sales they recorded; `own_clients`: subscription payments of the clients they coach; `box_all`: every subscription payment of the box). A coach may hold any number of rules at once. `amount_basis` (gross by default) is inherited by the rule's lines. The currency defaults to the business's.
          */
         post: operations["PaleeWeb.AdminCoachPayController.create_rule"];
         delete?: never;
@@ -6106,6 +6255,23 @@ export interface paths {
         put?: never;
         /** Stop a pay rule: it pays nothing after today */
         post: operations["PaleeWeb.AdminCoachPayController.archive_rule"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Finance: pay periods with each person's totals (gross and net apart) */
+        get: operations["PaleeWeb.AdminCoachPayController.summary"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -76747,6 +76913,223 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminCoachPayController.items": {
+        parameters: {
+            query?: {
+                kind?: "overtime" | "allowance";
+                include_archived?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Items */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /**
+                             * @description Whether the amount is before (gross) or after (net) the person's taxes
+                             * @enum {string}
+                             */
+                            amount_basis: "gross" | "net";
+                            amount_cents: number;
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            currency: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "overtime" | "allowance";
+                            name: string;
+                            roles: ("owner" | "admin" | "head_coach" | "coach" | "front_desk" | "accountant" | "janitor")[];
+                            /** @enum {string} */
+                            unit: "per_period" | "per_occurrence" | "per_hour";
+                            weekly_threshold?: number | null;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.create_item": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                     * @enum {string}
+                     */
+                    amount_basis?: "gross" | "net";
+                    amount_cents: number;
+                    currency?: string;
+                    /** @enum {string} */
+                    kind: "overtime" | "allowance";
+                    name: string;
+                    roles: ("owner" | "admin" | "head_coach" | "coach" | "front_desk" | "accountant" | "janitor")[];
+                    /**
+                     * @description overtime: per_hour; allowance: per_period or per_occurrence
+                     * @enum {string}
+                     */
+                    unit: "per_period" | "per_occurrence" | "per_hour";
+                    /** @description Overtime: hours a week (Monday to Sunday) before overtime; required */
+                    weekly_threshold?: number | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Item */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        item: {
+                            /**
+                             * @description Whether the amount is before (gross) or after (net) the person's taxes
+                             * @enum {string}
+                             */
+                            amount_basis: "gross" | "net";
+                            amount_cents: number;
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            currency: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "overtime" | "allowance";
+                            name: string;
+                            roles: ("owner" | "admin" | "head_coach" | "coach" | "front_desk" | "accountant" | "janitor")[];
+                            /** @enum {string} */
+                            unit: "per_period" | "per_occurrence" | "per_hour";
+                            weekly_threshold?: number | null;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.update_item": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                     * @enum {string}
+                     */
+                    amount_basis?: "gross" | "net";
+                    amount_cents?: number;
+                    currency?: string;
+                    /** @enum {string} */
+                    kind?: "overtime" | "allowance";
+                    name?: string;
+                    roles?: ("owner" | "admin" | "head_coach" | "coach" | "front_desk" | "accountant" | "janitor")[];
+                    /**
+                     * @description overtime: per_hour; allowance: per_period or per_occurrence
+                     * @enum {string}
+                     */
+                    unit?: "per_period" | "per_occurrence" | "per_hour";
+                    /** @description Overtime: hours a week (Monday to Sunday) before overtime; required */
+                    weekly_threshold?: number | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Item */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        item: {
+                            /**
+                             * @description Whether the amount is before (gross) or after (net) the person's taxes
+                             * @enum {string}
+                             */
+                            amount_basis: "gross" | "net";
+                            amount_cents: number;
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            currency: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "overtime" | "allowance";
+                            name: string;
+                            roles: ("owner" | "admin" | "head_coach" | "coach" | "front_desk" | "accountant" | "janitor")[];
+                            /** @enum {string} */
+                            unit: "per_period" | "per_occurrence" | "per_hour";
+                            weekly_threshold?: number | null;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.archive_item": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Item */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        item: {
+                            /**
+                             * @description Whether the amount is before (gross) or after (net) the person's taxes
+                             * @enum {string}
+                             */
+                            amount_basis: "gross" | "net";
+                            amount_cents: number;
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            currency: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "overtime" | "allowance";
+                            name: string;
+                            roles: ("owner" | "admin" | "head_coach" | "coach" | "front_desk" | "accountant" | "janitor")[];
+                            /** @enum {string} */
+                            unit: "per_period" | "per_occurrence" | "per_hour";
+                            weekly_threshold?: number | null;
+                        };
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.MyCoachPayController.index": {
         parameters: {
             query?: never;
@@ -76767,31 +77150,203 @@ export interface operations {
                             coach_name?: string | null;
                             /** Format: uuid */
                             coach_user_id: string;
+                            gross_cents: number;
+                            groups: {
+                                /**
+                                 * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                 * @enum {string}
+                                 */
+                                amount_basis: "gross" | "net";
+                                amount_cents: number;
+                                base_cents?: number | null;
+                                key: string;
+                                /** @enum {string} */
+                                kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                line_count: number;
+                                /** Format: uuid */
+                                pay_item_id?: string | null;
+                                quantity: number;
+                                quantity_divisor?: number | null;
+                                /** Format: uuid */
+                                rule_id?: string | null;
+                                /** @description The rule's or pay item's terms when the statement was calculated */
+                                terms?: Record<string, never> | null;
+                                unit_cents?: number | null;
+                            }[];
                             /** Format: uuid */
                             id: string;
                             line_count: number;
                             lines: {
+                                /**
+                                 * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                 * @enum {string}
+                                 */
+                                amount_basis: "gross" | "net";
                                 amount_cents: number;
                                 base_cents?: number | null;
+                                /** Format: uuid */
+                                created_by_id?: string | null;
                                 description: string;
+                                /** @description True for a net line (the default is gross): show it marked */
+                                deviates_from_default: boolean;
                                 /** Format: uuid */
                                 id: string;
+                                /** Format: date-time */
+                                inserted_at?: string | null;
                                 /** @enum {string} */
-                                kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "clawback" | "adjustment";
+                                kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                note?: string | null;
                                 /** Format: date */
                                 occurred_on: string;
+                                /** Format: uuid */
+                                pay_item_id?: string | null;
                                 percent_bps?: number | null;
                                 quantity: number;
+                                quantity_divisor?: number | null;
                                 /** Format: uuid */
                                 rule_id?: string | null;
                                 /** Format: uuid */
                                 source_id?: string | null;
                                 /** @enum {string} */
-                                source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual";
+                                source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual" | "rule" | "pay_item";
                                 unit_cents?: number | null;
                             }[];
+                            net_cents: number;
+                            net_line_count: number;
                             period?: Record<string, never> | null;
+                            /** @description Every line summed whatever its basis; show gross_cents and net_cents */
                             total_cents: number;
+                        }[];
+                        totals: {
+                            currency: string;
+                            gross_cents: number;
+                            net_cents: number;
+                            statement_count: number;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyCoachPayController.payslip": {
+        parameters: {
+            query?: {
+                /** @description el en de fr it nl es pt-PT ru bg */
+                language?: string;
+            };
+            header?: never;
+            path: {
+                period_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description PDF */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": string;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.person_statements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Statements */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        statements: {
+                            coach_name?: string | null;
+                            /** Format: uuid */
+                            coach_user_id: string;
+                            gross_cents: number;
+                            groups: {
+                                /**
+                                 * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                 * @enum {string}
+                                 */
+                                amount_basis: "gross" | "net";
+                                amount_cents: number;
+                                base_cents?: number | null;
+                                key: string;
+                                /** @enum {string} */
+                                kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                line_count: number;
+                                /** Format: uuid */
+                                pay_item_id?: string | null;
+                                quantity: number;
+                                quantity_divisor?: number | null;
+                                /** Format: uuid */
+                                rule_id?: string | null;
+                                /** @description The rule's or pay item's terms when the statement was calculated */
+                                terms?: Record<string, never> | null;
+                                unit_cents?: number | null;
+                            }[];
+                            /** Format: uuid */
+                            id: string;
+                            line_count: number;
+                            lines: {
+                                /**
+                                 * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                 * @enum {string}
+                                 */
+                                amount_basis: "gross" | "net";
+                                amount_cents: number;
+                                base_cents?: number | null;
+                                /** Format: uuid */
+                                created_by_id?: string | null;
+                                description: string;
+                                /** @description True for a net line (the default is gross): show it marked */
+                                deviates_from_default: boolean;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: date-time */
+                                inserted_at?: string | null;
+                                /** @enum {string} */
+                                kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                note?: string | null;
+                                /** Format: date */
+                                occurred_on: string;
+                                /** Format: uuid */
+                                pay_item_id?: string | null;
+                                percent_bps?: number | null;
+                                quantity: number;
+                                quantity_divisor?: number | null;
+                                /** Format: uuid */
+                                rule_id?: string | null;
+                                /** Format: uuid */
+                                source_id?: string | null;
+                                /** @enum {string} */
+                                source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual" | "rule" | "pay_item";
+                                unit_cents?: number | null;
+                            }[];
+                            net_cents: number;
+                            net_line_count: number;
+                            period?: Record<string, never> | null;
+                            /** @description Every line summed whatever its basis; show gross_cents and net_cents */
+                            total_cents: number;
+                        }[];
+                        totals: {
+                            currency: string;
+                            gross_cents: number;
+                            net_cents: number;
+                            statement_count: number;
                         }[];
                     };
                 };
@@ -76828,8 +77383,10 @@ export interface operations {
                             ends_on: string;
                             /** Format: date-time */
                             exported_at?: string | null;
+                            gross_cents: number;
                             /** Format: uuid */
                             id: string;
+                            net_cents: number;
                             reopen_reason?: string | null;
                             /** Format: date */
                             starts_on: string;
@@ -76837,30 +77394,71 @@ export interface operations {
                                 coach_name?: string | null;
                                 /** Format: uuid */
                                 coach_user_id: string;
+                                gross_cents: number;
+                                groups: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    key: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    line_count: number;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** @description The rule's or pay item's terms when the statement was calculated */
+                                    terms?: Record<string, never> | null;
+                                    unit_cents?: number | null;
+                                }[];
                                 /** Format: uuid */
                                 id: string;
                                 line_count: number;
                                 lines: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
                                     amount_cents: number;
                                     base_cents?: number | null;
+                                    /** Format: uuid */
+                                    created_by_id?: string | null;
                                     description: string;
+                                    /** @description True for a net line (the default is gross): show it marked */
+                                    deviates_from_default: boolean;
                                     /** Format: uuid */
                                     id: string;
+                                    /** Format: date-time */
+                                    inserted_at?: string | null;
                                     /** @enum {string} */
-                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "clawback" | "adjustment";
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    note?: string | null;
                                     /** Format: date */
                                     occurred_on: string;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
                                     percent_bps?: number | null;
                                     quantity: number;
+                                    quantity_divisor?: number | null;
                                     /** Format: uuid */
                                     rule_id?: string | null;
                                     /** Format: uuid */
                                     source_id?: string | null;
                                     /** @enum {string} */
-                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual";
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual" | "rule" | "pay_item";
                                     unit_cents?: number | null;
                                 }[];
+                                net_cents: number;
+                                net_line_count: number;
                                 period?: Record<string, never> | null;
+                                /** @description Every line summed whatever its basis; show gross_cents and net_cents */
                                 total_cents: number;
                             }[];
                             /** @enum {string} */
@@ -76909,8 +77507,10 @@ export interface operations {
                             ends_on: string;
                             /** Format: date-time */
                             exported_at?: string | null;
+                            gross_cents: number;
                             /** Format: uuid */
                             id: string;
+                            net_cents: number;
                             reopen_reason?: string | null;
                             /** Format: date */
                             starts_on: string;
@@ -76918,30 +77518,71 @@ export interface operations {
                                 coach_name?: string | null;
                                 /** Format: uuid */
                                 coach_user_id: string;
+                                gross_cents: number;
+                                groups: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    key: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    line_count: number;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** @description The rule's or pay item's terms when the statement was calculated */
+                                    terms?: Record<string, never> | null;
+                                    unit_cents?: number | null;
+                                }[];
                                 /** Format: uuid */
                                 id: string;
                                 line_count: number;
                                 lines: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
                                     amount_cents: number;
                                     base_cents?: number | null;
+                                    /** Format: uuid */
+                                    created_by_id?: string | null;
                                     description: string;
+                                    /** @description True for a net line (the default is gross): show it marked */
+                                    deviates_from_default: boolean;
                                     /** Format: uuid */
                                     id: string;
+                                    /** Format: date-time */
+                                    inserted_at?: string | null;
                                     /** @enum {string} */
-                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "clawback" | "adjustment";
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    note?: string | null;
                                     /** Format: date */
                                     occurred_on: string;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
                                     percent_bps?: number | null;
                                     quantity: number;
+                                    quantity_divisor?: number | null;
                                     /** Format: uuid */
                                     rule_id?: string | null;
                                     /** Format: uuid */
                                     source_id?: string | null;
                                     /** @enum {string} */
-                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual";
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual" | "rule" | "pay_item";
                                     unit_cents?: number | null;
                                 }[];
+                                net_cents: number;
+                                net_line_count: number;
                                 period?: Record<string, never> | null;
+                                /** @description Every line summed whatever its basis; show gross_cents and net_cents */
                                 total_cents: number;
                             }[];
                             /** @enum {string} */
@@ -76983,8 +77624,10 @@ export interface operations {
                             ends_on: string;
                             /** Format: date-time */
                             exported_at?: string | null;
+                            gross_cents: number;
                             /** Format: uuid */
                             id: string;
+                            net_cents: number;
                             reopen_reason?: string | null;
                             /** Format: date */
                             starts_on: string;
@@ -76992,30 +77635,71 @@ export interface operations {
                                 coach_name?: string | null;
                                 /** Format: uuid */
                                 coach_user_id: string;
+                                gross_cents: number;
+                                groups: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    key: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    line_count: number;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** @description The rule's or pay item's terms when the statement was calculated */
+                                    terms?: Record<string, never> | null;
+                                    unit_cents?: number | null;
+                                }[];
                                 /** Format: uuid */
                                 id: string;
                                 line_count: number;
                                 lines: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
                                     amount_cents: number;
                                     base_cents?: number | null;
+                                    /** Format: uuid */
+                                    created_by_id?: string | null;
                                     description: string;
+                                    /** @description True for a net line (the default is gross): show it marked */
+                                    deviates_from_default: boolean;
                                     /** Format: uuid */
                                     id: string;
+                                    /** Format: date-time */
+                                    inserted_at?: string | null;
                                     /** @enum {string} */
-                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "clawback" | "adjustment";
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    note?: string | null;
                                     /** Format: date */
                                     occurred_on: string;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
                                     percent_bps?: number | null;
                                     quantity: number;
+                                    quantity_divisor?: number | null;
                                     /** Format: uuid */
                                     rule_id?: string | null;
                                     /** Format: uuid */
                                     source_id?: string | null;
                                     /** @enum {string} */
-                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual";
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual" | "rule" | "pay_item";
                                     unit_cents?: number | null;
                                 }[];
+                                net_cents: number;
+                                net_line_count: number;
                                 period?: Record<string, never> | null;
+                                /** @description Every line summed whatever its basis; show gross_cents and net_cents */
                                 total_cents: number;
                             }[];
                             /** @enum {string} */
@@ -77039,10 +77723,21 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    /**
+                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                     * @enum {string}
+                     */
+                    amount_basis?: "gross" | "net";
                     amount_cents: number;
                     /** Format: uuid */
                     coach_user_id: string;
-                    description: string;
+                    description?: string;
+                    /**
+                     * @description adjustment (default): any non-zero amount with a description; ad_hoc and non_taxable_reimbursement: a positive amount with a required note
+                     * @enum {string}
+                     */
+                    kind?: "adjustment" | "ad_hoc" | "non_taxable_reimbursement";
+                    note?: string;
                 };
             };
         };
@@ -77066,8 +77761,10 @@ export interface operations {
                             ends_on: string;
                             /** Format: date-time */
                             exported_at?: string | null;
+                            gross_cents: number;
                             /** Format: uuid */
                             id: string;
+                            net_cents: number;
                             reopen_reason?: string | null;
                             /** Format: date */
                             starts_on: string;
@@ -77075,30 +77772,71 @@ export interface operations {
                                 coach_name?: string | null;
                                 /** Format: uuid */
                                 coach_user_id: string;
+                                gross_cents: number;
+                                groups: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    key: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    line_count: number;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** @description The rule's or pay item's terms when the statement was calculated */
+                                    terms?: Record<string, never> | null;
+                                    unit_cents?: number | null;
+                                }[];
                                 /** Format: uuid */
                                 id: string;
                                 line_count: number;
                                 lines: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
                                     amount_cents: number;
                                     base_cents?: number | null;
+                                    /** Format: uuid */
+                                    created_by_id?: string | null;
                                     description: string;
+                                    /** @description True for a net line (the default is gross): show it marked */
+                                    deviates_from_default: boolean;
                                     /** Format: uuid */
                                     id: string;
+                                    /** Format: date-time */
+                                    inserted_at?: string | null;
                                     /** @enum {string} */
-                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "clawback" | "adjustment";
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    note?: string | null;
                                     /** Format: date */
                                     occurred_on: string;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
                                     percent_bps?: number | null;
                                     quantity: number;
+                                    quantity_divisor?: number | null;
                                     /** Format: uuid */
                                     rule_id?: string | null;
                                     /** Format: uuid */
                                     source_id?: string | null;
                                     /** @enum {string} */
-                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual";
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual" | "rule" | "pay_item";
                                     unit_cents?: number | null;
                                 }[];
+                                net_cents: number;
+                                net_line_count: number;
                                 period?: Record<string, never> | null;
+                                /** @description Every line summed whatever its basis; show gross_cents and net_cents */
                                 total_cents: number;
                             }[];
                             /** @enum {string} */
@@ -77141,8 +77879,10 @@ export interface operations {
                             ends_on: string;
                             /** Format: date-time */
                             exported_at?: string | null;
+                            gross_cents: number;
                             /** Format: uuid */
                             id: string;
+                            net_cents: number;
                             reopen_reason?: string | null;
                             /** Format: date */
                             starts_on: string;
@@ -77150,30 +77890,71 @@ export interface operations {
                                 coach_name?: string | null;
                                 /** Format: uuid */
                                 coach_user_id: string;
+                                gross_cents: number;
+                                groups: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    key: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    line_count: number;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** @description The rule's or pay item's terms when the statement was calculated */
+                                    terms?: Record<string, never> | null;
+                                    unit_cents?: number | null;
+                                }[];
                                 /** Format: uuid */
                                 id: string;
                                 line_count: number;
                                 lines: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
                                     amount_cents: number;
                                     base_cents?: number | null;
+                                    /** Format: uuid */
+                                    created_by_id?: string | null;
                                     description: string;
+                                    /** @description True for a net line (the default is gross): show it marked */
+                                    deviates_from_default: boolean;
                                     /** Format: uuid */
                                     id: string;
+                                    /** Format: date-time */
+                                    inserted_at?: string | null;
                                     /** @enum {string} */
-                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "clawback" | "adjustment";
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    note?: string | null;
                                     /** Format: date */
                                     occurred_on: string;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
                                     percent_bps?: number | null;
                                     quantity: number;
+                                    quantity_divisor?: number | null;
                                     /** Format: uuid */
                                     rule_id?: string | null;
                                     /** Format: uuid */
                                     source_id?: string | null;
                                     /** @enum {string} */
-                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual";
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual" | "rule" | "pay_item";
                                     unit_cents?: number | null;
                                 }[];
+                                net_cents: number;
+                                net_line_count: number;
                                 period?: Record<string, never> | null;
+                                /** @description Every line summed whatever its basis; show gross_cents and net_cents */
                                 total_cents: number;
                             }[];
                             /** @enum {string} */
@@ -77215,8 +77996,10 @@ export interface operations {
                             ends_on: string;
                             /** Format: date-time */
                             exported_at?: string | null;
+                            gross_cents: number;
                             /** Format: uuid */
                             id: string;
+                            net_cents: number;
                             reopen_reason?: string | null;
                             /** Format: date */
                             starts_on: string;
@@ -77224,30 +78007,71 @@ export interface operations {
                                 coach_name?: string | null;
                                 /** Format: uuid */
                                 coach_user_id: string;
+                                gross_cents: number;
+                                groups: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    key: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    line_count: number;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** @description The rule's or pay item's terms when the statement was calculated */
+                                    terms?: Record<string, never> | null;
+                                    unit_cents?: number | null;
+                                }[];
                                 /** Format: uuid */
                                 id: string;
                                 line_count: number;
                                 lines: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
                                     amount_cents: number;
                                     base_cents?: number | null;
+                                    /** Format: uuid */
+                                    created_by_id?: string | null;
                                     description: string;
+                                    /** @description True for a net line (the default is gross): show it marked */
+                                    deviates_from_default: boolean;
                                     /** Format: uuid */
                                     id: string;
+                                    /** Format: date-time */
+                                    inserted_at?: string | null;
                                     /** @enum {string} */
-                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "clawback" | "adjustment";
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    note?: string | null;
                                     /** Format: date */
                                     occurred_on: string;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
                                     percent_bps?: number | null;
                                     quantity: number;
+                                    quantity_divisor?: number | null;
                                     /** Format: uuid */
                                     rule_id?: string | null;
                                     /** Format: uuid */
                                     source_id?: string | null;
                                     /** @enum {string} */
-                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual";
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual" | "rule" | "pay_item";
                                     unit_cents?: number | null;
                                 }[];
+                                net_cents: number;
+                                net_line_count: number;
                                 period?: Record<string, never> | null;
+                                /** @description Every line summed whatever its basis; show gross_cents and net_cents */
                                 total_cents: number;
                             }[];
                             /** @enum {string} */
@@ -77289,8 +78113,10 @@ export interface operations {
                             ends_on: string;
                             /** Format: date-time */
                             exported_at?: string | null;
+                            gross_cents: number;
                             /** Format: uuid */
                             id: string;
+                            net_cents: number;
                             reopen_reason?: string | null;
                             /** Format: date */
                             starts_on: string;
@@ -77298,30 +78124,71 @@ export interface operations {
                                 coach_name?: string | null;
                                 /** Format: uuid */
                                 coach_user_id: string;
+                                gross_cents: number;
+                                groups: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    key: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    line_count: number;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** @description The rule's or pay item's terms when the statement was calculated */
+                                    terms?: Record<string, never> | null;
+                                    unit_cents?: number | null;
+                                }[];
                                 /** Format: uuid */
                                 id: string;
                                 line_count: number;
                                 lines: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
                                     amount_cents: number;
                                     base_cents?: number | null;
+                                    /** Format: uuid */
+                                    created_by_id?: string | null;
                                     description: string;
+                                    /** @description True for a net line (the default is gross): show it marked */
+                                    deviates_from_default: boolean;
                                     /** Format: uuid */
                                     id: string;
+                                    /** Format: date-time */
+                                    inserted_at?: string | null;
                                     /** @enum {string} */
-                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "clawback" | "adjustment";
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    note?: string | null;
                                     /** Format: date */
                                     occurred_on: string;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
                                     percent_bps?: number | null;
                                     quantity: number;
+                                    quantity_divisor?: number | null;
                                     /** Format: uuid */
                                     rule_id?: string | null;
                                     /** Format: uuid */
                                     source_id?: string | null;
                                     /** @enum {string} */
-                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual";
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual" | "rule" | "pay_item";
                                     unit_cents?: number | null;
                                 }[];
+                                net_cents: number;
+                                net_line_count: number;
                                 period?: Record<string, never> | null;
+                                /** @description Every line summed whatever its basis; show gross_cents and net_cents */
                                 total_cents: number;
                             }[];
                             /** @enum {string} */
@@ -77351,6 +78218,267 @@ export interface operations {
                 };
                 content: {
                     "text/csv": string;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.set_line_basis": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                line_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                     * @enum {string}
+                     */
+                    amount_basis: "gross" | "net";
+                };
+            };
+        };
+        responses: {
+            /** @description Period */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        period: {
+                            /** Format: date-time */
+                            approved_at?: string | null;
+                            /** Format: uuid */
+                            approved_by_id?: string | null;
+                            /** Format: date-time */
+                            calculated_at?: string | null;
+                            currency: string;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: date-time */
+                            exported_at?: string | null;
+                            gross_cents: number;
+                            /** Format: uuid */
+                            id: string;
+                            net_cents: number;
+                            reopen_reason?: string | null;
+                            /** Format: date */
+                            starts_on: string;
+                            statements?: {
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                coach_user_id: string;
+                                gross_cents: number;
+                                groups: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    key: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    line_count: number;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** @description The rule's or pay item's terms when the statement was calculated */
+                                    terms?: Record<string, never> | null;
+                                    unit_cents?: number | null;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                line_count: number;
+                                lines: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    /** Format: uuid */
+                                    created_by_id?: string | null;
+                                    description: string;
+                                    /** @description True for a net line (the default is gross): show it marked */
+                                    deviates_from_default: boolean;
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** Format: date-time */
+                                    inserted_at?: string | null;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    note?: string | null;
+                                    /** Format: date */
+                                    occurred_on: string;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    percent_bps?: number | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** Format: uuid */
+                                    source_id?: string | null;
+                                    /** @enum {string} */
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual" | "rule" | "pay_item";
+                                    unit_cents?: number | null;
+                                }[];
+                                net_cents: number;
+                                net_line_count: number;
+                                period?: Record<string, never> | null;
+                                /** @description Every line summed whatever its basis; show gross_cents and net_cents */
+                                total_cents: number;
+                            }[];
+                            /** @enum {string} */
+                            status: "draft" | "approved" | "exported";
+                            total_cents: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.add_pay_item_line": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                     * @enum {string}
+                     */
+                    amount_basis?: "gross" | "net";
+                    note?: string | null;
+                    /** Format: uuid */
+                    pay_item_id: string;
+                    quantity?: number;
+                    /** Format: uuid */
+                    user_id: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Period */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        period: {
+                            /** Format: date-time */
+                            approved_at?: string | null;
+                            /** Format: uuid */
+                            approved_by_id?: string | null;
+                            /** Format: date-time */
+                            calculated_at?: string | null;
+                            currency: string;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: date-time */
+                            exported_at?: string | null;
+                            gross_cents: number;
+                            /** Format: uuid */
+                            id: string;
+                            net_cents: number;
+                            reopen_reason?: string | null;
+                            /** Format: date */
+                            starts_on: string;
+                            statements?: {
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                coach_user_id: string;
+                                gross_cents: number;
+                                groups: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    key: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    line_count: number;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** @description The rule's or pay item's terms when the statement was calculated */
+                                    terms?: Record<string, never> | null;
+                                    unit_cents?: number | null;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                line_count: number;
+                                lines: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    /** Format: uuid */
+                                    created_by_id?: string | null;
+                                    description: string;
+                                    /** @description True for a net line (the default is gross): show it marked */
+                                    deviates_from_default: boolean;
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** Format: date-time */
+                                    inserted_at?: string | null;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    note?: string | null;
+                                    /** Format: date */
+                                    occurred_on: string;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    percent_bps?: number | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** Format: uuid */
+                                    source_id?: string | null;
+                                    /** @enum {string} */
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual" | "rule" | "pay_item";
+                                    unit_cents?: number | null;
+                                }[];
+                                net_cents: number;
+                                net_line_count: number;
+                                period?: Record<string, never> | null;
+                                /** @description Every line summed whatever its basis; show gross_cents and net_cents */
+                                total_cents: number;
+                            }[];
+                            /** @enum {string} */
+                            status: "draft" | "approved" | "exported";
+                            total_cents: number;
+                        };
+                    };
                 };
             };
         };
@@ -77391,8 +78519,10 @@ export interface operations {
                             ends_on: string;
                             /** Format: date-time */
                             exported_at?: string | null;
+                            gross_cents: number;
                             /** Format: uuid */
                             id: string;
+                            net_cents: number;
                             reopen_reason?: string | null;
                             /** Format: date */
                             starts_on: string;
@@ -77400,30 +78530,71 @@ export interface operations {
                                 coach_name?: string | null;
                                 /** Format: uuid */
                                 coach_user_id: string;
+                                gross_cents: number;
+                                groups: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    key: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    line_count: number;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** @description The rule's or pay item's terms when the statement was calculated */
+                                    terms?: Record<string, never> | null;
+                                    unit_cents?: number | null;
+                                }[];
                                 /** Format: uuid */
                                 id: string;
                                 line_count: number;
                                 lines: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
                                     amount_cents: number;
                                     base_cents?: number | null;
+                                    /** Format: uuid */
+                                    created_by_id?: string | null;
                                     description: string;
+                                    /** @description True for a net line (the default is gross): show it marked */
+                                    deviates_from_default: boolean;
                                     /** Format: uuid */
                                     id: string;
+                                    /** Format: date-time */
+                                    inserted_at?: string | null;
                                     /** @enum {string} */
-                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "clawback" | "adjustment";
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    note?: string | null;
                                     /** Format: date */
                                     occurred_on: string;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
                                     percent_bps?: number | null;
                                     quantity: number;
+                                    quantity_divisor?: number | null;
                                     /** Format: uuid */
                                     rule_id?: string | null;
                                     /** Format: uuid */
                                     source_id?: string | null;
                                     /** @enum {string} */
-                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual";
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual" | "rule" | "pay_item";
                                     unit_cents?: number | null;
                                 }[];
+                                net_cents: number;
+                                net_line_count: number;
                                 period?: Record<string, never> | null;
+                                /** @description Every line summed whatever its basis; show gross_cents and net_cents */
                                 total_cents: number;
                             }[];
                             /** @enum {string} */
@@ -77431,6 +78602,32 @@ export interface operations {
                             total_cents: number;
                         };
                     };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.payslip": {
+        parameters: {
+            query?: {
+                /** @description el en de fr it nl es pt-PT ru bg (default: the business's document language) */
+                language?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description PDF */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": string;
                 };
             };
         };
@@ -77455,6 +78652,11 @@ export interface operations {
                 content: {
                     "application/json": {
                         rules: {
+                            /**
+                             * @description Whether the amount is before (gross) or after (net) the person's taxes
+                             * @enum {string}
+                             */
+                            amount_basis: "gross" | "net";
                             amount_cents?: number | null;
                             /** Format: date-time */
                             archived_at?: string | null;
@@ -77466,16 +78668,18 @@ export interface operations {
                             currency: string;
                             /** Format: date */
                             ends_on?: string | null;
+                            /** @enum {string|null} */
+                            frequency?: "monthly" | "weekly" | "daily" | null;
                             /** Format: uuid */
                             id: string;
                             /** @enum {string} */
-                            kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales";
+                            kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed";
                             max_attendees?: number | null;
                             min_attendees: number;
                             note?: string | null;
                             percent_bps?: number | null;
                             /** @enum {string|null} */
-                            sales_scope?: "personal_training" | "sold_by" | null;
+                            sales_scope?: "personal_training" | "sold_by" | "own_clients" | "box_all" | null;
                             /** Format: date */
                             starts_on: string;
                         }[];
@@ -77494,6 +78698,11 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    /**
+                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                     * @enum {string}
+                     */
+                    amount_basis?: "gross" | "net";
                     amount_cents?: number | null;
                     class_type_ids?: string[];
                     /** Format: uuid */
@@ -77502,14 +78711,16 @@ export interface operations {
                     currency?: string;
                     /** Format: date */
                     ends_on?: string | null;
+                    /** @enum {string|null} */
+                    frequency?: "monthly" | "weekly" | "daily" | null;
                     /** @enum {string} */
-                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales";
+                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed";
                     max_attendees?: number | null;
                     min_attendees?: number;
                     note?: string | null;
                     percent_bps?: number | null;
                     /** @enum {string|null} */
-                    sales_scope?: "personal_training" | "sold_by" | null;
+                    sales_scope?: "personal_training" | "sold_by" | "own_clients" | "box_all" | null;
                     /** Format: date */
                     starts_on: string;
                 };
@@ -77524,6 +78735,11 @@ export interface operations {
                 content: {
                     "application/json": {
                         rule: {
+                            /**
+                             * @description Whether the amount is before (gross) or after (net) the person's taxes
+                             * @enum {string}
+                             */
+                            amount_basis: "gross" | "net";
                             amount_cents?: number | null;
                             /** Format: date-time */
                             archived_at?: string | null;
@@ -77535,16 +78751,18 @@ export interface operations {
                             currency: string;
                             /** Format: date */
                             ends_on?: string | null;
+                            /** @enum {string|null} */
+                            frequency?: "monthly" | "weekly" | "daily" | null;
                             /** Format: uuid */
                             id: string;
                             /** @enum {string} */
-                            kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales";
+                            kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed";
                             max_attendees?: number | null;
                             min_attendees: number;
                             note?: string | null;
                             percent_bps?: number | null;
                             /** @enum {string|null} */
-                            sales_scope?: "personal_training" | "sold_by" | null;
+                            sales_scope?: "personal_training" | "sold_by" | "own_clients" | "box_all" | null;
                             /** Format: date */
                             starts_on: string;
                         };
@@ -77565,6 +78783,11 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    /**
+                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                     * @enum {string}
+                     */
+                    amount_basis?: "gross" | "net";
                     amount_cents?: number | null;
                     class_type_ids?: string[];
                     /** Format: uuid */
@@ -77573,14 +78796,16 @@ export interface operations {
                     currency?: string;
                     /** Format: date */
                     ends_on?: string | null;
+                    /** @enum {string|null} */
+                    frequency?: "monthly" | "weekly" | "daily" | null;
                     /** @enum {string} */
-                    kind?: "per_class" | "per_attendee" | "per_session" | "percent_of_sales";
+                    kind?: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed";
                     max_attendees?: number | null;
                     min_attendees?: number;
                     note?: string | null;
                     percent_bps?: number | null;
                     /** @enum {string|null} */
-                    sales_scope?: "personal_training" | "sold_by" | null;
+                    sales_scope?: "personal_training" | "sold_by" | "own_clients" | "box_all" | null;
                     /** Format: date */
                     starts_on?: string;
                 };
@@ -77595,6 +78820,11 @@ export interface operations {
                 content: {
                     "application/json": {
                         rule: {
+                            /**
+                             * @description Whether the amount is before (gross) or after (net) the person's taxes
+                             * @enum {string}
+                             */
+                            amount_basis: "gross" | "net";
                             amount_cents?: number | null;
                             /** Format: date-time */
                             archived_at?: string | null;
@@ -77606,16 +78836,18 @@ export interface operations {
                             currency: string;
                             /** Format: date */
                             ends_on?: string | null;
+                            /** @enum {string|null} */
+                            frequency?: "monthly" | "weekly" | "daily" | null;
                             /** Format: uuid */
                             id: string;
                             /** @enum {string} */
-                            kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales";
+                            kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed";
                             max_attendees?: number | null;
                             min_attendees: number;
                             note?: string | null;
                             percent_bps?: number | null;
                             /** @enum {string|null} */
-                            sales_scope?: "personal_training" | "sold_by" | null;
+                            sales_scope?: "personal_training" | "sold_by" | "own_clients" | "box_all" | null;
                             /** Format: date */
                             starts_on: string;
                         };
@@ -77643,6 +78875,11 @@ export interface operations {
                 content: {
                     "application/json": {
                         rule: {
+                            /**
+                             * @description Whether the amount is before (gross) or after (net) the person's taxes
+                             * @enum {string}
+                             */
+                            amount_basis: "gross" | "net";
                             amount_cents?: number | null;
                             /** Format: date-time */
                             archived_at?: string | null;
@@ -77654,19 +78891,68 @@ export interface operations {
                             currency: string;
                             /** Format: date */
                             ends_on?: string | null;
+                            /** @enum {string|null} */
+                            frequency?: "monthly" | "weekly" | "daily" | null;
                             /** Format: uuid */
                             id: string;
                             /** @enum {string} */
-                            kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales";
+                            kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed";
                             max_attendees?: number | null;
                             min_attendees: number;
                             note?: string | null;
                             percent_bps?: number | null;
                             /** @enum {string|null} */
-                            sales_scope?: "personal_training" | "sold_by" | null;
+                            sales_scope?: "personal_training" | "sold_by" | "own_clients" | "box_all" | null;
                             /** Format: date */
                             starts_on: string;
                         };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.summary": {
+        parameters: {
+            query?: {
+                from?: string;
+                to?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Summary */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        periods: {
+                            currency: string;
+                            /** Format: date */
+                            ends_on: string;
+                            gross_cents: number;
+                            /** Format: uuid */
+                            id: string;
+                            net_cents: number;
+                            /** Format: date */
+                            starts_on: string;
+                            statements: {
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                coach_user_id: string;
+                                gross_cents: number;
+                                line_count: number;
+                                net_cents: number;
+                                total_cents?: number;
+                            }[];
+                            /** @enum {string} */
+                            status: "draft" | "approved" | "exported";
+                            total_cents?: number;
+                        }[];
                     };
                 };
             };
