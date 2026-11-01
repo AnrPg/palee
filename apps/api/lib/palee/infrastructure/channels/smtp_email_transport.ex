@@ -41,9 +41,6 @@ defmodule Palee.Infrastructure.Channels.SmtpEmailTransport do
 
           {:error, type, reason} ->
             {:error, reduce({type, reason})}
-
-          {:error, reason} ->
-            {:error, reduce(reason)}
         end
       end)
     end
