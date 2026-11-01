@@ -988,6 +988,8 @@ defmodule PaleeWeb.Router do
     get("/pr-members", AdminUserController, :pr_members)
     # ADR-341: a coach's own approved pay statements.
     get("/coach-pay/mine", MyCoachPayController, :index)
+    # ADR-382: my pay statement of an approved period as PDF.
+    get("/coach-pay/mine/:period_id/pdf", MyCoachPayController, :payslip)
   end
 
   # Staff work that coaches share with owners and admins (ADR-098).
@@ -1607,6 +1609,22 @@ defmodule PaleeWeb.Router do
     post("/coach-pay/periods/:id/approve", AdminCoachPayController, :approve)
     post("/coach-pay/periods/:id/reopen", AdminCoachPayController, :reopen)
     get("/coach-pay/periods/:id/export", AdminCoachPayController, :export)
+    # ADR-382: pay items, lines by hand, gross/net, PDF, profile and summary.
+    post("/coach-pay/periods/:id/pay-items", AdminCoachPayController, :add_pay_item_line)
+    patch("/coach-pay/periods/:id/lines/:line_id", AdminCoachPayController, :set_line_basis)
+
+    get(
+      "/coach-pay/periods/:id/statements/:user_id/pdf",
+      AdminCoachPayController,
+      :payslip
+    )
+
+    get("/coach-pay/people/:user_id/statements", AdminCoachPayController, :person_statements)
+    get("/coach-pay/summary", AdminCoachPayController, :summary)
+    get("/coach-pay/items", AdminCoachPayController, :items)
+    post("/coach-pay/items", AdminCoachPayController, :create_item)
+    patch("/coach-pay/items/:id", AdminCoachPayController, :update_item)
+    post("/coach-pay/items/:id/archive", AdminCoachPayController, :archive_item)
     # ADR-340: the card surcharge passed on to the person paying.
     get("/payments/surcharge", AdminCardSurchargeController, :show)
     put("/payments/surcharge", AdminCardSurchargeController, :update)

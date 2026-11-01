@@ -17,6 +17,7 @@ defmodule Palee.CoachPay do
   """
 
   alias Palee.CoachPay.CoachPayStore
+
   alias Palee.CoachPay.Domain.{
     AmountBasis,
     PayCalculator,
@@ -58,8 +59,7 @@ defmodule Palee.CoachPay do
 
   @doc "Where a line comes from (for the API's enums)."
   def line_sources,
-    do:
-      ~w(scheduled_class appointment_slot finance_payment finance_reversal manual rule pay_item)
+    do: ~w(scheduled_class appointment_slot finance_payment finance_reversal manual rule pay_item)
 
   def list_rules(context, filters \\ %{}),
     do: scoped(context, fn -> CoachPayStore.list_rules(filters) end)
@@ -126,7 +126,9 @@ defmodule Palee.CoachPay do
   def get_period(context, id) do
     scoped(context, fn ->
       case CoachPayStore.get_period(id) do
-        nil -> {:error, :not_found}
+        nil ->
+          {:error, :not_found}
+
         period ->
           statements = period.id |> CoachPayStore.statements() |> Enum.map(&with_groups/1)
           {:ok, Map.put(period, :statements, statements)}

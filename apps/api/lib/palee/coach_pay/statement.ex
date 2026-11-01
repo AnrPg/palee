@@ -22,7 +22,15 @@ defmodule Palee.CoachPay.Statement do
 
   def changeset(statement, attrs) do
     statement
-    |> cast(attrs, [:period_id, :coach_user_id, :total_cents, :line_count, :rule_terms, :gross_cents, :net_cents])
+    |> cast(attrs, [
+      :period_id,
+      :coach_user_id,
+      :total_cents,
+      :line_count,
+      :rule_terms,
+      :gross_cents,
+      :net_cents
+    ])
     |> validate_required([:period_id, :coach_user_id])
     |> unique_constraint([:period_id, :coach_user_id])
   end

@@ -3227,6 +3227,8 @@ defmodule PaleeWeb.FallbackController do
     coach_pay_period_exported: {:conflict, "This pay period was handed to the accountant"},
     coach_pay_period_not_approved: {:conflict, "Approve the pay period first"},
     coach_pay_rule_archived: {:conflict, "This pay rule has stopped"},
+    # ADR-382: the catalogue of overtime and allowances.
+    coach_pay_item_archived: {:conflict, "This pay item has stopped"},
     # ADR-342 (CP-A8): purchase and booking rules of a package.
     package_staff_only: {:forbidden, "Only the box's staff can give this package"},
     package_purchase_limit_reached:

@@ -11,6 +11,16 @@ defmodule PaleeWeb.RouteCapabilities do
 
   alias PaleeWeb, as: W
 
+  # ADR-382: what any staff role holds, for reading one's own pay.
+  @own_pay [
+    :run_classes,
+    :manage_appointments,
+    :check_in,
+    :take_payments,
+    :view_finance_reports,
+    :record_cleaning
+  ]
+
   @controller_defaults %{
     W.AdminWorkoutController => [:manage_workouts],
     # ADR-252: templates, versions, requirement, settings and audit.
@@ -333,8 +343,25 @@ defmodule PaleeWeb.RouteCapabilities do
     {W.AdminCoachPayController, :approve} => [:manage_billing],
     {W.AdminCoachPayController, :reopen} => [:manage_billing],
     {W.AdminCoachPayController, :export} => [:view_finance_reports, :manage_billing],
-    # A coach's own statements: whoever runs classes or sessions.
-    {W.MyCoachPayController, :index} => [:run_classes, :manage_appointments],
+    # ADR-382: lines by hand, gross/net, the PDF, a person's statements and
+    # Finance's summary; the catalogue of overtime and allowances is a setting.
+    {W.AdminCoachPayController, :add_pay_item_line} => [:manage_billing],
+    {W.AdminCoachPayController, :set_line_basis} => [:manage_billing],
+    {W.AdminCoachPayController, :payslip} => [:view_finance_reports, :manage_billing],
+    {W.AdminCoachPayController, :person_statements} => [:view_finance_reports, :manage_billing],
+    {W.AdminCoachPayController, :summary} => [:view_finance_reports, :manage_billing],
+    {W.AdminCoachPayController, :items} => [
+      :manage_settings,
+      :view_finance_reports,
+      :manage_billing
+    ],
+    {W.AdminCoachPayController, :create_item} => [:manage_settings],
+    {W.AdminCoachPayController, :update_item} => [:manage_settings],
+    {W.AdminCoachPayController, :archive_item} => [:manage_settings],
+    # A staff member's own statements: every staff role may be paid (ADR-382);
+    # the service only ever reads the caller's own.
+    {W.MyCoachPayController, :index} => @own_pay,
+    {W.MyCoachPayController, :payslip} => @own_pay,
     # ADR-340: the card surcharge.
     {W.AdminCardSurchargeController, :show} => [:view_finance_reports, :manage_billing],
     {W.AdminCardSurchargeController, :update} => [:manage_billing],

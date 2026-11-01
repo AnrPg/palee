@@ -243,7 +243,10 @@ defmodule Palee.Infrastructure.CoachPay.EctoCoachPayStore do
     with_uuid(line_id, fn id ->
       Line
       |> tenant_scope()
-      |> where([line], line.id == ^id and line.statement_id in ^Map.values(statement_map(period_id)))
+      |> where(
+        [line],
+        line.id == ^id and line.statement_id in ^Map.values(statement_map(period_id))
+      )
       |> Repo.one()
       |> case do
         nil ->
