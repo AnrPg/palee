@@ -2,6 +2,8 @@ defmodule Palee.CoachPay.Line do
   @moduledoc """
   ADR-341: one line of a coach's statement, naming what it comes from
   (a class, a session, a payment or refund, or a staff adjustment).
+  ADR-382: also a fixed amount (its rule), overtime and allowances (the pay
+  item) and payments by hand with their reason (`note`).
   """
 
   use Ecto.Schema
@@ -10,7 +12,7 @@ defmodule Palee.CoachPay.Line do
   @primary_key {:id, :binary_id, autogenerate: true}
 
   @fields ~w(statement_id rule_id kind source_type source_id occurred_on description quantity
-             unit_cents base_cents percent_bps amount_cents created_by_id)a
+             unit_cents base_cents percent_bps amount_cents created_by_id pay_item_id quantity_divisor note)a
 
   schema "coach_pay_lines" do
     field :organization_id, :binary_id, read_after_writes: true
@@ -27,6 +29,9 @@ defmodule Palee.CoachPay.Line do
     field :percent_bps, :integer
     field :amount_cents, :integer
     field :created_by_id, :binary_id
+    field :pay_item_id, :binary_id
+    field :quantity_divisor, :integer
+    field :note, :string
 
     timestamps(type: :utc_datetime_usec)
   end
@@ -38,5 +43,7 @@ defmodule Palee.CoachPay.Line do
     |> validate_required([:amount_cents])
     |> check_constraint(:kind, name: :coach_pay_lines_kind_check)
     |> check_constraint(:source_type, name: :coach_pay_lines_source_check)
+    |> check_constraint(:quantity_divisor, name: :coach_pay_lines_divisor_check)
+    |> check_constraint(:note, name: :coach_pay_lines_note_check)
   end
 end
