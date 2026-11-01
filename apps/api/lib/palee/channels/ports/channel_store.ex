@@ -19,6 +19,15 @@ defmodule Palee.Channels.Ports.ChannelStore do
   @callback get_connection(context()) :: map() | nil
   @callback save_connection(context(), map()) :: {:ok, map()} | {:error, term()}
 
+  # ADR-368: the box's own SMTP email provider
+  @callback get_email_connection(context()) :: map() | nil
+  @callback save_email_connection(context(), map()) :: {:ok, map()} | {:error, term()}
+  @callback delete_email_connection(context()) :: :ok
+
+  # ADR-369: the installation's settings (platform data, no tenant)
+  @callback get_platform_settings() :: map() | nil
+  @callback save_platform_settings(map()) :: {:ok, map()} | {:error, term()}
+
   # Contacts and consents
   @callback get_contact(context(), id()) :: map() | nil
   @callback find_contact(context(), person()) :: map() | nil
@@ -48,6 +57,11 @@ defmodule Palee.Channels.Ports.ChannelStore do
   @callback record_event(context(), map()) :: {:ok, map() | :duplicate} | {:error, term()}
   @callback list_messages(context(), map()) :: %{messages: [map()], total: non_neg_integer()}
   @callback list_events(context(), id()) :: [map()]
-  @doc "What the box spent between two instants: `%{total, by_channel, count}` (cents)."
+  @doc """
+  What the box spent between two instants (cents): `%{total, by_channel,
+  count}` in the box's price, plus `palee_charge` (the box price of
+  messages sent on Palee's account, what Palee bills) and `provider_total`
+  (the providers' price of those, for the Palee team only), ADR-369.
+  """
   @callback spend(context(), DateTime.t(), DateTime.t()) :: map()
 end

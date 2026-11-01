@@ -5,7 +5,16 @@ defmodule Palee.Infrastructure.Channels.EctoChannelStore do
 
   import Ecto.Query
 
-  alias Palee.Channels.{Connection, Consent, Contact, Message, MessageEvent, Template}
+  alias Palee.Channels.{
+    Connection,
+    Consent,
+    Contact,
+    EmailConnection,
+    Message,
+    MessageEvent,
+    PlatformSetting,
+    Template
+  }
   alias Palee.Channels.Domain.DeliveryPolicy
   alias Palee.Repo
 
@@ -38,6 +47,49 @@ defmodule Palee.Infrastructure.Channels.EctoChannelStore do
       connection -> connection
     end
     |> Connection.changeset(attrs)
+    |> Repo.insert_or_update()
+    |> result()
+  end
+
+  # ── Own SMTP email provider (ADR-368) ──────────────────────────────────
+
+  @impl true
+  def get_email_connection(%{organization_id: organization_id}) do
+    EmailConnection
+    |> where([c], c.organization_id == ^organization_id)
+    |> Repo.one()
+    |> to_map()
+  end
+
+  @impl true
+  def save_email_connection(%{organization_id: organization_id}, attrs) do
+    case Repo.one(from c in EmailConnection, where: c.organization_id == ^organization_id) do
+      nil -> %EmailConnection{organization_id: organization_id}
+      connection -> connection
+    end
+    |> EmailConnection.changeset(attrs)
+    |> Repo.insert_or_update()
+    |> result()
+  end
+
+  @impl true
+  def delete_email_connection(%{organization_id: organization_id}) do
+    EmailConnection
+    |> where([c], c.organization_id == ^organization_id)
+    |> Repo.delete_all()
+
+    :ok
+  end
+
+  # ── Platform settings (ADR-369) ─────────────────────────────────────────
+
+  @impl true
+  def get_platform_settings, do: PlatformSetting |> Repo.one() |> to_map()
+
+  @impl true
+  def save_platform_settings(attrs) do
+    (Repo.one(PlatformSetting) || %PlatformSetting{})
+    |> PlatformSetting.changeset(attrs)
     |> Repo.insert_or_update()
     |> result()
   end
@@ -377,19 +429,48 @@ defmodule Palee.Infrastructure.Channels.EctoChannelStore do
       |> where([m], m.organization_id == ^organization_id)
       |> where([m], m.inserted_at >= ^from and m.inserted_at < ^to)
       |> where([m], m.status in ^@counted or (m.status == "failed" and not is_nil(m.cost_cents)))
-      |> group_by([m], m.channel)
+      |> group_by([m], [m.channel, m.account_mode])
+      # ADR-369: the box price is the charged provider price with the
+      # message's margin (rounded up, as `CostPolicy.price/2`), else the
+      # estimated box price.
       |> select(
         [m],
-        {m.channel, sum(coalesce(m.cost_cents, m.estimated_cost_cents)), count(m.id)}
+        {m.channel, m.account_mode,
+         sum(
+           coalesce(
+             fragment(
+               "(? * (10000 + ?) + 9999) / 10000",
+               m.cost_cents,
+               m.margin_bps
+             ),
+             m.estimated_cost_cents
+           )
+         ), sum(coalesce(m.cost_cents, coalesce(m.provider_cost_cents, m.estimated_cost_cents))),
+         count(m.id)}
       )
       |> Repo.all()
+      |> Enum.map(fn {channel, mode, cents, provider, count} ->
+        %{channel: channel, mode: mode, cents: to_int(cents), provider: to_int(provider), count: count}
+      end)
+
+    palee = Enum.filter(rows, &(&1.mode == "palee"))
 
     %{
-      total: rows |> Enum.map(fn {_channel, cents, _count} -> to_int(cents) end) |> Enum.sum(),
-      count: rows |> Enum.map(&elem(&1, 2)) |> Enum.sum(),
+      total: rows |> Enum.map(& &1.cents) |> Enum.sum(),
+      count: rows |> Enum.map(& &1.count) |> Enum.sum(),
       by_channel:
-        Map.new(rows, fn {channel, cents, count} ->
-          {channel, %{cents: to_int(cents), count: count}}
+        rows
+        |> Enum.group_by(& &1.channel)
+        |> Map.new(fn {channel, group} ->
+          {channel,
+           %{cents: group |> Enum.map(& &1.cents) |> Enum.sum(), count: group |> Enum.map(& &1.count) |> Enum.sum()}}
+        end),
+      palee_charge: palee |> Enum.map(& &1.cents) |> Enum.sum(),
+      provider_total: palee |> Enum.map(& &1.provider) |> Enum.sum(),
+      palee_by_channel:
+        palee
+        |> Map.new(fn row ->
+          {row.channel, %{charge_cents: row.cents, provider_cost_cents: row.provider, count: row.count}}
         end)
     }
   end

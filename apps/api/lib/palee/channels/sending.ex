@@ -19,7 +19,7 @@ defmodule Palee.Channels.Sending do
   box's), `box_name`.
   """
 
-  alias Palee.Channels.{ChannelStore, Connections, Contacts}
+  alias Palee.Channels.{ChannelStore, Connections, Contacts, Margins}
 
   alias Palee.Channels.Domain.{
     ChannelPolicy,
@@ -64,7 +64,7 @@ defmodule Palee.Channels.Sending do
          :ok <- length_ok(text) do
       segments = MessageText.segments(channel, text)
 
-      estimate =
+      provider_estimate =
         CostPolicy.estimate(
           Application.get_env(:palee, :channel_prices),
           channel,
@@ -72,6 +72,11 @@ defmodule Palee.Channels.Sending do
           PhoneNumber.country(contact.phone_e164),
           segments
         )
+
+      # ADR-369: on Palee's account the box pays the provider's price plus
+      # Palee's margin; on its own account, the provider's price only.
+      margin = if connection.account_mode == "palee", do: Margins.bps(channel), else: 0
+      estimate = CostPolicy.price(provider_estimate, margin)
 
       {from, to} = CostPolicy.month_range(env.now, env.time_zone)
       spent = ChannelStore.spend(context, from, to).total
@@ -100,6 +105,8 @@ defmodule Palee.Channels.Sending do
         segments: segments,
         encoding: if(channel == "sms", do: MessageText.encoding(text)),
         estimated_cost_cents: estimate,
+        provider_cost_cents: provider_estimate,
+        margin_bps: margin,
         currency: connection.currency,
         urgent: urgent?,
         release_at: release_at,
@@ -274,6 +281,8 @@ defmodule Palee.Channels.Sending do
         account_mode: plan.connection.account_mode,
         segments: plan.segments,
         estimated_cost_cents: plan.estimated_cost_cents,
+        provider_cost_cents: plan.provider_cost_cents,
+        margin_bps: plan.margin_bps,
         currency: plan.currency,
         source: request.source,
         source_ref: request[:source_ref],
@@ -505,7 +514,36 @@ defmodule Palee.Channels.Sending do
          by_channel: spend.by_channel,
          cap_cents: connection && connection.monthly_budget_cents,
          currency: (connection && connection.currency) || "EUR",
-         account_mode: connection && connection.account_mode
+         account_mode: connection && connection.account_mode,
+         # ADR-369: what Palee bills the box for the month (messages sent
+         # on Palee's account, at the box's price).
+         palee_charge_cents: spend.palee_charge
+       }}
+    end
+  end
+
+  @doc """
+  ADR-369: the box's charge for messages Palee sent on its own account in a
+  month (`YYYY-MM` on the box clock), for billing and the Palee team:
+  `%{month, from, to, currency, charge_cents, provider_cost_cents,
+  margin_cents, messages, by_channel}`. Own-account messages are not in it.
+  """
+  def monthly_charge(context, month, env) do
+    with {:ok, {from, to}} <- CostPolicy.month_range_of(month, env.time_zone) do
+      connection = Connections.get(context)
+      spend = ChannelStore.spend(context, from, to)
+
+      {:ok,
+       %{
+         month: month,
+         from: from,
+         to: to,
+         currency: (connection && connection.currency) || "EUR",
+         charge_cents: spend.palee_charge,
+         provider_cost_cents: spend.provider_total,
+         margin_cents: spend.palee_charge - spend.provider_total,
+         messages: spend.palee_by_channel |> Map.values() |> Enum.map(& &1.count) |> Enum.sum(),
+         by_channel: spend.palee_by_channel
        }}
     end
   end

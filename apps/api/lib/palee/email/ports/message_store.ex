@@ -30,7 +30,7 @@ defmodule Palee.Email.Ports.MessageStore do
   @doc "Sets the given fields on a message (`status`, `attempts`, `last_error`, ...)."
   @callback update(Message.t(), map()) :: {:ok, Message.t()} | {:error, term()}
 
-  @doc "How many messages were sent since `since`."
+  @doc "How many messages Palee's mailer sent since `since` (not a box's own SMTP, ADR-368)."
   @callback count_sent_since(DateTime.t()) :: non_neg_integer()
 
   @doc """

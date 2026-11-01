@@ -8,7 +8,8 @@ defmodule Palee.Channels.Message do
 
   @fields ~w(contact_id channel purpose template_key locale body template_values to_phone idempotency_key status
              hold_reason urgent attempts next_attempt_at claimed_at provider account_mode
-             provider_message_id segments estimated_cost_cents cost_cents currency error_code
+             provider_message_id segments estimated_cost_cents provider_cost_cents margin_bps
+             cost_cents currency error_code
              error_message source source_ref created_by_id sent_at delivered_at failed_at)a
 
   schema "channel_messages" do
@@ -33,7 +34,11 @@ defmodule Palee.Channels.Message do
     field :account_mode, :string
     field :provider_message_id, :string
     field :segments, :integer, default: 1
+    # ADR-369: the box's price (provider estimate plus Palee's margin on a
+    # Palee-managed account), the provider estimate and the margin applied.
     field :estimated_cost_cents, :integer, default: 0
+    field :provider_cost_cents, :integer
+    field :margin_bps, :integer, default: 0
     field :cost_cents, :integer
     field :currency, :string, default: "EUR"
     field :error_code, :string
