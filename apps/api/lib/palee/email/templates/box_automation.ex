@@ -11,7 +11,7 @@ defmodule Palee.Email.Templates.BoxAutomation do
   `box_name`.
   """
 
-  use Palee.Email.Template, category: :transactional
+  use Palee.Email.Template, category: :transactional, origin: :box
 
   # At most a few automatic messages a day to one address, whatever the box
   # switched on.

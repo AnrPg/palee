@@ -97,3 +97,6 @@ config :palee, :box_site_conversions_api, Palee.Infrastructure.BoxSite.SandboxCo
 
 # ADR-364: no calls to payment or tax authority APIs from a laptop.
 config :palee, :status_probe_targets, []
+
+# ADR-368: a box's own SMTP provider is simulated in development.
+config :palee, :channel_email_transport, Palee.Infrastructure.Channels.SandboxEmailTransport

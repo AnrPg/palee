@@ -291,7 +291,7 @@ Terms marked **(proposed)** change today's wording; see §5. Everything else mat
 | Bring in a coach | Φέρε τον coach | `joined_as: coach` | The inbox adds a coach of the box to one conversation; the topic «Προπόνηση» adds the person's coaches by itself. |
 | Topic | Θέμα | `messaging_messages.topic` | Κράτηση, Πληρωμή, Συνδρομή, Προπόνηση, Χώρος. |
 
-### 4.6b Text messages from the box (ADR-348..351)
+### 4.6b Text messages from the box (ADR-348..351, ADR-368/369)
 
 Outside the app: SMS today, Viber and WhatsApp later. Push stays first; these go only where
 push is not enough.
@@ -311,6 +311,13 @@ push is not enough.
 | Quiet hours | Ώρες ησυχίας | `quiet_start_minute`, `quiet_end_minute` | Hours on the box's clock when messages wait (21:00–09:00 by default). An urgent update goes at once. | Opening hours. |
 | Monthly message budget | Μηνιαίο όριο κόστους | `monthly_budget_cents` | The most the box spends on text messages in a month; past it, messages are refused. | Platform plan. |
 | Message wording | Κείμενο μηνύματος | `channel_templates` | Palee's wording of each message, which the box may rewrite per language. | WhatsApp template (approved by Meta). |
+| My own email provider | Δικός μου πάροχος email | `channel_email_connections` | Advanced option (ADR-368): the box's own email service over SMTP (host, port, TLS, user name, password), so its own messages (automations, receipts, invoices) leave from its address. Off by default: Palee sends the box's email. Account and security emails always come from Palee. | Palee's account (the default); SMS provider. |
+| Sender address | Διεύθυνση αποστολέα | `from_address`, `from_name` | The address and name the box's emails come from through its own provider. | Reply-to («Απαντήσεις σε»). |
+| Reply-to | Απαντήσεις σε | `reply_to` | Where a person's reply to the box's email goes. | Sender address. |
+| Email DNS records | Ρυθμίσεις DNS για email | `dns_guidance` (`email_dns.spf`, `email_dns.dkim`, `email_dns.dmarc`) | The SPF, DKIM and DMARC records the box adds at its domain so its emails are not marked as spam. | Website domain records (box website). |
+| Palee margin | Περιθώριο Palee | `channel_platform_settings.margins_bps` | What Palee adds to the provider's cost of a message it sends on its own account, set per channel by the Palee team (ADR-369). Never shown to the box as a separate number. | Platform plan price; the box's own account (no margin). |
+| Message price | Κόστος μηνύματος | `estimated_cost_cents` | What the box sees and pays for one message: the provider's cost plus the Palee margin on Palee's account, the provider's cost alone on the box's own. | Provider cost (Palee team only). |
+| Monthly message charge | Χρέωση μηνυμάτων μήνα | `palee_charge_cents`, `GET /api/platform/organizations/:id/channel-charges` | What Palee charges the box for the month's messages sent on Palee's account. | Monthly message budget (the cap). |
 
 ### 4.6a Class booking rules (ADR-226)
 

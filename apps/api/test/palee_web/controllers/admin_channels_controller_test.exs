@@ -91,7 +91,7 @@ defmodule PaleeWeb.AdminChannelsControllerTest do
              })
              |> json_response(422)
 
-    assert %{"cap_cents" => 500} =
+    assert %{"cap_cents" => 500, "palee_charge_cents" => 0} =
              ctx.owner |> get_json("#{ctx.base}/usage?month=2026-10") |> json_response(200)
 
     assert %{"templates" => templates} =
@@ -162,10 +162,17 @@ defmodule PaleeWeb.AdminChannelsControllerTest do
              &(&1["channel"] == "sms" and &1["purpose"] == "service" and &1["granted"])
            )
 
+    preview =
+      ctx.owner
+      |> send_json(:post, "#{ctx.base}/messages/preview", send_body)
+      |> json_response(200)
+
     assert %{"channel" => "sms", "body" => body, "segments" => 1, "estimated_cost_cents" => 7} =
-             ctx.owner
-             |> send_json(:post, "#{ctx.base}/messages/preview", send_body)
-             |> json_response(200)
+             preview
+
+    # ADR-369: the box sees its own price only, never the provider's.
+    refute Map.has_key?(preview, "provider_cost_cents")
+    refute Map.has_key?(preview, "margin_bps")
 
     assert body =~ "Αύριο κλειστά"
 

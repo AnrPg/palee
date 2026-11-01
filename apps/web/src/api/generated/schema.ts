@@ -5474,6 +5474,45 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/channels/email": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box's own email provider (null: Palee sends), the options and the DNS guide */
+        get: operations["PaleeWeb.AdminChannelEmailController.show"];
+        /**
+         * Connect the box's own email provider over SMTP
+         * @description Every email provider speaks SMTP. `secret` (the password) is kept when not sent and never returned. A change to the host, port, TLS mode, user name or password needs «Δοκιμή σύνδεσης» before the box's email goes through it. Platform email (verification, password reset, security notices) always goes through Palee.
+         */
+        put: operations["PaleeWeb.AdminChannelEmailController.save"];
+        post?: never;
+        /** Remove the box's own email provider: Palee sends the box's email again */
+        delete: operations["PaleeWeb.AdminChannelEmailController.delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/email/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** «Δοκιμή σύνδεσης»: connect, start TLS and log in, then quit; nothing is sent */
+        post: operations["PaleeWeb.AdminChannelEmailController.check"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/channels/messages": {
         parameters: {
             query?: never;
@@ -16621,6 +16660,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/platform/channel-margins": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Palee's margin per channel on Palee-managed messages (basis points) */
+        get: operations["PaleeWeb.PlatformChannelMarginsController.show"];
+        /** Set Palee's margin per channel; channels not sent keep theirs */
+        put: operations["PaleeWeb.PlatformChannelMarginsController.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/platform/organization-purges": {
         parameters: {
             query?: never;
@@ -16736,6 +16793,23 @@ export interface paths {
         put?: never;
         /** Create a constrained presigned upload for an organization logo */
         post: operations["PaleeWeb.PlatformOrganizationBrandingController.logo_upload_url"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/platform/organizations/{id}/channel-charges": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** What Palee charges a box for a month's messages, with the providers' cost */
+        get: operations["PaleeWeb.PlatformChannelMarginsController.charges"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -74700,6 +74774,208 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminChannelEmailController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Email provider */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description The box's own SMTP provider; null when Palee sends the box's email (the default). The password is never returned (`has_secret`). */
+                        connection: {
+                            /** Format: date-time */
+                            checked_at?: string | null;
+                            enabled: boolean;
+                            error_code?: string | null;
+                            /** Format: email */
+                            from_address: string;
+                            from_name?: string | null;
+                            has_secret: boolean;
+                            host: string;
+                            in_use: boolean;
+                            port: number;
+                            reply_to?: string | null;
+                            /**
+                             * @description Mail goes through it only when `enabled` and `active` (`in_use`)
+                             * @enum {string}
+                             */
+                            status: "unchecked" | "active" | "invalid";
+                            /** @enum {string} */
+                            tls_mode: "starttls" | "tls";
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            username: string;
+                        } | null;
+                        /** @description The DNS records the guide reminds the box of; `key` is a message key (`email_dns.*`) the screen translates */
+                        dns_guidance: {
+                            domain: string | null;
+                            steps: {
+                                host: string | null;
+                                key: string;
+                                record: string | null;
+                            }[];
+                        };
+                        ports: number[];
+                        tls_modes: string[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelEmailController.save": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    enabled?: boolean;
+                    from_address?: string;
+                    from_name?: string | null;
+                    host?: string;
+                    /** @enum {integer} */
+                    port?: 25 | 465 | 587 | 2525;
+                    reply_to?: string | null;
+                    /**
+                     * Format: password
+                     * @description The SMTP password; kept when not sent, never returned
+                     */
+                    secret?: string;
+                    /** @enum {string} */
+                    tls_mode?: "starttls" | "tls";
+                    username?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Email provider */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description The box's own SMTP provider; null when Palee sends the box's email (the default). The password is never returned (`has_secret`). */
+                        connection: {
+                            /** Format: date-time */
+                            checked_at?: string | null;
+                            enabled: boolean;
+                            error_code?: string | null;
+                            /** Format: email */
+                            from_address: string;
+                            from_name?: string | null;
+                            has_secret: boolean;
+                            host: string;
+                            in_use: boolean;
+                            port: number;
+                            reply_to?: string | null;
+                            /**
+                             * @description Mail goes through it only when `enabled` and `active` (`in_use`)
+                             * @enum {string}
+                             */
+                            status: "unchecked" | "active" | "invalid";
+                            /** @enum {string} */
+                            tls_mode: "starttls" | "tls";
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            username: string;
+                        } | null;
+                        /** @description The DNS records the guide reminds the box of; `key` is a message key (`email_dns.*`) the screen translates */
+                        dns_guidance: {
+                            domain: string | null;
+                            steps: {
+                                host: string | null;
+                                key: string;
+                                record: string | null;
+                            }[];
+                        };
+                        ports: number[];
+                        tls_modes: string[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelEmailController.delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelEmailController.check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Check */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        check: {
+                            error_code: string | null;
+                            ok: boolean;
+                        };
+                        /** @description The box's own SMTP provider; null when Palee sends the box's email (the default). The password is never returned (`has_secret`). */
+                        connection: {
+                            /** Format: date-time */
+                            checked_at?: string | null;
+                            enabled: boolean;
+                            error_code?: string | null;
+                            /** Format: email */
+                            from_address: string;
+                            from_name?: string | null;
+                            has_secret: boolean;
+                            host: string;
+                            in_use: boolean;
+                            port: number;
+                            reply_to?: string | null;
+                            /**
+                             * @description Mail goes through it only when `enabled` and `active` (`in_use`)
+                             * @enum {string}
+                             */
+                            status: "unchecked" | "active" | "invalid";
+                            /** @enum {string} */
+                            tls_mode: "starttls" | "tls";
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            username: string;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminChannelMessagesController.index": {
         parameters: {
             query?: {
@@ -74913,6 +75189,7 @@ export interface operations {
                         currency?: string;
                         /** @description gsm7 or ucs2 (SMS only) */
                         encoding?: string | null;
+                        /** @description The box's price: the provider's estimate plus Palee's margin on Palee's account (ADR-369) */
                         estimated_cost_cents: number;
                         held_for_quiet_hours: boolean;
                         locale?: string;
@@ -75205,6 +75482,8 @@ export interface operations {
                             /** Format: date-time */
                             from: string;
                             messages: number;
+                            /** @description ADR-369: what Palee bills the box for the month (messages sent on Palee's account, at the box's price) */
+                            palee_charge_cents: number;
                             spent_cents: number;
                             /** Format: date-time */
                             to: string;
@@ -75501,6 +75780,8 @@ export interface operations {
                         /** Format: date-time */
                         from: string;
                         messages: number;
+                        /** @description ADR-369: what Palee bills the box for the month (messages sent on Palee's account, at the box's price) */
+                        palee_charge_cents: number;
                         spent_cents: number;
                         /** Format: date-time */
                         to: string;
@@ -136685,6 +136966,78 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.PlatformChannelMarginsController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Margins */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Basis points per channel (2500 = 25 %) */
+                        margins_bps: {
+                            email: number;
+                            sms: number;
+                            viber: number;
+                            whatsapp: number;
+                        };
+                        /** Format: date-time */
+                        updated_at: string | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PlatformChannelMarginsController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Basis points per channel (2500 = 25 %) */
+                    margins_bps: {
+                        email?: number;
+                        sms?: number;
+                        viber?: number;
+                        whatsapp?: number;
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description Margins */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Basis points per channel (2500 = 25 %) */
+                        margins_bps: {
+                            email: number;
+                            sms: number;
+                            viber: number;
+                            whatsapp: number;
+                        };
+                        /** Format: date-time */
+                        updated_at: string | null;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.PlatformOrganizationPurgeController.index": {
         parameters: {
             query?: never;
@@ -137024,6 +137377,50 @@ export interface operations {
                             [key: string]: string;
                         };
                         upload_url: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PlatformChannelMarginsController.charges": {
+        parameters: {
+            query?: {
+                /** @description YYYY-MM on the box's clock; this month when left out */
+                month?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Charge */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        by_channel: {
+                            [key: string]: {
+                                charge_cents: number;
+                                count: number;
+                                provider_cost_cents: number;
+                            };
+                        };
+                        charge_cents: number;
+                        currency: string;
+                        /** Format: date-time */
+                        from: string;
+                        margin_cents: number;
+                        messages: number;
+                        /** @example 2026-11 */
+                        month: string;
+                        provider_cost_cents: number;
+                        /** Format: date-time */
+                        to: string;
                     };
                 };
             };

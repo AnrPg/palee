@@ -1522,6 +1522,11 @@ defmodule PaleeWeb.Router do
     put("/channels/settings", AdminChannelSettingsController, :save)
     post("/channels/settings/check", AdminChannelSettingsController, :check)
     get("/channels/usage", AdminChannelSettingsController, :usage)
+    # ADR-368: the box's own email provider over SMTP (advanced option).
+    get("/channels/email", AdminChannelEmailController, :show)
+    put("/channels/email", AdminChannelEmailController, :save)
+    delete("/channels/email", AdminChannelEmailController, :delete)
+    post("/channels/email/check", AdminChannelEmailController, :check)
     get("/channels/templates", AdminChannelSettingsController, :templates)
     put("/channels/templates/:key", AdminChannelSettingsController, :save_template)
     delete("/channels/templates/:key", AdminChannelSettingsController, :delete_template)
@@ -1918,6 +1923,10 @@ defmodule PaleeWeb.Router do
     post("/push-settings/rotate", PlatformPushSettingsController, :rotate)
     # ADR-187: the password reset security log.
     get("/password-reset-log", PasswordRecoveryController, :log)
+    # ADR-369: Palee's margin on Palee-managed messages and a box's monthly charge.
+    get("/channel-margins", PlatformChannelMarginsController, :show)
+    put("/channel-margins", PlatformChannelMarginsController, :update)
+    get("/organizations/:id/channel-charges", PlatformChannelMarginsController, :charges)
     # ADR-170: platform plans, prices and each organization's plan.
     get("/plans", PlatformPlanController, :index)
     post("/plans", PlatformPlanController, :create)

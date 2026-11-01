@@ -8,7 +8,7 @@ defmodule Palee.Email.Templates.CorporateInvoiceReminder do
   `gym_name`.
   """
 
-  use Palee.Email.Template, category: :transactional
+  use Palee.Email.Template, category: :transactional, origin: :box
 
   alias Palee.Finance.Emails.CorporateInvoiceEmail
 

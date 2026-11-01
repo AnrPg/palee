@@ -338,7 +338,10 @@ defmodule PaleeWeb.FallbackController do
       {:conflict, "This month's message budget is used up. Raise it in the settings"},
     not_cancellable: {:conflict, "Only a message that has not left yet can be stopped"},
     channel_not_retryable: {:conflict, "Only a failed message can be sent again"},
-    invalid_month: {:unprocessable_entity, "Choose a month as YYYY-MM"}
+    invalid_month: {:unprocessable_entity, "Choose a month as YYYY-MM"},
+    # ADR-368: the box's own SMTP email provider.
+    email_connection_missing:
+      {:not_found, "The box has no email provider of its own; Palee sends its email"}
   }
 
   def call(conn, {:error, reason}) when is_map_key(@channel_errors, reason) do

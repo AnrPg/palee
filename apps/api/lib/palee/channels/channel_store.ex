@@ -23,6 +23,25 @@ defmodule Palee.Channels.ChannelStore do
     do: tenant_call(context, :save_connection, [attrs])
 
   @impl true
+  def get_email_connection(context),
+    do: tenant_call(context, :get_email_connection, [])
+
+  @impl true
+  def save_email_connection(context, attrs),
+    do: tenant_call(context, :save_email_connection, [attrs])
+
+  @impl true
+  def delete_email_connection(context),
+    do: tenant_call(context, :delete_email_connection, [])
+
+  # Platform data: no tenant session.
+  @impl true
+  def get_platform_settings, do: adapter().get_platform_settings()
+
+  @impl true
+  def save_platform_settings(attrs), do: adapter().save_platform_settings(attrs)
+
+  @impl true
   def get_contact(context, id),
     do: tenant_call(context, :get_contact, [id])
 

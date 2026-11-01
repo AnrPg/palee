@@ -6,15 +6,34 @@ defmodule Palee.Channels do
 
   Other contexts and W2's automations use `Palee.Application.Channels.SendThroughChannel`;
   this module is the context's public API for the application layer.
+
+  Palee sends a box's SMS and email by default; the box's own provider is
+  the advanced option (ADR-349 for SMS, ADR-368 for email over SMTP). On
+  Palee's account the box pays the provider's price plus Palee's margin
+  (ADR-369).
   """
 
-  alias Palee.Channels.{Connections, Contacts, Sending}
+  alias Palee.Channels.{Connections, Contacts, EmailConnections, Margins, Sending}
 
   defdelegate connection(context), to: Connections, as: :get
   defdelegate public_connection(connection), to: Connections, as: :public
   defdelegate provider_catalog, to: Connections, as: :catalog
   defdelegate save_connection(context, params, actor_id), to: Connections, as: :save
   defdelegate check_connection(context, now), to: Connections, as: :check
+
+  # ADR-368: the box's own SMTP email provider.
+  defdelegate email_connection(context), to: EmailConnections, as: :get
+  defdelegate public_email_connection(connection), to: EmailConnections, as: :public
+  defdelegate email_connection_options(connection), to: EmailConnections, as: :options
+  defdelegate save_email_connection(context, params, actor_id), to: EmailConnections, as: :save
+  defdelegate delete_email_connection(context), to: EmailConnections, as: :delete
+  defdelegate check_email_connection(context, now), to: EmailConnections, as: :check
+  defdelegate deliver_box_email(context, email), to: EmailConnections, as: :deliver
+
+  # ADR-369: Palee's margin (platform setting) and the box's monthly charge.
+  defdelegate margins, to: Margins, as: :get
+  defdelegate save_margins(params, actor_id), to: Margins, as: :save
+  defdelegate monthly_charge(context, month, env), to: Sending
 
   defdelegate person(params), to: Contacts
   defdelegate find_contact(context, person), to: Contacts, as: :find

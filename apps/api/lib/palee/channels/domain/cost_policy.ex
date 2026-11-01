@@ -9,6 +9,11 @@ defmodule Palee.Channels.Domain.CostPolicy do
   one. A message is refused when the month's spend plus its estimate would
   pass the cap; a cap of 0 stops every message.
 
+  ADR-369: on Palee's own provider account the box pays the provider's
+  price plus Palee's margin (`price/2`); the estimate, the budget cap and the
+  month's spend are all in that box price. The provider's own price is kept
+  beside it for the Palee team only.
+
   The default prices are public list prices for Greece and Cyprus in
   October 2026 (see ADR-349 for the sources), rounded up to whole cents;
   `config :palee, :channel_prices` replaces them.
@@ -25,6 +30,58 @@ defmodule Palee.Channels.Domain.CostPolicy do
   }
 
   def default_prices, do: @default_prices
+
+  # ADR-369: margins in basis points (1 bps = 0.01 %), per channel.
+  @margin_channels ~w(email sms viber whatsapp)
+  @max_margin_bps 100_000
+
+  @doc "Channels Palee may put a margin on."
+  def margin_channels, do: @margin_channels
+
+  @doc "The largest margin the Palee team may set (1000 %)."
+  def max_margin_bps, do: @max_margin_bps
+
+  @doc """
+  The box's price for a message the provider charges `provider_cents` for,
+  with Palee's margin of `margin_bps` (ADR-369): whole cents, rounded up, so
+  a margin never rounds to nothing. Own-account messages carry no margin
+  (`margin_bps` 0) and cost exactly the provider's price.
+  """
+  def price(provider_cents, margin_bps)
+      when is_integer(provider_cents) and provider_cents >= 0 and is_integer(margin_bps) and
+             margin_bps >= 0,
+      do: div(provider_cents * (10_000 + margin_bps) + 9_999, 10_000)
+
+  @doc "The margin on `channel` from the platform's margins (0 when unset)."
+  def margin_bps(margins, channel) when is_map(margins) do
+    case Map.get(margins, channel) do
+      bps when is_integer(bps) and bps >= 0 -> bps
+      _unset -> 0
+    end
+  end
+
+  def margin_bps(_margins, _channel), do: 0
+
+  @doc """
+  Validates the margins the Palee team saves: `{:ok, margins}` with every
+  channel (missing ones 0) or `{:error, {:invalid_fields, errors}}`.
+  """
+  def validate_margins(params) when is_map(params) do
+    params = Map.new(params, fn {key, value} -> {to_string(key), value} end)
+
+    errors =
+      params
+      |> Enum.reject(fn {channel, bps} ->
+        channel in @margin_channels and is_integer(bps) and bps >= 0 and bps <= @max_margin_bps
+      end)
+      |> Map.new(fn {channel, _bps} -> {channel, "invalid"} end)
+
+    if errors == %{},
+      do: {:ok, Map.merge(Map.new(@margin_channels, &{&1, 0}), params)},
+      else: {:error, {:invalid_fields, errors}}
+  end
+
+  def validate_margins(_params), do: {:error, {:invalid_fields, %{margins_bps: "invalid"}}}
 
   @doc "Estimated cents for a message of `segments` parts."
   def estimate(prices, channel, purpose, country, segments) do
@@ -74,7 +131,12 @@ defmodule Palee.Channels.Domain.CostPolicy do
     end
   end
 
-  @doc "What a message counts towards the month: the charged price, else the estimate."
-  def counted(%{cost_cents: cents}) when is_integer(cents), do: cents
+  @doc """
+  What a message counts towards the box's month: the provider's charged
+  price with the margin of the message, else the estimated box price.
+  """
+  def counted(%{cost_cents: cents} = message) when is_integer(cents),
+    do: price(cents, Map.get(message, :margin_bps) || 0)
+
   def counted(%{estimated_cost_cents: cents}), do: cents
 end

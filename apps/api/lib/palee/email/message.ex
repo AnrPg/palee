@@ -41,6 +41,8 @@ defmodule Palee.Email.Message do
     field :scheduled_at, :utc_datetime_usec
     field :sent_at, :utc_datetime_usec
     field :delivered_at, :utc_datetime_usec
+    # ADR-368: `palee` (Palee's mailer) or `own` (the box's SMTP), once sent.
+    field :sent_via, :string
 
     # Decrypted bodies, filled only by test helpers (`Palee.EmailCase`).
     field :text, :string, virtual: true, redact: true
