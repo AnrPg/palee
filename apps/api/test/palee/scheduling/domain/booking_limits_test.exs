@@ -11,7 +11,9 @@ defmodule Palee.Scheduling.Domain.BookingLimitsTest do
   test "no limits is always fine" do
     assert BookingLimits.check(%{}, @slot, [@slot, @slot], @now, @zone) == :ok
     refute BookingLimits.any?(%{daily_booking_limit: nil})
-    assert BookingLimits.any?(%{weekly_booking_limit: 2})
+    assert BookingLimits.any?(%{open_bookings_limit: 2})
+    # ADR-383: there is no weekly limit; the package's visits per week cover it.
+    refute BookingLimits.any?(%{weekly_booking_limit: 2})
   end
 
   test "the daily limit counts the class's gym-local day" do
@@ -27,16 +29,12 @@ defmodule Palee.Scheduling.Domain.BookingLimitsTest do
     assert BookingLimits.check(limits, @slot, [next_day], @now, @zone) == :ok
   end
 
-  test "the weekly limit counts Monday to Sunday, gym-local" do
-    limits = %{weekly_booking_limit: 2}
+  test "a weekly limit is not a booking limit (ADR-383)" do
     monday = ~U[2027-05-03 06:00:00Z]
     sunday = ~U[2027-05-09 18:00:00Z]
-    next_monday = ~U[2027-05-10 06:00:00Z]
 
-    assert {:error, :booking_weekly_limit_reached, %{limit: 2}} =
-             BookingLimits.check(limits, @slot, [monday, sunday], @now, @zone)
-
-    assert BookingLimits.check(limits, @slot, [monday, next_monday], @now, @zone) == :ok
+    assert BookingLimits.check(%{weekly_booking_limit: 1}, @slot, [monday, sunday], @now, @zone) ==
+             :ok
   end
 
   test "the open limit counts upcoming bookings only" do
@@ -50,9 +48,9 @@ defmodule Palee.Scheduling.Domain.BookingLimitsTest do
              BookingLimits.check(limits, @slot, [later, @slot], @now, @zone)
   end
 
-  test "counting starts at the week's start or now, whichever is first" do
-    assert BookingLimits.counted_from(@slot, @now, @zone) == ~U[2027-05-02 21:00:00Z]
-    early_now = ~U[2027-04-20 08:00:00Z]
-    assert BookingLimits.counted_from(@slot, early_now, @zone) == early_now
+  test "counting starts at the class's gym-local day or now, whichever is first" do
+    assert BookingLimits.counted_from(@slot, @now, @zone) == @now
+    same_day_now = ~U[2027-05-05 10:00:00Z]
+    assert BookingLimits.counted_from(@slot, same_day_now, @zone) == ~U[2027-05-04 21:00:00Z]
   end
 end

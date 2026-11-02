@@ -76,7 +76,10 @@ defmodule Palee.Application.PackageRulesTest do
     Date.add(today, 8 - Date.day_of_week(today))
   end
 
-  test "bookings per day and per week are limited by the package", %{workout: workout} do
+  test "bookings per day are limited by the package; a stored weekly limit is ignored", %{
+    workout: workout
+  } do
+    # ADR-383: a package saved with the retired weekly limit still saves and books.
     {member, context} =
       member_with(%{"booking.daily_limit" => 1, "booking.weekly_limit" => 2})
 
@@ -88,25 +91,14 @@ defmodule Palee.Application.PackageRulesTest do
     assert {:error, :booking_daily_limit_reached, %{limit: 1}} =
              SubmitBooking.call(context, member, slot_on(workout, monday, ~T[18:00:00]).id)
 
-    tuesday = Date.add(monday, 1)
-
-    assert {:ok, _} =
-             SubmitBooking.call(context, member, slot_on(workout, tuesday, ~T[09:00:00]).id)
-
-    assert {:error, :booking_weekly_limit_reached, %{limit: 2}} =
-             SubmitBooking.call(
-               context,
-               member,
-               slot_on(workout, Date.add(monday, 3), ~T[09:00:00]).id
-             )
-
-    # The next Monday starts a new week.
-    assert {:ok, _} =
-             SubmitBooking.call(
-               context,
-               member,
-               slot_on(workout, Date.add(monday, 7), ~T[09:00:00]).id
-             )
+    for day <- 1..3 do
+      assert {:ok, _} =
+               SubmitBooking.call(
+                 context,
+                 member,
+                 slot_on(workout, Date.add(monday, day), ~T[09:00:00]).id
+               )
+    end
   end
 
   test "open bookings are limited, and staff placement skips the limits", %{workout: workout} do

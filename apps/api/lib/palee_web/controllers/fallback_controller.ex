@@ -3243,7 +3243,6 @@ defmodule PaleeWeb.FallbackController do
     package_active_members_only:
       {:conflict, "This package is for members with an active package"},
     booking_daily_limit_reached: {:conflict, "Your package allows no more classes that day"},
-    booking_weekly_limit_reached: {:conflict, "Your package allows no more classes that week"},
     booking_open_limit_reached: {:conflict, "Your package allows no more upcoming bookings"},
     finance_membership_frozen: {:forbidden, "The membership is frozen"},
     finance_time_window_not_included: {:forbidden, "This time is outside the package's hours"},
