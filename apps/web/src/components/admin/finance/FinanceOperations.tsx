@@ -25,13 +25,14 @@ import { QueuesTab } from "@/components/admin/finance/tabs/QueuesTab";
 import { ReferralsTab } from "@/components/admin/finance/tabs/ReferralsTab";
 import { SeasonsTab } from "@/components/admin/finance/tabs/SeasonsTab";
 import { useSession } from "@/components/session-provider";
+import { CoachPayTab, useSeesCoachPay } from "@/components/admin/coach-pay/CoachPayTab";
 import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
 import { PageHeader, pageHeaderActionClass } from "@/components/PageHeader";
 import { BranchFilterControl, BranchFilterNote, useBranchFilter } from "@/components/admin/BranchFilter";
 import { SegmentPicker } from "@/components/filters/SegmentPicker";
 import { GuideButton } from "@/components/guides/GuideButton";
 
-type Tab = "members" | "packages" | "seasons" | "promotions" | "referrals" | "documents" | "queues" | "accounting" | "corporate";
+type Tab = "members" | "packages" | "seasons" | "promotions" | "referrals" | "documents" | "queues" | "accounting" | "corporate" | "pay";
 
 export function FinanceOperations() {
   const uiLocale = useUiLocale();
@@ -40,6 +41,8 @@ export function FinanceOperations() {
   const branchT = useTranslations("BranchScope");
   const seasonsT = useTranslations("Seasons");
   const documentsT = useTranslations("FiscalDocuments");
+  const payT = useTranslations("CoachPay");
+  const seesCoachPay = useSeesCoachPay();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { tokens } = useSession();
@@ -64,6 +67,8 @@ export function FinanceOperations() {
     { id: "documents", label: documentsT("tab") },
     { id: "queues", label: i18n("queues83dbc32") },
     { id: "accounting", label: accountingT("tab") },
+    // ADR-341/382 (W1 s4): coach pay, for whoever sees finance reports or bills.
+    ...(seesCoachPay ? [{ id: "pay" as const, label: payT("title") }] : []),
     ...(corporateEnabled ? [{ id: "corporate" as const, label: i18n("stfTabCorporate") }] : []),
   ];
   const requestedTab = searchParams.get("tab");
@@ -83,6 +88,7 @@ export function FinanceOperations() {
     seasons: branchT("filterNoteBusinessWide"),
     documents: branchT("filterNoteBusinessWide"),
     corporate: branchT("filterNoteBusinessWide"),
+    pay: branchT("filterNoteBusinessWide"),
   };
 
   const summaryQuery = useQuery({
@@ -200,6 +206,7 @@ export function FinanceOperations() {
         {activeTab === "queues" && <QueuesTab locationIds={locationIds} />}
         {activeTab === "accounting" && <AccountingTab locationIds={locationIds} />}
         {activeTab === "corporate" && <CorporateTab />}
+        {activeTab === "pay" && <CoachPayTab />}
 
       </div>
     </main>

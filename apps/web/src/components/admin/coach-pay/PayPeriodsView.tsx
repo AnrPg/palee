@@ -339,7 +339,7 @@ function StatementRow({
 }
 
 /** The groups of a statement (each rule or item with its terms), then the lines added by hand with their notes. */
-export function StatementLines({ period, statement, editable }: { period: Pick<PayPeriod, "id" | "currency">; statement: PayStatement; editable: boolean }) {
+export function StatementLines({ period, statement, editable }: { period: Pick<PayPeriod, "id" | "currency">; statement: Pick<PayStatement, "groups" | "lines">; editable: boolean }) {
   const t = useTranslations("CoachPay");
   const ui = useUiTranslations();
   const token = useSession().tokens?.access_token ?? "";
