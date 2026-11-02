@@ -7,6 +7,8 @@ import { FieldError } from "@/components/ui/ErrorNotice";
 import { useUiLocale } from "@/i18n/use-ui-locale";
 import { formatMinorUnits } from "@/lib/finance-accounting";
 import { dateKeyInZone } from "@/lib/zoned-time";
+
+import { calendarNoon } from "./coach-pay";
 import { useOrganizationTimeZone } from "@/lib/organization-slug";
 
 /*
@@ -31,7 +33,7 @@ export function usePercent() {
 /** A gym-local calendar date (YYYY-MM-DD) as «31/10/2026». */
 export function useShortDate() {
   const locale = useUiLocale();
-  return (iso: string) => new Intl.DateTimeFormat(locale, { day: "numeric", month: "numeric", year: "numeric", timeZone: "UTC" }).format(new Date(`${iso.slice(0, 10)}T12:00:00Z`));
+  return (iso: string) => new Intl.DateTimeFormat(locale, { day: "numeric", month: "numeric", year: "numeric", timeZone: "UTC" }).format(calendarNoon(iso));
 }
 
 /** The gym-local date today (ADR-176/179), as YYYY-MM-DD. */

@@ -15,7 +15,7 @@ import { useUiTranslations } from "@/i18n/ui";
 import { useUiLocale } from "@/i18n/use-ui-locale";
 import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
 
-import { periodLabel } from "./coach-pay";
+import { payFileName, periodLabel } from "./coach-pay";
 import { payslipLanguage, StatementLines } from "./PayPeriodsView";
 import { GrossNet, saveFile, useMoney } from "./pay-ui";
 
@@ -89,7 +89,7 @@ function MyStatementCard({ statement }: { statement: MyStatement }) {
   const money = useMoney(period.currency);
   const pdf = useMutation({
     mutationFn: () => fetchMyPayslipPdf(token, period.id, payslipLanguage(locale)),
-    onSuccess: (blob) => saveFile(blob, `pay-statement-${period.starts_on}-${period.ends_on}.pdf`),
+    onSuccess: (blob) => saveFile(blob, payFileName("pay-statement", period, "pdf")),
   });
   return (
     <section className="space-y-3 rounded-[1.6rem] p-5" style={{ background: "var(--panel)", border: "1px solid var(--border)" }} data-testid="my-pay-statement">

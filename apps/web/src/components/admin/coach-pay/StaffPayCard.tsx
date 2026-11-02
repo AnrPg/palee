@@ -13,7 +13,7 @@ import { useUiLocale } from "@/i18n/use-ui-locale";
 import { useSelectedMembershipRole } from "@/lib/membership-role";
 import { can } from "@/lib/role-navigation";
 
-import { activeRules, periodLabel } from "./coach-pay";
+import { activeRules, payFileName, periodLabel } from "./coach-pay";
 import { payslipLanguage, StatusPill } from "./PayPeriodsView";
 import { PayRuleForm } from "./PayRuleForm";
 import { RuleLine } from "./PayRulesView";
@@ -43,7 +43,7 @@ function StaffPay({ userId, name, canEdit }: { userId: string; name: string; can
   const statements = useQuery({ queryKey: coachPayKeys.person(userId), enabled: Boolean(token), queryFn: () => fetchPersonStatements(token, userId) });
   const pdf = useMutation({
     mutationFn: (period: StatementPeriod) => fetchPayslipPdf(token, period.id, userId, payslipLanguage(locale)),
-    onSuccess: (blob, period) => saveFile(blob, `pay-statement-${period.starts_on}-${period.ends_on}.pdf`),
+    onSuccess: (blob, period) => saveFile(blob, payFileName("pay-statement", period, "pdf")),
   });
 
   const mine = activeRules(rules.data?.rules ?? [], today).filter((rule) => rule.coach_user_id === userId);

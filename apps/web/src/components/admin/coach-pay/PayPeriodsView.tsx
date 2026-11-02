@@ -30,7 +30,7 @@ import { useUiTranslations } from "@/i18n/ui";
 import { useUiLocale } from "@/i18n/use-ui-locale";
 import { fieldBorder } from "@/lib/form-errors";
 
-import { groupSentence, isManual, isNet, nextPeriodRange, periodLabel, periodRangeError, primaryAction } from "./coach-pay";
+import { groupSentence, payFileName, isManual, isNet, nextPeriodRange, periodLabel, periodRangeError, primaryAction } from "./coach-pay";
 import { PayLineDialog, ReopenDialog } from "./PayLineDialog";
 import { FormRow, GrossNet, Initials, NetMark, controlClass, controlStyle, saveFile, useGymToday, useMoney, usePercent } from "./pay-ui";
 
@@ -188,7 +188,7 @@ export function PayPeriodDetail({ periodId, canEdit, onBack }: { periodId: strin
     mutationFn: () => exportPayPeriod(token, periodId),
     onSuccess: async (blob) => {
       const period = query.data?.period;
-      saveFile(blob, `coach-pay-${period?.starts_on ?? ""}-${period?.ends_on ?? ""}.csv`);
+      if (period) saveFile(blob, payFileName("coach-pay", period, "csv"));
       await queryClient.invalidateQueries({ queryKey: coachPayKeys.period(periodId) });
       void queryClient.invalidateQueries({ queryKey: coachPayKeys.periods });
     },
@@ -302,7 +302,7 @@ function StatementRow({
   const locked = period.status !== "draft";
   const pdf = useMutation({
     mutationFn: () => fetchPayslipPdf(token, period.id, statement.coach_user_id, payslipLanguage(locale)),
-    onSuccess: (blob) => saveFile(blob, `pay-statement-${period.starts_on}-${period.ends_on}.pdf`),
+    onSuccess: (blob) => saveFile(blob, payFileName("pay-statement", period, "pdf")),
   });
   return (
     <div>

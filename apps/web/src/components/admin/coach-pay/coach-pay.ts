@@ -366,3 +366,15 @@ export function itemBody(draft: ItemDraft): PayItemBody {
 export function addableItems(items: PayItem[]): PayItem[] {
   return items.filter((item) => item.kind === "allowance" && !item.archived_at);
 }
+
+// ── Files and dates ─────────────────────────────────────────────────────────
+
+/** A downloaded file's name: `coach-pay-2026-10-01-2026-10-31.csv`, `pay-statement-….pdf`. */
+export function payFileName(prefix: "coach-pay" | "pay-statement", period: { starts_on: string; ends_on: string }, extension: "csv" | "pdf"): string {
+  return [prefix, period.starts_on, period.ends_on].join("-") + "." + extension;
+}
+
+/** A calendar date (YYYY-MM-DD) at noon UTC, so formatting it never shifts the day. */
+export function calendarNoon(iso: string): Date {
+  return new Date(iso.slice(0, 10) + "T12:00:00Z");
+}
