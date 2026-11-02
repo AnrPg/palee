@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
@@ -22,6 +23,7 @@ import { useUiTranslations } from "@/i18n/ui";
 
 import { newOperationId } from "./trial-ui";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
+import { BackButton } from "@/components/ui/BackLink";
 import { clockFormat } from "@/lib/clock";
 
 const POLL_MS = 5_000;
@@ -53,6 +55,7 @@ export function BoxChat({
   topic?: MessageTopic | null;
 }) {
   const t = useTranslations("Trials");
+  const router = useRouter();
   const i18n = useUiTranslations();
   const [topic, setTopic] = useState<MessageTopic | null>(initialTopic);
   const locale = useLocale();
@@ -117,8 +120,20 @@ export function BoxChat({
   const text = body.trim();
 
   return (
-    <main className="mx-auto flex h-[calc(100dvh-4rem)] w-full max-w-xl flex-col">
-      <header className="flex items-center gap-3 px-4 py-3" style={{ borderBottom: "1px solid var(--border)" }}>
+    // Full screen (lib/bottom-nav.ts hides the bars here, ANR 2026-11-02 mockup alt B).
+    <main className="mx-auto flex h-[calc(100dvh-var(--safe-top,0px))] w-full max-w-xl flex-col">
+      <header className="flex items-center gap-1 py-2 pe-4 ps-1" style={{ borderBottom: "1px solid var(--border)" }}>
+        <BackButton
+          onClick={() => {
+            // Back where the chat was opened from; a chat opened from a link goes to its box.
+            if (window.history.length > 1) router.back();
+            else router.push(data.member ? "/box" : `/b/${data.box.slug}`);
+          }}
+          className="min-h-11 min-w-11 text-xl font-bold"
+          data-testid="box-chat-back"
+        >
+          <span className="sr-only">{t("chatBack")}</span>
+        </BackButton>
         <Link href={`/b/${data.box.slug}`} className="flex min-w-0 flex-col">
           <span className="truncate text-lg font-extrabold" style={{ color: "var(--text)" }}>{data.box.name}</span>
           <span className="text-xs" style={{ color: "var(--dim)" }}>{t("chatTeamAnswers")}</span>
@@ -173,8 +188,9 @@ export function BoxChat({
           {t("chatBlocked")}
         </p>
       ) : (
-      <div style={{ borderTop: "1px solid var(--border)" }}>
-      <div role="group" aria-label={t("chatTopicLabel")} className="flex gap-1.5 overflow-x-auto px-4 pt-2" data-testid="box-chat-topics">
+      <div className="flex flex-col gap-2 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3" style={{ borderTop: "1px solid var(--border)", background: "var(--panel)" }} data-testid="box-chat-composer">
+      {send.isError ? <ErrorNotice className="mx-4">{t(sendErrorKey(send.error))}</ErrorNotice> : null}
+      <div role="group" aria-label={t("chatTopicLabel")} className="flex gap-1.5 overflow-x-auto px-4" data-testid="box-chat-topics">
         {MESSAGE_TOPICS.map((value) => (
           <button
             key={value}
@@ -185,7 +201,7 @@ export function BoxChat({
             style={
               topic === value
                 ? { background: "var(--primary)", color: "var(--primary-contrast)", border: "1px solid var(--primary)" }
-                : { background: "var(--panel)", color: "var(--text)", border: "1px solid var(--border)" }
+                : { background: "var(--bg)", color: "var(--text)", border: "1px solid var(--border)" }
             }
           >
             {i18n(TOPIC_KEYS[value])}
@@ -193,7 +209,7 @@ export function BoxChat({
         ))}
       </div>
       <form
-        className="flex items-end gap-2 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2"
+        className="flex items-end gap-2 px-4"
         onSubmit={(event) => {
           event.preventDefault();
           if (text && !send.isPending) send.mutate(text);
@@ -208,7 +224,7 @@ export function BoxChat({
           onChange={(event) => setBody(event.target.value)}
           placeholder={t("chatPlaceholder")}
           className="min-h-11 flex-1 resize-none rounded-2xl px-3.5 py-2.5 text-sm"
-          style={{ background: "var(--panel)", border: "1px solid var(--border)", color: "var(--text)" }}
+          style={{ background: "var(--bg)", border: "1px solid var(--border)", color: "var(--text)" }}
         />
         <button
           type="submit"
@@ -221,7 +237,6 @@ export function BoxChat({
       </form>
       </div>
       )}
-      {send.isError ? <ErrorNotice className="mx-4 mb-2">{t(sendErrorKey(send.error))}</ErrorNotice> : null}
     </main>
   );
 }

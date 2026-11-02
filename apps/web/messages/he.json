@@ -6727,6 +6727,7 @@
     "error_class_not_found": "השיעור הזה כבר לא זמין.",
     "error_package_not_found": "בחר חבילת מנוי פעילה.",
     "chatTeamAnswers": "צוות הבוקס עונה",
+    "chatBack": "חזרה",
     "chatEmptyBox": "כתוב/כתבי לבוקס. מי שפנוי בצוות יענה.",
     "chatFrom": "{name} · {box}",
     "chatTopicLabel": "במה מדובר?",

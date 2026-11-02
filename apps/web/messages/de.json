@@ -6727,6 +6727,7 @@
     "error_class_not_found": "Dieser Kurs ist nicht mehr verfügbar.",
     "error_package_not_found": "Wähle ein aktives Abo-Paket.",
     "chatTeamAnswers": "Das Team der Box antwortet",
+    "chatBack": "Zurück",
     "chatEmptyBox": "Schreib der Box. Wer im Team gerade Zeit hat, antwortet.",
     "chatFrom": "{name} · {box}",
     "chatTopicLabel": "Worum geht es?",

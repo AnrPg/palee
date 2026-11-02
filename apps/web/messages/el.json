@@ -6727,6 +6727,7 @@
     "error_class_not_found": "Αυτό το τμήμα δεν είναι πια διαθέσιμο.",
     "error_package_not_found": "Διάλεξε ένα ενεργό πακέτο συνδρομής.",
     "chatTeamAnswers": "Απαντά η ομάδα του box",
+    "chatBack": "Πίσω",
     "chatEmptyBox": "Γράψε στο box. Θα σου απαντήσει όποιος από την ομάδα είναι διαθέσιμος.",
     "chatFrom": "{name} · {box}",
     "chatTopicLabel": "Για τι είναι;",
