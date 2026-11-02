@@ -19,6 +19,7 @@ import { formatMinorUnits } from "@/lib/finance-accounting";
 
 import { isRecurring, providerLabel, type CheckoutOrigin } from "./checkout-flow";
 import { ChoiceLabel, ChoiceRow, PayButton, usePayError, useStartCheckout } from "./PayParts";
+import { payableCents, surchargeShown, SurchargeTotal } from "./SurchargeTotal";
 
 export type BookingTarget = { id: string; label: string };
 
@@ -163,9 +164,13 @@ export function BeforePaying({
         </div>
       ) : null}
 
+      {/* ADR-340 (mockup W1 s2 A): the card surcharge as a line in the total, the button says the final amount. */}
+      {surchargeShown(data.surcharge) ? (
+        <SurchargeTotal label={pkg.name} amountCents={pkg.base_price_cents} currency={pkg.currency} surcharge={data.surcharge} />
+      ) : null}
       {!data.available ? <ErrorNotice>{t("errorUnavailable")}</ErrorNotice> : null}
       <PayButton disabled={!ready || pay.isPending} onClick={() => pay.mutate()} testId="pay-submit">
-        {payLabel(pkg.base_price_cents, pkg.currency, data.provider, andBook)}
+        {payLabel(payableCents(pkg.base_price_cents, data.surcharge), pkg.currency, data.provider, andBook)}
       </PayButton>
       {pay.isError ? <ErrorNotice variant="field">{payError(pay.error)}</ErrorNotice> : null}
     </div>

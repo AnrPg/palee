@@ -13099,7 +13099,12 @@
     "signUp": "Создать аккаунт",
     "joinFirst": "Сначала стань участником {box}, потом покупай здесь.",
     "join": "Вступить",
-    "salesTitle": "Абонементные пакеты · {box}"
+    "salesTitle": "Абонементные пакеты · {box}",
+    "surchargeLine": "Надбавка за карту",
+    "surchargeLinePercent": "Надбавка за карту ({percent})",
+    "surchargeNone": "Без надбавки",
+    "surchargeTotal": "Итого",
+    "surchargeNote": "Бокс добавляет надбавку для карт, где это разрешено законом. С другой картой надбавки нет."
   },
   "CsvImport": {
     "crumbLabel": "Навигация",

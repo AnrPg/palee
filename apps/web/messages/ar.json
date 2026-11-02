@@ -13099,7 +13099,12 @@
     "signUp": "إنشاء حساب",
     "joinFirst": "انضم أولًا إلى {box} كعضو، ثم اشترِ هنا.",
     "join": "انضم",
-    "salesTitle": "باقات الاشتراك · {box}"
+    "salesTitle": "باقات الاشتراك · {box}",
+    "surchargeLine": "رسوم البطاقة الإضافية",
+    "surchargeLinePercent": "رسوم البطاقة الإضافية ({percent})",
+    "surchargeNone": "بدون رسوم إضافية",
+    "surchargeTotal": "الإجمالي",
+    "surchargeNote": "يضيف المكان رسومًا على البطاقات التي يسمح بها القانون. ببطاقة أخرى لا تدفع رسومًا إضافية."
   },
   "CsvImport": {
     "crumbLabel": "المسار",

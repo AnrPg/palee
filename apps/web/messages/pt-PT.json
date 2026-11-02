@@ -13099,7 +13099,12 @@
     "signUp": "Criar conta",
     "joinFirst": "Torna-te primeiro membro de {box} e depois compra aqui.",
     "join": "Tornar-me membro",
-    "salesTitle": "Pacotes de subscrição · {box}"
+    "salesTitle": "Pacotes de subscrição · {box}",
+    "surchargeLine": "Sobretaxa de cartão",
+    "surchargeLinePercent": "Sobretaxa de cartão ({percent})",
+    "surchargeNone": "Sem sobretaxa",
+    "surchargeTotal": "Total",
+    "surchargeNote": "A box acrescenta uma sobretaxa nos cartões em que a lei o permite. Com outro cartão não pagas sobretaxa."
   },
   "CsvImport": {
     "crumbLabel": "Caminho",

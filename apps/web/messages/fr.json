@@ -13099,7 +13099,12 @@
     "signUp": "Créer un compte",
     "joinFirst": "Deviens d'abord membre de {box}, puis achète ici.",
     "join": "Devenir membre",
-    "salesTitle": "Forfaits d'abonnement · {box}"
+    "salesTitle": "Forfaits d'abonnement · {box}",
+    "surchargeLine": "Supplément carte",
+    "surchargeLinePercent": "Supplément carte ({percent})",
+    "surchargeNone": "Sans supplément",
+    "surchargeTotal": "Total",
+    "surchargeNote": "La box ajoute un supplément sur les cartes où la loi le permet. Avec une autre carte, vous ne payez pas de supplément."
   },
   "CsvImport": {
     "crumbLabel": "Fil d’Ariane",

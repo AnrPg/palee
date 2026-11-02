@@ -13099,7 +13099,12 @@
     "signUp": "Create account",
     "joinFirst": "First join {box} as a member, then buy here.",
     "join": "Join the box",
-    "salesTitle": "Subscription packages · {box}"
+    "salesTitle": "Subscription packages · {box}",
+    "surchargeLine": "Card surcharge",
+    "surchargeLinePercent": "Card surcharge ({percent})",
+    "surchargeNone": "No surcharge",
+    "surchargeTotal": "Total",
+    "surchargeNote": "The box adds a surcharge on cards the law allows it on. With another card you pay no surcharge."
   },
   "CsvImport": {
     "crumbLabel": "Breadcrumb",

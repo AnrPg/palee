@@ -13099,7 +13099,12 @@
     "signUp": "Crear cuenta",
     "joinFirst": "Hazte primero miembro de {box} y luego compra aquí.",
     "join": "Hacerse miembro",
-    "salesTitle": "Paquetes de suscripción · {box}"
+    "salesTitle": "Paquetes de suscripción · {box}",
+    "surchargeLine": "Recargo por tarjeta",
+    "surchargeLinePercent": "Recargo por tarjeta ({percent})",
+    "surchargeNone": "Sin recargo",
+    "surchargeTotal": "Total",
+    "surchargeNote": "El box añade un recargo en las tarjetas donde la ley lo permite. Con otra tarjeta no pagas recargo."
   },
   "CsvImport": {
     "crumbLabel": "Ruta",

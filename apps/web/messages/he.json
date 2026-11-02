@@ -13099,7 +13099,12 @@
     "signUp": "יצירת חשבון",
     "joinFirst": "קודם הצטרף ל-{box} כחבר, ואז קנה כאן.",
     "join": "הצטרפות",
-    "salesTitle": "חבילות מנוי · {box}"
+    "salesTitle": "חבילות מנוי · {box}",
+    "surchargeLine": "תוספת כרטיס",
+    "surchargeLinePercent": "תוספת כרטיס ({percent})",
+    "surchargeNone": "ללא תוספת",
+    "surchargeTotal": "סה״כ",
+    "surchargeNote": "המקום מוסיף תוספת בכרטיסים שהחוק מתיר. בכרטיס אחר אין תוספת."
   },
   "CsvImport": {
     "crumbLabel": "נתיב",

@@ -13099,7 +13099,12 @@
     "signUp": "Konto erstellen",
     "joinFirst": "Werde zuerst Mitglied bei {box}, dann kaufst du hier.",
     "join": "Mitglied werden",
-    "salesTitle": "Abo-Pakete · {box}"
+    "salesTitle": "Abo-Pakete · {box}",
+    "surchargeLine": "Kartenaufschlag",
+    "surchargeLinePercent": "Kartenaufschlag ({percent})",
+    "surchargeNone": "Kein Aufschlag",
+    "surchargeTotal": "Gesamt",
+    "surchargeNote": "Die Box schlägt bei Karten auf, bei denen das Gesetz es erlaubt. Mit einer anderen Karte zahlst du keinen Aufschlag."
   },
   "CsvImport": {
     "crumbLabel": "Pfad",

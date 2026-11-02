@@ -13099,7 +13099,12 @@
     "signUp": "Account aanmaken",
     "joinFirst": "Word eerst lid van {box} en koop dan hier.",
     "join": "Lid worden",
-    "salesTitle": "Abonnementspakketten · {box}"
+    "salesTitle": "Abonnementspakketten · {box}",
+    "surchargeLine": "Kaarttoeslag",
+    "surchargeLinePercent": "Kaarttoeslag ({percent})",
+    "surchargeNone": "Geen toeslag",
+    "surchargeTotal": "Totaal",
+    "surchargeNote": "De box rekent een toeslag op kaarten waar de wet dat toestaat. Met een andere kaart betaal je geen toeslag."
   },
   "CsvImport": {
     "crumbLabel": "Kruimelpad",

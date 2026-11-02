@@ -13099,7 +13099,12 @@
     "signUp": "Crea un account",
     "joinFirst": "Diventa prima membro di {box}, poi acquista qui.",
     "join": "Diventa membro",
-    "salesTitle": "Pacchetti di abbonamento · {box}"
+    "salesTitle": "Pacchetti di abbonamento · {box}",
+    "surchargeLine": "Sovrapprezzo carta",
+    "surchargeLinePercent": "Sovrapprezzo carta ({percent})",
+    "surchargeNone": "Nessun sovrapprezzo",
+    "surchargeTotal": "Totale",
+    "surchargeNote": "Il box aggiunge un sovrapprezzo sulle carte dove la legge lo consente. Con un'altra carta non paghi sovrapprezzo."
   },
   "CsvImport": {
     "crumbLabel": "Percorso",

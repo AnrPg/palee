@@ -13099,7 +13099,12 @@
     "signUp": "Създай профил",
     "joinFirst": "Първо стани член на {box}, после купи тук.",
     "join": "Стани член",
-    "salesTitle": "Абонаментни пакети · {box}"
+    "salesTitle": "Абонаментни пакети · {box}",
+    "surchargeLine": "Надбавка за карта",
+    "surchargeLinePercent": "Надбавка за карта ({percent})",
+    "surchargeNone": "Без надбавка",
+    "surchargeTotal": "Общо",
+    "surchargeNote": "Боксът добавя надбавка за карти, при които законът позволява. С друга карта не плащаш надбавка."
   },
   "CsvImport": {
     "crumbLabel": "Път",
