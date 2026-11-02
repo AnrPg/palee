@@ -32,10 +32,29 @@ defmodule Palee.CoachPay.Domain.PayCalculator do
   def calculate(rules, work, currency) do
     rules
     |> Enum.filter(&(&1.currency == currency))
-    |> Enum.flat_map(&lines(&1, work))
+    |> Enum.flat_map(fn rule ->
+      Enum.map(lines(rule, work), &{Map.get(rule, :sales_scope), &1})
+    end)
+    |> count_payments_once()
     |> Kernel.++(overtime(work, currency))
     |> Enum.group_by(& &1.coach_user_id, &Map.delete(&1, :coach_user_id))
   end
+
+  # ADR-382 (product owner, 2026-11-02): a payment that both a coach's
+  # `personal_training` rule and their `own_clients` rule count is paid
+  # once, by the more specific `personal_training` rule.
+  defp count_payments_once(scoped_lines) do
+    personal =
+      for {"personal_training", line} <- scoped_lines,
+          into: MapSet.new(),
+          do: payment_key(line)
+
+    for {scope, line} <- scoped_lines,
+        not (scope == "own_clients" and MapSet.member?(personal, payment_key(line))),
+        do: line
+  end
+
+  defp payment_key(line), do: {line.coach_user_id, line.source_type, line.source_id}
 
   defp overtime(%{period: %{starts_on: from, ends_on: to}} = work, currency),
     do:

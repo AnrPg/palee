@@ -352754,11 +352754,6 @@
                     "margins_bps": {
                       "description": "Basis points per channel (2500 = 25 %)",
                       "properties": {
-                        "email": {
-                          "maximum": 100000,
-                          "minimum": 0,
-                          "type": "integer"
-                        },
                         "sms": {
                           "maximum": 100000,
                           "minimum": 0,
@@ -352776,7 +352771,6 @@
                         }
                       },
                       "required": [
-                        "email",
                         "sms",
                         "viber",
                         "whatsapp"
@@ -352824,11 +352818,6 @@
                     "additionalProperties": false,
                     "description": "Basis points per channel (2500 = 25 %)",
                     "properties": {
-                      "email": {
-                        "maximum": 100000,
-                        "minimum": 0,
-                        "type": "integer"
-                      },
                       "sms": {
                         "maximum": 100000,
                         "minimum": 0,
@@ -352866,11 +352855,6 @@
                     "margins_bps": {
                       "description": "Basis points per channel (2500 = 25 %)",
                       "properties": {
-                        "email": {
-                          "maximum": 100000,
-                          "minimum": 0,
-                          "type": "integer"
-                        },
                         "sms": {
                           "maximum": 100000,
                           "minimum": 0,
@@ -352888,7 +352872,6 @@
                         }
                       },
                       "required": [
-                        "email",
                         "sms",
                         "viber",
                         "whatsapp"

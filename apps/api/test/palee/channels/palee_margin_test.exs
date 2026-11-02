@@ -69,15 +69,21 @@ defmodule Palee.Channels.PaleeMarginTest do
   end
 
   test "the margin is 0 until the Palee team sets it, and only known channels take one", ctx do
-    assert %{margins_bps: %{"sms" => 0, "email" => 0, "viber" => 0, "whatsapp" => 0}} =
+    assert %{margins_bps: %{"sms" => 0, "viber" => 0, "whatsapp" => 0} = margins} =
              ChannelMargins.show()
 
-    assert {:ok, %{margins_bps: %{"sms" => 2500, "email" => 0}}} =
+    refute Map.has_key?(margins, "email")
+
+    assert {:ok, %{margins_bps: %{"sms" => 2500, "viber" => 0}}} =
              ChannelMargins.save(%{margins_bps: %{sms: 2500}}, ctx.owner.id)
 
     # Channels not sent keep theirs.
-    assert {:ok, %{margins_bps: %{"sms" => 2500, "email" => 1000}}} =
-             ChannelMargins.save(%{"margins_bps" => %{"email" => 1000}}, ctx.owner.id)
+    assert {:ok, %{margins_bps: %{"sms" => 2500, "viber" => 1000}}} =
+             ChannelMargins.save(%{"margins_bps" => %{"viber" => 1000}}, ctx.owner.id)
+
+    # Email Palee sends is included in the subscription.
+    assert {:error, {:invalid_fields, %{"email" => "invalid"}}} =
+             ChannelMargins.save(%{margins_bps: %{email: 1000}}, ctx.owner.id)
 
     assert {:error, {:invalid_fields, %{"fax" => "invalid"}}} =
              ChannelMargins.save(%{margins_bps: %{fax: 10}}, ctx.owner.id)

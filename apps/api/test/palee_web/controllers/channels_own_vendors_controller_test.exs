@@ -144,13 +144,13 @@ defmodule PaleeWeb.ChannelsOwnVendorsControllerTest do
     end
 
     test "the Palee team sets margins and reads a box's monthly charge", ctx do
-      assert %{"margins_bps" => %{"sms" => 0, "email" => 0}} =
+      assert %{"margins_bps" => %{"sms" => 0, "viber" => 0}} =
                ctx.vendor |> get_json("/api/platform/channel-margins") |> json_response(200)
 
-      assert %{"margins_bps" => %{"sms" => 2500, "email" => 1000, "viber" => 0}} =
+      assert %{"margins_bps" => %{"sms" => 2500, "viber" => 1000}} =
                ctx.vendor
                |> send_json(:put, "/api/platform/channel-margins", %{
-                 margins_bps: %{sms: 2500, email: 1000}
+                 margins_bps: %{sms: 2500, viber: 1000}
                })
                |> json_response(200)
 

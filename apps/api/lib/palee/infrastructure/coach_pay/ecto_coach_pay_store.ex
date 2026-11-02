@@ -6,6 +6,7 @@ defmodule Palee.Infrastructure.CoachPay.EctoCoachPayStore do
   import Ecto.Query
 
   alias Palee.CoachPay.{Line, PayItem, Period, Rule, Statement}
+  alias Palee.CoachPay.Domain.AmountBasis
   alias Palee.Infrastructure.Tenancy.RepoContext
   alias Palee.Repo
 
@@ -196,19 +197,39 @@ defmodule Palee.Infrastructure.CoachPay.EctoCoachPayStore do
   def replace_lines(period_id, lines_by_coach, terms_by_coach, %DateTime{} = now) do
     statements = statement_map(period_id)
 
-    # Calculated lines go; lines staff added by hand stay.
-    Line
-    |> tenant_scope()
-    |> where(
-      [line],
-      line.statement_id in ^Map.values(statements) and line.source_type != "manual"
-    )
-    |> Repo.delete_all()
+    # Calculated lines go; lines staff added by hand stay. The basis staff
+    # chose on a calculated line is kept for its replacement (ADR-382).
+    calculated =
+      Line
+      |> tenant_scope()
+      |> where(
+        [line],
+        line.statement_id in ^Map.values(statements) and line.source_type != "manual"
+      )
+
+    previous =
+      calculated
+      |> join(:inner, [line], statement in Statement, on: statement.id == line.statement_id)
+      |> select([line, statement], %{
+        coach_user_id: statement.coach_user_id,
+        rule_id: line.rule_id,
+        pay_item_id: line.pay_item_id,
+        kind: line.kind,
+        source_type: line.source_type,
+        source_id: line.source_id,
+        occurred_on: line.occurred_on,
+        amount_basis: line.amount_basis
+      })
+      |> Repo.all()
+      |> Enum.group_by(& &1.coach_user_id)
+
+    Repo.delete_all(calculated)
 
     Enum.each(lines_by_coach, fn {coach_user_id, lines} ->
       statement_id =
         Map.get(statements, coach_user_id) || insert_statement!(period_id, coach_user_id)
 
+      lines = AmountBasis.keep_choices(lines, Map.get(previous, coach_user_id, []))
       insert_lines!(statement_id, lines, now)
       merge_terms!(statement_id, Map.get(terms_by_coach, coach_user_id, %{}))
     end)

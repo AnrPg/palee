@@ -331,8 +331,7 @@ defmodule PaleeWeb.CoachPayControllerTest do
           coach_user_id: ctx.coach.id,
           kind: "non_taxable_reimbursement",
           amount_cents: 2_000,
-          note: "Βενζίνη για αγώνες",
-          amount_basis: "net"
+          note: "Βενζίνη για αγώνες"
         })
         |> json_response(200)
 
@@ -362,6 +361,33 @@ defmodule PaleeWeb.CoachPayControllerTest do
 
       assert %{"gross_cents" => 12_000, "net_cents" => 6_500, "net_line_count" => 3} =
                coach_statement
+
+      assert %{"gross_cents" => 17_000, "net_cents" => 6_500} = period
+
+      # A basis staff chose on a calculated line survives a recalculation.
+      fixed = Enum.find(coach_statement["lines"], &(&1["kind"] == "fixed"))
+
+      conn
+      |> as(ctx.admin)
+      |> patch(pay_path(ctx, "/periods/#{id}/lines/#{fixed["id"]}"), %{amount_basis: "net"})
+      |> json_response(200)
+
+      %{"period" => period} =
+        conn
+        |> as(ctx.admin)
+        |> post(pay_path(ctx, "/periods/#{id}/calculate"))
+        |> json_response(200)
+
+      coach_statement = Enum.find(period["statements"], &(&1["coach_user_id"] == ctx.coach.id))
+      fixed = Enum.find(coach_statement["lines"], &(&1["kind"] == "fixed"))
+      assert fixed["amount_basis"] == "net"
+      assert %{"gross_cents" => 0, "net_cents" => 18_500} = coach_statement
+
+      %{"period" => period} =
+        conn
+        |> as(ctx.admin)
+        |> patch(pay_path(ctx, "/periods/#{id}/lines/#{fixed["id"]}"), %{amount_basis: "gross"})
+        |> json_response(200)
 
       assert %{"gross_cents" => 17_000, "net_cents" => 6_500} = period
 

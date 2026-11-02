@@ -2,8 +2,9 @@ defmodule Palee.Channels.Margins do
   @moduledoc """
   Palee's margin on the messages it sends for a box on its own provider
   account (ADR-369): a platform setting the Palee team edits in the vendor
-  console, in basis points per channel (`sms`, `email`, and `viber`,
-  `whatsapp` for when they come). 0 until set.
+  console, in basis points per channel (`sms`, and `viber`, `whatsapp` for
+  when they come). 0 until set. Email Palee sends is included in the
+  subscription: no price, no margin (product owner, 2026-11-02).
 
   The box pays the provider's price plus the margin (`CostPolicy.price/2`);
   a box on its own provider account pays no margin and nothing to Palee.

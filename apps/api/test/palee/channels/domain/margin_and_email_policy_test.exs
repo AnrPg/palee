@@ -24,14 +24,20 @@ defmodule Palee.Channels.Domain.MarginAndEmailPolicyTest do
     end
 
     test "margins are whole basis points per known channel, 0 when unset" do
-      assert {:ok, %{"sms" => 2500, "email" => 0, "viber" => 0, "whatsapp" => 0}} =
+      assert {:ok, %{"sms" => 2500, "viber" => 0, "whatsapp" => 0} = margins} =
                CostPolicy.validate_margins(%{sms: 2500})
+
+      refute Map.has_key?(margins, "email")
 
       assert {:error, {:invalid_fields, %{"sms" => "invalid", "fax" => "invalid"}}} =
                CostPolicy.validate_margins(%{"sms" => -1, "fax" => 10})
 
+      # Email is included in the subscription: no margin on it.
       assert {:error, {:invalid_fields, %{"email" => "invalid"}}} =
-               CostPolicy.validate_margins(%{"email" => 100_001})
+               CostPolicy.validate_margins(%{"email" => 1_000})
+
+      assert {:error, {:invalid_fields, %{"sms" => "invalid"}}} =
+               CostPolicy.validate_margins(%{"sms" => 100_001})
 
       assert {:error, {:invalid_fields, %{"sms" => "invalid"}}} =
                CostPolicy.validate_margins(%{"sms" => 12.5})

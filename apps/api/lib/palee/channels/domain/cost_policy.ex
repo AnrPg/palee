@@ -31,8 +31,10 @@ defmodule Palee.Channels.Domain.CostPolicy do
 
   def default_prices, do: @default_prices
 
-  # ADR-369: margins in basis points (1 bps = 0.01 %), per channel.
-  @margin_channels ~w(email sms viber whatsapp)
+  # ADR-369: margins in basis points (1 bps = 0.01 %), per paid channel.
+  # Email Palee sends is included in the subscription and carries no
+  # margin (product owner, 2026-11-02).
+  @margin_channels ~w(sms viber whatsapp)
   @max_margin_bps 100_000
 
   @doc "Channels Palee may put a margin on."

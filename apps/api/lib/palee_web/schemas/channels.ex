@@ -595,7 +595,6 @@ defmodule PaleeWeb.Schemas.Channels do
     type: :object,
     description: "Basis points per channel (2500 = 25 %)",
     properties: %{
-      email: %Schema{type: :integer, minimum: 0, maximum: 100_000},
       sms: %Schema{type: :integer, minimum: 0, maximum: 100_000},
       viber: %Schema{type: :integer, minimum: 0, maximum: 100_000},
       whatsapp: %Schema{type: :integer, minimum: 0, maximum: 100_000}
@@ -606,7 +605,7 @@ defmodule PaleeWeb.Schemas.Channels do
     %Schema{
       type: :object,
       properties: %{
-        margins_bps: %Schema{@margins | required: [:email, :sms, :viber, :whatsapp]},
+        margins_bps: %Schema{@margins | required: [:sms, :viber, :whatsapp]},
         updated_at: @time
       },
       required: [:margins_bps, :updated_at]

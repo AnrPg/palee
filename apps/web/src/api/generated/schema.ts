@@ -138270,7 +138270,6 @@ export interface operations {
                     "application/json": {
                         /** @description Basis points per channel (2500 = 25 %) */
                         margins_bps: {
-                            email: number;
                             sms: number;
                             viber: number;
                             whatsapp: number;
@@ -138294,7 +138293,6 @@ export interface operations {
                 "application/json": {
                     /** @description Basis points per channel (2500 = 25 %) */
                     margins_bps: {
-                        email?: number;
                         sms?: number;
                         viber?: number;
                         whatsapp?: number;
@@ -138312,7 +138310,6 @@ export interface operations {
                     "application/json": {
                         /** @description Basis points per channel (2500 = 25 %) */
                         margins_bps: {
-                            email: number;
                             sms: number;
                             viber: number;
                             whatsapp: number;

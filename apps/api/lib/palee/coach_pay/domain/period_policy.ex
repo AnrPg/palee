@@ -86,12 +86,13 @@ defmodule Palee.CoachPay.Domain.PeriodPolicy do
       required `note`, like `ad_hoc`. Whether it is taxable is the
       accountant's call; Palee only labels it.
 
-  `amount_basis` is `gross` (default) or `net`. Who added it
+  `amount_basis` is `gross` or `net`; it defaults to `net` for
+  `non_taxable_reimbursement` and to `gross` for every other kind. Who added it
   (`created_by_id`) and when (`inserted_at`) stay on the line.
   """
   def adjustment(params, %Date{} = occurred_on, actor_id) do
     params = Map.new(params, fn {key, value} -> {to_string(key), value} end)
-    basis = params["amount_basis"] || AmountBasis.default()
+    basis = params["amount_basis"] || AmountBasis.default_for(params["kind"])
 
     if AmountBasis.valid?(basis) do
       with {:ok, line} <- manual(params["kind"] || "adjustment", params, occurred_on, actor_id) do

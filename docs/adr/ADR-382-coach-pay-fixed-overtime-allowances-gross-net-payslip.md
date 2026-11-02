@@ -31,7 +31,9 @@ UI waits for mockups: this ADR covers domain, API and tests only.
    coaches through a coaching relationship, ADR-100, on the day paid, or
    whose personal-training coach they are) and `box_all` (every
    subscription and package payment of the box). Both count only
-   `membership` and `package` revenue (ADR-190); refunds are clawbacks
+   `membership` and `package` revenue (ADR-190); a payment that both a
+   coach's `personal_training` rule and `own_clients` rule count is paid
+   once, by `personal_training` (product owner, 2026-11-02); refunds are clawbacks
    attributed by the day the refunded payment was made; `card_surcharge`
    stays excluded. `sold_by` and `personal_training` are unchanged. The
    work source reads relationships through `Coaching.relationships_between/3`.
@@ -65,8 +67,11 @@ UI waits for mockups: this ADR covers domain, API and tests only.
 6. **Gross and net**: `amount_basis` (`gross` default, `net`) on rules,
    pay items and every line; lines inherit it from their rule or item and
    staff may change it per line in a draft period
-   (`PATCH …/periods/:id/lines/:line_id`; a calculated line takes its
-   rule's basis again on recalculation). Statements and periods keep
+   (`PATCH …/periods/:id/lines/:line_id`; product owner, 2026-11-02: a
+   basis staff chose on a calculated line is kept when the period is
+   recalculated, matched by rule or pay item, kind, source and day). Lines
+   by hand default to `gross`, except `non_taxable_reimbursement`, which
+   defaults to `net` (product owner, 2026-11-02). Statements and periods keep
    `gross_cents` and `net_cents`; `total_cents` stays (ADR-341) and is
    documented as the sum of all lines. Each line carries
    `deviates_from_default` (true when net) and each statement
@@ -115,8 +120,9 @@ stable. Separate gross and net subtotals avoid a figure that mixes bases.
 
 ## Consequences
 - A coach holding both `personal_training` and `own_clients` rules is paid
-  twice on the same PT package payment; that is the box's configuration.
-- Changing the basis of a calculated line is undone by recalculation.
+  once on a PT package payment, at the `personal_training` rate.
+- A line's basis choice survives recalculation only while the line keeps
+  its identity; a line whose source disappears goes with its choice.
 - The statement PDF in Arabic and Hebrew waits for right-to-left support
   in `Palee.Pdf`.
 

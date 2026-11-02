@@ -15,6 +15,35 @@ defmodule Palee.CoachPay.Domain.AmountBasis do
   def bases, do: @bases
   def default, do: "gross"
 
+  @doc """
+  The default basis of a line kind (product owner, 2026-11-02): money paid
+  back (`non_taxable_reimbursement`) is `net`, everything else `gross`.
+  """
+  def default_for("non_taxable_reimbursement"), do: "net"
+  def default_for(_kind), do: default()
+
+  @doc """
+  ADR-382 (product owner, 2026-11-02): staff's basis choices on calculated
+  lines survive a recalculation. `previous` are the lines being replaced;
+  a new line with the same identity (rule or pay item, kind, source, day)
+  takes the old line's basis.
+  """
+  def keep_choices(lines, previous) do
+    chosen = Map.new(previous, &{identity(&1), Map.get(&1, :amount_basis)})
+
+    Enum.map(lines, fn line ->
+      case Map.get(chosen, identity(line)) do
+        basis when basis in @bases -> Map.put(line, :amount_basis, basis)
+        _none -> line
+      end
+    end)
+  end
+
+  defp identity(line),
+    do:
+      {Map.get(line, :rule_id), Map.get(line, :pay_item_id), Map.get(line, :kind),
+       Map.get(line, :source_type), Map.get(line, :source_id), Map.get(line, :occurred_on)}
+
   @doc "Whether a value is a basis (nil is allowed where a default applies)."
   def valid?(value), do: value in @bases
 

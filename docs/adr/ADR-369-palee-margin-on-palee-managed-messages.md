@@ -11,7 +11,7 @@ Palee charge; billing will pick up a monthly charge later (no invoicing now).
 
 ## Decision
 1. **Setting** `channel_platform_settings` (platform data, one row, no tenant):
-   `margins_bps` per channel (`sms`, `email`, and `viber`, `whatsapp` for when they come),
+   `margins_bps` per paid channel (`sms`, and `viber`, `whatsapp` for when they come),
    in basis points (2500 = 25 %), 0 until set, at most 100 000. Edited in the vendor
    console: `GET/PUT /api/platform/channel-margins` (vendors only, like the other
    `/api/platform` settings). A save sends only the channels it changes.
@@ -48,8 +48,9 @@ the price lets the Palee team check the margin without showing it to boxes.
   in the preview and in the budget.
 
 ## Consequences
-- Email has a margin setting but Palee-managed email has no per-message cost yet (the
-  email outbox does not price mail), so nothing is charged for email until it does.
+- Email Palee sends is included in the box's subscription (product owner, 2026-11-02):
+  it has no price and no margin, and a margin on `email` is refused. Only SMS (and
+  later Viber, WhatsApp) is charged.
 - Messages queued before this change have `margin_bps` 0 and `provider_cost_cents` null;
   their box price equals their old estimate.
 

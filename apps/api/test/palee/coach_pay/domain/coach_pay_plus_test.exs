@@ -191,6 +191,27 @@ defmodule Palee.CoachPay.Domain.CoachPayPlusTest do
                [{"clawback", -500}, {"percent_of_sales", 1_000}, {"percent_of_sales", 1_000}]
     end
 
+    test "a payment both personal_training and own_clients count is paid once, by personal_training" do
+      personal =
+        rule("percent_of_sales", %{"percent_bps" => 2_000, "sales_scope" => "personal_training"})
+
+      own = rule("percent_of_sales", %{"percent_bps" => 1_000, "sales_scope" => "own_clients"})
+      both = sale(%{pt_coach_id: @coach})
+      only_own = sale(%{})
+
+      work = %{
+        sales: [both, only_own],
+        coach_clients: [
+          %{coach_user_id: @coach, client_user_id: @member, from: ~D[2027-01-01], to: nil}
+        ]
+      }
+
+      %{@coach => lines} = PayCalculator.calculate([own, personal], work, "EUR")
+
+      assert lines |> Enum.map(&{&1.source_id, &1.rule_id, &1.amount_cents}) |> Enum.sort() ==
+               Enum.sort([{both.id, personal.id, 2_000}, {only_own.id, own.id, 1_000}])
+    end
+
     test "box_all: every subscription and package payment, no shop" do
       rule = rule("percent_of_sales", %{"percent_bps" => 250, "sales_scope" => "box_all"})
 
@@ -455,6 +476,20 @@ defmodule Palee.CoachPay.Domain.CoachPayPlusTest do
                  @other
                )
 
+      assert {:ok, %{amount_basis: "net"}} =
+               PeriodPolicy.adjustment(
+                 %{"kind" => "non_taxable_reimbursement", "amount_cents" => 2_000, "note" => "x"},
+                 ~D[2027-01-31],
+                 @other
+               )
+
+      assert {:ok, %{amount_basis: "gross"}} =
+               PeriodPolicy.adjustment(
+                 %{"kind" => "ad_hoc", "amount_cents" => 2_000, "note" => "x"},
+                 ~D[2027-01-31],
+                 @other
+               )
+
       assert {:error, {:invalid_fields, %{"note" => "required"}}} =
                PeriodPolicy.adjustment(
                  %{"kind" => "non_taxable_reimbursement", "amount_cents" => 2_000},
@@ -495,6 +530,30 @@ defmodule Palee.CoachPay.Domain.CoachPayPlusTest do
       mixed = [line, %{line | amount_basis: "gross"}]
       assert length(StatementGroups.groups(%{lines: mixed})) == 2
       assert AmountBasis.deviates?(line)
+    end
+  end
+
+  describe "basis kept on recalculation" do
+    test "a calculated line takes the basis staff chose on the line it replaces" do
+      line = %{
+        rule_id: "r1",
+        pay_item_id: nil,
+        kind: "per_class",
+        source_type: "class",
+        source_id: "c1",
+        occurred_on: ~D[2027-01-04],
+        amount_basis: "gross"
+      }
+
+      other = %{line | source_id: "c2"}
+
+      previous = [
+        %{line | amount_basis: "net"},
+        %{other | source_id: "gone", amount_basis: "net"}
+      ]
+
+      assert [%{amount_basis: "net"}, %{amount_basis: "gross"}] =
+               AmountBasis.keep_choices([line, other], previous)
     end
   end
 
