@@ -8,11 +8,25 @@ defmodule Palee.Infrastructure.Notifications.EctoNotificationStore do
   alias Palee.Infrastructure.Tenancy.RepoContext
   alias Palee.Repo
 
+  # A duplicate `dedupe_key` (e.g. the same reminder job running on several
+  # API pods at once) must not raise a unique violation: Postgres logs it as an
+  # ERROR and it aborts any surrounding transaction. `DO UPDATE ... WHERE false`
+  # skips the row without touching it and, unlike `DO NOTHING`, makes Ecto
+  # report the skip (as a stale error on `:dedupe_key`), so callers still get
+  # `{:ok, :duplicate}`.
+  @dedupe_conflict_target {:unsafe_fragment, "(user_id, dedupe_key) WHERE dedupe_key IS NOT NULL"}
+
   @impl true
   def create_notification(params) do
     %Notification{}
     |> Notification.changeset(params)
-    |> Repo.insert()
+    |> Repo.insert(
+      on_conflict:
+        from(n in Notification, update: [set: [dedupe_key: n.dedupe_key]], where: false),
+      conflict_target: @dedupe_conflict_target,
+      stale_error_field: :dedupe_key,
+      stale_error_message: "has already been taken"
+    )
     |> case do
       {:ok, %Notification{} = notification} ->
         {:ok, normalize_notification(notification)}
