@@ -9356,7 +9356,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** One box member's risk with its reasons */
+        /** One box member's risk with its reasons and what staff did (who and when, ADR-384) */
         get: operations["PaleeWeb.AdminMemberRiskController.show"];
         put?: never;
         post?: never;
