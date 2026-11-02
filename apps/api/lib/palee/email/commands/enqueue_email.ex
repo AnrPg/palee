@@ -36,6 +36,7 @@ defmodule Palee.Email.Commands.EnqueueEmail do
 
   def call(kind, to, assigns, opts) do
     now = Keyword.get_lazy(opts, :now, &DateTime.utc_now/0)
+    opts = Keyword.put(opts, :now, now)
     store = Palee.Email.message_store()
 
     with {:ok, template} <- Templates.fetch(kind),
@@ -150,7 +151,10 @@ defmodule Palee.Email.Commands.EnqueueEmail do
       status: status,
       message_id: Palee.Email.new_message_id(),
       idempotency_key: Keyword.get(opts, :idempotency_key),
-      scheduled_at: scheduled_at
+      scheduled_at: scheduled_at,
+      # Stamped with the clock the throttle and budget judged it by, so the
+      # next enqueue's look-back sees it at the same time.
+      inserted_at: Keyword.fetch!(opts, :now)
     }
 
     job = fn message ->
