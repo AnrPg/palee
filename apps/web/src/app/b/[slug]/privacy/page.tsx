@@ -16,7 +16,7 @@ async function texts(slug: string, lang: string | undefined) {
   const site = await loadPublicSite(page.box.slug);
   const wanted = lang === "en" ? "en" : site?.language;
   const locale = isAppLocale(wanted) ? wanted : undefined;
-  const t = await getTranslations(locale ? { locale, namespace: "BoxSite.privacyPage" } : "BoxSite.privacyPage");
+  const t = locale ? await getTranslations({ locale, namespace: "BoxSite.privacyPage" }) : await getTranslations("BoxSite.privacyPage");
   return { page, site, t, locale };
 }
 

@@ -602,7 +602,7 @@ and the box members who may be leaving. A lead is never called a «μέλος» 
 | Contacted | Επικοινώνησα | `contacted_at` | Staff noted they reached out. | Lead «Επικοινωνία» event. |
 | Snooze | Αργότερα | `snoozed_until` | Hide a box member from «Σε κίνδυνο» for some days. | — |
 
-### 4.22 Box website and Google reviews (ADR-352..355)
+### 4.22 Box website and reviews (ADR-352..355, ADR-386..388)
 
 | English | Ελληνικά | Code | What it is | Not to be confused with |
 |---|---|---|---|---|
@@ -616,6 +616,13 @@ and the box members who may be leaving. A lead is never called a «μέλος» 
 | Tags | Κωδικοί μέτρησης | `meta_pixel_id`, `ga4_measurement_id`, `gtm_container_id` | The box's own Meta Pixel, Google Analytics and Google Tag ids. Under «Προχωρημένα». | |
 | Google review ask | Αίτημα κριτικής Google | `review_asks` | At an attendance milestone, right after a class, every member alike sees «Γράψε κριτική στο Google» and «Πες κάτι στο box». Never depends on their opinion, never rewarded. «Να μη ρωτηθώ ξανά» stops it. | Box feedback questionnaires (Αξιολογήσεις, ADR-015). |
 | Place ID | Place ID | `google_place_id` | Google's id of the box's listing; it builds the review link. | |
+| Review | Κριτική | `box_reviews` | A member's stars (1–5) and optional text about their box, in the app's «Κριτικές» and on the website, with their first name. Only people who checked in, one each; «Η κριτική μου» to edit or delete. The box replies («Απάντηση από …»), never deletes. | Google review («Από το Google», kept apart with its own average); Αξιολογήσεις (ADR-015). |
+| Google listing | Καταχώριση Google | `google_place_snapshots` | The box's Google rating and up to five Google reviews, found by name («Αναζήτηση στο Google», Place ID as the fallback) and refreshed daily. Always shown apart, labelled «Από το Google». | Review (in-app). |
+| Review ask (v3.1) | Αίτημα κριτικής | `review_asks` | After the 10th, 50th and 100th class, once, a card on Αρχική with «Γράψε κριτική», «Γράψε και στο Google», «Πες κάτι στο box». No push, no reminders, never gated on opinion. | |
+| Events (section) | Events | site section `events` | The box's events open to everyone, on the website. | Box events tab (members). |
+| WOD of the day | WOD της ημέρας | `public_wod`, site section `wod` | Today's published WOD on the website. Off until the owner turns it on. | Member WOD card. |
+| English website | Αγγλική ιστοσελίδα | `/b/<slug>/en`, `about_en`, FAQ `question_en`/`answer_en` | The website in English, with the owner's optional English texts; the EL/EN switch remembers the choice. | App language. |
+| Send the instructions | Στείλε τις οδηγίες | `POST /admin/site/domains/:id/instructions` | Emails the DNS records and a status link to whoever runs the box's domain. | |
 
 ### 4.23 Training and floor (ADR-356..359)
 

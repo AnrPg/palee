@@ -32,7 +32,7 @@ import { useUiTranslations } from "@/i18n/ui";
 import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
 
 import { DnsRecords, DomainStatusLine } from "./DomainParts";
-import { sectionOn, toggleSection, moveSection } from "./website-settings-model";
+import { CONVERSIONS_API_LABEL, DOMAIN_PLACEHOLDER, moveSection, sectionOn, TAG_FIELDS, toggleSection } from "./website-settings-model";
 
 const SITE_KEY = ["admin", "site"] as const;
 const SUMMARY_KEY = ["admin", "site", "summary"] as const;
@@ -284,14 +284,14 @@ function SiteForm({ token, site }: { token: string; site: AdminSite }) {
         <div className="flex flex-col gap-2">
           <h3 className="text-sm font-bold" style={{ color: "var(--text)" }}>{t("settings.tagsTitle")}</h3>
           <p className="text-xs" style={{ color: "var(--muted)" }}>{t("settings.tagsHint")}</p>
-          <TagField label="Google Analytics 4" placeholder="G-XXXXXXX" value={draft.ga4_measurement_id} onChange={(value) => form.edit({ ga4_measurement_id: value })} />
-          <TagField label="Google Tag Manager" placeholder="GTM-XXXXXX" value={draft.gtm_container_id} onChange={(value) => form.edit({ gtm_container_id: value })} />
-          <TagField label="Meta Pixel" placeholder="1234567890" value={draft.meta_pixel_id} onChange={(value) => form.edit({ meta_pixel_id: value })} />
+          {TAG_FIELDS.map((field) => (
+            <TagField key={field.key} label={field.label} placeholder={field.placeholder} value={draft[field.key]} onChange={(value) => form.edit({ [field.key]: value })} />
+          ))}
         </div>
         <div className="flex flex-col gap-2">
           <label className="flex min-h-11 items-center justify-between gap-3">
             <span className="flex flex-col">
-              <span className="text-sm font-semibold" style={{ color: "var(--text)" }}>{t("settings.capi")}</span>
+              <span className="text-sm font-semibold" style={{ color: "var(--text)" }}>{CONVERSIONS_API_LABEL}</span>
               <span className="text-xs" style={{ color: "var(--dim)" }}>{t("settings.capiHint")}</span>
             </span>
             <input type="checkbox" role="switch" checked={draft.conversions_api_enabled} onChange={(event) => form.edit({ conversions_api_enabled: event.target.checked })} className="h-5 w-5 shrink-0" style={{ accentColor: "var(--primary)" }} />
@@ -359,7 +359,7 @@ function DomainsCard({ token, domains }: { token: string; domains: SiteDomain[] 
               id="website-domain-host"
               value={host}
               onChange={(event) => setHost(event.target.value)}
-              placeholder="www.mybox.gr"
+              placeholder={DOMAIN_PLACEHOLDER}
               inputMode="url"
               autoCapitalize="none"
               aria-invalid={addError ? true : undefined}

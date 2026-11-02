@@ -23,7 +23,7 @@ export function DomainStatusPage({ token }: { token: string }) {
             <p className="text-sm" style={{ color: "var(--text-soft)" }}>{t("domains.statusIntro", { box: query.data.box_name })}</p>
           </header>
           <DomainStatusLine status={query.data.status} lastError={query.data.last_error} />
-          <DnsRecords records={query.data.dns_records as DnsRecord[]} />
+          <DnsRecords records={query.data.dns_records as unknown as DnsRecord[]} />
         </>
       ) : null}
     </main>

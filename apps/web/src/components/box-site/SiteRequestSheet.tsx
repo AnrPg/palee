@@ -8,7 +8,7 @@ import { ApiError } from "@/api/client";
 import { sendSiteForm } from "@/api/box-site";
 import { Dialog } from "@/components/ui/Dialog";
 import { ErrorNotice, FieldError } from "@/components/ui/ErrorNotice";
-import { attribution, contactFields } from "@/lib/public-site";
+import { attribution, contactFields, fieldErrorId } from "@/lib/public-site";
 
 import { trackLead, useSiteConsent } from "./SiteConsent";
 
@@ -90,7 +90,7 @@ export function SiteRequestSheet({ slug, kind, privacyHref, onClose }: { slug: s
 
   const field = (name: Field) => ({
     "aria-invalid": errors[name] ? true : undefined,
-    "aria-describedby": errors[name] ? `${ids}-${name}-error` : undefined,
+    "aria-describedby": errors[name] ? fieldErrorId(ids, name) : undefined,
   });
   const inputStyle = (name: Field) => ({ background: "var(--bg)", border: `1px solid ${errors[name] ? "var(--danger)" : "var(--border)"}`, color: "var(--text)" });
   const inputClass = "min-h-11 w-full rounded-2xl px-3.5 text-sm";
@@ -128,12 +128,12 @@ export function SiteRequestSheet({ slug, kind, privacyHref, onClose }: { slug: s
         <label className="flex flex-col gap-1.5">
           <span className="text-sm font-semibold" style={{ color: "var(--text)" }}>{t("form.name")}</span>
           <input value={form.name} onChange={(event) => set("name", event.target.value)} autoComplete="name" maxLength={80} className={inputClass} style={inputStyle("name")} {...field("name")} />
-          {errors.name ? <FieldError id={`${ids}-name-error`}>{t("form.errors.nameRequired")}</FieldError> : null}
+          {errors.name ? <FieldError id={fieldErrorId(ids, "name")}>{t("form.errors.nameRequired")}</FieldError> : null}
         </label>
         <label className="flex flex-col gap-1.5">
           <span className="text-sm font-semibold" style={{ color: "var(--text)" }}>{t("form.contact")}</span>
           <input value={form.contact} onChange={(event) => set("contact", event.target.value)} autoComplete="email" maxLength={160} className={inputClass} style={inputStyle("contact")} {...field("contact")} />
-          {errors.contact ? <FieldError id={`${ids}-contact-error`}>{t(errors.contact === "invalid" ? "form.errors.contactInvalid" : "form.errors.contactRequired")}</FieldError> : null}
+          {errors.contact ? <FieldError id={fieldErrorId(ids, "contact")}>{t(errors.contact === "invalid" ? "form.errors.contactInvalid" : "form.errors.contactRequired")}</FieldError> : null}
         </label>
         {kind === "trial" ? (
           <label className="flex flex-col gap-1.5">
@@ -144,7 +144,7 @@ export function SiteRequestSheet({ slug, kind, privacyHref, onClose }: { slug: s
           <label className="flex flex-col gap-1.5">
             <span className="text-sm font-semibold" style={{ color: "var(--text)" }}>{t("form.message")}</span>
             <textarea value={form.message} onChange={(event) => set("message", event.target.value)} rows={4} maxLength={2000} className="w-full rounded-2xl px-3.5 py-2.5 text-sm" style={inputStyle("message")} {...field("message")} />
-            {errors.message ? <FieldError id={`${ids}-message-error`}>{t("form.errors.messageRequired")}</FieldError> : null}
+            {errors.message ? <FieldError id={fieldErrorId(ids, "message")}>{t("form.errors.messageRequired")}</FieldError> : null}
           </label>
         )}
         {/* Honeypot: people never see it; a bot that fills it is dropped (ADR-353). */}
@@ -166,7 +166,7 @@ export function SiteRequestSheet({ slug, kind, privacyHref, onClose }: { slug: s
               })}
             </span>
           </label>
-          {errors.privacy_ack ? <FieldError id={`${ids}-privacy_ack-error`}>{t("form.errors.privacyRequired")}</FieldError> : null}
+          {errors.privacy_ack ? <FieldError id={fieldErrorId(ids, "privacy_ack")}>{t("form.errors.privacyRequired")}</FieldError> : null}
         </div>
       </div>
     </Dialog>

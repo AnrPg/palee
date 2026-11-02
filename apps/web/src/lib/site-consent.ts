@@ -73,6 +73,9 @@ export function consentModeUpdate(choice: ConsentChoice) {
   };
 }
 
+/** Meta Pixel standard events the site sends (ADR-354 §5). */
+export const PIXEL_EVENTS = { pageView: "PageView", lead: "Lead" } as const;
+
 /** The action the consent log records for a choice. */
 export function consentAction(choice: ConsentChoice, withdrawing: boolean) {
   if (withdrawing && !choice.analytics && !choice.marketing) return "withdraw" as const;

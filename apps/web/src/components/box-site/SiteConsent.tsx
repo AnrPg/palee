@@ -12,6 +12,7 @@ import {
   consentCategories,
   consentCookie,
   consentModeUpdate,
+  PIXEL_EVENTS,
   readConsent,
   type ConsentChoice,
   type SiteTags,
@@ -230,7 +231,7 @@ function loadTags(tags: SiteTags, choice: ConsentChoice) {
         addScript("https://connect.facebook.net/en_US/fbevents.js");
       }
       w.fbq("init", id);
-      w.fbq("track", "PageView");
+      w.fbq("track", PIXEL_EVENTS.pageView);
     }
   }
 }
@@ -238,5 +239,5 @@ function loadTags(tags: SiteTags, choice: ConsentChoice) {
 /** ADR-354 §5: the browser Pixel's Lead event, only with marketing consent. */
 export function trackLead() {
   const w = window as TagWindow;
-  if (w.__paleeSiteTags?.has("meta_pixel_id") && w.fbq) w.fbq("track", "Lead");
+  if (w.__paleeSiteTags?.has("meta_pixel_id") && w.fbq) w.fbq("track", PIXEL_EVENTS.lead);
 }

@@ -32,6 +32,16 @@ export function rememberedSiteLanguage(cookieValue: string | undefined, slug: st
   return owner === slug && code ? code : null;
 }
 
+/** The cookie that remembers a visitor's EL/EN choice for one site. */
+export function siteLanguageCookie(slug: string, code: string, secure: boolean) {
+  return `${SITE_LANGUAGE_COOKIE}=${encodeURIComponent(`${slug}:${code}`)}; Path=/; Max-Age=31536000; SameSite=Lax${secure ? "; Secure" : ""}`;
+}
+
+/** The id of a form field's inline error. */
+export function fieldErrorId(base: string, field: string) {
+  return `${base}-${field}-error`;
+}
+
 /** The first language of an Accept-Language header, as a lowercase base tag ("el", "en"). */
 export function preferredLanguage(acceptLanguage: string | null | undefined): string | null {
   const first = acceptLanguage?.split(",")[0]?.split(";")[0]?.trim();

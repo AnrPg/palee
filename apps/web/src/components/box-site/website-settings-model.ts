@@ -53,3 +53,12 @@ export function moveSection(order: SiteSection[], key: SiteSection, step: -1 | 1
   next[target] = key;
   return next;
 }
+
+/** The tag fields under «Προχωρημένα»: product names and id formats, the same in every language. */
+export const TAG_FIELDS = [
+  { key: "ga4_measurement_id", label: "Google Analytics 4", placeholder: "G-XXXXXXX" },
+  { key: "gtm_container_id", label: "Google Tag Manager", placeholder: "GTM-XXXXXX" },
+  { key: "meta_pixel_id", label: "Meta Pixel", placeholder: "1234567890" },
+] as const;
+export const CONVERSIONS_API_LABEL = "Meta Conversions API";
+export const DOMAIN_PLACEHOLDER = "www.mybox.gr";
