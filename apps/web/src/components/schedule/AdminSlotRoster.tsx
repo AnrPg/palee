@@ -3,26 +3,32 @@
 import type { ReactNode } from "react";
 
 import type { ScheduleBooking, ScheduleSlot } from "@/api/schedule";
+import type { ClassVisitPerson } from "@/api/training-floor";
 import { splitRoster } from "@/components/schedule/admin-roster";
+import { NewTodayCard, VisitBadgeChips } from "@/components/schedule/VisitBadges";
+import { newcomers, visitFor } from "@/lib/training-floor";
 import { SemanticLabel } from "@/components/semantic-label";
 import { useUiTranslations } from "@/i18n/ui";
 import { useTranslations } from "next-intl";
 
 /** Admin class roster: booked members (guests marked with their host, trial visitors tagged), then the waitlist in offer order.
  * `header` renders above the bookings (the injury-warning panel), `badgeFor` next to each person, and
- * members' personalized class versions (ADR-125) are listed after the roster. */
+ * members' personalized class versions (ADR-125) are listed after the roster.
+ * `visits` (ADR-359, ANR mockup e1 B) puts «Νέοι σήμερα» on top and each person's visit badges on their row. */
 export function AdminSlotRoster({
   slot,
   onApproveBooking,
   onRejectBooking,
   header,
   badgeFor,
+  visits,
 }: {
   slot: ScheduleSlot;
   onApproveBooking: (booking: ScheduleBooking) => void;
   onRejectBooking: (booking: ScheduleBooking) => void;
   header?: ReactNode;
   badgeFor?: (booking: ScheduleBooking) => ReactNode;
+  visits?: ClassVisitPerson[];
 }) {
   const i18n = useUiTranslations();
   const tTrials = useTranslations("Trials");
@@ -42,6 +48,13 @@ export function AdminSlotRoster({
         {i18n("bookings135229c")}
       </h3>
       <div className="mt-4 space-y-3">
+        <NewTodayCard
+          people={newcomers(visits).filter((person) => booked.some((booking) => booking.id === person.booking_id))}
+          nameFor={(person) => {
+            const booking = booked.find((entry) => entry.id === person.booking_id);
+            return booking ? personLabel(booking) : (person.guest_name ?? "?");
+          }}
+        />
         {header}
         {booked.length === 0 ? (
           <p className="text-sm" style={{ color: "var(--dim)" }}>
@@ -65,6 +78,13 @@ export function AdminSlotRoster({
                     >
                       {tTrials("tag")}
                     </span>
+                  ) : null}
+                  {visitFor(visits, booking.id) ? (
+                    <VisitBadgeChips
+                      badges={visitFor(visits, booking.id)!.badges}
+                      via={visitFor(visits, booking.id)!.via}
+                      skip={booking.kind === "trial" ? ["trial"] : []}
+                    />
                   ) : null}
                   {badgeFor?.(booking)}
                 </p>
