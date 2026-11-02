@@ -805,3 +805,12 @@ msgstr "%{nickname} έγραψε στο %{box}"
 
 msgid "%{nickname} sent the box a message."
 msgstr "%{nickname} έστειλε μήνυμα στο box."
+
+msgid "Question from the website"
+msgstr "Ερώτηση από την ιστοσελίδα"
+
+msgid "Trial request from the website"
+msgstr "Αίτημα δοκιμαστικού από την ιστοσελίδα"
+
+msgid "%{name} wrote through the box's website. Answer or call them."
+msgstr "Ο/Η %{name} έγραψε από την ιστοσελίδα του box. Απάντησε ή τηλεφώνησε."

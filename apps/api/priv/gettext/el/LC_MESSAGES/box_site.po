@@ -1,0 +1,23 @@
+msgid ""
+msgstr ""
+"Language: el\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "DNS records for %{host}"
+msgstr "Εγγραφές DNS για το %{host}"
+
+msgid "See if the records are found"
+msgstr "Δες αν βρέθηκαν οι εγγραφές"
+
+msgid "%{box} wants its website to open at %{host}. Whoever manages the domain can do it in a few minutes."
+msgstr "Το %{box} θέλει η ιστοσελίδα του να ανοίγει στο %{host}. Όποιος διαχειρίζεται το domain μπορεί να το κάνει σε λίγα λεπτά."
+
+msgid "Add these records at the domain's provider (DNS settings):"
+msgstr "Πρόσθεσε αυτές τις εγγραφές στον πάροχο του domain (ρυθμίσεις DNS):"
+
+msgid "We check every few minutes. When the records are found, the site gets its certificate (https) by itself."
+msgstr "Ελέγχουμε κάθε λίγα λεπτά. Μόλις βρεθούν οι εγγραφές, η ιστοσελίδα παίρνει μόνη της πιστοποιητικό (https)."
+
+msgid "You get this email because %{box} sent you its domain instructions."
+msgstr "Λαμβάνεις αυτό το email επειδή το %{box} σού έστειλε τις οδηγίες για το domain του."

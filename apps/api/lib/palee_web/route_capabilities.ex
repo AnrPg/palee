@@ -70,6 +70,8 @@ defmodule PaleeWeb.RouteCapabilities do
     W.AdminSiteController => [:manage_settings],
     # ADR-355: Google review asks (settings and counts only).
     W.AdminReviewAsksController => [:manage_settings],
+    # ADR-386: replying to reviews speaks as the box (like the box inbox).
+    W.AdminBoxReviewsController => [:message_from_box],
     W.HomeLocationController => [:manage_memberships],
     W.AdminWorkoutFreeTextController => [:manage_workouts],
     W.AdminOnboardingController => [:manage_settings],

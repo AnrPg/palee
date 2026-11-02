@@ -2,6 +2,7 @@ defmodule PaleeWeb.Schemas.BoxSite do
   @moduledoc "OpenAPI schemas of the box's website and Google review asks (ADR-352..355)."
 
   alias OpenApiSpex.{MediaType, RequestBody, Schema}
+  alias PaleeWeb.Schemas.BoxReviews
 
   @uuid %Schema{type: :string, format: :uuid}
   @time %Schema{type: :string, format: :"date-time", nullable: true}
@@ -287,11 +288,17 @@ defmodule PaleeWeb.Schemas.BoxSite do
           },
           required: [:contact, :kinds, :trial]
         },
-        reviews: %Schema{
-          type: :object,
-          properties: %{google_reviews_url: @text},
-          required: [:google_reviews_url]
+        reviews: BoxReviews.site_reviews(),
+        language: %Schema{type: :string, description: "The box's language (ADR-388)"},
+        languages: %Schema{
+          type: :array,
+          items: %Schema{type: :string},
+          description: "The site's languages: the box's own and English"
         },
+        time_zone: %Schema{type: :string},
+        about_en: %Schema{type: :string, nullable: true},
+        events: %Schema{type: :array, items: BoxReviews.site_event()},
+        wod: %Schema{type: :array, items: BoxReviews.site_wod()},
         tracking: %Schema{
           type: :object,
           properties: %{
@@ -326,14 +333,20 @@ defmodule PaleeWeb.Schemas.BoxSite do
         }
       },
       required: [
+        :about_en,
         :canonical_url,
+        :events,
         :faq,
         :forms,
+        :language,
+        :languages,
         :reviews,
         :sections,
         :slug,
+        :time_zone,
         :timetable,
-        :tracking
+        :tracking,
+        :wod
       ]
     }
   end
@@ -472,8 +485,8 @@ defmodule PaleeWeb.Schemas.BoxSite do
     %Schema{
       title: "ReviewAskSettingsResponse",
       type: :object,
-      properties: %{settings: review_settings()},
-      required: [:settings]
+      properties: %{settings: review_settings(), google: BoxReviews.google()},
+      required: [:google, :settings]
     }
   end
 
@@ -512,9 +525,13 @@ defmodule PaleeWeb.Schemas.BoxSite do
         status: %Schema{type: :string, enum: ["shown" | @review_actions]},
         shown_at: %Schema{type: :string, format: :"date-time"},
         google_review_url: @text,
+        has_review: %Schema{
+          type: :boolean,
+          description: "The member already wrote an in-app review (ADR-386)"
+        },
         actions: %Schema{type: :array, items: %Schema{type: :string, enum: @review_actions}}
       },
-      required: [:actions, :google_review_url, :id, :milestone, :shown_at, :status]
+      required: [:actions, :google_review_url, :has_review, :id, :milestone, :shown_at, :status]
     }
   end
 

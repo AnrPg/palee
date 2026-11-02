@@ -805,3 +805,12 @@ msgstr "%{nickname} hat %{box} geschrieben"
 
 msgid "%{nickname} sent the box a message."
 msgstr "%{nickname} hat der Box geschrieben."
+
+msgid "Question from the website"
+msgstr "Frage über die Website"
+
+msgid "Trial request from the website"
+msgstr "Probetraining-Anfrage über die Website"
+
+msgid "%{name} wrote through the box's website. Answer or call them."
+msgstr "%{name} hat über die Website des Box geschrieben. Antworte oder ruf an."

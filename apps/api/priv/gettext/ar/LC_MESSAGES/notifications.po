@@ -805,3 +805,12 @@ msgstr "كتب %{nickname} إلى %{box}"
 
 msgid "%{nickname} sent the box a message."
 msgstr "أرسل %{nickname} رسالة إلى الصالة."
+
+msgid "Question from the website"
+msgstr "سؤال من الموقع"
+
+msgid "Trial request from the website"
+msgstr "طلب حصة تجريبية من الموقع"
+
+msgid "%{name} wrote through the box's website. Answer or call them."
+msgstr "كتب %{name} عبر موقع الصالة. أجب أو اتصل."

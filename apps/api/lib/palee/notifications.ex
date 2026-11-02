@@ -673,6 +673,20 @@ defmodule Palee.Notifications do
     end)
   end
 
+  # ADR-388: a trial request or question from the box's website. The use
+  # case names each recipient (the lead's owner, else whoever handles
+  # «Ενδιαφερόμενοι»).
+  def process_event("site_request", payload),
+    do:
+      enqueue_simple(:site_request, payload, %{
+        organization_id: field(payload, :organization_id),
+        lead_id: field(payload, :lead_id),
+        kind: field(payload, :kind),
+        person_name: field(payload, :person_name),
+        dedupe_key: "site_request:#{field(payload, :submission_id)}:#{field(payload, :user_id)}",
+        url: "/admin/leads?lead=#{field(payload, :lead_id)}"
+      })
+
   # ADR-220: a member is leaving the box. The staff who manage billing hear
   # the last day and the reason, once per leave.
   def process_event("member_leaving", payload) do

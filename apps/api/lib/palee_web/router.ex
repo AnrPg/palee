@@ -353,6 +353,8 @@ defmodule PaleeWeb.Router do
 
     get("/tls-allowed", PublicSiteController, :tls_allowed)
     get("/by-host/:host", PublicSiteController, :by_host)
+    # ADR-388: the page behind «Στείλε τις οδηγίες».
+    get("/domain-status/:token", PublicSiteController, :domain_status)
     get("/:slug", PublicSiteController, :show)
     post("/:slug/consents", PublicSiteController, :consent)
   end
@@ -644,6 +646,10 @@ defmodule PaleeWeb.Router do
     post("/review-asks/:id/respond", MyReviewAskController, :respond)
     put("/review-asks/opt-out", MyReviewAskController, :opt_out)
     delete("/review-asks/opt-out", MyReviewAskController, :opt_in)
+    # ADR-386: the box's in-app reviews.
+    get("/box-reviews", MyBoxReviewsController, :index)
+    put("/box-review", MyBoxReviewsController, :save)
+    delete("/box-review", MyBoxReviewsController, :delete)
     # ADR-246/247: paying invoices online and saved cards.
     get("/invoices/:id/payment-terms", MyPaymentsController, :terms)
     post("/invoices/:id/pay", MyPaymentsController, :pay)
@@ -1443,10 +1449,16 @@ defmodule PaleeWeb.Router do
     post("/site/domains/:id/check", AdminSiteController, :check_domain)
     put("/site/domains/:id/primary", AdminSiteController, :make_primary)
     delete("/site/domains/:id", AdminSiteController, :remove_domain)
+    post("/site/domains/:id/instructions", AdminSiteController, :send_instructions)
     # ADR-355: Google review asks.
     get("/review-asks/settings", AdminReviewAsksController, :show)
     put("/review-asks/settings", AdminReviewAsksController, :update)
     get("/review-asks/summary", AdminReviewAsksController, :summary)
+    # ADR-387: find the box's Google listing by name.
+    get("/review-asks/places", AdminReviewAsksController, :places)
+    # ADR-386: the box's in-app reviews; staff reply, never delete.
+    get("/box-reviews", AdminBoxReviewsController, :index)
+    put("/box-reviews/:id/reply", AdminBoxReviewsController, :reply)
     get("/public-profile", AdminPublicProfileController, :show)
     put("/public-profile", AdminPublicProfileController, :update)
     post("/public-profile/publish", AdminPublicProfileController, :publish)

@@ -4,8 +4,13 @@ defmodule Palee.Application.BoxSite.SiteAdmin do
   custom domains and what the site brought in (counts only).
   """
 
+  alias Palee.Application.{PublicURL, SignedToken}
   alias Palee.Application.BoxSite.SiteDomainChecks
-  alias Palee.BoxSite
+  alias Palee.{BoxSite, Email, Organizations}
+  alias Palee.Email.Domain.Address
+
+  @status_salt "box-site-domain-status"
+  @status_days 30
 
   @summary_days 30
 
@@ -67,6 +72,78 @@ defmodule Palee.Application.BoxSite.SiteAdmin do
       {:error, :not_found} -> {:error, :site_domain_not_found}
     end
   end
+
+  @doc """
+  ADR-388 «Στείλε τις οδηγίες»: emails the host's DNS records to whoever
+  runs the domain, with a link (valid #{@status_days} days) to a page that
+  shows whether they are found yet. A demo business sends nothing.
+  """
+  def send_instructions(%{organization_id: organization_id} = context, id, params) do
+    params = stringify(params)
+
+    with %{} = domain <- BoxSite.get_domain(context, id) || {:error, :site_domain_not_found},
+         {:ok, to} <- address(Map.get(params, "email")),
+         {:ok, _message} <- enqueue_instructions(organization_id, domain, to) do
+      {:ok, %{sent_to: to}}
+    end
+  end
+
+  defp address(value) do
+    case Address.normalize(value) do
+      {:ok, address} -> {:ok, address}
+      _invalid -> {:error, {:invalid_fields, %{email: "invalid"}}}
+    end
+  end
+
+  defp enqueue_instructions(organization_id, domain, to) do
+    organization = Organizations.get_by_id(organization_id)
+    settings = Organizations.get_organization_settings(organization_id)
+
+    with %{} <- organization || {:error, :not_found},
+         :ok <- Organizations.go_live(organization, :send_outside) do
+      token = SignedToken.sign(@status_salt, %{"o" => organization_id, "d" => domain.id})
+
+      Email.enqueue(
+        :site_domain_instructions,
+        to,
+        %{
+          box_name: (settings && settings.brand_name) || organization.name,
+          host: domain.host,
+          records: BoxSite.dns_records(domain),
+          status_url: PublicURL.base_url() <> "/site-domain/" <> token
+        },
+        locale: (settings && settings.default_locale) || "el",
+        organization_id: organization_id,
+        idempotency_key:
+          "site_domain_instructions:#{domain.id}:#{to}:#{Date.to_iso8601(Date.utc_today())}"
+      )
+    end
+  end
+
+  @doc "The page behind the emailed link: the host's state and records, or `{:error, :not_found}`."
+  def domain_status(token) when is_binary(token) do
+    with {:ok, %{"o" => organization_id, "d" => domain_id}} <-
+           SignedToken.verify(@status_salt, token, max_age: @status_days * 86_400),
+         context = %{organization_id: organization_id},
+         %{} = domain <- BoxSite.get_domain(context, domain_id) do
+      settings = Organizations.get_organization_settings(organization_id)
+      organization = Organizations.get_by_id(organization_id)
+
+      {:ok,
+       %{
+         host: domain.host,
+         status: domain.status,
+         last_error: domain.last_error,
+         checked_at: domain.checked_at,
+         box_name: (settings && settings.brand_name) || (organization && organization.name) || "",
+         dns_records: BoxSite.dns_records(domain)
+       }}
+    else
+      _invalid -> {:error, :not_found}
+    end
+  end
+
+  def domain_status(_token), do: {:error, :not_found}
 
   @doc "Counts of the last #{@summary_days} days: form submissions and consent choices."
   def summary(context) do

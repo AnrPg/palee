@@ -126,7 +126,9 @@ defmodule Palee.Notifications.Notification do
     :partner_verification_decided,
     :partner_sponsor_penalty,
     # ADR-346: an automatic message of a box's recipe.
-    :box_automation
+    :box_automation,
+    # ADR-388: a trial request or question from the box's website.
+    :site_request
   ]
 
   schema "notifications" do

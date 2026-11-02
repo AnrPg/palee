@@ -7,11 +7,22 @@ defmodule Palee.Application.BoxSite.PublicSite do
   Every read projects public fields only: section keys, FAQ, public tag ids
   (never the Conversions API token), the Google reviews link and, when the
   owner turned it on, a timetable without spots, bookings or people.
+
+  ADR-388 (v3.1) adds the box's events open to everyone, «WOD της ημέρας»
+  (only when the owner turns it on), the in-app reviews next to the Google
+  rating (ADR-386/387), and the site's languages: the box's own plus
+  English, with the optional English texts.
   """
 
   alias Palee.Application.{PublicBox, PublicURL}
   alias Palee.Application.BoxSite.SiteOutbox
-  alias Palee.{BoxSite, ReviewAsks}
+  alias Palee.Application.ReviewAsks.BoxReviews
+  alias Palee.{BoxSite, Community, Organizations, ReviewAsks, Workouts}
+  alias Palee.Scheduling.DayWorkoutStore
+  alias Palee.TimeZones.ZonedTime
+
+  @events_shown 6
+  @wods_shown 3
 
   @doc "The site of a published box."
   def show(slug) do
@@ -19,28 +30,42 @@ defmodule Palee.Application.BoxSite.PublicSite do
       settings = BoxSite.settings(context)
       place_id = ReviewAsks.settings(context).google_place_id
       faq = settings.faq || []
+      reviews = BoxReviews.public(context, place_id)
 
       facts = %{
         public_schedule: settings.public_schedule,
+        public_wod: Map.get(settings, :public_wod, false),
         faq?: faq != [],
         forms_enabled: settings.forms_enabled,
-        reviews?: not is_nil(place_id)
+        reviews?: not is_nil(place_id) or reviews.palee.count > 0
       }
 
       sections = BoxSite.visible_sections(settings.section_order, settings.hidden_sections, facts)
+      zone = Organizations.organization_timezone(box.organization_id) || "Etc/UTC"
+      language = BoxReviews.box_language(box.organization_id)
 
       {:ok,
        %{
          slug: box.slug,
          canonical_url: canonical_url(box),
          sections: sections,
+         language: language,
+         languages: Enum.uniq([language, "en"]),
+         time_zone: zone,
+         about_en: if("about" in sections, do: Map.get(settings, :about_en), else: nil),
+         events: if("events" in sections, do: events(context, box), else: []),
+         wod: if("wod" in sections, do: wods(context, zone), else: []),
          faq: if("faq" in sections, do: faq, else: []),
          forms: %{
            trial: "trial_form" in sections,
            contact: "contact_form" in sections,
            kinds: BoxSite.form_kinds()
          },
-         reviews: %{google_reviews_url: ReviewAsks.read_reviews_url(place_id)},
+         reviews:
+           if("reviews" in sections,
+             do: Map.put(reviews, :google_reviews_url, ReviewAsks.read_reviews_url(place_id)),
+             else: %{google_reviews_url: nil, palee: nil, google: nil}
+           ),
          tracking: %{
            tags: BoxSite.public_tags(settings),
            consent_required: BoxSite.tracking?(settings),
@@ -51,6 +76,58 @@ defmodule Palee.Application.BoxSite.PublicSite do
          timetable: if("schedule" in sections, do: timetable(slug), else: [])
        }}
     end
+  end
+
+  # ADR-388: the box's next events that anyone may join (no goers shown).
+  defp events(context, box) do
+    now = BoxSite.clock().now()
+
+    context
+    |> Community.list_events(%{
+      organization_ids: [box.organization_id],
+      open_only: true,
+      from: now,
+      limit: @events_shown
+    })
+    |> Enum.map(fn event ->
+      %{
+        id: event.id,
+        title: event.title,
+        starts_at: event.starts_at,
+        ends_at: event.ends_at,
+        time_zone: event.time_zone,
+        place_name: event.place_name,
+        price_cents: event.price_cents,
+        currency: event.currency
+      }
+    end)
+  rescue
+    _error -> []
+  end
+
+  # ADR-388: today's WOD (the gym's day), as staff set it for the day.
+  defp wods(context, zone) do
+    today = ZonedTime.local_date(BoxSite.clock().now(), zone)
+
+    context
+    |> DayWorkoutStore.list_rules(today, today)
+    |> Enum.map(& &1.master_workout_id)
+    |> Enum.reject(&is_nil/1)
+    |> Enum.uniq()
+    |> Enum.take(@wods_shown)
+    |> Enum.map(&Workouts.get_workout(context, &1))
+    |> Enum.filter(&is_map/1)
+    |> Enum.map(fn workout ->
+      %{
+        id: workout.id,
+        date: today,
+        title: workout.title,
+        type: workout |> Map.get(:type) |> then(&(&1 && to_string(&1))),
+        body: Map.get(workout, :body)
+      }
+    end)
+  rescue
+    _error -> []
   end
 
   # ADR-352 §3: the week's classes, without spots, bookings or people.

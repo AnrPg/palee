@@ -5,8 +5,9 @@ defmodule PaleeWeb.AdminReviewAsksController do
   use OpenApiSpex.ControllerSpecs
 
   alias Palee.Application.ReviewAsks.ReviewAskAdmin
+  alias PaleeWeb.Schemas.BoxReviews
   alias PaleeWeb.Schemas.BoxSite, as: S
-  alias OpenApiSpex.Schema
+  alias OpenApiSpex.{Parameter, Schema}
 
   action_fallback PaleeWeb.FallbackController
 
@@ -48,5 +49,23 @@ defmodule PaleeWeb.AdminReviewAsksController do
   def summary(conn, _params) do
     with {:ok, summary} <- ReviewAskAdmin.summary(conn.assigns.tenant_context),
          do: json(conn, summary)
+  end
+
+  operation(:places,
+    summary: "Find the box's Google listing by name (Places API, ADR-387)",
+    parameters: [
+      %Parameter{name: :q, in: :query, required: true, schema: %Schema{type: :string}}
+    ],
+    responses: [
+      ok: {"Matches", "application/json", BoxReviews.places_response()},
+      unprocessable_entity: {"Too short", "application/json", %Schema{type: :object}},
+      service_unavailable: {"Places unavailable", "application/json", %Schema{type: :object}}
+    ]
+  )
+
+  def places(conn, params) do
+    with {:ok, result} <-
+           ReviewAskAdmin.search_places(conn.assigns.tenant_context, Map.get(params, "q")),
+         do: json(conn, result)
   end
 end

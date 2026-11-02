@@ -9,6 +9,7 @@ defmodule Palee.Application.BoxSite.SiteOutbox do
 
   require Logger
 
+  alias Palee.Application.BoxSite.SiteRequestNotice
   alias Palee.BoxSite
   alias Palee.Workers.BoxSiteJob
 
@@ -47,7 +48,16 @@ defmodule Palee.Application.BoxSite.SiteOutbox do
       result = safe_submit(intake, context, BoxSite.intake(submission))
       changes = BoxSite.after_delivery(result, submission, now)
       {:ok, _row} = BoxSite.finish_submission(context, submission.id, changes)
-      match?({:ok, _}, result)
+
+      case result do
+        {:ok, %{lead_id: lead_id}} ->
+          # ADR-388: staff hear about it once it is a lead.
+          SiteRequestNotice.notify(context, lead_id, submission)
+          true
+
+        _failed ->
+          false
+      end
     end)
   end
 

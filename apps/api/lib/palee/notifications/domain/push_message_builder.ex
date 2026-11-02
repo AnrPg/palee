@@ -913,6 +913,21 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
     }
   end
 
+  # ADR-388: a request from the box's website reached «Ενδιαφερόμενοι».
+  def build("site_request", payload, localize) do
+    bindings = %{name: payload["person_name"] || "-"}
+
+    %{
+      title:
+        if(payload["kind"] == "contact",
+          do: localize.("Question from the website", %{}),
+          else: localize.("Trial request from the website", %{})
+        ),
+      body: localize.("%{name} wrote through the box's website. Answer or call them.", bindings),
+      url: payload["url"] || "/admin/leads"
+    }
+  end
+
   # ADR-220.
   def build("member_leaving", payload, localize) do
     bindings = %{nickname: payload["person_nickname"], date: payload["leaving_on"]}
