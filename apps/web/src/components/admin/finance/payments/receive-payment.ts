@@ -133,7 +133,15 @@ export function missingFields(form: ReceivePaymentForm, purpose: PaymentPurpose)
   return missing;
 }
 
-export function receiveBody(form: ReceivePaymentForm, purpose: PaymentPurpose, idempotencyKey: string): FinanceRecord {
+/** ADR-340: a card surcharge on «Κάρτα στο POS», with the card facts the law read. */
+export type DeskSurcharge = { cents: number; card: Record<string, unknown> };
+
+export function receiveBody(
+  form: ReceivePaymentForm,
+  purpose: PaymentPurpose,
+  idempotencyKey: string,
+  surcharge: DeskSurcharge | null = null,
+): FinanceRecord {
   const body: FinanceRecord = {
     amount_cents: parseAmountCents(form.amount),
     payment_method: form.method,
@@ -146,6 +154,11 @@ export function receiveBody(form: ReceivePaymentForm, purpose: PaymentPurpose, i
   if (purpose.kind === "other") {
     body.description = form.description.trim();
     if (form.chargeCategory) body.charge_category = form.chargeCategory;
+  }
+  // Only a card on the box's own POS carries a surcharge (the API refuses it elsewhere).
+  if (surcharge && surcharge.cents > 0 && form.method === "card_manual") {
+    body.surcharge_cents = surcharge.cents;
+    body.card = surcharge.card;
   }
   return body;
 }

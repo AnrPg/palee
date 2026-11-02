@@ -2,7 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { useId, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useCallback, useId, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
 
 import { ApiError } from "@/api/client";
 import {
@@ -24,6 +24,9 @@ import { useUiTranslations } from "@/i18n/ui";
 import { useUiLocale } from "@/i18n/use-ui-locale";
 import { fieldBorder, invalidFieldProps } from "@/lib/form-errors";
 
+import type { DeskCardKind } from "@/components/admin/payments/card-surcharge";
+
+import { DeskSurchargeQuestion } from "./DeskSurchargeQuestion";
 import { downloadExportDocument, receiptDocument } from "./receipt-pdf";
 import {
   PAYMENT_METHODS,
@@ -33,9 +36,11 @@ import {
   initialForm,
   missingFields,
   outcome,
+  parseAmountCents,
   paymentPurposes,
   purposeValue,
   receiveBody,
+  type DeskSurcharge,
   type PaymentPurpose,
   type ReceivePaymentField,
   type ReceivePaymentForm,
@@ -81,12 +86,17 @@ export function ReceivePaymentDialog({ userId, nickname, onClose }: { userId: st
   const [idempotencyKey] = useState(() => crypto.randomUUID());
   const [checked, setChecked] = useState(false);
   const [received, setReceived] = useState<ReceivedPayment | null>(null);
+  // ADR-340: «Τι κάρτα έδωσε;» for «Κάρτα στο POS»; «Δεν ξέρω» adds nothing.
+  const [cardKind, setCardKind] = useState<DeskCardKind>("unknown");
+  const [surcharge, setSurcharge] = useState<DeskSurcharge | null>(null);
+  const onSurcharge = useCallback((next: DeskSurcharge | null) => setSurcharge(next), []);
+  const amountCents = parseAmountCents(form.amount);
 
   const money = (cents: number, currency = "EUR") =>
     new Intl.NumberFormat(uiLocale, { style: "currency", currency }).format(cents / 100);
 
   const mutation = useMutation({
-    mutationFn: () => receiveFinancePayment(token, userId, receiveBody(form, purpose, idempotencyKey)),
+    mutationFn: () => receiveFinancePayment(token, userId, receiveBody(form, purpose, idempotencyKey, surcharge)),
     onSuccess: async ({ received: result }) => {
       setReceived(result);
       await Promise.all([
@@ -237,6 +247,10 @@ export function ReceivePaymentDialog({ userId, nickname, onClose }: { userId: st
               })}
             </div>
           </FormRow>
+
+          {form.method === "card_manual" && amountCents !== null ? (
+            <DeskSurchargeQuestion amountCents={amountCents} currency="EUR" kind={cardKind} onKind={setCardKind} onSurcharge={onSurcharge} />
+          ) : null}
 
           <FormRow label={t("paidOn")} hint={t("paidOnHint")}>
             <DateInput
