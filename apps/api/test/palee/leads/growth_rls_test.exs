@@ -7,7 +7,9 @@ defmodule Palee.Leads.GrowthRLSTest do
   """
   use Palee.RLSCase, async: false
 
-  test "leads, lead events, recipes, deliveries and risk actions stay inside their box", %{conn: conn} do
+  test "leads, lead events, recipes, deliveries and risk actions stay inside their box", %{
+    conn: conn
+  } do
     {org_s, org} = uuid()
     {other_s, other} = uuid()
 
@@ -90,7 +92,8 @@ defmodule Palee.Leads.GrowthRLSTest do
 
     counts = fn session ->
       as_session(conn, nil, session, false, fn ->
-        for table <- ~w(leads lead_events box_automations automation_deliveries retention_risk_actions) do
+        for table <-
+              ~w(leads lead_events box_automations automation_deliveries retention_risk_actions) do
           %{rows: [[count]]} = Postgrex.query!(conn, "SELECT count(*) FROM #{table}", [])
           count
         end

@@ -52,7 +52,9 @@ defmodule PaleeWeb.AdminMemberRiskController do
   operation(:show,
     summary: "One box member's risk with its reasons and what staff did (who and when, ADR-384)",
     parameters: [@user_id],
-    responses: [ok: {"Member at risk with the staff action log", "application/json", G.risk_detail()}]
+    responses: [
+      ok: {"Member at risk with the staff action log", "application/json", G.risk_detail()}
+    ]
   )
 
   def show(conn, %{user_id: user_id}) do

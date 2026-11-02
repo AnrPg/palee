@@ -322,9 +322,17 @@ defmodule PaleeWeb.AutomationControllerTest do
       assert detail["member"]["user_id"] == gone.id
 
       assert [
-               %{"kind" => "unsnoozed", "actor" => %{"user_id" => owner_id}, "snoozed_until" => nil},
+               %{
+                 "kind" => "unsnoozed",
+                 "actor" => %{"user_id" => owner_id},
+                 "snoozed_until" => nil
+               },
                %{"kind" => "contacted", "channel" => "phone", "actor" => %{"user_id" => desk_id}},
-               %{"kind" => "snoozed", "snoozed_until" => until, "actor" => %{"user_id" => desk_id}}
+               %{
+                 "kind" => "snoozed",
+                 "snoozed_until" => until,
+                 "actor" => %{"user_id" => desk_id}
+               }
              ] = detail["actions"]
 
       assert owner_id == ctx.owner.id
