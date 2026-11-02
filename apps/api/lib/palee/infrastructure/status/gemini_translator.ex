@@ -31,7 +31,13 @@ defmodule Palee.Infrastructure.Status.GeminiTranslator do
 
     case Keyword.get(config, :api_key) do
       key when is_binary(key) and key != "" ->
-        request(key, Keyword.get(config, :translate_model) || @default_model, config, text, metering)
+        request(
+          key,
+          Keyword.get(config, :translate_model) || @default_model,
+          config,
+          text,
+          metering
+        )
 
       _missing ->
         {:error, :not_configured}

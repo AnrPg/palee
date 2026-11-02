@@ -25,7 +25,16 @@ defmodule Palee.Status.IncidentUpdate do
 
   def create_changeset(attrs) do
     %__MODULE__{}
-    |> cast(attrs, [:incident_id, :status, :body, :notify, :created_by_id, :locale, :body_en, :en_source])
+    |> cast(attrs, [
+      :incident_id,
+      :status,
+      :body,
+      :notify,
+      :created_by_id,
+      :locale,
+      :body_en,
+      :en_source
+    ])
     |> validate_required([:incident_id, :status, :body])
     |> check_constraint(:body, name: :status_incident_updates_body_check)
     |> check_constraint(:body_en, name: :status_incident_updates_translation_check)

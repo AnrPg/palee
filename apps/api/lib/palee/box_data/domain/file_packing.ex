@@ -40,7 +40,8 @@ defmodule Palee.BoxData.Domain.FilePacking do
   end
 
   @doc "Splits selected objects into parts of at most `max_bytes` (in order)."
-  def plan(objects, max_bytes) when is_list(objects) and is_integer(max_bytes) and max_bytes > 0 do
+  def plan(objects, max_bytes)
+      when is_list(objects) and is_integer(max_bytes) and max_bytes > 0 do
     objects
     |> Enum.reduce({[], [], 0}, fn object, {parts, current, size} ->
       bytes = object.size || 0

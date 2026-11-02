@@ -105,10 +105,33 @@ defmodule PaleeWeb.AdminDataExportControllerTest do
     on_exit(fn -> Application.put_env(:palee, :box_data_export, previous || []) end)
 
     prefix = "organizations/#{box.organization.id}/"
-    :ok = MemoryObjectStore.put_object(:documents, prefix <> "documents/contract.pdf", "%PDF-contract", "application/pdf")
-    :ok = MemoryObjectStore.put_object(:branding, prefix <> "branding/logo.png", "logo", "image/png")
-    :ok = MemoryObjectStore.put_object(:media_public, prefix <> "media/p1/photo.jpg", "photo", "image/jpeg")
-    :ok = MemoryObjectStore.put_object(:documents, "organizations/#{other.organization.id}/documents/x.pdf", "%PDF-other", "application/pdf")
+
+    :ok =
+      MemoryObjectStore.put_object(
+        :documents,
+        prefix <> "documents/contract.pdf",
+        "%PDF-contract",
+        "application/pdf"
+      )
+
+    :ok =
+      MemoryObjectStore.put_object(:branding, prefix <> "branding/logo.png", "logo", "image/png")
+
+    :ok =
+      MemoryObjectStore.put_object(
+        :media_public,
+        prefix <> "media/p1/photo.jpg",
+        "photo",
+        "image/jpeg"
+      )
+
+    :ok =
+      MemoryObjectStore.put_object(
+        :documents,
+        "organizations/#{other.organization.id}/documents/x.pdf",
+        "%PDF-other",
+        "application/pdf"
+      )
 
     export = conn |> put_bearer_token(box.owner) |> post(path(box)) |> json_response(202)
 

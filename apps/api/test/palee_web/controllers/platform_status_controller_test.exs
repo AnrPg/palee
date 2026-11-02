@@ -106,7 +106,11 @@ defmodule PaleeWeb.PlatformStatusControllerTest do
     assert [%{"body_en" => "Fixed, monitoring.", "en_source" => "auto"} | _] = step["updates"]
 
     console =
-      ctx.conn |> recycle() |> put_bearer_token(ctx.vendor) |> get("/api/platform/status") |> json_response(200)
+      ctx.conn
+      |> recycle()
+      |> put_bearer_token(ctx.vendor)
+      |> get("/api/platform/status")
+      |> json_response(200)
 
     assert [%{"published_by" => ^publisher}] = console["incidents"]
 

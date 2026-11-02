@@ -15,7 +15,11 @@ defmodule Palee.Status.Domain.TranslationTest do
                 en_source: "auto"
               }} =
                Translation.from_params(
-                 %{"locale" => "EL", "title_en" => " Email delays ", "body_en" => "Receipts are late."},
+                 %{
+                   "locale" => "EL",
+                   "title_en" => " Email delays ",
+                   "body_en" => "Receipts are late."
+                 },
                  :incident
                )
     end
@@ -30,7 +34,10 @@ defmodule Palee.Status.Domain.TranslationTest do
 
     test "English text and missing translations carry no copy" do
       assert {:ok, %{locale: "en-gb", title_en: nil, body_en: nil, en_source: nil}} =
-               Translation.from_params(%{locale: "en-GB", title_en: "x y z", body_en: "b"}, :incident)
+               Translation.from_params(
+                 %{locale: "en-GB", title_en: "x y z", body_en: "b"},
+                 :incident
+               )
 
       assert {:ok, %{locale: "el", body_en: nil, en_source: nil}} =
                Translation.from_params(%{locale: "el"}, :incident)
@@ -81,7 +88,12 @@ defmodule Palee.Status.Domain.TranslationTest do
 
   describe "for_reader/3" do
     @incident %{title: "Καθυστερήσεις", title_en: "Delays", locale: "el", en_source: "auto"}
-    @update %{body: "Το ερευνούμε.", body_en: "We are looking into it.", locale: "el", en_source: "auto"}
+    @update %{
+      body: "Το ερευνούμε.",
+      body_en: "We are looking into it.",
+      locale: "el",
+      en_source: "auto"
+    }
 
     test "a reader of the source language reads the original" do
       assert %{title: "Καθυστερήσεις", body: "Το ερευνούμε.", machine: false} =

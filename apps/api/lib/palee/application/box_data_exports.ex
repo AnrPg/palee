@@ -133,7 +133,11 @@ defmodule Palee.Application.BoxDataExports do
   end
 
   defp pack_part(export, name, objects) do
-    dir = Path.join(System.tmp_dir!(), "palee-box-export-#{export.id}-#{System.unique_integer([:positive])}")
+    dir =
+      Path.join(
+        System.tmp_dir!(),
+        "palee-box-export-#{export.id}-#{System.unique_integer([:positive])}"
+      )
 
     try do
       with :ok <- File.mkdir_p(dir),
@@ -159,7 +163,12 @@ defmodule Palee.Application.BoxDataExports do
 
       with :ok <- File.mkdir_p(Path.dirname(path)),
            :ok <-
-             TenantObjectStorage.download_box_file(organization_id, object.bucket, object.key, path) do
+             TenantObjectStorage.download_box_file(
+               organization_id,
+               object.bucket,
+               object.key,
+               path
+             ) do
         {:cont, {:ok, entries ++ [String.to_charlist(object.entry)]}}
       else
         # A file deleted since it was listed is simply not in the copy.
