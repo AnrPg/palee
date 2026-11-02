@@ -63,6 +63,21 @@ defmodule Palee.Channels.Domain.Templates do
          "el" => "{{box}}: Η δοκιμαστική σου προπόνηση είναι {{when}} ({{class}}). Τα λέμε!",
          "en" => "{{box}}: Your trial session is {{when}} ({{class}}). See you!"
        }},
+    # Events of a box or an organiser (product owner, 2026-11-02): sent
+    # only to attendees who agreed to SMS when they said «Θα έρθω».
+    "event_reminder" =>
+      {"service", ~w(box event when),
+       %{
+         "el" => "{{box}}: Υπενθύμιση για το {{event}}, {{when}}. Τα λέμε!",
+         "en" => "{{box}}: Reminder: {{event}}, {{when}}. See you there!"
+       }},
+    "event_changed" =>
+      {"service", ~w(box event when),
+       %{
+         "el" =>
+           "{{box}}: Άλλαξαν στοιχεία στο {{event}} ({{when}}). Δες τις λεπτομέρειες στην εφαρμογή.",
+         "en" => "{{box}}: {{event}} ({{when}}) has changed. See the details in the app."
+       }},
     "lead_follow_up" =>
       {"marketing", ~w(box text), %{"el" => "{{box}}: {{text}}", "en" => "{{box}}: {{text}}"}},
     "win_back" =>

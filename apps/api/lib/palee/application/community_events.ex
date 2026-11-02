@@ -34,6 +34,7 @@ defmodule Palee.Application.CommunityEvents do
     EventInvites,
     EventNotices,
     EventPresenter,
+    EventSms,
     GoLive,
     KeyDerivation,
     PublicBox,
@@ -155,7 +156,9 @@ defmodule Palee.Application.CommunityEvents do
   def rsvp(%{user_id: user_id} = context, event_id, params) do
     now = DateTime.utc_now()
 
-    with {:ok, event, clubs, invite} <- locate(context, event_id, params[:invite_token]) do
+    with {:ok, event, clubs, invite} <- locate(context, event_id, params[:invite_token]),
+         # The number and «yes» to SMS go first, so a wrong number changes nothing.
+         :ok <- if(params[:going], do: EventSms.record_consent(event, user_id, params), else: :ok) do
       gym = gym(event.organization_id, context)
 
       invited_by = invite && invite.inviter_id != user_id && invite.inviter_id

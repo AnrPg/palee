@@ -32567,6 +32567,20 @@
             "description": "From a member's guest pass link",
             "maxLength": 2000,
             "type": "string"
+          },
+          "locale": {
+            "description": "Language of the SMS (el, en)",
+            "maxLength": 10,
+            "type": "string"
+          },
+          "phone": {
+            "description": "Mobile number for `sms_consent`",
+            "maxLength": 32,
+            "type": "string"
+          },
+          "sms_consent": {
+            "description": "The person agrees to SMS about this event (reminder, changes) from its organiser; needs `phone`. Recorded as a service SMS consent with the organiser.",
+            "type": "boolean"
           }
         },
         "required": [
@@ -139649,6 +139663,20 @@
                     "description": "From a member's guest pass link",
                     "maxLength": 2000,
                     "type": "string"
+                  },
+                  "locale": {
+                    "description": "Language of the SMS (el, en)",
+                    "maxLength": 10,
+                    "type": "string"
+                  },
+                  "phone": {
+                    "description": "Mobile number for `sms_consent`",
+                    "maxLength": 32,
+                    "type": "string"
+                  },
+                  "sms_consent": {
+                    "description": "The person agrees to SMS about this event (reminder, changes) from its organiser; needs `phone`. Recorded as a service SMS consent with the organiser.",
+                    "type": "boolean"
                   }
                 },
                 "required": [

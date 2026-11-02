@@ -43,6 +43,11 @@ consent screen can show plainly. Keeping the consent ledger on the contact keeps
 - START keyword to opt back in: left out; open question for ANR.
 
 ## Consequences
+- Events of a box or an organiser (product owner, 2026-11-02): «Θα έρθω» may carry
+  `sms_consent` and `phone`; they are recorded first (a wrong number changes nothing) as a
+  `service` SMS consent with the event's organisation, source `person`, text `event_rsvp_v1`
+  (`Application.EventSms`). The reminder and a change then also go by SMS (`event_reminder`,
+  `event_changed`) on top of push; without consent or a connection, only push goes.
 - Leads: W2's lead form records contact and marketing consent, not SMS consent, so leads get
   no SMS until the form asks per channel or the integrator maps it (open question).
   `ChannelContacts.record/2` takes number and consents from a form or import.

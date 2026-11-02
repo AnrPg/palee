@@ -359,7 +359,15 @@ defmodule PaleeWeb.Schemas.CommunityEvents do
       "CommunityEventRsvpRequest",
       %{
         going: %Schema{type: :boolean, description: "«Θα έρθω» (true) or «Δεν θα έρθω» (false)"},
-        invite_token: string(maxLength: 2000, description: "From a member's guest pass link")
+        invite_token: string(maxLength: 2000, description: "From a member's guest pass link"),
+        sms_consent: %Schema{
+          type: :boolean,
+          description:
+            "The person agrees to SMS about this event (reminder, changes) from its organiser; " <>
+              "needs `phone`. Recorded as a service SMS consent with the organiser."
+        },
+        phone: string(maxLength: 32, description: "Mobile number for `sms_consent`"),
+        locale: string(maxLength: 10, description: "Language of the SMS (el, en)")
       },
       [:going]
     )

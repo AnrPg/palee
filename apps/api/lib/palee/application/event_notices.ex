@@ -8,6 +8,7 @@ defmodule Palee.Application.EventNotices do
   """
 
   alias Palee.{Community, Notifications, Organizations}
+  alias Palee.Application.EventSms
   alias Palee.TimeZones.ZonedTime
 
   def promoted(event, attendees),
@@ -22,20 +23,24 @@ defmodule Palee.Application.EventNotices do
         %{reason: event.cancel_reason, dedupe: event.id}
       end)
 
-  def changed(event, attendees, changes),
-    do:
-      each(attendees, event, :community_event_changed, fn _attendee ->
-        %{
-          changes: Enum.map_join(changes, ",", &Atom.to_string/1),
-          dedupe: stamp(event.updated_at)
-        }
-      end)
+  def changed(event, attendees, changes) do
+    each(attendees, event, :community_event_changed, fn _attendee ->
+      %{
+        changes: Enum.map_join(changes, ",", &Atom.to_string/1),
+        dedupe: stamp(event.updated_at)
+      }
+    end)
 
-  def reminder(event, attendees),
-    do:
-      each(attendees, event, :community_event_reminder, fn _attendee ->
-        %{dedupe: stamp(event.starts_at)}
-      end)
+    EventSms.changed(event, attendees, event_when(event))
+  end
+
+  def reminder(event, attendees) do
+    each(attendees, event, :community_event_reminder, fn _attendee ->
+      %{dedupe: stamp(event.starts_at)}
+    end)
+
+    EventSms.reminder(event, attendees, event_when(event))
+  end
 
   def guest_joined(event, inviter_id, guest_id, guest_nickname),
     do:

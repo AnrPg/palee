@@ -28481,6 +28481,12 @@ export interface components {
             going: boolean;
             /** @description From a member's guest pass link */
             invite_token?: string;
+            /** @description Language of the SMS (el, en) */
+            locale?: string;
+            /** @description Mobile number for `sms_consent` */
+            phone?: string;
+            /** @description The person agrees to SMS about this event (reminder, changes) from its organiser; needs `phone`. Recorded as a service SMS consent with the organiser. */
+            sms_consent?: boolean;
         };
         /** CommunityEventSentResponse */
         CommunityEventSentResponse: {
@@ -63981,6 +63987,12 @@ export interface operations {
                     going: boolean;
                     /** @description From a member's guest pass link */
                     invite_token?: string;
+                    /** @description Language of the SMS (el, en) */
+                    locale?: string;
+                    /** @description Mobile number for `sms_consent` */
+                    phone?: string;
+                    /** @description The person agrees to SMS about this event (reminder, changes) from its organiser; needs `phone`. Recorded as a service SMS consent with the organiser. */
+                    sms_consent?: boolean;
                 };
             };
         };
