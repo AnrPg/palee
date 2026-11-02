@@ -20,6 +20,7 @@ import {
   type PayPeriodStatus,
   type PayStatement,
 } from "@/api/coach-pay";
+
 import { useSession } from "@/components/session-provider";
 import { DateInput } from "@/components/ui/DateInput";
 import { Dialog, DialogButton } from "@/components/ui/Dialog";
@@ -30,7 +31,7 @@ import { useUiTranslations } from "@/i18n/ui";
 import { useUiLocale } from "@/i18n/use-ui-locale";
 import { fieldBorder } from "@/lib/form-errors";
 
-import { groupSentence, payFileName, isManual, isNet, nextPeriodRange, periodLabel, periodRangeError, primaryAction } from "./coach-pay";
+import { groupKeyOf, groupSentence, payFileName, payslipLanguage, isManual, isNet, nextPeriodRange, periodLabel, periodRangeError, primaryAction } from "./coach-pay";
 import { PayLineDialog, ReopenDialog } from "./PayLineDialog";
 import { FormRow, GrossNet, Initials, NetMark, controlClass, controlStyle, saveFile, useGymToday, useMoney, usePercent } from "./pay-ui";
 
@@ -373,7 +374,7 @@ export function StatementLines({ period, statement, editable }: { period: Pick<P
                 items={[
                   {
                     label: group.amount_basis === "net" ? t("markGross") : t("markNet"),
-                    onSelect: () => lines.filter((line) => line.amount_basis === group.amount_basis).forEach((line) => basis.mutate(line)),
+                    onSelect: () => lines.forEach((line) => basis.mutate(line)),
                   },
                 ]}
               />
@@ -404,22 +405,4 @@ export function StatementLines({ period, statement, editable }: { period: Pick<P
       {basis.isError || remove.isError ? <ErrorNotice variant="field">{localizeError(basis.error ?? remove.error, ui)}</ErrorNotice> : null}
     </div>
   );
-}
-
-/**
- * The group a calculated line belongs to (ADR-382 `StatementGroups`): its
- * rule or pay item and kind. Clawbacks join their rule's group.
- */
-export function groupKeyOf(line: Pick<PayLine, "rule_id" | "pay_item_id" | "kind" | "amount_basis">): string {
-  if (line.rule_id) return `rule:${line.rule_id}`;
-  if (line.pay_item_id) return `item:${line.pay_item_id}`;
-  return `kind:${line.kind}`;
-}
-
-/** The PDF writer's languages (ADR-382); right-to-left ones fall back to English. */
-export function payslipLanguage(locale: string): string {
-  const supported = ["el", "en", "de", "fr", "it", "nl", "es", "pt-PT", "ru", "bg"];
-  if (supported.includes(locale)) return locale;
-  const short = locale.split("-")[0]!;
-  return supported.includes(short) ? short : "en";
 }

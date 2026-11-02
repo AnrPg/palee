@@ -15,8 +15,8 @@ import { useUiTranslations } from "@/i18n/ui";
 import { useUiLocale } from "@/i18n/use-ui-locale";
 import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
 
-import { payFileName, periodLabel } from "./coach-pay";
-import { payslipLanguage, StatementLines } from "./PayPeriodsView";
+import { payFileName, payslipLanguage, periodLabel } from "./coach-pay";
+import { StatementLines } from "./PayPeriodsView";
 import { GrossNet, saveFile, useMoney } from "./pay-ui";
 
 const periodOf = (statement: MyStatement) => statement.period as unknown as StatementPeriod;

@@ -13,8 +13,8 @@ import { useUiLocale } from "@/i18n/use-ui-locale";
 import { useSelectedMembershipRole } from "@/lib/membership-role";
 import { can } from "@/lib/role-navigation";
 
-import { activeRules, payFileName, periodLabel } from "./coach-pay";
-import { payslipLanguage, StatusPill } from "./PayPeriodsView";
+import { activeRules, payFileName, payslipLanguage, periodLabel } from "./coach-pay";
+import { StatusPill } from "./PayPeriodsView";
 import { PayRuleForm } from "./PayRuleForm";
 import { RuleLine } from "./PayRulesView";
 import { GrossNet, saveFile, useGymToday } from "./pay-ui";

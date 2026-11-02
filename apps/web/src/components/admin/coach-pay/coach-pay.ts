@@ -291,7 +291,7 @@ export function lineErrors(draft: LineDraft, item: PayItem | null): Partial<Reco
     if (item?.unit === "per_occurrence" && !/^[1-9]\d{0,2}$/.test(draft.quantity.trim())) errors.quantity = "errorWholeNumber";
     return errors;
   }
-  const cents = parseCents(draft.amount, draft.kind === "adjustment");
+  const cents = parseCents(draft.amount, true);
   if (cents === null || cents === 0) errors.amount = "errorAmount";
   else if (draft.kind !== "adjustment" && cents < 0) errors.amount = "errorPositive";
   if (draft.note.trim() === "") errors.note = "errorNoteRequired";
@@ -377,4 +377,24 @@ export function payFileName(prefix: "coach-pay" | "pay-statement", period: { sta
 /** A calendar date (YYYY-MM-DD) at noon UTC, so formatting it never shifts the day. */
 export function calendarNoon(iso: string): Date {
   return new Date(iso.slice(0, 10) + "T12:00:00Z");
+}
+
+/**
+ * The group a line belongs to, as the API builds `groups` (ADR-382
+ * `StatementGroups`): its rule, or its pay item and kind, or its kind when
+ * added by hand, and its gross/net basis. Clawbacks join their rule's group.
+ */
+export function groupKeyOf(line: Pick<PayLine, "rule_id" | "pay_item_id" | "kind" | "amount_basis">): string {
+  const basis = line.amount_basis || "gross";
+  if (line.rule_id) return ["rule", line.rule_id, basis].join(":");
+  if (line.pay_item_id) return ["pay_item", line.pay_item_id, line.kind, basis].join(":");
+  return ["manual", line.kind, basis].join(":");
+}
+
+/** The PDF writer's languages (ADR-382); right-to-left ones fall back to English. */
+export function payslipLanguage(locale: string): string {
+  const supported = ["el", "en", "de", "fr", "it", "nl", "es", "pt-PT", "ru", "bg"];
+  if (supported.includes(locale)) return locale;
+  const short = locale.split("-")[0]!;
+  return supported.includes(short) ? short : "en";
 }

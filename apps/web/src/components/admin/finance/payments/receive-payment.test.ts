@@ -90,6 +90,15 @@ describe("receive payment form", () => {
     expect(other).not.toHaveProperty("finance_invoice_id");
   });
 
+  it("adds the «Κάρτα στο POS» surcharge and the card only for a card on the POS", () => {
+    const purposes = paymentPurposes(profile, name);
+    const base = { ...initialForm(purposes), method: "card_manual" as const };
+    const surcharge = { cents: 15, card: { commercial: true } };
+    expect(receiveBody(base, findPurpose(purposes, "invoice:inv-old"), "k", surcharge)).toMatchObject({ surcharge_cents: 15, card: { commercial: true } });
+    expect(receiveBody({ ...base, method: "cash" }, findPurpose(purposes, "invoice:inv-old"), "k", surcharge)).not.toHaveProperty("surcharge_cents");
+    expect(receiveBody(base, findPurpose(purposes, "invoice:inv-old"), "k", { cents: 0, card: {} })).not.toHaveProperty("card");
+  });
+
   it("puts an API refusal under the field it is about", () => {
     expect(fieldForErrorCode("payment_exceeds_invoice_balance")).toBe("amount_cents");
     expect(fieldForErrorCode("payment_purpose_required")).toBe("description");
