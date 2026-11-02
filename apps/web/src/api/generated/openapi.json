@@ -16328,6 +16328,39 @@
             "format": "uuid",
             "type": "string"
           },
+          "parts": {
+            "description": "ADR-367: ZIP parts with the box's stored files (photos, PDFs)",
+            "items": {
+              "properties": {
+                "bytes": {
+                  "type": "integer"
+                },
+                "download_url": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "files": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "sha256": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "bytes",
+                "download_url",
+                "files",
+                "name",
+                "sha256"
+              ],
+              "title": "BoxDataExportPart",
+              "type": "object"
+            },
+            "type": "array"
+          },
           "record_count": {
             "nullable": true,
             "type": "integer"
@@ -16355,12 +16388,42 @@
           "expires_at",
           "file",
           "id",
+          "parts",
           "record_count",
           "requested_at",
           "status",
           "table_count"
         ],
         "title": "BoxDataExport",
+        "type": "object"
+      },
+      "BoxDataExportPart": {
+        "properties": {
+          "bytes": {
+            "type": "integer"
+          },
+          "download_url": {
+            "nullable": true,
+            "type": "string"
+          },
+          "files": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "sha256": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "bytes",
+          "download_url",
+          "files",
+          "name",
+          "sha256"
+        ],
+        "title": "BoxDataExportPart",
         "type": "object"
       },
       "BoxDataExports": {
@@ -16407,6 +16470,39 @@
                   "format": "uuid",
                   "type": "string"
                 },
+                "parts": {
+                  "description": "ADR-367: ZIP parts with the box's stored files (photos, PDFs)",
+                  "items": {
+                    "properties": {
+                      "bytes": {
+                        "type": "integer"
+                      },
+                      "download_url": {
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "files": {
+                        "type": "integer"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "sha256": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "bytes",
+                      "download_url",
+                      "files",
+                      "name",
+                      "sha256"
+                    ],
+                    "title": "BoxDataExportPart",
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
                 "record_count": {
                   "nullable": true,
                   "type": "integer"
@@ -16434,6 +16530,7 @@
                 "expires_at",
                 "file",
                 "id",
+                "parts",
                 "record_count",
                 "requested_at",
                 "status",
@@ -89824,6 +89921,14 @@
                   },
                   "type": "array"
                 },
+                "en_source": {
+                  "enum": [
+                    "auto",
+                    "edited"
+                  ],
+                  "nullable": true,
+                  "type": "string"
+                },
                 "id": {
                   "format": "uuid",
                   "type": "string"
@@ -89842,6 +89947,15 @@
                     "incident",
                     "maintenance"
                   ],
+                  "type": "string"
+                },
+                "locale": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "published_by": {
+                  "description": "Who published the incident (console only)",
+                  "nullable": true,
                   "type": "string"
                 },
                 "resolved_at": {
@@ -89878,18 +89992,43 @@
                 "title": {
                   "type": "string"
                 },
+                "title_en": {
+                  "nullable": true,
+                  "type": "string"
+                },
                 "updates": {
                   "items": {
                     "properties": {
                       "body": {
                         "type": "string"
                       },
+                      "body_en": {
+                        "nullable": true,
+                        "type": "string"
+                      },
                       "created_at": {
                         "format": "date-time",
                         "type": "string"
                       },
+                      "en_source": {
+                        "enum": [
+                          "auto",
+                          "edited"
+                        ],
+                        "nullable": true,
+                        "type": "string"
+                      },
                       "id": {
                         "format": "uuid",
+                        "type": "string"
+                      },
+                      "locale": {
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "published_by": {
+                        "description": "Who published this step (console only)",
+                        "nullable": true,
                         "type": "string"
                       },
                       "status": {
@@ -89907,8 +90046,11 @@
                     },
                     "required": [
                       "body",
+                      "body_en",
                       "created_at",
+                      "en_source",
                       "id",
+                      "locale",
                       "status"
                     ],
                     "title": "StatusIncidentUpdate",
@@ -89919,15 +90061,18 @@
               },
               "required": [
                 "components",
+                "en_source",
                 "id",
                 "impact",
                 "kind",
+                "locale",
                 "resolved_at",
                 "scheduled_for",
                 "scheduled_until",
                 "started_at",
                 "status",
                 "title",
+                "title_en",
                 "updates"
               ],
               "title": "StatusIncident",
@@ -90088,6 +90233,14 @@
                   },
                   "type": "array"
                 },
+                "en_source": {
+                  "enum": [
+                    "auto",
+                    "edited"
+                  ],
+                  "nullable": true,
+                  "type": "string"
+                },
                 "id": {
                   "format": "uuid",
                   "type": "string"
@@ -90106,6 +90259,15 @@
                     "incident",
                     "maintenance"
                   ],
+                  "type": "string"
+                },
+                "locale": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "published_by": {
+                  "description": "Who published the incident (console only)",
+                  "nullable": true,
                   "type": "string"
                 },
                 "resolved_at": {
@@ -90142,18 +90304,43 @@
                 "title": {
                   "type": "string"
                 },
+                "title_en": {
+                  "nullable": true,
+                  "type": "string"
+                },
                 "updates": {
                   "items": {
                     "properties": {
                       "body": {
                         "type": "string"
                       },
+                      "body_en": {
+                        "nullable": true,
+                        "type": "string"
+                      },
                       "created_at": {
                         "format": "date-time",
                         "type": "string"
                       },
+                      "en_source": {
+                        "enum": [
+                          "auto",
+                          "edited"
+                        ],
+                        "nullable": true,
+                        "type": "string"
+                      },
                       "id": {
                         "format": "uuid",
+                        "type": "string"
+                      },
+                      "locale": {
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "published_by": {
+                        "description": "Who published this step (console only)",
+                        "nullable": true,
                         "type": "string"
                       },
                       "status": {
@@ -90171,8 +90358,11 @@
                     },
                     "required": [
                       "body",
+                      "body_en",
                       "created_at",
+                      "en_source",
                       "id",
+                      "locale",
                       "status"
                     ],
                     "title": "StatusIncidentUpdate",
@@ -90183,15 +90373,18 @@
               },
               "required": [
                 "components",
+                "en_source",
                 "id",
                 "impact",
                 "kind",
+                "locale",
                 "resolved_at",
                 "scheduled_for",
                 "scheduled_until",
                 "started_at",
                 "status",
                 "title",
+                "title_en",
                 "updates"
               ],
               "title": "StatusIncident",
@@ -90259,6 +90452,14 @@
             },
             "type": "array"
           },
+          "en_source": {
+            "enum": [
+              "auto",
+              "edited"
+            ],
+            "nullable": true,
+            "type": "string"
+          },
           "id": {
             "format": "uuid",
             "type": "string"
@@ -90277,6 +90478,15 @@
               "incident",
               "maintenance"
             ],
+            "type": "string"
+          },
+          "locale": {
+            "nullable": true,
+            "type": "string"
+          },
+          "published_by": {
+            "description": "Who published the incident (console only)",
+            "nullable": true,
             "type": "string"
           },
           "resolved_at": {
@@ -90313,18 +90523,43 @@
           "title": {
             "type": "string"
           },
+          "title_en": {
+            "nullable": true,
+            "type": "string"
+          },
           "updates": {
             "items": {
               "properties": {
                 "body": {
                   "type": "string"
                 },
+                "body_en": {
+                  "nullable": true,
+                  "type": "string"
+                },
                 "created_at": {
                   "format": "date-time",
                   "type": "string"
                 },
+                "en_source": {
+                  "enum": [
+                    "auto",
+                    "edited"
+                  ],
+                  "nullable": true,
+                  "type": "string"
+                },
                 "id": {
                   "format": "uuid",
+                  "type": "string"
+                },
+                "locale": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "published_by": {
+                  "description": "Who published this step (console only)",
+                  "nullable": true,
                   "type": "string"
                 },
                 "status": {
@@ -90342,8 +90577,11 @@
               },
               "required": [
                 "body",
+                "body_en",
                 "created_at",
+                "en_source",
                 "id",
+                "locale",
                 "status"
               ],
               "title": "StatusIncidentUpdate",
@@ -90354,15 +90592,18 @@
         },
         "required": [
           "components",
+          "en_source",
           "id",
           "impact",
           "kind",
+          "locale",
           "resolved_at",
           "scheduled_for",
           "scheduled_until",
           "started_at",
           "status",
           "title",
+          "title_en",
           "updates"
         ],
         "title": "StatusIncident",
@@ -90373,6 +90614,10 @@
           "body": {
             "maxLength": 2000,
             "minLength": 1,
+            "type": "string"
+          },
+          "body_en": {
+            "maxLength": 2000,
             "type": "string"
           },
           "components": {
@@ -90389,6 +90634,13 @@
             },
             "type": "array"
           },
+          "en_source": {
+            "enum": [
+              "auto",
+              "edited"
+            ],
+            "type": "string"
+          },
           "impact": {
             "enum": [
               "none",
@@ -90403,6 +90655,10 @@
               "incident",
               "maintenance"
             ],
+            "type": "string"
+          },
+          "locale": {
+            "maxLength": 8,
             "type": "string"
           },
           "notify": {
@@ -90431,6 +90687,10 @@
           "title": {
             "maxLength": 140,
             "minLength": 3,
+            "type": "string"
+          },
+          "title_en": {
+            "maxLength": 140,
             "type": "string"
           }
         },
@@ -90480,12 +90740,33 @@
           "body": {
             "type": "string"
           },
+          "body_en": {
+            "nullable": true,
+            "type": "string"
+          },
           "created_at": {
             "format": "date-time",
             "type": "string"
           },
+          "en_source": {
+            "enum": [
+              "auto",
+              "edited"
+            ],
+            "nullable": true,
+            "type": "string"
+          },
           "id": {
             "format": "uuid",
+            "type": "string"
+          },
+          "locale": {
+            "nullable": true,
+            "type": "string"
+          },
+          "published_by": {
+            "description": "Who published this step (console only)",
+            "nullable": true,
             "type": "string"
           },
           "status": {
@@ -90503,8 +90784,11 @@
         },
         "required": [
           "body",
+          "body_en",
           "created_at",
+          "en_source",
           "id",
+          "locale",
           "status"
         ],
         "title": "StatusIncidentUpdate",
@@ -90515,6 +90799,21 @@
           "body": {
             "maxLength": 2000,
             "minLength": 1,
+            "type": "string"
+          },
+          "body_en": {
+            "maxLength": 2000,
+            "type": "string"
+          },
+          "en_source": {
+            "enum": [
+              "auto",
+              "edited"
+            ],
+            "type": "string"
+          },
+          "locale": {
+            "maxLength": 8,
             "type": "string"
           },
           "notify": {
@@ -90558,6 +90857,14 @@
                   },
                   "type": "array"
                 },
+                "en_source": {
+                  "enum": [
+                    "auto",
+                    "edited"
+                  ],
+                  "nullable": true,
+                  "type": "string"
+                },
                 "id": {
                   "format": "uuid",
                   "type": "string"
@@ -90576,6 +90883,15 @@
                     "incident",
                     "maintenance"
                   ],
+                  "type": "string"
+                },
+                "locale": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "published_by": {
+                  "description": "Who published the incident (console only)",
+                  "nullable": true,
                   "type": "string"
                 },
                 "resolved_at": {
@@ -90612,18 +90928,43 @@
                 "title": {
                   "type": "string"
                 },
+                "title_en": {
+                  "nullable": true,
+                  "type": "string"
+                },
                 "updates": {
                   "items": {
                     "properties": {
                       "body": {
                         "type": "string"
                       },
+                      "body_en": {
+                        "nullable": true,
+                        "type": "string"
+                      },
                       "created_at": {
                         "format": "date-time",
                         "type": "string"
                       },
+                      "en_source": {
+                        "enum": [
+                          "auto",
+                          "edited"
+                        ],
+                        "nullable": true,
+                        "type": "string"
+                      },
                       "id": {
                         "format": "uuid",
+                        "type": "string"
+                      },
+                      "locale": {
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "published_by": {
+                        "description": "Who published this step (console only)",
+                        "nullable": true,
                         "type": "string"
                       },
                       "status": {
@@ -90641,8 +90982,11 @@
                     },
                     "required": [
                       "body",
+                      "body_en",
                       "created_at",
+                      "en_source",
                       "id",
+                      "locale",
                       "status"
                     ],
                     "title": "StatusIncidentUpdate",
@@ -90653,15 +90997,18 @@
               },
               "required": [
                 "components",
+                "en_source",
                 "id",
                 "impact",
                 "kind",
+                "locale",
                 "resolved_at",
                 "scheduled_for",
                 "scheduled_until",
                 "started_at",
                 "status",
                 "title",
+                "title_en",
                 "updates"
               ],
               "title": "StatusIncident",
@@ -90741,6 +91088,14 @@
                   },
                   "type": "array"
                 },
+                "en_source": {
+                  "enum": [
+                    "auto",
+                    "edited"
+                  ],
+                  "nullable": true,
+                  "type": "string"
+                },
                 "id": {
                   "format": "uuid",
                   "type": "string"
@@ -90759,6 +91114,15 @@
                     "incident",
                     "maintenance"
                   ],
+                  "type": "string"
+                },
+                "locale": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "published_by": {
+                  "description": "Who published the incident (console only)",
+                  "nullable": true,
                   "type": "string"
                 },
                 "resolved_at": {
@@ -90795,18 +91159,43 @@
                 "title": {
                   "type": "string"
                 },
+                "title_en": {
+                  "nullable": true,
+                  "type": "string"
+                },
                 "updates": {
                   "items": {
                     "properties": {
                       "body": {
                         "type": "string"
                       },
+                      "body_en": {
+                        "nullable": true,
+                        "type": "string"
+                      },
                       "created_at": {
                         "format": "date-time",
                         "type": "string"
                       },
+                      "en_source": {
+                        "enum": [
+                          "auto",
+                          "edited"
+                        ],
+                        "nullable": true,
+                        "type": "string"
+                      },
                       "id": {
                         "format": "uuid",
+                        "type": "string"
+                      },
+                      "locale": {
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "published_by": {
+                        "description": "Who published this step (console only)",
+                        "nullable": true,
                         "type": "string"
                       },
                       "status": {
@@ -90824,8 +91213,11 @@
                     },
                     "required": [
                       "body",
+                      "body_en",
                       "created_at",
+                      "en_source",
                       "id",
+                      "locale",
                       "status"
                     ],
                     "title": "StatusIncidentUpdate",
@@ -90836,15 +91228,18 @@
               },
               "required": [
                 "components",
+                "en_source",
                 "id",
                 "impact",
                 "kind",
+                "locale",
                 "resolved_at",
                 "scheduled_for",
                 "scheduled_until",
                 "started_at",
                 "status",
                 "title",
+                "title_en",
                 "updates"
               ],
               "title": "StatusIncident",
@@ -90929,6 +91324,47 @@
           "token"
         ],
         "title": "StatusToken",
+        "type": "object"
+      },
+      "StatusTranslate": {
+        "properties": {
+          "body": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 140,
+            "type": "string"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "title": "StatusTranslate",
+        "type": "object"
+      },
+      "StatusTranslation": {
+        "properties": {
+          "body": {
+            "type": "string"
+          },
+          "locale": {
+            "description": "The detected language of the text",
+            "nullable": true,
+            "type": "string"
+          },
+          "title": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "body",
+          "locale",
+          "title"
+        ],
+        "title": "StatusTranslation",
         "type": "object"
       },
       "StructuredSection": {
@@ -194546,6 +194982,39 @@
                             "format": "uuid",
                             "type": "string"
                           },
+                          "parts": {
+                            "description": "ADR-367: ZIP parts with the box's stored files (photos, PDFs)",
+                            "items": {
+                              "properties": {
+                                "bytes": {
+                                  "type": "integer"
+                                },
+                                "download_url": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "files": {
+                                  "type": "integer"
+                                },
+                                "name": {
+                                  "type": "string"
+                                },
+                                "sha256": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "bytes",
+                                "download_url",
+                                "files",
+                                "name",
+                                "sha256"
+                              ],
+                              "title": "BoxDataExportPart",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
                           "record_count": {
                             "nullable": true,
                             "type": "integer"
@@ -194573,6 +195042,7 @@
                           "expires_at",
                           "file",
                           "id",
+                          "parts",
                           "record_count",
                           "requested_at",
                           "status",
@@ -194654,6 +195124,39 @@
                       "format": "uuid",
                       "type": "string"
                     },
+                    "parts": {
+                      "description": "ADR-367: ZIP parts with the box's stored files (photos, PDFs)",
+                      "items": {
+                        "properties": {
+                          "bytes": {
+                            "type": "integer"
+                          },
+                          "download_url": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "files": {
+                            "type": "integer"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "sha256": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "bytes",
+                          "download_url",
+                          "files",
+                          "name",
+                          "sha256"
+                        ],
+                        "title": "BoxDataExportPart",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
                     "record_count": {
                       "nullable": true,
                       "type": "integer"
@@ -194681,6 +195184,7 @@
                     "expires_at",
                     "file",
                     "id",
+                    "parts",
                     "record_count",
                     "requested_at",
                     "status",
@@ -360226,6 +360730,14 @@
                             },
                             "type": "array"
                           },
+                          "en_source": {
+                            "enum": [
+                              "auto",
+                              "edited"
+                            ],
+                            "nullable": true,
+                            "type": "string"
+                          },
                           "id": {
                             "format": "uuid",
                             "type": "string"
@@ -360244,6 +360756,15 @@
                               "incident",
                               "maintenance"
                             ],
+                            "type": "string"
+                          },
+                          "locale": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "published_by": {
+                            "description": "Who published the incident (console only)",
+                            "nullable": true,
                             "type": "string"
                           },
                           "resolved_at": {
@@ -360280,18 +360801,43 @@
                           "title": {
                             "type": "string"
                           },
+                          "title_en": {
+                            "nullable": true,
+                            "type": "string"
+                          },
                           "updates": {
                             "items": {
                               "properties": {
                                 "body": {
                                   "type": "string"
                                 },
+                                "body_en": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
                                 "created_at": {
                                   "format": "date-time",
                                   "type": "string"
                                 },
+                                "en_source": {
+                                  "enum": [
+                                    "auto",
+                                    "edited"
+                                  ],
+                                  "nullable": true,
+                                  "type": "string"
+                                },
                                 "id": {
                                   "format": "uuid",
+                                  "type": "string"
+                                },
+                                "locale": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "published_by": {
+                                  "description": "Who published this step (console only)",
+                                  "nullable": true,
                                   "type": "string"
                                 },
                                 "status": {
@@ -360309,8 +360855,11 @@
                               },
                               "required": [
                                 "body",
+                                "body_en",
                                 "created_at",
+                                "en_source",
                                 "id",
+                                "locale",
                                 "status"
                               ],
                               "title": "StatusIncidentUpdate",
@@ -360321,15 +360870,18 @@
                         },
                         "required": [
                           "components",
+                          "en_source",
                           "id",
                           "impact",
                           "kind",
+                          "locale",
                           "resolved_at",
                           "scheduled_for",
                           "scheduled_until",
                           "started_at",
                           "status",
                           "title",
+                          "title_en",
                           "updates"
                         ],
                         "title": "StatusIncident",
@@ -360431,6 +360983,10 @@
                     "minLength": 1,
                     "type": "string"
                   },
+                  "body_en": {
+                    "maxLength": 2000,
+                    "type": "string"
+                  },
                   "components": {
                     "items": {
                       "enum": [
@@ -360444,6 +361000,13 @@
                       "type": "string"
                     },
                     "type": "array"
+                  },
+                  "en_source": {
+                    "enum": [
+                      "auto",
+                      "edited"
+                    ],
+                    "type": "string"
                   },
                   "impact": {
                     "enum": [
@@ -360459,6 +361022,10 @@
                       "incident",
                       "maintenance"
                     ],
+                    "type": "string"
+                  },
+                  "locale": {
+                    "maxLength": 8,
                     "type": "string"
                   },
                   "notify": {
@@ -360487,6 +361054,10 @@
                   "title": {
                     "maxLength": 140,
                     "minLength": 3,
+                    "type": "string"
+                  },
+                  "title_en": {
+                    "maxLength": 140,
                     "type": "string"
                   }
                 },
@@ -360522,6 +361093,14 @@
                       },
                       "type": "array"
                     },
+                    "en_source": {
+                      "enum": [
+                        "auto",
+                        "edited"
+                      ],
+                      "nullable": true,
+                      "type": "string"
+                    },
                     "id": {
                       "format": "uuid",
                       "type": "string"
@@ -360540,6 +361119,15 @@
                         "incident",
                         "maintenance"
                       ],
+                      "type": "string"
+                    },
+                    "locale": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "published_by": {
+                      "description": "Who published the incident (console only)",
+                      "nullable": true,
                       "type": "string"
                     },
                     "resolved_at": {
@@ -360576,18 +361164,43 @@
                     "title": {
                       "type": "string"
                     },
+                    "title_en": {
+                      "nullable": true,
+                      "type": "string"
+                    },
                     "updates": {
                       "items": {
                         "properties": {
                           "body": {
                             "type": "string"
                           },
+                          "body_en": {
+                            "nullable": true,
+                            "type": "string"
+                          },
                           "created_at": {
                             "format": "date-time",
                             "type": "string"
                           },
+                          "en_source": {
+                            "enum": [
+                              "auto",
+                              "edited"
+                            ],
+                            "nullable": true,
+                            "type": "string"
+                          },
                           "id": {
                             "format": "uuid",
+                            "type": "string"
+                          },
+                          "locale": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "published_by": {
+                            "description": "Who published this step (console only)",
+                            "nullable": true,
                             "type": "string"
                           },
                           "status": {
@@ -360605,8 +361218,11 @@
                         },
                         "required": [
                           "body",
+                          "body_en",
                           "created_at",
+                          "en_source",
                           "id",
+                          "locale",
                           "status"
                         ],
                         "title": "StatusIncidentUpdate",
@@ -360617,15 +361233,18 @@
                   },
                   "required": [
                     "components",
+                    "en_source",
                     "id",
                     "impact",
                     "kind",
+                    "locale",
                     "resolved_at",
                     "scheduled_for",
                     "scheduled_until",
                     "started_at",
                     "status",
                     "title",
+                    "title_en",
                     "updates"
                   ],
                   "title": "StatusIncident",
@@ -360724,6 +361343,14 @@
                       },
                       "type": "array"
                     },
+                    "en_source": {
+                      "enum": [
+                        "auto",
+                        "edited"
+                      ],
+                      "nullable": true,
+                      "type": "string"
+                    },
                     "id": {
                       "format": "uuid",
                       "type": "string"
@@ -360742,6 +361369,15 @@
                         "incident",
                         "maintenance"
                       ],
+                      "type": "string"
+                    },
+                    "locale": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "published_by": {
+                      "description": "Who published the incident (console only)",
+                      "nullable": true,
                       "type": "string"
                     },
                     "resolved_at": {
@@ -360778,18 +361414,43 @@
                     "title": {
                       "type": "string"
                     },
+                    "title_en": {
+                      "nullable": true,
+                      "type": "string"
+                    },
                     "updates": {
                       "items": {
                         "properties": {
                           "body": {
                             "type": "string"
                           },
+                          "body_en": {
+                            "nullable": true,
+                            "type": "string"
+                          },
                           "created_at": {
                             "format": "date-time",
                             "type": "string"
                           },
+                          "en_source": {
+                            "enum": [
+                              "auto",
+                              "edited"
+                            ],
+                            "nullable": true,
+                            "type": "string"
+                          },
                           "id": {
                             "format": "uuid",
+                            "type": "string"
+                          },
+                          "locale": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "published_by": {
+                            "description": "Who published this step (console only)",
+                            "nullable": true,
                             "type": "string"
                           },
                           "status": {
@@ -360807,8 +361468,11 @@
                         },
                         "required": [
                           "body",
+                          "body_en",
                           "created_at",
+                          "en_source",
                           "id",
+                          "locale",
                           "status"
                         ],
                         "title": "StatusIncidentUpdate",
@@ -360819,15 +361483,18 @@
                   },
                   "required": [
                     "components",
+                    "en_source",
                     "id",
                     "impact",
                     "kind",
+                    "locale",
                     "resolved_at",
                     "scheduled_for",
                     "scheduled_until",
                     "started_at",
                     "status",
                     "title",
+                    "title_en",
                     "updates"
                   ],
                   "title": "StatusIncident",
@@ -360872,6 +361539,21 @@
                   "body": {
                     "maxLength": 2000,
                     "minLength": 1,
+                    "type": "string"
+                  },
+                  "body_en": {
+                    "maxLength": 2000,
+                    "type": "string"
+                  },
+                  "en_source": {
+                    "enum": [
+                      "auto",
+                      "edited"
+                    ],
+                    "type": "string"
+                  },
+                  "locale": {
+                    "maxLength": 8,
                     "type": "string"
                   },
                   "notify": {
@@ -360921,6 +361603,14 @@
                       },
                       "type": "array"
                     },
+                    "en_source": {
+                      "enum": [
+                        "auto",
+                        "edited"
+                      ],
+                      "nullable": true,
+                      "type": "string"
+                    },
                     "id": {
                       "format": "uuid",
                       "type": "string"
@@ -360939,6 +361629,15 @@
                         "incident",
                         "maintenance"
                       ],
+                      "type": "string"
+                    },
+                    "locale": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "published_by": {
+                      "description": "Who published the incident (console only)",
+                      "nullable": true,
                       "type": "string"
                     },
                     "resolved_at": {
@@ -360975,18 +361674,43 @@
                     "title": {
                       "type": "string"
                     },
+                    "title_en": {
+                      "nullable": true,
+                      "type": "string"
+                    },
                     "updates": {
                       "items": {
                         "properties": {
                           "body": {
                             "type": "string"
                           },
+                          "body_en": {
+                            "nullable": true,
+                            "type": "string"
+                          },
                           "created_at": {
                             "format": "date-time",
                             "type": "string"
                           },
+                          "en_source": {
+                            "enum": [
+                              "auto",
+                              "edited"
+                            ],
+                            "nullable": true,
+                            "type": "string"
+                          },
                           "id": {
                             "format": "uuid",
+                            "type": "string"
+                          },
+                          "locale": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "published_by": {
+                            "description": "Who published this step (console only)",
+                            "nullable": true,
                             "type": "string"
                           },
                           "status": {
@@ -361004,8 +361728,11 @@
                         },
                         "required": [
                           "body",
+                          "body_en",
                           "created_at",
+                          "en_source",
                           "id",
+                          "locale",
                           "status"
                         ],
                         "title": "StatusIncidentUpdate",
@@ -361016,15 +361743,18 @@
                   },
                   "required": [
                     "components",
+                    "en_source",
                     "id",
                     "impact",
                     "kind",
+                    "locale",
                     "resolved_at",
                     "scheduled_for",
                     "scheduled_until",
                     "started_at",
                     "status",
                     "title",
+                    "title_en",
                     "updates"
                   ],
                   "title": "StatusIncident",
@@ -361041,6 +361771,80 @@
           }
         ],
         "summary": "Add a step to an incident's timeline (vendors)",
+        "tags": [
+          "Platform status"
+        ]
+      }
+    },
+    "/api/platform/status/translations": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformStatusController.translate",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "body": {
+                    "maxLength": 2000,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "title": {
+                    "maxLength": 140,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "body"
+                ],
+                "title": "StatusTranslate",
+                "type": "object"
+              }
+            }
+          },
+          "description": "The title and note to preview in English",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "body": {
+                      "type": "string"
+                    },
+                    "locale": {
+                      "description": "The detected language of the text",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "title": {
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "body",
+                    "locale",
+                    "title"
+                  ],
+                  "title": "StatusTranslation",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Translation"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Preview a title and note in English, by machine (vendors)",
         "tags": [
           "Platform status"
         ]
@@ -366967,6 +367771,14 @@
                             },
                             "type": "array"
                           },
+                          "en_source": {
+                            "enum": [
+                              "auto",
+                              "edited"
+                            ],
+                            "nullable": true,
+                            "type": "string"
+                          },
                           "id": {
                             "format": "uuid",
                             "type": "string"
@@ -366985,6 +367797,15 @@
                               "incident",
                               "maintenance"
                             ],
+                            "type": "string"
+                          },
+                          "locale": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "published_by": {
+                            "description": "Who published the incident (console only)",
+                            "nullable": true,
                             "type": "string"
                           },
                           "resolved_at": {
@@ -367021,18 +367842,43 @@
                           "title": {
                             "type": "string"
                           },
+                          "title_en": {
+                            "nullable": true,
+                            "type": "string"
+                          },
                           "updates": {
                             "items": {
                               "properties": {
                                 "body": {
                                   "type": "string"
                                 },
+                                "body_en": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
                                 "created_at": {
                                   "format": "date-time",
                                   "type": "string"
                                 },
+                                "en_source": {
+                                  "enum": [
+                                    "auto",
+                                    "edited"
+                                  ],
+                                  "nullable": true,
+                                  "type": "string"
+                                },
                                 "id": {
                                   "format": "uuid",
+                                  "type": "string"
+                                },
+                                "locale": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "published_by": {
+                                  "description": "Who published this step (console only)",
+                                  "nullable": true,
                                   "type": "string"
                                 },
                                 "status": {
@@ -367050,8 +367896,11 @@
                               },
                               "required": [
                                 "body",
+                                "body_en",
                                 "created_at",
+                                "en_source",
                                 "id",
+                                "locale",
                                 "status"
                               ],
                               "title": "StatusIncidentUpdate",
@@ -367062,15 +367911,18 @@
                         },
                         "required": [
                           "components",
+                          "en_source",
                           "id",
                           "impact",
                           "kind",
+                          "locale",
                           "resolved_at",
                           "scheduled_for",
                           "scheduled_until",
                           "started_at",
                           "status",
                           "title",
+                          "title_en",
                           "updates"
                         ],
                         "title": "StatusIncident",
@@ -367150,6 +368002,14 @@
                             },
                             "type": "array"
                           },
+                          "en_source": {
+                            "enum": [
+                              "auto",
+                              "edited"
+                            ],
+                            "nullable": true,
+                            "type": "string"
+                          },
                           "id": {
                             "format": "uuid",
                             "type": "string"
@@ -367168,6 +368028,15 @@
                               "incident",
                               "maintenance"
                             ],
+                            "type": "string"
+                          },
+                          "locale": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "published_by": {
+                            "description": "Who published the incident (console only)",
+                            "nullable": true,
                             "type": "string"
                           },
                           "resolved_at": {
@@ -367204,18 +368073,43 @@
                           "title": {
                             "type": "string"
                           },
+                          "title_en": {
+                            "nullable": true,
+                            "type": "string"
+                          },
                           "updates": {
                             "items": {
                               "properties": {
                                 "body": {
                                   "type": "string"
                                 },
+                                "body_en": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
                                 "created_at": {
                                   "format": "date-time",
                                   "type": "string"
                                 },
+                                "en_source": {
+                                  "enum": [
+                                    "auto",
+                                    "edited"
+                                  ],
+                                  "nullable": true,
+                                  "type": "string"
+                                },
                                 "id": {
                                   "format": "uuid",
+                                  "type": "string"
+                                },
+                                "locale": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "published_by": {
+                                  "description": "Who published this step (console only)",
+                                  "nullable": true,
                                   "type": "string"
                                 },
                                 "status": {
@@ -367233,8 +368127,11 @@
                               },
                               "required": [
                                 "body",
+                                "body_en",
                                 "created_at",
+                                "en_source",
                                 "id",
+                                "locale",
                                 "status"
                               ],
                               "title": "StatusIncidentUpdate",
@@ -367245,15 +368142,18 @@
                         },
                         "required": [
                           "components",
+                          "en_source",
                           "id",
                           "impact",
                           "kind",
+                          "locale",
                           "resolved_at",
                           "scheduled_for",
                           "scheduled_until",
                           "started_at",
                           "status",
                           "title",
+                          "title_en",
                           "updates"
                         ],
                         "title": "StatusIncident",
@@ -367394,6 +368294,14 @@
                             },
                             "type": "array"
                           },
+                          "en_source": {
+                            "enum": [
+                              "auto",
+                              "edited"
+                            ],
+                            "nullable": true,
+                            "type": "string"
+                          },
                           "id": {
                             "format": "uuid",
                             "type": "string"
@@ -367412,6 +368320,15 @@
                               "incident",
                               "maintenance"
                             ],
+                            "type": "string"
+                          },
+                          "locale": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "published_by": {
+                            "description": "Who published the incident (console only)",
+                            "nullable": true,
                             "type": "string"
                           },
                           "resolved_at": {
@@ -367448,18 +368365,43 @@
                           "title": {
                             "type": "string"
                           },
+                          "title_en": {
+                            "nullable": true,
+                            "type": "string"
+                          },
                           "updates": {
                             "items": {
                               "properties": {
                                 "body": {
                                   "type": "string"
                                 },
+                                "body_en": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
                                 "created_at": {
                                   "format": "date-time",
                                   "type": "string"
                                 },
+                                "en_source": {
+                                  "enum": [
+                                    "auto",
+                                    "edited"
+                                  ],
+                                  "nullable": true,
+                                  "type": "string"
+                                },
                                 "id": {
                                   "format": "uuid",
+                                  "type": "string"
+                                },
+                                "locale": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "published_by": {
+                                  "description": "Who published this step (console only)",
+                                  "nullable": true,
                                   "type": "string"
                                 },
                                 "status": {
@@ -367477,8 +368419,11 @@
                               },
                               "required": [
                                 "body",
+                                "body_en",
                                 "created_at",
+                                "en_source",
                                 "id",
+                                "locale",
                                 "status"
                               ],
                               "title": "StatusIncidentUpdate",
@@ -367489,15 +368434,18 @@
                         },
                         "required": [
                           "components",
+                          "en_source",
                           "id",
                           "impact",
                           "kind",
+                          "locale",
                           "resolved_at",
                           "scheduled_for",
                           "scheduled_until",
                           "started_at",
                           "status",
                           "title",
+                          "title_en",
                           "updates"
                         ],
                         "title": "StatusIncident",

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { configuredMapOrigins } from "@/lib/map-style";
 import { retiredOrganizationSlugRedirect } from "@/lib/organization-slug-alias";
+import { statusHostRewrite } from "@/lib/service-status";
 
 type MediaOriginEnv = Record<string, string | undefined>;
 
@@ -51,7 +52,14 @@ export async function proxy(request: NextRequest) {
   requestHeaders.set("Content-Security-Policy", csp);
 
   const organizationMatch = request.nextUrl.pathname.match(/^\/org\/[^/]+(\/.*)$/);
-  const destination = organizationMatch?.[1];
+  // ADR-366: status.palee.app (STATUS_HOST) serves the status page at its root.
+  const statusPage = statusHostRewrite(
+    request.nextUrl.hostname,
+    request.nextUrl.pathname,
+    process.env.STATUS_HOST ?? "status.palee.app",
+  );
+  // The status emails' links carry ?confirm= / ?unsubscribe=, so keep the query.
+  const destination = statusPage ? statusPage + request.nextUrl.search : organizationMatch?.[1];
 
   const response = destination
     ? NextResponse.rewrite(new URL(destination, request.url), {

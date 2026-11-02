@@ -1328,7 +1328,12 @@ export function AdminSettingsHub() {
                 description={i18n("orgSettingsDescription")}
                 defaultOpen={false}
               >
-                <OrganizationOwnerSettings token={token} slug={selectedOrganizationSlug} currentUserId={currentUser?.id} />
+                <OrganizationOwnerSettings
+                  token={token}
+                  slug={selectedOrganizationSlug}
+                  currentUserId={currentUser?.id}
+                  currentUserEmail={currentUser?.email}
+                />
               </CollapsibleSection>
             ) : null}
 
