@@ -554,7 +554,7 @@ Staff screens only (Fiscal). The German and Austrian texts a receipt prints are 
 | Your data | Τα δεδομένα σου | `/me/settings#your-data` | The Settings section with «Λήψη των δεδομένων μου» and the links to the privacy policy and the terms. | Delete profile or account. |
 | Download my data | Λήψη των δεδομένων μου | `POST /me/data-exports` | One request for a copy of all of the person's own data; ready in the background, with an email when it is. | Journal export («Εξαγωγή», only the journal); accounting export. |
 | Data file | Αρχείο δεδομένων | `personal_data_exports` | The ZIP (JSON files) «Λήψη των δεδομένων μου» makes; downloadable for 7 days, one a day. | Audit archive; a box's tenant export (ADR-117). |
-| Download the box's data | Λήψη των δεδομένων του box | `POST /api/org/:slug/admin/data-exports` | For owners: one copy of all the box's own data (every table the owner may read), as a ZIP of CSV files, at any time, one a day, kept 7 days. (ADR-365) | Download my data (a person's own data); the Palee team's tenant export before a purge (ADR-117); accounting export. |
+| Download the box's data | Λήψη των δεδομένων του box | `POST /api/org/:slug/admin/data-exports` | For owners: one copy of all the box's own data (every table the owner may read), as a ZIP of CSV files, at any time, one a day, kept 7 days. Since ADR-367 also the box's photos and PDFs in extra ZIP files («Μέρος 1, 2…»), and one email when it is ready. Lives in Ρυθμίσεις › Επιχείρηση. (ADR-365, ADR-367) | Download my data (a person's own data); the Palee team's tenant export before a purge (ADR-117); accounting export. |
 | Sub-processor | Εκτελών την επεξεργασία | `lib/legal/sub-processors.ts` | A company that processes personal data for Palee (email, hosting, maps, payments…), listed on the privacy policy. | Payment provider (the box's own choice). |
 
 ### 4.20 Structured WOD (ADR-270)
@@ -650,6 +650,9 @@ Leaderboard filters, WOD snapshots, the fitness profile, visit badges, calendar 
 | Planned maintenance | Προγραμματισμένη συντήρηση | `status_incidents.kind: maintenance` | Work announced ahead with a window: Προγραμματισμένη → Σε εξέλιξη → Ολοκληρώθηκε. | Cleaning («Καθαριότητα»), machine maintenance in Inventory. |
 | Uptime | Διαθεσιμότητα | `status_daily_samples` | The share of checks that found a component working, per day and over 90 days. | |
 | Status emails | Email κατάστασης | `status_subscribers` | Emails about incidents and maintenance to anyone who asked for them on the status page (confirmed by email first; one link stops them). | Notifications of the app; marketing emails. |
+| Service status (console) | Κατάσταση υπηρεσίας | `/platform/status` | The Palee team's page in the platform console: «Τώρα» (the automatic checks and open incidents), «Νέο πρόβλημα ή συντήρηση», a closed history. (ADR-366) | Status page (the public page). |
+| Automatic translation | Αυτόματη μετάφραση | `en_source: auto`, `POST /api/platform/status/translations` | The English version Palee makes of an incident written in another language; the publisher sees it and may correct it («Διόρθωση»), then it is `edited`. Readers whose language is not the original read it, marked as such. (ADR-366) | Translations of the app's own texts. |
+| Status strip | Λωρίδα κατάστασης | `ServiceStatusStrip` | The line inside the app while an incident is active, only for people who use the affected component; no close button, it goes away when the incident is resolved. «Λεπτομέρειες» opens the status page. (ADR-366) | Notifications; the email confirmation banner. |
 
 ### 4.25 Coach pay (ADR-341, ADR-382)
 

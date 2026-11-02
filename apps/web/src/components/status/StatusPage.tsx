@@ -256,7 +256,7 @@ function ComponentHistory({ overview, history, days }: { overview: StatusOvervie
               {shown.map((day) => (
                 <span
                   key={day.date}
-                  title={`${formatInZone(`${day.date}T12:00:00Z`, "UTC", locale, { day: "numeric", month: "short" })} · ${t(`dayStatus.${day.status}`)}`}
+                  title={`${formatInZone(Date.parse(day.date), "UTC", locale, { day: "numeric", month: "short" })} · ${t(`dayStatus.${day.status}`)}`}
                   className="h-[22px] flex-1 rounded-[2px]"
                   style={{ background: dayBarColor(day.status) }}
                 />

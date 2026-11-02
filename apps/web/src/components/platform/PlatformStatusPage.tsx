@@ -404,7 +404,7 @@ function IncidentForm({
                     })
                   }
                 >
-                  {t(`componentShort.${key}`)}
+                  {tStatus(`component.${key}`)}
                 </ToggleChip>
               ))}
             </div>
