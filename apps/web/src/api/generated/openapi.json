@@ -204228,10 +204228,6 @@
                       "booking.waitlist_priority": {
                         "type": "string"
                       },
-                      "booking.weekly_limit": {
-                        "nullable": true,
-                        "type": "integer"
-                      },
                       "booking.window_days": {
                         "nullable": true,
                         "type": "integer"
@@ -204997,10 +204993,6 @@
                       },
                       "booking.waitlist_priority": {
                         "type": "string"
-                      },
-                      "booking.weekly_limit": {
-                        "nullable": true,
-                        "type": "integer"
                       },
                       "booking.window_days": {
                         "nullable": true,
