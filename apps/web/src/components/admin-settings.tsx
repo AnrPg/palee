@@ -56,6 +56,7 @@ import { Dialog } from "@/components/ui/Dialog";
 import { Popover } from "@/components/ui/Popover";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { OnlinePaymentsSettings } from "@/components/admin/payments/OnlinePaymentsSettings";
+import { CardSurchargeSettings } from "@/components/admin/payments/CardSurchargeSettings";
 import { useSettingLevels, type SettingLevels } from "@/components/settings/AdvancedSettings";
 import { AdvancedSettingsCard } from "@/components/settings/AdvancedSettingsCard";
 
@@ -1258,6 +1259,10 @@ export function AdminSettingsHub() {
                 <Suspense>
                   <OnlinePaymentsSettings token={token} />
                 </Suspense>
+                {/* ADR-340 (mockup W1 s1 B): the card surcharge, next to the provider it applies to. */}
+                <div className="mt-4">
+                  <CardSurchargeSettings token={token} />
+                </div>
               </CollapsibleSection>
             ) : null}
 
