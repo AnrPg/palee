@@ -310,15 +310,6 @@
       "section": "booking"
     },
     {
-      "max": 50,
-      "min": 1,
-      "key": "booking.weekly_limit",
-      "kind": "integer_or_null",
-      "phase": "b",
-      "available": true,
-      "section": "booking"
-    },
-    {
       "max": 100,
       "min": 1,
       "key": "booking.open_bookings_limit",
@@ -630,7 +621,6 @@
           "limit": 0,
           "period": "calendar_month"
         },
-        "booking.weekly_limit": null,
         "facility.location_ids": "all",
         "personal_training.included": false,
         "group_classes.rollover_max": 0,
@@ -763,7 +753,6 @@
           "limit": 0,
           "period": "calendar_month"
         },
-        "booking.weekly_limit": null,
         "facility.location_ids": "all",
         "personal_training.included": false,
         "group_classes.rollover_max": 0,
@@ -888,7 +877,6 @@
           "limit": 0,
           "period": "calendar_month"
         },
-        "booking.weekly_limit": null,
         "facility.location_ids": "all",
         "personal_training.included": false,
         "group_classes.rollover_max": 0,
@@ -1037,7 +1025,6 @@
           "limit": 0,
           "period": "calendar_month"
         },
-        "booking.weekly_limit": null,
         "facility.location_ids": "all",
         "personal_training.included": false,
         "group_classes.rollover_max": 0,
@@ -1180,7 +1167,6 @@
           "limit": 0,
           "period": "calendar_month"
         },
-        "booking.weekly_limit": null,
         "facility.location_ids": "all",
         "personal_training.included": true,
         "group_classes.rollover_max": 0,
@@ -1302,7 +1288,6 @@
           "limit": 0,
           "period": "calendar_month"
         },
-        "booking.weekly_limit": null,
         "facility.location_ids": "all",
         "personal_training.included": false,
         "group_classes.rollover_max": 0,
@@ -1442,7 +1427,6 @@
           "limit": 0,
           "period": "calendar_month"
         },
-        "booking.weekly_limit": null,
         "facility.location_ids": "all",
         "personal_training.included": false,
         "group_classes.rollover_max": 0,
@@ -1572,7 +1556,6 @@
           "limit": 0,
           "period": "calendar_month"
         },
-        "booking.weekly_limit": null,
         "facility.location_ids": "all",
         "personal_training.included": false,
         "group_classes.rollover_max": 0,

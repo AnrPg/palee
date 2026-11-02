@@ -421,7 +421,6 @@ const API_ERROR_KEYS: Record<string, string> = {
   package_prerequisite_missing: "apiErrorPackagePrerequisiteMissing",
   package_active_members_only: "apiErrorPackageActiveMembersOnly",
   booking_daily_limit_reached: "mbErrBookingDailyLimitReached",
-  booking_weekly_limit_reached: "mbErrBookingWeeklyLimitReached",
   booking_open_limit_reached: "mbErrBookingOpenLimitReached",
   // ADR-340, ADR-341
   card_surcharge_not_allowed: "apiErrorCardSurchargeNotAllowed",
