@@ -27,4 +27,10 @@ defmodule Palee.Retention.RiskStore do
 
   @impl true
   def level_counts(context), do: call(context, :level_counts, [])
+
+  @impl true
+  def add_action(context, user_id, attrs), do: call(context, :add_action, [user_id, attrs])
+
+  @impl true
+  def actions(context, user_id, limit), do: call(context, :actions, [user_id, limit])
 end

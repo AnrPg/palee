@@ -23,7 +23,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     finance_value_overrides finance_package_requests
     leads lead_tasks lead_events
     box_automations automation_deliveries automation_member_preferences
-    retention_risks
+    retention_risks retention_risk_actions
     facility_locations facility_check_ins facility_check_in_settings
     membership_location_scopes
     facility_visitor_scans facility_member_codes wallet_passes content_videos

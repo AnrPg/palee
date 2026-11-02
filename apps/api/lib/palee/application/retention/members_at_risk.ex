@@ -12,10 +12,11 @@ defmodule Palee.Application.Retention.MembersAtRisk do
   """
 
   alias Palee.{DomainEvents, Identity, Organizations, Retention}
-  alias Palee.Retention.Risk
+  alias Palee.Retention.{Risk, RiskAction}
 
   @contact_channels ~w(phone email message in_person)
   @max_snooze_days 90
+  @history_limit 50
 
   def contact_channels, do: @contact_channels
 
@@ -111,11 +112,21 @@ defmodule Palee.Application.Retention.MembersAtRisk do
     }
   end
 
-  @doc "One member's risk with its reasons."
+  @doc """
+  One member's risk with its reasons, and (ADR-384) the log of what staff
+  did about them, newest first, each with who and when.
+  """
   def show(context, user_id) do
     case Retention.get(context, user_id) do
-      nil -> {:error, :not_found}
-      risk -> {:ok, present(risk, people([risk.user_id, risk.contacted_by_id]))}
+      nil ->
+        {:error, :not_found}
+
+      risk ->
+        actions = Retention.actions(context, user_id, @history_limit)
+        people = people([risk.user_id, risk.contacted_by_id | Enum.map(actions, & &1.actor_id)])
+
+        {:ok,
+         %{member: present(risk, people), actions: Enum.map(actions, &present_action(&1, people))}}
     end
   end
 
@@ -126,11 +137,13 @@ defmodule Palee.Application.Retention.MembersAtRisk do
     with true <-
            channel in @contact_channels || {:error, {:invalid_fields, %{"channel" => "invalid"}}},
          %Risk{} <- Retention.get(context, user_id) || {:error, :not_found},
+         now = Retention.now(),
          {:ok, risk} <-
            Retention.put(context, user_id, %{
-             contacted_at: Retention.now(),
+             contacted_at: now,
              contacted_by_id: Map.get(context, :user_id)
-           }) do
+           }),
+         {:ok, _action} <- log(context, user_id, "contacted", now, %{channel: channel}) do
       {:ok, present(risk, people([risk.user_id, risk.contacted_by_id]))}
     end
   end
@@ -148,9 +161,37 @@ defmodule Palee.Application.Retention.MembersAtRisk do
              do: nil,
              else: Date.add(Organizations.local_today(organization_id, Retention.now()), days)
            ),
-         {:ok, risk} <- Retention.put(context, user_id, %{snoozed_until: until}) do
+         {:ok, risk} <- Retention.put(context, user_id, %{snoozed_until: until}),
+         {:ok, _action} <-
+           log(
+             context,
+             user_id,
+             if(until, do: "snoozed", else: "unsnoozed"),
+             Retention.now(),
+             %{snoozed_until: until}
+           ) do
       {:ok, present(risk, people([risk.user_id, risk.contacted_by_id]))}
     end
+  end
+
+  # ADR-384: every staff action on a member at risk is kept with who and when.
+  defp log(context, user_id, kind, at, attrs) do
+    Retention.add_action(
+      context,
+      user_id,
+      Map.merge(attrs, %{kind: kind, at: at, actor_id: Map.get(context, :user_id)})
+    )
+  end
+
+  defp present_action(%RiskAction{} = action, people) do
+    %{
+      id: action.id,
+      kind: action.kind,
+      channel: action.channel,
+      snoozed_until: action.snoozed_until,
+      at: action.at,
+      actor: Map.get(people, action.actor_id)
+    }
   end
 
   defp present(%Risk{} = risk, people) do
