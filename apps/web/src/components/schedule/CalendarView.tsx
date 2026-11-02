@@ -7,7 +7,8 @@
 
 import {useUiTranslations} from "@/i18n/ui";
 import type { ClassTypeRecord, ScheduleCoach, ScheduleLocation, ScheduleSlot } from "@/api/schedule";
-import type { DayWorkout } from "@/api/day-workouts";
+import type { DayAssignmentTag, DayWorkout } from "@/api/day-workouts";
+import { DayAssignmentTagBadge } from "@/components/schedule/DayAssignmentTagBadge";
 import { DayWorkoutStrip } from "@/components/schedule/DayWorkoutStrip";
 import { dayWorkoutsOn } from "@/components/schedule/day-workouts";
 import { useLocale, useTranslations } from "next-intl";
@@ -37,6 +38,8 @@ type CalendarViewProps = {
   /** ADR-230, staff: the WOD of each day, shown under the day's header. */
   dayWorkouts?: DayWorkout[];
   classTypes?: ClassTypeRecord[];
+  /** ADR-357, whoever programs: whether none, some or all of a day's classes have their WOD. */
+  dayTags?: DayAssignmentTag[];
   /** Opens the day WOD dialog of a date (today or later). */
   onOpenDayWorkout?: (isoDate: string) => void;
 };
@@ -78,8 +81,10 @@ export function CalendarView({
   timeZone = null,
   dayWorkouts,
   classTypes,
+  dayTags,
   onOpenDayWorkout,
 }: CalendarViewProps) {
+  const tagsByDate = new Map((dayTags ?? []).map((day) => [day.date, day]));
   const i18n = useUiTranslations();
   const t = useTranslations("Schedule");
   const locale = useLocale();
@@ -158,6 +163,7 @@ export function CalendarView({
                     </button>
                   ) : null}
                 </div>
+                {!outsideMonth && tagsByDate.get(date) ? <DayAssignmentTagBadge day={tagsByDate.get(date)!} compact /> : null}
                 {!outsideMonth ? (
                   <DayWorkoutStrip
                     variant="month"
@@ -256,6 +262,11 @@ export function CalendarView({
                     </button>
                   ) : null}
               </div>
+
+              {/* An empty day already says it has no classes below. */}
+              {tagsByDate.get(date) && tagsByDate.get(date)!.tag !== "none" ? (
+                <DayAssignmentTagBadge day={tagsByDate.get(date)!} />
+              ) : null}
 
               <DayWorkoutStrip
                 variant={days === 7 ? "compact" : "full"}

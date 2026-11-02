@@ -96903,6 +96903,67 @@
         "title": "WodTodayCard",
         "type": "object"
       },
+      "WorkoutAsPerformed": {
+        "properties": {
+          "changed": {
+            "description": "The WOD now reads differently, or no longer exists",
+            "type": "boolean"
+          },
+          "snapshot": {
+            "allOf": [
+              {
+                "properties": {
+                  "content": {
+                    "additionalProperties": true,
+                    "description": "The WOD as it read then (title, type, text, sections, plans, body)",
+                    "type": "object"
+                  },
+                  "content_hash": {
+                    "type": "string"
+                  },
+                  "format_version": {
+                    "type": "integer"
+                  },
+                  "id": {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "taken_at": {
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  "title": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "workout_id": {
+                    "format": "uuid",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "content",
+                  "content_hash",
+                  "format_version",
+                  "id",
+                  "taken_at",
+                  "workout_id"
+                ],
+                "title": "WorkoutSnapshot",
+                "type": "object"
+              }
+            ],
+            "description": "Null for results from before snapshots (ADR-357)",
+            "nullable": true
+          }
+        },
+        "required": [
+          "changed",
+          "snapshot"
+        ],
+        "title": "WorkoutAsPerformed",
+        "type": "object"
+      },
       "WorkoutAuthoringSettings": {
         "properties": {
           "wod_assistant_enabled": {
@@ -294628,6 +294689,113 @@
         ]
       }
     },
+    "/api/org/{organization_slug}/me/executions/{id}/workout-snapshot": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.WorkoutSnapshotController.execution",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "changed": {
+                      "description": "The WOD now reads differently, or no longer exists",
+                      "type": "boolean"
+                    },
+                    "snapshot": {
+                      "allOf": [
+                        {
+                          "properties": {
+                            "content": {
+                              "additionalProperties": true,
+                              "description": "The WOD as it read then (title, type, text, sections, plans, body)",
+                              "type": "object"
+                            },
+                            "content_hash": {
+                              "type": "string"
+                            },
+                            "format_version": {
+                              "type": "integer"
+                            },
+                            "id": {
+                              "format": "uuid",
+                              "type": "string"
+                            },
+                            "taken_at": {
+                              "format": "date-time",
+                              "type": "string"
+                            },
+                            "title": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "workout_id": {
+                              "format": "uuid",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "content",
+                            "content_hash",
+                            "format_version",
+                            "id",
+                            "taken_at",
+                            "workout_id"
+                          ],
+                          "title": "WorkoutSnapshot",
+                          "type": "object"
+                        }
+                      ],
+                      "description": "Null for results from before snapshots (ADR-357)",
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "changed",
+                    "snapshot"
+                  ],
+                  "title": "WorkoutAsPerformed",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "As performed"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No such run, or not yours"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The WOD as my own run performed it, and whether it changed since (ADR-389)",
+        "tags": [
+          "Workouts"
+        ]
+      }
+    },
     "/api/org/{organization_slug}/me/finance": {
       "get": {
         "callbacks": {},
@@ -306999,6 +307167,113 @@
         "summary": "Void a training log entry (entries are never deleted)",
         "tags": [
           "Training Log"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/me/training-log/entries/{id}/workout-snapshot": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.WorkoutSnapshotController.training_log",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "changed": {
+                      "description": "The WOD now reads differently, or no longer exists",
+                      "type": "boolean"
+                    },
+                    "snapshot": {
+                      "allOf": [
+                        {
+                          "properties": {
+                            "content": {
+                              "additionalProperties": true,
+                              "description": "The WOD as it read then (title, type, text, sections, plans, body)",
+                              "type": "object"
+                            },
+                            "content_hash": {
+                              "type": "string"
+                            },
+                            "format_version": {
+                              "type": "integer"
+                            },
+                            "id": {
+                              "format": "uuid",
+                              "type": "string"
+                            },
+                            "taken_at": {
+                              "format": "date-time",
+                              "type": "string"
+                            },
+                            "title": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "workout_id": {
+                              "format": "uuid",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "content",
+                            "content_hash",
+                            "format_version",
+                            "id",
+                            "taken_at",
+                            "workout_id"
+                          ],
+                          "title": "WorkoutSnapshot",
+                          "type": "object"
+                        }
+                      ],
+                      "description": "Null for results from before snapshots (ADR-357)",
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "changed",
+                    "snapshot"
+                  ],
+                  "title": "WorkoutAsPerformed",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "As performed"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No such score, or not yours"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The WOD as my own logged score performed it, and whether it changed since (ADR-389)",
+        "tags": [
+          "Workouts"
         ]
       }
     },
