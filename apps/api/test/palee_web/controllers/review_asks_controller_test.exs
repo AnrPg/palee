@@ -55,7 +55,7 @@ defmodule PaleeWeb.ReviewAsksControllerTest do
 
   defp as(user), do: put_bearer_token(build_conn(), user)
 
-  test "off until a Place ID is set; then asked once, answered, opted out", ctx do
+  test "off until turned on; then asked once, answered, opted out", ctx do
     assert %{"ask" => nil} =
              ctx.member |> as() |> get("#{ctx.me}/review-ask") |> json_response(200)
 
@@ -87,8 +87,8 @@ defmodule PaleeWeb.ReviewAsksControllerTest do
            } =
              ctx.member |> as() |> get("#{ctx.me}/review-ask") |> json_response(200)
 
-    # Closed without answering: the same ask comes back.
-    assert %{"ask" => %{"id" => ^id}} =
+    # ADR-386: shown once; the next visit does not bring it back.
+    assert %{"ask" => nil} =
              ctx.member |> as() |> get("#{ctx.me}/review-ask") |> json_response(200)
 
     assert %{"ask" => %{"status" => "opened"}} =
@@ -124,6 +124,17 @@ defmodule PaleeWeb.ReviewAsksControllerTest do
 
     # Members do not see the settings.
     ctx.member |> as() |> get("#{ctx.admin}/settings") |> json_response(403)
+  end
+
+  test "ADR-386: asks work without a Place ID and say when a review exists", ctx do
+    assert %{"settings" => %{"enabled" => true, "google_place_id" => nil}, "google" => nil} =
+             ctx.owner
+             |> as()
+             |> put("#{ctx.admin}/settings", %{lock_version: 0, enabled: true})
+             |> json_response(200)
+
+    assert %{"ask" => %{"google_review_url" => nil, "has_review" => false}} =
+             ctx.member |> as() |> get("#{ctx.me}/review-ask") |> json_response(200)
   end
 
   test "opted-out members and members without the moment are never asked", ctx do

@@ -144,8 +144,11 @@ defmodule Palee.Application.ReviewAsks.BoxReviews do
     ids
     |> Enum.reject(&MapSet.member?(hidden, &1))
     |> Identity.list_by_ids()
-    |> Map.new(&{&1.id, ReviewAsks.author_name(&1.nickname)})
+    |> Map.new(&{&1.id, ReviewAsks.author_name(display_name(&1))})
   end
+
+  defp display_name(user),
+    do: Map.get(user, :display_name) || Map.get(user, :nickname) || Map.get(user, :handle)
 
   defp page(params) do
     params = stringify(params)
