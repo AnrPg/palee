@@ -304,6 +304,37 @@ defmodule PaleeWeb.AutomationControllerTest do
         |> json_response(200)
 
       assert contacted["member"]["contacted_by"]["user_id"] == ctx.desk.id
+
+      # ADR-384: the member's detail keeps every action with who and when,
+      # newest first; showing them again is logged too.
+      build_conn()
+      |> put_bearer_token(ctx.owner)
+      |> put_req_header("content-type", "application/json")
+      |> post(admin(ctx, "/members-at-risk/#{gone.id}/snooze"), Jason.encode!(%{"days" => 0}))
+      |> json_response(200)
+
+      detail =
+        build_conn()
+        |> put_bearer_token(ctx.desk)
+        |> get(admin(ctx, "/members-at-risk/#{gone.id}"))
+        |> json_response(200)
+
+      assert detail["member"]["user_id"] == gone.id
+
+      assert [
+               %{"kind" => "unsnoozed", "actor" => %{"user_id" => owner_id}, "snoozed_until" => nil},
+               %{"kind" => "contacted", "channel" => "phone", "actor" => %{"user_id" => desk_id}},
+               %{"kind" => "snoozed", "snoozed_until" => until, "actor" => %{"user_id" => desk_id}}
+             ] = detail["actions"]
+
+      assert owner_id == ctx.owner.id
+      assert desk_id == ctx.desk.id
+      assert until == snoozed["member"]["snoozed_until"]
+      assert Enum.all?(detail["actions"], &is_binary(&1["at"]))
+
+      # A former box member's log goes with their risk.
+      Palee.Retention.delete_except(ctx.context, [])
+      assert Palee.Retention.actions(ctx.context, gone.id, 50) == []
     end
 
     test "missed classes: an absence is greeted once", ctx do

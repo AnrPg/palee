@@ -7,7 +7,7 @@ defmodule Palee.Leads.GrowthRLSTest do
   """
   use Palee.RLSCase, async: false
 
-  test "leads, lead events, recipes and deliveries stay inside their box", %{conn: conn} do
+  test "leads, lead events, recipes, deliveries and risk actions stay inside their box", %{conn: conn} do
     {org_s, org} = uuid()
     {other_s, other} = uuid()
 
@@ -23,6 +23,22 @@ defmodule Palee.Leads.GrowthRLSTest do
     end
 
     {lead_s, lead} = uuid()
+    {_member_s, member} = uuid()
+    nick = "rls_growth_#{System.unique_integer([:positive])}"
+
+    Postgrex.query!(
+      conn,
+      """
+      WITH login AS (
+        INSERT INTO logins (id, email, password_hash, inserted_at, updated_at)
+        VALUES (gen_random_uuid(), $2::text || '@placeholder.invalid', 'x', now(), now())
+        RETURNING id
+      )
+      INSERT INTO users (id, nickname, display_nickname, role, login_id, inserted_at, updated_at)
+      SELECT $1, $2::text, $2::text, 'member', login.id, now(), now() FROM login
+      """,
+      [member, nick]
+    )
 
     as_session(conn, nil, org_s, false, fn ->
       Postgrex.query!(
@@ -60,20 +76,30 @@ defmodule Palee.Leads.GrowthRLSTest do
         """,
         [org, lead]
       )
+
+      # ADR-384: the staff action log of members at risk.
+      Postgrex.query!(
+        conn,
+        """
+        INSERT INTO retention_risk_actions (id, organization_id, user_id, kind, at, inserted_at)
+        VALUES (gen_random_uuid(), $1, $2, 'contacted', now(), now())
+        """,
+        [org, member]
+      )
     end)
 
     counts = fn session ->
       as_session(conn, nil, session, false, fn ->
-        for table <- ~w(leads lead_events box_automations automation_deliveries) do
+        for table <- ~w(leads lead_events box_automations automation_deliveries retention_risk_actions) do
           %{rows: [[count]]} = Postgrex.query!(conn, "SELECT count(*) FROM #{table}", [])
           count
         end
       end)
     end
 
-    assert counts.(org_s) == [1, 1, 1, 1]
-    assert counts.(other_s) == [0, 0, 0, 0]
-    assert counts.(nil) == [0, 0, 0, 0]
+    assert counts.(org_s) == [1, 1, 1, 1, 1]
+    assert counts.(other_s) == [0, 0, 0, 0, 0]
+    assert counts.(nil) == [0, 0, 0, 0, 0]
 
     as_session(conn, nil, other_s, false, fn ->
       assert %{num_rows: 0} =
@@ -102,5 +128,6 @@ defmodule Palee.Leads.GrowthRLSTest do
              end)
 
     Postgrex.query!(conn, "DELETE FROM organizations WHERE id = ANY($1)", [[org, other]])
+    Postgrex.query!(conn, "DELETE FROM users WHERE id = $1", [member])
   end
 end
