@@ -187,6 +187,81 @@ defmodule PaleeWeb.TrainingFloorControllerTest do
       refute Ecto.UUID.load!(snapshot_again) == snapshot_id
     end
 
+    test "ADR-389: my own score's WOD as performed, and whether it changed since", ctx do
+      %{as: as, base: base, coach: coach, person: person} = ctx
+      workout = fran(coach)
+      member = person.(:member)
+      other = person.(:member)
+      %{"entry" => %{"id" => entry_id}} = log(as, base, member, workout, "4:00")
+      path = "#{base}/me/training-log/entries/#{entry_id}/workout-snapshot"
+
+      # Unchanged WOD: nothing to show.
+      assert %{"changed" => false, "snapshot" => %{"title" => "Fran"}} =
+               as.(member) |> get(path) |> json_response(200)
+
+      Repo.query!("UPDATE master_workouts SET title = 'Fran (heavy)' WHERE id = $1", [
+        Ecto.UUID.dump!(workout.id)
+      ])
+
+      assert %{"changed" => true, "snapshot" => %{"title" => "Fran", "content" => content}} =
+               as.(member) |> get(path) |> json_response(200)
+
+      assert [%{"name" => "For time"}] = content["sections"]
+
+      # Someone else's score, and an unknown id, are not found.
+      assert as.(other) |> get(path) |> json_response(404)
+
+      assert as.(member)
+             |> get("#{base}/me/training-log/entries/#{Ecto.UUID.generate()}/workout-snapshot")
+             |> json_response(404)
+
+      # A result from before snapshots shows nothing.
+      Repo.query!("UPDATE training_log_entries SET workout_snapshot_id = NULL WHERE id = $1", [
+        Ecto.UUID.dump!(entry_id)
+      ])
+
+      assert %{"changed" => false, "snapshot" => nil} =
+               as.(member) |> get(path) |> json_response(200)
+    end
+
+    test "ADR-389: my own run's WOD as performed, changed after an edit", ctx do
+      %{as: as, base: base, coach: coach, person: person} = ctx
+      workout = fran(coach)
+      member = person.(:member)
+      %{"entry" => %{"id" => entry_id}} = log(as, base, member, workout, "4:00")
+
+      %{rows: [[snapshot_id]]} =
+        Repo.query!("SELECT workout_snapshot_id FROM training_log_entries WHERE id = $1", [
+          Ecto.UUID.dump!(entry_id)
+        ])
+
+      %{"execution" => %{"id" => execution_id}} =
+        as.(member)
+        |> send_json(:post, "/api/executions", %{
+          master_workout_id: workout.id,
+          source: "self_selected"
+        })
+        |> json_response(201)
+
+      Repo.query!(
+        "UPDATE workout_executions SET workout_snapshot_id = $1 WHERE id = $2",
+        [snapshot_id, Ecto.UUID.dump!(execution_id)]
+      )
+
+      path = "#{base}/me/executions/#{execution_id}/workout-snapshot"
+
+      assert %{"changed" => false, "snapshot" => %{"id" => _}} =
+               as.(member) |> get(path) |> json_response(200)
+
+      Repo.query!("UPDATE master_workouts SET description = 'Heavy day' WHERE id = $1", [
+        Ecto.UUID.dump!(workout.id)
+      ])
+
+      assert %{"changed" => true} = as.(member) |> get(path) |> json_response(200)
+      # Another member does not read it.
+      assert as.(person.(:member)) |> get(path) |> json_response(404)
+    end
+
     test "day-workouts tags each day not assigned, mixed or all assigned", ctx do
       %{as: as, base: base, coach: coach, owner: owner} = ctx
       workout = fran(coach)
