@@ -26,6 +26,7 @@ import {
   ruleErrors,
   type RuleDraft,
   type RuleField,
+  withoutKey,
 } from "./coach-pay";
 import { Advanced, Choice, Chips, FormRow, controlClass, controlStyle, useGymToday } from "./pay-ui";
 
@@ -54,8 +55,7 @@ export function PayRuleForm({ userId, name, rule, onClose }: { userId: string; n
     mutationFn: () => {
       const body = ruleBody(draft, userId);
       if (!rule) return createPayRule(token, body);
-      const { coach_user_id: _person, ...update } = body;
-      return updatePayRule(token, rule.id, update);
+      return updatePayRule(token, rule.id, withoutKey(body, "coach_user_id"));
     },
     onSuccess: done,
   });

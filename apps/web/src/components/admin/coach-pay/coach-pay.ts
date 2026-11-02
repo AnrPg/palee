@@ -398,3 +398,10 @@ export function payslipLanguage(locale: string): string {
   const short = locale.split("-")[0]!;
   return supported.includes(short) ? short : "en";
 }
+
+/** A copy of `record` without `key` (an update body never carries the person or kind it was created with). */
+export function withoutKey<T extends object, K extends keyof T>(record: T, key: K): Omit<T, K> {
+  const copy = { ...record };
+  delete copy[key];
+  return copy;
+}

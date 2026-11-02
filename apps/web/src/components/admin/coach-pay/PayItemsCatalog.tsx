@@ -13,7 +13,7 @@ import { localizeError } from "@/i18n/presentation";
 import { useUiTranslations } from "@/i18n/ui";
 import { fieldBorder, invalidFieldProps } from "@/lib/form-errors";
 
-import { PAY_ROLES, emptyItemDraft, itemBody, itemDraftFrom, itemErrors, type ItemDraft, type ItemField } from "./coach-pay";
+import { PAY_ROLES, emptyItemDraft, itemBody, itemDraftFrom, itemErrors, type ItemDraft, type ItemField, withoutKey } from "./coach-pay";
 import { Advanced, Chips, Choice, FormRow, NetMark, controlClass, controlStyle, useMoney } from "./pay-ui";
 
 /**
@@ -116,8 +116,7 @@ export function PayItemDialog({ item, kind, onClose }: { item: PayItem | null; k
     mutationFn: () => {
       const body = itemBody(draft);
       if (!item) return createPayItem(token, body);
-      const { kind: _kind, ...update } = body;
-      return updatePayItem(token, item.id, update);
+      return updatePayItem(token, item.id, withoutKey(body, "kind"));
     },
     onSuccess: done,
   });
