@@ -37,7 +37,8 @@ export function BoxDataExportCard({ token, slug, email }: { token: string; slug:
     onSuccess: () => queryClient.invalidateQueries({ queryKey }),
   });
 
-  const card = exportCard(exports.data, Date.now());
+  // The time the list was read: the card is as fresh as the data it shows.
+  const card = exportCard(exports.data, exports.dataUpdatedAt);
   const refusal = boxDataExportRefusal(request.error);
   const day = (at: string) => formatInZone(at, null, locale, { day: "numeric", month: "short" });
   const when = (at: string) => formatInZone(at, null, locale, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });

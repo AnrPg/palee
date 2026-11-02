@@ -1,7 +1,11 @@
 // ADR-366, W7 screen 2: the platform console's «Νέο πρόβλημα ή συντήρηση»
 // form. Pure: the draft, its errors and what is sent.
 
+import type { StatusIncident } from "@/api/service-status";
 import type { StatusComponentKey } from "@/lib/service-status";
+
+/** A step of an incident or maintenance, as the API names it. */
+export type IncidentStep = StatusIncident["status"];
 
 export type IncidentKind = "incident" | "maintenance";
 export type Severity = "minor" | "major" | "critical";
@@ -111,12 +115,12 @@ export function incidentPayload(draft: IncidentDraft) {
 }
 
 /** The body of `POST .../incidents/:id/updates`: a new step with its note. */
-export function updatePayload(draft: Pick<IncidentDraft, "body" | "english">, status: string) {
+export function updatePayload(draft: Pick<IncidentDraft, "body" | "english">, status: IncidentStep) {
   return { status, body: draft.body.trim(), notify: true, ...translationFields(draft.english, false) };
 }
 
 /** The steps a person may pick next for an open incident or maintenance. */
-export function nextStatuses(kind: string): string[] {
+export function nextStatuses(kind: string): IncidentStep[] {
   return kind === "maintenance" ? ["in_progress", "completed"] : ["investigating", "identified", "monitoring", "resolved"];
 }
 

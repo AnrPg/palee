@@ -26,6 +26,7 @@ import {
   incidentPayload,
   needsTranslation,
   nextStatuses,
+  type IncidentStep,
   translationKey,
   updatePayload,
   type IncidentDraft,
@@ -174,7 +175,7 @@ function Overview({
               since: when(probe.changed_at),
             })}
             {probe.reason ? ` (${probe.reason})` : null}
-            {open.some((incident) => incident.components.includes(probe.key)) ? null : ` ${t("noIncidentWritten")}`}
+            {open.some((incident) => (incident.components as string[]).includes(probe.key)) ? null : ` ${t("noIncidentWritten")}`}
           </p>
         ))}
         {open.map((incident) => (
@@ -298,7 +299,7 @@ function IncidentForm({
   const queryClient = useQueryClient();
   const isUpdate = incident !== null;
   const [draft, setDraft] = useState<IncidentDraft>(EMPTY_DRAFT);
-  const [step, setStep] = useState(incident ? nextStatuses(incident.kind)[0] : "");
+  const [step, setStep] = useState<IncidentStep>(incident ? nextStatuses(incident.kind)[0] : "investigating");
   const [correcting, setCorrecting] = useState(false);
   const [showErrors, setShowErrors] = useState(false);
   const latestKey = useRef<string | null>(null);
