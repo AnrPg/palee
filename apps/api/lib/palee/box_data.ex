@@ -3,10 +3,11 @@ defmodule Palee.BoxData do
   The box's own copy of its data (ADR-365, CP-G5): «what happens if Palee
   closes, or we leave?». An owner asks for it at any time and gets one ZIP of
   CSV files with every table of the box that the owner may read, built from
-  each bounded context's own export (the ADR-117 policies).
+  each bounded context's own export (the ADR-117 policies), plus (ADR-367)
+  the box's stored files (photos, PDFs) in ZIP parts.
   """
 
-  alias Palee.BoxData.Domain.{CsvBundle, ExportPolicy, TenantDataPolicy}
+  alias Palee.BoxData.Domain.{CsvBundle, ExportPolicy, FilePacking, TenantDataPolicy}
   alias Palee.BoxData.ExportStore
   alias Palee.TenantData.{BoxExportContext, TableStore}
 
@@ -63,4 +64,10 @@ defmodule Palee.BoxData do
   defdelegate file_name(slug, now), to: ExportPolicy
   defdelegate object_folder(export_id), to: ExportPolicy
   defdelegate keep_days, to: ExportPolicy
+  defdelegate part_name(slug, now, index), to: ExportPolicy
+
+  ## Stored files (ADR-367)
+
+  defdelegate select_files(objects, tenant_prefix), to: FilePacking, as: :select
+  defdelegate plan_parts(objects, max_bytes), to: FilePacking, as: :plan
 end

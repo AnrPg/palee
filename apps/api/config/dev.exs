@@ -100,3 +100,6 @@ config :palee, :status_probe_targets, []
 
 # ADR-368: a box's own SMTP provider is simulated in development.
 config :palee, :channel_email_transport, Palee.Infrastructure.Channels.SandboxEmailTransport
+
+# ADR-366: no model calls for status page translations outside production.
+config :palee, :status_translator, Palee.Infrastructure.Status.SandboxTranslator

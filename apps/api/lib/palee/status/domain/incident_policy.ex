@@ -15,7 +15,7 @@ defmodule Palee.Status.Domain.IncidentPolicy do
   Pure: callers pass `now`.
   """
 
-  alias Palee.Status.Domain.Components
+  alias Palee.Status.Domain.{Components, Translation}
 
   @kinds ~w(incident maintenance)
   @impacts ~w(none minor major critical)
@@ -35,8 +35,9 @@ defmodule Palee.Status.Domain.IncidentPolicy do
   @doc """
   Validates a new incident or maintenance. Returns `{:ok, attrs}` with
   the incident fields (`kind`, `title`, `impact`, `status`, `components`,
-  `scheduled_for`, `scheduled_until`, `started_at`, `resolved_at`) and the
-  first update (`body`, `notify`), or `{:error, reason}`.
+  `scheduled_for`, `scheduled_until`, `started_at`, `resolved_at`, and the
+  ADR-366 `locale`, `title_en`, `en_source`) and the first update (`body`,
+  `notify`, `locale`, `body_en`, `en_source`), or `{:error, reason}`.
   """
   def validate_new(params, %DateTime{} = now) do
     kind = text(params, :kind) || "incident"
@@ -49,7 +50,8 @@ defmodule Palee.Status.Domain.IncidentPolicy do
          {:ok, window} <- window(kind, params),
          status = text(params, :status) || initial_status(kind),
          :ok <- check(status in statuses(kind), :invalid_status_transition),
-         {:ok, body} <- body(params) do
+         {:ok, body} <- body(params),
+         {:ok, translation} <- Translation.from_params(params, :incident) do
       started_at = started_at(kind, status, window, now)
 
       {:ok,
@@ -63,14 +65,24 @@ defmodule Palee.Status.Domain.IncidentPolicy do
          scheduled_until: window[:scheduled_until],
          started_at: started_at,
          resolved_at: if(closed?(status), do: now),
-         update: %{status: status, body: body, notify: notify?(params)}
+         locale: translation.locale,
+         title_en: translation.title_en,
+         en_source: translation.en_source,
+         update: %{
+           status: status,
+           body: body,
+           notify: notify?(params),
+           locale: translation.locale,
+           body_en: translation.body_en,
+           en_source: translation.en_source
+         }
        }}
     end
   end
 
   @doc """
   Validates a new step on an existing incident: `{:ok, %{status, body,
-  notify, resolved_at, started_at}}`, where `resolved_at`/`started_at`
+  notify, locale, body_en, en_source, resolved_at, started_at}}`, where `resolved_at`/`started_at`
   are set only when this step closes or starts it.
   """
   def validate_update(%{kind: kind, status: current} = incident, params, %DateTime{} = now) do
@@ -78,12 +90,16 @@ defmodule Palee.Status.Domain.IncidentPolicy do
 
     with :ok <- check(not closed?(current), :status_incident_closed),
          :ok <- check(status in statuses(kind), :invalid_status_transition),
-         {:ok, body} <- body(params) do
+         {:ok, body} <- body(params),
+         {:ok, translation} <- Translation.from_params(params, :update) do
       {:ok,
        %{
          status: status,
          body: body,
          notify: notify?(params),
+         locale: translation.locale,
+         body_en: translation.body_en,
+         en_source: translation.en_source,
          resolved_at: if(closed?(status), do: now),
          started_at: maintenance_start(incident, status, now)
        }}

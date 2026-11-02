@@ -91,7 +91,9 @@ config :palee, :gemini,
   # ADR-157: alt text suggestions (vision).
   vision_model: System.get_env("GEMINI_VISION_MODEL", "gemini-2.5-flash-lite"),
   # ADR-175: voice logging speech to text (audio in, transcript out).
-  transcribe_model: System.get_env("GEMINI_TRANSCRIBE_MODEL", "gemini-2.5-flash")
+  transcribe_model: System.get_env("GEMINI_TRANSCRIBE_MODEL", "gemini-2.5-flash"),
+  # ADR-366: status page incidents into English.
+  translate_model: System.get_env("GEMINI_TRANSLATE_MODEL", "gemini-2.5-flash-lite")
 
 # ADR-174: AI scaling suggestions call the Claude API with each gym's own key
 # (set in the gym's AI settings); only the default model is configured here.

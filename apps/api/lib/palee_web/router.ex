@@ -2026,6 +2026,8 @@ defmodule PaleeWeb.Router do
     post("/status/incidents", PlatformStatusController, :create)
     patch("/status/incidents/:id", PlatformStatusController, :update)
     post("/status/incidents/:id/updates", PlatformStatusController, :add_update)
+    # ADR-366: the English preview of a new incident or step.
+    post("/status/translations", PlatformStatusController, :translate)
     # ADR-117 reviewed tenant export/purge workflow.
     get("/organization-purges", PlatformOrganizationPurgeController, :index)
     post("/organizations/:id/purge", PlatformOrganizationPurgeController, :create)

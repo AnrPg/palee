@@ -1,0 +1,17 @@
+msgid ""
+msgstr ""
+"Language: bg\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "The box's data is ready to download"
+msgstr "Данните на бокса са готови за изтегляне"
+
+msgid "The copy of %{box}'s data you asked for is ready: members, packages, payments, classes, workouts, documents, photos and PDFs."
+msgstr "Копието на данните на %{box}, което поиска, е готово: членове, пакети, плащания, класове, тренировки, документи, снимки и PDF файлове."
+
+msgid "Download it from Settings › Business while you are signed in. It is kept for %{days} days."
+msgstr "Изтегли го от Настройки › Бизнес, докато си влязъл в профила си. Пази се %{days} дни."
+
+msgid "Open Settings"
+msgstr "Отвори Настройки"

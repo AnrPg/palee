@@ -155,6 +155,8 @@ config :palee, :box_data_export_store, Palee.Infrastructure.BoxData.EctoExportSt
 config :palee, :status_store, Palee.Infrastructure.Status.EctoStatusStore
 config :palee, :status_probe, Palee.Infrastructure.Status.LiveProbe
 config :palee, :status_clock, Palee.Infrastructure.Status.SystemClock
+# ADR-366: incidents written in any language get an English version.
+config :palee, :status_translator, Palee.Infrastructure.Status.GeminiTranslator
 config :palee, :status_http, req_options: []
 config :palee, :status_page_url, nil
 

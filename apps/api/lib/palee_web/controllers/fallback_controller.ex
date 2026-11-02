@@ -2914,6 +2914,10 @@ defmodule PaleeWeb.FallbackController do
     invalid_status_note: {:unprocessable_entity, "Write a note of 1 to 2000 characters"},
     status_incident_closed: {:conflict, "This incident is already closed"},
     status_incident_not_found: {:not_found, "No incident matches"},
+    invalid_status_translation:
+      {:unprocessable_entity, "An English title has 3 to 140 characters and a note 1 to 2000"},
+    status_translation_unavailable:
+      {:service_unavailable, "The translation is not available; publish without it"},
     status_subscription_not_found: {:not_found, "This link has expired or was already used"},
     invalid_status_email: {:unprocessable_entity, "Enter a valid email address"},
     box_export_too_soon: {:conflict, "One export of the box's data a day; try again tomorrow"},

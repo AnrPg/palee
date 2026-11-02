@@ -48,6 +48,10 @@ defmodule Palee.BoxData.Domain.ExportPolicy do
   def file_name(slug, %DateTime{} = now),
     do: "palee-#{slug}-data-#{Calendar.strftime(now, "%Y-%m-%d")}.zip"
 
+  @doc "ADR-367: the name of the `index`th ZIP part with the box's stored files (1-based)."
+  def part_name(slug, %DateTime{} = now, index) when is_integer(index) and index > 0,
+    do: "palee-#{slug}-files-#{Calendar.strftime(now, "%Y-%m-%d")}-#{index}.zip"
+
   @doc "The tenant-relative folder an export's file lives in."
   def object_folder(export_id), do: "exports/box-data/#{export_id}/"
 end

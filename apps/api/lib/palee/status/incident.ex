@@ -25,24 +25,40 @@ defmodule Palee.Status.Incident do
     field :started_at, :utc_datetime_usec
     field :resolved_at, :utc_datetime_usec
     field :created_by_id, :binary_id
+    # ADR-366: the language it was written in and its English version.
+    field :locale, :string
+    field :title_en, :string
+    field :en_source, :string
 
     has_many :updates, IncidentUpdate, preload_order: [asc: :inserted_at]
 
     timestamps(type: :utc_datetime_usec)
   end
 
-  @fields ~w(kind title impact status components scheduled_for scheduled_until started_at resolved_at created_by_id)a
+  @fields ~w(kind title impact status components scheduled_for scheduled_until started_at resolved_at created_by_id locale title_en en_source)a
 
   def create_changeset(attrs) do
     %__MODULE__{}
     |> cast(attrs, @fields)
     |> validate_required([:kind, :title, :impact, :status, :started_at])
     |> check_constraint(:status, name: :status_incidents_check)
+    |> check_constraint(:title_en, name: :status_incidents_translation_check)
   end
 
   def change_changeset(incident, attrs) do
     incident
-    |> cast(attrs, [:title, :impact, :status, :components, :started_at, :resolved_at])
+    |> cast(attrs, [
+      :title,
+      :impact,
+      :status,
+      :components,
+      :started_at,
+      :resolved_at,
+      :locale,
+      :title_en,
+      :en_source
+    ])
     |> check_constraint(:status, name: :status_incidents_check)
+    |> check_constraint(:title_en, name: :status_incidents_translation_check)
   end
 end
