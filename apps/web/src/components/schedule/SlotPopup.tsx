@@ -57,6 +57,7 @@ import { ClassRoomDialog } from "@/components/spaces/ClassRoomDialog";
 import { Dialog } from "@/components/ui/Dialog";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { MoreMenu } from "@/components/ui/MoreMenu";
+import { ClassNoticeDialog } from "@/components/channels/ClassNoticeDialog";
 
 // ADR-179: on the gym's clock (`zone`), its city added when the viewer's differs.
 function formatDateTime(locale: string, isoString: string, zone: string | null) {
@@ -125,7 +126,10 @@ export function SlotPopup({
   const i18n = useUiTranslations();
   const t = useTranslations("Schedule");
   const spaceT = useTranslations("Spaces");
+  const tSms = useTranslations("Sms");
   const [roomOpen, setRoomOpen] = useState(false);
+  // W3 screen 4 Γ (ADR-385): «Ενημέρωση συμμετεχόντων», the app first, SMS for the rest.
+  const [noticeOpen, setNoticeOpen] = useState(false);
   const rulesT = useTranslations("BookingRules");
   const locale = useLocale();
   const organizationSlug = useOrganizationSlug();
@@ -413,6 +417,7 @@ export function SlotPopup({
                 items={[
                   ...(onDuplicate ? [{ label: t("duplicateClass"), onSelect: onDuplicate }] : []),
                   ...(slot.cancelled_at ? [] : [{ label: i18n("addToCalendar4f05cd6"), onSelect: addToCalendar }]),
+                  ...(hasBookedMembers && !isPast ? [{ label: tSms("noticeTitle"), onSelect: () => setNoticeOpen(true) }] : []),
                   ...stateActions
                     .filter((action) => action !== "restore" && action !== "resume" && action !== "delete")
                     .map((action) => ({
@@ -950,6 +955,8 @@ export function SlotPopup({
           ) : null}
         </div>
       </Dialog>
+
+      {noticeOpen && isAdmin ? <ClassNoticeDialog slotId={slot.id} cancelled={Boolean(slot.cancelled_at)} onClose={() => setNoticeOpen(false)} /> : null}
 
       {editWorkoutOpen && slot.workout && isAdmin ? (
         <WorkoutEditModal

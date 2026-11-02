@@ -140,7 +140,13 @@ defmodule Palee.Application.Channels.SendThroughChannel do
   sweep (every minute).
   """
   def schedule(%{organization_id: organization_id}, message \\ nil) do
-    due? = is_nil(message) or DateTime.compare(message.next_attempt_at, DateTime.utc_now()) != :gt
+    # A repeated key answers the message already sent (no next attempt): nothing to do.
+    due? =
+      case message do
+        nil -> true
+        %{next_attempt_at: %DateTime{} = at} -> DateTime.compare(at, DateTime.utc_now()) != :gt
+        _sent -> false
+      end
 
     cond do
       not due? ->

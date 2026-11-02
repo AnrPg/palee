@@ -217,3 +217,13 @@ export function inputStyle(invalid: boolean) {
     color: "var(--text)",
   };
 }
+
+/** The 12 message languages (ADR-350); anything else is sent in English. */
+export const SMS_LOCALES = ["el", "en", "de", "fr", "it", "es", "nl", "pt-PT", "bg", "ru", "ar", "he"];
+export function smsLocale(locale: string): string {
+  if (SMS_LOCALES.includes(locale)) return locale;
+  if (locale.startsWith("pt")) return "pt-PT";
+  const base = locale.split("-")[0];
+  return SMS_LOCALES.includes(base) ? base : "en";
+}
+

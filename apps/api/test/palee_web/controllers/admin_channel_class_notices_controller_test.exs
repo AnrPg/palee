@@ -11,7 +11,7 @@ defmodule PaleeWeb.AdminChannelClassNoticesControllerTest do
   import Palee.TestFixtures
 
   alias Palee.{Notifications, Organizations, Repo}
-  alias Palee.Scheduling.{Booking, ScheduledClass}
+  alias Palee.Scheduling.{Booking, ClassType, ScheduledClass}
 
   setup %{conn: conn} do
     owner = admin_fixture(%{nickname: "cn_owner"})
@@ -36,9 +36,17 @@ defmodule PaleeWeb.AdminChannelClassNoticesControllerTest do
         })
     end
 
+    class_type =
+      Repo.insert!(%ClassType{
+        organization_id: organization.id,
+        name: "CrossFit",
+        slug: "crossfit-#{System.unique_integer([:positive])}"
+      })
+
     slot =
       Repo.insert!(%ScheduledClass{
         organization_id: organization.id,
+        class_type_id: class_type.id,
         name: "WOD",
         scheduled_at: DateTime.add(DateTime.utc_now(), 1, :day) |> DateTime.truncate(:second),
         capacity: 10

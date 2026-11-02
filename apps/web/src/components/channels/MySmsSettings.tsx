@@ -12,18 +12,11 @@ import type { BoxExtensionProps } from "@/components/member-app/box/box-extensio
 import { useSession } from "@/components/session-provider";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 
-import { consentGranted, inputStyle } from "./sms";
+import { consentGranted, inputStyle, smsLocale } from "./sms";
+
+export { smsLocale };
 
 export const myChannelsKey = (slug: string) => ["me", "channels", slug] as const;
-
-/** The 12 message languages (ADR-350); anything else is sent in English. */
-export const SMS_LOCALES = ["el", "en", "de", "fr", "it", "es", "nl", "pt-PT", "bg", "ru", "ar", "he"];
-export function smsLocale(locale: string): string {
-  if (SMS_LOCALES.includes(locale)) return locale;
-  if (locale.startsWith("pt")) return "pt-PT";
-  const base = locale.split("-")[0];
-  return SMS_LOCALES.includes(base) ? base : "en";
-}
 
 /** The «phone» field's error from the API, in words; null for any other error. */
 export function usePhoneError() {
