@@ -29,7 +29,9 @@ defmodule Palee.Community.Event do
     :guests_per_member,
     :good_for_friends,
     :cover_media_id,
-    :time_zone
+    :time_zone,
+    # ADR-385: the organiser's per-event SMS switch (reminder and changes).
+    :sms_enabled
   ]
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -61,6 +63,7 @@ defmodule Palee.Community.Event do
     field :guest_pass_allowed, :boolean, default: false
     field :guests_per_member, :integer, default: 1
     field :good_for_friends, :boolean, default: false
+    field :sms_enabled, :boolean, default: true
     field :cover_media_id, :binary_id
     # ADR-179: the zone of an event held away from its gym; nil: the gym's.
     field :time_zone, :string

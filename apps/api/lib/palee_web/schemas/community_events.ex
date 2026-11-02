@@ -143,6 +143,15 @@ defmodule PaleeWeb.Schemas.CommunityEvents do
         },
         can_rsvp: boolean(),
         can_manage: %Schema{type: :boolean, description: "You run events at this box"},
+        sms_enabled: %Schema{
+          type: :boolean,
+          description: "ADR-385: the organiser's SMS switch for this event"
+        },
+        sms_offered: %Schema{
+          type: :boolean,
+          description:
+            "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)"
+        },
         guests_left:
           integer(
             nullable: true,
@@ -190,8 +199,36 @@ defmodule PaleeWeb.Schemas.CommunityEvents do
         :host,
         :cohosts,
         :can_rsvp,
-        :can_manage
+        :can_manage,
+        :sms_enabled,
+        :sms_offered
       ]
+    )
+  end
+
+  @doc "ADR-385: the organiser's SMS view of one event."
+  def sms_summary do
+    object(
+      "CommunityEventSms",
+      %{
+        enabled: %Schema{type: :boolean, description: "This event's SMS switch"},
+        connected: %Schema{
+          type: :boolean,
+          description: "The organiser sends SMS (a connection with SMS switched on)"
+        },
+        going: integer(),
+        recipients: %Schema{
+          type: :integer,
+          description: "Going and agreed to SMS: «12 από 40 θα πάρουν SMS»"
+        },
+        spent_cents: %Schema{type: :integer, description: "What this event's SMS cost so far"},
+        per_message_cents: %Schema{
+          type: :integer,
+          description: "The price of one event SMS (one part, the organiser's country)"
+        },
+        currency: string()
+      },
+      [:connected, :currency, :enabled, :going, :per_message_cents, :recipients, :spent_cents]
     )
   end
 
@@ -284,6 +321,11 @@ defmodule PaleeWeb.Schemas.CommunityEvents do
         description: "«Καλό για φίλους»; only when friends can come (open or guest passes)"
       },
       cover_media_id: %{@nullable_uuid | description: "A ready box photo upload"},
+      sms_enabled: %Schema{
+        type: :boolean,
+        description:
+          "ADR-385: the reminder and changes also go by SMS to those who asked at «Θα έρθω» (default on)"
+      },
       time_zone:
         string(
           maxLength: 100,

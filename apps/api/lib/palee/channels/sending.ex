@@ -499,6 +499,50 @@ defmodule Palee.Channels.Sending do
 
   def list(context, filters), do: ChannelStore.list_messages(context, filters)
 
+  @doc """
+  ADR-385: the box's price of one part of a `channel` message to its own
+  country (Palee's margin included on Palee's account), for «≈ X € ανά SMS».
+  """
+  def unit_price(context, channel, purpose) do
+    connection = Connections.get(context)
+    country = (connection && connection.default_country) || "GR"
+
+    provider =
+      CostPolicy.estimate(
+        Application.get_env(:palee, :channel_prices),
+        channel,
+        purpose,
+        country,
+        1
+      )
+
+    margin =
+      if connection && connection.account_mode == "palee", do: Margins.bps(channel), else: 0
+
+    CostPolicy.price(provider, margin)
+  end
+
+  @counted ~w(queued sending sent delivered)
+
+  @doc """
+  ADR-385: what the messages of one `source_ref` (an event, a class) cost the
+  box so far, charged as the month's spend is: the provider's charge with
+  the message's margin when known, else the estimate.
+  """
+  def spent_on(context, source_ref) when is_binary(source_ref) do
+    context
+    |> ChannelStore.list_messages(%{source_ref: source_ref, limit: 1000})
+    |> Map.get(:messages, [])
+    |> Enum.filter(&(&1.status in @counted or (&1.status == "failed" and is_integer(&1.cost_cents))))
+    |> Enum.map(fn message ->
+      case message.cost_cents do
+        cents when is_integer(cents) -> CostPolicy.price(cents, message.margin_bps || 0)
+        _unknown -> message.estimated_cost_cents || 0
+      end
+    end)
+    |> Enum.sum()
+  end
+
   @doc "The month's spend (`month` `YYYY-MM` on the box clock, default now) against the cap."
   def usage(context, month, env) do
     range =
@@ -517,7 +561,10 @@ defmodule Palee.Channels.Sending do
          to: to,
          spent_cents: spend.total,
          messages: spend.count,
+         segments: spend.segments,
          by_channel: spend.by_channel,
+         by_source: spend.by_source,
+         by_status: spend.by_status,
          cap_cents: connection && connection.monthly_budget_cents,
          currency: (connection && connection.currency) || "EUR",
          account_mode: connection && connection.account_mode,

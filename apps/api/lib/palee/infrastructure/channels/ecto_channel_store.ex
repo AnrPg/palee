@@ -430,13 +430,13 @@ defmodule Palee.Infrastructure.Channels.EctoChannelStore do
       |> where([m], m.organization_id == ^organization_id)
       |> where([m], m.inserted_at >= ^from and m.inserted_at < ^to)
       |> where([m], m.status in ^@counted or (m.status == "failed" and not is_nil(m.cost_cents)))
-      |> group_by([m], [m.channel, m.account_mode])
+      |> group_by([m], [m.channel, m.account_mode, m.source])
       # ADR-369: the box price is the charged provider price with the
       # message's margin (rounded up, as `CostPolicy.price/2`), else the
       # estimated box price.
       |> select(
         [m],
-        {m.channel, m.account_mode,
+        {m.channel, m.account_mode, m.source,
          sum(
            coalesce(
              fragment(
@@ -447,16 +447,18 @@ defmodule Palee.Infrastructure.Channels.EctoChannelStore do
              m.estimated_cost_cents
            )
          ), sum(coalesce(m.cost_cents, coalesce(m.provider_cost_cents, m.estimated_cost_cents))),
-         count(m.id)}
+         count(m.id), sum(m.segments)}
       )
       |> Repo.all()
-      |> Enum.map(fn {channel, mode, cents, provider, count} ->
+      |> Enum.map(fn {channel, mode, source, cents, provider, count, segments} ->
         %{
           channel: channel,
           mode: mode,
+          source: source,
           cents: to_int(cents),
           provider: to_int(provider),
-          count: count
+          count: count,
+          segments: to_int(segments)
         }
       end)
 
@@ -465,16 +467,11 @@ defmodule Palee.Infrastructure.Channels.EctoChannelStore do
     %{
       total: rows |> Enum.map(& &1.cents) |> Enum.sum(),
       count: rows |> Enum.map(& &1.count) |> Enum.sum(),
-      by_channel:
-        rows
-        |> Enum.group_by(& &1.channel)
-        |> Map.new(fn {channel, group} ->
-          {channel,
-           %{
-             cents: group |> Enum.map(& &1.cents) |> Enum.sum(),
-             count: group |> Enum.map(& &1.count) |> Enum.sum()
-           }}
-        end),
+      segments: rows |> Enum.map(& &1.segments) |> Enum.sum(),
+      by_channel: sum_by(rows, & &1.channel),
+      # ADR-385: who spent it («Αυτοματισμοί», «Staff», the system).
+      by_source: sum_by(rows, &(&1.source || "system")),
+      by_status: status_counts(organization_id, from, to),
       palee_charge: palee |> Enum.map(& &1.cents) |> Enum.sum(),
       provider_total: palee |> Enum.map(& &1.provider) |> Enum.sum(),
       palee_by_channel:
@@ -484,6 +481,30 @@ defmodule Palee.Infrastructure.Channels.EctoChannelStore do
            %{charge_cents: row.cents, provider_cost_cents: row.provider, count: row.count}}
         end)
     }
+  end
+
+  defp sum_by(rows, key) do
+    rows
+    |> Enum.group_by(key)
+    |> Map.new(fn {name, group} ->
+      {name,
+       %{
+         cents: group |> Enum.map(& &1.cents) |> Enum.sum(),
+         count: group |> Enum.map(& &1.count) |> Enum.sum()
+       }}
+    end)
+  end
+
+  # ADR-385: every message of the range by state, charged or not, so the
+  # cost screen can say how many arrived and how many did not.
+  defp status_counts(organization_id, from, to) do
+    Message
+    |> where([m], m.organization_id == ^organization_id)
+    |> where([m], m.inserted_at >= ^from and m.inserted_at < ^to)
+    |> group_by([m], m.status)
+    |> select([m], {m.status, count(m.id)})
+    |> Repo.all()
+    |> Map.new()
   end
 
   defp to_int(nil), do: 0

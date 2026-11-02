@@ -214,6 +214,14 @@ defmodule Palee.Notifications do
     end)
   end
 
+  @doc """
+  ADR-385: whether the app can reach the person: a web push subscription or
+  a phone's push token. «Ενημέρωση συμμετεχόντων» sends an SMS only to
+  people without one.
+  """
+  def reachable_in_app?(user_id) when is_binary(user_id),
+    do: get_push_subscriptions(user_id) != [] or list_native_push_tokens(user_id) != []
+
   def get_push_subscriptions(user_id),
     do:
       PushSubscriptionStore.with_user_context(%{user_id: user_id}, fn ->

@@ -56,6 +56,7 @@ defmodule PaleeWeb.RouteCapabilities do
     W.AdminChannelEmailController => [:manage_settings],
     W.AdminChannelContactsController => [:message_from_box],
     W.AdminChannelMessagesController => [:message_from_box],
+    W.AdminChannelClassNoticesController => [:message_from_box],
     W.CoachingRelationshipsController => [:assign_coaches, :manage_coaching],
     W.RoleAccessController => [:manage_settings],
     W.InventoryController => [:manage_inventory],

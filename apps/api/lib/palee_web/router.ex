@@ -1539,6 +1539,9 @@ defmodule PaleeWeb.Router do
     get("/channels/messages/:id", AdminChannelMessagesController, :show)
     post("/channels/messages/:id/retry", AdminChannelMessagesController, :retry)
     post("/channels/messages/:id/cancel", AdminChannelMessagesController, :cancel)
+    # ADR-385: «Ενημέρωση συμμετεχόντων» of a class, the app first.
+    post("/channels/class-notices/preview", AdminChannelClassNoticesController, :preview)
+    post("/channels/class-notices", AdminChannelClassNoticesController, :create)
     # ADR-243: reporting to the tax authority (myDATA).
     get("/fiscal/authority-connection", AdminFiscalReportingController, :connection)
     put("/fiscal/authority-connection", AdminFiscalReportingController, :save_connection)
@@ -2326,6 +2329,7 @@ defmodule PaleeWeb.Router do
     get("/me/events/:id", CommunityEventController, :show)
     patch("/me/events/:id", CommunityEventController, :update)
     post("/me/events/:id/cancel", CommunityEventController, :cancel)
+    get("/me/events/:id/sms", CommunityEventController, :sms)
     put("/me/events/:id/rsvp", CommunityEventController, :rsvp)
     post("/me/events/:id/invites", CommunityEventController, :invite)
     # ADR-185: «Διοργάνωση ως» and the event page's view count.
