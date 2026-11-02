@@ -638,6 +638,10 @@ Leaderboard filters, WOD snapshots, the fitness profile, visit badges, calendar 
 | Came through | Ήρθε μέσω | `via` (`event`, `referral`) | How a first-time visitor came: a box event or a member's invitation. | |
 | Add to calendar | Προσθήκη στο ημερολόγιο | `GET /bookings/:id/calendar.ics` | One booking as an .ics invite; a cancelled one comes as a cancellation. | Calendar subscription («Συνδρομή ημερολογίου», the personal feed URL). |
 | Staff note | Σημείωση για το staff | `coaching_notes.audience = staff` | A note about a member that every staff member of the box reads, the front desk included. | Private coach note («Ιδιωτική σημείωση», ADR-101). |
+| Who sees it | Ποιος τη βλέπει | `audience` (`staff` «Όλο το staff», `private` «Μόνο εγώ») | The choice under a new note in the member profile (ADR-389). A coach starts from «Μόνο εγώ», everyone else from the staff; the front desk writes only for the staff. | Journal visibility («Ορατότητα») of the member's own entries. |
+| New today | Νέοι σήμερα | `first_visit` or `trial` badge | The card on top of a class roster with the people to welcome: a first visit or a trial seat (ADR-389). | First visit (one badge). |
+| As performed | Όπως ήταν | `GET /me/executions/:id/workout-snapshot` | Under a run or score in the Journal, only when the WOD changed since: «Το WOD άλλαξε από τότε», with the WOD as it read then (ADR-389). | Today's WOD. |
+| Standards | Κλίμακα | `division` of `GET /me/fitness-profile` | Which anchors the fitness profile reads: «Ουδέτερη» (default, the mean of both), «Γυναίκες», «Άνδρες». Under «Προχωρημένα», kept on the device. | Scale level («Επίπεδο»). |
 
 ### 4.24 Service status (ADR-364)
 

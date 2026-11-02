@@ -272,7 +272,7 @@ must have an ADR. See `template.md` for the format.
 | ADR-347 | Members at risk («Σε κίνδυνο»): nightly rule-based 0–100 score with reasons and points, levels, suggested action, staff list with «Επικοινώνησα» and snooze; entering high starts the win-back recipe | Accepted |
 
 | ADR-356 | WOD leaderboard filters (division, age group, scale, branch, window, buddies) and a percentile per score (≥ 5 results); division and birth year on the per-box opt-in; comparison only for those who opted in | Accepted |
-| ADR-357 | Content-addressed WOD snapshots on assignment, run completion and logged score; day tags Χωρίς WOD / Μικτό / Όλα με WOD in day-workouts | Accepted |
+| ADR-357 | Content-addressed WOD snapshots on assignment, run completion and logged score; day tags Χωρίς WOD / Μερικά με WOD / Όλα με WOD in day-workouts | Accepted |
 | ADR-358 | Explainable fitness profile v1: benchmark PRs → points per domain with reasons, overall from ≥ 2 domains, «Τι να δουλέψεις», own data only | Accepted |
 | ADR-359 | Visit badges on class lists and check-in; calendar feed with stable UIDs, SEQUENCE, CANCELLED seats and a per-booking invite; staff notes the front desk reads | Accepted |
 
@@ -297,3 +297,4 @@ must have an ADR. See `template.md` for the format.
 | ADR-368 | A box's own email provider over SMTP (advanced; Palee sends by default): encrypted password never returned or exported, «Δοκιμή σύνδεσης», box-origin templates go through it when checked, platform mail always through Palee, fallback on a refused password, DNS guide data, no private hosts | Accepted |
 | ADR-369 | Palee's margin on Palee-managed messages: platform setting in basis points per channel (vendor console), box price = provider cost + margin rounded up and frozen per message, budget cap on the box price, monthly charge read model for billing; no margin on the box's own account | Accepted |
 | ADR-382 | Coach pay additions: fixed pay prorated by days, % of own clients' or all subscriptions, groups per rule, payments by hand and non-taxable reimbursements with notes, overtime (hours above a weekly threshold) and allowances catalogue, gross/net per line with separate subtotals, internal pay statement PDF, profile and Finance summary | Accepted |
+| ADR-389 | v3.1 training floor screens (leaderboard chips and percentile, day tags, fitness profile, «Νέοι σήμερα», calendar offer, note audience, technique video) and `GET /me/executions/:id/workout-snapshot` (and training-log entries): the WOD as performed and whether it changed | Accepted |
