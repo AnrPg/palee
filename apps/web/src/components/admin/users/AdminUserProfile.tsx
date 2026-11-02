@@ -89,6 +89,7 @@ import { DateInput } from "@/components/ui/DateInput";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { BackLink } from "@/components/ui/BackLink";
 import { displayRoles, rolesOf } from "@/lib/users-directory";
+import { ClientSmsPanel } from "@/components/channels/ClientSmsPanel";
 
 function Panel({ id, title, children }: { id: string; title: string; children: React.ReactNode; href?: string; hrefLabel?: string }) {
   const i18n = useUiTranslations();
@@ -594,6 +595,7 @@ export function AdminUserProfile({ userId }: { userId: string }) {
   const tPrSharing = useTranslations("PrSharing");
   const tDepth = useTranslations("Depth");
   const tGoal = useTranslations("TrainingGoal");
+  const tSms = useTranslations("Sms");
   const { tokens, currentUser } = useSession();
   const token = tokens?.access_token;
   const organizationSlug = useOrganizationSlug();
@@ -841,6 +843,13 @@ export function AdminUserProfile({ userId }: { userId: string }) {
           {inTab("box_message") ? (
             <Panel id="box_message" title={i18n("bmTitle")}>
               <BoxMessagePanel userId={userId} />
+            </Panel>
+          ) : null}
+
+          {/* W3 screen 2 C (ADR-350): the client's mobile and SMS consents, recorded at the desk. */}
+          {isClient && inTab("box_message") ? (
+            <Panel id="client_sms" title={tSms("cardTitle")}>
+              <ClientSmsPanel userId={userId} />
             </Panel>
           ) : null}
 
