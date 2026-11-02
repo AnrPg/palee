@@ -47,6 +47,9 @@ export function senderError(value: string): "tooLong" | "latinOnly" | "needsLett
 }
 
 /** A sender suggestion from the box's name: Latin letters and digits, 11 at most. */
+/** Shown as the sender field's example: a brand name, never translated. */
+export const SENDER_EXAMPLE = "Palee";
+
 export function suggestSender(name: string): string {
   const latin = name
     .normalize("NFD")

@@ -2734,6 +2734,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/me/events/{id}/sms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** ADR-385: the organiser's SMS view of an event: who will get SMS and its cost */
+        get: operations["PaleeWeb.CommunityEventController.sms"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me/events/{id}/views": {
         parameters: {
             query?: never;
@@ -5400,6 +5417,46 @@ export interface paths {
         head?: never;
         /** Update a seasonal challenge */
         patch: operations["PaleeWeb.AdminChallengeController.update"];
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/class-notices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send a class notice: in the app to those with a device, by SMS to the rest
+         * @description `idempotency_key` is required: a repeated press sends nothing twice.
+         */
+        post: operations["PaleeWeb.AdminChannelClassNoticesController.create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/class-notices/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Who would learn of a class notice, in the app or by SMS, and the SMS cost
+         * @description Nothing is sent. `channels_demo_mode` and the like come back as `sms_blocked`.
+         */
+        post: operations["PaleeWeb.AdminChannelClassNoticesController.preview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/org/{organization_slug}/admin/channels/contacts": {
@@ -19345,6 +19402,10 @@ export interface components {
                  * @description Shared by every week of a weekly event
                  */
                 series_id?: string | null;
+                /** @description ADR-385: the organiser's SMS switch for this event */
+                sms_enabled: boolean;
+                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                sms_offered: boolean;
                 /** @description Null: no limit */
                 spots_left?: number | null;
                 /** Format: date-time */
@@ -19517,6 +19578,10 @@ export interface components {
                      * @description Shared by every week of a weekly event
                      */
                     series_id?: string | null;
+                    /** @description ADR-385: the organiser's SMS switch for this event */
+                    sms_enabled: boolean;
+                    /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                    sms_offered: boolean;
                     /** @description Null: no limit */
                     spots_left?: number | null;
                     /** Format: date-time */
@@ -19776,6 +19841,10 @@ export interface components {
                      * @description Shared by every week of a weekly event
                      */
                     series_id?: string | null;
+                    /** @description ADR-385: the organiser's SMS switch for this event */
+                    sms_enabled: boolean;
+                    /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                    sms_offered: boolean;
                     /** @description Null: no limit */
                     spots_left?: number | null;
                     /** Format: date-time */
@@ -20069,6 +20138,10 @@ export interface components {
                          * @description Shared by every week of a weekly event
                          */
                         series_id?: string | null;
+                        /** @description ADR-385: the organiser's SMS switch for this event */
+                        sms_enabled: boolean;
+                        /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                        sms_offered: boolean;
                         /** @description Null: no limit */
                         spots_left?: number | null;
                         /** Format: date-time */
@@ -20508,6 +20581,10 @@ export interface components {
                      * @description Shared by every week of a weekly event
                      */
                     series_id?: string | null;
+                    /** @description ADR-385: the organiser's SMS switch for this event */
+                    sms_enabled: boolean;
+                    /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                    sms_offered: boolean;
                     /** @description Null: no limit */
                     spots_left?: number | null;
                     /** Format: date-time */
@@ -20798,6 +20875,10 @@ export interface components {
                          * @description Shared by every week of a weekly event
                          */
                         series_id?: string | null;
+                        /** @description ADR-385: the organiser's SMS switch for this event */
+                        sms_enabled: boolean;
+                        /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                        sms_offered: boolean;
                         /** @description Null: no limit */
                         spots_left?: number | null;
                         /** Format: date-time */
@@ -21243,6 +21324,10 @@ export interface components {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -21464,6 +21549,10 @@ export interface components {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -21821,6 +21910,10 @@ export interface components {
                          * @description Shared by every week of a weekly event
                          */
                         series_id?: string | null;
+                        /** @description ADR-385: the organiser's SMS switch for this event */
+                        sms_enabled: boolean;
+                        /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                        sms_offered: boolean;
                         /** @description Null: no limit */
                         spots_left?: number | null;
                         /** Format: date-time */
@@ -22042,6 +22135,10 @@ export interface components {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -27291,6 +27388,10 @@ export interface components {
              * @description Shared by every week of a weekly event
              */
             series_id?: string | null;
+            /** @description ADR-385: the organiser's SMS switch for this event */
+            sms_enabled: boolean;
+            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+            sms_offered: boolean;
             /** @description Null: no limit */
             spots_left?: number | null;
             /** Format: date-time */
@@ -27980,6 +28081,10 @@ export interface components {
                  * @description Shared by every week of a weekly event
                  */
                 series_id?: string | null;
+                /** @description ADR-385: the organiser's SMS switch for this event */
+                sms_enabled: boolean;
+                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                sms_offered: boolean;
                 /** @description Null: no limit */
                 spots_left?: number | null;
                 /** Format: date-time */
@@ -28173,6 +28278,8 @@ export interface components {
              * @description «Επανάληψη κάθε εβδομάδα» until this date (box time zone), at most 26 weeks
              */
             repeat_until?: string;
+            /** @description ADR-385: the reminder and changes also go by SMS to those who asked at «Θα έρθω» (default on) */
+            sms_enabled?: boolean;
             /** Format: date-time */
             starts_at: string;
             /** @description ADR-179: an IANA zone for an event held away from its gym; null keeps the gym's */
@@ -28300,6 +28407,8 @@ export interface components {
              * @description «Επανάληψη κάθε εβδομάδα» until this date (box time zone), at most 26 weeks
              */
             repeat_until?: string;
+            /** @description ADR-385: the reminder and changes also go by SMS to those who asked at «Θα έρθω» (default on) */
+            sms_enabled?: boolean;
             /** Format: date-time */
             starts_at: string;
             /** @description ADR-179: an IANA zone for an event held away from its gym; null keeps the gym's */
@@ -28463,6 +28572,10 @@ export interface components {
                  * @description Shared by every week of a weekly event
                  */
                 series_id?: string | null;
+                /** @description ADR-385: the organiser's SMS switch for this event */
+                sms_enabled: boolean;
+                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                sms_offered: boolean;
                 /** @description Null: no limit */
                 spots_left?: number | null;
                 /** Format: date-time */
@@ -28492,6 +28605,21 @@ export interface components {
         CommunityEventSentResponse: {
             /** @description People notified */
             sent: number;
+        };
+        /** CommunityEventSms */
+        CommunityEventSms: {
+            /** @description The organiser sends SMS (a connection with SMS switched on) */
+            connected: boolean;
+            currency: string;
+            /** @description This event's SMS switch */
+            enabled: boolean;
+            going: number;
+            /** @description The price of one event SMS (one part, the organiser's country) */
+            per_message_cents: number;
+            /** @description Going and agreed to SMS: «12 από 40 θα πάρουν SMS» */
+            recipients: number;
+            /** @description What this event's SMS cost so far */
+            spent_cents: number;
         };
         /** CommunityEventStats */
         CommunityEventStats: {
@@ -28554,6 +28682,8 @@ export interface components {
              * @enum {string}
              */
             scope?: "this" | "following";
+            /** @description ADR-385: the reminder and changes also go by SMS to those who asked at «Θα έρθω» (default on) */
+            sms_enabled?: boolean;
             /** Format: date-time */
             starts_at?: string;
             /** @description ADR-179: an IANA zone for an event held away from its gym; null keeps the gym's */
@@ -28720,6 +28850,10 @@ export interface components {
                  * @description Shared by every week of a weekly event
                  */
                 series_id?: string | null;
+                /** @description ADR-385: the organiser's SMS switch for this event */
+                sms_enabled: boolean;
+                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                sms_offered: boolean;
                 /** @description Null: no limit */
                 spots_left?: number | null;
                 /** Format: date-time */
@@ -28932,6 +29066,10 @@ export interface components {
                      * @description Shared by every week of a weekly event
                      */
                     series_id?: string | null;
+                    /** @description ADR-385: the organiser's SMS switch for this event */
+                    sms_enabled: boolean;
+                    /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                    sms_offered: boolean;
                     /** @description Null: no limit */
                     spots_left?: number | null;
                     /** Format: date-time */
@@ -29212,6 +29350,10 @@ export interface components {
                      * @description Shared by every week of a weekly event
                      */
                     series_id?: string | null;
+                    /** @description ADR-385: the organiser's SMS switch for this event */
+                    sms_enabled: boolean;
+                    /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                    sms_offered: boolean;
                     /** @description Null: no limit */
                     spots_left?: number | null;
                     /** Format: date-time */
@@ -29990,6 +30132,10 @@ export interface components {
                  * @description Shared by every week of a weekly event
                  */
                 series_id?: string | null;
+                /** @description ADR-385: the organiser's SMS switch for this event */
+                sms_enabled: boolean;
+                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                sms_offered: boolean;
                 /** @description Null: no limit */
                 spots_left?: number | null;
                 /** Format: date-time */
@@ -30249,6 +30395,10 @@ export interface components {
              * @description Shared by every week of a weekly event
              */
             series_id?: string | null;
+            /** @description ADR-385: the organiser's SMS switch for this event */
+            sms_enabled: boolean;
+            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+            sms_offered: boolean;
             /** @description Null: no limit */
             spots_left?: number | null;
             /** Format: date-time */
@@ -30475,6 +30625,10 @@ export interface components {
                      * @description Shared by every week of a weekly event
                      */
                     series_id?: string | null;
+                    /** @description ADR-385: the organiser's SMS switch for this event */
+                    sms_enabled: boolean;
+                    /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                    sms_offered: boolean;
                     /** @description Null: no limit */
                     spots_left?: number | null;
                     /** Format: date-time */
@@ -37450,6 +37604,10 @@ export interface components {
                      * @description Shared by every week of a weekly event
                      */
                     series_id?: string | null;
+                    /** @description ADR-385: the organiser's SMS switch for this event */
+                    sms_enabled: boolean;
+                    /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                    sms_offered: boolean;
                     /** @description Null: no limit */
                     spots_left?: number | null;
                     /** Format: date-time */
@@ -40010,6 +40168,10 @@ export interface components {
                      * @description Shared by every week of a weekly event
                      */
                     series_id?: string | null;
+                    /** @description ADR-385: the organiser's SMS switch for this event */
+                    sms_enabled: boolean;
+                    /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                    sms_offered: boolean;
                     /** @description Null: no limit */
                     spots_left?: number | null;
                     /** Format: date-time */
@@ -44087,6 +44249,10 @@ export interface components {
              * @description Shared by every week of a weekly event
              */
             series_id?: string | null;
+            /** @description ADR-385: the organiser's SMS switch for this event */
+            sms_enabled: boolean;
+            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+            sms_offered: boolean;
             /** @description Null: no limit */
             spots_left?: number | null;
             /** Format: date-time */
@@ -44459,6 +44625,10 @@ export interface components {
                  * @description Shared by every week of a weekly event
                  */
                 series_id?: string | null;
+                /** @description ADR-385: the organiser's SMS switch for this event */
+                sms_enabled: boolean;
+                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                sms_offered: boolean;
                 /** @description Null: no limit */
                 spots_left?: number | null;
                 /** Format: date-time */
@@ -44542,6 +44712,8 @@ export interface components {
              * @description «Επανάληψη κάθε εβδομάδα» until this date (box time zone), at most 26 weeks
              */
             repeat_until?: string;
+            /** @description ADR-385: the reminder and changes also go by SMS to those who asked at «Θα έρθω» (default on) */
+            sms_enabled?: boolean;
             /** Format: date-time */
             starts_at: string;
             /** @description ADR-179: an IANA zone for an event held away from its gym; null keeps the gym's */
@@ -44879,6 +45051,10 @@ export interface components {
                  * @description Shared by every week of a weekly event
                  */
                 series_id?: string | null;
+                /** @description ADR-385: the organiser's SMS switch for this event */
+                sms_enabled: boolean;
+                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                sms_offered: boolean;
                 /** @description Null: no limit */
                 spots_left?: number | null;
                 /** Format: date-time */
@@ -45070,6 +45246,10 @@ export interface components {
              * @description Shared by every week of a weekly event
              */
             series_id?: string | null;
+            /** @description ADR-385: the organiser's SMS switch for this event */
+            sms_enabled: boolean;
+            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+            sms_offered: boolean;
             /** @description Null: no limit */
             spots_left?: number | null;
             /** Format: date-time */
@@ -45253,6 +45433,10 @@ export interface components {
                  * @description Shared by every week of a weekly event
                  */
                 series_id?: string | null;
+                /** @description ADR-385: the organiser's SMS switch for this event */
+                sms_enabled: boolean;
+                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                sms_offered: boolean;
                 /** @description Null: no limit */
                 spots_left?: number | null;
                 /** Format: date-time */
@@ -49108,6 +49292,10 @@ export interface operations {
                                          * @description Shared by every week of a weekly event
                                          */
                                         series_id?: string | null;
+                                        /** @description ADR-385: the organiser's SMS switch for this event */
+                                        sms_enabled: boolean;
+                                        /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                        sms_offered: boolean;
                                         /** @description Null: no limit */
                                         spots_left?: number | null;
                                         /** Format: date-time */
@@ -49329,6 +49517,10 @@ export interface operations {
                                              * @description Shared by every week of a weekly event
                                              */
                                             series_id?: string | null;
+                                            /** @description ADR-385: the organiser's SMS switch for this event */
+                                            sms_enabled: boolean;
+                                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                            sms_offered: boolean;
                                             /** @description Null: no limit */
                                             spots_left?: number | null;
                                             /** Format: date-time */
@@ -49662,6 +49854,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -49955,6 +50151,10 @@ export interface operations {
                                      * @description Shared by every week of a weekly event
                                      */
                                     series_id?: string | null;
+                                    /** @description ADR-385: the organiser's SMS switch for this event */
+                                    sms_enabled: boolean;
+                                    /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                    sms_offered: boolean;
                                     /** @description Null: no limit */
                                     spots_left?: number | null;
                                     /** Format: date-time */
@@ -53081,6 +53281,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -53326,6 +53530,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -56706,6 +56914,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -58661,6 +58873,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -58731,6 +58947,8 @@ export interface operations {
                      * @description «Επανάληψη κάθε εβδομάδα» until this date (box time zone), at most 26 weeks
                      */
                     repeat_until?: string;
+                    /** @description ADR-385: the reminder and changes also go by SMS to those who asked at «Θα έρθω» (default on) */
+                    sms_enabled?: boolean;
                     /** Format: date-time */
                     starts_at: string;
                     /** @description ADR-179: an IANA zone for an event held away from its gym; null keeps the gym's */
@@ -58908,6 +59126,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -59270,6 +59492,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -59523,6 +59749,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -59951,6 +60181,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -60264,6 +60498,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -60577,6 +60815,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -63043,6 +63285,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -63118,6 +63364,8 @@ export interface operations {
                      * @description «Επανάληψη κάθε εβδομάδα» until this date (box time zone), at most 26 weeks
                      */
                     repeat_until?: string;
+                    /** @description ADR-385: the reminder and changes also go by SMS to those who asked at «Θα έρθω» (default on) */
+                    sms_enabled?: boolean;
                     /** Format: date-time */
                     starts_at: string;
                     /** @description ADR-179: an IANA zone for an event held away from its gym; null keeps the gym's */
@@ -63295,6 +63543,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -63489,6 +63741,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -63552,6 +63808,8 @@ export interface operations {
                      * @enum {string}
                      */
                     scope?: "this" | "following";
+                    /** @description ADR-385: the reminder and changes also go by SMS to those who asked at «Θα έρθω» (default on) */
+                    sms_enabled?: boolean;
                     /** Format: date-time */
                     starts_at?: string;
                     /** @description ADR-179: an IANA zone for an event held away from its gym; null keeps the gym's */
@@ -63723,6 +63981,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -63923,6 +64185,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -64159,6 +64425,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -64170,6 +64440,41 @@ export interface operations {
                             title: string;
                             waitlist_count: number;
                         };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.CommunityEventController.sms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Event SMS */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description The organiser sends SMS (a connection with SMS switched on) */
+                        connected: boolean;
+                        currency: string;
+                        /** @description This event's SMS switch */
+                        enabled: boolean;
+                        going: number;
+                        /** @description The price of one event SMS (one part, the organiser's country) */
+                        per_message_cents: number;
+                        /** @description Going and agreed to SMS: «12 από 40 θα πάρουν SMS» */
+                        recipients: number;
+                        /** @description What this event's SMS cost so far */
+                        spent_cents: number;
                     };
                 };
             };
@@ -64424,6 +64729,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -64704,6 +65013,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -74697,6 +75010,142 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminChannelClassNoticesController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Sending only: the same key never sends twice */
+                    idempotency_key?: string;
+                    /** @enum {string} */
+                    kind: "cancelled" | "changed" | "free";
+                    /** @description Language of the app notice */
+                    locale?: string;
+                    /** Format: uuid */
+                    slot_id: string;
+                    /** @description The staff's own words; required for `free` */
+                    text?: string;
+                    /** @description `free` only: send now, even in quiet hours */
+                    urgent?: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Sent */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        budget: {
+                            cap_cents: number;
+                            currency: string;
+                            spent_cents: number;
+                        } | null;
+                        currency: string;
+                        estimated_cost_cents: number;
+                        in_app: number;
+                        /** @enum {string} */
+                        kind: "cancelled" | "changed" | "free";
+                        participants: number;
+                        /** @description The first SMS: its text, parts and when it leaves */
+                        sample: {
+                            body: string;
+                            held_for_quiet_hours: boolean;
+                            /** Format: date-time */
+                            release_at: string;
+                            segments: number;
+                        } | null;
+                        /** Format: uuid */
+                        slot_id: string;
+                        sms: number;
+                        /** @description The box's own reason no SMS can go (`channels_demo_mode`, `channels_not_connected`, `channel_budget_exceeded`…) */
+                        sms_blocked: string | null;
+                        unreachable: number;
+                        /** @description Why, by error code (`channel_consent_missing`…) */
+                        unreachable_reasons: {
+                            [key: string]: number;
+                        };
+                        urgent: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelClassNoticesController.preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Sending only: the same key never sends twice */
+                    idempotency_key?: string;
+                    /** @enum {string} */
+                    kind: "cancelled" | "changed" | "free";
+                    /** @description Language of the app notice */
+                    locale?: string;
+                    /** Format: uuid */
+                    slot_id: string;
+                    /** @description The staff's own words; required for `free` */
+                    text?: string;
+                    /** @description `free` only: send now, even in quiet hours */
+                    urgent?: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Preview */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        budget: {
+                            cap_cents: number;
+                            currency: string;
+                            spent_cents: number;
+                        } | null;
+                        currency: string;
+                        estimated_cost_cents: number;
+                        in_app: number;
+                        /** @enum {string} */
+                        kind: "cancelled" | "changed" | "free";
+                        participants: number;
+                        /** @description The first SMS: its text, parts and when it leaves */
+                        sample: {
+                            body: string;
+                            held_for_quiet_hours: boolean;
+                            /** Format: date-time */
+                            release_at: string;
+                            segments: number;
+                        } | null;
+                        /** Format: uuid */
+                        slot_id: string;
+                        sms: number;
+                        /** @description The box's own reason no SMS can go (`channels_demo_mode`, `channels_not_connected`, `channel_budget_exceeded`…) */
+                        sms_blocked: string | null;
+                        unreachable: number;
+                        /** @description Why, by error code (`channel_consent_missing`…) */
+                        unreachable_reasons: {
+                            [key: string]: number;
+                        };
+                        urgent: boolean;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminChannelContactsController.index": {
         parameters: {
             query?: {
@@ -75655,6 +76104,17 @@ export interface operations {
                                     count: number;
                                 };
                             };
+                            /** @description ADR-385: spend by who sent (`automation`, `staff`, `system`) */
+                            by_source: {
+                                [key: string]: {
+                                    cents: number;
+                                    count: number;
+                                };
+                            };
+                            /** @description ADR-385: every message of the month by state, charged or not */
+                            by_status: {
+                                [key: string]: number;
+                            };
                             cap_cents?: number | null;
                             currency: string;
                             /** Format: date-time */
@@ -75662,6 +76122,8 @@ export interface operations {
                             messages: number;
                             /** @description ADR-369: what Palee bills the box for the month (messages sent on Palee's account, at the box's price) */
                             palee_charge_cents: number;
+                            /** @description ADR-385: SMS parts of the counted messages */
+                            segments: number;
                             spent_cents: number;
                             /** Format: date-time */
                             to: string;
@@ -75953,6 +76415,17 @@ export interface operations {
                                 count: number;
                             };
                         };
+                        /** @description ADR-385: spend by who sent (`automation`, `staff`, `system`) */
+                        by_source: {
+                            [key: string]: {
+                                cents: number;
+                                count: number;
+                            };
+                        };
+                        /** @description ADR-385: every message of the month by state, charged or not */
+                        by_status: {
+                            [key: string]: number;
+                        };
                         cap_cents?: number | null;
                         currency: string;
                         /** Format: date-time */
@@ -75960,6 +76433,8 @@ export interface operations {
                         messages: number;
                         /** @description ADR-369: what Palee bills the box for the month (messages sent on Palee's account, at the box's price) */
                         palee_charge_cents: number;
+                        /** @description ADR-385: SMS parts of the counted messages */
+                        segments: number;
                         spent_cents: number;
                         /** Format: date-time */
                         to: string;
@@ -80201,6 +80676,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -80287,6 +80766,8 @@ export interface operations {
                      * @description «Επανάληψη κάθε εβδομάδα» until this date (box time zone), at most 26 weeks
                      */
                     repeat_until?: string;
+                    /** @description ADR-385: the reminder and changes also go by SMS to those who asked at «Θα έρθω» (default on) */
+                    sms_enabled?: boolean;
                     /** Format: date-time */
                     starts_at: string;
                     /** @description ADR-179: an IANA zone for an event held away from its gym; null keeps the gym's */
@@ -80638,6 +81119,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -81026,6 +81511,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -81113,6 +81602,8 @@ export interface operations {
                      * @enum {string}
                      */
                     scope?: "this" | "following";
+                    /** @description ADR-385: the reminder and changes also go by SMS to those who asked at «Θα έρθω» (default on) */
+                    sms_enabled?: boolean;
                     /** Format: date-time */
                     starts_at?: string;
                     /** @description ADR-179: an IANA zone for an event held away from its gym; null keeps the gym's */
@@ -81458,6 +81949,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -81846,6 +82341,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -82240,6 +82739,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -82635,6 +83138,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -83030,6 +83537,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -83428,6 +83939,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -115207,6 +115722,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -115635,6 +116154,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -115948,6 +116471,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -116261,6 +116788,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -130727,6 +131258,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -137508,6 +138043,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -137814,6 +138353,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -141899,6 +142442,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -142327,6 +142874,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */

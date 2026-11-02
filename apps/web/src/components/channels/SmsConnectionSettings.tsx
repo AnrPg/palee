@@ -35,6 +35,7 @@ import {
   inputStyle,
   providerFor,
   senderError,
+  SENDER_EXAMPLE,
   smsErrorCode,
   smsSwitchedOn,
   suggestSender,
@@ -265,7 +266,7 @@ function SenderRow({ saved, pending, error, onSave }: { saved: string; pending: 
             id="sms-sender"
             value={value}
             maxLength={16}
-            placeholder="Palee"
+            placeholder={SENDER_EXAMPLE}
             aria-invalid={Boolean(message)}
             aria-describedby={message ? "sms-sender-error" : undefined}
             onChange={(event) => setValue(event.target.value)}
