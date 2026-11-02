@@ -1,5 +1,6 @@
 "use client";
 
+import { MyPayCard } from "@/components/admin/coach-pay/MyPay";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -52,6 +53,9 @@ import { can } from "@/lib/role-navigation";
 
 type Membership = ReturnType<typeof useSelectedMembershipRole>["membership"];
 
+// Who may read their own pay statements (the API's `@own_pay`).
+const OWN_PAY = ["run_classes", "manage_appointments", "check_in", "take_payments", "view_finance_reports", "record_cleaning"];
+
 const RELATIONSHIPS_KEY = ["staff", "coaching-relationships"] as const;
 
 export function StaffHome() {
@@ -72,6 +76,8 @@ export function StaffHome() {
       <>
         {can(membership, "report_inventory") ? <InventoryShortcut /> : null}
         <CleaningLog />
+        {/* ADR-382 (W1 s6): «Οι αμοιβές μου», once there is a statement. */}
+        {OWN_PAY.some((capability) => can(membership, capability)) ? <MyPayCard /> : null}
       </>
     );
   }
@@ -97,6 +103,8 @@ export function StaffHome() {
       {coach ? <MemberPRsSection /> : null}
       {coach && has("manage_coaching") ? <ScalingQueue /> : null}
       {frontDesk && (has("review_cleaning") || has("record_cleaning")) ? <CleaningStatus /> : null}
+      {/* ADR-382 (W1 s6): «Οι αμοιβές μου», once there is a statement. */}
+      {OWN_PAY.some(has) ? <MyPayCard /> : null}
     </AdminDashboard>
   );
 }
