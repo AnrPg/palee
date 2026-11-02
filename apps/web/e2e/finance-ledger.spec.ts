@@ -302,7 +302,9 @@ test.describe("finance ledger", () => {
     const row = page.getByRole("row", { name: /Maria/ });
     await expect(row.locator("[data-member-status]")).toHaveText("Unpaid");
     await expect(row).toContainText("€5.00");
-    await expect(row).toContainText("since 2026-10-29");
+    await expect(row).toContainText("since Oct 29, 2026");
+    // On a phone only the status column shows, so the status says since when too.
+    await expect(row.locator("[data-member-status-since]")).toHaveText("since Oct 29, 2026");
 
     // The end date set by hand: a dot in its corner, and on hover who, when, from and to.
     const dot = row.getByRole("button", { name: "Changed by hand" });

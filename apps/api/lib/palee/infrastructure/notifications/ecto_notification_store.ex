@@ -159,7 +159,10 @@ defmodule Palee.Infrastructure.Notifications.EctoNotificationStore do
 
   defp maybe_apply_cursor(query, nil), do: query
 
-  defp maybe_apply_cursor(query, %{inserted_at: inserted_at, id: id}) do
+  # The cursor carries a UTC DateTime; `inserted_at` is a naive (UTC) column.
+  defp maybe_apply_cursor(query, %{inserted_at: %DateTime{} = at, id: id}) do
+    inserted_at = at |> InboxCursor.to_utc() |> DateTime.to_naive()
+
     where(
       query,
       [notification],
@@ -203,7 +206,8 @@ defmodule Palee.Infrastructure.Notifications.EctoNotificationStore do
       type: to_string(notification.type),
       payload: notification.payload || %{},
       read_at: notification.read_at,
-      inserted_at: notification.inserted_at
+      # Stored naive (UTC); sent with its offset so clients never read it as local time.
+      inserted_at: InboxCursor.to_utc(notification.inserted_at)
     }
   end
 

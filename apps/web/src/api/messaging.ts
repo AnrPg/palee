@@ -28,6 +28,11 @@ export async function fetchThreads(token: string, contextType?: ThreadContextTyp
   return apiRequest<ThreadsResponse>(`/me/threads${qs}`, { token });
 }
 
+/** One thread I take part in, e.g. when a link opens it before the list has it. */
+export async function fetchThread(token: string, threadId: string) {
+  return apiRequest<{ thread: ChatThread }>(`/me/threads/${encodeURIComponent(threadId)}`, { token });
+}
+
 export async function createDirectThread(token: string, participantId: string) {
   return apiRequest<{ thread: ChatThread }>("/me/threads", {
     method: "POST",

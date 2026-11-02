@@ -44,6 +44,60 @@ defmodule PaleeWeb.NotificationControllerTest do
     assert length(response["notifications"]) == 2
   end
 
+  # Prod 2026-11-02: a box owner with 51 notifications saw «Οι ειδοποιήσεις δεν
+  # είναι διαθέσιμες προσωρινά»: the next-page cursor raised on the naive
+  # `inserted_at`, so every inbox with more than one page failed.
+  test "pages through an inbox longer than one page", %{conn: conn, user: user} do
+    base = ~N[2026-10-01 08:00:00]
+
+    for offset <- 0..24 do
+      {:ok, notification} =
+        Notifications.create_notification(%{
+          user_id: user.id,
+          type: :booking_pending,
+          payload: %{url: "/schedule", n: offset}
+        })
+
+      Palee.Repo.query!(
+        "UPDATE notifications SET inserted_at = $1 WHERE id = $2",
+        [NaiveDateTime.add(base, div(offset, 2) * 60), Ecto.UUID.dump!(notification.id)]
+      )
+    end
+
+    first = conn |> get("/api/notifications?limit=10") |> json_response(200)
+    assert length(first["notifications"]) == 10
+    assert is_binary(first["next_cursor"])
+    assert first["unread_count"] == 25
+    # Sent with its offset, so a browser never reads the time as local.
+    assert String.ends_with?(hd(first["notifications"])["inserted_at"], "Z")
+
+    pages =
+      Stream.unfold(first, fn
+        nil ->
+          nil
+
+        page ->
+          next =
+            if page["next_cursor"] do
+              conn
+              |> get("/api/notifications?limit=10&cursor=#{page["next_cursor"]}")
+              |> json_response(200)
+            end
+
+          {page, next}
+      end)
+      |> Enum.to_list()
+
+    ids = Enum.flat_map(pages, fn page -> Enum.map(page["notifications"], & &1["id"]) end)
+    assert length(pages) == 3
+    assert length(ids) == 25
+    assert ids == Enum.uniq(ids)
+  end
+
+  test "refuses a malformed inbox cursor", %{conn: conn} do
+    assert conn |> get("/api/notifications?cursor=not-a-cursor") |> json_response(400)
+  end
+
   test "excludes chat delivery records from Updates and its unread count", %{
     conn: conn,
     user: user

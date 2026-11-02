@@ -126,4 +126,44 @@ test.describe("notification settings", () => {
     await expect(page).toHaveURL(/\/me\/settings#security$/);
     await expect(page.getByRole("button", { name: "Sign out all devices" })).toBeVisible();
   });
+
+  // Beta box 2026-11-02: 51 notifications on the badge, «temporarily
+  // unavailable» in the panel (the API failed on any inbox longer than one
+  // page). The panel offers a retry and pages through a long inbox.
+  test("the bell retries a failed inbox and pages through a long one", async ({ page }) => {
+    await stub(page);
+    const note = (index: number) => ({
+      id: `n-${index}`,
+      user_id: user.id,
+      organization_id: null,
+      type: "password_reset_completed",
+      payload: { url: "/me/settings#security" },
+      read_at: null,
+      inserted_at: new Date(Date.now() - index * 60_000).toISOString(),
+    });
+    // The app retries a failed read once by itself, so fail both.
+    let failures = 2;
+    const cursors: (string | null)[] = [];
+    await page.route("**/api/notifications/unread-count", (route) => route.fulfill(json({ unread_count: 25 })));
+    await page.route("**/api/notifications?**", (route) => {
+      if (failures-- > 0) return route.fulfill({ status: 500, contentType: "application/json", body: "{}" });
+      const cursor = new URL(route.request().url()).searchParams.get("cursor");
+      cursors.push(cursor);
+      return route.fulfill(
+        json(
+          cursor
+            ? { notifications: Array.from({ length: 5 }, (_, i) => note(20 + i)), next_cursor: null, unread_count: 25 }
+            : { notifications: Array.from({ length: 20 }, (_, i) => note(i)), next_cursor: "page-2", unread_count: 25 },
+        ),
+      );
+    });
+    await page.goto("/me/settings");
+    await page.getByTestId("member-top-bar").getByRole("button", { name: "25 unread notifications" }).click();
+
+    await page.getByTestId("notifications-retry").click();
+    await expect(page.getByText("Your password was reset")).toHaveCount(20);
+    await page.getByRole("button", { name: "Load older notifications" }).click();
+    await expect(page.getByText("Your password was reset")).toHaveCount(25);
+    expect(cursors).toEqual([null, "page-2"]);
+  });
 });
