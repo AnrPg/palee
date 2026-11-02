@@ -5181,6 +5181,40 @@ export interface paths {
         patch: operations["PaleeWeb.AdminScheduleController.reject_booking"];
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/box-reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box's reviews (newest first) with the average and the Google listing */
+        get: operations["PaleeWeb.AdminBoxReviewsController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/box-reviews/{id}/reply": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Reply to a review as the box (or edit the reply) */
+        put: operations["PaleeWeb.AdminBoxReviewsController.reply"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/box-screens": {
         parameters: {
             query?: never;
@@ -10357,6 +10391,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/review-asks/places": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Find the box's Google listing by name (Places API, ADR-387) */
+        get: operations["PaleeWeb.AdminReviewAsksController.places"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/review-asks/settings": {
         parameters: {
             query?: never;
@@ -11167,6 +11218,23 @@ export interface paths {
         put?: never;
         /** «Έλεγχος τώρα»: check a custom domain's DNS and HTTPS now */
         post: operations["PaleeWeb.AdminSiteController.check_domain"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/site/domains/{id}/instructions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** «Στείλε τις οδηγίες»: email the domain's DNS records with a status link */
+        post: operations["PaleeWeb.AdminSiteController.send_instructions"];
         delete?: never;
         options?: never;
         head?: never;
@@ -13156,6 +13224,41 @@ export interface paths {
         get: operations["PaleeWeb.MyAutomationPreferencesController.show"];
         /** Change my choices about this box's automatic messages */
         put: operations["PaleeWeb.MyAutomationPreferencesController.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/box-review": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Write or edit my review of the box (only after checking in there) */
+        put: operations["PaleeWeb.MyBoxReviewsController.save"];
+        post?: never;
+        /** Delete my review of the box */
+        delete: operations["PaleeWeb.MyBoxReviewsController.delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/box-reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box's reviews (newest first), the average, mine and whether I may write one */
+        get: operations["PaleeWeb.MyBoxReviewsController.index"];
+        put?: never;
         post?: never;
         delete?: never;
         options?: never;
@@ -18108,6 +18211,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/public/sites/domain-status/{token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The emailed domain instructions' status page (ADR-388): records and state */
+        get: operations["PaleeWeb.PublicSiteController.domain_status"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/public/sites/tls-allowed": {
         parameters: {
             query?: never;
@@ -18853,25 +18973,32 @@ export interface components {
                 /** Format: date-time */
                 verified_at: string | null;
             }[];
-            section_keys: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            section_keys: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
             /** SiteSettings */
             settings: {
+                about_en: string | null;
                 banner_version: number;
                 conversions_api_enabled: boolean;
                 faq: {
                     answer: string;
+                    /** @description Optional English text (ADR-388) */
+                    answer_en?: string;
                     question: string;
+                    /** @description Optional English text (ADR-388) */
+                    question_en?: string;
                 }[];
                 forms_enabled: boolean;
                 ga4_measurement_id: string | null;
                 gtm_container_id: string | null;
                 /** @description A token is saved; the token itself is never returned */
                 has_conversions_api_token: boolean;
-                hidden_sections: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                hidden_sections: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
                 lock_version: number;
                 meta_pixel_id: string | null;
                 public_schedule: boolean;
-                section_order: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                /** @description «WOD της ημέρας» on the site (ADR-388) */
+                public_wod: boolean;
+                section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
             };
         };
         /** AnatomyNode */
@@ -23857,6 +23984,109 @@ export interface components {
             /** @description Ready box_photo media of the gallery, in display order. */
             photo_ids?: string[];
             services?: ("personal_training" | "small_group_training" | "open_gym" | "nutrition_coaching" | "online_coaching" | "corporate")[];
+        };
+        /** BoxReview */
+        BoxReview: {
+            /** @description First name only; null for people who hide themselves */
+            author_name: string | null;
+            body: string | null;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            edited_at: string | null;
+            /** Format: uuid */
+            id: string;
+            rating: number;
+            /** BoxReviewReply */
+            reply: {
+                body: string;
+                /** Format: date-time */
+                replied_at: string;
+            } | null;
+        };
+        /** BoxReviewReply */
+        BoxReviewReply: {
+            body: string;
+            /** Format: date-time */
+            replied_at: string;
+        } | null;
+        /** BoxReviewReplyRequest */
+        BoxReviewReplyRequest: {
+            body: string;
+        };
+        /** BoxReviewRequest */
+        BoxReviewRequest: {
+            body?: string | null;
+            locale?: string | null;
+            rating: number;
+        };
+        /** BoxReviewResponse */
+        BoxReviewResponse: {
+            /** BoxReview */
+            review: {
+                /** @description First name only; null for people who hide themselves */
+                author_name: string | null;
+                body: string | null;
+                /** Format: date-time */
+                created_at: string;
+                /** Format: date-time */
+                edited_at: string | null;
+                /** Format: uuid */
+                id: string;
+                rating: number;
+                /** BoxReviewReply */
+                reply: {
+                    body: string;
+                    /** Format: date-time */
+                    replied_at: string;
+                } | null;
+            };
+        };
+        /** BoxReviewsResponse */
+        BoxReviewsResponse: {
+            average: number | null;
+            count: number;
+            /**
+             * GoogleListing
+             * @description The box's Google rating and up to five reviews, kept apart (ADR-387)
+             */
+            google: {
+                count: number | null;
+                /** Format: date-time */
+                fetched_at: string;
+                maps_uri: string | null;
+                name: string | null;
+                rating: number | null;
+                reviews: {
+                    author_name: string | null;
+                    author_photo_uri: string | null;
+                    author_uri: string | null;
+                    published_at: string | null;
+                    rating: number | null;
+                    relative_time: string | null;
+                    text: string | null;
+                }[];
+                write_review_url: string | null;
+            } | null;
+            has_more: boolean;
+            reviews: {
+                /** @description First name only; null for people who hide themselves */
+                author_name: string | null;
+                body: string | null;
+                /** Format: date-time */
+                created_at: string;
+                /** Format: date-time */
+                edited_at: string | null;
+                /** Format: uuid */
+                id: string;
+                rating: number;
+                /** BoxReviewReply */
+                reply: {
+                    body: string;
+                    /** Format: date-time */
+                    replied_at: string;
+                } | null;
+            }[];
         };
         /** BoxScreen */
         BoxScreen: {
@@ -33149,6 +33379,56 @@ export interface components {
             /** @enum {string} */
             role: "primary" | "secondary" | "stabilizer";
         };
+        /**
+         * GoogleListing
+         * @description The box's Google rating and up to five reviews, kept apart (ADR-387)
+         */
+        GoogleListing: {
+            count: number | null;
+            /** Format: date-time */
+            fetched_at: string;
+            maps_uri: string | null;
+            name: string | null;
+            rating: number | null;
+            reviews: {
+                author_name: string | null;
+                author_photo_uri: string | null;
+                author_uri: string | null;
+                published_at: string | null;
+                rating: number | null;
+                relative_time: string | null;
+                text: string | null;
+            }[];
+            write_review_url: string | null;
+        } | null;
+        /** GooglePlaceMatch */
+        GooglePlaceMatch: {
+            address: string | null;
+            name: string | null;
+            place_id: string;
+            rating: number | null;
+            rating_count: number | null;
+        };
+        /** GooglePlacesSearchResponse */
+        GooglePlacesSearchResponse: {
+            places: {
+                address: string | null;
+                name: string | null;
+                place_id: string;
+                rating: number | null;
+                rating_count: number | null;
+            }[];
+        };
+        /** GoogleReview */
+        GoogleReview: {
+            author_name: string | null;
+            author_photo_uri: string | null;
+            author_uri: string | null;
+            published_at: string | null;
+            rating: number | null;
+            relative_time: string | null;
+            text: string | null;
+        };
         /** GuideProgress */
         GuideProgress: {
             /**
@@ -34680,6 +34960,92 @@ export interface components {
                 source_url?: string | null;
                 status?: string | null;
                 title?: string | null;
+            }[];
+        };
+        /** MyBoxReview */
+        MyBoxReview: {
+            /** @description First name only; null for people who hide themselves */
+            author_name: string | null;
+            body: string | null;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            edited_at: string | null;
+            /** Format: uuid */
+            id: string;
+            rating: number;
+            /** BoxReviewReply */
+            reply: {
+                body: string;
+                /** Format: date-time */
+                replied_at: string;
+            } | null;
+        } | null;
+        /** MyBoxReviewsResponse */
+        MyBoxReviewsResponse: {
+            average: number | null;
+            /** @description Checked in at least once */
+            can_review: boolean;
+            count: number;
+            /**
+             * GoogleListing
+             * @description The box's Google rating and up to five reviews, kept apart (ADR-387)
+             */
+            google: {
+                count: number | null;
+                /** Format: date-time */
+                fetched_at: string;
+                maps_uri: string | null;
+                name: string | null;
+                rating: number | null;
+                reviews: {
+                    author_name: string | null;
+                    author_photo_uri: string | null;
+                    author_uri: string | null;
+                    published_at: string | null;
+                    rating: number | null;
+                    relative_time: string | null;
+                    text: string | null;
+                }[];
+                write_review_url: string | null;
+            } | null;
+            has_more: boolean;
+            /** MyBoxReview */
+            mine: {
+                /** @description First name only; null for people who hide themselves */
+                author_name: string | null;
+                body: string | null;
+                /** Format: date-time */
+                created_at: string;
+                /** Format: date-time */
+                edited_at: string | null;
+                /** Format: uuid */
+                id: string;
+                rating: number;
+                /** BoxReviewReply */
+                reply: {
+                    body: string;
+                    /** Format: date-time */
+                    replied_at: string;
+                } | null;
+            } | null;
+            reviews: {
+                /** @description First name only; null for people who hide themselves */
+                author_name: string | null;
+                body: string | null;
+                /** Format: date-time */
+                created_at: string;
+                /** Format: date-time */
+                edited_at: string | null;
+                /** Format: uuid */
+                id: string;
+                rating: number;
+                /** BoxReviewReply */
+                reply: {
+                    body: string;
+                    /** Format: date-time */
+                    replied_at: string;
+                } | null;
             }[];
         };
         /** MyInjuryWarningsAcknowledged */
@@ -40334,21 +40700,90 @@ export interface components {
         };
         /** PublicSiteResponse */
         PublicSiteResponse: {
+            about_en: string | null;
             canonical_url: string;
+            events: {
+                currency: string;
+                /** Format: date-time */
+                ends_at: string;
+                /** Format: uuid */
+                id: string;
+                place_name: string | null;
+                price_cents: number;
+                /** Format: date-time */
+                starts_at: string;
+                time_zone: string | null;
+                title: string;
+            }[];
             faq: {
                 answer: string;
+                /** @description Optional English text (ADR-388) */
+                answer_en?: string;
                 question: string;
+                /** @description Optional English text (ADR-388) */
+                question_en?: string;
             }[];
             forms: {
                 contact: boolean;
                 kinds: ("trial" | "contact")[];
                 trial: boolean;
             };
+            /** @description The box's language (ADR-388) */
+            language: string;
+            /** @description The site's languages: the box's own and English */
+            languages: string[];
+            /** SiteReviews */
             reviews: {
+                /**
+                 * GoogleListing
+                 * @description The box's Google rating and up to five reviews, kept apart (ADR-387)
+                 */
+                google: {
+                    count: number | null;
+                    /** Format: date-time */
+                    fetched_at: string;
+                    maps_uri: string | null;
+                    name: string | null;
+                    rating: number | null;
+                    reviews: {
+                        author_name: string | null;
+                        author_photo_uri: string | null;
+                        author_uri: string | null;
+                        published_at: string | null;
+                        rating: number | null;
+                        relative_time: string | null;
+                        text: string | null;
+                    }[];
+                    write_review_url: string | null;
+                } | null;
                 google_reviews_url: string | null;
+                /** SitePaleeReviews */
+                palee: {
+                    average: number | null;
+                    count: number;
+                    latest: {
+                        /** @description First name only; null for people who hide themselves */
+                        author_name: string | null;
+                        body: string | null;
+                        /** Format: date-time */
+                        created_at: string;
+                        /** Format: date-time */
+                        edited_at: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        rating: number;
+                        /** BoxReviewReply */
+                        reply: {
+                            body: string;
+                            /** Format: date-time */
+                            replied_at: string;
+                        } | null;
+                    }[];
+                } | null;
             };
-            sections: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            sections: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
             slug: string;
+            time_zone: string;
             /** @description The next 7 days' classes when the owner shows the timetable (no spots or people) */
             timetable: {
                 /** Format: uuid */
@@ -40377,6 +40812,15 @@ export interface components {
                 };
                 validity_days: number;
             };
+            wod: {
+                body: string | null;
+                /** Format: date */
+                date: string;
+                /** Format: uuid */
+                id: string;
+                title: string;
+                type: string | null;
+            }[];
         };
         /** ReferralClaim */
         ReferralClaim: {
@@ -41032,6 +41476,8 @@ export interface components {
         ReviewAsk: {
             actions: ("opened" | "later" | "dismissed")[];
             google_review_url: string | null;
+            /** @description The member already wrote an in-app review (ADR-386) */
+            has_review: boolean;
             /** Format: uuid */
             id: string;
             milestone: number;
@@ -41055,6 +41501,8 @@ export interface components {
             ask: {
                 actions: ("opened" | "later" | "dismissed")[];
                 google_review_url: string | null;
+                /** @description The member already wrote an in-app review (ADR-386) */
+                has_review: boolean;
                 /** Format: uuid */
                 id: string;
                 milestone: number;
@@ -41074,6 +41522,28 @@ export interface components {
         };
         /** ReviewAskSettingsResponse */
         ReviewAskSettingsResponse: {
+            /**
+             * GoogleListing
+             * @description The box's Google rating and up to five reviews, kept apart (ADR-387)
+             */
+            google: {
+                count: number | null;
+                /** Format: date-time */
+                fetched_at: string;
+                maps_uri: string | null;
+                name: string | null;
+                rating: number | null;
+                reviews: {
+                    author_name: string | null;
+                    author_photo_uri: string | null;
+                    author_uri: string | null;
+                    published_at: string | null;
+                    rating: number | null;
+                    relative_time: string | null;
+                    text: string | null;
+                }[];
+                write_review_url: string | null;
+            } | null;
             /** ReviewAskSettings */
             settings: {
                 enabled: boolean;
@@ -43303,6 +43773,15 @@ export interface components {
             /** Format: date-time */
             verified_at: string | null;
         };
+        /** SiteDomainInstructionsRequest */
+        SiteDomainInstructionsRequest: {
+            /** Format: email */
+            email: string;
+        };
+        /** SiteDomainInstructionsResponse */
+        SiteDomainInstructionsResponse: {
+            sent_to: string;
+        };
         /** SiteDomainRequest */
         SiteDomainRequest: {
             host: string;
@@ -43335,6 +43814,19 @@ export interface components {
                 verified_at: string | null;
             };
         };
+        /**
+         * SiteDomainStatusResponse
+         * @description What the person setting up the domain sees from the emailed link
+         */
+        SiteDomainStatusResponse: {
+            box_name: string;
+            /** Format: date-time */
+            checked_at: string | null;
+            dns_records: Record<string, never>[];
+            host: string;
+            last_error: string | null;
+            status: string;
+        };
         /** SiteDomainsResponse */
         SiteDomainsResponse: {
             domains: {
@@ -43362,10 +43854,28 @@ export interface components {
                 verified_at: string | null;
             }[];
         };
+        /** SiteEvent */
+        SiteEvent: {
+            currency: string;
+            /** Format: date-time */
+            ends_at: string;
+            /** Format: uuid */
+            id: string;
+            place_name: string | null;
+            price_cents: number;
+            /** Format: date-time */
+            starts_at: string;
+            time_zone: string | null;
+            title: string;
+        };
         /** SiteFaqEntry */
         SiteFaqEntry: {
             answer: string;
+            /** @description Optional English text (ADR-388) */
+            answer_en?: string;
             question: string;
+            /** @description Optional English text (ADR-388) */
+            question_en?: string;
         };
         /** SiteFormRequest */
         SiteFormRequest: {
@@ -43418,64 +43928,156 @@ export interface components {
                 verified_at: string | null;
             }[];
         };
+        /** SitePaleeReviews */
+        SitePaleeReviews: {
+            average: number | null;
+            count: number;
+            latest: {
+                /** @description First name only; null for people who hide themselves */
+                author_name: string | null;
+                body: string | null;
+                /** Format: date-time */
+                created_at: string;
+                /** Format: date-time */
+                edited_at: string | null;
+                /** Format: uuid */
+                id: string;
+                rating: number;
+                /** BoxReviewReply */
+                reply: {
+                    body: string;
+                    /** Format: date-time */
+                    replied_at: string;
+                } | null;
+            }[];
+        } | null;
+        /** SiteReviews */
+        SiteReviews: {
+            /**
+             * GoogleListing
+             * @description The box's Google rating and up to five reviews, kept apart (ADR-387)
+             */
+            google: {
+                count: number | null;
+                /** Format: date-time */
+                fetched_at: string;
+                maps_uri: string | null;
+                name: string | null;
+                rating: number | null;
+                reviews: {
+                    author_name: string | null;
+                    author_photo_uri: string | null;
+                    author_uri: string | null;
+                    published_at: string | null;
+                    rating: number | null;
+                    relative_time: string | null;
+                    text: string | null;
+                }[];
+                write_review_url: string | null;
+            } | null;
+            google_reviews_url: string | null;
+            /** SitePaleeReviews */
+            palee: {
+                average: number | null;
+                count: number;
+                latest: {
+                    /** @description First name only; null for people who hide themselves */
+                    author_name: string | null;
+                    body: string | null;
+                    /** Format: date-time */
+                    created_at: string;
+                    /** Format: date-time */
+                    edited_at: string | null;
+                    /** Format: uuid */
+                    id: string;
+                    rating: number;
+                    /** BoxReviewReply */
+                    reply: {
+                        body: string;
+                        /** Format: date-time */
+                        replied_at: string;
+                    } | null;
+                }[];
+            } | null;
+        };
         /** SiteSettings */
         SiteSettings: {
+            about_en: string | null;
             banner_version: number;
             conversions_api_enabled: boolean;
             faq: {
                 answer: string;
+                /** @description Optional English text (ADR-388) */
+                answer_en?: string;
                 question: string;
+                /** @description Optional English text (ADR-388) */
+                question_en?: string;
             }[];
             forms_enabled: boolean;
             ga4_measurement_id: string | null;
             gtm_container_id: string | null;
             /** @description A token is saved; the token itself is never returned */
             has_conversions_api_token: boolean;
-            hidden_sections: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            hidden_sections: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
             lock_version: number;
             meta_pixel_id: string | null;
             public_schedule: boolean;
-            section_order: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            /** @description «WOD της ημέρας» on the site (ADR-388) */
+            public_wod: boolean;
+            section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
         };
         /** SiteSettingsResponse */
         SiteSettingsResponse: {
             /** SiteSettings */
             settings: {
+                about_en: string | null;
                 banner_version: number;
                 conversions_api_enabled: boolean;
                 faq: {
                     answer: string;
+                    /** @description Optional English text (ADR-388) */
+                    answer_en?: string;
                     question: string;
+                    /** @description Optional English text (ADR-388) */
+                    question_en?: string;
                 }[];
                 forms_enabled: boolean;
                 ga4_measurement_id: string | null;
                 gtm_container_id: string | null;
                 /** @description A token is saved; the token itself is never returned */
                 has_conversions_api_token: boolean;
-                hidden_sections: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                hidden_sections: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
                 lock_version: number;
                 meta_pixel_id: string | null;
                 public_schedule: boolean;
-                section_order: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                /** @description «WOD της ημέρας» on the site (ADR-388) */
+                public_wod: boolean;
+                section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
             };
         };
         /** SiteSettingsUpdate */
         SiteSettingsUpdate: {
+            about_en?: string | null;
             conversions_api_enabled?: boolean;
             /** @description Meta Conversions API access token (write-only; empty removes it) */
             conversions_api_token?: string | null;
             faq?: {
                 answer: string;
+                /** @description Optional English text (ADR-388) */
+                answer_en?: string;
                 question: string;
+                /** @description Optional English text (ADR-388) */
+                question_en?: string;
             }[];
             forms_enabled?: boolean;
             ga4_measurement_id?: string | null;
             gtm_container_id?: string | null;
-            hidden_sections?: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            hidden_sections?: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
             lock_version: number;
             meta_pixel_id?: string | null;
             public_schedule?: boolean;
-            section_order?: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            public_wod?: boolean;
+            section_order?: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
         };
         /** SiteSummaryResponse */
         SiteSummaryResponse: {
@@ -43514,6 +44116,16 @@ export interface components {
             name: string;
             /** Format: date-time */
             scheduled_at: string;
+        };
+        /** SiteWod */
+        SiteWod: {
+            body: string | null;
+            /** Format: date */
+            date: string;
+            /** Format: uuid */
+            id: string;
+            title: string;
+            type: string | null;
         };
         /**
          * SocialPrivacy
@@ -73544,6 +74156,139 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminBoxReviewsController.index": {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reviews */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        average: number | null;
+                        count: number;
+                        /**
+                         * GoogleListing
+                         * @description The box's Google rating and up to five reviews, kept apart (ADR-387)
+                         */
+                        google: {
+                            count: number | null;
+                            /** Format: date-time */
+                            fetched_at: string;
+                            maps_uri: string | null;
+                            name: string | null;
+                            rating: number | null;
+                            reviews: {
+                                author_name: string | null;
+                                author_photo_uri: string | null;
+                                author_uri: string | null;
+                                published_at: string | null;
+                                rating: number | null;
+                                relative_time: string | null;
+                                text: string | null;
+                            }[];
+                            write_review_url: string | null;
+                        } | null;
+                        has_more: boolean;
+                        reviews: {
+                            /** @description First name only; null for people who hide themselves */
+                            author_name: string | null;
+                            body: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            /** Format: date-time */
+                            edited_at: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            rating: number;
+                            /** BoxReviewReply */
+                            reply: {
+                                body: string;
+                                /** Format: date-time */
+                                replied_at: string;
+                            } | null;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminBoxReviewsController.reply": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    body: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Review */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** BoxReview */
+                        review: {
+                            /** @description First name only; null for people who hide themselves */
+                            author_name: string | null;
+                            body: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            /** Format: date-time */
+                            edited_at: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            rating: number;
+                            /** BoxReviewReply */
+                            reply: {
+                                body: string;
+                                /** Format: date-time */
+                                replied_at: string;
+                            } | null;
+                        };
+                    };
+                };
+            };
+            /** @description No such review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Invalid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminBoxScreenController.index": {
         parameters: {
             query?: never;
@@ -100497,6 +101242,54 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminReviewAsksController.places": {
+        parameters: {
+            query: {
+                q: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Matches */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        places: {
+                            address: string | null;
+                            name: string | null;
+                            place_id: string;
+                            rating: number | null;
+                            rating_count: number | null;
+                        }[];
+                    };
+                };
+            };
+            /** @description Too short */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Places unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminReviewAsksController.show": {
         parameters: {
             query?: never;
@@ -100513,6 +101306,28 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /**
+                         * GoogleListing
+                         * @description The box's Google rating and up to five reviews, kept apart (ADR-387)
+                         */
+                        google: {
+                            count: number | null;
+                            /** Format: date-time */
+                            fetched_at: string;
+                            maps_uri: string | null;
+                            name: string | null;
+                            rating: number | null;
+                            reviews: {
+                                author_name: string | null;
+                                author_photo_uri: string | null;
+                                author_uri: string | null;
+                                published_at: string | null;
+                                rating: number | null;
+                                relative_time: string | null;
+                                text: string | null;
+                            }[];
+                            write_review_url: string | null;
+                        } | null;
                         /** ReviewAskSettings */
                         settings: {
                             enabled: boolean;
@@ -100551,6 +101366,28 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /**
+                         * GoogleListing
+                         * @description The box's Google rating and up to five reviews, kept apart (ADR-387)
+                         */
+                        google: {
+                            count: number | null;
+                            /** Format: date-time */
+                            fetched_at: string;
+                            maps_uri: string | null;
+                            name: string | null;
+                            rating: number | null;
+                            reviews: {
+                                author_name: string | null;
+                                author_photo_uri: string | null;
+                                author_uri: string | null;
+                                published_at: string | null;
+                                rating: number | null;
+                                relative_time: string | null;
+                                text: string | null;
+                            }[];
+                            write_review_url: string | null;
+                        } | null;
                         /** ReviewAskSettings */
                         settings: {
                             enabled: boolean;
@@ -104004,25 +104841,32 @@ export interface operations {
                             /** Format: date-time */
                             verified_at: string | null;
                         }[];
-                        section_keys: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                        section_keys: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
                         /** SiteSettings */
                         settings: {
+                            about_en: string | null;
                             banner_version: number;
                             conversions_api_enabled: boolean;
                             faq: {
                                 answer: string;
+                                /** @description Optional English text (ADR-388) */
+                                answer_en?: string;
                                 question: string;
+                                /** @description Optional English text (ADR-388) */
+                                question_en?: string;
                             }[];
                             forms_enabled: boolean;
                             ga4_measurement_id: string | null;
                             gtm_container_id: string | null;
                             /** @description A token is saved; the token itself is never returned */
                             has_conversions_api_token: boolean;
-                            hidden_sections: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                            hidden_sections: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
                             lock_version: number;
                             meta_pixel_id: string | null;
                             public_schedule: boolean;
-                            section_order: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                            /** @description «WOD της ημέρας» on the site (ADR-388) */
+                            public_wod: boolean;
+                            section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
                         };
                     };
                 };
@@ -104039,21 +104883,27 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    about_en?: string | null;
                     conversions_api_enabled?: boolean;
                     /** @description Meta Conversions API access token (write-only; empty removes it) */
                     conversions_api_token?: string | null;
                     faq?: {
                         answer: string;
+                        /** @description Optional English text (ADR-388) */
+                        answer_en?: string;
                         question: string;
+                        /** @description Optional English text (ADR-388) */
+                        question_en?: string;
                     }[];
                     forms_enabled?: boolean;
                     ga4_measurement_id?: string | null;
                     gtm_container_id?: string | null;
-                    hidden_sections?: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                    hidden_sections?: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
                     lock_version: number;
                     meta_pixel_id?: string | null;
                     public_schedule?: boolean;
-                    section_order?: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                    public_wod?: boolean;
+                    section_order?: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
                 };
             };
         };
@@ -104067,22 +104917,29 @@ export interface operations {
                     "application/json": {
                         /** SiteSettings */
                         settings: {
+                            about_en: string | null;
                             banner_version: number;
                             conversions_api_enabled: boolean;
                             faq: {
                                 answer: string;
+                                /** @description Optional English text (ADR-388) */
+                                answer_en?: string;
                                 question: string;
+                                /** @description Optional English text (ADR-388) */
+                                question_en?: string;
                             }[];
                             forms_enabled: boolean;
                             ga4_measurement_id: string | null;
                             gtm_container_id: string | null;
                             /** @description A token is saved; the token itself is never returned */
                             has_conversions_api_token: boolean;
-                            hidden_sections: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                            hidden_sections: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
                             lock_version: number;
                             meta_pixel_id: string | null;
                             public_schedule: boolean;
-                            section_order: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                            /** @description «WOD της ημέρας» on the site (ADR-388) */
+                            public_wod: boolean;
+                            section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
                         };
                     };
                 };
@@ -104301,6 +105158,55 @@ export interface operations {
             };
             /** @description Error */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.send_instructions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: email */
+                    email: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Sent */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        sent_to: string;
+                    };
+                };
+            };
+            /** @description Error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Error */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -117887,6 +118793,178 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.MyBoxReviewsController.save": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    body?: string | null;
+                    locale?: string | null;
+                    rating: number;
+                };
+            };
+        };
+        responses: {
+            /** @description Review */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** BoxReview */
+                        review: {
+                            /** @description First name only; null for people who hide themselves */
+                            author_name: string | null;
+                            body: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            /** Format: date-time */
+                            edited_at: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            rating: number;
+                            /** BoxReviewReply */
+                            reply: {
+                                body: string;
+                                /** Format: date-time */
+                                replied_at: string;
+                            } | null;
+                        };
+                    };
+                };
+            };
+            /** @description Never checked in here */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Invalid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyBoxReviewsController.delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "PaleeWeb.MyBoxReviewsController.index": {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reviews */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        average: number | null;
+                        /** @description Checked in at least once */
+                        can_review: boolean;
+                        count: number;
+                        /**
+                         * GoogleListing
+                         * @description The box's Google rating and up to five reviews, kept apart (ADR-387)
+                         */
+                        google: {
+                            count: number | null;
+                            /** Format: date-time */
+                            fetched_at: string;
+                            maps_uri: string | null;
+                            name: string | null;
+                            rating: number | null;
+                            reviews: {
+                                author_name: string | null;
+                                author_photo_uri: string | null;
+                                author_uri: string | null;
+                                published_at: string | null;
+                                rating: number | null;
+                                relative_time: string | null;
+                                text: string | null;
+                            }[];
+                            write_review_url: string | null;
+                        } | null;
+                        has_more: boolean;
+                        /** MyBoxReview */
+                        mine: {
+                            /** @description First name only; null for people who hide themselves */
+                            author_name: string | null;
+                            body: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            /** Format: date-time */
+                            edited_at: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            rating: number;
+                            /** BoxReviewReply */
+                            reply: {
+                                body: string;
+                                /** Format: date-time */
+                                replied_at: string;
+                            } | null;
+                        } | null;
+                        reviews: {
+                            /** @description First name only; null for people who hide themselves */
+                            author_name: string | null;
+                            body: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            /** Format: date-time */
+                            edited_at: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            rating: number;
+                            /** BoxReviewReply */
+                            reply: {
+                                body: string;
+                                /** Format: date-time */
+                                replied_at: string;
+                            } | null;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.MyChannelsController.show": {
         parameters: {
             query?: never;
@@ -120847,6 +121925,8 @@ export interface operations {
                         ask: {
                             actions: ("opened" | "later" | "dismissed")[];
                             google_review_url: string | null;
+                            /** @description The member already wrote an in-app review (ADR-386) */
+                            has_review: boolean;
                             /** Format: uuid */
                             id: string;
                             milestone: number;
@@ -120933,6 +122013,8 @@ export interface operations {
                         ask: {
                             actions: ("opened" | "later" | "dismissed")[];
                             google_review_url: string | null;
+                            /** @description The member already wrote an in-app review (ADR-386) */
+                            has_review: boolean;
                             /** Format: uuid */
                             id: string;
                             milestone: number;
@@ -143427,6 +144509,45 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.PublicSiteController.domain_status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Status */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        box_name: string;
+                        /** Format: date-time */
+                        checked_at: string | null;
+                        dns_records: Record<string, never>[];
+                        host: string;
+                        last_error: string | null;
+                        status: string;
+                    };
+                };
+            };
+            /** @description No published box */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
     "PaleeWeb.PublicSiteController.tls_allowed": {
         parameters: {
             query: {
@@ -143477,21 +144598,90 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        about_en: string | null;
                         canonical_url: string;
+                        events: {
+                            currency: string;
+                            /** Format: date-time */
+                            ends_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            place_name: string | null;
+                            price_cents: number;
+                            /** Format: date-time */
+                            starts_at: string;
+                            time_zone: string | null;
+                            title: string;
+                        }[];
                         faq: {
                             answer: string;
+                            /** @description Optional English text (ADR-388) */
+                            answer_en?: string;
                             question: string;
+                            /** @description Optional English text (ADR-388) */
+                            question_en?: string;
                         }[];
                         forms: {
                             contact: boolean;
                             kinds: ("trial" | "contact")[];
                             trial: boolean;
                         };
+                        /** @description The box's language (ADR-388) */
+                        language: string;
+                        /** @description The site's languages: the box's own and English */
+                        languages: string[];
+                        /** SiteReviews */
                         reviews: {
+                            /**
+                             * GoogleListing
+                             * @description The box's Google rating and up to five reviews, kept apart (ADR-387)
+                             */
+                            google: {
+                                count: number | null;
+                                /** Format: date-time */
+                                fetched_at: string;
+                                maps_uri: string | null;
+                                name: string | null;
+                                rating: number | null;
+                                reviews: {
+                                    author_name: string | null;
+                                    author_photo_uri: string | null;
+                                    author_uri: string | null;
+                                    published_at: string | null;
+                                    rating: number | null;
+                                    relative_time: string | null;
+                                    text: string | null;
+                                }[];
+                                write_review_url: string | null;
+                            } | null;
                             google_reviews_url: string | null;
+                            /** SitePaleeReviews */
+                            palee: {
+                                average: number | null;
+                                count: number;
+                                latest: {
+                                    /** @description First name only; null for people who hide themselves */
+                                    author_name: string | null;
+                                    body: string | null;
+                                    /** Format: date-time */
+                                    created_at: string;
+                                    /** Format: date-time */
+                                    edited_at: string | null;
+                                    /** Format: uuid */
+                                    id: string;
+                                    rating: number;
+                                    /** BoxReviewReply */
+                                    reply: {
+                                        body: string;
+                                        /** Format: date-time */
+                                        replied_at: string;
+                                    } | null;
+                                }[];
+                            } | null;
                         };
-                        sections: ("hero" | "about" | "schedule" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                        sections: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
                         slug: string;
+                        time_zone: string;
                         /** @description The next 7 days' classes when the owner shows the timetable (no spots or people) */
                         timetable: {
                             /** Format: uuid */
@@ -143520,6 +144710,15 @@ export interface operations {
                             };
                             validity_days: number;
                         };
+                        wod: {
+                            body: string | null;
+                            /** Format: date */
+                            date: string;
+                            /** Format: uuid */
+                            id: string;
+                            title: string;
+                            type: string | null;
+                        }[];
                     };
                 };
             };
