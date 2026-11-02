@@ -123,6 +123,8 @@ const TENANT_SCOPED_PREFIXES = [
   "/landing",
   "/locations",
   "/me/appointments",
+  // ADR-346: the member's «Αυτόματα μηνύματα» of their box.
+  "/me/automatic-messages",
   "/me/corporate-enrollment",
   "/me/documents",
   "/me/entitlement",
