@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 
 import type { ClassVisitPerson, VisitBadge, VisitVia } from "@/api/training-floor";
+import { rowBadges } from "@/lib/training-floor";
 
 const BADGE_KEYS: Record<VisitBadge, string> = {
   first_visit: "badgeFirstVisit",
@@ -40,19 +41,19 @@ export function viaLabel(via: VisitVia | null | undefined, t: ReturnType<typeof 
 
 /**
  * The ADR-359 badges of one person (ANR mockup e1): words, never icons, so
- * they read from across the floor. `skip` leaves out what the row already says.
+ * they read from across the floor. `skipTrial` leaves out what the row already says.
  */
 export function VisitBadgeChips({
   badges,
   via,
-  skip = [],
+  skipTrial = false,
 }: {
   badges: readonly VisitBadge[];
   via?: VisitVia | null;
-  skip?: readonly VisitBadge[];
+  skipTrial?: boolean;
 }) {
   const t = useTranslations("TrainingFloor");
-  const shown = badges.filter((badge) => !skip.includes(badge) && badge !== "came_via_event" && badge !== "came_via_referral");
+  const shown = rowBadges(badges, { skipTrial });
   const viaText = viaLabel(via, t);
   if (shown.length === 0 && !viaText) return null;
   return (

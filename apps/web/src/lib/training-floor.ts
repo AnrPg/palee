@@ -6,6 +6,7 @@ import type {
   FitnessDomainName,
   LeaderboardQuery,
   LeaderboardWindow,
+  VisitBadge,
 } from "@/api/training-floor";
 
 // Pure rules behind the v3.1 «Training and floor» screens (ADR-356..359,
@@ -202,10 +203,14 @@ export function visitFor(people: ClassVisitPerson[] | null | undefined, bookingI
   return (people ?? []).find((person) => person.booking_id === bookingId) ?? null;
 }
 
-/** Badges a row shows; «Δοκιμαστικό» already has its own tag on the roster. */
-export function rowBadges(person: ClassVisitPerson | null, options: { skipTrial?: boolean } = {}) {
-  if (!person) return [];
-  return person.badges.filter((badge) => !(options.skipTrial && badge === "trial") && badge !== "came_via_event" && badge !== "came_via_referral");
+/**
+ * Badges a row shows as chips: how they came is one «Ήρθε μέσω …» chip of its
+ * own, and the roster already tags a trial seat («Δοκιμαστικό»).
+ */
+export function rowBadges(badges: readonly VisitBadge[] | null | undefined, options: { skipTrial?: boolean } = {}): VisitBadge[] {
+  return (badges ?? []).filter(
+    (badge) => !(options.skipTrial && badge === "trial") && badge !== "came_via_event" && badge !== "came_via_referral",
+  );
 }
 
 // -- CP-E4: the calendar offer at the first booking ---------------------------

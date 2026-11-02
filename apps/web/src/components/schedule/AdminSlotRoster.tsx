@@ -83,7 +83,7 @@ export function AdminSlotRoster({
                     <VisitBadgeChips
                       badges={visitFor(visits, booking.id)!.badges}
                       via={visitFor(visits, booking.id)!.via}
-                      skip={booking.kind === "trial" ? ["trial"] : []}
+                      skipTrial={booking.kind === "trial"}
                     />
                   ) : null}
                   {badgeFor?.(booking)}
