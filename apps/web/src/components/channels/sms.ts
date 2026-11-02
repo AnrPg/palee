@@ -208,3 +208,12 @@ export type SmsErrorCode = (typeof SMS_ERROR_CODES)[number];
 export function smsErrorCode(code: string | null | undefined): SmsErrorCode | null {
   return SMS_ERROR_CODES.find((known) => known === code) ?? null;
 }
+
+/** A text field's look; red border when its value is wrong (the reason goes under it). */
+export function inputStyle(invalid: boolean) {
+  return {
+    background: "var(--panel)",
+    border: `1px solid ${invalid ? "var(--danger)" : "var(--border)"}`,
+    color: "var(--text)",
+  };
+}
