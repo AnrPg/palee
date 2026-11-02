@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
-import { siteLanguageCookie, type SiteLanguage } from "@/lib/public-site";
+import { rememberSiteLanguage, type SiteLanguage } from "@/lib/public-site";
 
 /**
  * ADR-388: the website's EL/EN switch. The choice is remembered, so the
@@ -17,7 +17,7 @@ export function SiteLanguageSwitch({ slug, boxLanguage, language, basePath }: { 
   ];
   function remember(value: SiteLanguage) {
     const code = value === "en" ? "en" : boxLanguage;
-    document.cookie = siteLanguageCookie(slug, code, window.location.protocol === "https:");
+    rememberSiteLanguage(slug, code);
   }
   return (
     <nav aria-label={t("languageLabel")} className="flex h-10 items-center gap-0.5 rounded-full p-1" style={{ background: "var(--media-control)" }} data-testid="site-language-switch">

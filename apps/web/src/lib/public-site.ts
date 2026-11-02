@@ -37,6 +37,11 @@ export function siteLanguageCookie(slug: string, code: string, secure: boolean) 
   return `${SITE_LANGUAGE_COOKIE}=${encodeURIComponent(`${slug}:${code}`)}; Path=/; Max-Age=31536000; SameSite=Lax${secure ? "; Secure" : ""}`;
 }
 
+/** Remembers the visitor's choice in the browser (the switch's links then reload the page). */
+export function rememberSiteLanguage(slug: string, code: string) {
+  document.cookie = siteLanguageCookie(slug, code, window.location.protocol === "https:");
+}
+
 /** The id of a form field's inline error. */
 export function fieldErrorId(base: string, field: string) {
   return `${base}-${field}-error`;
