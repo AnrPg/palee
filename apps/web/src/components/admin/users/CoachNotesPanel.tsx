@@ -156,7 +156,7 @@ export function CoachNotesPanel({
                 {own(note) ? i18n("rhYou") : (note.coach_nickname ?? i18n("stfCoach"))}
                 {note.inserted_at ? ` · ${formatDateTime(note.inserted_at, locale)}` : ""}
                 {note.updated_at && note.inserted_at && note.updated_at !== note.inserted_at ? ` · ${i18n("rhEdited")}` : ""}
-                <AudienceBadge audience={note.audience ?? "private"} />
+                <AudienceBadge audience={audienceOf(note)} />
               </p>
               {subjectLabel(note) ? (
                 <p className="mt-1 text-xs font-semibold" style={{ color: "var(--primary-strong)" }}>{subjectLabel(note)}</p>
@@ -306,6 +306,11 @@ export function CoachNotesPanel({
       ) : null}
     </div>
   );
+}
+
+/** A note written before ADR-359 has no audience: it is private. */
+function audienceOf(note: CoachNote): NoteAudience {
+  return note.audience === "staff" ? "staff" : "private";
 }
 
 /** «Για το staff» or «Ιδιωτική» beside each note (ADR-359). */
