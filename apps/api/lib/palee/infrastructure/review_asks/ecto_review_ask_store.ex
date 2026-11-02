@@ -6,7 +6,13 @@ defmodule Palee.Infrastructure.ReviewAsks.EctoReviewAskStore do
   import Ecto.Query
 
   alias Palee.Repo
-  alias Palee.ReviewAsks.{ReviewAsk, ReviewAskOptOut, ReviewAskSettings}
+  alias Palee.ReviewAsks.{
+    BoxReview,
+    GooglePlaceSnapshot,
+    ReviewAsk,
+    ReviewAskOptOut,
+    ReviewAskSettings
+  }
 
   @impl true
   def get_settings(%{organization_id: organization_id}) do
@@ -152,5 +158,165 @@ defmodule Palee.Infrastructure.ReviewAsks.EctoReviewAskStore do
       unanswered: Map.get(by_status, "shown", 0),
       opted_out: opted_out
     }
+  end
+
+  # ── In-app reviews (ADR-386) ────────────────────────────────────────────
+
+  @review_fields [
+    :id,
+    :user_id,
+    :rating,
+    :body,
+    :locale,
+    :edited_at,
+    :reply_body,
+    :replied_at,
+    :replied_by_id,
+    :inserted_at,
+    :updated_at
+  ]
+
+  @impl true
+  def get_review(%{organization_id: organization_id}, user_id) do
+    BoxReview
+    |> where([r], r.organization_id == ^organization_id and r.user_id == ^user_id)
+    |> Repo.one()
+    |> review_map()
+  end
+
+  @impl true
+  def get_review_by_id(%{organization_id: organization_id}, id) do
+    case Ecto.UUID.cast(id) do
+      {:ok, id} ->
+        BoxReview
+        |> where([r], r.organization_id == ^organization_id and r.id == ^id)
+        |> Repo.one()
+        |> review_map()
+
+      :error ->
+        nil
+    end
+  end
+
+  @impl true
+  def save_review(%{organization_id: organization_id}, user_id, attrs) do
+    row =
+      Repo.one(
+        from r in BoxReview,
+          where: r.organization_id == ^organization_id and r.user_id == ^user_id
+      )
+
+    (row || %BoxReview{organization_id: organization_id})
+    |> BoxReview.changeset(Map.put(attrs, :user_id, user_id))
+    |> Repo.insert_or_update()
+    |> case do
+      {:ok, review} -> {:ok, review_map(review)}
+      error -> error
+    end
+  end
+
+  @impl true
+  def delete_review(%{organization_id: organization_id}, user_id) do
+    BoxReview
+    |> where([r], r.organization_id == ^organization_id and r.user_id == ^user_id)
+    |> Repo.delete_all()
+
+    :ok
+  end
+
+  @impl true
+  def list_reviews(%{organization_id: organization_id}, %{limit: limit, offset: offset}) do
+    BoxReview
+    |> where([r], r.organization_id == ^organization_id)
+    |> order_by([r], desc: r.inserted_at, desc: r.id)
+    |> limit(^limit)
+    |> offset(^offset)
+    |> Repo.all()
+    |> Enum.map(&review_map/1)
+  end
+
+  @impl true
+  def review_stats(%{organization_id: organization_id}) do
+    {count, sum} =
+      BoxReview
+      |> where([r], r.organization_id == ^organization_id)
+      |> select([r], {count(r.id), coalesce(sum(r.rating), 0)})
+      |> Repo.one()
+
+    %{count: count, sum: to_integer(sum)}
+  end
+
+  defp to_integer(%Decimal{} = value), do: Decimal.to_integer(value)
+  defp to_integer(value) when is_integer(value), do: value
+
+  @impl true
+  def reply_review(%{organization_id: organization_id}, id, attrs) do
+    with {:ok, id} <- Ecto.UUID.cast(id),
+         %BoxReview{} = review <-
+           Repo.one(
+             from r in BoxReview, where: r.organization_id == ^organization_id and r.id == ^id
+           ) do
+      review
+      |> BoxReview.changeset(attrs)
+      |> Repo.update()
+      |> case do
+        {:ok, review} -> {:ok, review_map(review)}
+        error -> error
+      end
+    else
+      _missing -> {:error, :box_review_not_found}
+    end
+  end
+
+  defp review_map(nil), do: nil
+  defp review_map(review), do: Map.take(review, @review_fields)
+
+  # ── Google listing (ADR-387) ────────────────────────────────────────────
+
+  @impl true
+  def get_place_snapshot(%{organization_id: organization_id}) do
+    GooglePlaceSnapshot
+    |> where([g], g.organization_id == ^organization_id)
+    |> Repo.one()
+    |> snapshot_map()
+  end
+
+  @impl true
+  def save_place_snapshot(%{organization_id: organization_id}, attrs) do
+    row =
+      Repo.one(from g in GooglePlaceSnapshot, where: g.organization_id == ^organization_id)
+
+    (row || %GooglePlaceSnapshot{organization_id: organization_id})
+    |> GooglePlaceSnapshot.changeset(attrs)
+    |> Repo.insert_or_update()
+    |> case do
+      {:ok, snapshot} -> {:ok, snapshot_map(snapshot)}
+      error -> error
+    end
+  end
+
+  @impl true
+  def place_due_organizations(now) do
+    %{rows: rows} =
+      Repo.query!("SELECT organization_id FROM palee_google_place_due_organizations($1)", [now])
+
+    Enum.map(rows, fn [id] -> Ecto.UUID.load!(id) end)
+  end
+
+  defp snapshot_map(nil), do: nil
+
+  defp snapshot_map(snapshot) do
+    Map.take(snapshot, [
+      :place_id,
+      :name,
+      :rating,
+      :rating_count,
+      :maps_uri,
+      :reviews,
+      :status,
+      :fetched_at,
+      :next_refresh_at,
+      :attempts
+    ])
   end
 end

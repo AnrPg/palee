@@ -30,6 +30,8 @@ config :palee, Oban,
        {"*/15 * * * *", Palee.Workers.RefreshLeaderboardJob},
        # ADR-352/353: custom domain checks and the website form outbox.
        {"*/5 * * * *", Palee.Workers.BoxSiteJob},
+       # ADR-387: refresh due Google listings (each box once a day).
+       {"17 * * * *", Palee.Workers.GooglePlacesJob},
        {"*/15 * * * *", Palee.Workers.RefreshFinanceAggregatesJob},
        {"*/15 * * * *", Palee.Workers.RefreshCoachingAggregatesJob},
        {"0 2 * * *", Palee.Workers.MarkOverdueInvoicesJob},
@@ -472,6 +474,8 @@ config :palee, :box_site,
 config :palee, :review_ask_store, Palee.Infrastructure.ReviewAsks.EctoReviewAskStore
 config :palee, :review_signals, Palee.Infrastructure.ReviewAsks.EctoReviewSignals
 config :palee, :review_ask_clock, Palee.Infrastructure.ReviewAsks.SystemClock
+# ADR-387: the box's Google listing (Places API with Palee's server key).
+config :palee, :google_places, Palee.Infrastructure.ReviewAsks.GooglePlaces
 
 config :palee,
        :saved_filter_store,

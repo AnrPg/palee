@@ -9,7 +9,7 @@ defmodule PaleeWeb.Schemas.BoxSite do
   @int %Schema{type: :integer}
   @bool %Schema{type: :boolean}
 
-  @section_keys ~w(hero about schedule packages coaches location reviews faq trial_form contact_form)
+  @section_keys ~w(hero about schedule events wod packages coaches location reviews faq trial_form contact_form)
   @domain_statuses ~w(pending_dns pending_tls active broken expired)
   @consent_actions ~w(accept_all reject_all custom withdraw)
   @review_actions ~w(opened later dismissed)
@@ -26,7 +26,9 @@ defmodule PaleeWeb.Schemas.BoxSite do
       type: :object,
       properties: %{
         question: %Schema{type: :string, maxLength: 200},
-        answer: %Schema{type: :string, maxLength: 1000}
+        answer: %Schema{type: :string, maxLength: 1000},
+        question_en: %Schema{type: :string, maxLength: 200, description: "Optional English text (ADR-388)"},
+        answer_en: %Schema{type: :string, maxLength: 1000, description: "Optional English text (ADR-388)"}
       },
       required: [:answer, :question]
     }
@@ -58,6 +60,8 @@ defmodule PaleeWeb.Schemas.BoxSite do
         section_order: sections(),
         hidden_sections: sections(),
         public_schedule: @bool,
+        public_wod: %Schema{type: :boolean, description: "«WOD της ημέρας» on the site (ADR-388)"},
+        about_en: %Schema{type: :string, nullable: true, maxLength: 4000},
         faq: faq(),
         forms_enabled: @bool,
         meta_pixel_id: @text,
@@ -72,6 +76,7 @@ defmodule PaleeWeb.Schemas.BoxSite do
         lock_version: @int
       },
       required: [
+        :about_en,
         :banner_version,
         :conversions_api_enabled,
         :faq,
@@ -83,6 +88,7 @@ defmodule PaleeWeb.Schemas.BoxSite do
         :lock_version,
         :meta_pixel_id,
         :public_schedule,
+        :public_wod,
         :section_order
       ]
     }
@@ -96,6 +102,8 @@ defmodule PaleeWeb.Schemas.BoxSite do
         section_order: sections(),
         hidden_sections: sections(),
         public_schedule: @bool,
+        public_wod: @bool,
+        about_en: %Schema{type: :string, nullable: true, maxLength: 4000},
         faq: faq(),
         forms_enabled: @bool,
         meta_pixel_id: @text,

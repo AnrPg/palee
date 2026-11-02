@@ -9,6 +9,7 @@ defmodule Palee.BoxSite.Domain.SiteSettingsPolicy do
   @max_faq 12
   @max_question 200
   @max_answer 1_000
+  @max_about_en 4_000
   @tag_formats %{
     meta_pixel_id: ~r/^[0-9]{5,20}$/,
     ga4_measurement_id: ~r/^G-[A-Z0-9]{4,16}$/,
@@ -24,6 +25,8 @@ defmodule Palee.BoxSite.Domain.SiteSettingsPolicy do
       section_order: SiteSections.keys(),
       hidden_sections: [],
       public_schedule: false,
+      public_wod: false,
+      about_en: nil,
       faq: [],
       forms_enabled: true,
       meta_pixel_id: nil,
@@ -47,6 +50,8 @@ defmodule Palee.BoxSite.Domain.SiteSettingsPolicy do
       {%{}, %{}}
       |> sections(current, params)
       |> boolean(params, "public_schedule", :public_schedule)
+      |> boolean(params, "public_wod", :public_wod)
+      |> about_en(params)
       |> boolean(params, "forms_enabled", :forms_enabled)
       |> boolean(params, "conversions_api_enabled", :conversions_api_enabled)
       |> faq(params)
@@ -100,19 +105,56 @@ defmodule Palee.BoxSite.Domain.SiteSettingsPolicy do
   defp faq({changes, errors}, %{"faq" => _other}), do: {changes, Map.put(errors, :faq, "invalid")}
   defp faq(acc, _params), do: acc
 
-  defp faq_entry(%{question: question, answer: answer}),
-    do: faq_entry(%{"question" => question, "answer" => answer})
+  defp faq_entry(entry) when is_map(entry) do
+    entry = Map.new(entry, fn {key, value} -> {to_string(key), value} end)
 
-  defp faq_entry(%{"question" => question, "answer" => answer})
-       when is_binary(question) and is_binary(answer) do
-    {question, answer} = {String.trim(question), String.trim(answer)}
+    with {:ok, question} <- text(entry["question"], @max_question, :required),
+         {:ok, answer} <- text(entry["answer"], @max_answer, :required),
+         {:ok, question_en} <- text(entry["question_en"], @max_question, :optional),
+         {:ok, answer_en} <- text(entry["answer_en"], @max_answer, :optional) do
+      # ADR-388: the English text is optional and shown on `/en` only when
+      # both halves are there.
+      english =
+        if question_en && answer_en,
+          do: %{"question_en" => question_en, "answer_en" => answer_en},
+          else: %{}
 
-    if question != "" and answer != "" and String.length(question) <= @max_question and
-         String.length(answer) <= @max_answer,
-       do: %{"question" => question, "answer" => answer}
+      Map.merge(%{"question" => question, "answer" => answer}, english)
+    else
+      _invalid -> nil
+    end
   end
 
   defp faq_entry(_entry), do: nil
+
+  defp text(nil, _max, :optional), do: {:ok, nil}
+
+  defp text(value, max, need) when is_binary(value) do
+    value = String.trim(value)
+
+    cond do
+      value == "" and need == :optional -> {:ok, nil}
+      value == "" -> :error
+      String.length(value) > max -> :error
+      true -> {:ok, value}
+    end
+  end
+
+  defp text(_value, _max, _need), do: :error
+
+  # ADR-388: the optional English text of the box's «Σχετικά» for `/en`.
+  defp about_en({changes, errors}, params) do
+    case Map.fetch(params, "about_en") do
+      :error ->
+        {changes, errors}
+
+      {:ok, value} ->
+        case text(value, @max_about_en, :optional) do
+          {:ok, about} -> {Map.put(changes, :about_en, about), errors}
+          :error -> {changes, Map.put(errors, :about_en, "invalid")}
+        end
+    end
+  end
 
   defp tags(acc, params) do
     Enum.reduce(@tag_formats, acc, fn {field, format}, {changes, errors} ->

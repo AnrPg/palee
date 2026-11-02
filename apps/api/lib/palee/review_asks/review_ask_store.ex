@@ -30,4 +30,24 @@ defmodule Palee.ReviewAsks.ReviewAskStore do
   def opt_in(context, user_id), do: call(context, :opt_in, [user_id])
   @impl true
   def summary(context, since), do: call(context, :summary, [since])
+  @impl true
+  def get_review(context, user_id), do: call(context, :get_review, [user_id])
+  @impl true
+  def get_review_by_id(context, id), do: call(context, :get_review_by_id, [id])
+  @impl true
+  def save_review(context, user_id, attrs), do: call(context, :save_review, [user_id, attrs])
+  @impl true
+  def delete_review(context, user_id), do: call(context, :delete_review, [user_id])
+  @impl true
+  def list_reviews(context, page), do: call(context, :list_reviews, [page])
+  @impl true
+  def review_stats(context), do: call(context, :review_stats, [])
+  @impl true
+  def reply_review(context, id, attrs), do: call(context, :reply_review, [id, attrs])
+  @impl true
+  def get_place_snapshot(context), do: call(context, :get_place_snapshot, [])
+  @impl true
+  def save_place_snapshot(context, attrs), do: call(context, :save_place_snapshot, [attrs])
+  @impl true
+  def place_due_organizations(now), do: adapter().place_due_organizations(now)
 end

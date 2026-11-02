@@ -99,6 +99,8 @@ defmodule Palee.Application.BoxSite.SiteAdmin do
       :section_order,
       :hidden_sections,
       :public_schedule,
+      :public_wod,
+      :about_en,
       :faq,
       :forms_enabled,
       :meta_pixel_id,

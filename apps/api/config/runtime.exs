@@ -79,6 +79,9 @@ config :palee, :geocoder_governor,
 config :palee, :geonames,
   base_url: System.get_env("GEONAMES_BASE_URL", "https://download.geonames.org/export/dump")
 
+# ADR-387: Palee's own Places API server key (never shown to boxes or logged).
+config :palee, :google_places_api, api_key: System.get_env("GOOGLE_PLACES_API_KEY")
+
 config :palee, :gemini,
   req_options: gemini_req_options,
   api_key: System.get_env("GEMINI_API_KEY"),
