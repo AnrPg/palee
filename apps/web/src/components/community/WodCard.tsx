@@ -64,7 +64,7 @@ export function WodCard({ club, showOrigin = true }: { club: CommunityClub; show
             {[...data.classes.map((entry) => time(entry.scheduled_at)), t("wodScoreCount", { count: data.leaderboard.length })].join(" · ")}
           </p>
         </div>
-        {data.score ? (
+        {data.score && club.organization_slug ? (
           <WodLeaderboard
             slug={club.organization_slug}
             workoutId={data.workout.id}
