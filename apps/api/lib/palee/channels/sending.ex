@@ -533,7 +533,9 @@ defmodule Palee.Channels.Sending do
     context
     |> ChannelStore.list_messages(%{source_ref: source_ref, limit: 1000})
     |> Map.get(:messages, [])
-    |> Enum.filter(&(&1.status in @counted or (&1.status == "failed" and is_integer(&1.cost_cents))))
+    |> Enum.filter(
+      &(&1.status in @counted or (&1.status == "failed" and is_integer(&1.cost_cents)))
+    )
     |> Enum.map(fn message ->
       case message.cost_cents do
         cents when is_integer(cents) -> CostPolicy.price(cents, message.margin_bps || 0)

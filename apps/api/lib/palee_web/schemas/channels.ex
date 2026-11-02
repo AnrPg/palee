@@ -67,7 +67,10 @@ defmodule PaleeWeb.Schemas.Channels do
         to: %Schema{type: :string, format: :"date-time"},
         spent_cents: %Schema{type: :integer},
         messages: %Schema{type: :integer},
-        segments: %Schema{type: :integer, description: "ADR-385: SMS parts of the counted messages"},
+        segments: %Schema{
+          type: :integer,
+          description: "ADR-385: SMS parts of the counted messages"
+        },
         by_channel: spend_map(),
         by_source: %Schema{
           spend_map()

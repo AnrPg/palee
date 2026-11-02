@@ -910,7 +910,10 @@ defmodule PaleeWeb.CommunityEventsControllerTest do
         )
 
       assert %{"sms_offered" => true} =
-               ctx.as.(ctx.member) |> recycle() |> get("/api/me/events/#{event["id"]}") |> event_json()
+               ctx.as.(ctx.member)
+               |> recycle()
+               |> get("/api/me/events/#{event["id"]}")
+               |> event_json()
 
       rsvp(ctx, ctx.member, event, true, %{sms_consent: true, phone: "6912345678"})
       |> event_json()
