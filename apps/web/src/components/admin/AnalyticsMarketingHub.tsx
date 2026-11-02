@@ -64,7 +64,7 @@ export function AnalyticsMarketingHub() {
         <div id="analytics-panel" role="tabpanel" aria-labelledby={`analytics-tab-${tab}`}>
           {tab === "overview" ? <OverviewSections /> : null}
           {tab === "marketing" ? <MarketingLinks /> : null}
-          {tab === "automations" && token ? <AutomationsTab token={token} /> : null}
+          {tab === "automations" ? <AutomationsTab /> : null}
           {tab === "sms" && token ? <SmsCostTab token={token} /> : null}
         </div>
       </div>

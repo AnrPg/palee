@@ -55,9 +55,9 @@ export function ClientSmsPanel({ userId }: { userId: string }) {
   const sourceLine = (purpose: ChannelPurpose) => {
     const consent = contact?.consents.find((entry) => entry.channel === "sms" && entry.purpose === purpose);
     if (!consent) return t("consentNever");
-    const when = new Date((consent.granted ? consent.granted_at : consent.withdrawn_at) ?? Date.now()).toLocaleDateString(locale);
+    const at = consent.granted ? consent.granted_at : consent.withdrawn_at;
     const source = consent.source === "staff" ? t("sourceStaff") : consent.source === "stop_keyword" ? t("sourceStop") : t("sourcePerson");
-    return `${source} · ${when}`;
+    return at ? `${source} · ${new Date(at).toLocaleDateString(locale)}` : source;
   };
 
   return (
