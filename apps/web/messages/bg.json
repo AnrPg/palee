@@ -103,7 +103,8 @@
     "socialApp": "Социално",
     "shop": "Магазин",
     "switchProfile": "Смяна на профил",
-    "spaces": "Помещения"
+    "spaces": "Помещения",
+    "leads": "Интересуващи се"
   },
   "Profile": {
     "eyebrow": "Профил",
@@ -5221,7 +5222,8 @@
       "open": "Отвори профила",
       "roles": "Роли"
     },
-    "importLink": "Импорт"
+    "importLink": "Импорт",
+    "atRiskLink": "В риск"
   },
   "Onboarding": {
     "popupEyebrow": "Настройката не е завършена",
@@ -15042,5 +15044,338 @@
     "collectTitle": "Събиране на плащане",
     "collectHint": "Пакетът започва днес и се издава касовата бележка.",
     "close": "Затвори"
+  },
+  "Leads": {
+    "withCount": "{label} ({count})",
+    "cardMeta": "{source} · {when}",
+    "due": {
+      "later": "{title} · {when}",
+      "late": "Закъсняло: {title}",
+      "today": "{title} · днес {when}"
+    },
+    "taskWhenWho": "{when} · {name}",
+    "byWhoWhen": "{name} · {when}",
+    "byPaleeWhen": "Palee · {when}",
+    "email": "Email",
+    "emailLabel": "Email",
+    "channel": {
+      "email": "Email",
+      "phone": "Телефон",
+      "message": "Съобщение",
+      "in_person": "Лично"
+    },
+    "source": {
+      "event": "Event",
+      "website_form": "Уебсайт",
+      "form": "Форма на бокса",
+      "join_link": "Линк за присъединяване",
+      "manual": "Телефон или съобщение",
+      "csv": "Импорт",
+      "walk_in": "Мина през бокса",
+      "referral": "По препоръка",
+      "around_me": "Наблизо",
+      "trial": "Заявка за пробна тренировка",
+      "prospect_assistant": "Асистент Palee"
+    },
+    "title": "Интересуващи се",
+    "import": "Импорт",
+    "newLead": "Нов интересуващ се",
+    "viewLabel": "Интересуващи се по етап",
+    "stageLabel": "Етап",
+    "column": {
+      "open": "Отворени",
+      "new": "Нови",
+      "trial": "Пробна тренировка",
+      "offer": "Оферта",
+      "converted": "Стана член",
+      "lost": "Изгубен"
+    },
+    "stage": {
+      "new": "Нов",
+      "trial": "Пробна тренировка",
+      "offer": "Оферта",
+      "converted": "Стана член",
+      "lost": "Изгубен"
+    },
+    "empty": {
+      "new": "Няма нови интересуващи се. Запитванията от страницата на бокса идват тук.",
+      "trial": "Никой не е на пробна тренировка.",
+      "offer": "Няма отворени оферти.",
+      "converted": "Още никой. Който стане член, остава тук с историята си.",
+      "lost": "Няма никой тук."
+    },
+    "loading": "Зареждане…",
+    "ownerShort": "Отговорник: {name}",
+    "noOwner": "Без отговорник",
+    "noNextStep": "Няма следваща стъпка",
+    "convertedOn": "Член от {when}",
+    "lostReason": {
+      "price": "Цена",
+      "schedule": "Часове",
+      "location": "Местоположение",
+      "no_answer": "Не отговори",
+      "chose_other": "Избра друго",
+      "not_interested": "Няма интерес",
+      "other": "Друго"
+    },
+    "formNote": "Формата на страницата на бокса и линковете за присъединяване сами довеждат нови интересуващи се тук.",
+    "copyLink": "Копирай линка към страницата на бокса",
+    "linkCopied": "Линкът е копиран",
+    "leadTitle": "Интересуващ се",
+    "more": "Още действия",
+    "optOut": "Без повече новини и оферти",
+    "reopen": "Отвори отново",
+    "call": "Обади се",
+    "contacted": "Свързах се",
+    "note": "Бележка",
+    "nextStep": "Следваща стъпка",
+    "channelLabel": "Как",
+    "saveContacted": "Запиши контакта",
+    "addNote": "Добави бележката",
+    "taskTitle": "Какво",
+    "taskPlaceholder": "напр. Обаждане в четвъртък",
+    "taskDue": "Кога",
+    "addNextStep": "Добави стъпката",
+    "converted": "Стана член",
+    "lost": "Изгубен",
+    "convertWho": "Кой член на бокса е?",
+    "convertNoMatch": "Няма член на бокса с това име.",
+    "convertHint": "Щом започне пакет за този имейл, това става само. Историята остава.",
+    "convertSubmit": "Свържи с члена",
+    "lostWhy": "Защо е изгубен?",
+    "lostSubmit": "Отбележи като изгубен",
+    "cancel": "Отказ",
+    "save": "Запази",
+    "close": "Затвори",
+    "phone": "Мобилен",
+    "message": "Съобщение",
+    "interest": "Интересува се от",
+    "interestOption": {
+      "trial": "Пробна тренировка",
+      "prices": "Цени",
+      "other": "Друго"
+    },
+    "marketing": "Новини и оферти",
+    "yes": "Да",
+    "no": "Не",
+    "owner": "Отговорник",
+    "nextSteps": "{count, plural, one {# следваща стъпка} other {# следващи стъпки}}",
+    "taskDone": "Готово",
+    "history": "История",
+    "event": {
+      "created": "Дойде от: {source}",
+      "enquired_again": "Попита отново: {source}",
+      "stage_changed": "Етап: {stage}",
+      "lost": "Изгубен: {reason}",
+      "contacted": "Свързах се: {channel}",
+      "note": "Бележка: {text}",
+      "task_added": "Следваща стъпка: {title}",
+      "task_done": "Готово: {title}",
+      "message_sent": "Изпратено автоматично съобщение: {recipe}",
+      "owner_changed": "Отговорникът е сменен",
+      "converted": "Стана член",
+      "marketing_opted_out": "Вече не иска новини и оферти",
+      "details_changed": "Данните са променени"
+    },
+    "recipe": {
+      "welcome": "Добре дошли",
+      "trial_follow_up": "След пробната тренировка",
+      "missed_classes": "Липсваш ни",
+      "renewal_reminder": "Напомняне за подновяване",
+      "birthday": "Рожден ден",
+      "win_back": "Връщане"
+    },
+    "error": {
+      "lead_converted": "Този интересуващ се вече стана член.",
+      "lead_task_done": "Тази стъпка вече е готова.",
+      "lead_person_not_in_box": "Този човек не е член на бокса.",
+      "lead_capture_conflict": "Записва се. Опитайте отново след малко."
+    },
+    "field": {
+      "required": "Попълнете това поле.",
+      "noteRequired": "Първо напишете бележката.",
+      "contactRequired": "Добавете мобилен или имейл.",
+      "emailInvalid": "Този имейл не изглежда правилен.",
+      "pickMember": "Изберете члена от списъка.",
+      "pickReason": "Изберете причина."
+    },
+    "name": "Име",
+    "sourceLabel": "Откъде идва",
+    "marketingConsent": "Иска да получава новини и оферти",
+    "marketingConsentHint": "Само ако човекът сам го е казал. Без това отговаряме само на запитването му.",
+    "advanced": "Разширени",
+    "campaign": "Кампания",
+    "campaignPlaceholder": "напр. флаер септември",
+    "importTitle": "Импорт от файл",
+    "importPick": "Изберете CSV файл",
+    "importColumns": "Колони: Име, Имейл, Телефон, Бележка (на гръцки или английски). До {max} реда.",
+    "importChecking": "Проверка на файла…",
+    "importCheckTitle": "Проверка преди импорта",
+    "importCheck": "{ready, plural, one {# ред е готов} other {# реда са готови}} · {invalid, plural, =0 {няма грешки} one {# ред с грешки се пропуска} other {# реда с грешки се пропускат}}",
+    "importInvalidRows": "Редове с грешки: {rows}",
+    "importRun": "{count, plural, =0 {Импорт} one {Импортирай # интересуващ се} other {Импортирай # интересуващи се}}",
+    "importDone": "{created, plural, one {# нов} other {# нови}} · {existing, plural, one {# обновен} other {# обновени}} · {invalid, plural, one {# пропуснат} other {# пропуснати}}"
+  },
+  "AtRisk": {
+    "withCount": "{label} ({count})",
+    "byWhoWhen": "{name} · {when}",
+    "channel": {
+      "email": "Email",
+      "phone": "Телефон",
+      "message": "Съобщение",
+      "in_person": "Лично"
+    },
+    "title": "В риск",
+    "backToMembers": "Назад",
+    "levelLabel": "Ниво на риск",
+    "all": "Всички",
+    "level": {
+      "high": "Високо",
+      "medium": "Средно",
+      "low": "Ниско"
+    },
+    "intro": "Обновява се всяка нощ от тренировки, резервации и плащания. Членовете никога не го виждат.",
+    "empty": "В момента никой не е в риск.",
+    "winBackNote": "Връщане: когато някой стигне Високо, автоматичното съобщение «Връщане» тръгва само ако сте го включили.",
+    "automationsLink": "Автоматизации",
+    "unknownMember": "Член на бокса",
+    "reason": {
+      "attendance_drop": "Напоследък идва {now, number} пъти седмично, обикновено {usual, number}",
+      "absent": "{days, plural, one {Не е идвал # ден} other {Не е идвал # дни}}",
+      "no_first_visit": "{days, plural, one {Записа се преди # ден и още не е идвал} other {Записа се преди # дни и още не е идвал}}",
+      "no_upcoming_bookings": "{days, plural, one {Няма резервация за следващия # ден} other {Няма резервация за следващите # дни}}",
+      "package_ending": "{days, plural, =0 {Пакетът изтича днес} one {Пакетът изтича след # ден} other {Пакетът изтича след # дни}}",
+      "payment_overdue": "{count, plural, one {# просрочена фактура} other {# просрочени фактури}}",
+      "many_cancellations": "{count, plural, one {# скорошна отмяна} other {# скорошни отмени}}",
+      "new_member_slow_start": "Нов член: {visits, plural, one {# посещение} other {# посещения}} за {days} дни"
+    },
+    "action": {
+      "personal_message": "Изпратете лично съобщение",
+      "renewal_offer": "Предложете подновяване",
+      "payment_follow_up": "Напомнете за плащането",
+      "check_in_call": "Обадете се"
+    },
+    "contacted": "Свързах се",
+    "contactedBy": "Свързах се · {name} · {when}",
+    "contactedAt": "Свързах се · {when}",
+    "later": "По-късно",
+    "laterDays": "{days, plural, one {След # ден} other {След # дни}}",
+    "todayTitle": "{count, plural, one {# член има нужда от съобщение} other {# членове имат нужда от съобщение}}",
+    "todayAll": "Всички в риск",
+    "loading": "Зареждане…",
+    "why": "Защо",
+    "since": "На това ниво от {when}",
+    "history": "История на действията",
+    "historyEmpty": "Още никой не е направил нищо.",
+    "log": {
+      "contacted": "Свързах се: {channel}",
+      "snoozed": "По-късно: отново в списъка на {until}",
+      "unsnoozed": "Отново в списъка"
+    },
+    "formerStaff": "Бивш служител",
+    "openProfile": "Отвори профила"
+  },
+  "Automations": {
+    "sentLine": "{recipe} · {when}",
+    "channel": {
+      "email": "Email",
+      "sms": "SMS",
+      "in_app": "Известие"
+    },
+    "title": "Автоматизации",
+    "hubDescription": "Готови съобщения, които Palee изпраща от името на бокса: добре дошли, след пробната тренировка, подновяване и още.",
+    "intro": "Готови съобщения, които Palee изпраща от името на бокса. Никога между 21:00 и 09:00; който не ги иска, ги изключва в своите настройки.",
+    "sent": "Изпратени съобщения",
+    "loading": "Зареждане…",
+    "recipe": {
+      "welcome": "Добре дошли",
+      "trial_follow_up": "След пробната тренировка",
+      "missed_classes": "Липсваш ни",
+      "renewal_reminder": "Напомняне за подновяване",
+      "birthday": "Рожден ден",
+      "win_back": "Връщане"
+    },
+    "when": {
+      "welcome": "Когато някой стане член на бокса",
+      "trial_follow_up": "След първата пробна тренировка",
+      "missed_classes": "{days, plural, one {След # ден без тренировка} other {След # дни без тренировка}}",
+      "renewal_reminder": "{days, plural, one {# ден преди края на пакета} other {# дни преди края на пакета}}",
+      "birthday": "На рождения ден, ако е споделен",
+      "win_back": "Когато някой стане «В риск»"
+    },
+    "sentCount": "{days} дни: {count, plural, one {# изпратено} other {# изпратени}}",
+    "switchLabel": "{name}: включено или не",
+    "resetText": "Върни текста",
+    "cancel": "Отказ",
+    "save": "Запази",
+    "enabled": "Включено",
+    "setting": {
+      "missed_classes": "Дни без тренировка",
+      "renewal_reminder": "Дни преди края на пакета"
+    },
+    "field": {
+      "between": "От {min} до {max}.",
+      "channels": "Изберете поне един начин.",
+      "required": "Попълнете това поле."
+    },
+    "how": "Как",
+    "channelsHint": "В избрания ред: ако първият не стигне до човека, се използва следващият.",
+    "subject": "Тема",
+    "body": "Текст",
+    "placeholders": "Можете да използвате {list}. Ако го оставите така, всеки го получава на своя език.",
+    "preview": "Преглед",
+    "advanced": "Разширени",
+    "delay": "Изчакване преди изпращане (минути)",
+    "quietHours": "Тихи часове: 21:00–09:00 по часа на бокса.",
+    "sentEmpty": "Още няма автоматични съобщения.",
+    "status": {
+      "pending": "Чака",
+      "sending": "Изпраща се",
+      "sent": "Изпратено",
+      "skipped": "Не е изпратено",
+      "failed": "Неуспешно",
+      "cancelled": "Отменено"
+    }
+  },
+  "AutoMessages": {
+    "title": "Автоматични съобщения",
+    "description": "Съобщения, които боксът ви изпраща сам: добре дошли, напомняния, поздрави.",
+    "descriptionBox": "Съобщения, които {box} изпраща сам: добре дошли, напомняния, поздрави.",
+    "loading": "Зареждане…",
+    "allLabel": "Искам автоматични съобщения",
+    "allHint": "Важните (плащания, отмени) идват винаги.",
+    "birthday": "Рожден ден",
+    "birthdayHint": "Ако искате поздрав от бокса, кажете ден и месец. Без година.",
+    "day": "Ден",
+    "month": "Месец",
+    "birthdayClear": "Не го споделяй",
+    "advanced": "Разширени · по съобщение"
+  },
+  "LeadEnquiry": {
+    "title": "Интересувам се",
+    "cardText": "Искате да опитате {box} или да попитате нещо? Оставете данните си и ще ви отговорят.",
+    "name": "Име",
+    "nameRequired": "Напишете името си.",
+    "contact": "Мобилен или имейл",
+    "contactRequired": "Добавете мобилен или имейл.",
+    "contactInvalid": "Това не прилича на мобилен или имейл.",
+    "interest": "Какво ви интересува",
+    "interestOption": {
+      "trial": "Пробна тренировка",
+      "prices": "Цени",
+      "other": "Друго"
+    },
+    "message": "Съобщение",
+    "optional": "по желание",
+    "consentContact": "Боксът може да се свърже с мен за това запитване",
+    "privacy": "Как използваме данните ви.",
+    "consentRequired": "Отметнете, за да може боксът да ви отговори.",
+    "consentMarketing": "Искам новини и оферти от бокса",
+    "consentMarketingHint": "По желание. Можете да спрете по всяко време.",
+    "send": "Изпрати",
+    "cancel": "Отказ",
+    "close": "Затвори",
+    "sentTitle": "Получено!",
+    "sentBody": "{box} ще ви отговори скоро, обикновено същия ден."
   }
 }

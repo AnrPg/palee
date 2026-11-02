@@ -103,7 +103,8 @@
     "socialApp": "Social",
     "shop": "Winkel",
     "switchProfile": "Profiel wisselen",
-    "spaces": "Ruimtes"
+    "spaces": "Ruimtes",
+    "leads": "Geïnteresseerden"
   },
   "Profile": {
     "eyebrow": "Profiel",
@@ -5221,7 +5222,8 @@
       "open": "Profiel openen",
       "roles": "Rollen"
     },
-    "importLink": "Importeren"
+    "importLink": "Importeren",
+    "atRiskLink": "Risico"
   },
   "Onboarding": {
     "popupEyebrow": "Instellen niet afgerond",
@@ -15042,5 +15044,338 @@
     "collectTitle": "Afrekenen",
     "collectHint": "Het pakket start vandaag en het bonnetje wordt uitgegeven.",
     "close": "Sluiten"
+  },
+  "Leads": {
+    "withCount": "{label} ({count})",
+    "cardMeta": "{source} · {when}",
+    "due": {
+      "later": "{title} · {when}",
+      "late": "Te laat: {title}",
+      "today": "{title} · vandaag {when}"
+    },
+    "taskWhenWho": "{when} · {name}",
+    "byWhoWhen": "{name} · {when}",
+    "byPaleeWhen": "Palee · {when}",
+    "email": "Email",
+    "emailLabel": "Email",
+    "channel": {
+      "email": "Email",
+      "phone": "Telefoon",
+      "message": "Bericht",
+      "in_person": "Persoonlijk"
+    },
+    "source": {
+      "event": "Event",
+      "website_form": "Website",
+      "form": "Boxformulier",
+      "join_link": "Aanmeldlink",
+      "manual": "Telefoon of bericht",
+      "csv": "Import",
+      "walk_in": "Kwam langs in de box",
+      "referral": "Doorverwijzing",
+      "around_me": "In de buurt",
+      "trial": "Proeftrainingaanvraag",
+      "prospect_assistant": "Palee-assistent"
+    },
+    "title": "Geïnteresseerden",
+    "import": "Importeren",
+    "newLead": "Nieuwe geïnteresseerde",
+    "viewLabel": "Geïnteresseerden per fase",
+    "stageLabel": "Fase",
+    "column": {
+      "open": "Open",
+      "new": "Nieuw",
+      "trial": "Proeftraining",
+      "offer": "Aanbod",
+      "converted": "Lid geworden",
+      "lost": "Verloren"
+    },
+    "stage": {
+      "new": "Nieuw",
+      "trial": "Proeftraining",
+      "offer": "Aanbod",
+      "converted": "Lid geworden",
+      "lost": "Verloren"
+    },
+    "empty": {
+      "new": "Geen nieuwe geïnteresseerden. Aanvragen via de boxpagina komen hier binnen.",
+      "trial": "Niemand doet een proeftraining.",
+      "offer": "Geen open aanbiedingen.",
+      "converted": "Nog niemand. Wie lid wordt, blijft hier met de geschiedenis.",
+      "lost": "Niemand hier."
+    },
+    "loading": "Laden…",
+    "ownerShort": "Verantwoordelijke: {name}",
+    "noOwner": "Geen verantwoordelijke",
+    "noNextStep": "Geen volgende stap",
+    "convertedOn": "Lid sinds {when}",
+    "lostReason": {
+      "price": "Prijs",
+      "schedule": "Tijden",
+      "location": "Locatie",
+      "no_answer": "Geen antwoord",
+      "chose_other": "Koos iets anders",
+      "not_interested": "Geen interesse",
+      "other": "Anders"
+    },
+    "formNote": "Het formulier op je boxpagina en de aanmeldlinks brengen nieuwe geïnteresseerden vanzelf hierheen.",
+    "copyLink": "Link naar de boxpagina kopiëren",
+    "linkCopied": "Link gekopieerd",
+    "leadTitle": "Geïnteresseerde",
+    "more": "Meer acties",
+    "optOut": "Geen nieuws en aanbiedingen meer",
+    "reopen": "Opnieuw openen",
+    "call": "Bellen",
+    "contacted": "Contact gehad",
+    "note": "Notitie",
+    "nextStep": "Volgende stap",
+    "channelLabel": "Hoe",
+    "saveContacted": "Contact vastleggen",
+    "addNote": "Notitie toevoegen",
+    "taskTitle": "Wat",
+    "taskPlaceholder": "bijv. Bellen op donderdag",
+    "taskDue": "Wanneer",
+    "addNextStep": "Volgende stap toevoegen",
+    "converted": "Lid geworden",
+    "lost": "Verloren",
+    "convertWho": "Welk lid van de box is het?",
+    "convertNoMatch": "Geen lid van de box met deze naam.",
+    "convertHint": "Zodra er een pakket start voor dit e-mailadres, gebeurt het vanzelf. De geschiedenis blijft.",
+    "convertSubmit": "Koppelen aan het lid",
+    "lostWhy": "Waarom verloren?",
+    "lostSubmit": "Markeren als verloren",
+    "cancel": "Annuleren",
+    "save": "Opslaan",
+    "close": "Sluiten",
+    "phone": "Mobiel",
+    "message": "Bericht",
+    "interest": "Interesse in",
+    "interestOption": {
+      "trial": "Proeftraining",
+      "prices": "Prijzen",
+      "other": "Anders"
+    },
+    "marketing": "Nieuws en aanbiedingen",
+    "yes": "Ja",
+    "no": "Nee",
+    "owner": "Verantwoordelijke",
+    "nextSteps": "{count, plural, one {# volgende stap} other {# volgende stappen}}",
+    "taskDone": "Klaar",
+    "history": "Geschiedenis",
+    "event": {
+      "created": "Binnengekomen via: {source}",
+      "enquired_again": "Opnieuw gevraagd: {source}",
+      "stage_changed": "Fase: {stage}",
+      "lost": "Verloren: {reason}",
+      "contacted": "Contact gehad: {channel}",
+      "note": "Notitie: {text}",
+      "task_added": "Volgende stap: {title}",
+      "task_done": "Klaar: {title}",
+      "message_sent": "Automatisch bericht verstuurd: {recipe}",
+      "owner_changed": "De verantwoordelijke is gewijzigd",
+      "converted": "Lid geworden",
+      "marketing_opted_out": "Wil geen nieuws en aanbiedingen meer",
+      "details_changed": "De gegevens zijn gewijzigd"
+    },
+    "recipe": {
+      "welcome": "Welkom",
+      "trial_follow_up": "Na de proeftraining",
+      "missed_classes": "We missen je",
+      "renewal_reminder": "Herinnering verlenging",
+      "birthday": "Verjaardag",
+      "win_back": "Terugwinnen"
+    },
+    "error": {
+      "lead_converted": "Deze geïnteresseerde is al lid geworden.",
+      "lead_task_done": "Deze stap is al klaar.",
+      "lead_person_not_in_box": "Deze persoon is geen lid van de box.",
+      "lead_capture_conflict": "Wordt opgeslagen. Probeer het zo opnieuw."
+    },
+    "field": {
+      "required": "Vul dit in.",
+      "noteRequired": "Schrijf eerst de notitie.",
+      "contactRequired": "Voeg een mobiel nummer of e-mail toe.",
+      "emailInvalid": "Dit e-mailadres lijkt niet te kloppen.",
+      "pickMember": "Kies het lid uit de lijst.",
+      "pickReason": "Kies een reden."
+    },
+    "name": "Naam",
+    "sourceLabel": "Waar vandaan",
+    "marketingConsent": "Wil nieuws en aanbiedingen ontvangen",
+    "marketingConsentHint": "Alleen als de persoon dat zelf zei. Zonder dit beantwoorden we alleen de aanvraag.",
+    "advanced": "Geavanceerd",
+    "campaign": "Campagne",
+    "campaignPlaceholder": "bijv. flyer september",
+    "importTitle": "Importeren uit een bestand",
+    "importPick": "Kies een CSV-bestand",
+    "importColumns": "Kolommen: Naam, E-mail, Telefoon, Notitie (Grieks of Engels). Tot {max} rijen.",
+    "importChecking": "Bestand wordt gecontroleerd…",
+    "importCheckTitle": "Controle voor het importeren",
+    "importCheck": "{ready, plural, one {# rij klaar} other {# rijen klaar}} · {invalid, plural, =0 {geen fouten} one {# rij met fouten wordt overgeslagen} other {# rijen met fouten worden overgeslagen}}",
+    "importInvalidRows": "Rijen met fouten: {rows}",
+    "importRun": "{count, plural, =0 {Importeren} one {# geïnteresseerde importeren} other {# geïnteresseerden importeren}}",
+    "importDone": "{created, plural, one {# nieuw} other {# nieuw}} · {existing, plural, one {# bijgewerkt} other {# bijgewerkt}} · {invalid, plural, one {# overgeslagen} other {# overgeslagen}}"
+  },
+  "AtRisk": {
+    "withCount": "{label} ({count})",
+    "byWhoWhen": "{name} · {when}",
+    "channel": {
+      "email": "Email",
+      "phone": "Telefoon",
+      "message": "Bericht",
+      "in_person": "Persoonlijk"
+    },
+    "title": "Risico",
+    "backToMembers": "Terug",
+    "levelLabel": "Risiconiveau",
+    "all": "Iedereen",
+    "level": {
+      "high": "Hoog",
+      "medium": "Gemiddeld",
+      "low": "Laag"
+    },
+    "intro": "Wordt elke nacht bijgewerkt uit trainingen, boekingen en betalingen. Leden zien dit nooit.",
+    "empty": "Op dit moment loopt niemand risico.",
+    "winBackNote": "Terugwinnen: als iemand Hoog bereikt, gaat het automatische bericht «Terugwinnen» alleen uit als je het hebt aangezet.",
+    "automationsLink": "Automatiseringen",
+    "unknownMember": "Lid van de box",
+    "reason": {
+      "attendance_drop": "Komt de laatste tijd {now, number} keer per week, normaal {usual, number}",
+      "absent": "{days, plural, one {Al # dag niet geweest} other {Al # dagen niet geweest}}",
+      "no_first_visit": "{days, plural, one {# dag geleden ingeschreven en nog niet geweest} other {# dagen geleden ingeschreven en nog niet geweest}}",
+      "no_upcoming_bookings": "{days, plural, one {Geen boeking voor de komende # dag} other {Geen boeking voor de komende # dagen}}",
+      "package_ending": "{days, plural, =0 {Het pakket loopt vandaag af} one {Het pakket loopt over # dag af} other {Het pakket loopt over # dagen af}}",
+      "payment_overdue": "{count, plural, one {# achterstallige factuur} other {# achterstallige facturen}}",
+      "many_cancellations": "{count, plural, one {# annulering de laatste tijd} other {# annuleringen de laatste tijd}}",
+      "new_member_slow_start": "Nieuw lid: {visits, plural, one {# bezoek} other {# bezoeken}} in {days} dagen"
+    },
+    "action": {
+      "personal_message": "Stuur een persoonlijk bericht",
+      "renewal_offer": "Stel een verlenging voor",
+      "payment_follow_up": "Herinner aan de betaling",
+      "check_in_call": "Bel even"
+    },
+    "contacted": "Contact gehad",
+    "contactedBy": "Contact gehad · {name} · {when}",
+    "contactedAt": "Contact gehad · {when}",
+    "later": "Later",
+    "laterDays": "{days, plural, one {Over # dag} other {Over # dagen}}",
+    "todayTitle": "{count, plural, one {# lid heeft een bericht nodig} other {# leden hebben een bericht nodig}}",
+    "todayAll": "Iedereen met risico",
+    "loading": "Laden…",
+    "why": "Waarom",
+    "since": "Op dit niveau sinds {when}",
+    "history": "Geschiedenis van acties",
+    "historyEmpty": "Nog niemand heeft iets gedaan.",
+    "log": {
+      "contacted": "Contact gehad: {channel}",
+      "snoozed": "Later: weer op de lijst op {until}",
+      "unsnoozed": "Weer op de lijst"
+    },
+    "formerStaff": "Voormalig teamlid",
+    "openProfile": "Profiel openen"
+  },
+  "Automations": {
+    "sentLine": "{recipe} · {when}",
+    "channel": {
+      "email": "Email",
+      "sms": "SMS",
+      "in_app": "Melding"
+    },
+    "title": "Automatiseringen",
+    "hubDescription": "Kant-en-klare berichten die Palee namens de box stuurt: welkom, na de proeftraining, verlenging en meer.",
+    "intro": "Kant-en-klare berichten die Palee namens de box stuurt. Nooit tussen 21:00 en 09:00; wie ze niet wil, zet ze uit in de eigen instellingen.",
+    "sent": "Verstuurde berichten",
+    "loading": "Laden…",
+    "recipe": {
+      "welcome": "Welkom",
+      "trial_follow_up": "Na de proeftraining",
+      "missed_classes": "We missen je",
+      "renewal_reminder": "Herinnering verlenging",
+      "birthday": "Verjaardag",
+      "win_back": "Terugwinnen"
+    },
+    "when": {
+      "welcome": "Als iemand lid van de box wordt",
+      "trial_follow_up": "Na de eerste proeftraining",
+      "missed_classes": "{days, plural, one {Als iemand # dag niet heeft getraind} other {Als iemand # dagen niet heeft getraind}}",
+      "renewal_reminder": "{days, plural, one {# dag voordat het pakket afloopt} other {# dagen voordat het pakket afloopt}}",
+      "birthday": "Op de verjaardag, als die gedeeld is",
+      "win_back": "Als iemand «Risico» krijgt"
+    },
+    "sentCount": "{days} dagen: {count, plural, one {# verstuurd} other {# verstuurd}}",
+    "switchLabel": "{name}: aan of uit",
+    "resetText": "Tekst herstellen",
+    "cancel": "Annuleren",
+    "save": "Opslaan",
+    "enabled": "Aan",
+    "setting": {
+      "missed_classes": "Dagen zonder training",
+      "renewal_reminder": "Dagen voor het einde van het pakket"
+    },
+    "field": {
+      "between": "Van {min} tot {max}.",
+      "channels": "Kies minstens één manier.",
+      "required": "Vul dit in."
+    },
+    "how": "Hoe",
+    "channelsHint": "In de gekozen volgorde: als de eerste de persoon niet bereikt, wordt de volgende gebruikt.",
+    "subject": "Onderwerp",
+    "body": "Tekst",
+    "placeholders": "Je kunt {list} gebruiken. Laat je het zo, dan krijgt iedereen het in de eigen taal.",
+    "preview": "Voorbeeld",
+    "advanced": "Geavanceerd",
+    "delay": "Wachten voor verzending (minuten)",
+    "quietHours": "Stille uren: 21:00–09:00 volgens de klok van de box.",
+    "sentEmpty": "Nog geen automatische berichten.",
+    "status": {
+      "pending": "Wacht",
+      "sending": "Wordt verstuurd",
+      "sent": "Verstuurd",
+      "skipped": "Niet verstuurd",
+      "failed": "Mislukt",
+      "cancelled": "Geannuleerd"
+    }
+  },
+  "AutoMessages": {
+    "title": "Automatische berichten",
+    "description": "Berichten die je box vanzelf stuurt: welkom, herinneringen, felicitaties.",
+    "descriptionBox": "Berichten die {box} vanzelf stuurt: welkom, herinneringen, felicitaties.",
+    "loading": "Laden…",
+    "allLabel": "Ik wil automatische berichten",
+    "allHint": "Belangrijke berichten (betalingen, annuleringen) komen altijd aan.",
+    "birthday": "Verjaardag",
+    "birthdayHint": "Wil je felicitaties van de box, geef dan dag en maand. Zonder jaar.",
+    "day": "Dag",
+    "month": "Maand",
+    "birthdayClear": "Niet delen",
+    "advanced": "Geavanceerd · per bericht"
+  },
+  "LeadEnquiry": {
+    "title": "Ik heb interesse",
+    "cardText": "Wil je {box} proberen of iets vragen? Laat je gegevens achter en je krijgt antwoord.",
+    "name": "Naam",
+    "nameRequired": "Schrijf je naam.",
+    "contact": "Mobiel of e-mail",
+    "contactRequired": "Voeg een mobiel nummer of e-mail toe.",
+    "contactInvalid": "Dit lijkt geen mobiel nummer of e-mail.",
+    "interest": "Waar heb je interesse in",
+    "interestOption": {
+      "trial": "Proeftraining",
+      "prices": "Prijzen",
+      "other": "Anders"
+    },
+    "message": "Bericht",
+    "optional": "optioneel",
+    "consentContact": "De box mag contact met me opnemen over deze aanvraag",
+    "privacy": "Zo gebruiken we je gegevens.",
+    "consentRequired": "Vink dit aan zodat de box je kan antwoorden.",
+    "consentMarketing": "Ik wil nieuws en aanbiedingen van de box",
+    "consentMarketingHint": "Optioneel. Je kunt altijd stoppen.",
+    "send": "Versturen",
+    "cancel": "Annuleren",
+    "close": "Sluiten",
+    "sentTitle": "Ontvangen!",
+    "sentBody": "{box} neemt snel contact op, meestal dezelfde dag."
   }
 }
