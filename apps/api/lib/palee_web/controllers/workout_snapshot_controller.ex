@@ -55,7 +55,8 @@ defmodule PaleeWeb.WorkoutSnapshotController do
   def execution(conn, %{id: id}), do: as_performed(conn, :execution, id)
 
   operation(:training_log,
-    summary: "The WOD as my own logged score performed it, and whether it changed since (ADR-389)",
+    summary:
+      "The WOD as my own logged score performed it, and whether it changed since (ADR-389)",
     parameters: [@holder_id],
     responses: [
       ok: {"As performed", "application/json", S.workout_as_performed()},
