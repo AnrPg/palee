@@ -5,6 +5,7 @@
 
 
 import {useUiTranslations} from "@/i18n/ui";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
@@ -12,6 +13,7 @@ import { PageHeader } from "@/components/PageHeader";
 
 export function AnalyticsMarketingHub() {
   const i18n = useUiTranslations();
+  const tAutomations = useTranslations("Automations");
   const organizationSlug = useOrganizationSlug();
   const SECTIONS = [
     {
@@ -48,6 +50,12 @@ export function AnalyticsMarketingHub() {
       title: i18n("challengesff38765"),
       description: i18n("manageSeasonalEngagementCampaignsAndReviewParticipationdf0bc50"),
       href: "/admin/challenges",
+    },
+    // ADR-346 (W2 p3): the ready recipes («Αυτοματισμοί»).
+    {
+      title: tAutomations("title"),
+      description: tAutomations("hubDescription"),
+      href: "/admin/metrics/automations",
     },
     {
       title: i18n("marketinge0c534a"),

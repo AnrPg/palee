@@ -11,6 +11,7 @@ import { filterDossierMembers } from "@/components/admin/users/admin-user-profil
 import { fetchCleaningAreas, fetchCoachingRelationships, fetchMyClientStats, startCoachingRelationship } from "@/api/roles";
 import { fetchAppointmentSlots } from "@/api/staff";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
+import { AtRiskTodayCard } from "@/components/admin/at-risk/AtRiskTodayCard";
 import {
   ActionTiles,
   AvatarChips,
@@ -88,6 +89,8 @@ export function StaffHome() {
       {/* ADR-272: «Είσπραξη» with Tap to Pay, on a staff phone only. */}
       {has("take_payments") ? <CollectEntry /> : null}
       {frontDesk ? <FrontDeskCard membership={membership} /> : null}
+      {/* ADR-347 (W2 p4): members at risk nobody has reached yet. */}
+      {has("view_members_at_risk") ? <AtRiskTodayCard /> : null}
       {accountant ? <AccountsCard membership={membership} /> : null}
       {coach ? <MyClientsSection membership={membership} /> : null}
       {coach ? <SquadsSection membership={membership} /> : null}
