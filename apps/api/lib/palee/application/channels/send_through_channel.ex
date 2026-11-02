@@ -115,16 +115,18 @@ defmodule Palee.Application.Channels.SendThroughChannel do
 
   @doc "What other contexts need from the box: `now`, its time zone and name."
   def env(%{organization_id: organization_id} = context, now) do
-    name =
+    organization =
       case Map.get(context, :organization) do
-        %{name: name} when is_binary(name) -> name
-        _missing -> organization_id |> Organizations.get_by_id() |> then(&(&1 && &1.name))
+        %{name: name, activation: _} = organization when is_binary(name) -> organization
+        _missing -> Organizations.get_by_id(organization_id)
       end
 
     %{
       now: now,
       time_zone: Organizations.organization_timezone(organization_id),
-      box_name: name || "Palee"
+      box_name: (organization && organization.name) || "Palee",
+      # A box in demo mode sends no SMS (product owner, 2026-11-02).
+      demo: match?(%{activation: "demo"}, organization)
     }
   end
 

@@ -92,6 +92,39 @@ defmodule Palee.Channels.SendingTest do
     assert {:error, :channel_consent_missing} = Channels.send(ctx.context, request(ctx), ctx.env)
   end
 
+  test "a box in demo mode sends nothing, and sends once activated", ctx do
+    connect(ctx)
+    contact(ctx)
+
+    demo =
+      bypass_rls(fn ->
+        ctx.organization |> Ecto.Changeset.change(activation: "demo") |> Repo.update!()
+      end)
+
+    demo_env = SendThroughChannel.env(%{organization_id: ctx.organization.id}, @noon)
+    assert demo_env.demo
+
+    assert {:error, :channels_demo_mode} =
+             Channels.send(ctx.context, request(ctx), demo_env)
+
+    demo_context = Map.put(ctx.context, :organization, demo)
+
+    assert {:error, :channels_demo_mode} =
+             SendThroughChannel.preview(
+               demo_context,
+               %{user_id: ctx.member.id, template_key: "class_cancelled", source: "staff"},
+               @noon
+             )
+
+    bypass_rls(fn ->
+      demo |> Ecto.Changeset.change(activation: "active") |> Repo.update!()
+    end)
+
+    active_env = SendThroughChannel.env(%{organization_id: ctx.organization.id}, @noon)
+    refute active_env.demo
+    assert {:ok, _message} = Channels.send(ctx.context, request(ctx), active_env)
+  end
+
   test "a message is queued once per key, rendered in the person's language and sent", ctx do
     connect(ctx)
     contact(ctx)

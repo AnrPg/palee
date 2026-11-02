@@ -35,6 +35,9 @@ Letting automations call the context directly: would spread the box name, time z
 scheduling logic to every caller.
 
 ## Consequences
+- A box in demo mode (ADR-184) sends nothing through these channels: `send` and `preview`
+  answer `channels_demo_mode` (409) until the box is activated; it may still connect and
+  test its provider (product owner, 2026-11-02).
 Push stays first (CP-C3): callers choose when SMS is a fallback.
 
 ## Implementation Notes

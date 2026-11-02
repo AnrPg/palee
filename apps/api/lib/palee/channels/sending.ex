@@ -43,7 +43,8 @@ defmodule Palee.Channels.Sending do
   def preview(context, request, env), do: prepare(context, request, env)
 
   defp prepare(context, request, env) do
-    with {:ok, connection} <- usable_connection(context),
+    with :ok <- not_demo(env),
+         {:ok, connection} <- usable_connection(context),
          {:ok, template} <- template(context, request.template_key),
          {:ok, purpose} <- purpose(template, request[:purpose]),
          {:ok, contact} <- contact(context, request.person),
@@ -124,6 +125,11 @@ defmodule Palee.Channels.Sending do
       end
     end
   end
+
+  # Product owner, 2026-11-02: a box in demo mode (ADR-184) sends no SMS,
+  # Viber or WhatsApp; it may still connect and test its provider.
+  defp not_demo(%{demo: true}), do: {:error, :channels_demo_mode}
+  defp not_demo(_env), do: :ok
 
   defp usable_connection(context) do
     case Connections.get(context) do
@@ -238,7 +244,7 @@ defmodule Palee.Channels.Sending do
     * `idempotency_key` – the same key answers the message already queued;
     * `source` (`staff`, `automation`, `system`), `source_ref`, `actor_id`.
 
-  `{:ok, message}` or `{:error, reason}`: `:channels_not_connected`,
+  `{:ok, message}` or `{:error, reason}`: `:channels_demo_mode`, `:channels_not_connected`,
   `:channels_connection_invalid`, `:channel_template_missing`,
   `:channel_contact_missing`, `:channel_not_enabled`,
   `:channel_consent_missing`, `:channel_opted_out`,
