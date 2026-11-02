@@ -34,10 +34,15 @@ import { useUiLocale } from "@/i18n/use-ui-locale";
 import { useSelectedMembershipRole } from "@/lib/membership-role";
 import { can, membershipRoles } from "@/lib/role-navigation";
 import { Select } from "@/components/ui/Select";
+import { SegmentPicker } from "@/components/filters/SegmentPicker";
+import { defaultNoteAudience, type NoteAudience } from "@/lib/training-floor";
+import { useTranslations } from "next-intl";
 
 // Private coach notes on a client (ADR-101): coaches write their own; owners
 // and admins may read them unless the coach turned that off, and every such
-// read is logged for the coach to see.
+// read is logged for the coach to see. ADR-359 (ANR mockup e5 A): the same
+// field writes a note for the whole staff, chosen with «Ποιος τη βλέπει»; the
+// front desk writes and reads only those.
 
 /** A thing of the client's a note can be about, as the profile lists it. */
 export type CoachNoteSubjectOption = CoachNoteSubject & { label: string };
@@ -66,13 +71,19 @@ export function CoachNotesPanel({
   subjects?: CoachNoteSubjectOption[];
 }) {
   const i18n = useUiTranslations();
+  const tNotes = useTranslations("TrainingFloor");
   const locale = useUiLocale();
   const { tokens, currentUser } = useSession();
   const token = tokens?.access_token;
   const queryClient = useQueryClient();
   const { membership } = useSelectedMembershipRole();
-  const canWrite = can(membership, "write_coach_notes");
+  const canWritePrivate = can(membership, "write_coach_notes");
+  const canWrite = canWritePrivate || can(membership, "view_directory");
   const isCoach = membershipRoles(membership).includes("coach");
+  // The role's default until the writer picks (the membership may load late).
+  const [pickedAudience, setAudience] = useState<NoteAudience | null>(null);
+  const audience = pickedAudience ?? defaultNoteAudience(membershipRoles(membership), canWritePrivate);
+  const chosenAudience: NoteAudience = canWritePrivate ? audience : "staff";
   const notesKey = ["staff", "coach-notes", userId];
 
   const [draft, setDraft] = useState("");
@@ -90,11 +101,12 @@ export function CoachNotesPanel({
   const create = useMutation({
     mutationFn: () => {
       const subject = subjectFor(subjectKey);
-      return createCoachNote(token!, userId, draft.trim(), subject ? { kind: subject.kind, id: subject.id } : null);
+      return createCoachNote(token!, userId, draft.trim(), subject ? { kind: subject.kind, id: subject.id } : null, chosenAudience);
     },
     onSuccess: async () => {
       setDraft("");
       setSubjectKey("");
+      setAudience(null);
       await refresh();
     },
   });
@@ -144,6 +156,7 @@ export function CoachNotesPanel({
                 {own(note) ? i18n("rhYou") : (note.coach_nickname ?? i18n("stfCoach"))}
                 {note.inserted_at ? ` · ${formatDateTime(note.inserted_at, locale)}` : ""}
                 {note.updated_at && note.inserted_at && note.updated_at !== note.inserted_at ? ` · ${i18n("rhEdited")}` : ""}
+                <AudienceBadge audience={note.audience ?? "private"} />
               </p>
               {subjectLabel(note) ? (
                 <p className="mt-1 text-xs font-semibold" style={{ color: "var(--primary-strong)" }}>{subjectLabel(note)}</p>
@@ -214,6 +227,11 @@ export function CoachNotesPanel({
             value={draft}
             onChange={(event) => setDraft(event.target.value)}
           />
+          {canWritePrivate ? (
+            <AudiencePicker value={audience} onChange={setAudience} adminsMayRead={visibleToAdmins} />
+          ) : (
+            <p className="text-xs" style={{ color: "var(--dim)" }}>{tNotes("noteStaffOnly")}</p>
+          )}
           {subjects.length > 0 ? (
             <label className="block text-xs" style={{ color: "var(--dim)" }}>
               {i18n("cnAbout")}
@@ -245,7 +263,7 @@ export function CoachNotesPanel({
 
       {failed ? <StatusText tone="error">{errorText(failed.error)}</StatusText> : null}
 
-      {isCoach && canWrite && !kinds ? (
+      {isCoach && canWritePrivate && !kinds ? (
         <details className="rounded-[1.2rem] p-4" style={{ background: "var(--panel-muted)", border: "1px solid var(--border)" }}>
           <summary className="cursor-pointer font-semibold" style={{ color: "var(--text)" }}>{i18n("rhNotePrivacy")}</summary>
           <label className="mt-3 flex items-start gap-3">
@@ -286,6 +304,52 @@ export function CoachNotesPanel({
           )}
         </details>
       ) : null}
+    </div>
+  );
+}
+
+/** «Για το staff» or «Ιδιωτική» beside each note (ADR-359). */
+function AudienceBadge({ audience }: { audience: NoteAudience }) {
+  const t = useTranslations("TrainingFloor");
+  const tone = audience === "staff" ? "var(--primary)" : "var(--muted)";
+  return (
+    <span
+      className="ms-2 inline-block rounded-full px-2 py-0.5 text-[11px] font-bold"
+      style={{ background: `color-mix(in srgb, ${tone} 12%, transparent)`, color: tone }}
+      data-testid={`note-audience-${audience}`}
+    >
+      {t(audience === "staff" ? "noteBadgeStaff" : "noteBadgePrivate")}
+    </span>
+  );
+}
+
+/** «Ποιος τη βλέπει» (ANR mockup e5 A): the choice and, under it, who that means. */
+function AudiencePicker({
+  value,
+  onChange,
+  adminsMayRead,
+}: {
+  value: NoteAudience;
+  onChange: (value: NoteAudience) => void;
+  adminsMayRead: boolean;
+}) {
+  const t = useTranslations("TrainingFloor");
+  return (
+    <div className="space-y-1">
+      <p className="text-xs font-semibold" style={{ color: "var(--dim)" }}>{t("noteWhoSees")}</p>
+      <SegmentPicker<NoteAudience>
+        ariaLabel={t("noteWhoSees")}
+        semantics="radiogroup"
+        value={value}
+        onChange={onChange}
+        options={[
+          { value: "staff", label: t("noteAudienceStaff") },
+          { value: "private", label: t("noteAudiencePrivate") },
+        ]}
+      />
+      <p className="text-xs" style={{ color: "var(--dim)" }}>
+        {value === "staff" ? t("noteStaffHint") : adminsMayRead ? t("notePrivateHintAdmins") : t("notePrivateHint")}
+      </p>
     </div>
   );
 }

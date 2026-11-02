@@ -591,6 +591,7 @@ function PRDossier({ member, prs }: { member: AdminUserPRMember; prs: AdminUserP
 
 export function AdminUserProfile({ userId }: { userId: string }) {
   const i18n = useUiTranslations();
+  const tFloor = useTranslations("TrainingFloor");
   const tPrSharing = useTranslations("PrSharing");
   const tDepth = useTranslations("Depth");
   const tGoal = useTranslations("TrainingGoal");
@@ -698,6 +699,8 @@ export function AdminUserProfile({ userId }: { userId: string }) {
   const isClient = clientRole !== null;
   if (isClient) sections.add("schedule");
   const showCoachNotes = isClient && (can(actor, "write_coach_notes") || can(actor, "read_coach_notes"));
+  // ADR-359 (ANR mockup e5 A): the front desk reads and writes notes for the staff.
+  const showNotes = showCoachNotes || (isClient && can(actor, "view_directory"));
   const showCoaches = isClient && (can(actor, "assign_coaches") || can(actor, "manage_coaching"));
   const showBoxMessage = isClient && can(actor, "message_from_box");
   const trains = isClient;
@@ -708,7 +711,7 @@ export function AdminUserProfile({ userId }: { userId: string }) {
   if (showCoaches) tabSections.add("coaching_relationships");
   // ADR-229: a coach (or full-scope staff) may set the client's weekly goal.
   if (isClient && can(actor, "manage_coaching")) tabSections.add("training_goal");
-  if (showCoachNotes) tabSections.add("coach_notes");
+  if (showNotes) tabSections.add("coach_notes");
   if (showBoxMessage) tabSections.add("box_message");
   // ADR-158: a client's coach sees the body snapshots the member shared.
   const showBody = isClient && actorCoaches && can(actor, "view_health");
@@ -905,7 +908,11 @@ export function AdminUserProfile({ userId }: { userId: string }) {
 
           {token && inTab("coaching_relationships") ? <Panel id="coaching_relationships" title={i18n("rhCoaches")}><CoachAssignmentPanel userId={userId} /></Panel> : null}
 
-          {token && inTab("coach_notes") ? <Panel id="coach_notes" title={i18n("rhCoachNotes")}><CoachNotesPanel userId={userId} subjects={[...trainingSubjects, ...wellbeingSubjects]} /></Panel> : null}
+          {token && inTab("coach_notes") ? (
+            <Panel id="coach_notes" title={showCoachNotes ? i18n("rhCoachNotes") : tFloor("notesStaffTitle")}>
+              <CoachNotesPanel userId={userId} subjects={showCoachNotes ? [...trainingSubjects, ...wellbeingSubjects] : []} />
+            </Panel>
+          ) : null}
 
 
           {inTab("messages") ? <Panel id="messages" title={i18n("chat2ced57f")} href="/messages"><p>{i18n("conversationSummary", { threads: messages.data?.summary.thread_count ?? 0, unread: messages.data?.summary.unread_thread_count ?? 0 })}</p><div className="mt-3 grid gap-3">{messages.data?.threads.length ? messages.data.threads.slice(0, 6).map((thread) => <GenericRecordCard key={thread.id} title={<SemanticLabel value={thread.context_type} />} meta={`${i18n("messageCount", { count: thread.message_count })} · ${date(thread.latest_message?.inserted_at)}`} detail={<p>{thread.latest_message?.body ?? i18n("emptyThreadfee51b1")}</p>} href="/messages" />) : <Empty>{i18n("noConversationsRecordedd525265")}</Empty>}</div></Panel> : null}
