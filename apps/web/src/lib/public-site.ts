@@ -25,6 +25,13 @@ export const loadPublicSite = cache(async (slug: string): Promise<PublicSite | n
   }
 });
 
+/** The remembered choice for this site ("<slug>:<code>"), or null. */
+export function rememberedSiteLanguage(cookieValue: string | undefined, slug: string): string | null {
+  if (!cookieValue) return null;
+  const [owner, code] = decodeURIComponent(cookieValue).split(":");
+  return owner === slug && code ? code : null;
+}
+
 /** The first language of an Accept-Language header, as a lowercase base tag ("el", "en"). */
 export function preferredLanguage(acceptLanguage: string | null | undefined): string | null {
   const first = acceptLanguage?.split(",")[0]?.split(";")[0]?.trim();
