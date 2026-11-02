@@ -19,9 +19,11 @@ import { useUiTranslations } from "@/i18n/ui";
 import { useSelectedMembershipRole } from "@/lib/membership-role";
 import { OFFLINE_COMMAND_OUTBOX_EVENT } from "@/lib/offline-command-outbox";
 import { organizationTopic, subscribeToTopic } from "@/lib/realtime";
+import { calendarOfferPending } from "@/lib/training-floor";
 import { addDaysToKey, dateKeyInZone, formatInZone, startOfDayInZone } from "@/lib/zoned-time";
 
 import { ClassRow } from "./ClassRow";
+import { CalendarOfferSheet } from "./CalendarOfferSheet";
 import { ClassSheet } from "./ClassSheet";
 import { MONTH_GRID_DAYS, MonthGrid, monthGridStart, shiftMonth, type DayCount } from "./MonthGrid";
 import {
@@ -58,7 +60,7 @@ export function MemberSchedule({ initialOpenSlotId = null }: { initialOpenSlotId
   const t = useTranslations("BoxSchedule");
   const i18n = useUiTranslations();
   const locale = useLocale();
-  const { tokens } = useSession();
+  const { tokens, currentUser } = useSession();
   const token = tokens?.access_token ?? null;
   const { membership } = useSelectedMembershipRole();
   const organizationId = membership?.organization.id ?? null;
@@ -77,6 +79,8 @@ export function MemberSchedule({ initialOpenSlotId = null }: { initialOpenSlotId
   const [actionError, setActionError] = useState<string | null>(null);
   // Mockup s4 B: booking without a package offers to pay for the visit.
   const [payFor, setPayFor] = useState<ScheduleSlot | null>(null);
+  // ADR-359 (ANR mockup e4 A): the calendar offer, once, after a booking.
+  const [calendarOffer, setCalendarOffer] = useState(false);
   const sales = useBoxSales(membership?.organization.slug);
   const offer = bookingOffer(sales.packages);
   // ADR-252: what the booking gate asks for, shown in the class sheet.
@@ -242,6 +246,7 @@ export function MemberSchedule({ initialOpenSlotId = null }: { initialOpenSlotId
       setOpenSlotId(null);
       setDocumentsGate(null);
       if (outcome.status === "delivered") reload();
+      if (outcome.status === "delivered" && calendarOfferPending(currentUser?.id)) setCalendarOffer(true);
     } catch (error) {
       const gate = documentsRequired(error);
       if (gate) {
@@ -405,6 +410,10 @@ export function MemberSchedule({ initialOpenSlotId = null }: { initialOpenSlotId
             reload();
           }}
         />
+      ) : null}
+
+      {calendarOffer && currentUser?.id ? (
+        <CalendarOfferSheet userId={currentUser.id} onClose={() => setCalendarOffer(false)} />
       ) : null}
 
       {payFor && membership ? (
