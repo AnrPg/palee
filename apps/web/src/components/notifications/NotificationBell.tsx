@@ -1128,6 +1128,17 @@ export function NotificationBell({
                   style={{ border: "1px solid var(--border)", color: "var(--dim)" }}
                 >
                   {emptyMessage}
+                  {notificationQuery.isError && !notificationQuery.isFetching ? (
+                    <button
+                      type="button"
+                      onClick={() => void notificationQuery.refetch()}
+                      className="mt-3 block rounded-full px-3 py-1.5 text-xs font-semibold"
+                      style={{ background: "var(--panel)", border: "1px solid var(--border)", color: "var(--text-soft)" }}
+                      data-testid="notifications-retry"
+                    >
+                      {i18n("retry9f5cd8a")}
+                    </button>
+                  ) : null}
                 </div>
               ) : null}
 

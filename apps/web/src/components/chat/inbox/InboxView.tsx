@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 
 import {
   createDirectThread,
+  fetchThread,
   fetchThreads,
   MESSAGE_TOPICS,
   searchUsers,
@@ -132,13 +133,44 @@ export function InboxView({
     return { currentUserId, coachPeerIds: coachPeerIds.size ? coachPeerIds : EMPTY, coachingThreadIds };
   }, [audience.data, clientIds, currentUserId, landing.data]);
 
+  // Every gym thread I take part in: direct, workout, class and the box's.
+  // Read again on the way back to the list, so a thread shows what was last
+  // sent in it (and moves between «Αναπάντητα» and «Όλα») without a reload.
+  const backToList = threadId === null;
+  const threadsLoaded = useRef(false);
   useEffect(() => {
-    if (!accessToken) return;
-    // Every gym thread I take part in: direct, workout, class and the box's.
+    if (!accessToken || (threadsLoaded.current && !backToList)) return;
+    let cancelled = false;
     void fetchThreads(accessToken)
-      .then((data) => setThreads(Array.isArray(data.threads) ? data.threads : []))
-      .catch(() => setThreads([]));
-  }, [accessToken]);
+      .then((data) => {
+        if (cancelled) return;
+        threadsLoaded.current = true;
+        setThreads(Array.isArray(data.threads) ? data.threads : []);
+      })
+      .catch(() => {
+        if (!cancelled) setThreads((current) => current ?? []);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [accessToken, backToList]);
+
+  // A link can open a thread the list does not hold yet (just created
+  // elsewhere, e.g. «Μήνυμα από το box» on a member's page): fetch that one.
+  const missingThreadId = threadId && threads && !threads.some((thread) => thread.id === threadId) ? threadId : null;
+  useEffect(() => {
+    if (!accessToken || !missingThreadId) return;
+    let cancelled = false;
+    void fetchThread(accessToken, missingThreadId)
+      .then(({ thread }) => {
+        if (cancelled || !thread) return;
+        setThreads((current) => (current?.some((item) => item.id === thread.id) ? current : [thread, ...(current ?? [])]));
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, [accessToken, missingThreadId]);
 
   useEffect(() => {
     const next = searchQuery.trim();
@@ -220,6 +252,10 @@ export function InboxView({
   };
 
   const fromBox = activeThread?.context_type === "box" && activeThread.context_id !== currentUserId;
+  // In the box's inbox the staff answer as one box: every message that is not
+  // the person's sits on my side, whoever on the staff wrote it.
+  const isOwnSide = (senderId: string | null | undefined) =>
+    fromBox ? senderId !== activeThread?.context_id : senderId === currentUserId;
   const activeOther = activeThread ? otherParticipant(activeThread) : undefined;
   const canCoach = activeThread?.context_type === "direct" && Boolean(activeOther && clientIds.has(activeOther.user_id));
 
@@ -292,7 +328,7 @@ export function InboxView({
             <MessageBubble
               key={msg.id}
               message={msg}
-              isOwnMessage={msg.sender_id === currentUserId}
+              isOwnMessage={isOwnSide(msg.sender_id)}
               onRetry={retryMessage}
               onDiscard={discardMessage}
             />

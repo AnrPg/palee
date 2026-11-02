@@ -54,12 +54,23 @@ export async function proxy(request: NextRequest) {
   const destination = organizationMatch?.[1];
 
   const response = destination
-    ? NextResponse.rewrite(new URL(destination, request.url), {
+    ? NextResponse.rewrite(tenantRewriteUrl(request.nextUrl, destination), {
         request: { headers: requestHeaders },
       })
     : NextResponse.next({ request: { headers: requestHeaders } });
   response.headers.set("Content-Security-Policy", csp);
   return applySecurityHeaders(response, destination ?? request.nextUrl.pathname);
+}
+
+/**
+ * `/org/<slug>/<rest>` renders `/<rest>` with the same query: `?tab=`, `?queue=`
+ * and every other deep link must survive the rewrite (a bare
+ * `new URL(destination, request.url)` drops the query).
+ */
+export function tenantRewriteUrl(requestUrl: URL, destination: string): URL {
+  const target = new URL(requestUrl.toString());
+  target.pathname = destination;
+  return target;
 }
 
 /** ADR-206: pages a reset link opens never leak their URL to another site. */

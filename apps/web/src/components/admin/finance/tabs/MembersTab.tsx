@@ -8,6 +8,7 @@
 import {useUiTranslations} from "@/i18n/ui";
 import { useTranslations } from "next-intl";
 import {useUiLocale} from "@/i18n/use-ui-locale";
+import { formatDateKey } from "@/lib/local-date";
 import { useCallback, useState, type ReactNode } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -685,7 +686,12 @@ function MemberRow({
       {/* Status */}
       <td className="px-4 py-3" style={{ whiteSpace: "nowrap" }}>
         {membership ? (
-          <MemberStatusCell userId={field(member, "id")} status={membershipStatus} override={overrideFor(overrides, "status")} />
+          <MemberStatusCell
+            userId={field(member, "id")}
+            status={membershipStatus}
+            override={overrideFor(overrides, "status")}
+            dueSince={formatDateKey(uiLocale, oldestUnpaidDueOn)}
+          />
         ) : (
           <span className="text-xs" style={{ color: "var(--dim)" }}>{i18n("noFinanceProfilef804f44")}</span>
         )}
@@ -763,7 +769,7 @@ function MemberRow({
               }}
             >
               {eur.format(outstandingCents / 100)} {i18n("due30cdf73")}
-              {oldestUnpaidDueOn ? <span> · {standingT("dueSince", { date: oldestUnpaidDueOn.slice(0, 10) })}</span> : null}
+              {oldestUnpaidDueOn ? <span> · {standingT("dueSince", { date: formatDateKey(uiLocale, oldestUnpaidDueOn) ?? oldestUnpaidDueOn.slice(0, 10) })}</span> : null}
             </span>
           ) : (
             <span className="text-xs" style={{ color: "var(--dim)" }}>—</span>

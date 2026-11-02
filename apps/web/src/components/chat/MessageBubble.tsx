@@ -48,6 +48,7 @@ export function MessageBubble({
 
   return (
     <div
+      data-side={isOwnMessage ? "own" : "other"}
       className={"flex flex-col gap-0.5 max-w-[78%] " + (isOwnMessage ? "self-end items-end" : "self-start items-start")}
     >
       {senderNickname && !isOwnMessage && (

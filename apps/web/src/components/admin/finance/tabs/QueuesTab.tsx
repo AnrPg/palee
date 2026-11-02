@@ -7,12 +7,14 @@
 
 import {useUiLocale} from "@/i18n/use-ui-locale";
 import {useUiTranslations} from "@/i18n/ui";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { fetchFinanceQueues, type FinanceRecord } from "@/api/finance";
+import { formatDateKey } from "@/lib/local-date";
+import { parseFinanceQueue, type FinanceQueue } from "@/components/admin/finance/finance-queues";
 import { FailedChargesList, useFailedCharges } from "@/components/admin/payments/FailedCharges";
 import { DeskPackageRequestRows, PersonLink, useDeskPackageRequests } from "@/components/admin/finance/payments/DeskPackageRequests";
 import { ReceivePaymentDialog } from "@/components/admin/finance/payments/ReceivePaymentDialog";
@@ -23,7 +25,7 @@ import { useSession } from "@/components/session-provider";
 import { useSelectedMembershipRole } from "@/lib/membership-role";
 import { can } from "@/lib/role-navigation";
 
-type QueueKey = "debts" | "awaiting" | "expiring" | "failed" | "rewards" | "promos";
+type QueueKey = FinanceQueue;
 
 function field(record: FinanceRecord | null | undefined, key: string, fallback = "") {
   const value = record?.[key];
@@ -36,9 +38,8 @@ function money(uiLocale: string, cents: unknown) {
   return new Intl.NumberFormat(uiLocale, { style: "currency", currency: "EUR" }).format(amount / 100);
 }
 
-function dateText(value: unknown) {
-  if (!value) return "—";
-  return String(value).slice(0, 10);
+function dateText(uiLocale: string, value: unknown) {
+  return formatDateKey(uiLocale, value) ?? "—";
 }
 
 /** `locationIds`: the page branch filter (ADR-186 §7). */
@@ -68,10 +69,21 @@ export function QueuesTab({ locationIds }: { locationIds?: string } = {}) {
   ];
   const { tokens } = useSession();
   const token = tokens?.access_token;
-  // The staff notice of a failed charge opens `?tab=queues&queue=failed_charges`.
-  const requested = useSearchParams().get("queue");
-  const [active, setActive] = useState<QueueKey>(
-    requested === "failed_charges" ? "failed" : requested === "package_requests" ? "awaiting" : "debts",
+  // The open list lives in the address (`?queue=`), so every alert and notice
+  // that links here lands on the rows it counted, also when this tab is
+  // already open, and Back returns to the list that was showing.
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const requested = parseFinanceQueue(searchParams.get("queue"));
+  const offered = (id: QueueKey | null): id is QueueKey => id !== null && CHIPS.some((chip) => chip.id === id);
+  const active: QueueKey = offered(requested) ? requested : "debts";
+  const setActive = useCallback(
+    (queue: QueueKey) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("queue", queue);
+      router.replace(`?${params.toString()}`, { scroll: false });
+    },
+    [router, searchParams],
   );
   const failedQuery = useFailedCharges(token, seesFailedCharges);
   const awaitingQuery = useDeskPackageRequests(locationIds, seesAwaiting);
@@ -112,6 +124,8 @@ export function QueuesTab({ locationIds }: { locationIds?: string } = {}) {
                 : { background: "var(--panel)", border: "1px solid var(--border)", color: "var(--dim)" }
             }
             onClick={() => setActive(id)}
+            aria-pressed={active === id}
+            data-queue={id}
             type="button"
           >
             {label}
@@ -160,7 +174,7 @@ export function QueuesTab({ locationIds }: { locationIds?: string } = {}) {
             {active === "expiring" && rows.map((row, i) => (
               <QueueRow key={field(row, "id", String(i))} last={i === rows.length - 1}>
                 <PersonLink userId={field(row, "user_id")} name={field(row, "user_label", field(row, "nickname"))} />
-                <span style={{ color: "var(--muted)" }}>{i18n("expiresa99be3d")} {dateText(row.expires_on)}</span>
+                <span style={{ color: "var(--muted)" }}>{i18n("expiresa99be3d")} {dateText(uiLocale, row.expires_on)}</span>
               </QueueRow>
             ))}
 
@@ -172,7 +186,7 @@ export function QueuesTab({ locationIds }: { locationIds?: string } = {}) {
                   <span className="min-w-0" style={{ color: "var(--text)" }}>
                     <PersonLink userId={field(row, "user_id")} name={field(row, "user_label")} />
                     {row.oldest_due_on ? (
-                      <span style={{ color: "var(--muted)" }}> · {standingT("dueSince", { date: dateText(row.oldest_due_on) })}</span>
+                      <span style={{ color: "var(--muted)" }}> · {standingT("dueSince", { date: dateText(uiLocale, row.oldest_due_on) })}</span>
                     ) : null}
                   </span>
                   <span className="flex flex-wrap items-center justify-end gap-2">

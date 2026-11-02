@@ -36,6 +36,8 @@ import {
   type TimelineEntry,
 } from "@/components/admin/DashboardWidgets";
 import { clockFormat } from "@/lib/clock";
+import { earliestDateKey, formatDateKey } from "@/lib/local-date";
+import { financeQueueHref } from "@/components/admin/finance/finance-queues";
 
 type AlertCategory = "finance" | "coaching" | "training";
 type AlertMessageKey =
@@ -172,6 +174,7 @@ export function AdminDashboard({
   const uiLocale = useUiLocale();
   const i18n = useUiTranslations();
   const nav = useTranslations("Navigation");
+  const standingT = useTranslations("MemberStanding");
   const has = (...capabilities: string[]) =>
     membership === undefined || capabilities.some((capability) => can(membership, capability));
   const fullAnalytics = has("view_business_analytics");
@@ -305,8 +308,8 @@ export function AdminDashboard({
   const financeKpis: Array<[string, string, boolean, string]> = [
     [i18n("activeMembersa17ecbe"), String(totals.active_memberships ?? 0), false, "/admin/finance"],
     [i18n("revenueMtd3ffc292"), money(uiLocale, totals.paid_revenue_cents), false, "/admin/metrics/finance"],
-    [i18n("expiring30d1d039ba"), String(totals.expiring_memberships ?? 0), Number(totals.expiring_memberships ?? 0) > 0, "/admin/finance?tab=queues"],
-    [i18n("overdueInvoices747a2d8"), money(uiLocale, totals.overdue_invoice_balance_cents), Number(totals.overdue_invoice_balance_cents ?? 0) > 0, "/admin/finance?tab=queues"],
+    [i18n("expiring30d1d039ba"), String(totals.expiring_memberships ?? 0), Number(totals.expiring_memberships ?? 0) > 0, financeQueueHref("expiring")],
+    [i18n("overdueInvoices747a2d8"), money(uiLocale, totals.overdue_invoice_balance_cents), Number(totals.overdue_invoice_balance_cents ?? 0) > 0, financeQueueHref("debts")],
   ];
 
   const operationalKpis: Array<[string, string, boolean, string, boolean]> = [
@@ -320,14 +323,26 @@ export function AdminDashboard({
   // ── Alerts ─────────────────────────────────────────────────────────────────
   // Each alert is one ICU plural message with the count inside it, so every
   // locale controls spacing, word order and plural forms (never `count + text`).
-  type DashboardAlert = { text: string; href: string };
-  const alertsFor = (rows: Array<[count: number, key: AlertMessageKey, href: string]>): DashboardAlert[] =>
-    rows.filter(([count]) => count > 0).map(([count, key, href]) => ({ text: i18n(key, { count }), href }));
+  // Every alert links to the list that holds the rows it counts, already
+  // picked, and a money alert names its nearest date («λήξη 28 Οκτ 2026»).
+  type DashboardAlert = { text: string; href: string; detail?: string | null };
+  const alertsFor = (
+    rows: Array<[count: number, key: AlertMessageKey, href: string, detail?: string | null]>,
+  ): DashboardAlert[] =>
+    rows.filter(([count]) => count > 0).map(([count, key, href, detail]) => ({ text: i18n(key, { count }), href, detail }));
+  const dueSince = (rows: FinanceRecord[] | undefined, field: string) => {
+    const date = formatDateKey(uiLocale, earliestDateKey((rows ?? []).map((row) => row[field])));
+    return date ? standingT("dueSince", { date }) : null;
+  };
+  const expiresOn = (rows: FinanceRecord[] | undefined) => {
+    const date = formatDateKey(uiLocale, earliestDateKey((rows ?? []).map((row) => row.expires_on)));
+    return date ? `${i18n("expiresa99be3d")} ${date}` : null;
+  };
 
   const financeAlerts = alertsFor([
-    [Number(totals.expiring_memberships ?? 0), "adminAlertExpiringMemberships", "/admin/finance?tab=queues"],
-    [(queues.overdue_invoices ?? []).length, "adminAlertOverdueInvoices", "/admin/finance?tab=queues"],
-    [(queues.pending_payments ?? []).length, "adminAlertPendingPayments", "/admin/finance?tab=queues"],
+    [Number(totals.expiring_memberships ?? 0), "adminAlertExpiringMemberships", financeQueueHref("expiring"), expiresOn(queues.expiring_memberships)],
+    [(queues.overdue_invoices ?? []).length, "adminAlertOverdueInvoices", financeQueueHref("debts"), dueSince(queues.overdue_invoices, "due_date")],
+    [(queues.pending_payments ?? []).length, "adminAlertPendingPayments", financeQueueHref("debts")],
     [(queues.pending_referral_rewards ?? []).length, "adminAlertPendingReferralRewards", "/admin/finance?tab=referrals"],
   ]);
 
@@ -340,7 +355,7 @@ export function AdminDashboard({
     [pendingBookingsCount, "adminAlertPendingBookingApprovals", "/admin/class-schedule"],
   ]);
 
-  const allAlerts: Record<AlertCategory, { label: string; items: Array<{ text: string; href: string }> }> = {
+  const allAlerts: Record<AlertCategory, { label: string; items: DashboardAlert[] }> = {
     finance: { label: i18n("finance1b48d3f"), items: canFinanceReports ? financeAlerts : [] },
     coaching: { label: i18n("coachingfd8b79f"), items: canBusinessAnalytics ? coachingAlerts : [] },
     training: { label: i18n("trainingb6fe7f5"), items: has("run_classes") ? trainingAlerts : [] },
@@ -533,7 +548,12 @@ export function AdminDashboard({
                                 style={{ background: "color-mix(in srgb, var(--primary) 7%, transparent)", border: "1px solid color-mix(in srgb, var(--primary) 15%, transparent)" }}
                               >
                                 <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full" style={{ background: "var(--primary)" }} />
-                                <span className="min-w-0 flex-1" style={{ color: "var(--text)" }}>{alert.text}</span>
+                                <span className="min-w-0 flex-1" style={{ color: "var(--text)" }}>
+                                  {alert.text}
+                                  {alert.detail ? (
+                                    <span className="block text-xs" data-testid="alert-detail" style={{ color: "var(--muted)" }}>{alert.detail}</span>
+                                  ) : null}
+                                </span>
                                 <span aria-hidden="true" style={{ color: "var(--primary-strong)" }}>→</span>
                               </Link>
                             </li>
