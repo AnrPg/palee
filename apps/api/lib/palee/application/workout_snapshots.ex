@@ -9,6 +9,9 @@ defmodule Palee.Application.WorkoutSnapshots do
       happened, not a condition for it.
     * `get/2` – one snapshot, for staff who program or follow training, or
       for the person whose own assignment, run or score points at it.
+    * `as_performed/3` (ADR-389) – for the person's own run or score: its
+      snapshot and whether the WOD has changed since, so the Journal shows
+      «όπως ήταν» only when it differs from the WOD as it reads now.
 
   Editing the template later, or reopening and editing the class's copy,
   changes neither the snapshot nor what the holder points at.
@@ -66,6 +69,38 @@ defmodule Palee.Application.WorkoutSnapshots do
   end
 
   def get(_context, _id), do: {:error, :organization_context_required}
+
+  @doc """
+  The person's own run (`:execution`) or score (`:training_log`): the
+  snapshot it points at (`nil` before ADR-357) and `changed`, true when the
+  WOD now reads differently or no longer exists. Someone else's holder is
+  `{:error, :workout_snapshot_not_found}`.
+  """
+  def as_performed(%{organization_id: org, user_id: user_id} = context, holder, holder_id)
+      when holder in [:execution, :training_log] and is_binary(org) and is_binary(user_id) do
+    case WorkoutSnapshotStore.own_snapshot_id(context, holder, holder_id, user_id) do
+      {:ok, nil} ->
+        {:ok, %{snapshot: nil, changed: false}}
+
+      {:ok, snapshot_id} ->
+        case WorkoutSnapshotStore.get_snapshot(context, snapshot_id) do
+          nil -> {:ok, %{snapshot: nil, changed: false}}
+          snapshot -> {:ok, %{snapshot: present(snapshot), changed: changed?(context, snapshot)}}
+        end
+
+      {:error, :not_found} ->
+        {:error, :workout_snapshot_not_found}
+    end
+  end
+
+  def as_performed(_context, _holder, _holder_id), do: {:error, :organization_context_required}
+
+  defp changed?(context, snapshot) do
+    case Workouts.get_workout_for_admin(context, snapshot.master_workout_id) do
+      %{} = workout -> not Workouts.snapshot_same?(snapshot, workout)
+      _gone -> true
+    end
+  end
 
   @doc "The snapshot a holder points at, if any (`nil` before ADR-357)."
   def of(context, holder, holder_id) when holder in @holders do

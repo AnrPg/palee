@@ -23,4 +23,10 @@ defmodule Palee.Workouts.Ports.WorkoutSnapshotStore do
   @callback snapshot_id_of(map(), holder(), Ecto.UUID.t()) :: Ecto.UUID.t() | nil
   @doc "Whether one of the person's own assignments, runs or scores points at the snapshot."
   @callback referenced_by?(map(), Ecto.UUID.t(), Ecto.UUID.t()) :: boolean()
+  @doc """
+  ADR-389: the snapshot id of the person's own run or score (`nil` before
+  ADR-357), or `{:error, :not_found}` when the holder is not theirs.
+  """
+  @callback own_snapshot_id(map(), :execution | :training_log, Ecto.UUID.t(), Ecto.UUID.t()) ::
+              {:ok, Ecto.UUID.t() | nil} | {:error, :not_found}
 end

@@ -164,6 +164,26 @@ defmodule PaleeWeb.Schemas.TrainingFloor do
     }
   end
 
+  @doc "ADR-389: the WOD as one's own run or score performed it, and whether it changed since."
+  def workout_as_performed do
+    %Schema{
+      title: "WorkoutAsPerformed",
+      type: :object,
+      properties: %{
+        snapshot: %Schema{
+          allOf: [workout_snapshot().properties.snapshot],
+          nullable: true,
+          description: "Null for results from before snapshots (ADR-357)"
+        },
+        changed: %Schema{
+          type: :boolean,
+          description: "The WOD now reads differently, or no longer exists"
+        }
+      },
+      required: [:changed, :snapshot]
+    }
+  end
+
   # -- CP-D6: fitness profile ---------------------------------------------------
 
   @domains ~w(strength power gymnastics monostructural metcon)
