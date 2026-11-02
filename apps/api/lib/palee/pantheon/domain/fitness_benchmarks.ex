@@ -23,6 +23,11 @@ defmodule Palee.Pantheon.Domain.FitnessBenchmarks do
 
   @domains ~w(strength power gymnastics monostructural metcon)
 
+  # NEEDS COACH REVIEW (ANR 2026-11-02, mockup d6): every anchor below is a
+  # generic population value that a pilot coach has not checked yet. The
+  # Πρόοδος card shows these numbers to members; a reviewed set is a new
+  # algorithm version, never an edit of this one.
+  #
   # {key, domain, unit, aliases, women anchors, men anchors}
   @catalog [
     {"back_squat", "strength", "kg", ["back squat", "squat", "πισω καθισμα", "καθισμα"],
