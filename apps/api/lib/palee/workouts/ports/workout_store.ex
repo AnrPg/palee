@@ -34,6 +34,8 @@ defmodule Palee.Workouts.Ports.WorkoutStore do
   @callback find_filed_copy(binary(), binary()) :: binary() | nil
   @callback set_workout_icon(binary(), String.t() | nil, String.t() | nil) ::
               {:ok, map()} | {:error, term()}
+  @callback set_workout_benchmark(binary(), String.t() | nil) ::
+              {:ok, map()} | {:error, term()}
   @callback ensure_system_folder(String.t(), String.t(), binary() | nil) ::
               {:ok, map()} | {:error, term()}
   @callback delete_folder(binary()) :: :ok | {:error, term()}

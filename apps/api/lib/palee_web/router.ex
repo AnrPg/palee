@@ -1309,6 +1309,9 @@ defmodule PaleeWeb.Router do
     get("/workouts/dsl/manual", AdminWorkoutDslController, :manual)
     get("/workouts/:id/dsl", AdminWorkoutDslController, :show_authoring)
     post("/workouts/:id/dsl/publish", AdminWorkoutDslController, :publish)
+    # ADR-394: the benchmark catalog and a WOD's benchmark tag.
+    get("/workouts/benchmarks", AdminWorkoutController, :benchmarks)
+    put("/workouts/:id/benchmark", AdminWorkoutController, :update_benchmark)
     get("/workouts/:id", AdminWorkoutController, :show)
     get("/workouts/:id/goals", AdminWorkoutGoalsController, :show)
     put("/workouts/:id/goals", AdminWorkoutGoalsController, :update)

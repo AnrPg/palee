@@ -229,6 +229,7 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
           source_workout_id: workout.source_workout_id,
           icon: workout.icon,
           icon_source: workout.icon_source,
+          benchmark_key: workout.benchmark_key,
           sections: draft_sections
         }
 
@@ -386,6 +387,23 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
 
           error ->
             error
+        end
+    end
+  end
+
+  @impl true
+  def set_workout_benchmark(id, benchmark_key) do
+    case MasterWorkout |> scoped_to_tenant() |> Repo.get(id) do
+      nil ->
+        {:error, :not_found}
+
+      workout ->
+        workout
+        |> Ecto.Changeset.change(benchmark_key: benchmark_key)
+        |> Repo.update()
+        |> case do
+          {:ok, updated} -> {:ok, %{id: updated.id, benchmark_key: updated.benchmark_key}}
+          error -> error
         end
     end
   end
@@ -1199,6 +1217,7 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
       source_workout_id: workout.source_workout_id,
       icon: workout.icon,
       icon_source: workout.icon_source,
+      benchmark_key: workout.benchmark_key,
       inserted_at: workout.inserted_at,
       updated_at: workout.updated_at,
       sections: sections
@@ -2292,7 +2311,8 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
             draft_data: draft_data
           })
 
-        # Copies keep the original's icon, whoever chose it, and its WOD
+        # Copies keep the original's icon, whoever chose it, its benchmark
+        # tag (ADR-394: a class variant of Fran is still Fran), and its WOD
         # goals (ADR-163), in one transaction. Programming copies (class
         # variants, member versions, filed copies) pass `copy_goals: false`
         # and inherit the original's goals live instead.
@@ -2300,7 +2320,11 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
 
         Repo.transaction(fn ->
           with {:ok, new_workout} <-
-                 %MasterWorkout{icon: source.icon, icon_source: source.icon_source}
+                 %MasterWorkout{
+                   icon: source.icon,
+                   icon_source: source.icon_source,
+                   benchmark_key: source.benchmark_key
+                 }
                  |> MasterWorkout.draft_changeset(params)
                  |> Repo.insert(),
                :ok <- maybe_copy_goals(copy_goals?, source.id, new_workout.id) do

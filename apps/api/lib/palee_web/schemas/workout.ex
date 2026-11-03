@@ -281,6 +281,8 @@ defmodule PaleeWeb.Schemas.Workout do
         },
         free_text_body: %Schema{type: :string, nullable: true},
         free_text_document: %Schema{type: :object, additionalProperties: true, nullable: true},
+        # ADR-394: the benchmark a coach tagged the WOD with.
+        benchmark_key: %Schema{type: :string, nullable: true},
         body: body_schema()
       },
       required: [:id, :title, :type, :sections],

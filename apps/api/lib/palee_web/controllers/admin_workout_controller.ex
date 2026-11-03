@@ -10,6 +10,7 @@ defmodule PaleeWeb.AdminWorkoutController do
     DuplicateWorkout,
     FileWorkoutCopy,
     GetAdminWorkout,
+    SetWorkoutBenchmark,
     SetWorkoutIcon,
     ListAdminWorkouts,
     PublishWorkout,
@@ -27,7 +28,7 @@ defmodule PaleeWeb.AdminWorkoutController do
 
   plug OpenApiSpex.Plug.CastAndValidate,
        [json_render_error_v2: true]
-       when action in [:create, :update_draft, :publish, :copy, :update_icon]
+       when action in [:create, :update_draft, :publish, :copy, :update_icon, :update_benchmark]
 
   @icon_body %RequestBody{
     required: true,
@@ -45,6 +46,43 @@ defmodule PaleeWeb.AdminWorkoutController do
             }
           },
           required: [:icon]
+        }
+      }
+    }
+  }
+
+  # ADR-394: a benchmark as the editor's picker and the WOD show it.
+  @benchmark_schema %Schema{
+    type: :object,
+    properties: %{
+      key: %Schema{type: :string},
+      group: %Schema{
+        type: :string,
+        enum: ["strength", "power", "gymnastics", "monostructural", "metcon"]
+      },
+      unit: %Schema{type: :string, enum: ["kg", "reps", "mins_secs"]},
+      lower_is_better: %Schema{type: :boolean}
+    },
+    required: [:group, :key, :lower_is_better, :unit],
+    additionalProperties: false
+  }
+
+  @benchmark_body %RequestBody{
+    required: true,
+    content: %{
+      "application/json" => %MediaType{
+        schema: %Schema{
+          type: :object,
+          additionalProperties: false,
+          properties: %{
+            benchmark_key: %Schema{
+              type: :string,
+              nullable: true,
+              maxLength: 40,
+              description: "A key of the benchmark catalog; null clears the tag"
+            }
+          },
+          required: [:benchmark_key]
         }
       }
     }
@@ -369,6 +407,52 @@ defmodule PaleeWeb.AdminWorkoutController do
     icon = Map.get(conn.body_params, :icon) || Map.get(conn.body_params, "icon")
 
     with {:ok, result} <- SetWorkoutIcon.call(conn.assigns.tenant_context, id, icon) do
+      json(conn, result)
+    end
+  end
+
+  operation(:benchmarks,
+    summary: "The benchmarks a coach can tag a WOD with (ADR-394)",
+    responses: [
+      ok:
+        {"Benchmarks", "application/json",
+         %Schema{
+           type: :object,
+           properties: %{benchmarks: %Schema{type: :array, items: @benchmark_schema}},
+           required: [:benchmarks]
+         }}
+    ]
+  )
+
+  def benchmarks(conn, _params) do
+    json(conn, %{benchmarks: SetWorkoutBenchmark.catalog()})
+  end
+
+  operation(:update_benchmark,
+    summary: "Tag a WOD as a known benchmark for the Palee-wide board, or clear the tag",
+    parameters: [@id_param],
+    request_body: @benchmark_body,
+    responses: [
+      ok:
+        {"Benchmark", "application/json",
+         %Schema{
+           type: :object,
+           properties: %{
+             id: %Schema{type: :string, format: :uuid},
+             benchmark: %Schema{@benchmark_schema | nullable: true}
+           },
+           required: [:benchmark, :id]
+         }},
+      unprocessable_entity: {"Unknown benchmark", "application/json", %Schema{type: :object}},
+      not_found: {"Not found", "application/json", %Schema{type: :object}}
+    ]
+  )
+
+  def update_benchmark(conn, params) do
+    id = Map.get(params, "id") || Map.get(params, :id)
+    key = Map.get(conn.body_params, :benchmark_key)
+
+    with {:ok, result} <- SetWorkoutBenchmark.call(conn.assigns.tenant_context, id, key) do
       json(conn, result)
     end
   end
