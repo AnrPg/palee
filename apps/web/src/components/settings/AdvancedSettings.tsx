@@ -149,13 +149,24 @@ export function AdvancedDisclosure({
   count,
   children,
   testId,
+  open: controlledOpen,
+  onOpenChange,
 }: {
   count?: number;
   children: ReactNode;
   testId?: string;
+  /** Controlled open state, for a screen that opens it from elsewhere («Αλλαγή»). */
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }) {
   const t = useTranslations("AdvancedSettings");
-  const [open, setOpen] = useState(false);
+  const [ownOpen, setOwnOpen] = useState(false);
+  const open = controlledOpen ?? ownOpen;
+  const setOpen = (update: (value: boolean) => boolean) => {
+    const next = update(open);
+    setOwnOpen(next);
+    onOpenChange?.(next);
+  };
   const id = useId();
   return (
     <section

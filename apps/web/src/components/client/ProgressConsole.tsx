@@ -97,7 +97,7 @@ export function ProgressConsole() {
             <PersonalRecordsSection filter={filter} />
             <ProgressOverview />
             {/* ADR-358 (ANR mockup d6 A): own PRs only, never other people. */}
-            <FitnessProfileCard />
+            <FitnessProfileCard range={filter.range} />
             {progress ? (
               <>
                 <Totals progress={progress} />

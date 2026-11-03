@@ -4,6 +4,8 @@ import type {
   Division,
   FitnessDomain,
   FitnessDomainName,
+  FitnessDisplayMode,
+  FitnessReason,
   LeaderboardQuery,
   LeaderboardWindow,
   VisitBadge,
@@ -216,6 +218,42 @@ export function orderedDomains(domains: FitnessDomain[] | undefined): FitnessDom
   return FITNESS_DOMAINS.map(
     (name) => known.find((domain) => domain.domain === name) ?? { domain: name, score: null, confidence: null, reasons: [], stale: false },
   );
+}
+
+// -- ADR-395: fitness card version 2 ------------------------------------------
+
+/** An age band as the API names it (`40_44`, `60_plus`) the way people write it: «40–44», «60+». */
+export function ageBandLabel(band: string | null | undefined): string | null {
+  if (!band) return null;
+  const plus = /^(\d+)_plus$/.exec(band);
+  if (plus) return `${plus[1]}+`;
+  const range = /^(\d+)_(\d+)$/.exec(band);
+  return range ? `${range[1]}–${range[2]}` : null;
+}
+
+/**
+ * What separates a reading from the next level, in the PR's own unit: kg more
+ * on the 1RM, reps more, or seconds faster. Null at the top of the scale.
+ */
+export function nextGap(reading: Pick<FitnessReason, "unit" | "value" | "next">): number | null {
+  const next = reading.next;
+  if (!next) return null;
+  const gap = reading.unit === "mins_secs" ? reading.value - next.value : next.value - reading.value;
+  if (gap <= 0) return null;
+  return reading.unit === "kg" ? Math.round(gap * 2) / 2 : Math.round(gap);
+}
+
+const DISPLAY_RANK: Record<FitnessDisplayMode, number> = { all: 0, progress_only: 1, none: 2 };
+
+/** Whether a display choice shows more than another (a member's own choice never loosens the coach's). */
+export function looserDisplay(choice: FitnessDisplayMode, than: FitnessDisplayMode): boolean {
+  return DISPLAY_RANK[choice] < DISPLAY_RANK[than];
+}
+
+/** The change chip's direction: up, down or the same; null when there is nothing to compare. */
+export function changeDirection(change: number | null | undefined): "up" | "down" | "same" | null {
+  if (typeof change !== "number") return null;
+  return change > 0 ? "up" : change < 0 ? "down" : "same";
 }
 
 /** A PR value as the reason line shows it: kg, reps, or m:ss. */
