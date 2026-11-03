@@ -142,6 +142,7 @@ defmodule Palee.ReviewAsks do
   @doc "The statement of reasons with Palee's moderation contact (DSA Art. 17(3)(f))."
   def statement_of_reasons(decision),
     do: ReviewReportPolicy.statement_of_reasons(decision, moderation_contact())
+
   defdelegate reported_review_ids(context, reporter_id), to: ReviewAskStore
   defdelegate latest_decision(context, review_id), to: ReviewAskStore
   defdelegate platform_open_reports(context, limit), to: ReviewAskStore

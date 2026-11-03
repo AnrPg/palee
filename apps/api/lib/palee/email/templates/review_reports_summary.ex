@@ -24,7 +24,9 @@ defmodule Palee.Email.Templates.ReviewReportsSummary do
 
   @impl true
   def text(%{url: url} = assigns, locale) do
-    Layout.text(locale, [body(assigns, locale), Layout.text_button(s(locale, "Open the queue"), url)],
+    Layout.text(
+      locale,
+      [body(assigns, locale), Layout.text_button(s(locale, "Open the queue"), url)],
       reason: reason(locale)
     )
   end

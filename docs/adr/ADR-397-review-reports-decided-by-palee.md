@@ -1,6 +1,6 @@
 # ADR-397: «Αναφορά» on box reviews, decided only by the Palee team
 Date: 2026-11-03
-Status: Accepted (backend); UI waits for ANR's pick of the mockup
+Status: Accepted (backend and UI; the v3.2 questions decided on 2026-11-03, see below)
 
 ## Context
 ADR-386 gave a box its own in-app reviews (stars and text by people who
@@ -72,6 +72,12 @@ restrict (Art. 17), whatever their size.
    the box (`review_moderated`, 409); the author may still delete it.
    Without open reports there is nothing to decide (`review_report_decided`,
    409).
+   - `restore` (`POST /api/platform/review-reports/:review_id/restore`, from
+     «Αποφασισμένες»): shows a hidden review again, with a required
+     `statement` for the author, who is notified. Only a hidden review can be
+     restored (`review_not_hidden`, 409); a removed text is gone. Restore is a
+     decision row of its own (`outcome: restore`, `ground: no_violation`), so
+     the audit trail keeps both.
 7. **Statement of reasons (DSA Art. 17).** The decision row
    (`box_review_decisions`) is the statement: the restriction (`hide` =
    visibility restricted, `remove` = removed), the ground and its basis
@@ -79,14 +85,16 @@ restrict (Art. 17), whatever their size.
    the facts in the moderator's words, that it was decided after a report
    (the reporter is never named: Art. 17(3)(b) allows it only where strictly
    necessary), that a person decided with no automated means (Art. 17(3)(c))
-   and the redress available (`ask_palee_again`, `court`: Art. 17(3)(f)). The
+   and the redress available (`contact_palee` with Palee's moderation
+   address in `contact`, and `court`: Art. 17(3)(f)). The
    author's `GET /me/box-reviews` returns it under `mine.moderation`, and a
    locked notification (`box_review_moderated`, category `account`) tells
    them the same day.
 8. **The reporter hears the outcome** (DSA Art. 16(5)) through a locked
    notification (`box_review_report_decided`), whatever it is. The author is
    not notified of a `keep` (nothing changed for them, and telling them would
-   only say that someone, possibly their box, complained; see question 3).
+   only say that someone, possibly their box, complained; decided, question
+   3).
 9. **Audit trail.** Who reported and when (`box_review_reports.reporter_id`,
    `reporter_role`, `inserted_at`), who decided and when
    (`box_review_decisions.decided_by_id`, `decided_at`), and every decision in
@@ -140,25 +148,54 @@ longer exempt), Art. 23 (misuse of notices).
   model; a vendor read policy on tenant tables is narrower and keeps every
   write in the box's session.
 
+## Decisions of 2026-11-03 (v3.2)
+ANR delegated the v3.2 choices; the coordinator decided the mockup's
+questions as follows, and the UI was built with option A of all four parts.
+1. **Who may report:** members and the box only; no public form on the
+   website yet.
+2. **Reasons:** the six above, unchanged.
+3. **No notice to the author on `keep`.**
+4. **Website footer:** a line «Αναφορά περιεχομένου: <address>» with a
+   `mailto:` to Palee's moderation address (`site.report_contact`, from
+   `config :palee, :review_moderation, contact_email`, env
+   `REVIEW_MODERATION_EMAIL`). This is the electronic notice channel for
+   visitors (Art. 16(1)); no form yet.
+5. **Restore:** yes, from «Αποφασισμένες», with a statement; the author is
+   notified (Decision 6).
+6. **No appeal flow in v3.2.** The statement of reasons names the moderation
+   address for redress and the courts. Palee is a micro or small enterprise,
+   so Art. 20 does not apply yet (Art. 19); an internal complaint system is
+   due when it no longer is.
+7. **Retention:** a removed review's text (the report's copy and the
+   reporter's note) is kept 6 months after the decision, then purged
+   (`palee_purge_removed_review_texts(before)`, run daily by
+   `Palee.Workers.ReviewReportsDailyJob` at 07:10). The decision row and its
+   statement stay.
+8. **Daily summary:** the same job emails the Palee team
+   (`review_moderation.team_email`, env `REVIEW_MODERATION_TEAM_EMAIL`, in
+   `team_locale`) when open reports exist: how many reviews, how many
+   reports, the oldest. One email a day at most (idempotency key per day).
+9. **No waiting period** between a report and a decision.
+10. **Rate limit:** 10 reports per person and box per day, as in Decision 4.
+11. **Terms of use:** the content moderation paragraph (DSA Art. 14: the
+    reasons, that the Palee team decides, no automated decisions, the
+    moderation address for redress) **needs the lawyer**, together with the
+    website privacy template. Until it is checked, statements cite «όροι
+    χρήσης Palee» as the basis for the non-illegal grounds.
+
 ## Consequences
-- The UI is not built: the mockup
-  (`v32-mockups/review-report.html`) offers alternatives for the entry
-  point, the report sheet and the moderation queue; ANR picks before build.
-- Palee's terms of use need a content moderation paragraph (DSA Art. 14):
-  the reasons, that the Palee team decides, no automated decisions, how to
-  ask again. A lawyer should check it with the website privacy template
-  (question 15 of the same list).
-- The website shows the 6 latest reviews to the public: DSA Art. 16 expects
-  anyone to be able to notify. Until a public notice form exists, the
-  website's footer needs a contact for notices (question 4).
-- Restoring a hidden review needs a new report today; a "restore" action
-  and the author's appeal (Art. 20) are follow-ups (questions 5 and 6).
-- Removed texts stay as the report's copy until the box's data is purged;
-  a retention rule (for example 6 months after the decision, Art. 20(1))
-  is a follow-up (question 7).
+- The UI (option A in all four parts of `v32-mockups/review-report.html`):
+  «Αναφορά» in the ⋯ of every other review in Box › «Κριτικές», the report
+  sheet (one sheet, reasons as a radio list, note under them), «Το ανέφερες»
+  while open, the statement of reasons under «Η κριτική μου» (editing
+  closed, «Διαγραφή» open), «Αναφορά ως box» in Settings › Reviews, and the
+  console page `/platform/review-reports` (cards per review, «Ανοιχτές» and
+  «Αποφασισμένες» with «Επαναφορά»).
+- Palee's terms of use need the moderation paragraph, checked by a lawyer
+  with the privacy template (decision 11).
 - Migration `20270605000000_box_review_reports.exs`; notification types
   `box_review_moderated`, `box_review_report_decided` (category `account`,
-  locked).
+  locked); email template `review_reports_summary`.
 
 ## Implementation Notes
 - Domain: `Palee.ReviewAsks.Domain.ReviewReportPolicy` (pure); store
@@ -170,3 +207,8 @@ longer exempt), Art. 23 (misuse of notices).
   show «Το ανέφερες») and `mine.moderation`.
 - `list_reviews` and `review_stats` (app, staff and website) leave out
   moderated reviews.
+- Daily job: `Palee.Application.ReviewAsks.ReviewReportsDaily.run/1`
+  (purge, then the summary), cron `10 7 * * *`.
+- Web: `components/reviews/ReviewReportSheet.tsx`, `ModerationNotice` in
+  `ReviewParts.tsx`, `components/platform/PlatformReviewReportsPage.tsx`,
+  `api/platform-review-reports.ts`; e2e `e2e/review-reports.spec.ts`.

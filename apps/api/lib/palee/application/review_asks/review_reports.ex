@@ -147,7 +147,10 @@ defmodule Palee.Application.ReviewAsks.ReviewReports do
     |> Enum.uniq_by(& &1.review_id)
     |> Map.new(fn decision ->
       review =
-        ReviewAsks.get_review_by_id(tenant(platform, decision.organization_id), decision.review_id)
+        ReviewAsks.get_review_by_id(
+          tenant(platform, decision.organization_id),
+          decision.review_id
+        )
 
       {decision.review_id, review_status(review)}
     end)
@@ -215,7 +218,12 @@ defmodule Palee.Application.ReviewAsks.ReviewReports do
          {:ok, _event} <-
            Organizations.record_platform_event(platform, organization_id, %{
              event: "box_review_moderated",
-             metadata: %{review_id: review_id, outcome: "restore", ground: "no_violation", reports: 0}
+             metadata: %{
+               review_id: review_id,
+               outcome: "restore",
+               ground: "no_violation",
+               reports: 0
+             }
            }) do
       notify(organization_id, %{decision: decision, reports: []})
       {:ok, %{review_id: review_id, outcome: "restore", ground: "no_violation", resolved: 0}}

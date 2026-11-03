@@ -710,7 +710,9 @@ A member, or the box, reports a box review to the Palee team; only the Palee tea
 | Keep | Μένει | `outcome: keep` | The review breaks no rule and stays. | |
 | Hide | Απόκρυψη | `outcome: hide`, `box_reviews.moderation: hidden` | Only the author still sees it, with the reasons; out of the average and the website. Reversible. | The box hiding a review (not possible). |
 | Remove | Αφαίρεση | `outcome: remove`, `box_reviews.moderation: removed` | The text and the box's reply are erased; the author sees «Αφαιρέθηκε από την ομάδα Palee» with the reasons. | The author's «Διαγραφή» of their own review. |
-| Statement of reasons | Αιτιολόγηση | `box_review_decisions`, `mine.moderation` | What the author reads when the Palee team hid or removed their review: what changed, why (Palee's terms or the law), that a person decided, how to ask again. | The box's reply («Απάντηση από …»). |
+| Restore | Επαναφορά | `outcome: restore` | The Palee team shows a hidden review again from «Αποφασισμένες», with a statement to the author. Only a hidden review; a removed text is gone. | Undoing the author's own «Διαγραφή» (not possible). |
+| Report contact | Αναφορά περιεχομένου | `site.report_contact`, `review_moderation.contact_email` | Palee's moderation address in the box website's footer and in every statement of reasons. | The box's own contact form. |
+| Statement of reasons | Αιτιολόγηση | `box_review_decisions`, `mine.moderation` | What the author reads when the Palee team hid or removed their review: what changed, why (Palee's terms or the law), that a person decided, where to seek redress (the moderation address, the courts). | The box's reply («Απάντηση από …»). |
 
 ## 5. Name clashes found, and proposals
 
