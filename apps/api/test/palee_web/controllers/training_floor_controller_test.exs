@@ -395,11 +395,12 @@ defmodule PaleeWeb.TrainingFloorControllerTest do
       profile = as.(member) |> get("/api/me/fitness-profile?division=men") |> json_response(200)
 
       assert %{"algorithm" => %{"id" => "fitness-profile", "version" => 2}} = profile
-      assert %{"score" => 63, "domains_scored" => 2} = profile["overall"]
+      # Back squat 140 kg: 64.3 points (between 120 and 155); Fran 6:00: 42.5.
+      assert %{"score" => 54, "domains_scored" => 2} = profile["overall"]
 
       strength = Enum.find(profile["domains"], &(&1["domain"] == "strength"))
 
-      assert %{"score" => 75, "reasons" => [%{"benchmark" => "back_squat", "points" => 75.0}]} =
+      assert %{"score" => 64, "reasons" => [%{"benchmark" => "back_squat", "points" => 64.3}]} =
                strength
 
       assert as.(member) |> get("/api/me/fitness-profile?division=x") |> json_response(422)
@@ -457,7 +458,17 @@ defmodule PaleeWeb.TrainingFloorControllerTest do
         |> get("/api/me/fitness-profile?division=women&period=12w")
         |> json_response(200)
 
-      assert %{"inputs" => %{"body_weight_kg" => 60.0, "age_ready" => false}} = full
+      # Born 1985: the 40–44 band, 8% easier for women (ADR-395 age bands).
+      assert %{
+               "inputs" => %{
+                 "body_weight_kg" => 60.0,
+                 "age_ready" => true,
+                 "age_band" => band,
+                 "age_percent" => percent
+               }
+             } = full
+
+      assert {band, percent} in [{"40_44", 8}, {"35_39", 5}]
       assert is_binary(full["period_from"])
 
       [reason] = Enum.find(full["domains"], &(&1["domain"] == "strength"))["reasons"]

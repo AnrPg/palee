@@ -57,21 +57,21 @@ defmodule Palee.Pantheon.Domain.FitnessProfileTest do
 
     strength = Enum.find(profile.domains, &(&1.domain == "strength"))
     assert %{score: score, confidence: "medium", reasons: reasons} = strength
-    assert score == 58
+    assert score == 48
 
     assert %{benchmark: "deadlift", estimated: true, value: value} =
              Enum.find(reasons, &(&1.benchmark == "deadlift"))
 
     assert value == 116.5
 
-    assert %{score: 50, confidence: "low"} = Enum.find(profile.domains, &(&1.domain == "metcon"))
+    assert %{score: 43, confidence: "low"} = Enum.find(profile.domains, &(&1.domain == "metcon"))
     assert %{score: 20} = Enum.find(profile.domains, &(&1.domain == "gymnastics"))
     assert %{score: nil, reasons: []} = Enum.find(profile.domains, &(&1.domain == "power"))
 
-    # (58 + 50 + 20) / 3
-    assert %{score: 43, domains_scored: 3} = profile.overall
+    # (48 + 42.5 + 20) / 3
+    assert %{score: 37, domains_scored: 3} = profile.overall
 
-    assert [%{domain: "gymnastics", kind: "weakest_domain", gap: 34} | rest] = profile.focus
+    assert [%{domain: "gymnastics", kind: "weakest_domain", gap: 26} | rest] = profile.focus
     assert Enum.any?(rest, &(&1.kind == "untested_domain"))
     assert length(profile.focus) <= 3
   end
@@ -91,8 +91,8 @@ defmodule Palee.Pantheon.Domain.FitnessProfileTest do
       })
 
     strength = Enum.find(profile.domains, &(&1.domain == "strength"))
-    # (95 × 0.5 + 50 × 1) / 1.5
-    assert strength.score == 65
+    # (89.3 × 0.5 + 39.1 × 1) / 1.5
+    assert strength.score == 56
     refute strength.stale
   end
 
@@ -157,8 +157,8 @@ defmodule Palee.Pantheon.Domain.FitnessProfileTest do
                reps: 3,
                ratio: 1.28,
                body_weight_kg: 60.0,
-               points: 63.0,
-               next: %{points: 75, value: 90.0}
+               points: 55.2,
+               next: %{points: 75, value: 96.0}
              } = reason
 
       assert with_weight.inputs.body_weight_kg == 60.0
@@ -168,7 +168,7 @@ defmodule Palee.Pantheon.Domain.FitnessProfileTest do
 
       [absolute] = Enum.find(without.domains, &(&1.domain == "strength")).reasons
 
-      assert %{basis: "absolute", ratio: nil, points: 60.0, next: %{points: 75, value: 95.0}} =
+      assert %{basis: "absolute", ratio: nil, points: 52.0, next: %{points: 75, value: 100.0}} =
                absolute
     end
 
@@ -185,22 +185,42 @@ defmodule Palee.Pantheon.Domain.FitnessProfileTest do
       assert %{basis: "absolute", next: %{points: 75, value: 15}} = pull_ups
 
       [fran] = Enum.find(profile.domains, &(&1.domain == "metcon")).reasons
-      assert %{next: %{points: 75, value: 300}} = fran
+      assert %{next: %{points: 75, value: 255}} = fran
     end
 
-    test "no age band counts before the coach set its percentages" do
-      refute FitnessBenchmarks.age_ready?()
+    test "an age band from 35 eases every target by its percentage" do
+      assert FitnessBenchmarks.age_ready?()
       assert FitnessBenchmarks.age_band(34) == nil
       assert FitnessBenchmarks.age_band(41) == "40_44"
       assert FitnessBenchmarks.age_band(63) == "60_plus"
-      assert FitnessBenchmarks.age_factor("40_44", "women") == nil
+      assert FitnessBenchmarks.age_factor("40_44", "women") == 8
+      assert FitnessBenchmarks.age_factor("40_44", "men") == 10
+      # Without a division, the mean of the two.
+      assert FitnessBenchmarks.age_factor("40_44", nil) == 9.0
 
       profile =
-        FitnessProfile.build(%{prs: [pr("Fran", "mins_secs", 360)], today: @today, age: 41})
+        FitnessProfile.build(%{
+          prs: [pr("Fran", "mins_secs", 360)],
+          today: @today,
+          division: "women",
+          age: 41
+        })
 
+      # Fran's 75 target 4:15 becomes 4:15 × 1.08 ≈ 4:35 for a woman of 41.
       [fran] = Enum.find(profile.domains, &(&1.domain == "metcon")).reasons
-      assert fran.age_percent == nil
-      refute profile.inputs.age_ready
+      assert %{age_band: "40_44", age_percent: 8, points: 56.3, next: %{value: 275}} = fran
+      assert profile.inputs.age_ready
+
+      young =
+        FitnessProfile.build(%{
+          prs: [pr("Fran", "mins_secs", 360)],
+          today: @today,
+          division: "women",
+          age: 30
+        })
+
+      [fran] = Enum.find(young.domains, &(&1.domain == "metcon")).reasons
+      assert %{age_band: nil, age_percent: nil, points: 50.0} = fran
     end
 
     test "the PRs as they stood on a date come from the PR history" do
@@ -255,10 +275,10 @@ defmodule Palee.Pantheon.Domain.FitnessProfileTest do
 
       changed = FitnessProfile.with_change(now, before)
       strength = Enum.find(changed.domains, &(&1.domain == "strength"))
-      assert %{score: 75, previous_score: 63, change: 12} = strength
+      assert %{score: 64, previous_score: 50, change: 14} = strength
       assert %{change: 0} = Enum.find(changed.domains, &(&1.domain == "metcon"))
       assert %{change: nil} = Enum.find(changed.domains, &(&1.domain == "power"))
-      assert changed.overall.change == 6
+      assert changed.overall.change == 7
     end
 
     test "the card shows the strictest of the person's choice and their coaches'" do

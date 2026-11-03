@@ -19,9 +19,14 @@ and sets the age percentages.
   itself: `load`, `reps`, `basis` (`absolute`/`body_weight`), `ratio`, `body_weight_kg`, `age_band`,
   `age_percent` and `next` (points and the value that reaches the next anchor).
 - **Age bands** 35–39 … 60+ ease the target: weights × (1 − p/100), reps likewise, times × (1 + p/100).
-  The percentages come only from the reviewing coach; until they are filled in
-  (`FitnessBenchmarks.age_ready?/0` is false) age changes nothing and the card does not ask for it.
-  No invented defaults.
+  Women / men: 5/5, 8/10, 13/15, 20/20, 26/25, 33/30 %. They come from the CrossFit Open 2023–2024
+  leaderboards (about 5,000 athletes per sex per year, the score at the same peer percentile per band;
+  strength and conditioning declined alike up to 54, so one value per band) and, from 55, the Open's
+  masters loads and published decline data. Research file: `docs/research/fitness-anchors-research-2026-11-03.md`.
+- **Anchors audited (2026-11-03).** 16 of 23 benchmarks and the ratio anchors were recalibrated against
+  Meier et al. 2021, Mangine et al. 2018, Concept2 2025 rankings, Strength Level and CrossFit.com tiers.
+  ANR: in use now; the reviewing coach (xristoforos_rigas) confirms, and any objection becomes a new
+  algorithm version.
 - **Change over a period.** `GET /api/me/fitness-profile?period=4w|12w|6m|1y|all` rebuilds the
   profile as it stood at the period start from the PR history (`as_of/3`) and adds
   `previous_score` / `change` per domain and overall. `all` or none: no change.
