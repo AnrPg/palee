@@ -163,7 +163,10 @@ export function DashboardCard({
       className={`flex min-w-0 flex-col rounded-[2.2rem] p-6 ${className}`}
       style={{ background: "var(--panel)", border: "1px solid var(--border)" }}
     >
-      <div className="flex items-start justify-between gap-4">
+      {/* One header shape for every card: eyebrow + count left, one action
+          right, the same height whether or not there is an action, so the
+          bodies of cards in one row start on the same line. */}
+      <div className={`flex min-h-10 justify-between gap-4 ${title ? "items-start" : "items-center"}`}>
         <div className="min-w-0">
           <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.24em]" style={{ color: "var(--dim)" }}>
             <span className="truncate">{eyebrow}</span>
@@ -201,11 +204,34 @@ export function CardLink({ href, children }: { href: string; children: ReactNode
   return (
     <Link
       href={href}
-      className="rounded-full px-4 py-2 text-sm font-semibold transition-opacity hover:opacity-80"
+      className="whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition-opacity hover:opacity-80"
       style={{ background: "var(--border)", border: "1px solid var(--border-strong)", color: "var(--text-soft)" }}
     >
       {children}
     </Link>
+  );
+}
+
+/** The card's one action as a button, styled exactly like `CardLink`. */
+export function CardAction({
+  onClick,
+  children,
+  expanded,
+}: {
+  onClick: () => void;
+  children: ReactNode;
+  expanded?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      aria-expanded={expanded}
+      onClick={onClick}
+      className="whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition-opacity hover:opacity-80"
+      style={{ background: "var(--border)", border: "1px solid var(--border-strong)", color: "var(--text-soft)" }}
+    >
+      {children}
+    </button>
   );
 }
 
@@ -232,6 +258,8 @@ export type TimelineEntry = {
   filled: number;
   capacity: number;
   past?: boolean;
+  /** What the row is when a list mixes kinds («Τμήμα», «Ραντεβού»). */
+  kind?: { label: string; tone: "class" | "appointment" };
 };
 
 /** Today's classes as a vertical timeline with a capacity bar per class. */
@@ -256,8 +284,23 @@ export function ClassTimeline({ entries }: { entries: TimelineEntry[] }) {
               className="mb-1 min-w-0 flex-1 rounded-[1.3rem] px-4 py-3 transition-transform hover:-translate-y-0.5"
               style={{ background: "var(--panel-muted)", border: "1px solid var(--border)" }}
             >
-              <span className="block truncate text-sm font-semibold" style={{ color: "var(--text)" }}>
-                {entry.title}
+              <span className="flex min-w-0 items-center gap-2">
+                {entry.kind ? (
+                  <span
+                    data-testid="timeline-kind"
+                    className="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.06em]"
+                    style={
+                      entry.kind.tone === "class"
+                        ? { background: "color-mix(in srgb, var(--primary) 12%, transparent)", color: "var(--primary-strong)" }
+                        : { background: "var(--panel)", border: "1px solid var(--border)", color: "var(--warning)" }
+                    }
+                  >
+                    {entry.kind.label}
+                  </span>
+                ) : null}
+                <span className="min-w-0 truncate text-sm font-semibold" style={{ color: "var(--text)" }}>
+                  {entry.title}
+                </span>
               </span>
               <span className="mt-2 flex items-center gap-3">
                 <span className="h-1.5 flex-1 overflow-hidden rounded-full" style={{ background: "var(--border)" }}>

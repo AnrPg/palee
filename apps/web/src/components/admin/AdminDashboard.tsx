@@ -18,6 +18,16 @@ import { fetchAdminAnalyticsSummary } from "@/api/analytics";
 import { fetchFinanceQueues, fetchFinanceSummary, type FinanceRecord } from "@/api/finance";
 import { fetchLandingPayload, type AdminMetrics } from "@/api/landing";
 import { fetchSchedule } from "@/api/schedule";
+import { fetchScalingQueue, SCALING_QUEUE_KEY } from "@/api/scaling";
+import { fetchAppointmentSlots, fetchFormReviewQueue, fetchReplyQueue, type AppointmentSlot } from "@/api/staff";
+import { FORM_REVIEWS_KEY } from "@/components/staff/FormReviewQueue";
+import {
+  COACH_QUEUE_HREFS,
+  coachQueueCounts,
+  mergeAgenda,
+  openAppointmentSlots,
+  slotsOnDay,
+} from "@/components/admin/staff-home-agenda";
 import { useSession } from "@/components/session-provider";
 import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
 import { PageHeader, pageHeaderActionClass } from "@/components/PageHeader";
@@ -47,7 +57,10 @@ type AlertMessageKey =
   | "adminAlertPendingReferralRewards"
   | "adminAlertInjuryFlags"
   | "adminAlertUnreadWorkoutReviews"
-  | "adminAlertPendingBookingApprovals";
+  | "adminAlertPendingBookingApprovals"
+  | "shAlertRepliesWaiting"
+  | "shAlertFormReviews"
+  | "shAlertScaling";
 
 const DEFAULT_CATEGORIES: AlertCategory[] = ["finance", "coaching", "training"];
 const STORAGE_KEY = "palee-admin-alert-categories";
@@ -160,15 +173,33 @@ type DashboardLink = { label: string; href: string; icon: IconName; show?: boole
 
 /**
  * The staff dashboard. Every staff role gets this page (ADR-103 keeps the
- * existing UI): tiles, alerts and links a membership cannot open are hidden,
- * and role sections (`children`) sit under the metrics. Without a membership
- * everything shows.
+ * existing UI): tiles, alerts and links a membership cannot open are hidden.
+ * Without a membership everything shows.
+ *
+ * Layout B (ANR, 2026-11-03): the order answers "what do I set up, what do I
+ * have today, what waits for me, who are my people", then every tool.
+ * - `setup`: the box set-up card, first, while it is still to do.
+ * - «Σήμερα»: today's classes, plus the coach's own appointments when
+ *   `appointments` is on, in one list by time.
+ * - «Θέλει προσοχή»: one list; with `coachQueues` it also counts the coach's
+ *   unanswered messages, technique videos and scaling suggestions, each a row
+ *   that opens its tab in the coaching workspace (no separate cards).
+ * - `children`: role cards (front desk, accounts, cleaning…).
+ * - `people`: «Οι άνθρωποί σου» (member search, clients, coach groups).
  */
 export function AdminDashboard({
   membership,
+  setup,
+  people,
+  coachQueues = false,
+  appointments = false,
   children,
 }: {
   membership?: MembershipLike | null;
+  setup?: ReactNode;
+  people?: ReactNode;
+  coachQueues?: boolean;
+  appointments?: boolean;
   children?: ReactNode;
 } = {}) {
   const uiLocale = useUiLocale();
@@ -289,6 +320,38 @@ export function AdminDashboard({
     staleTime: 5 * 60 * 1000,
   });
 
+  const replyQueueQuery = useQuery({
+    queryKey: ["staff", "reply-queue"],
+    enabled: enabled && coachQueues,
+    queryFn: () => fetchReplyQueue(token!),
+    refetchInterval: 60_000,
+  });
+
+  const formReviewsQuery = useQuery({
+    queryKey: [...FORM_REVIEWS_KEY, "submitted"],
+    enabled: enabled && coachQueues,
+    queryFn: () => fetchFormReviewQueue(token!, "submitted"),
+  });
+
+  const scalingQuery = useQuery({
+    queryKey: SCALING_QUEUE_KEY,
+    enabled: enabled && coachQueues,
+    queryFn: () => fetchScalingQueue(token!),
+    staleTime: 60_000,
+  });
+
+  const appointmentsQuery = useQuery({
+    queryKey: ["staff", "home", "appointments", currentUser?.id],
+    enabled: enabled && appointments && Boolean(currentUser?.id),
+    queryFn: () => {
+      const from = new Date();
+      from.setHours(0, 0, 0, 0);
+      const to = new Date(from);
+      to.setDate(from.getDate() + 7);
+      return fetchAppointmentSlots(token!, { from: from.toISOString(), to: to.toISOString(), coach_id: currentUser!.id });
+    },
+  });
+
   const totals = (financeQuery.data?.totals ?? {}) as FinanceRecord;
   const queues = (queuesQuery.data?.queues ?? {}) as Record<string, FinanceRecord[]>;
   const coaching = ((analyticsQuery.data as FinanceRecord)?.coaching ?? {}) as FinanceRecord;
@@ -325,7 +388,7 @@ export function AdminDashboard({
   // locale controls spacing, word order and plural forms (never `count + text`).
   // Every alert links to the list that holds the rows it counts, already
   // picked, and a money alert names its nearest date («λήξη 28 Οκτ 2026»).
-  type DashboardAlert = { text: string; href: string; detail?: string | null };
+  type DashboardAlert = { text: string; href: string; detail?: string | null; urgent?: boolean };
   const alertsFor = (
     rows: Array<[count: number, key: AlertMessageKey, href: string, detail?: string | null]>,
   ): DashboardAlert[] =>
@@ -351,20 +414,44 @@ export function AdminDashboard({
     [Number(coaching.review_count ?? 0), "adminAlertUnreadWorkoutReviews", "/admin/reviews"],
   ]);
 
+  const queueCounts = coachQueueCounts({
+    replies: replyQueueQuery.data,
+    formReviews: formReviewsQuery.data,
+    scaling: scalingQuery.data,
+  });
+  const coachQueueAlerts: DashboardAlert[] = coachQueues
+    ? alertsFor([
+        [
+          queueCounts.replies,
+          "shAlertRepliesWaiting",
+          COACH_QUEUE_HREFS.replies,
+          queueCounts.overdueReplies > 0 ? i18n("shAlertRepliesOverdue", { count: queueCounts.overdueReplies }) : null,
+        ],
+        [queueCounts.formReviews, "shAlertFormReviews", COACH_QUEUE_HREFS.formReviews],
+        [queueCounts.scaling, "shAlertScaling", COACH_QUEUE_HREFS.scaling],
+      ]).map((alert, index) => ({ ...alert, urgent: index === 0 && queueCounts.overdueReplies > 0 }))
+    : [];
+
   const trainingAlerts = alertsFor([
     [pendingBookingsCount, "adminAlertPendingBookingApprovals", "/admin/class-schedule"],
   ]);
 
   const allAlerts: Record<AlertCategory, { label: string; items: DashboardAlert[] }> = {
     finance: { label: i18n("finance1b48d3f"), items: canFinanceReports ? financeAlerts : [] },
-    coaching: { label: i18n("coachingfd8b79f"), items: canBusinessAnalytics ? coachingAlerts : [] },
+    coaching: { label: i18n("coachingfd8b79f"), items: [...coachQueueAlerts, ...(canBusinessAnalytics ? coachingAlerts : [])] },
     training: { label: i18n("trainingb6fe7f5"), items: has("run_classes") ? trainingAlerts : [] },
   };
 
   const hasAnyAlert = activeCategories.some((cat) => allAlerts[cat].items.length > 0);
   const hasAnyAvailableAlert = Object.values(allAlerts).some((group) => group.items.length > 0);
   const alertsLoading =
-    financeQuery.isLoading || queuesQuery.isLoading || analyticsQuery.isLoading || scheduleQuery.isLoading;
+    financeQuery.isLoading ||
+    queuesQuery.isLoading ||
+    analyticsQuery.isLoading ||
+    scheduleQuery.isLoading ||
+    replyQueueQuery.isLoading ||
+    formReviewsQuery.isLoading ||
+    scalingQuery.isLoading;
 
   // ── Today ───────────────────────────────────────────────────────────────────
   const roles = membershipRoles(membership);
@@ -376,16 +463,54 @@ export function AdminDashboard({
     : slots.filter((slot) => new Date(slot.scheduled_at).toDateString() === now.toDateString())
   ).sort((a, b) => a.scheduled_at.localeCompare(b.scheduled_at));
   const timeFormat = clockFormat(uiLocale, { timeStyle: "short" });
-  const timeline: TimelineEntry[] = todaySlots.map((slot) => ({
-    id: slot.id,
-    time: timeFormat.format(new Date(slot.scheduled_at)),
-    title: slot.name,
-    href: adminHref(`/admin/class-schedule?open_slot=${slot.id}`, organizationSlug),
-    caption: i18n("rhBookedCount", { count: slot.approved_booking_count ?? 0, capacity: slot.capacity ?? 0 }),
-    filled: slot.approved_booking_count ?? 0,
-    capacity: slot.capacity ?? 0,
-    past: new Date(slot.scheduled_at).getTime() + 60 * 60 * 1000 < now.getTime(),
+  const classEntries = todaySlots.map((slot) => ({
+    startsAt: slot.scheduled_at,
+    entry: {
+      id: slot.id,
+      time: timeFormat.format(new Date(slot.scheduled_at)),
+      title: slot.name,
+      href: adminHref(`/admin/class-schedule?open_slot=${slot.id}`, organizationSlug),
+      caption: i18n("rhBookedCount", { count: slot.approved_booking_count ?? 0, capacity: slot.capacity ?? 0 }),
+      filled: slot.approved_booking_count ?? 0,
+      capacity: slot.capacity ?? 0,
+      past: new Date(slot.scheduled_at).getTime() + 60 * 60 * 1000 < now.getTime(),
+    } as TimelineEntry,
   }));
+  // The coach's own appointments for the coming week; today's join the agenda.
+  const weekAppointments = appointments ? openAppointmentSlots<AppointmentSlot>(appointmentsQuery.data) : [];
+  const appointmentsHref = adminHref("/admin/appointments", organizationSlug);
+  const appointmentEntries = slotsOnDay(weekAppointments, now).map((slot) => {
+    const booked = (slot.bookings ?? []).filter((booking) => booking.status === "booked");
+    const names = booked.map((booking) => booking.nickname).filter(Boolean).join(", ");
+    const kindLabel = slot.kind === "pt_session" ? i18n("stfKindPtSession") : i18n("stfKindAssessment");
+    return {
+      startsAt: slot.starts_at,
+      entry: {
+        id: `appointment-${slot.id}`,
+        time: timeFormat.format(new Date(slot.starts_at)),
+        title: names ? `${kindLabel} · ${names}` : kindLabel,
+        href: appointmentsHref,
+        caption: i18n("rhBookedCount", { count: booked.length, capacity: slot.capacity }),
+        filled: booked.length,
+        capacity: slot.capacity,
+        past: new Date(slot.starts_at).getTime() + 60 * 60 * 1000 < now.getTime(),
+      } as TimelineEntry,
+    };
+  });
+  const showKinds = appointments && classEntries.length > 0 && appointmentEntries.length > 0;
+  const timeline: TimelineEntry[] = mergeAgenda(classEntries, appointmentEntries).map((item) =>
+    showKinds
+      ? {
+          ...item.entry,
+          kind:
+            item.kind === "class"
+              ? { label: i18n("shAgendaClass"), tone: "class" as const }
+              : { label: i18n("shAgendaAppointment"), tone: "appointment" as const },
+        }
+      : item.entry,
+  );
+  const showToday = canClasses || appointments;
+  const todayLoading = (canClasses && scheduleQuery.isLoading) || (appointments && appointmentsQuery.isLoading);
   const showAttention = alertsLoading || hasAnyAvailableAlert;
 
   function toggleCategory(cat: AlertCategory) {
@@ -421,7 +546,7 @@ export function AdminDashboard({
                 className="group flex items-center overflow-hidden rounded-full px-3 py-2 text-sm font-semibold"
                 style={{ background: "var(--panel)", border: "1px solid var(--border)", color: "var(--text-soft)" }}
               >
-                <span aria-hidden="true">⚙</span>
+                <span aria-hidden="true" className="text-xl leading-5">⚙</span>
                 <span className="max-w-0 overflow-hidden whitespace-nowrap opacity-0 transition-all duration-200 group-hover:ms-2 group-hover:max-w-40 group-hover:opacity-100 group-focus-visible:ms-2 group-focus-visible:max-w-40 group-focus-visible:opacity-100">
                   {i18n("appConfigurationse0effaa")}
                 </span>
@@ -448,6 +573,9 @@ export function AdminDashboard({
           />
         </div>
 
+        {/* Box set-up comes first while it is still to do */}
+        {setup}
+
         {/* Headline KPIs: four at most */}
         {canFinanceReports ? (
           <section className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
@@ -467,31 +595,50 @@ export function AdminDashboard({
         ) : null}
 
         {/* Today and what needs attention */}
-        {canClasses || showAttention ? (
-          <div className={`grid gap-6 ${canClasses && showAttention ? "lg:grid-cols-5" : ""}`}>
-            {canClasses ? (
+        {showToday || showAttention ? (
+          <div className={`grid gap-6 ${showToday && showAttention ? "lg:grid-cols-5" : ""}`}>
+            {showToday ? (
               <DashboardCard
-                eyebrow={mineOnly ? i18n("rhMyClassesToday") : i18n("classesTodayd01b776")}
-                badge={scheduleQuery.data ? <CountBadge value={timeline.length} tone={timeline.length ? "primary" : "neutral"} /> : null}
-                action={<CardLink href={adminHref("/admin/class-schedule", organizationSlug)}>{i18n("managebfa0df1")}</CardLink>}
+                id="home-today"
+                eyebrow={appointments ? i18n("today24345a1") : mineOnly ? i18n("rhMyClassesToday") : i18n("classesTodayd01b776")}
+                badge={!todayLoading ? <CountBadge value={timeline.length} tone={timeline.length ? "primary" : "neutral"} /> : null}
+                action={
+                  canClasses ? (
+                    <CardLink href={adminHref("/admin/class-schedule", organizationSlug)}>{i18n("managebfa0df1")}</CardLink>
+                  ) : (
+                    <CardLink href={appointmentsHref}>{i18n("open6f4789b")}</CardLink>
+                  )
+                }
                 className={showAttention ? "lg:col-span-3" : ""}
               >
-                {scheduleQuery.isLoading ? (
+                {todayLoading ? (
                   <div className="space-y-3">
                     {[1, 2].map((n) => (
                       <div key={n} className="h-16 animate-pulse rounded-[1.3rem]" style={{ background: "var(--border)" }} />
                     ))}
                   </div>
                 ) : timeline.length === 0 ? (
-                  <EmptyNote>{mineOnly ? i18n("rhClassesTodayCount", { count: 0 }) : i18n("dashNoClassesToday")}</EmptyNote>
+                  <EmptyNote>
+                    {appointments ? i18n("shNothingToday") : mineOnly ? i18n("rhClassesTodayCount", { count: 0 }) : i18n("dashNoClassesToday")}
+                  </EmptyNote>
                 ) : (
                   <ClassTimeline entries={timeline} />
                 )}
+                {appointments && canClasses && !todayLoading ? (
+                  <Link
+                    href={appointmentsHref}
+                    data-testid="home-week-appointments"
+                    className="mt-3 inline-block text-xs font-semibold hover:underline"
+                    style={{ color: "var(--muted)" }}
+                  >
+                    {i18n("rhAppointmentsThisWeek", { count: weekAppointments.length })} →
+                  </Link>
+                ) : null}
               </DashboardCard>
             ) : null}
 
             {showAttention ? (
-              <section className={`rounded-[2.2rem] p-6 ${canClasses ? "lg:col-span-2" : ""}`} style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
+              <section id="home-attention" className={`rounded-[2.2rem] p-6 ${showToday ? "lg:col-span-2" : ""}`} style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.24em]" style={{ color: "var(--dim)" }}>{i18n("needsAttentiona126722")}</p>
@@ -547,7 +694,7 @@ export function AdminDashboard({
                                 className="flex items-center gap-3 rounded-[1rem] px-4 py-3 text-sm transition-opacity hover:opacity-80"
                                 style={{ background: "color-mix(in srgb, var(--primary) 7%, transparent)", border: "1px solid color-mix(in srgb, var(--primary) 15%, transparent)" }}
                               >
-                                <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full" style={{ background: "var(--primary)" }} />
+                                <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full" style={{ background: alert.urgent ? "var(--danger)" : "var(--primary)" }} />
                                 <span className="min-w-0 flex-1" style={{ color: "var(--text)" }}>
                                   {alert.text}
                                   {alert.detail ? (
@@ -568,35 +715,24 @@ export function AdminDashboard({
           </div>
         ) : null}
 
-        {/* Role sections */}
-        {children ? <div className="grid gap-6 md:grid-cols-2">{children}</div> : null}
+        {/* Role sections (front desk, accounts, cleaning…) */}
+        {children ? <div className="grid items-stretch gap-6 md:grid-cols-2 md:[&>*:only-child]:col-span-2">{children}</div> : null}
 
-        {/* Seasonal Challenges */}
-        {canChallenges && (has("manage_settings") || activeChallenges.length > 0) ? (
+        {/* «Οι άνθρωποί σου» */}
+        {people}
+
+        {/* Seasonal challenges, only while one runs; «Challenges» stays a tool below */}
+        {canChallenges && activeChallenges.length > 0 ? (
           <DashboardCard
             eyebrow={i18n("seasonalChallengesfd69ec6")}
-            title={
-              activeChallenges.length === 0 && !challengesQuery.isLoading
-                ? i18n("noActiveChallenges1856c6d")
-                : i18n("activeChallengeCount", { count: activeChallenges.length })
-            }
+            title={i18n("activeChallengeCount", { count: activeChallenges.length })}
             action={<CardLink href={adminHref("/admin/challenges", organizationSlug)}>{i18n("managebfa0df1")}</CardLink>}
           >
-            {challengesQuery.isLoading ? (
-              <div className="space-y-3">
-                {[1, 2].map((n) => (
-                  <div key={n} className="h-24 animate-pulse rounded-[1.6rem]" style={{ background: "var(--border)" }} />
-                ))}
-              </div>
-            ) : activeChallenges.length === 0 ? (
-              <EmptyNote>{i18n("noActiveSeasonalChallengesCreateOneToStarte83a1e1")}</EmptyNote>
-            ) : (
-              <div className="grid gap-3 sm:grid-cols-2">
-                {activeChallenges.map((c) => (
-                  <AdminChallengeCard key={c.id} challenge={c} />
-                ))}
-              </div>
-            )}
+            <div className="grid gap-3 sm:grid-cols-2">
+              {activeChallenges.map((c) => (
+                <AdminChallengeCard key={c.id} challenge={c} />
+              ))}
+            </div>
           </DashboardCard>
         ) : null}
 

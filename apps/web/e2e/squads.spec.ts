@@ -250,7 +250,7 @@ test.describe("PT squads", () => {
 
     await page.goto("/box");
     await expect(page.getByRole("link", { name: /Morning PT/ })).toContainText("3 members");
-    await page.getByRole("button", { name: "+ New PT squad" }).click();
+    await page.getByRole("button", { name: "+ New squad" }).click();
     const sheet = page.getByRole("dialog", { name: "New PT squad" });
     await sheet.getByLabel("Name").fill("Hyrox crew");
     await sheet.getByRole("checkbox", { name: "Anna" }).check();

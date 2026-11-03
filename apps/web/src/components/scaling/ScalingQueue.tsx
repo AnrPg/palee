@@ -166,13 +166,14 @@ function SuggestionCard({ suggestion }: { suggestion: ScalingSuggestion }) {
 }
 
 /**
- * «Προτάσεις κλιμάκωσης» (ADR-174) in the coach's home, under «Πελάτες μου».
- * Shown only while something waits: the feature is off by default, so an
- * empty card for every coach would be clutter. Nothing here reaches an
- * athlete until the coach approves it.
+ * «Προτάσεις κλιμάκωσης» (ADR-174), the «Κλιμάκωση» tab of the coaching
+ * workspace; the staff home counts them in «Θέλει προσοχή» and links here.
+ * Without `showEmpty` it renders nothing while nothing waits. Nothing here
+ * reaches an athlete until the coach approves it.
  */
-export function ScalingQueue() {
+export function ScalingQueue({ showEmpty = false }: { showEmpty?: boolean } = {}) {
   const t = useTranslations("Scaling");
+  const i18n = useUiTranslations();
   const { tokens } = useSession();
   const query = useQuery({
     queryKey: SCALING_QUEUE_KEY,
@@ -180,8 +181,21 @@ export function ScalingQueue() {
     queryFn: () => fetchScalingQueue(tokens!.access_token),
     staleTime: 60_000,
   });
-  const suggestions = query.data ?? [];
-  if (suggestions.length === 0) return null;
+  const suggestions = Array.isArray(query.data) ? query.data : [];
+  if (suggestions.length === 0) {
+    if (!showEmpty) return null;
+    return (
+      <StaffPanel eyebrow={t("queue.eyebrow")} labelledBy="staff-scaling-queue" title={i18n("stfTabScaling")}>
+        {query.isPending ? (
+          <StatusText tone="muted">{i18n("loading33ce417")}</StatusText>
+        ) : query.isError ? (
+          <StatusText tone="error">{localizeError(query.error, i18n)}</StatusText>
+        ) : (
+          <StatusText tone="muted">{i18n("stfScalingEmpty")}</StatusText>
+        )}
+      </StaffPanel>
+    );
+  }
 
   return (
     <StaffPanel eyebrow={t("queue.eyebrow")} labelledBy="staff-scaling-queue" title={t("queue.title", { count: suggestions.length })}>

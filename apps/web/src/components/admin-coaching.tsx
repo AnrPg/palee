@@ -20,6 +20,7 @@ import { useSession } from "@/components/session-provider";
 import { FormReviewQueue } from "@/components/staff/FormReviewQueue";
 import { NutritionPlanEditor } from "@/components/staff/NutritionPlanEditor";
 import { ReplyQueue } from "@/components/staff/ReplyQueue";
+import { ScalingQueue } from "@/components/scaling/ScalingQueue";
 import { SemanticLabel } from "@/components/semantic-label";
 import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
 import { PageHeader, pageHeaderActionClass } from "@/components/PageHeader";
@@ -122,7 +123,8 @@ function DrillDownPanel({ drillDown }: { drillDown: AthleteDrillDown }) {
 }
 
 // ADR-098: staff coaching work lives in tabs next to the athlete workspace.
-const COACHING_TABS = ["athletes", "form-reviews", "replies", "nutrition"] as const;
+// «Κλιμάκωση» holds the scaling suggestions the staff home counts (layout B).
+const COACHING_TABS = ["athletes", "form-reviews", "replies", "scaling", "nutrition"] as const;
 type CoachingTab = (typeof COACHING_TABS)[number];
 
 export function AdminCoaching() {
@@ -139,6 +141,7 @@ export function AdminCoaching() {
     athletes: i18n("stfTabAthletes"),
     "form-reviews": i18n("stfTabFormReviews"),
     replies: i18n("stfTabReplies"),
+    scaling: i18n("stfTabScaling"),
     nutrition: i18n("stfTabNutrition"),
   };
   const setTab = useCallback(
@@ -200,6 +203,7 @@ export function AdminCoaching() {
 
         {activeTab === "form-reviews" ? <FormReviewQueue /> : null}
         {activeTab === "replies" ? <ReplyQueue /> : null}
+        {activeTab === "scaling" ? <ScalingQueue showEmpty /> : null}
         {activeTab === "nutrition" ? <NutritionPlanEditor /> : null}
 
         {activeTab === "athletes" ? (
