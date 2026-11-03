@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 import type { components, operations } from "@/api/generated/schema";
 
 // ADR-174: AI scaling suggestions. Coaches review them under /staff; the
@@ -54,7 +54,7 @@ export async function fetchMyWorkoutScaling(token: string, workoutId: string) {
 
 export async function fetchAiSettings(token: string) {
   const response = await apiRequest<SettingsResponse>("/admin/ai-settings", { token });
-  return response.ai_settings;
+  return requiredField(response.ai_settings, "ai_settings");
 }
 
 export async function updateAiSettings(token: string, body: GymAiSettingsUpdate) {

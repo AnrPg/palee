@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 import type { components } from "@/api/generated/schema";
 
 /**
@@ -66,7 +66,7 @@ export async function fetchBoxEvents(token: string, slug: string) {
 export async function fetchEvent(token: string, eventId: string, invite: string | null = null) {
   const query = invite ? `?${new URLSearchParams({ invite }).toString()}` : "";
   const data = await apiRequest<{ event: CommunityEvent }>(`/me/events/${id(eventId)}${query}`, { token });
-  return data.event;
+  return requiredField(data.event, "event");
 }
 
 /** ADR-385: «Στείλτε μου SMS για υπενθύμιση και αλλαγές» ticked on the «Θα έρθω» sheet. */

@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 import type { components } from "@/api/generated/schema";
 import type { CommunityPost } from "@/api/community";
 import type { MediaUpload } from "@/api/media";
@@ -59,7 +59,7 @@ export function fetchBodySnapshots(token: string, params: { cursor?: string | nu
 }
 
 export async function fetchBodySnapshot(token: string, snapshotId: string) {
-  return (await apiRequest<{ snapshot: BodySnapshot }>(`/me/body/snapshots/${id(snapshotId)}`, { token })).snapshot;
+  return requiredField((await apiRequest<{ snapshot: BodySnapshot }>(`/me/body/snapshots/${id(snapshotId)}`, { token })).snapshot, "snapshot");
 }
 
 export async function createBodySnapshot(token: string, body: BodySnapshotCreate) {
@@ -101,7 +101,7 @@ export function removeBodyPhoto(token: string, snapshotId: string, photoId: stri
 }
 
 export async function fetchLatestBodyPhotos(token: string) {
-  return (await apiRequest<{ photos: BodyPhoto[] }>("/me/body/photos/latest", { token })).photos;
+  return (await apiRequest<{ photos: BodyPhoto[] }>("/me/body/photos/latest", { token })).photos ?? [];
 }
 
 export function deleteAllBodyPhotos(token: string) {
@@ -117,19 +117,19 @@ export function updateBodySettings(token: string, body: BodySettingsUpdate) {
 }
 
 export async function fetchHealthConsents(token: string) {
-  return (await apiRequest<HealthConsents>("/me/body/consents", { token })).consents;
+  return (await apiRequest<HealthConsents>("/me/body/consents", { token })).consents ?? [];
 }
 
 export async function grantHealthConsent(token: string, scope: HealthConsent["scope"]) {
-  return (await apiRequest<HealthConsents>(`/me/body/consents/${scope}`, { method: "PUT", token })).consents;
+  return (await apiRequest<HealthConsents>(`/me/body/consents/${scope}`, { method: "PUT", token })).consents ?? [];
 }
 
 export async function withdrawHealthConsent(token: string, scope: HealthConsent["scope"]) {
-  return (await apiRequest<HealthConsents>(`/me/body/consents/${scope}`, { method: "DELETE", token })).consents;
+  return (await apiRequest<HealthConsents>(`/me/body/consents/${scope}`, { method: "DELETE", token })).consents ?? [];
 }
 
 export async function fetchBodyAccessLog(token: string) {
-  return (await apiRequest<{ entries: BodyAccessLogEntry[] }>("/me/body/access-log", { token })).entries;
+  return (await apiRequest<{ entries: BodyAccessLogEntry[] }>("/me/body/access-log", { token })).entries ?? [];
 }
 
 export async function shareBodyBeforeAfter(token: string, body: BodyShareRequest) {
@@ -147,7 +147,7 @@ export function fetchClientBodySeries(token: string, clientUserId: string, metri
 }
 
 export async function fetchClientBodySnapshot(token: string, clientUserId: string, snapshotId: string) {
-  return (
+  return requiredField((
     await apiRequest<{ snapshot: BodySnapshot }>(`/staff/clients/${id(clientUserId)}/body/snapshots/${id(snapshotId)}`, { token })
-  ).snapshot;
+  ).snapshot, "snapshot");
 }

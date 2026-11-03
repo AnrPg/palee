@@ -9,7 +9,7 @@ export type BookablePlace = PlacesResponse["places"][number];
 export async function fetchBookablePlaces(token: string, near?: { latitude: number; longitude: number } | null) {
   const search = near ? `?lat=${near.latitude}&lng=${near.longitude}` : "";
   const response = await apiRequest<PlacesResponse>(`/me/places${search}`, { token });
-  return response.places;
+  return response.places ?? [];
 }
 
 /** Sets (or, with null, clears) the user's home location in the current gym. */

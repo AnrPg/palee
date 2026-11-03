@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 import type { components } from "@/api/generated/schema";
 
 /**
@@ -58,7 +58,7 @@ export function updateCommunitySettings(token: string, change: CommunitySettings
 
 export async function fetchReports(token: string) {
   const data = await apiRequest<{ reports: ReportRow[] }>(`${BASE}/reports`, { token });
-  return data.reports;
+  return data.reports ?? [];
 }
 
 export function actOnReport(token: string, row: Pick<ReportRow, "target_type" | "target_id">, action: ReportAction) {
@@ -71,12 +71,12 @@ export function actOnReport(token: string, row: Pick<ReportRow, "target_type" | 
 
 export async function fetchStaffClubs(token: string) {
   const data = await apiRequest<{ clubs: StaffOpenClub[] }>(`${BASE}/clubs`, { token });
-  return data.clubs;
+  return data.clubs ?? [];
 }
 
 export async function fetchStaffClub(token: string, clubId: string) {
   const data = await apiRequest<{ club: StaffOpenClub }>(`${BASE}/clubs/${id(clubId)}`, { token });
-  return data.club;
+  return requiredField(data.club, "club");
 }
 
 export async function createOpenClub(token: string, draft: OpenClubDraft) {

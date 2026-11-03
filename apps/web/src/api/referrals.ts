@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 import type { components } from "@/api/generated/schema";
 
 /**
@@ -50,7 +50,7 @@ export function rotateReferralCode(token: string, slug: string) {
 
 export async function fetchReferralInvite(code: string) {
   const data = await apiRequest<{ invite: ReferralInvitePage }>(`/public/referrals/${enc(code)}`);
-  return data.invite;
+  return requiredField(data.invite, "invite");
 }
 
 export function claimReferral(token: string, claim: ReferralClaim) {

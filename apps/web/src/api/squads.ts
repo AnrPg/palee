@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 import type { components } from "@/api/generated/schema";
 
 /**
@@ -35,7 +35,7 @@ export async function fetchSquads(token: string, slug: string): Promise<PtSquads
 
 export async function fetchSquad(token: string, slug: string, squadId: string) {
   const data = await apiRequest<{ squad: PtSquad }>(`${base(slug)}/${id(squadId)}`, { token });
-  return data.squad;
+  return requiredField(data.squad, "squad");
 }
 
 export async function createSquad(token: string, slug: string, draft: PtSquadDraft) {

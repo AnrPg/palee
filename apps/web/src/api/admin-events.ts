@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 import type { components } from "@/api/generated/schema";
 
 import type { EventListScope, EventScope } from "./events";
@@ -46,7 +46,7 @@ export async function fetchStaffEvents(token: string, scope: EventListScope, slu
 
 export async function fetchStaffEvent(token: string, eventId: string, slug: Slug = null) {
   const data = await apiRequest<{ event: StaffEvent }>(`${events(slug)}/${id(eventId)}`, { token });
-  return data.event;
+  return requiredField(data.event, "event");
 }
 
 export function createStaffEvent(token: string, draft: StaffEventDraft) {

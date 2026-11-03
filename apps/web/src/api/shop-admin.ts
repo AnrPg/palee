@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 
 /*
  * The shop for staff («Κατάστημα»): catalog, variants, the stock ledger,
@@ -579,7 +579,7 @@ export async function fetchShopOrders(token: string, params: { status?: ShopOrde
 
 export async function fetchShopOrder(token: string, orderId: string) {
   const data = await apiRequest<{ order: ShopOrder }>(`${BASE}/orders/${id(orderId)}`, { token });
-  return data.order;
+  return requiredField(data.order, "order");
 }
 
 export type OrderAction =

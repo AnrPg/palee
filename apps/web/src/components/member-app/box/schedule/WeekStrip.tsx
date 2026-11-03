@@ -58,7 +58,6 @@ export function WeekStrip({
                 type="button"
                 onClick={() => onSelect(day)}
                 aria-pressed={selected}
-                aria-label={full.format(date)}
                 aria-current={day === today ? "date" : undefined}
                 className="flex min-h-12 w-full flex-col items-center justify-center rounded-xl text-[11px] font-semibold"
                 style={{
@@ -67,10 +66,13 @@ export function WeekStrip({
                   color: selected ? "var(--primary-contrast)" : day === today ? "var(--spark-contrast)" : "var(--dim)",
                 }}
               >
-                {weekday.format(date)}
-                <span className="text-base font-bold" style={{ color: selected ? "var(--primary-contrast)" : day === today ? "var(--spark-contrast)" : "var(--text-soft)" }}>
+                {/* The short label is what shows; the full date is what is read, so the
+                    accessible name never contradicts the visible text. */}
+                <span aria-hidden="true">{weekday.format(date)}</span>
+                <span aria-hidden="true" className="text-base font-bold" style={{ color: selected ? "var(--primary-contrast)" : day === today ? "var(--spark-contrast)" : "var(--text-soft)" }}>
                   {date.getDate()}
                 </span>
+                <span className="sr-only">{full.format(date)}</span>
               </button>
             </li>
           );

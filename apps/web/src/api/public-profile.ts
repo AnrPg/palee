@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 
 /** A stored image (ADR-148); `url` is stable for public media. */
 export type MediaItem = {
@@ -56,7 +56,7 @@ export type TagList = "disciplines" | "audiences" | "amenities" | "services";
 const BASE = "/admin/public-profile";
 
 export async function getPublicProfile(token: string) {
-  return (await apiRequest<{ profile: BoxPublicProfile }>(BASE, { token })).profile;
+  return requiredField((await apiRequest<{ profile: BoxPublicProfile }>(BASE, { token })).profile, "profile");
 }
 
 export async function saveProfileDraft(token: string, draft: BoxPublicProfileDraft) {
@@ -121,7 +121,7 @@ export type TagSuggestion = {
 };
 
 export async function listTagSuggestions(token: string) {
-  return (await apiRequest<{ suggestions: TagSuggestion[] }>("/platform/tag-suggestions", { token })).suggestions;
+  return (await apiRequest<{ suggestions: TagSuggestion[] }>("/platform/tag-suggestions", { token })).suggestions ?? [];
 }
 
 export async function resolveTagSuggestion(token: string, id: string, status: "added" | "declined") {

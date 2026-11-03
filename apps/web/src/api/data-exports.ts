@@ -10,7 +10,7 @@ export type DataExport = ExportList["exports"][number];
 /** The person's requests, newest first; a ready file carries a fresh short-lived link. */
 export async function fetchDataExports(token: string): Promise<DataExport[]> {
   const response = await apiRequest<ExportList>("/me/data-exports", { token, scope: "account" });
-  return response.exports;
+  return response.exports ?? [];
 }
 
 /** Asks for a new copy of the person's data; the file is built in the background. */

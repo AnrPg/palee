@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 import type { operations } from "@/api/generated/schema";
 
 // Role sets, head coach, role access and the owner's gym actions (ADR-099,
@@ -87,7 +87,7 @@ export async function updateLocationScope(token: string, userId: string, locatio
 
 export async function fetchMembershipStatus(token: string, userId: string) {
   const response = await apiRequest<MembershipStatusResponse>(`/admin/users/${userId}/membership-status`, { token });
-  return response.membership_status;
+  return requiredField(response.membership_status, "membership_status");
 }
 
 export async function fetchRoleAccess(token: string) {
@@ -139,7 +139,7 @@ export async function fetchCoachingRelationships(token: string, filter: { coachU
   if (filter.clientUserId) params.set("client_user_id", filter.clientUserId);
   const suffix = params.size > 0 ? `?${params.toString()}` : "";
   const response = await apiRequest<RelationshipsResponse>(`/staff/coaching-relationships${suffix}`, { token });
-  return response.relationships;
+  return response.relationships ?? [];
 }
 
 /** Without `coachUserId` a coach takes the athlete themselves. */
@@ -158,7 +158,7 @@ export async function endCoachingRelationship(token: string, id: string) {
 
 export async function fetchCoachNotes(token: string, clientUserId: string) {
   const response = await apiRequest<NotesResponse>(`/staff/clients/${clientUserId}/coach-notes`, { token });
-  return response.notes;
+  return response.notes ?? [];
 }
 
 /** ADR-359: `staff` notes are read by every staff role that sees the directory; `private` keeps ADR-101. */
@@ -190,7 +190,7 @@ export async function deleteCoachNote(token: string, id: string) {
 
 export async function fetchCoachNoteReads(token: string) {
   const response = await apiRequest<ReadsResponse>("/staff/coach-notes/reads", { token });
-  return response.reads;
+  return response.reads ?? [];
 }
 
 export async function setNotesVisibility(token: string, visibleToAdmins: boolean) {
@@ -203,7 +203,7 @@ export async function setNotesVisibility(token: string, visibleToAdmins: boolean
 
 export async function fetchCleaningAreas(token: string) {
   const response = await apiRequest<AreasResponse>("/staff/cleaning/areas", { token });
-  return response.areas;
+  return response.areas ?? [];
 }
 
 export async function createCleaningArea(token: string, body: { name: string; tasks: string[] }) {
@@ -223,7 +223,7 @@ export async function archiveCleaningArea(token: string, id: string) {
 
 export async function fetchCleaningEntries(token: string) {
   const response = await apiRequest<EntriesResponse>("/staff/cleaning/entries", { token });
-  return response.entries;
+  return response.entries ?? [];
 }
 
 export async function startCleaning(token: string, areaId: string) {

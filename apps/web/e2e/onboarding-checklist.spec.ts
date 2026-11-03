@@ -42,6 +42,7 @@ async function stubApi(page: Page, roles: string[] = ["owner"]) {
     route.fulfill(
       json([
         {
+          id: "membership-1",
           role: "owner",
           roles,
           capabilities: { manage_settings: true },

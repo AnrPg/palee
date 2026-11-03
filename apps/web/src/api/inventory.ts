@@ -44,7 +44,7 @@ export const LOW_LEVELS = ["running_low", "empty"] as const;
 
 export async function fetchMachines(token: string) {
   const response = await apiRequest<MachinesResponse>("/staff/inventory/machines", { token });
-  return response.machines;
+  return response.machines ?? [];
 }
 
 export async function createMachine(token: string, body: MachineInput) {
@@ -83,7 +83,7 @@ export async function logMachineEvent(token: string, id: string, body: MachineEv
 
 export async function fetchSupplies(token: string) {
   const response = await apiRequest<SuppliesResponse>("/staff/inventory/supplies", { token });
-  return response.supplies;
+  return response.supplies ?? [];
 }
 
 export async function createSupply(token: string, body: SupplyInput) {
@@ -103,7 +103,7 @@ export async function archiveSupply(token: string, id: string) {
 
 export async function fetchSupplyMovements(token: string, id: string) {
   const response = await apiRequest<MovementsResponse>(`/staff/inventory/supplies/${id}/movements`, { token });
-  return response.movements;
+  return response.movements ?? [];
 }
 
 export async function recordSupplyMovement(token: string, id: string, body: SupplyMovementInput) {
@@ -112,7 +112,7 @@ export async function recordSupplyMovement(token: string, id: string, body: Supp
 
 export async function fetchLowReports(token: string, id: string) {
   const response = await apiRequest<LowReportsResponse>(`/staff/inventory/supplies/${id}/low-reports`, { token });
-  return response.reports;
+  return response.reports ?? [];
 }
 
 export async function reportSupplyLow(token: string, id: string, body: LowReportInput) {

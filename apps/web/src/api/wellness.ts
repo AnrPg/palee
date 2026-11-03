@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 import type { components } from "@/api/generated/schema";
 
 /**
@@ -96,7 +96,7 @@ export const WELLNESS_PREFERENCES_KEY = [...WELLNESS_KEY, "preferences"] as cons
 
 export async function fetchWellnessPreferences(token: string) {
   const data = await apiRequest<{ preferences: WellnessPreferences }>("/me/wellness/preferences", { token });
-  return data.preferences;
+  return requiredField(data.preferences, "preferences");
 }
 
 export async function updateWellnessPreferences(token: string, body: WellnessPreferencesRequest) {

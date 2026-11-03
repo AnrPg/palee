@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 import type { paths } from "@/api/generated/schema";
 import type { JournalComment, JournalCommentChange } from "@/api/journal-comments";
 import type { WorkoutRecord } from "@/api/workouts";
@@ -261,7 +261,7 @@ export async function fetchExecution(
     `/executions/${executionId}`,
     { token },
   );
-  return data.execution;
+  return requiredField(data.execution, "execution");
 }
 
 /** What the member reads before Έναρξη (ADR-140 §4): never a coach-brief. */
@@ -297,7 +297,7 @@ export async function listMyExecutions(token: string): Promise<WorkoutExecution[
   const data = await apiRequest<{ executions: WorkoutExecution[] }>("/executions", {
     token,
   });
-  return data.executions;
+  return data.executions ?? [];
 }
 
 type VaultResponse =
@@ -309,5 +309,5 @@ export type VaultEntry = VaultWorkout["entries"][number];
 /** My completed workouts, each with its dated entries (ADR-098). Not tenant scoped. */
 export async function fetchWorkoutVault(token: string): Promise<VaultWorkout[]> {
   const data = await apiRequest<VaultResponse>("/executions/vault", { token });
-  return data.workouts;
+  return data.workouts ?? [];
 }
