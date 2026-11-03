@@ -34,6 +34,7 @@ import { PageHeader, pageHeaderActionClass } from "@/components/PageHeader";
 import { InviteClientsButton } from "@/components/invites/InviteClients";
 import { can, membershipRoles, staffNavItems, type MembershipLike } from "@/lib/role-navigation";
 import { classesCoachedToday } from "@/components/admin/staff-home";
+import { foldSingleTileGroups } from "@/components/admin/hub-groups";
 import {
   CardLink,
   ClassTimeline,
@@ -206,6 +207,8 @@ export function AdminDashboard({
   const i18n = useUiTranslations();
   const nav = useTranslations("Navigation");
   const standingT = useTranslations("MemberStanding");
+  const publicPageT = useTranslations("AdminPublicPage");
+  const documentsT = useTranslations("Documents");
   const has = (...capabilities: string[]) =>
     membership === undefined || capabilities.some((capability) => can(membership, capability));
   const fullAnalytics = has("view_business_analytics");
@@ -221,7 +224,6 @@ export function AdminDashboard({
         // Shop proposal §2 (A): «Κατάστημα» is its own section; TODO(ADR-190) `manage_shop`.
         { label: nav("shop"), href: "/admin/shop", icon: "bag", show: has("manage_shop") || has("sell_shop") },
         { label: i18n("classesed1846a"), href: "/admin/class-schedule", icon: "calendar", show: has("run_classes", "manage_schedule", "manage_coaching") },
-        { label: nav("wodsVault"), href: "/admin/workouts", icon: "dumbbell", show: has("manage_workouts") },
         { label: i18n("admCheckInTitle"), href: "/admin/check-in", icon: "check", show: has("check_in") },
         { label: i18n("personalCoaching6accdcd"), href: "/admin/coaching-assignments", icon: "coach", show: has("manage_coaching") },
         { label: nav("appointments"), href: "/admin/appointments", icon: "clock", show: has("manage_appointments") },
@@ -232,11 +234,16 @@ export function AdminDashboard({
       ],
     },
     {
+      // «Περιεχόμενο» (ANR, 2026-11-03): what the box writes and publishes.
+      // The pages keep their own places; these are only shortcuts.
       label: i18n("content4f9be05"),
       items: [
-        // Coaches without the full Analytics card keep their nutrition plans here.
-        { label: i18n("rhNutritionPlans"), href: "/admin/coaching?tab=nutrition", icon: "leaf", show: !fullAnalytics && has("manage_coaching") },
+        { label: nav("wodsVault"), href: "/admin/workouts", icon: "dumbbell", show: has("manage_workouts") },
+        { label: i18n("rhNutritionPlans"), href: "/admin/coaching?tab=nutrition", icon: "leaf", show: has("manage_coaching") },
         { label: nav("onDemandContent"), href: "/admin/content", icon: "play", show: has("manage_content") },
+        { label: publicPageT("navLabel"), href: "/admin/public-page", icon: "star", show: has("manage_settings") },
+        // ADR-252 §7: documents for settings, membership and front-desk staff.
+        { label: documentsT("title"), href: "/admin/documents", icon: "file", show: has("manage_settings", "manage_memberships", "request_signatures") },
       ],
     },
     {
@@ -251,10 +258,12 @@ export function AdminDashboard({
       ],
     },
   ];
-  const NAV_GROUPS = ALL_NAV_GROUPS.map((group) => ({
-    ...group,
-    items: group.items.filter((item) => item.show !== false),
-  })).filter((group) => group.items.length > 0);
+  const NAV_GROUPS = foldSingleTileGroups(
+    ALL_NAV_GROUPS.map((group) => ({
+      ...group,
+      items: group.items.filter((item) => item.show !== false),
+    })),
+  );
   // Header shortcuts (ANR, 2026-11-03): never a page the top bar already
   // links to (Οικονομικά, Coaching… sit there), so the header offers the next
   // most used pages instead: check-in, analytics, the shop or else spaces.

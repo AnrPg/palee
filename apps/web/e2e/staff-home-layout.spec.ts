@@ -32,7 +32,7 @@ function todayAt(hour: number) {
   return date.toISOString();
 }
 
-async function stubApi(page: Page) {
+async function stubApi(page: Page, extraCapabilities: Record<string, boolean> = {}) {
   await page.route("**/api/**", (route) => route.fulfill(json({})));
   await page.route("**/api/auth/refresh", (route) => route.fulfill(json({ access_token: tokenFor(), refresh_token: "refresh" })));
   await page.route("**/api/auth/me", (route) => route.fulfill(json(user)));
@@ -52,6 +52,7 @@ async function stubApi(page: Page) {
             view_spaces: true,
             manage_shop: true,
             take_payments: true,
+            ...extraCapabilities,
           },
           organization: { id: "org-1", slug: "kypseli", name: "Box Kypseli" },
           settings: { brand_name: "Box Kypseli", brand_logo_url: null, brand_primary_color: null },
@@ -196,5 +197,28 @@ test.describe("staff home layout", () => {
     await expect(page.locator("#home-people")).toBeVisible();
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(0);
+  });
+});
+
+// «Περιεχόμενο» (ANR, 2026-11-03): what the box writes and publishes, and a
+// tool group that would hold a single tile is folded into «Διαχείριση».
+test.describe("staff home tools", () => {
+  test.beforeEach(async ({ context, baseURL }) => {
+    await context.addCookies([{ name: "palee_locale", value: "el", url: baseURL! }]);
+  });
+
+  test("a lone content tile joins «Διαχείριση» and its group is hidden", async ({ page }) => {
+    await stubApi(page);
+    await page.goto("/org/kypseli/admin");
+    await expect(page.getByRole("link", { name: "Διατροφικά πλάνα" })).toBeVisible();
+    await expect(page.getByText("Περιεχόμενο", { exact: true })).toHaveCount(0);
+  });
+
+  test("an owner's content group holds the vault, plans, public page and documents", async ({ page }) => {
+    await stubApi(page, { manage_workouts: true, manage_settings: true });
+    await page.goto("/org/kypseli/admin");
+    const group = page.getByText("Περιεχόμενο", { exact: true }).locator("..");
+    await expect(group.getByRole("link")).toHaveText(["Αρχείο WOD", "Διατροφικά πλάνα", "Δημόσια σελίδα", "Έγγραφα"]);
+    await expect(group.getByRole("link", { name: "Έγγραφα" })).toHaveAttribute("href", "/org/kypseli/admin/documents");
   });
 });
