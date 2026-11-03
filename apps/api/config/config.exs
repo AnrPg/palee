@@ -286,9 +286,15 @@ config :palee, :payment_store, Palee.Infrastructure.Payments.EctoPaymentStore
 # (`channel_managed_accounts`, runtime), a box's own Brevo key as an option.
 config :palee, :channel_store, Palee.Infrastructure.Channels.EctoChannelStore
 
+# ADR-396: a box's own account with one of the popular vendors (`own` only).
 config :palee, :channel_providers, %{
   "sandbox" => Palee.Infrastructure.Channels.SandboxChannel,
-  "brevo" => Palee.Infrastructure.Channels.BrevoChannel
+  "brevo" => Palee.Infrastructure.Channels.BrevoChannel,
+  "twilio" => Palee.Infrastructure.Channels.TwilioChannel,
+  "vonage" => Palee.Infrastructure.Channels.VonageChannel,
+  "infobip" => Palee.Infrastructure.Channels.InfobipChannel,
+  "yuboto" => Palee.Infrastructure.Channels.YubotoChannel,
+  "apifon" => Palee.Infrastructure.Channels.ApifonChannel
 }
 
 config :palee, :channel_managed_accounts, %{}

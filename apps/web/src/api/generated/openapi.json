@@ -174217,6 +174217,10 @@
                         "has_secret": {
                           "type": "boolean"
                         },
+                        "has_webhook_secret": {
+                          "description": "Whether the vendor's own webhook signing key is saved (ADR-396)",
+                          "type": "boolean"
+                        },
                         "last_error": {
                           "nullable": true,
                           "type": "string"
@@ -174275,6 +174279,7 @@
                         "channels",
                         "default_country",
                         "has_secret",
+                        "has_webhook_secret",
                         "monthly_budget_cents",
                         "provider",
                         "status"
@@ -174434,7 +174439,7 @@
       },
       "put": {
         "callbacks": {},
-        "description": "`account_mode` `palee` (default) sends through Palee's own Brevo account, with the box's cost tracked against `monthly_budget_cents`; `own` uses the box's own Brevo API key (`secret`, kept when not sent, never returned). `quiet_start`/`quiet_end` (\"HH:MM\" on the box's clock, both null for none) hold non-urgent messages. `rotate_webhook` draws a new webhook URL.",
+        "description": "`account_mode` `palee` (default) sends through Palee's own Brevo account, with the box's cost tracked against `monthly_budget_cents`; `own` uses the box's own account with a vendor of ADR-396 (`brevo`, `twilio`, `vonage`, `infobip`, `yuboto`, `apifon`): `account_id`, `secret`, `webhook_secret` and `base_url` as that vendor needs them (secrets kept when not sent, never returned). `quiet_start`/`quiet_end` (\"HH:MM\" on the box's clock, both null for none) hold non-urgent messages. `rotate_webhook` draws a new webhook URL.",
         "operationId": "PaleeWeb.AdminChannelSettingsController.save",
         "parameters": [],
         "requestBody": {
@@ -174456,6 +174461,7 @@
                     "type": "string"
                   },
                   "base_url": {
+                    "description": "Infobip's personal base URL, https://<id>.api.infobip.com",
                     "maxLength": 200,
                     "nullable": true,
                     "type": "string"
@@ -174499,7 +174505,12 @@
                   "provider": {
                     "enum": [
                       "sandbox",
-                      "brevo"
+                      "brevo",
+                      "twilio",
+                      "vonage",
+                      "infobip",
+                      "yuboto",
+                      "apifon"
                     ],
                     "type": "string"
                   },
@@ -174517,19 +174528,25 @@
                     "type": "boolean"
                   },
                   "secret": {
-                    "description": "The box's own API key (`own`); kept when not sent",
+                    "description": "The box's own API key, Auth Token, API secret or secret key (`own`); kept when not sent",
                     "format": "password",
                     "maxLength": 300,
                     "type": "string"
                   },
                   "sms_sender": {
-                    "maxLength": 20,
+                    "maxLength": 40,
                     "nullable": true,
                     "type": "string"
                   },
                   "viber_sender": {
                     "maxLength": 60,
                     "nullable": true,
+                    "type": "string"
+                  },
+                  "webhook_secret": {
+                    "description": "Vonage's signature secret for signed delivery receipts (ADR-396); kept when not sent",
+                    "format": "password",
+                    "maxLength": 300,
                     "type": "string"
                   },
                   "whatsapp_sender": {
@@ -174632,6 +174649,10 @@
                         "has_secret": {
                           "type": "boolean"
                         },
+                        "has_webhook_secret": {
+                          "description": "Whether the vendor's own webhook signing key is saved (ADR-396)",
+                          "type": "boolean"
+                        },
                         "last_error": {
                           "nullable": true,
                           "type": "string"
@@ -174690,6 +174711,7 @@
                         "channels",
                         "default_country",
                         "has_secret",
+                        "has_webhook_secret",
                         "monthly_budget_cents",
                         "provider",
                         "status"
@@ -174809,6 +174831,10 @@
                         "has_secret": {
                           "type": "boolean"
                         },
+                        "has_webhook_secret": {
+                          "description": "Whether the vendor's own webhook signing key is saved (ADR-396)",
+                          "type": "boolean"
+                        },
                         "last_error": {
                           "nullable": true,
                           "type": "string"
@@ -174867,6 +174893,7 @@
                         "channels",
                         "default_country",
                         "has_secret",
+                        "has_webhook_secret",
                         "monthly_budget_cents",
                         "provider",
                         "status"

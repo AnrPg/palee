@@ -5726,7 +5726,7 @@ export interface paths {
         get: operations["PaleeWeb.AdminChannelSettingsController.show"];
         /**
          * Connect the box's messaging provider, then check it
-         * @description `account_mode` `palee` (default) sends through Palee's own Brevo account, with the box's cost tracked against `monthly_budget_cents`; `own` uses the box's own Brevo API key (`secret`, kept when not sent, never returned). `quiet_start`/`quiet_end` ("HH:MM" on the box's clock, both null for none) hold non-urgent messages. `rotate_webhook` draws a new webhook URL.
+         * @description `account_mode` `palee` (default) sends through Palee's own Brevo account, with the box's cost tracked against `monthly_budget_cents`; `own` uses the box's own account with a vendor of ADR-396 (`brevo`, `twilio`, `vonage`, `infobip`, `yuboto`, `apifon`): `account_id`, `secret`, `webhook_secret` and `base_url` as that vendor needs them (secrets kept when not sent, never returned). `quiet_start`/`quiet_end` ("HH:MM" on the box's clock, both null for none) hold non-urgent messages. `rotate_webhook` draws a new webhook URL.
          */
         put: operations["PaleeWeb.AdminChannelSettingsController.save"];
         post?: never;
@@ -77159,6 +77159,8 @@ export interface operations {
                             default_country: string;
                             error_code?: string | null;
                             has_secret: boolean;
+                            /** @description Whether the vendor's own webhook signing key is saved (ADR-396) */
+                            has_webhook_secret: boolean;
                             last_error?: string | null;
                             /** @description The cap the box typed; null until it does, and then nothing is sent (ADR-390) */
                             monthly_budget_cents: number | null;
@@ -77233,6 +77235,7 @@ export interface operations {
                     account_id?: string | null;
                     /** @enum {string} */
                     account_mode?: "palee" | "own";
+                    /** @description Infobip's personal base URL, https://<id>.api.infobip.com */
                     base_url?: string | null;
                     channel_order?: ("sms" | "viber" | "whatsapp")[];
                     channels?: ("sms" | "viber" | "whatsapp")[];
@@ -77240,17 +77243,22 @@ export interface operations {
                     /** @description The box's own monthly cap in cents; required once a channel is on (no default, ADR-390) */
                     monthly_budget_cents?: number | null;
                     /** @enum {string} */
-                    provider: "sandbox" | "brevo";
+                    provider: "sandbox" | "brevo" | "twilio" | "vonage" | "infobip" | "yuboto" | "apifon";
                     quiet_end?: string | null;
                     quiet_start?: string | null;
                     rotate_webhook?: boolean;
                     /**
                      * Format: password
-                     * @description The box's own API key (`own`); kept when not sent
+                     * @description The box's own API key, Auth Token, API secret or secret key (`own`); kept when not sent
                      */
                     secret?: string;
                     sms_sender?: string | null;
                     viber_sender?: string | null;
+                    /**
+                     * Format: password
+                     * @description Vonage's signature secret for signed delivery receipts (ADR-396); kept when not sent
+                     */
+                    webhook_secret?: string;
                     whatsapp_sender?: string | null;
                 };
             };
@@ -77284,6 +77292,8 @@ export interface operations {
                             default_country: string;
                             error_code?: string | null;
                             has_secret: boolean;
+                            /** @description Whether the vendor's own webhook signing key is saved (ADR-396) */
+                            has_webhook_secret: boolean;
                             last_error?: string | null;
                             /** @description The cap the box typed; null until it does, and then nothing is sent (ADR-390) */
                             monthly_budget_cents: number | null;
@@ -77344,6 +77354,8 @@ export interface operations {
                             default_country: string;
                             error_code?: string | null;
                             has_secret: boolean;
+                            /** @description Whether the vendor's own webhook signing key is saved (ADR-396) */
+                            has_webhook_secret: boolean;
                             last_error?: string | null;
                             /** @description The cap the box typed; null until it does, and then nothing is sent (ADR-390) */
                             monthly_budget_cents: number | null;

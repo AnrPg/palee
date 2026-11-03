@@ -1,7 +1,7 @@
 defmodule Palee.Channels.Connection do
   @moduledoc """
-  A box's messaging provider (ADR-348 §2): its own account (`own`, the
-  secret encrypted at rest and never returned) or the Palee-managed one
+  A box's messaging provider (ADR-348 §2): its own account (`own`, with one
+  of the vendors of ADR-396; the secrets encrypted at rest and never returned) or the Palee-managed one
   (`palee`, credentials in the platform config), the senders, the channels
   switched on, the monthly budget cap and quiet hours (ADR-349). Neither
   has a default (ADR-390): the box types its own cap when it turns a
@@ -15,7 +15,7 @@ defmodule Palee.Channels.Connection do
 
   @primary_key {:id, :binary_id, autogenerate: true}
 
-  @fields ~w(provider account_mode account_id secret base_url sms_sender viber_sender
+  @fields ~w(provider account_mode account_id secret webhook_secret base_url sms_sender viber_sender
              whatsapp_sender channels channel_order default_country monthly_budget_cents
              currency quiet_start_minute quiet_end_minute webhook_salt status error_code
              last_error checked_at updated_by_id)a
@@ -26,6 +26,8 @@ defmodule Palee.Channels.Connection do
     field :account_mode, :string, default: "palee"
     field :account_id, :string
     field :secret, EncryptedBinary, redact: true
+    # ADR-396: the vendor's own key for signing its reports (Vonage).
+    field :webhook_secret, EncryptedBinary, redact: true
     field :base_url, :string
     field :sms_sender, :string
     field :viber_sender, :string

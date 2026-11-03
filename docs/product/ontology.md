@@ -300,9 +300,9 @@ push is not enough.
 |---|---|---|---|---|
 | Text message (SMS) | Μήνυμα SMS | `channel_messages` channel `sms` | A message the box sends to a person's mobile, outside the app. | Message («Μήνυμα») in Μηνύματα, which stays in the app; push notification. |
 | Messaging channel | Κανάλι μηνυμάτων | `channel` (`sms`, `viber`, `whatsapp`) | How a text message travels. Only SMS is switched on today. | Club channel (§4.4). |
-| SMS provider | Πάροχος SMS | `channel_connections.provider` | The company that delivers the box's SMS (Brevo). | Payment provider, fiscal provider. |
+| SMS provider | Πάροχος SMS | `channel_connections.provider` | The company that delivers the box's SMS: Brevo on Palee's account; on the box's own account Brevo, Twilio, Vonage, Infobip, Yuboto or Apifon (ADR-396). | Payment provider, fiscal provider. |
 | Palee's account | Λογαριασμός Palee | `account_mode: palee` | The box sends through Palee's Brevo account; Palee counts what each box spends. The default. | The box's own account. |
-| The box's own account | Δικός σας λογαριασμός | `account_mode: own` | The box's own Brevo account and key; Brevo bills the box. Under «Προχωρημένα». | |
+| The box's own account | Δικός σας λογαριασμός | `account_mode: own` | The box's own account with an SMS provider it picks, and that provider's keys; the provider bills the box. Under «Προχωρημένα» (ADR-396). | |
 | Mobile for messages | Κινητό για μηνύματα | `channel_contacts` | The person's mobile number for this box, with the language of the messages. | Contact details of the account. |
 | Consent to messages | Συγκατάθεση για μηνύματα | `channel_consents` | Per channel and purpose: «Ενημερώσεις» (service) and «Προσφορές» (marketing). Never assumed. | Privacy terms acceptance (§4.19). |
 | Updates (purpose) | Ενημερώσεις | `purpose: service` | About the person's own bookings, classes and payments. | Offers. |
@@ -322,6 +322,8 @@ push is not enough.
 | Update participants | Ενημέρωση συμμετεχόντων | `POST /admin/channels/class-notices` | From a class in the schedule, staff tell everyone booked what happened (cancelled, new time, own text): the app notification first, SMS only for those without the app who agreed (ADR-385). | Μήνυμα in Μηνύματα; an automation. |
 | SMS for this event | SMS για αυτό το event | `community_events.sms_enabled` | The organiser's per-event switch: on, those who ticked SMS at «Θα έρθω» get the reminder and changes by SMS; off, only the app (ADR-385). | The box's SMS switch in Ρυθμίσεις › Συνδέσεις. |
 | Connections (settings) | Συνδέσεις | `admin-settings#connections` | The settings section that holds «Μηνύματα SMS» and «Δικός μου πάροχος email» (ADR-385). | Fiscal connections in «Στοιχεία τιμολόγησης». |
+| Use my own SMS provider | Χρήση δικού μου παρόχου SMS | `account_mode: own`, `provider` | The «Προχωρημένα» action that opens the provider picker (ui/Select), that provider's step-by-step guide and its fields (ADR-396). | Palee's account. |
+| Provider keys | Κλειδιά παρόχου | `account_id`, `secret`, `webhook_secret`, `base_url` | What the box copies from its provider's console: Twilio Account SID and Auth Token; Vonage API key, API secret and optional signature secret («Μυστικό υπογραφής»); Infobip Base URL and API key; Yuboto OMNI API key; Apifon API token and secret key («Μυστικό κλειδί»). Secrets are encrypted and never shown again (ADR-396). Vendor field names stay as each console spells them. | The box's Palee login. |
 
 ### 4.6a Class booking rules (ADR-226)
 
