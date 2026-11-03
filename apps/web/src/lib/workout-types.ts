@@ -7,15 +7,32 @@
 export const WORKOUT_TYPE_FAMILIES = [
   { family: "functional", types: ["crossfit", "functional_fitness", "hyrox", "hiit", "bootcamp", "circuit_training"] },
   { family: "strength", types: ["strength", "powerlifting", "olympic_lifting", "bodybuilding", "strongman", "kettlebell"] },
-  { family: "gymnastics", types: ["gymnastics", "calisthenics"] },
+  {
+    family: "gymnastics",
+    types: ["gymnastics", "calisthenics", "artistic_gymnastics", "rhythmic_gymnastics", "trampoline_tumbling", "acrobatics", "parkour"],
+  },
   { family: "endurance", types: ["aerobics", "running", "cycling", "indoor_cycling", "rowing", "swimming", "endurance"] },
   { family: "mind_body", types: ["yoga", "pilates", "barre", "flexibility", "mobility", "stretching", "tai_chi_qigong"] },
   {
     family: "combat",
-    types: ["boxing", "kickboxing", "muay_thai", "mma", "bjj_grappling", "wrestling", "martial_arts", "self_defense"],
+    types: [
+      "boxing",
+      "kickboxing",
+      "muay_thai",
+      "mma",
+      "bjj_grappling",
+      "wrestling",
+      "martial_arts",
+      "self_defense",
+      "judo",
+      "karate",
+      "taekwondo",
+      "kung_fu",
+      "krav_maga",
+    ],
   },
-  { family: "dance", types: ["dance", "dance_fitness", "pole_aerial"] },
-  { family: "outdoor", types: ["outdoor_training", "climbing_bouldering"] },
+  { family: "dance", types: ["dance", "dance_fitness", "pole_aerial", "ballet", "contemporary_dance", "latin_dance", "street_dance"] },
+  { family: "outdoor", types: ["outdoor_training", "climbing_bouldering", "skateboarding"] },
   { family: "recovery", types: ["recovery"] },
 ] as const;
 

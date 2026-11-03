@@ -15,6 +15,12 @@ defmodule Palee.Workouts.Domain.WorkoutTypeTest do
     assert WorkoutType.family("muay_thai") == "combat"
     assert WorkoutType.family(:bjj_grappling) == "combat"
     assert WorkoutType.family("pole_aerial") == "dance"
+    # ADR-400: the kinds rank ladders need.
+    assert WorkoutType.family("artistic_gymnastics") == "gymnastics"
+    assert WorkoutType.family("rhythmic_gymnastics") == "gymnastics"
+    assert WorkoutType.family("judo") == "combat"
+    assert WorkoutType.family("ballet") == "dance"
+    assert WorkoutType.family("skateboarding") == "outdoor"
     assert WorkoutType.family("karaoke") == nil
     refute WorkoutType.valid?("karaoke")
     refute WorkoutType.valid?(nil)

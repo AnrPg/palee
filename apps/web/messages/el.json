@@ -4734,7 +4734,7 @@
     "semanticWorkoutMma": "MMA",
     "semanticWorkoutBjjGrappling": "BJJ & grappling",
     "semanticWorkoutWrestling": "Πάλη",
-    "semanticWorkoutMartialArts": "Πολεμικές τέχνες (καράτε, ταεκβοντό, τζούντο)",
+    "semanticWorkoutMartialArts": "Πολεμικές τέχνες (αϊκίντο, καποέιρα, άλλες)",
     "semanticWorkoutSelfDefense": "Αυτοάμυνα",
     "semanticWorkoutDance": "Χορός",
     "semanticWorkoutDanceFitness": "Χορευτική γυμναστική (Zumba)",
@@ -4898,7 +4898,22 @@
     "pkgFieldBookingDailyLimitSuffix": "{count, plural, one {μάθημα την ημέρα} other {μαθήματα την ημέρα}}",
     "pkgFieldBookingOpenBookingsLimit": "Ανοιχτές κρατήσεις",
     "pkgFieldBookingOpenBookingsLimitHint": "Πόσα επόμενα τμήματα μπορεί να έχει κλεισμένα ένα μέλος ταυτόχρονα.",
-    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {επόμενο μάθημα} other {επόμενα μαθήματα}}"
+    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {επόμενο μάθημα} other {επόμενα μαθήματα}}",
+    "semanticWorkoutArtisticGymnastics": "Ενόργανη γυμναστική",
+    "semanticWorkoutRhythmicGymnastics": "Ρυθμική γυμναστική",
+    "semanticWorkoutTrampolineTumbling": "Τραμπολίνο & tumbling",
+    "semanticWorkoutAcrobatics": "Ακροβατική",
+    "semanticWorkoutParkour": "Parkour & freerunning",
+    "semanticWorkoutJudo": "Τζούντο",
+    "semanticWorkoutKarate": "Καράτε",
+    "semanticWorkoutTaekwondo": "Ταεκβοντό",
+    "semanticWorkoutKungFu": "Κουνγκ φου & wushu",
+    "semanticWorkoutKravMaga": "Krav Maga",
+    "semanticWorkoutBallet": "Μπαλέτο",
+    "semanticWorkoutContemporaryDance": "Σύγχρονος χορός",
+    "semanticWorkoutLatinDance": "Λάτιν χοροί (σάλσα, μπατσάτα)",
+    "semanticWorkoutStreetDance": "Χοροί δρόμου (hip-hop, heels, reggaeton)",
+    "semanticWorkoutSkateboarding": "Skateboard"
   },
   "PrSharing": {
     "gymLabel": "Πού πέτυχες αυτό το PR;",
@@ -6240,7 +6255,8 @@
       "dance": "Χορός",
       "aquatic": "Νερό",
       "outdoor": "Υπαίθριο",
-      "recovery": "Αποκατάσταση & αποθεραπεία"
+      "recovery": "Αποκατάσταση & αποθεραπεία",
+      "gymnastics": "Γυμναστική & ακροβατική"
     },
     "discipline": {
       "strength": "Προπόνηση δύναμης",
@@ -6277,7 +6293,7 @@
       "mma": "MMA",
       "bjj_grappling": "BJJ & grappling",
       "wrestling": "Πάλη",
-      "martial_arts": "Πολεμικές τέχνες (καράτε, ταεκβοντό, τζούντο)",
+      "martial_arts": "Πολεμικές τέχνες (αϊκίντο, καποέιρα, άλλες)",
       "self_defense": "Αυτοάμυνα",
       "dance": "Χορός",
       "dance_fitness": "Χορευτική γυμναστική (Zumba)",
@@ -6288,7 +6304,22 @@
       "climbing_bouldering": "Αναρρίχηση & bouldering",
       "physio_rehab": "Φυσικοθεραπεία & αποκατάσταση",
       "sports_massage": "Αθλητικό μασάζ",
-      "recovery": "Τμήματα αποθεραπείας"
+      "recovery": "Τμήματα αποθεραπείας",
+      "artistic_gymnastics": "Ενόργανη γυμναστική",
+      "rhythmic_gymnastics": "Ρυθμική γυμναστική",
+      "trampoline_tumbling": "Τραμπολίνο & tumbling",
+      "acrobatics": "Ακροβατική",
+      "parkour": "Parkour & freerunning",
+      "judo": "Τζούντο",
+      "karate": "Καράτε",
+      "taekwondo": "Ταεκβοντό",
+      "kung_fu": "Κουνγκ φου & wushu",
+      "krav_maga": "Krav Maga",
+      "ballet": "Μπαλέτο",
+      "contemporary_dance": "Σύγχρονος χορός",
+      "latin_dance": "Λάτιν χοροί (σάλσα, μπατσάτα)",
+      "street_dance": "Χοροί δρόμου (hip-hop, heels, reggaeton)",
+      "skateboarding": "Skateboard"
     },
     "audience": {
       "beginners": "Αρχάριοι",
@@ -16877,11 +16908,6 @@
       "panelTitle": "Βαθμός",
       "settingsHint": "Μία κλίμακα ανά άθλημα: ζώνες με ρίγες ή επίπεδα. Για την προαγωγή αποφασίζει πάντα ο coach.",
       "newLadder": "Νέα κλίμακα",
-      "template": {
-        "bjj_adult": "Ζώνες BJJ",
-        "karate_kyu": "Ζώνες καράτε",
-        "gymnastics_levels": "Επίπεδα ενόργανης"
-      },
       "fromScratch": "Από την αρχή: διάλεξε άθλημα",
       "create": "Δημιουργία",
       "newLadderName": "Νέα κλίμακα",

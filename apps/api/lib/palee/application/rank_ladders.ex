@@ -7,17 +7,28 @@ defmodule Palee.Application.RankLadders do
   """
 
   alias Palee.Application.{Clock, RankStanding}
-  alias Palee.{Ranks, Workouts}
+  alias Palee.{Localization, Ranks, Workouts}
 
-  def list(context) do
+  # Templates were Greek before ADR-400; a client that names no language
+  # still gets them in Greek.
+  @default_locale "el"
+  @locales ~w(en el ar ru de es pt-PT he it bg nl fr)
+
+  def list(context, params \\ %{}) do
     ladders = Ranks.with_context(context, fn -> Ranks.list_ladders() end)
 
     {:ok,
      %{
        ladders: Enum.map(ladders, &RankStanding.present_ladder/1),
-       templates: Ranks.templates(),
+       templates: templates(locale(params)),
        colors: Ranks.colors()
      }}
+  end
+
+  @doc "The template catalogue in one of the web's languages (ADR-400)."
+  def templates(locale) do
+    translate = &Localization.translate(locale, &1, &2, "rank_templates")
+    Enum.map(Ranks.templates(), &Ranks.localize_template(&1, translate))
   end
 
   def create(%{organization_id: organization_id} = context, params) do
@@ -70,11 +81,17 @@ defmodule Palee.Application.RankLadders do
         params
 
       key ->
-        case Enum.find(Ranks.templates(), &(&1.key == key)) do
+        case Ranks.template(key) do
           nil ->
             params
 
           template ->
+            template =
+              Ranks.localize_template(
+                template,
+                &Localization.translate(locale(params), &1, &2, "rank_templates")
+              )
+
             params
             |> params_map()
             |> Map.put_new("name", template.name)
@@ -82,6 +99,13 @@ defmodule Palee.Application.RankLadders do
             |> Map.put_new("style", template.style)
             |> Map.put_new("ranks", template.ranks)
         end
+    end
+  end
+
+  defp locale(params) do
+    case get(params, "locale") do
+      locale when locale in @locales -> locale
+      _other -> @default_locale
     end
   end
 

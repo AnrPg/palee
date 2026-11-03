@@ -78,7 +78,7 @@ defmodule PaleeWeb.RanksControllerTest do
 
     assert standing["current"]["rank"]["name"] == "Μπλε"
     assert standing["next"]["name"] == "Μωβ"
-    assert %{"days" => %{"needed" => 540}, "ready" => false} = standing["progress"]
+    assert %{"days" => %{"needed" => 730}, "ready" => false} = standing["progress"]
     assert length(standing["history"]) == 3
 
     # Diplomas: the person's own, and the coach's copy.
@@ -157,6 +157,85 @@ defmodule PaleeWeb.RanksControllerTest do
 
     assert %{"ladders" => []} =
              conn |> as(ctx.owner) |> get("#{ctx.admin}/rank-ladders") |> json_response(200)
+  end
+
+  test "templates in the box's language, a coach's own copy and skills ticked one by one",
+       %{conn: conn} = ctx do
+    # ADR-400: the catalogue in English, with where its levels come from.
+    assert %{"templates" => templates} =
+             conn
+             |> as(ctx.owner)
+             |> get("#{ctx.admin}/rank-ladders?locale=en")
+             |> json_response(200)
+
+    assert length(templates) >= 70
+    judo = Enum.find(templates, &(&1["key"] == "judo_kyu"))
+    assert %{"name" => "Judo belts", "family" => "combat", "source" => "federation"} = judo
+    assert %{"source" => "palee"} = Enum.find(templates, &(&1["key"] == "salsa_levels"))
+
+    assert %{"templates" => greek} =
+             conn |> as(ctx.owner) |> get("#{ctx.admin}/rank-ladders") |> json_response(200)
+
+    assert Enum.find(greek, &(&1["key"] == "judo_kyu"))["name"] == "Ζώνες τζούντο"
+
+    # A coach (not only the owner) starts a ladder and makes it their own.
+    coach = user_fixture()
+    {:ok, _} = Organizations.ensure_legacy_membership_for_migration(coach, :coach)
+
+    assert %{"ladder" => %{"id" => ladder_id, "ranks" => [white, yellow | _]} = ladder} =
+             conn
+             |> as(coach)
+             |> send_json(:post, "#{ctx.admin}/rank-ladders", %{
+               template: "judo_kyu",
+               locale: "en",
+               name: "Kids judo"
+             })
+             |> json_response(201)
+
+    assert ladder["name"] == "Kids judo"
+    assert ladder["discipline"] == "judo"
+    assert white["name"] == "White"
+    assert [first_skill | _] = yellow["requirements"]["skills"]
+
+    # Staff with full coaching scope tick one skill of the next rank; the client sees it.
+
+    tick = fn user, body ->
+      conn
+      |> as(user)
+      |> send_json(:put, "#{ctx.staff}/clients/#{ctx.member.id}/ranks/skills", body)
+    end
+
+    assert %{"ladders" => [standing]} =
+             tick.(ctx.owner, %{rank_id: white["id"], skill: "Bow (rei) and judogi care"})
+             |> json_response(200)
+
+    assert [%{"skill" => "Bow (rei) and judogi care"}] = standing["progress"]["skills_checked"]
+    refute standing["progress"]["all_skills_checked"]
+
+    assert %{"code" => "unknown_skills"} =
+             tick.(ctx.owner, %{rank_id: white["id"], skill: "Not on the list"})
+             |> json_response(422)
+
+    assert %{"ladders" => [mine]} =
+             conn |> as(ctx.member) |> get("#{ctx.me}/ranks") |> json_response(200)
+
+    assert [%{"skill" => "Bow (rei) and judogi care"}] = mine["progress"]["skills_checked"]
+
+    assert %{"ladders" => [unticked]} =
+             tick.(ctx.owner, %{
+               rank_id: white["id"],
+               skill: "Bow (rei) and judogi care",
+               checked: false
+             })
+             |> json_response(200)
+
+    assert unticked["progress"]["skills_checked"] == []
+
+    # A box member can't tick skills.
+    assert tick.(ctx.other_member, %{rank_id: yellow["id"], skill: first_skill})
+           |> json_response(403)
+
+    assert ladder_id
   end
 
   test "invalid ladders and another box's view", %{conn: conn} = ctx do

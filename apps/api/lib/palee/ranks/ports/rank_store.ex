@@ -4,7 +4,7 @@ defmodule Palee.Ranks.Ports.RankStore do
   box's tenant session (row security keeps each box to its own rows).
   """
 
-  alias Palee.Ranks.{RankAward, RankLadder}
+  alias Palee.Ranks.{RankAward, RankLadder, RankSkillCheck}
 
   @type id :: Ecto.UUID.t()
   @type result(t) :: {:ok, t} | {:error, term()}
@@ -21,4 +21,11 @@ defmodule Palee.Ranks.Ports.RankStore do
   @callback get_award(id()) :: RankAward.t() | nil
   @callback insert_award(map()) :: result(RankAward.t())
   @callback revoke_award(RankAward.t(), map()) :: result(RankAward.t())
+
+  @doc "The skills ticked for a person (ADR-400), on every ladder."
+  @callback list_skill_checks(user_id :: id()) :: [RankSkillCheck.t()]
+  @doc "Ticks a skill (person, rank, skill); ticking it again updates the date, coach and note."
+  @callback put_skill_check(map()) :: result(RankSkillCheck.t())
+  @doc "Unticks a skill; `:ok` also when it was not ticked."
+  @callback delete_skill_check(user_id :: id(), rank_id :: id(), skill :: String.t()) :: :ok
 end

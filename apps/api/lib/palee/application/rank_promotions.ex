@@ -57,6 +57,73 @@ defmodule Palee.Application.RankPromotions do
     end
   end
 
+  @doc """
+  Ticks (or unticks, `checked: false`) one skill of a rank for a client
+  (ADR-400), between promotions; the skill must be on the rank's list.
+  Returns the client's standing, as `client/2`.
+  """
+  def check_skill(%{organization_id: organization_id} = context, staff_id, user_id, params) do
+    with :ok <- AuthorizeClientAccess.call(context, :manage_coaching, user_id),
+         {:ok, on} <- check_date(get(params, "checked_on"), Clock.today()),
+         :ok <-
+           Ranks.with_context(context, fn ->
+             with {:ok, rank} <- fetch_listed_rank(get(params, "rank_id")),
+                  skill = get(params, "skill"),
+                  :ok <-
+                    if(Ranks.listed_skill?(rank, skill), do: :ok, else: {:error, :unknown_skills}) do
+               put_check(get(params, "checked"), %{
+                 organization_id: organization_id,
+                 user_id: user_id,
+                 rank_id: rank.id,
+                 skill: skill,
+                 checked_on: on,
+                 checked_by_id: staff_id,
+                 note: get(params, "note")
+               })
+             end
+           end) do
+      client(context, user_id)
+    end
+  end
+
+  defp put_check(false, check),
+    do: Ranks.delete_skill_check(check.user_id, check.rank_id, check.skill)
+
+  defp put_check(_checked, check) do
+    case Ranks.put_skill_check(check) do
+      {:ok, _check} -> :ok
+      {:error, _changeset} -> {:error, :invalid_rank_award}
+    end
+  end
+
+  defp fetch_listed_rank(id) do
+    with {:ok, id} <- Ecto.UUID.cast(id || ""),
+         rank when not is_nil(rank) <-
+           Enum.find_value(Ranks.list_ladders(), fn ladder ->
+             Enum.find(ladder.ranks, &(&1.id == id))
+           end) do
+      {:ok, rank}
+    else
+      _missing -> {:error, :unknown_rank}
+    end
+  end
+
+  defp check_date(nil, today), do: {:ok, today}
+  defp check_date(%Date{} = date, today), do: future_check(date, today)
+
+  defp check_date(text, today) when is_binary(text) do
+    case Date.from_iso8601(text) do
+      {:ok, date} -> future_check(date, today)
+      _error -> {:error, :invalid_rank_award}
+    end
+  end
+
+  defp check_date(_other, _today), do: {:error, :invalid_rank_award}
+
+  defp future_check(date, today) do
+    if Date.compare(date, today) == :gt, do: {:error, :award_in_future}, else: {:ok, date}
+  end
+
   def revoke(context, staff_id, award_id, params) do
     Ranks.with_context(context, fn ->
       with %{} = award <- Ranks.get_award(award_id) || {:error, :not_found},

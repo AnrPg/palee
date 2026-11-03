@@ -4734,7 +4734,7 @@
     "semanticWorkoutMma": "MMA",
     "semanticWorkoutBjjGrappling": "BJJ والمصارعة الأرضية",
     "semanticWorkoutWrestling": "المصارعة",
-    "semanticWorkoutMartialArts": "الفنون القتالية (كاراتيه، تايكوندو، جودو)",
+    "semanticWorkoutMartialArts": "الفنون القتالية (أيكيدو، كابويرا، أخرى)",
     "semanticWorkoutSelfDefense": "الدفاع عن النفس",
     "semanticWorkoutDance": "الرقص",
     "semanticWorkoutDanceFitness": "لياقة الرقص (زومبا)",
@@ -4898,7 +4898,22 @@
     "pkgFieldBookingDailyLimitSuffix": "{count, plural, zero {حصة في اليوم} one {حصة في اليوم} two {حصتان في اليوم} few {حصص في اليوم} many {حصة في اليوم} other {حصة في اليوم}}",
     "pkgFieldBookingOpenBookingsLimit": "الحجوزات القادمة",
     "pkgFieldBookingOpenBookingsLimitHint": "عدد الحصص القادمة التي يمكن للعضو حجزها في الوقت نفسه.",
-    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, zero {حصة قادمة} one {حصة قادمة} two {حصتان قادمتان} few {حصص قادمة} many {حصة قادمة} other {حصة قادمة}}"
+    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, zero {حصة قادمة} one {حصة قادمة} two {حصتان قادمتان} few {حصص قادمة} many {حصة قادمة} other {حصة قادمة}}",
+    "semanticWorkoutArtisticGymnastics": "الجمباز الفني",
+    "semanticWorkoutRhythmicGymnastics": "الجمباز الإيقاعي",
+    "semanticWorkoutTrampolineTumbling": "الترامبولين والتمبلنغ",
+    "semanticWorkoutAcrobatics": "الأكروبات",
+    "semanticWorkoutParkour": "الباركور والفري رننغ",
+    "semanticWorkoutJudo": "الجودو",
+    "semanticWorkoutKarate": "الكاراتيه",
+    "semanticWorkoutTaekwondo": "التايكوندو",
+    "semanticWorkoutKungFu": "الكونغ فو والووشو",
+    "semanticWorkoutKravMaga": "كراف ماغا",
+    "semanticWorkoutBallet": "الباليه",
+    "semanticWorkoutContemporaryDance": "الرقص المعاصر",
+    "semanticWorkoutLatinDance": "الرقص اللاتيني (سالسا، باتشاتا)",
+    "semanticWorkoutStreetDance": "رقص الشارع (هيب هوب، هيلز، ريغيتون)",
+    "semanticWorkoutSkateboarding": "التزلج على اللوح"
   },
   "PrSharing": {
     "gymLabel": "أين حققت هذا الرقم القياسي؟",
@@ -6240,7 +6255,8 @@
       "dance": "الرقص",
       "aquatic": "الرياضات المائية",
       "outdoor": "في الهواء الطلق",
-      "recovery": "التعافي والتأهيل"
+      "recovery": "التعافي والتأهيل",
+      "gymnastics": "الجمباز والأكروبات"
     },
     "discipline": {
       "strength": "تدريب القوة",
@@ -6277,7 +6293,7 @@
       "mma": "MMA",
       "bjj_grappling": "BJJ والمصارعة الأرضية",
       "wrestling": "المصارعة",
-      "martial_arts": "الفنون القتالية (كاراتيه، تايكوندو، جودو)",
+      "martial_arts": "الفنون القتالية (أيكيدو، كابويرا، أخرى)",
       "self_defense": "الدفاع عن النفس",
       "dance": "الرقص",
       "dance_fitness": "لياقة الرقص (زومبا)",
@@ -6288,7 +6304,22 @@
       "climbing_bouldering": "التسلق والبولدرينغ",
       "physio_rehab": "العلاج الطبيعي والتأهيل",
       "sports_massage": "التدليك الرياضي",
-      "recovery": "جلسات التعافي"
+      "recovery": "جلسات التعافي",
+      "artistic_gymnastics": "الجمباز الفني",
+      "rhythmic_gymnastics": "الجمباز الإيقاعي",
+      "trampoline_tumbling": "الترامبولين والتمبلنغ",
+      "acrobatics": "الأكروبات",
+      "parkour": "الباركور والفري رننغ",
+      "judo": "الجودو",
+      "karate": "الكاراتيه",
+      "taekwondo": "التايكوندو",
+      "kung_fu": "الكونغ فو والووشو",
+      "krav_maga": "كراف ماغا",
+      "ballet": "الباليه",
+      "contemporary_dance": "الرقص المعاصر",
+      "latin_dance": "الرقص اللاتيني (سالسا، باتشاتا)",
+      "street_dance": "رقص الشارع (هيب هوب، هيلز، ريغيتون)",
+      "skateboarding": "التزلج على اللوح"
     },
     "audience": {
       "beginners": "المبتدئون",
@@ -16877,11 +16908,6 @@
       "panelTitle": "الرتبة",
       "settingsHint": "سلّم واحد لكل رياضة: أحزمة بخطوط أو مستويات. المدرب هو من يقرر الترقية دائمًا.",
       "newLadder": "سلّم جديد",
-      "template": {
-        "bjj_adult": "أحزمة BJJ",
-        "karate_kyu": "أحزمة الكاراتيه",
-        "gymnastics_levels": "مستويات الجمباز"
-      },
       "fromScratch": "من البداية: اختر رياضة",
       "create": "إنشاء",
       "newLadderName": "سلّم جديد",

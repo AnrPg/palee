@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import {
   createRankLadder,
@@ -24,7 +24,6 @@ import { useWorkoutTypeLabels, WorkoutTypeSelect } from "@/components/workouts/W
 import type { WorkoutType } from "@/lib/workout-types";
 
 const BELT_SHADES: RankColor[] = ["white", "grey", "yellow", "orange", "green", "blue", "purple", "brown", "red", "black", "pink"];
-const TEMPLATE_KEYS = ["bjj_adult", "karate_kyu", "gymnastics_levels"] as const;
 
 type DraftRank = {
   id?: string;
@@ -84,6 +83,14 @@ export function ladderBody(draft: Draft) {
   };
 }
 
+const TEMPLATE_LOCALES = ["en", "el", "ar", "ru", "de", "es", "pt-PT", "he", "it", "bg", "nl", "fr"] as const;
+type TemplateLocale = (typeof TEMPLATE_LOCALES)[number];
+
+/** The web locale as a template language the API knows; Greek otherwise (ADR-400). */
+function templateLocale(locale: string): TemplateLocale {
+  return (TEMPLATE_LOCALES as readonly string[]).includes(locale) ? (locale as TemplateLocale) : "el";
+}
+
 /**
  * Ρυθμίσεις › Προχωρημένα › Βαθμοί (ADR-377, mockup e2setup A): one ladder
  * per discipline, started from a template and corrected in a table (name,
@@ -92,8 +99,13 @@ export function ladderBody(draft: Draft) {
  */
 export function RankLaddersSettings({ token, slug }: { token: string; slug: string }) {
   const t = useTranslations("BodyDevices");
+  const locale = useLocale();
   const queryClient = useQueryClient();
-  const ladders = useQuery({ queryKey: rankLaddersKey(slug), enabled: Boolean(token && slug), queryFn: () => fetchRankLadders(token, slug) });
+  const ladders = useQuery({
+    queryKey: rankLaddersKey(slug, locale),
+    enabled: Boolean(token && slug),
+    queryFn: () => fetchRankLadders(token, slug, locale),
+  });
   const [creating, setCreating] = useState(false);
   const [scratchType, setScratchType] = useState<WorkoutType | "">("");
   const create = useMutation({
@@ -118,18 +130,21 @@ export function RankLaddersSettings({ token, slug }: { token: string; slug: stri
         <section className="flex flex-col gap-3 rounded-2xl p-4" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
           <b className="text-sm" style={{ color: "var(--text)" }}>{t("ranks.newLadder")}</b>
           <div className="flex flex-wrap gap-2">
-            {TEMPLATE_KEYS.map((key) => (
-              <button
-                key={key}
-                type="button"
-                disabled={create.isPending}
-                onClick={() => create.mutate({ template: key, name: t(`ranks.template.${key}`) })}
-                className="min-h-9 rounded-full px-3 text-sm font-semibold"
-                style={{ background: "var(--panel-muted)", border: "1px solid var(--border)", color: "var(--text)" }}
-              >
-                {t(`ranks.template.${key}`)}
-              </button>
-            ))}
+            {/* ADR-400: the server's catalogue, already in the box's language. */}
+            {ladders.data.templates
+              .filter((template) => template && typeof template.key === "string")
+              .map((template) => (
+                <button
+                  key={template.key}
+                  type="button"
+                  disabled={create.isPending}
+                  onClick={() => create.mutate({ template: template.key, name: template.name || template.key, locale: templateLocale(locale) })}
+                  className="min-h-9 rounded-full px-3 text-sm font-semibold"
+                  style={{ background: "var(--panel-muted)", border: "1px solid var(--border)", color: "var(--text)" }}
+                >
+                  {template.name || template.key}
+                </button>
+              ))}
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <WorkoutTypeSelect value={scratchType} onChange={setScratchType} placeholder={t("ranks.fromScratch")} className="min-h-11 min-w-56" />

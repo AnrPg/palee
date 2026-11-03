@@ -24,11 +24,19 @@ defmodule PaleeWeb.AdminRankLaddersController do
 
   operation(:index,
     summary: "The box's ladders, the templates and the belt palette",
+    parameters: [
+      locale: [
+        in: :query,
+        description: "The language of the templates (ADR-400); Greek when left out",
+        schema: S.locale()
+      ]
+    ],
     responses: [ok: {"Ladders", "application/json", S.ladders_response()}]
   )
 
-  def index(conn, _params) do
-    with {:ok, result} <- RankLadders.list(conn.assigns.tenant_context), do: json(conn, result)
+  def index(conn, params) do
+    with {:ok, result} <- RankLadders.list(conn.assigns.tenant_context, params),
+         do: json(conn, result)
   end
 
   operation(:create,

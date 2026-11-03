@@ -4734,7 +4734,7 @@
     "semanticWorkoutMma": "ММА",
     "semanticWorkoutBjjGrappling": "BJJ и грапълинг",
     "semanticWorkoutWrestling": "Борба",
-    "semanticWorkoutMartialArts": "Бойни изкуства (карате, таекуондо, джудо)",
+    "semanticWorkoutMartialArts": "Бойни изкуства (айкидо, капоейра, други)",
     "semanticWorkoutSelfDefense": "Самоотбрана",
     "semanticWorkoutDance": "Танци",
     "semanticWorkoutDanceFitness": "Танцов фитнес (Zumba)",
@@ -4898,7 +4898,22 @@
     "pkgFieldBookingDailyLimitSuffix": "{count, plural, one {час на ден} other {часа на ден}}",
     "pkgFieldBookingOpenBookingsLimit": "Отворени резервации",
     "pkgFieldBookingOpenBookingsLimitHint": "Колко предстоящи часа може да има резервирани един член едновременно.",
-    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {предстоящ час} other {предстоящи часа}}"
+    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {предстоящ час} other {предстоящи часа}}",
+    "semanticWorkoutArtisticGymnastics": "Спортна гимнастика",
+    "semanticWorkoutRhythmicGymnastics": "Художествена гимнастика",
+    "semanticWorkoutTrampolineTumbling": "Батут и тъмблинг",
+    "semanticWorkoutAcrobatics": "Акробатика",
+    "semanticWorkoutParkour": "Паркур и фрийрънинг",
+    "semanticWorkoutJudo": "Джудо",
+    "semanticWorkoutKarate": "Карате",
+    "semanticWorkoutTaekwondo": "Таекуондо",
+    "semanticWorkoutKungFu": "Кунг-фу и ушу",
+    "semanticWorkoutKravMaga": "Крав мага",
+    "semanticWorkoutBallet": "Балет",
+    "semanticWorkoutContemporaryDance": "Съвременен танц",
+    "semanticWorkoutLatinDance": "Латино танци (салса, бачата)",
+    "semanticWorkoutStreetDance": "Улични танци (хип-хоп, хийлс, регетон)",
+    "semanticWorkoutSkateboarding": "Скейтборд"
   },
   "PrSharing": {
     "gymLabel": "Къде постигна този рекорд?",
@@ -6240,7 +6255,8 @@
       "dance": "Танци",
       "aquatic": "Вода",
       "outdoor": "На открито",
-      "recovery": "Възстановяване и рехабилитация"
+      "recovery": "Възстановяване и рехабилитация",
+      "gymnastics": "Гимнастика и акробатика"
     },
     "discipline": {
       "strength": "Силови тренировки",
@@ -6277,7 +6293,7 @@
       "mma": "ММА",
       "bjj_grappling": "BJJ и грапълинг",
       "wrestling": "Борба",
-      "martial_arts": "Бойни изкуства (карате, таекуондо, джудо)",
+      "martial_arts": "Бойни изкуства (айкидо, капоейра, други)",
       "self_defense": "Самоотбрана",
       "dance": "Танци",
       "dance_fitness": "Танцов фитнес (Zumba)",
@@ -6288,7 +6304,22 @@
       "climbing_bouldering": "Катерене и боулдър",
       "physio_rehab": "Физиотерапия и рехабилитация",
       "sports_massage": "Спортен масаж",
-      "recovery": "Възстановителни сесии"
+      "recovery": "Възстановителни сесии",
+      "artistic_gymnastics": "Спортна гимнастика",
+      "rhythmic_gymnastics": "Художествена гимнастика",
+      "trampoline_tumbling": "Батут и тъмблинг",
+      "acrobatics": "Акробатика",
+      "parkour": "Паркур и фрийрънинг",
+      "judo": "Джудо",
+      "karate": "Карате",
+      "taekwondo": "Таекуондо",
+      "kung_fu": "Кунг-фу и ушу",
+      "krav_maga": "Крав мага",
+      "ballet": "Балет",
+      "contemporary_dance": "Съвременен танц",
+      "latin_dance": "Латино танци (салса, бачата)",
+      "street_dance": "Улични танци (хип-хоп, хийлс, регетон)",
+      "skateboarding": "Скейтборд"
     },
     "audience": {
       "beginners": "Начинаещи",
@@ -16877,11 +16908,6 @@
       "panelTitle": "Степен",
       "settingsHint": "Една скала за спорт: колани с ленти или нива. За повишението винаги решава треньорът.",
       "newLadder": "Нова скала",
-      "template": {
-        "bjj_adult": "Колани по BJJ",
-        "karate_kyu": "Колани по карате",
-        "gymnastics_levels": "Нива по гимнастика"
-      },
       "fromScratch": "От нулата: избери спорт",
       "create": "Създай",
       "newLadderName": "Нова скала",

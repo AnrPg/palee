@@ -7,7 +7,14 @@ defmodule Palee.Infrastructure.Localization.GettextAdapter do
     gettext_locale = if locale == "pt-PT", do: "pt_PT", else: locale || "en"
 
     Gettext.with_locale(GettextBackend, gettext_locale, fn ->
-      Gettext.dgettext(GettextBackend, domain, message, bindings)
+      lookup(domain, message, bindings)
     end)
   end
+
+  # `{context, message_id}` looks the text up under its msgctxt.
+  defp lookup(domain, {context, message}, bindings),
+    do: Gettext.dpgettext(GettextBackend, domain, context, message, bindings)
+
+  defp lookup(domain, message, bindings),
+    do: Gettext.dgettext(GettextBackend, domain, message, bindings)
 end

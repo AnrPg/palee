@@ -11,15 +11,23 @@ defmodule Palee.Application.RankStanding do
   @history_limit 2_000
 
   def call(context, user_id) do
-    {ladders, awards} =
-      Ranks.with_context(context, fn -> {Ranks.list_ladders(), Ranks.list_awards(user_id)} end)
+    {ladders, awards, checks} =
+      Ranks.with_context(context, fn ->
+        {Ranks.list_ladders(), Ranks.list_awards(user_id), Ranks.list_skill_checks(user_id)}
+      end)
 
     history = attendance(context, user_id, ladders)
     today = Clock.today()
 
     ladders
     |> Enum.map(
-      &ladder_standing(&1, Enum.filter(awards, fn a -> a.ladder_id == &1.id end), history, today)
+      &ladder_standing(
+        &1,
+        Enum.filter(awards, fn a -> a.ladder_id == &1.id end),
+        history,
+        checks,
+        today
+      )
     )
   end
 
@@ -32,7 +40,7 @@ defmodule Palee.Application.RankStanding do
     end
   end
 
-  defp ladder_standing(ladder, awards, history, today) do
+  defp ladder_standing(ladder, awards, history, checks, today) do
     ranks = Enum.sort_by(ladder.ranks, & &1.position)
     by_id = Map.new(ranks, &{&1.id, &1})
     current = Ranks.current_award(awards)
@@ -56,7 +64,8 @@ defmodule Palee.Application.RankStanding do
           next,
           since,
           Ranks.count_attended(history, ladder.class_type_ids || [], since),
-          today
+          today,
+          checks
         ),
       history: Enum.map(awards, &present_award(&1, by_id))
     }

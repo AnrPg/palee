@@ -94,7 +94,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     box_site_settings box_site_domains box_site_submissions box_site_consents
     box_site_ingress_ops
     review_ask_settings review_asks review_ask_opt_outs box_reviews google_place_snapshots
-    rank_ladders ranks rank_awards
+    rank_ladders ranks rank_awards rank_skill_checks
     box_review_reports box_review_decisions
   )
 

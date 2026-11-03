@@ -1,0 +1,8089 @@
+msgid ""
+msgstr ""
+"Language: bg\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "BJJ belts"
+msgstr "Колани по BJJ"
+
+msgid "IBJJF adult belts (16+)"
+msgstr "Колани за възрастни IBJJF (16+)"
+
+msgid "White"
+msgstr "Бял"
+
+msgid "Tapping and mat etiquette"
+msgstr ""
+
+msgid "Blue"
+msgstr "Син"
+
+msgid "Age 16 or older (IBJJF)"
+msgstr ""
+
+msgid "Break-falls back and to the side"
+msgstr ""
+
+msgid "Shrimp and bridge escapes to both sides"
+msgstr ""
+
+msgid "Closed guard posture and guard break"
+msgstr ""
+
+msgid "Mount escape with upa and elbow-knee"
+msgstr ""
+
+msgid "Side control escape to guard"
+msgstr ""
+
+msgid "Scissor sweep and hip-bump sweep"
+msgstr ""
+
+msgid "Armbar and triangle from closed guard"
+msgstr ""
+
+msgid "Rear naked choke from back control"
+msgstr ""
+
+msgid "Knee-cut or toreando guard pass"
+msgstr ""
+
+msgid "Double-leg or single-leg takedown"
+msgstr ""
+
+msgid "Positional sparring with control"
+msgstr ""
+
+msgid "Purple"
+msgstr "Лилав"
+
+msgid "Open guard retention (De La Riva or spider)"
+msgstr ""
+
+msgid "Half guard sweeps (old school and deep half)"
+msgstr ""
+
+msgid "Butterfly guard sweeps and elevations"
+msgstr ""
+
+msgid "Three guard passes chained together"
+msgstr ""
+
+msgid "Back take from turtle and seatbelt control"
+msgstr ""
+
+msgid "Collar chokes from mount and back"
+msgstr ""
+
+msgid "Kimura and americana from top and bottom"
+msgstr ""
+
+msgid "Live rolls with a clear game plan"
+msgstr ""
+
+msgid "Brown"
+msgstr "Кафяв"
+
+msgid "Age 18 or older (IBJJF)"
+msgstr ""
+
+msgid "Connected attacks from a personal guard game"
+msgstr ""
+
+msgid "Leg-lock entries and straight ankle lock"
+msgstr ""
+
+msgid "Counters to the common guard passes"
+msgstr ""
+
+msgid "Pressure passing and smash half guard"
+msgstr ""
+
+msgid "Omoplata and wrist lock"
+msgstr ""
+
+msgid "Helps teach white belts"
+msgstr ""
+
+msgid "Black"
+msgstr "Черен"
+
+msgid "A complete game in every position"
+msgstr ""
+
+msgid "Chains submissions and transitions fluidly"
+msgstr ""
+
+msgid "Heel hook defence and no-gi adaptations"
+msgstr ""
+
+msgid "Competition-level takedowns"
+msgstr ""
+
+msgid "Can teach the whole curriculum"
+msgstr ""
+
+msgid "Age 19 or older (IBJJF)"
+msgstr ""
+
+msgid "BJJ kids belts"
+msgstr "Детски колани по BJJ"
+
+msgid "IBJJF kids belts (ages 4-15)"
+msgstr "Детски колани IBJJF (4-15 г.)"
+
+msgid "Grey-white"
+msgstr "Сив-бял"
+
+msgid "Safe backward break-fall"
+msgstr ""
+
+msgid "Shrimp and bridge"
+msgstr ""
+
+msgid "Technical stand-up"
+msgstr ""
+
+msgid "Grey"
+msgstr "Сив"
+
+msgid "Hold side control for 10 seconds"
+msgstr ""
+
+msgid "Mount escape with upa"
+msgstr ""
+
+msgid "Closed guard posture in both roles"
+msgstr ""
+
+msgid "Grey-black"
+msgstr "Сив-черен"
+
+msgid "Scissor sweep"
+msgstr ""
+
+msgid "Armbar from mount"
+msgstr ""
+
+msgid "Yellow-white"
+msgstr "Жълт-бял"
+
+msgid "Age 7 or older (IBJJF)"
+msgstr ""
+
+msgid "Hip-bump sweep"
+msgstr ""
+
+msgid "Guard pass to side control"
+msgstr ""
+
+msgid "Knee on belly"
+msgstr ""
+
+msgid "Yellow"
+msgstr "Жълт"
+
+msgid "Triangle from closed guard"
+msgstr ""
+
+msgid "Back control with hooks"
+msgstr ""
+
+msgid "Double-leg takedown"
+msgstr ""
+
+msgid "Yellow-black"
+msgstr "Жълт-черен"
+
+msgid "Back control escape"
+msgstr ""
+
+msgid "Kimura from guard"
+msgstr ""
+
+msgid "Butterfly sweep"
+msgstr ""
+
+msgid "Orange-white"
+msgstr "Оранжев-бял"
+
+msgid "Age 10 or older (IBJJF)"
+msgstr ""
+
+msgid "Collar choke from mount"
+msgstr ""
+
+msgid "Half guard sweep"
+msgstr ""
+
+msgid "Turtle defence"
+msgstr ""
+
+msgid "Orange"
+msgstr "Оранжев"
+
+msgid "Sweep to submission combination"
+msgstr ""
+
+msgid "Two guard passes"
+msgstr ""
+
+msgid "Osoto-gari or single-leg takedown"
+msgstr ""
+
+msgid "Orange-black"
+msgstr "Оранжев-черен"
+
+msgid "Arm drag to back take"
+msgstr ""
+
+msgid "Back take from turtle"
+msgstr ""
+
+msgid "Positional sparring with a plan"
+msgstr ""
+
+msgid "Green-white"
+msgstr "Зелен-бял"
+
+msgid "Age 13 or older (IBJJF)"
+msgstr ""
+
+msgid "Open guard retention"
+msgstr ""
+
+msgid "Bow and arrow choke"
+msgstr ""
+
+msgid "Counter to a guard pass"
+msgstr ""
+
+msgid "Green"
+msgstr "Зелен"
+
+msgid "Three attacks chained from guard"
+msgstr ""
+
+msgid "Cross collar choke from guard"
+msgstr ""
+
+msgid "Helps younger children drill"
+msgstr ""
+
+msgid "Green-black"
+msgstr "Зелен-черен"
+
+msgid "Whole kids curriculum in live sparring"
+msgstr ""
+
+msgid "At 16 moves to adult blue or purple belt (coach decides)"
+msgstr ""
+
+msgid "Karate belts"
+msgstr "Колани по карате"
+
+msgid "Palee 7-belt kyu ladder (no single federation)"
+msgstr "Стълбица кю от 7 колана на Palee (без единна федерация)"
+
+msgid "Dojo etiquette (rei and seiza)"
+msgstr ""
+
+msgid "Stances zenkutsu and kiba-dachi"
+msgstr ""
+
+msgid "Oi-zuki and gyaku-zuki"
+msgstr ""
+
+msgid "Age-uke and gedan-barai"
+msgstr ""
+
+msgid "Mae-geri"
+msgstr ""
+
+msgid "First kata (Taikyoku or Heian Shodan)"
+msgstr ""
+
+msgid "Kokutsu-dachi and shuto-uke"
+msgstr ""
+
+msgid "Soto-uke and uchi-uke"
+msgstr ""
+
+msgid "Mawashi-geri"
+msgstr ""
+
+msgid "Gohon kumite (five-step sparring)"
+msgstr ""
+
+msgid "Heian Nidan"
+msgstr ""
+
+msgid "Yoko-geri keage and kekomi"
+msgstr ""
+
+msgid "Combinations of three techniques"
+msgstr ""
+
+msgid "Sanbon kumite (three-step sparring)"
+msgstr ""
+
+msgid "Heian Sandan"
+msgstr ""
+
+msgid "Ushiro-geri"
+msgstr ""
+
+msgid "Kihon ippon kumite"
+msgstr ""
+
+msgid "Heian Yondan and Godan"
+msgstr ""
+
+msgid "Jiyu ippon kumite"
+msgstr ""
+
+msgid "Tekki Shodan and Bassai Dai"
+msgstr ""
+
+msgid "Controlled free sparring (jiyu kumite)"
+msgstr ""
+
+msgid "All kihon with power and control"
+msgstr ""
+
+msgid "A senior kata of choice with bunkai"
+msgstr ""
+
+msgid "Free sparring against two opponents in turn"
+msgstr ""
+
+msgid "Shotokan karate kyu"
+msgstr "Кю карате Шотокан"
+
+msgid "Shotokan kyu (shoto.uk colours and intervals)"
+msgstr "Шотокан кю (цветове и срокове на shoto.uk)"
+
+msgid "Beginner"
+msgstr "Начинаещ"
+
+msgid "Dojo etiquette and dojo kun"
+msgstr ""
+
+msgid "Kyu %{n}"
+msgstr "%{n} кю"
+
+msgid "Zenkutsu-dachi with oi-zuki"
+msgstr ""
+
+msgid "Age-uke soto-uke and gedan-barai"
+msgstr ""
+
+msgid "Mae-geri keage"
+msgstr ""
+
+msgid "Kata Heian Shodan"
+msgstr ""
+
+msgid "Uchi-uke and shuto-uke in kokutsu-dachi"
+msgstr ""
+
+msgid "Gohon kumite jodan and chudan"
+msgstr ""
+
+msgid "Kata Heian Nidan"
+msgstr ""
+
+msgid "Yoko-geri keage and kekomi in kiba-dachi"
+msgstr ""
+
+msgid "Kizami-zuki and gyaku-zuki combination"
+msgstr ""
+
+msgid "Sanbon kumite"
+msgstr ""
+
+msgid "Kata Heian Sandan"
+msgstr ""
+
+msgid "Kata Heian Yondan"
+msgstr ""
+
+msgid "Combinations with stance changes"
+msgstr ""
+
+msgid "Kihon ippon kumite with counter"
+msgstr ""
+
+msgid "Kata Heian Godan"
+msgstr ""
+
+msgid "Mawashi-geri and ura-mawashi-geri"
+msgstr ""
+
+msgid "Kata Tekki Shodan"
+msgstr ""
+
+msgid "Kihon with hip rotation and kime"
+msgstr ""
+
+msgid "Jiyu ippon kumite on all levels"
+msgstr ""
+
+msgid "Kata Bassai Dai"
+msgstr ""
+
+msgid "Controlled jiyu kumite"
+msgstr ""
+
+msgid "Kata Kanku Dai or Jion"
+msgstr ""
+
+msgid "Jiyu kumite with timing and distance"
+msgstr ""
+
+msgid "Kata Enpi or Jitte with bunkai"
+msgstr ""
+
+msgid "Dan %{n}"
+msgstr "%{n} дан"
+
+msgid "All kihon with kime"
+msgstr ""
+
+msgid "Tokui kata (own choice) and a set kata"
+msgstr ""
+
+msgid "Jiyu kumite"
+msgstr ""
+
+msgid "Kyokushin karate kyu"
+msgstr "Кю карате Киокушин"
+
+msgid "Kyokushin kyu colours (IKO intervals)"
+msgstr "Цветове кю киокушин (срокове IKO)"
+
+msgid "Dojo etiquette and seiza"
+msgstr ""
+
+msgid "Seiken and uraken strikes"
+msgstr ""
+
+msgid "Mae-geri and hiza-geri"
+msgstr ""
+
+msgid "Kata Taikyoku Sono Ichi"
+msgstr ""
+
+msgid "Mawashi-geri gedan and chudan"
+msgstr ""
+
+msgid "Basic blocks in zenkutsu-dachi"
+msgstr ""
+
+msgid "Kata Taikyoku Sono Ni and San"
+msgstr ""
+
+msgid "Yoko-geri and kakato-geri"
+msgstr ""
+
+msgid "Kata Pinan Sono Ichi"
+msgstr ""
+
+msgid "Light kumite rounds"
+msgstr ""
+
+msgid "Combination punching on pads"
+msgstr ""
+
+msgid "Kata Pinan Sono Ni"
+msgstr ""
+
+msgid "Kata Pinan Sono San and Sanchin"
+msgstr ""
+
+msgid "Full-contact kumite (two rounds)"
+msgstr ""
+
+msgid "Kata Pinan Sono Yon"
+msgstr ""
+
+msgid "Conditioning: 50 push-ups on knuckles"
+msgstr ""
+
+msgid "Jodan mawashi-geri"
+msgstr ""
+
+msgid "Kata Pinan Sono Go and Gekisai Dai"
+msgstr ""
+
+msgid "Kumite five rounds"
+msgstr ""
+
+msgid "Kata Tsuki no Kata and Yantsu"
+msgstr ""
+
+msgid "Tameshiwari (breaking) when the club tests it"
+msgstr ""
+
+msgid "Kata Saiha and Tensho"
+msgstr ""
+
+msgid "Kumite eight rounds"
+msgstr ""
+
+msgid "Kata Gekisai Sho and Bassai Dai"
+msgstr ""
+
+msgid "Helps teach the junior grades"
+msgstr ""
+
+msgid "All kyu kata and kihon"
+msgstr ""
+
+msgid "Kumite of 10 or more rounds"
+msgstr ""
+
+msgid "Judo belts"
+msgstr "Колани по джудо"
+
+msgid "European kyu colours with British Judo intervals"
+msgstr "Европейски цветове кю със срокове на British Judo"
+
+msgid "Bow (rei) and judogi care"
+msgstr ""
+
+msgid "Ukemi back and side"
+msgstr ""
+
+msgid "Ukemi forward rolling"
+msgstr ""
+
+msgid "O-soto-gari and o-goshi"
+msgstr ""
+
+msgid "Hiza-guruma and de-ashi-barai"
+msgstr ""
+
+msgid "Kesa-gatame and escape"
+msgstr ""
+
+msgid "Kumikata (grips) and tsukuri"
+msgstr ""
+
+msgid "Ippon-seoi-nage and tai-otoshi"
+msgstr ""
+
+msgid "O-uchi-gari and ko-uchi-gari"
+msgstr ""
+
+msgid "Yoko-shiho-gatame and kami-shiho-gatame"
+msgstr ""
+
+msgid "Randori standing and on the ground"
+msgstr ""
+
+msgid "Harai-goshi and uchi-mata"
+msgstr ""
+
+msgid "Combination throws (renraku-waza)"
+msgstr ""
+
+msgid "Turnovers into hold-downs"
+msgstr ""
+
+msgid "Juji-gatame (no submission under 16)"
+msgstr ""
+
+msgid "Counter throws (kaeshi-waza)"
+msgstr ""
+
+msgid "Shime-waza (no submission under 16)"
+msgstr ""
+
+msgid "Nage-no-kata first set"
+msgstr ""
+
+msgid "Sumi-gaeshi and tomoe-nage"
+msgstr ""
+
+msgid "Tokui-waza in randori"
+msgstr ""
+
+msgid "Nage-no-kata three sets"
+msgstr ""
+
+msgid "Nage-no-kata complete"
+msgstr ""
+
+msgid "Katame-no-kata"
+msgstr ""
+
+msgid "Competition or shiai points as the federation requires"
+msgstr ""
+
+msgid "Age 15 or older"
+msgstr ""
+
+msgid "Taekwondo belts"
+msgstr "Колани по таекуондо"
+
+msgid "Kukkiwon 10 geup to 1st dan (British Taekwondo intervals)"
+msgstr "Куккивон от 10 геуп до 1 дан (срокове на British Taekwondo)"
+
+msgid "Geup %{n}"
+msgstr "%{n} гуп"
+
+msgid "Dojang etiquette and stances"
+msgstr ""
+
+msgid "Ap seogi and ap kubi"
+msgstr ""
+
+msgid "Momtong jireugi and arae makki"
+msgstr ""
+
+msgid "Ap chagi"
+msgstr ""
+
+msgid "Poomsae Taegeuk Il Jang"
+msgstr ""
+
+msgid "Bandal chagi"
+msgstr ""
+
+msgid "Poomsae Taegeuk Ee Jang"
+msgstr ""
+
+msgid "Yeop chagi"
+msgstr ""
+
+msgid "Poomsae Taegeuk Sam Jang"
+msgstr ""
+
+msgid "Dollyeo chagi to body and head"
+msgstr ""
+
+msgid "Step sparring"
+msgstr ""
+
+msgid "Poomsae Taegeuk Sa Jang"
+msgstr ""
+
+msgid "Dwi chagi"
+msgstr ""
+
+msgid "Poomsae Taegeuk Oh Jang"
+msgstr ""
+
+msgid "Kyorugi with protectors"
+msgstr ""
+
+msgid "Poomsae Taegeuk Yuk Jang"
+msgstr ""
+
+msgid "Naeryeo chagi"
+msgstr ""
+
+msgid "Poomsae Taegeuk Chil Jang"
+msgstr ""
+
+msgid "Spinning kicks (dwi huryeo chagi)"
+msgstr ""
+
+msgid "Poomsae Taegeuk Pal Jang"
+msgstr ""
+
+msgid "Board breaking"
+msgstr ""
+
+msgid "All Taegeuk poomsae and Koryo"
+msgstr ""
+
+msgid "Kyorugi and self-defence (hosinsul)"
+msgstr ""
+
+msgid "Poom instead of dan under age 15 (Kukkiwon)"
+msgstr ""
+
+msgid "Aikido kyu"
+msgstr "Кю айкидо"
+
+msgid "Aikikai Hombu practice days per grade"
+msgstr "Дни практика за степен по Айкикай Хомбу"
+
+msgid "Ukemi forward and backward"
+msgstr ""
+
+msgid "Shomen-uchi ikkyo omote and ura"
+msgstr ""
+
+msgid "Katate-dori shiho-nage"
+msgstr ""
+
+msgid "Shomen-uchi irimi-nage"
+msgstr ""
+
+msgid "Tai no henko and kokyu-dosa"
+msgstr ""
+
+msgid "Shomen-uchi nikyo and sankyo"
+msgstr ""
+
+msgid "Katate-dori kote-gaeshi"
+msgstr ""
+
+msgid "Suwari-waza kokyu-ho"
+msgstr ""
+
+msgid "Chudan-tsuki kote-gaeshi"
+msgstr ""
+
+msgid "Ryote-dori tenchi-nage"
+msgstr ""
+
+msgid "Yokomen-uchi shiho-nage and irimi-nage"
+msgstr ""
+
+msgid "Shomen-uchi yonkyo"
+msgstr ""
+
+msgid "Suwari-waza ikkyo to yonkyo"
+msgstr ""
+
+msgid "Hanmi handachi shiho-nage"
+msgstr ""
+
+msgid "Ushiro waza from several grabs"
+msgstr ""
+
+msgid "Ushiro ryote-dori kote-gaeshi"
+msgstr ""
+
+msgid "Jiyu-waza against one attacker"
+msgstr ""
+
+msgid "Tanto-dori basics (dojo addition)"
+msgstr ""
+
+msgid "Age 15 or older (Aikikai)"
+msgstr ""
+
+msgid "All kyu techniques fluidly"
+msgstr ""
+
+msgid "Randori against two attackers (dojo addition)"
+msgstr ""
+
+msgid "Muay Thai khan"
+msgstr "Кхан муай тай"
+
+msgid "Kru Muay Thai Association khan 1-10"
+msgstr "Кхан 1-10 на Kru Muay Thai Association"
+
+msgid "Khan %{n}"
+msgstr "Кхан %{n}"
+
+msgid "Fighting stance and footwork"
+msgstr ""
+
+msgid "Jab cross hook uppercut"
+msgstr ""
+
+msgid "Wai kru ram muay respect"
+msgstr ""
+
+msgid "Teep (front kick) both legs"
+msgstr ""
+
+msgid "Roundhouse kick to body both sides"
+msgstr ""
+
+msgid "Check (block) a low kick"
+msgstr ""
+
+msgid "Straight knee and diagonal knee"
+msgstr ""
+
+msgid "Horizontal and upward elbows"
+msgstr ""
+
+msgid "Combinations of four on pads"
+msgstr ""
+
+msgid "Clinch entry and neck control"
+msgstr ""
+
+msgid "Catch a kick and counter"
+msgstr ""
+
+msgid "Technical sparring three rounds"
+msgstr ""
+
+msgid "Switch kick and switch knee"
+msgstr ""
+
+msgid "Clinch knees and off-balancing"
+msgstr ""
+
+msgid "Teep defence and counter"
+msgstr ""
+
+msgid "Spinning elbow and back elbow"
+msgstr ""
+
+msgid "Sweeps from the catch"
+msgstr ""
+
+msgid "Sparring five rounds"
+msgstr ""
+
+msgid "Ram muay performed in full"
+msgstr ""
+
+msgid "Feints and rhythm changes"
+msgstr ""
+
+msgid "Ring craft and cutting off the ring"
+msgstr ""
+
+msgid "Holds pads for others"
+msgstr ""
+
+msgid "Interclub bout or full sparring test"
+msgstr ""
+
+msgid "Explains the history of Muay Thai"
+msgstr ""
+
+msgid "At least 217 hours of training in total (KMA)"
+msgstr ""
+
+msgid "Assists teaching a class"
+msgstr ""
+
+msgid "Builds a pad round for a beginner"
+msgstr ""
+
+msgid "Kickboxing belts"
+msgstr "Колани по кикбокс"
+
+msgid "WAKO grading programme (2025)"
+msgstr "Програма за изпити WAKO (2025)"
+
+msgid "Guard stance and footwork"
+msgstr ""
+
+msgid "Front kick and roundhouse kick"
+msgstr ""
+
+msgid "Knee strikes and low kick to the thigh"
+msgstr ""
+
+msgid "Parry and block straight punches"
+msgstr ""
+
+msgid "Side kick and hook kick to the head"
+msgstr ""
+
+msgid "Slip and roll under punches"
+msgstr ""
+
+msgid "Three-technique combinations"
+msgstr ""
+
+msgid "Back kick"
+msgstr ""
+
+msgid "Counter-attacks after defence"
+msgstr ""
+
+msgid "Light sparring two rounds"
+msgstr ""
+
+msgid "Jumping spinning back side kick and jumping spinning hook kick"
+msgstr ""
+
+msgid "Kick catching defence"
+msgstr ""
+
+msgid "Sparring three rounds in point or light contact"
+msgstr ""
+
+msgid "Jumping kicks with rotation"
+msgstr ""
+
+msgid "Ring and tatami tactics"
+msgstr ""
+
+msgid "Free sparring"
+msgstr ""
+
+msgid "Axe kick external and internal"
+msgstr ""
+
+msgid "Full technical exam of all colours"
+msgstr ""
+
+msgid "Written paper on kickboxing history"
+msgstr ""
+
+msgid "Age 16 or older in the year of grading"
+msgstr ""
+
+msgid "Boxing levels"
+msgstr "Нива по бокс"
+
+msgid "Modelled on England Boxing awards"
+msgstr "По модела на наградите на England Boxing"
+
+msgid "Level %{n}"
+msgstr "Ниво %{n}"
+
+msgid "Stance and guard"
+msgstr ""
+
+msgid "Step forward back and sideways"
+msgstr ""
+
+msgid "Jab to the head and body"
+msgstr ""
+
+msgid "Cross and lead hook"
+msgstr ""
+
+msgid "Parry and block the jab"
+msgstr ""
+
+msgid "Shadow boxing one round"
+msgstr ""
+
+msgid "Uppercuts both hands"
+msgstr ""
+
+msgid "Slip and roll"
+msgstr ""
+
+msgid "Four-punch combinations on pads"
+msgstr ""
+
+msgid "Conditioned sparring (one hand or set attack)"
+msgstr ""
+
+msgid "Counter-punching after defence"
+msgstr ""
+
+msgid "Technical sparring two rounds"
+msgstr ""
+
+msgid "Ring craft: angles and the ropes"
+msgstr ""
+
+msgid "Full sparring three rounds"
+msgstr ""
+
+msgid "Knows amateur boxing rules and scoring"
+msgstr ""
+
+msgid "MMA levels"
+msgstr "Нива по MMA"
+
+msgid "Palee gym progression (no federation ranks)"
+msgstr "Прогресия в залата на Palee (без рангове на федерация)"
+
+msgid "Stance and footwork for striking"
+msgstr ""
+
+msgid "Basic punches and kicks"
+msgstr ""
+
+msgid "Break-falls and shrimping"
+msgstr ""
+
+msgid "Double-leg and single-leg takedowns"
+msgstr ""
+
+msgid "Sprawl and takedown defence"
+msgstr ""
+
+msgid "Guard and mount escapes"
+msgstr ""
+
+msgid "Cage wall work (pin and escape)"
+msgstr ""
+
+msgid "Ground and pound from guard and mount"
+msgstr ""
+
+msgid "Rear naked choke and guillotine"
+msgstr ""
+
+msgid "Striking to takedown chains"
+msgstr ""
+
+msgid "Getting up from bottom position"
+msgstr ""
+
+msgid "MMA sparring with light contact"
+msgstr ""
+
+msgid "Full MMA sparring three rounds"
+msgstr ""
+
+msgid "Game plan for an amateur bout"
+msgstr ""
+
+msgid "Knows the unified rules"
+msgstr ""
+
+msgid "Krav Maga grades (P G E)"
+msgstr "Степени крав мага (P G E)"
+
+msgid "IKMF/KMG Practitioner Graduate Expert"
+msgstr "IKMF/KMG: Practitioner Graduate Expert"
+
+msgid "P1"
+msgstr ""
+
+msgid "Fighting stance and movement"
+msgstr ""
+
+msgid "Straight punches palm strikes and front kick"
+msgstr ""
+
+msgid "360 outside defence"
+msgstr ""
+
+msgid "Release from front choke"
+msgstr ""
+
+msgid "P2"
+msgstr ""
+
+msgid "Elbows and knees"
+msgstr ""
+
+msgid "Inside defences against punches"
+msgstr ""
+
+msgid "Choke releases from behind and side"
+msgstr ""
+
+msgid "Break-falls"
+msgstr ""
+
+msgid "P3"
+msgstr ""
+
+msgid "Defences against hooks and uppercuts"
+msgstr ""
+
+msgid "Bear hug releases"
+msgstr ""
+
+msgid "Ground fighting basics"
+msgstr ""
+
+msgid "P4"
+msgstr ""
+
+msgid "Defence against kicks"
+msgstr ""
+
+msgid "Headlock releases"
+msgstr ""
+
+msgid "Fighting under stress drills"
+msgstr ""
+
+msgid "P5"
+msgstr ""
+
+msgid "Knife threat defences (static)"
+msgstr ""
+
+msgid "Stick attack defences"
+msgstr ""
+
+msgid "Multiple attacker awareness"
+msgstr ""
+
+msgid "G1"
+msgstr ""
+
+msgid "Knife attack defences (overhead and stab)"
+msgstr ""
+
+msgid "Gun threat from front"
+msgstr ""
+
+msgid "Third-party protection basics"
+msgstr ""
+
+msgid "G2"
+msgstr ""
+
+msgid "Gun threats from side and behind"
+msgstr ""
+
+msgid "Advanced ground defences"
+msgstr ""
+
+msgid "G3"
+msgstr ""
+
+msgid "Knife and stick combined scenarios"
+msgstr ""
+
+msgid "Defending while seated or in a vehicle"
+msgstr ""
+
+msgid "G4"
+msgstr ""
+
+msgid "Long-gun and rifle threats"
+msgstr ""
+
+msgid "Fighting several attackers"
+msgstr ""
+
+msgid "G5"
+msgstr ""
+
+msgid "All practitioner and graduate syllabi under stress"
+msgstr ""
+
+msgid "Scenario training in low light"
+msgstr ""
+
+msgid "E1"
+msgstr ""
+
+msgid "Expert exam: complete syllabus at speed"
+msgstr ""
+
+msgid "Endurance fight test"
+msgstr ""
+
+msgid "Krav Maga belts"
+msgstr "Колани по крав мага"
+
+msgid "FEKM colour belts (at most one a year)"
+msgstr "Цветни колани FEKM (най-много един на година)"
+
+msgid "Fighting stance and safety rules"
+msgstr ""
+
+msgid "Punches palm strikes elbows knees"
+msgstr ""
+
+msgid "Front and round kicks"
+msgstr ""
+
+msgid "360 outside defence and inside defences"
+msgstr ""
+
+msgid "Choke releases front side and back"
+msgstr ""
+
+msgid "Defences against hooks and kicks"
+msgstr ""
+
+msgid "Bear hug and headlock releases"
+msgstr ""
+
+msgid "Ground escapes from mount and guard"
+msgstr ""
+
+msgid "Knife threat and stab defences"
+msgstr ""
+
+msgid "Stick defences"
+msgstr ""
+
+msgid "Fighting from the ground to standing"
+msgstr ""
+
+msgid "Handgun threats from all angles"
+msgstr ""
+
+msgid "Multiple attacker drills"
+msgstr ""
+
+msgid "Rifle threats and third-party protection"
+msgstr ""
+
+msgid "Scenario and stress tests"
+msgstr ""
+
+msgid "Complete syllabus under fatigue"
+msgstr ""
+
+msgid "Teaching ability"
+msgstr ""
+
+msgid "Kung fu sashes"
+msgstr "Пояси по кунг-фу"
+
+msgid "Palee sash ladder (styles and colours vary)"
+msgstr "Стълбица пояси на Palee (стиловете и цветовете се различават)"
+
+msgid "Horse stance bow stance cat stance"
+msgstr ""
+
+msgid "Basic punches palms and blocks"
+msgstr ""
+
+msgid "Front snap and side kicks"
+msgstr ""
+
+msgid "First form of the school"
+msgstr ""
+
+msgid "Stance transitions with balance"
+msgstr ""
+
+msgid "Sweeps and low stances (pu bu)"
+msgstr ""
+
+msgid "Second form"
+msgstr ""
+
+msgid "Jumping front kick and tornado kick"
+msgstr ""
+
+msgid "Partner drills (two-person set)"
+msgstr ""
+
+msgid "Third form"
+msgstr ""
+
+msgid "Applications of the forms"
+msgstr ""
+
+msgid "Light sanda sparring"
+msgstr ""
+
+msgid "First weapon (staff)"
+msgstr ""
+
+msgid "Advanced form"
+msgstr ""
+
+msgid "Second weapon (broadsword or spear)"
+msgstr ""
+
+msgid "Chin na basics"
+msgstr ""
+
+msgid "Red"
+msgstr "Червен"
+
+msgid "All forms with power and spirit"
+msgstr ""
+
+msgid "Sanda sparring three rounds"
+msgstr ""
+
+msgid "Complete syllabus and a demonstration"
+msgstr ""
+
+msgid "Assists teaching"
+msgstr ""
+
+msgid "Wing Chun levels"
+msgstr "Нива по уинг чун"
+
+msgid "Ip Man lineage form order"
+msgstr "Ред на формите в линията на Ип Ман"
+
+msgid "Siu Nim Tao"
+msgstr ""
+
+msgid "Yee jee kim yeung ma stance"
+msgstr ""
+
+msgid "Centre-line theory and chain punch"
+msgstr ""
+
+msgid "Siu Nim Tao form"
+msgstr ""
+
+msgid "Tan pak and bong sau"
+msgstr ""
+
+msgid "Chum Kiu"
+msgstr ""
+
+msgid "Chum Kiu form"
+msgstr ""
+
+msgid "Turning stance and stepping"
+msgstr ""
+
+msgid "Dan chi sau and luk sau (poon sau)"
+msgstr ""
+
+msgid "Front and side kicks"
+msgstr ""
+
+msgid "Biu Tze"
+msgstr ""
+
+msgid "Biu Tze form"
+msgstr ""
+
+msgid "Chi sau with attacks"
+msgstr ""
+
+msgid "Emergency techniques and elbows"
+msgstr ""
+
+msgid "Mook Yan Jong"
+msgstr ""
+
+msgid "Wooden dummy form (116 movements)"
+msgstr ""
+
+msgid "Free chi sau"
+msgstr ""
+
+msgid "Luk Dim Boon Kwan"
+msgstr ""
+
+msgid "Long pole form"
+msgstr ""
+
+msgid "Pole drills with a partner"
+msgstr ""
+
+msgid "Baat Cham Dao"
+msgstr ""
+
+msgid "Butterfly knives form"
+msgstr ""
+
+msgid "Teaches the empty-hand forms"
+msgstr ""
+
+msgid "Capoeira cords"
+msgstr "Шнурове по капоейра"
+
+msgid "Brazilian Capoeira Confederation student cords"
+msgstr "Ученически шнурове на Бразилската конфедерация по капоейра"
+
+msgid "No cord yet"
+msgstr ""
+
+msgid "Ginga"
+msgstr ""
+
+msgid "Basic esquivas (cocorinha and negativa)"
+msgstr ""
+
+msgid "Green cord"
+msgstr ""
+
+msgid "Batizado: plays in the roda for the first time"
+msgstr ""
+
+msgid "Meia-lua de frente and armada"
+msgstr ""
+
+msgid "Queixada and benção"
+msgstr ""
+
+msgid "Au (cartwheel) and role"
+msgstr ""
+
+msgid "Yellow cord"
+msgstr ""
+
+msgid "Martelo and meia-lua de compasso"
+msgstr ""
+
+msgid "Sings a corrido and claps the rhythm"
+msgstr ""
+
+msgid "Plays pandeiro and atabaque basics"
+msgstr ""
+
+msgid "Blue cord"
+msgstr ""
+
+msgid "Rasteira and other take-downs"
+msgstr ""
+
+msgid "Basic berimbau toques"
+msgstr ""
+
+msgid "Angola rhythm game"
+msgstr ""
+
+msgid "Green-yellow cord"
+msgstr ""
+
+msgid "Roda game at Regional rhythm"
+msgstr ""
+
+msgid "Floreios (macaco and au sem mao)"
+msgstr ""
+
+msgid "Green-blue cord"
+msgstr ""
+
+msgid "Leads a song in the roda"
+msgstr ""
+
+msgid "Sequences of Mestre Bimba"
+msgstr ""
+
+msgid "Yellow-blue cord"
+msgstr ""
+
+msgid "Plays every instrument of the bateria"
+msgstr ""
+
+msgid "History of capoeira and its mestres"
+msgstr ""
+
+msgid "Green-yellow-blue cord"
+msgstr ""
+
+msgid "Formado: age 18 or older and 5 years of capoeira (CBC)"
+msgstr ""
+
+msgid "Teaches beginners under supervision"
+msgstr ""
+
+msgid "Wrestling"
+msgstr "Борба"
+
+msgid "Palee levels (Olympic wrestling has no grades)"
+msgstr "Нива на Palee (олимпийската борба няма степени)"
+
+msgid "Novice"
+msgstr "Новак"
+
+msgid "Square and staggered stance with head up"
+msgstr ""
+
+msgid "Stance motion forward · back and sideways without crossing feet"
+msgstr ""
+
+msgid "Level change from stance"
+msgstr ""
+
+msgid "Forward and backward rolls"
+msgstr ""
+
+msgid "Front and back neck bridge (safe)"
+msgstr ""
+
+msgid "Breakfall to the side and back"
+msgstr ""
+
+msgid "Sprawl from stance"
+msgstr ""
+
+msgid "Collar tie and inside control ties"
+msgstr ""
+
+msgid "Knows scoring basics: takedown · exposure · fall"
+msgstr ""
+
+msgid "Skin check and mat hygiene routine"
+msgstr ""
+
+msgid "Basic Skills"
+msgstr ""
+
+msgid "Penetration step (drop step) to a partner"
+msgstr ""
+
+msgid "Outside step penetration"
+msgstr ""
+
+msgid "Knee spin penetration"
+msgstr ""
+
+msgid "Lift a partner from a level change"
+msgstr ""
+
+msgid "Back step drill"
+msgstr ""
+
+msgid "Back arch drill on a crash pad"
+msgstr ""
+
+msgid "Hand fighting: clear ties and win inside position"
+msgstr ""
+
+msgid "Snap down to front headlock"
+msgstr ""
+
+msgid "Referee's position top and bottom (par terre)"
+msgstr ""
+
+msgid "Hip heist from bottom"
+msgstr ""
+
+msgid "Takedowns"
+msgstr ""
+
+msgid "Double leg takedown with finish"
+msgstr ""
+
+msgid "Single leg takedown with finish"
+msgstr ""
+
+msgid "High crotch"
+msgstr ""
+
+msgid "Arm drag to back or single"
+msgstr ""
+
+msgid "Duck under"
+msgstr ""
+
+msgid "Ankle pick"
+msgstr ""
+
+msgid "Front headlock go-behind"
+msgstr ""
+
+msgid "Sprawl and whizzer defence"
+msgstr ""
+
+msgid "Re-attack after a failed shot"
+msgstr ""
+
+msgid "Push-out awareness at the edge"
+msgstr ""
+
+msgid "Mat Wrestling"
+msgstr ""
+
+msgid "Gut wrench both directions"
+msgstr ""
+
+msgid "Leg lace (ankle lace) turn"
+msgstr ""
+
+msgid "Half nelson to pin"
+msgstr ""
+
+msgid "Cradle (near side and far side)"
+msgstr ""
+
+msgid "Stand-up from bottom"
+msgstr ""
+
+msgid "Sit-out and turn-in"
+msgstr ""
+
+msgid "Switch reversal"
+msgstr ""
+
+msgid "Bridging out of a pin"
+msgstr ""
+
+msgid "Defends gut wrench and leg lace from bottom"
+msgstr ""
+
+msgid "Pin combination: tilt to cradle"
+msgstr ""
+
+msgid "Advanced"
+msgstr "Напреднал"
+
+msgid "Hip toss (headlock or over-under)"
+msgstr ""
+
+msgid "Arm throw"
+msgstr ""
+
+msgid "Body lock and lateral drop"
+msgstr ""
+
+msgid "Front body lock lift and suplex (Greco-Roman)"
+msgstr ""
+
+msgid "Reverse body lock lift from par terre"
+msgstr ""
+
+msgid "Underhook and 2-on-1 tie series"
+msgstr ""
+
+msgid "Counter to single leg (heel lift and step over)"
+msgstr ""
+
+msgid "Scramble from a stalled shot"
+msgstr ""
+
+msgid "Chain wrestling: 3 linked attacks"
+msgstr ""
+
+msgid "Weight management and safe cutting knowledge"
+msgstr ""
+
+msgid "Competitor"
+msgstr "Състезател"
+
+msgid "Full 2 × 3 minute match at competition pace"
+msgstr ""
+
+msgid "Knows UWW rules: passivity · activity clock · cautions"
+msgstr ""
+
+msgid "Personal A-game of 2 takedowns and 1 turn"
+msgstr ""
+
+msgid "Scouts and adjusts tactics between periods"
+msgstr ""
+
+msgid "Leads warm-up and drills for juniors"
+msgstr ""
+
+msgid "Competes in an official tournament"
+msgstr ""
+
+msgid "Sambo"
+msgstr "Самбо"
+
+msgid "FIAS sambo belt system"
+msgstr "Коланна система по самбо FIAS"
+
+msgid "Breakfall forward on hands from a squat"
+msgstr ""
+
+msgid "Side breakfall rolling over the shoulder from a squat"
+msgstr ""
+
+msgid "Side breakfall with a rock from a squat"
+msgstr ""
+
+msgid "Back breakfall with a rock from a squat"
+msgstr ""
+
+msgid "Mount hold gripping arm and neck"
+msgstr ""
+
+msgid "Cross-body hold with hand grips"
+msgstr ""
+
+msgid "Side hold gripping arm and neck"
+msgstr ""
+
+msgid "Head hold gripping arm and neck"
+msgstr ""
+
+msgid "Hold from the legs embracing torso and arm"
+msgstr ""
+
+msgid "Turnover with hand grips from the side"
+msgstr ""
+
+msgid "Turnover with a lever"
+msgstr ""
+
+msgid "Unbalance by pulling a squatting partner"
+msgstr ""
+
+msgid "Unbalance by twisting or pushing a kneeling partner"
+msgstr ""
+
+msgid "Student Level 1"
+msgstr ""
+
+msgid "Forward fall onto a bridge rolling from a squat"
+msgstr ""
+
+msgid "Forward fall on hands from standing"
+msgstr ""
+
+msgid "Side fall rolling over the shoulder from standing"
+msgstr ""
+
+msgid "Side and back falls with a rock from standing"
+msgstr ""
+
+msgid "Mount hold with outside leg grapevine"
+msgstr ""
+
+msgid "Cross-body hold gripping arm and hip"
+msgstr ""
+
+msgid "Side hold gripping torso and arm"
+msgstr ""
+
+msgid "Head hold embracing the torso"
+msgstr ""
+
+msgid "Throw with inside shin grip"
+msgstr ""
+
+msgid "Unbalancing by twisting and by pushing"
+msgstr ""
+
+msgid "Back trip (podnozhka) gripping arm and belt"
+msgstr ""
+
+msgid "Turnover gripping leg and arm"
+msgstr ""
+
+msgid "Elbow lever through the hip from side hold"
+msgstr ""
+
+msgid "Shoulder knot (uzel) from side hold"
+msgstr ""
+
+msgid "Student Level 2"
+msgstr ""
+
+msgid "Forward fall on arms jumping from standing"
+msgstr ""
+
+msgid "Side fall rolling over partner's arm"
+msgstr ""
+
+msgid "Back fall jumping forward (half flip) and backward"
+msgstr ""
+
+msgid "Reverse cross-body hold gripping arm and hip"
+msgstr ""
+
+msgid "Side hold gripping both arms"
+msgstr ""
+
+msgid "Head hold gripping lapels under the arms kneeling"
+msgstr ""
+
+msgid "Inside ankle grip throw"
+msgstr ""
+
+msgid "Hip throw with a belt grip"
+msgstr ""
+
+msgid "Back reaping throw gripping arm and belt"
+msgstr ""
+
+msgid "Front trip gripping arm and belt"
+msgstr ""
+
+msgid "Turnover by pulling or pushing the jacket wing"
+msgstr ""
+
+msgid "Knee lever locking the hip with crossed legs"
+msgstr ""
+
+msgid "Elbow lever after a cross-body hold"
+msgstr ""
+
+msgid "Shoulder knot using the leg from side hold"
+msgstr ""
+
+msgid "Escapes from mount · side · head and leg holds"
+msgstr ""
+
+msgid "Student Level 3"
+msgstr ""
+
+msgid "Leg-grip throw with a push"
+msgstr ""
+
+msgid "Outside shin-grip throw"
+msgstr ""
+
+msgid "Overhead (stomach) throw gripping neck and arm"
+msgstr ""
+
+msgid "Chest throw from seated gripping arm and torso"
+msgstr ""
+
+msgid "Back throw gripping the arm over the shoulder"
+msgstr ""
+
+msgid "Heel trip gripping one arm with both hands"
+msgstr ""
+
+msgid "Inside shin hook with a push"
+msgstr ""
+
+msgid "Outside reap gripping arm and belt"
+msgstr ""
+
+msgid "Turnover with belt grip and leg on the neck"
+msgstr ""
+
+msgid "Turnover with inside forearm grip"
+msgstr ""
+
+msgid "Reverse shoulder knot from side hold"
+msgstr ""
+
+msgid "Knee lever on opponent on hands and knees"
+msgstr ""
+
+msgid "Elbow lever on opponent lying on the chest"
+msgstr ""
+
+msgid "Achilles lock from seated"
+msgstr ""
+
+msgid "Self-defence: escapes from clothing and arm grips"
+msgstr ""
+
+msgid "Student Level 4"
+msgstr ""
+
+msgid "Shoulder throw (through the back) both sides"
+msgstr ""
+
+msgid "Front sweep (podsechka) and side sweep in motion"
+msgstr ""
+
+msgid "Double-leg pickup throw"
+msgstr ""
+
+msgid "Combination: trip into hip throw"
+msgstr ""
+
+msgid "Counter-throw to a hip throw"
+msgstr ""
+
+msgid "Straight armlock from guard"
+msgstr ""
+
+msgid "Straight knee bar from top"
+msgstr ""
+
+msgid "Transitions hold to armlock in under 3 seconds"
+msgstr ""
+
+msgid "Grip fighting on the sambo jacket (kurtka)"
+msgstr ""
+
+msgid "Knows sport sambo scoring and banned techniques"
+msgstr ""
+
+msgid "Student Level 5"
+msgstr ""
+
+msgid "Sacrifice throws (sumi-style) with clean landing"
+msgstr ""
+
+msgid "Pickup throws over the chest"
+msgstr ""
+
+msgid "Flying armbar entry from standing"
+msgstr ""
+
+msgid "Ankle lock and knee lock chains"
+msgstr ""
+
+msgid "Escapes from leg locks"
+msgstr ""
+
+msgid "Three-throw combinations in randori"
+msgstr ""
+
+msgid "Total victory awareness (clean throw or submission)"
+msgstr ""
+
+msgid "Competes in an official sambo tournament"
+msgstr ""
+
+msgid "Student Level 6"
+msgstr ""
+
+msgid "Personal tokui-waza: 2 signature throws on both sides"
+msgstr ""
+
+msgid "Ground-to-submission chain of 3 techniques"
+msgstr ""
+
+msgid "Counter-throws to 3 common attacks"
+msgstr ""
+
+msgid "Tactical match plan by score and time"
+msgstr ""
+
+msgid "Demonstrates and explains all student-level techniques"
+msgstr ""
+
+msgid "Assists coaching beginners"
+msgstr ""
+
+msgid "Candidate for Master"
+msgstr ""
+
+msgid "Full FIAS student syllabus demonstrated cleanly"
+msgstr ""
+
+msgid "National-level competition results"
+msgstr ""
+
+msgid "Referee rules knowledge exam"
+msgstr ""
+
+msgid "Teaches a full class under supervision"
+msgstr ""
+
+msgid "Master"
+msgstr ""
+
+msgid "International-level competition or coaching record"
+msgstr ""
+
+msgid "Independent coaching of all student levels"
+msgstr ""
+
+msgid "Examines and grades students"
+msgstr ""
+
+msgid "Gymnastics levels 1-10"
+msgstr "Нива по гимнастика 1-10"
+
+msgid "Generic numbered levels (add your own skills)"
+msgstr "Общи номерирани нива (добавете свои умения)"
+
+msgid "Women's artistic gymnastics levels"
+msgstr "Нива спортна гимнастика жени"
+
+msgid "USA Gymnastics Development Program levels 1-10"
+msgstr "Нива 1-10 на USA Gymnastics Development Program"
+
+msgid "Forward roll and backward roll"
+msgstr ""
+
+msgid "Bridge held 5 seconds"
+msgstr ""
+
+msgid "Cartwheel"
+msgstr ""
+
+msgid "Beam: walks and releve turns"
+msgstr ""
+
+msgid "Bars: pullover with spot and front support"
+msgstr ""
+
+msgid "Vault: straight jump onto mats"
+msgstr ""
+
+msgid "Handstand held 2 seconds"
+msgstr ""
+
+msgid "Backward roll to push-up position"
+msgstr ""
+
+msgid "Bars: pullover and back hip circle"
+msgstr ""
+
+msgid "Beam: cartwheel to handstand practice on low beam"
+msgstr ""
+
+msgid "Vault: handstand flat-back onto mat stack"
+msgstr ""
+
+msgid "Round-off"
+msgstr ""
+
+msgid "Bridge kickover"
+msgstr ""
+
+msgid "Bars: squat-on and cast to horizontal"
+msgstr ""
+
+msgid "Beam: split leap and handstand"
+msgstr ""
+
+msgid "Vault: front handspring onto mats"
+msgstr ""
+
+msgid "Back walkover"
+msgstr ""
+
+msgid "Round-off back handspring"
+msgstr ""
+
+msgid "Bars: glide kip and cast to horizontal"
+msgstr ""
+
+msgid "Bars: long hang kip and back hip circle"
+msgstr ""
+
+msgid "Beam: cartwheel"
+msgstr ""
+
+msgid "Vault: front handspring over the table"
+msgstr ""
+
+msgid "Round-off back handspring back tuck"
+msgstr ""
+
+msgid "Front tuck or aerial"
+msgstr ""
+
+msgid "Bars: kip cast above horizontal and clear hip circle"
+msgstr ""
+
+msgid "Bars: flyaway dismount"
+msgstr ""
+
+msgid "Beam: back walkover or back handspring"
+msgstr ""
+
+msgid "Beam: back tuck dismount"
+msgstr ""
+
+msgid "Optional routines with required elements"
+msgstr ""
+
+msgid "Bars: cast to 45 degrees above horizontal"
+msgstr ""
+
+msgid "Back layout"
+msgstr ""
+
+msgid "Round-off back handspring layout"
+msgstr ""
+
+msgid "Bars: giant swing drills"
+msgstr ""
+
+msgid "Beam: acro series of two elements"
+msgstr ""
+
+msgid "Vault: handspring (Yamashita optional)"
+msgstr ""
+
+msgid "Full twisting layout"
+msgstr ""
+
+msgid "Bars: giant swings and release move drills"
+msgstr ""
+
+msgid "Beam: salto element"
+msgstr ""
+
+msgid "Vault: Tsukahara or round-off entry drills"
+msgstr ""
+
+msgid "Double twist or front layout full"
+msgstr ""
+
+msgid "Bars: release move"
+msgstr ""
+
+msgid "Beam: two-element acro series with a salto"
+msgstr ""
+
+msgid "Vault: Yurchenko layout"
+msgstr ""
+
+msgid "Floor: D and E value skills in routine"
+msgstr ""
+
+msgid "Bars: release and pirouetting elements"
+msgstr ""
+
+msgid "Beam: complete optional routine to Level 10 rules"
+msgstr ""
+
+msgid "Vault: Yurchenko full or harder"
+msgstr ""
+
+msgid "Xcel divisions (women's artistic)"
+msgstr "Дивизии Xcel (спортна гимнастика)"
+
+msgid "USA Gymnastics Xcel Bronze to Sapphire"
+msgstr "USA Gymnastics Xcel от Bronze до Sapphire"
+
+msgid "Bronze"
+msgstr "Бронз"
+
+msgid "Cartwheel and handstand forward roll"
+msgstr ""
+
+msgid "Beam: leap and full turn on two feet"
+msgstr ""
+
+msgid "Vault: handstand flat-back"
+msgstr ""
+
+msgid "Silver"
+msgstr "Сребро"
+
+msgid "Round-off and back walkover"
+msgstr ""
+
+msgid "Bars: kip or cast with clear hip"
+msgstr ""
+
+msgid "Beam: cartwheel or walkover"
+msgstr ""
+
+msgid "Gold"
+msgstr "Злато"
+
+msgid "Bars: kip cast and squat-on or circle"
+msgstr ""
+
+msgid "Beam: acro element and split leap 120 degrees"
+msgstr ""
+
+msgid "Platinum"
+msgstr "Платина"
+
+msgid "Back tuck in a pass"
+msgstr ""
+
+msgid "Every event meets the Platinum special requirements"
+msgstr ""
+
+msgid "Beam: acro series"
+msgstr ""
+
+msgid "Diamond"
+msgstr "Диамант"
+
+msgid "Layout or twisting salto"
+msgstr ""
+
+msgid "Every event meets the Diamond special requirements"
+msgstr ""
+
+msgid "Beam: salto or two-flight series"
+msgstr ""
+
+msgid "Sapphire"
+msgstr "Сапфир"
+
+msgid "Harder value parts on every event"
+msgstr ""
+
+msgid "Age 12 or older"
+msgstr ""
+
+msgid "Men's artistic gymnastics levels"
+msgstr "Нива спортна гимнастика мъже"
+
+msgid "USA Gymnastics men's Development Program"
+msgstr "Мъжка програма за развитие на USA Gymnastics"
+
+msgid "Pommel: front support hold 10 seconds"
+msgstr ""
+
+msgid "Rings: tuck hang and skin the cat"
+msgstr ""
+
+msgid "Parallel bars: support walk"
+msgstr ""
+
+msgid "High bar: hang and pullover"
+msgstr ""
+
+msgid "Handstand forward roll and cartwheel"
+msgstr ""
+
+msgid "Pommel: single leg circles on mushroom"
+msgstr ""
+
+msgid "Rings: muscle-up drills with support hold"
+msgstr ""
+
+msgid "High bar: cast and back hip circle"
+msgstr ""
+
+msgid "Round-off and back handspring with spot"
+msgstr ""
+
+msgid "Pommel: double leg circles on mushroom"
+msgstr ""
+
+msgid "Parallel bars: swing in support and straddle dismount"
+msgstr ""
+
+msgid "Vault: front handspring"
+msgstr ""
+
+msgid "Back tuck and front tuck"
+msgstr ""
+
+msgid "Rings: L-sit 2 seconds and swings"
+msgstr ""
+
+msgid "High bar: kip and underswing dismount"
+msgstr ""
+
+msgid "Pommel: circles on the pommel horse"
+msgstr ""
+
+msgid "Parallel bars: peach basket drills"
+msgstr ""
+
+msgid "High bar: giant swing drills"
+msgstr ""
+
+msgid "Layout and full twist on floor"
+msgstr ""
+
+msgid "Rings: back lever and support hold"
+msgstr ""
+
+msgid "High bar: giant swings"
+msgstr ""
+
+msgid "Pommel: flairs or scissors"
+msgstr ""
+
+msgid "Parallel bars: handstand and stutz"
+msgstr ""
+
+msgid "Vault: handspring front tuck"
+msgstr ""
+
+msgid "Floor: double salto drills"
+msgstr ""
+
+msgid "Rings: strength hold (cross or planche) drills"
+msgstr ""
+
+msgid "High bar: release move drills"
+msgstr ""
+
+msgid "Floor: double back"
+msgstr ""
+
+msgid "High bar: release move"
+msgstr ""
+
+msgid "Optional routines to the men's code"
+msgstr ""
+
+msgid "All six apparatus at competition level"
+msgstr ""
+
+msgid "Rhythmic gymnastics levels"
+msgstr "Нива художествена гимнастика"
+
+msgid "USA Gymnastics rhythmic levels 3-8 then FIG Junior and Senior"
+msgstr "Нива по художествена гимнастика 3-8 на USA Gymnastics после FIG девойки и жени"
+
+msgid "Age 6 or older"
+msgstr ""
+
+msgid "Releve walks and passe balance"
+msgstr ""
+
+msgid "Split leap and stag leap"
+msgstr ""
+
+msgid "Floor routine to music"
+msgstr ""
+
+msgid "One apparatus routine (rope or ball)"
+msgstr ""
+
+msgid "Pivot 360 degrees in passe"
+msgstr ""
+
+msgid "Arabesque and attitude balances"
+msgstr ""
+
+msgid "Group floor routine"
+msgstr ""
+
+msgid "Two apparatus routines"
+msgstr ""
+
+msgid "Age 7 or older"
+msgstr ""
+
+msgid "Floor and three apparatus routines"
+msgstr ""
+
+msgid "Hoop: rolls spins and tosses"
+msgstr ""
+
+msgid "Ball: throw and catch with one hand"
+msgstr ""
+
+msgid "Age 8 or older"
+msgstr ""
+
+msgid "Pivots of 720 degrees"
+msgstr ""
+
+msgid "Clubs: mills and small circles"
+msgstr ""
+
+msgid "Ring leap and cossack jump"
+msgstr ""
+
+msgid "Age 9 or older"
+msgstr ""
+
+msgid "Ribbon: spirals and snakes"
+msgstr ""
+
+msgid "Leg in hand balance (penche drills)"
+msgstr ""
+
+msgid "Dynamic elements with rotation under a throw"
+msgstr ""
+
+msgid "Age 10 or older"
+msgstr ""
+
+msgid "Penche and ring balances"
+msgstr ""
+
+msgid "Apparatus masteries (risk elements)"
+msgstr ""
+
+msgid "Junior"
+msgstr "Девойки"
+
+msgid "Age 13 or older (FIG junior)"
+msgstr ""
+
+msgid "Routines with hoop ball clubs and ribbon"
+msgstr ""
+
+msgid "Fouette and illusion pivots"
+msgstr ""
+
+msgid "Senior"
+msgstr "Жени"
+
+msgid "Age 16 or older (FIG senior)"
+msgstr ""
+
+msgid "Routines under the FIG Code of Points"
+msgstr ""
+
+msgid "Trampoline awards 1-15"
+msgstr "Отличия на батут 1-15"
+
+msgid "British Gymnastics trampoline proficiency awards"
+msgstr "Значки за умения на батут на British Gymnastics"
+
+msgid "Award %{n}"
+msgstr "Отличие %{n}"
+
+msgid "Waits their turn and behaves safely around the trampoline"
+msgstr ""
+
+msgid "Mounts and dismounts from the centre"
+msgstr ""
+
+msgid "Bounces lying sitting or on hands and knees"
+msgstr ""
+
+msgid "Seated bounce with arm movements"
+msgstr ""
+
+msgid "Bounces a set number of times and stops"
+msgstr ""
+
+msgid "Quarter turn upright"
+msgstr ""
+
+msgid "Seat drop without returning to feet"
+msgstr ""
+
+msgid "Star position"
+msgstr ""
+
+msgid "Straight jumps using the arms"
+msgstr ""
+
+msgid "Tuck jump"
+msgstr ""
+
+msgid "Astride jump and star jump"
+msgstr ""
+
+msgid "Half twist jump"
+msgstr ""
+
+msgid "Tuck jump touching below the knees"
+msgstr ""
+
+msgid "Straddle jump and split jump"
+msgstr ""
+
+msgid "Seat drop returning to feet"
+msgstr ""
+
+msgid "Two half twist jumps linked"
+msgstr ""
+
+msgid "Five straight jumps then stop for 3 seconds"
+msgstr ""
+
+msgid "Piked straddle jump"
+msgstr ""
+
+msgid "Front landing and back landing on a mat"
+msgstr ""
+
+msgid "Seat drop to feet with half twist"
+msgstr ""
+
+msgid "Routine: straddle seat to feet tuck half twist straight"
+msgstr ""
+
+msgid "Seat landing half twist to feet"
+msgstr ""
+
+msgid "Full twist jump"
+msgstr ""
+
+msgid "Front landing to feet"
+msgstr ""
+
+msgid "Pike jump"
+msgstr ""
+
+msgid "Ten-move routine with seat landings and twists"
+msgstr ""
+
+msgid "Swivel hips (seat half twist to seat)"
+msgstr ""
+
+msgid "Back landing to feet"
+msgstr ""
+
+msgid "Hands and knees forward turnover to back landing"
+msgstr ""
+
+msgid "Seat landing to feet then front landing to feet"
+msgstr ""
+
+msgid "Seat landing to front landing to feet"
+msgstr ""
+
+msgid "Half twist to front landing and to back landing"
+msgstr ""
+
+msgid "Front and back landing with half twist to feet"
+msgstr ""
+
+msgid "Five back bounces"
+msgstr ""
+
+msgid "Piked and straight front and back landings"
+msgstr ""
+
+msgid "Front landing to back landing and back to front"
+msgstr ""
+
+msgid "Forward three-quarter turnover to back landing"
+msgstr ""
+
+msgid "Seat landing full twist to seat (roller)"
+msgstr ""
+
+msgid "Front or back somersault tucked"
+msgstr ""
+
+msgid "Back landing back pullover to feet"
+msgstr ""
+
+msgid "Front landing half turntable"
+msgstr ""
+
+msgid "Ten-move routine with one somersault"
+msgstr ""
+
+msgid "Front somersault piked"
+msgstr ""
+
+msgid "Back somersault tucked and back somersault straight or piked"
+msgstr ""
+
+msgid "Three-quarter front somersault straight to back landing"
+msgstr ""
+
+msgid "Routine with three somersaults"
+msgstr ""
+
+msgid "Floor conditioning: 20 crunches and 20 dorsal raises"
+msgstr ""
+
+msgid "Barani with straight legs"
+msgstr ""
+
+msgid "Crash dive straight"
+msgstr ""
+
+msgid "Back somersault tucked then front somersault piked"
+msgstr ""
+
+msgid "Routine with four somersaults including a barani"
+msgstr ""
+
+msgid "Barani tucked and piked"
+msgstr ""
+
+msgid "Back somersault then barani in the same shape"
+msgstr ""
+
+msgid "Crash dive to bounce roll"
+msgstr ""
+
+msgid "Routine with six somersaults"
+msgstr ""
+
+msgid "Barani straight"
+msgstr ""
+
+msgid "Back somersault with half twist"
+msgstr ""
+
+msgid "Full twisting front somersault"
+msgstr ""
+
+msgid "Crash dive to ball out"
+msgstr ""
+
+msgid "Routine with seven somersaults"
+msgstr ""
+
+msgid "Crash dive to ball-out barani"
+msgstr ""
+
+msgid "Full twisting back somersault straight"
+msgstr ""
+
+msgid "Rudi (front with one and a half twists)"
+msgstr ""
+
+msgid "Cody from a front landing"
+msgstr ""
+
+msgid "Ten-somersault routine with tariff 5.6 or more"
+msgstr ""
+
+msgid "Tumbling levels"
+msgstr "Нива по тъмблинг"
+
+msgid "USA Gymnastics tumbling levels 1-10"
+msgstr "Нива по тъмблинг 1-10 на USA Gymnastics"
+
+msgid "Straight jump with stuck landing"
+msgstr ""
+
+msgid "Handstand forward roll"
+msgstr ""
+
+msgid "Back roll to push-up"
+msgstr ""
+
+msgid "Round-off back handspring rebound"
+msgstr ""
+
+msgid "Front handspring"
+msgstr ""
+
+msgid "Round-off and two to four back handsprings"
+msgstr ""
+
+msgid "Round-off back handsprings back tuck"
+msgstr ""
+
+msgid "Passes of eight elements"
+msgstr ""
+
+msgid "Back pike or tuck finish"
+msgstr ""
+
+msgid "Whip back"
+msgstr ""
+
+msgid "Whip backs and back handsprings in series"
+msgstr ""
+
+msgid "Back somersault with a full twist (360 degrees)"
+msgstr ""
+
+msgid "Back full in elements two to seven"
+msgstr ""
+
+msgid "No double somersault before the last element"
+msgstr ""
+
+msgid "A double somersault in the pass"
+msgstr ""
+
+msgid "Double back tucked or piked"
+msgstr ""
+
+msgid "Acrobatics levels"
+msgstr "Нива по акробатика"
+
+msgid "Palee levels from acro gymnastics and hand balancing"
+msgstr "Нива на Palee от акробатика и стойки на ръце"
+
+msgid "Handstand against the wall 30 seconds"
+msgstr ""
+
+msgid "Bridge and splits"
+msgstr ""
+
+msgid "Base and flyer safety rules"
+msgstr ""
+
+msgid "Freestanding handstand 5 seconds"
+msgstr ""
+
+msgid "Pair balances: bird and throne"
+msgstr ""
+
+msgid "Cartwheel and round-off"
+msgstr ""
+
+msgid "Handstand 15 seconds and pirouette walk"
+msgstr ""
+
+msgid "Pair balances: shoulder stand and star"
+msgstr ""
+
+msgid "Press to handstand"
+msgstr ""
+
+msgid "Hand-to-hand drills with a spotter"
+msgstr ""
+
+msgid "Simple pair tempo element (toss to catch)"
+msgstr ""
+
+msgid "One-arm handstand drills"
+msgstr ""
+
+msgid "Balance routine of three elements"
+msgstr ""
+
+msgid "Tempo routine with a back salto toss"
+msgstr ""
+
+msgid "Hand-to-hand hold 3 seconds"
+msgstr ""
+
+msgid "Group pyramid of three"
+msgstr ""
+
+msgid "Combined routine to music"
+msgstr ""
+
+msgid "CrossFit gymnastics skills"
+msgstr "Гимнастически умения за CrossFit"
+
+msgid "Palee skill progressions for CrossFit gymnastics"
+msgstr "Прогресии на умения на Palee за гимнастика в CrossFit"
+
+msgid "Foundations"
+msgstr "Основи"
+
+msgid "Hollow hold 30 seconds and arch hold 30 seconds"
+msgstr ""
+
+msgid "Dead hang 30 seconds"
+msgstr ""
+
+msgid "10 push-ups to full depth"
+msgstr ""
+
+msgid "Box jump and step-down"
+msgstr ""
+
+msgid "Strict strength"
+msgstr "Стриктна сила"
+
+msgid "5 strict pull-ups"
+msgstr ""
+
+msgid "5 strict ring dips"
+msgstr ""
+
+msgid "5 strict toes-to-bar or hanging knee raises"
+msgstr ""
+
+msgid "Wall walk to nose and wall"
+msgstr ""
+
+msgid "Kipping"
+msgstr "Кипинг"
+
+msgid "Kip swing 10 in a row"
+msgstr ""
+
+msgid "Kipping pull-ups 10 unbroken"
+msgstr ""
+
+msgid "Kipping toes-to-bar 10 unbroken"
+msgstr ""
+
+msgid "Handstand hold against the wall 30 seconds"
+msgstr ""
+
+msgid "Rx skills"
+msgstr "Умения Rx"
+
+msgid "Chest-to-bar pull-ups 10 unbroken"
+msgstr ""
+
+msgid "Kipping handstand push-ups 5 unbroken"
+msgstr ""
+
+msgid "Double-unders 50 unbroken"
+msgstr ""
+
+msgid "Rope climb 4.5 metres with legs"
+msgstr ""
+
+msgid "Bar muscle-ups 5 unbroken"
+msgstr ""
+
+msgid "Ring muscle-up"
+msgstr ""
+
+msgid "Handstand walk 15 metres"
+msgstr ""
+
+msgid "Legless rope climb"
+msgstr ""
+
+msgid "Elite"
+msgstr "Елит"
+
+msgid "Ring muscle-ups 5 unbroken"
+msgstr ""
+
+msgid "Strict handstand push-ups 10 unbroken"
+msgstr ""
+
+msgid "Handstand walk over obstacles"
+msgstr ""
+
+msgid "Deficit handstand push-ups"
+msgstr ""
+
+msgid "Calisthenics levels"
+msgstr "Нива по калистеника"
+
+msgid "Palee street workout strength progressions"
+msgstr "Силови прогресии street workout на Palee"
+
+msgid "10 push-ups and 20 bodyweight squats"
+msgstr ""
+
+msgid "Dead hang 30 seconds and scapular pulls"
+msgstr ""
+
+msgid "Plank 60 seconds and hollow hold 30 seconds"
+msgstr ""
+
+msgid "5 pull-ups"
+msgstr ""
+
+msgid "10 dips on parallel bars"
+msgstr ""
+
+msgid "20 push-ups"
+msgstr ""
+
+msgid "Tuck L-sit 10 seconds"
+msgstr ""
+
+msgid "10 pull-ups and 20 dips"
+msgstr ""
+
+msgid "L-sit 10 seconds"
+msgstr ""
+
+msgid "Wall handstand 30 seconds"
+msgstr ""
+
+msgid "Tuck front lever 10 seconds"
+msgstr ""
+
+msgid "5 pistol squats per leg (assisted allowed)"
+msgstr ""
+
+msgid "Muscle-up on the bar"
+msgstr ""
+
+msgid "Freestanding handstand 10 seconds"
+msgstr ""
+
+msgid "Advanced tuck front lever 10 seconds"
+msgstr ""
+
+msgid "Tuck planche 5 seconds"
+msgstr ""
+
+msgid "Human flag drills"
+msgstr ""
+
+msgid "5 muscle-ups"
+msgstr ""
+
+msgid "Straddle front lever 5 seconds"
+msgstr ""
+
+msgid "Straddle planche drills"
+msgstr ""
+
+msgid "Human flag 5 seconds"
+msgstr ""
+
+msgid "Handstand push-up against the wall"
+msgstr ""
+
+msgid "Full front lever 5 seconds"
+msgstr ""
+
+msgid "Straddle planche 5 seconds"
+msgstr ""
+
+msgid "Freestanding handstand push-up"
+msgstr ""
+
+msgid "One-arm pull-up drills"
+msgstr ""
+
+msgid "Street workout freestyle"
+msgstr "Стрийт уъркаут фрийстайл"
+
+msgid "Palee freestyle bar progression"
+msgstr "Прогресия фрийстайл на лост на Palee"
+
+msgid "Front and back support on the bar"
+msgstr ""
+
+msgid "Swing with hollow and arch"
+msgstr ""
+
+msgid "Pullover"
+msgstr ""
+
+msgid "Muscle-up"
+msgstr ""
+
+msgid "Back hip circle"
+msgstr ""
+
+msgid "180 degree switch grip in swing"
+msgstr ""
+
+msgid "Underswing dismount"
+msgstr ""
+
+msgid "Bar spin (360 degree spin over the bar)"
+msgstr ""
+
+msgid "Kip-up on the bar"
+msgstr ""
+
+msgid "Giant swing with straps or spotter"
+msgstr ""
+
+msgid "180 release and regrab"
+msgstr ""
+
+msgid "Combo of three dynamic elements"
+msgstr ""
+
+msgid "Unassisted giant swings"
+msgstr ""
+
+msgid "360 release or flip dismount"
+msgstr ""
+
+msgid "Freestyle routine of 60 seconds"
+msgstr ""
+
+msgid "Parkour levels"
+msgstr "Нива по паркур"
+
+msgid "Palee technique tiers used by parkour schools"
+msgstr "Технически нива на Palee като в школите по паркур"
+
+msgid "Safe landing and roll"
+msgstr ""
+
+msgid "Quadrupedal movement 20 metres"
+msgstr ""
+
+msgid "Safety vault and step vault"
+msgstr ""
+
+msgid "Balance walk on a rail"
+msgstr ""
+
+msgid "Precision jump to a line"
+msgstr ""
+
+msgid "Lazy vault and speed vault"
+msgstr ""
+
+msgid "Tic-tac off a wall"
+msgstr ""
+
+msgid "Cat hang (arm jump hold)"
+msgstr ""
+
+msgid "Kong vault"
+msgstr ""
+
+msgid "Cat leap from a standing jump"
+msgstr ""
+
+msgid "Wall run and climb-up"
+msgstr ""
+
+msgid "Precision jump of 2 metres"
+msgstr ""
+
+msgid "Dash vault and kash vault"
+msgstr ""
+
+msgid "Kong to precision"
+msgstr ""
+
+msgid "Running cat leap"
+msgstr ""
+
+msgid "Underbar"
+msgstr ""
+
+msgid "Double kong"
+msgstr ""
+
+msgid "Turn vault and laché"
+msgstr ""
+
+msgid "Flowing line of six movements"
+msgstr ""
+
+msgid "Long precision and running precision"
+msgstr ""
+
+msgid "Route planning and risk assessment"
+msgstr ""
+
+msgid "Coaches a beginner line"
+msgstr ""
+
+msgid "Freerunning levels"
+msgstr "Нива по фрийрънинг"
+
+msgid "Palee acrobatic freerunning progression"
+msgstr "Акробатична прогресия фрийрънинг на Palee"
+
+msgid "Forward roll on hard ground"
+msgstr ""
+
+msgid "Front flip on soft ground"
+msgstr ""
+
+msgid "Side flip drills (aerial)"
+msgstr ""
+
+msgid "Back flip"
+msgstr ""
+
+msgid "Wall flip (wall spin drills)"
+msgstr ""
+
+msgid "Webster"
+msgstr ""
+
+msgid "Gainer"
+msgstr ""
+
+msgid "Palm flip"
+msgstr ""
+
+msgid "Cork or double leg"
+msgstr ""
+
+msgid "Flip combinations on obstacles"
+msgstr ""
+
+msgid "Freestyle line with three flips"
+msgstr ""
+
+msgid "CrossFit levels"
+msgstr "Нива по CrossFit"
+
+msgid "Palee levels from CrossFit scaling and benchmarks"
+msgstr "Нива на Palee по скалиране и бенчмаркове на CrossFit"
+
+msgid "Air squat to full depth with a neutral spine"
+msgstr ""
+
+msgid "Deadlift and press with PVC or empty bar"
+msgstr ""
+
+msgid "Hollow hold 30 seconds"
+msgstr ""
+
+msgid "Knows the class whiteboard and scaling"
+msgstr ""
+
+msgid "Scaled"
+msgstr "Scaled"
+
+msgid "Front squat and push press with load"
+msgstr ""
+
+msgid "Ring rows and banded pull-ups"
+msgstr ""
+
+msgid "2000 metre row under 10 minutes"
+msgstr ""
+
+msgid "Finishes Cindy scaled"
+msgstr ""
+
+msgid "Intermediate"
+msgstr "Среден"
+
+msgid "Power clean and power snatch with good form"
+msgstr ""
+
+msgid "5 strict pull-ups and 10 push-ups unbroken"
+msgstr ""
+
+msgid "Single-unders 100 and double-under attempts"
+msgstr ""
+
+msgid "Back squat 1 times bodyweight"
+msgstr ""
+
+msgid "Rx"
+msgstr ""
+
+msgid "Kipping pull-ups and toes-to-bar"
+msgstr ""
+
+msgid "Double-unders 30 unbroken"
+msgstr ""
+
+msgid "Fran and Grace at Rx loads"
+msgstr ""
+
+msgid "Back squat 1.5 times bodyweight (men) or 1.2 (women)"
+msgstr ""
+
+msgid "Rx+"
+msgstr ""
+
+msgid "Bar and ring muscle-ups"
+msgstr ""
+
+msgid "Handstand push-ups and walks"
+msgstr ""
+
+msgid "Squat snatch and squat clean at Rx loads"
+msgstr ""
+
+msgid "Fran under 5 minutes"
+msgstr ""
+
+msgid "Open workouts at Rx with a top 25 percent finish"
+msgstr ""
+
+msgid "Deadlift 2 times bodyweight"
+msgstr ""
+
+msgid "Pacing plan for long chippers"
+msgstr ""
+
+msgid "Metcon engine levels"
+msgstr "Нива по меткон"
+
+msgid "Palee benchmarks for conditioning classes"
+msgstr "Бенчмаркове на Palee за кондиционни занимания"
+
+msgid "Finishes a 12-minute AMRAP at a steady pace"
+msgstr ""
+
+msgid "500 metre row under 2:30"
+msgstr ""
+
+msgid "Knows how to scale a movement"
+msgstr ""
+
+msgid "EMOM of 20 minutes without missing a minute"
+msgstr ""
+
+msgid "1 km run under 5:30"
+msgstr ""
+
+msgid "50 burpees under 5 minutes"
+msgstr ""
+
+msgid "2000 metre row under 8:30"
+msgstr ""
+
+msgid "Holds pace over 30-minute chippers"
+msgstr ""
+
+msgid "Assault bike 50 calories under 4 minutes"
+msgstr ""
+
+msgid "5 km run under 25 minutes"
+msgstr ""
+
+msgid "Intervals at threshold with even splits"
+msgstr ""
+
+msgid "100 burpees under 9 minutes"
+msgstr ""
+
+msgid "2000 metre row under 7:30"
+msgstr ""
+
+msgid "Murph or a 45-minute hero WOD"
+msgstr ""
+
+msgid "Plans and logs their own pacing"
+msgstr ""
+
+msgid "HYROX divisions"
+msgstr "Дивизии HYROX"
+
+msgid "HYROX race divisions (organiser's system)"
+msgstr "Категории в състезанията HYROX (система на организатора)"
+
+msgid "Relay ready"
+msgstr "Готов за щафета"
+
+msgid "Runs 1 km four times with recovery"
+msgstr ""
+
+msgid "Each of the eight stations at Open load"
+msgstr ""
+
+msgid "Doubles"
+msgstr "Двойки"
+
+msgid "Full simulation with a partner (split stations)"
+msgstr ""
+
+msgid "Sled push and sled pull technique"
+msgstr ""
+
+msgid "100 wall balls with partner swaps"
+msgstr ""
+
+msgid "Open"
+msgstr ""
+
+msgid "8 km of running with eight stations alone"
+msgstr ""
+
+msgid "1000 metre SkiErg and 1000 metre row at steady pace"
+msgstr ""
+
+msgid "80 metre burpee broad jumps"
+msgstr ""
+
+msgid "100 metre sandbag lunges and 100 wall balls"
+msgstr ""
+
+msgid "Pro"
+msgstr ""
+
+msgid "Full simulation at Pro loads"
+msgstr ""
+
+msgid "Compromised running at race pace"
+msgstr ""
+
+msgid "Race plan with target splits per station"
+msgstr ""
+
+msgid "Elite 15"
+msgstr ""
+
+msgid "Qualifies at a Major or a regional championship"
+msgstr ""
+
+msgid "Season plan with peaking"
+msgstr ""
+
+msgid "Weightlifting classes"
+msgstr "Разряди по вдигане на тежести"
+
+msgid "Russian/EVSK sports classification (national tables)"
+msgstr "Руска спортна класификация EVSK (национални таблици)"
+
+msgid "Technique"
+msgstr "Техника"
+
+msgid "Snatch and clean with PVC from the hang"
+msgstr ""
+
+msgid "Overhead squat to full depth"
+msgstr ""
+
+msgid "Front squat with elbows high"
+msgstr ""
+
+msgid "Class III"
+msgstr "III разряд"
+
+msgid "Full snatch and clean and jerk from the floor"
+msgstr ""
+
+msgid "Total meets the federation Class III standard"
+msgstr ""
+
+msgid "Knows competition rules and the three attempts"
+msgstr ""
+
+msgid "Class II"
+msgstr "II разряд"
+
+msgid "Split or power jerk with a stable catch"
+msgstr ""
+
+msgid "Total meets the Class II standard"
+msgstr ""
+
+msgid "Class I"
+msgstr "I разряд"
+
+msgid "Total meets the Class I standard"
+msgstr ""
+
+msgid "Competes in an official meet"
+msgstr ""
+
+msgid "Candidate Master of Sport"
+msgstr "Кандидат-майстор на спорта"
+
+msgid "Total meets the CMS standard at an official meet"
+msgstr ""
+
+msgid "Master of Sport"
+msgstr "Майстор на спорта"
+
+msgid "Total meets the MS standard at a national meet"
+msgstr ""
+
+msgid "Master of Sport International Class"
+msgstr "Майстор на спорта международна класа"
+
+msgid "Total meets the MSIC standard at an international meet"
+msgstr ""
+
+msgid "Powerlifting levels"
+msgstr "Нива по пауърлифтинг"
+
+msgid "Palee strength standards (bodyweight multiples)"
+msgstr "Силови стандарти на Palee (кратни на телесното тегло)"
+
+msgid "Squat deadlift and bench press to competition depth with empty bar"
+msgstr ""
+
+msgid "Bracing and the valsalva technique"
+msgstr ""
+
+msgid "Squat 1 times bodyweight"
+msgstr ""
+
+msgid "Bench press 0.75 times bodyweight"
+msgstr ""
+
+msgid "Deadlift 1.25 times bodyweight"
+msgstr ""
+
+msgid "Squat 1.5 times bodyweight"
+msgstr ""
+
+msgid "Bench press 1 times bodyweight"
+msgstr ""
+
+msgid "Deadlift 1.75 times bodyweight"
+msgstr ""
+
+msgid "Follows a periodised programme"
+msgstr ""
+
+msgid "Squat 2 times bodyweight"
+msgstr ""
+
+msgid "Bench press 1.35 times bodyweight"
+msgstr ""
+
+msgid "Deadlift 2.4 times bodyweight"
+msgstr ""
+
+msgid "Competes under IPF rules"
+msgstr ""
+
+msgid "Squat 2.5 times bodyweight"
+msgstr ""
+
+msgid "Deadlift 3 times bodyweight"
+msgstr ""
+
+msgid "National-level total"
+msgstr ""
+
+msgid "Learn to swim stages"
+msgstr "Етапи на обучение по плуване"
+
+msgid "Swim England Learn to Swim stages 1-7"
+msgstr "Етапи 1-7 на Learn to Swim на Swim England"
+
+msgid "Stage %{n}"
+msgstr "Етап %{n}"
+
+msgid "Enters and exits the water safely"
+msgstr ""
+
+msgid "Moves forward 5 metres"
+msgstr ""
+
+msgid "Push and glide on the back from the wall"
+msgstr ""
+
+msgid "Names two pool rules"
+msgstr ""
+
+msgid "Jumps in from the side"
+msgstr ""
+
+msgid "Floats on front and back"
+msgstr ""
+
+msgid "Swims 5 metres front and back"
+msgstr ""
+
+msgid "Swims 10 metres without aids"
+msgstr ""
+
+msgid "Rotates from front to back"
+msgstr ""
+
+msgid "Submerges and picks up an object"
+msgstr ""
+
+msgid "Push and glide underwater"
+msgstr ""
+
+msgid "Kicks 10 metres of each of the four strokes"
+msgstr ""
+
+msgid "Swims 10 metres continuously"
+msgstr ""
+
+msgid "Sculls head first on the back"
+msgstr ""
+
+msgid "Treads water 30 seconds"
+msgstr ""
+
+msgid "10 metres each of backstroke front crawl breaststroke and butterfly"
+msgstr ""
+
+msgid "Handstand in water held 3 seconds"
+msgstr ""
+
+msgid "Forward somersault in water"
+msgstr ""
+
+msgid "25 metres of one stroke"
+msgstr ""
+
+msgid "Swims 10 metres wearing clothes"
+msgstr ""
+
+msgid "Shouts and signals for rescue"
+msgstr ""
+
+msgid "Surface dive"
+msgstr ""
+
+msgid "25 metres each of front crawl backstroke breaststroke and butterfly"
+msgstr ""
+
+msgid "50 metres without stopping"
+msgstr ""
+
+msgid "100 metres using three strokes"
+msgstr ""
+
+msgid "Eggbeater tread for 30 seconds"
+msgstr ""
+
+msgid "Sitting dive"
+msgstr ""
+
+msgid "Obstacle course of four objects with feet off the floor"
+msgstr ""
+
+msgid "Ashtanga yoga series"
+msgstr "Серии аштанга йога"
+
+msgid "Mysore-style series order (the school's system)"
+msgstr "Ред на сериите в стил Майсор (система на школата)"
+
+msgid "Sun salutations"
+msgstr "Поздрав към слънцето"
+
+msgid "Surya Namaskara A and B with breath"
+msgstr ""
+
+msgid "Ujjayi breathing and drishti"
+msgstr ""
+
+msgid "Standing sequence"
+msgstr "Изправена последователност"
+
+msgid "Standing postures to Parsvottanasana"
+msgstr ""
+
+msgid "Closing sequence"
+msgstr ""
+
+msgid "Primary series half"
+msgstr "Половин първа серия"
+
+msgid "Seated postures to Navasana"
+msgstr ""
+
+msgid "Vinyasa between sides"
+msgstr ""
+
+msgid "Primary series"
+msgstr "Първа серия"
+
+msgid "Full Yoga Chikitsa to Setu Bandhasana"
+msgstr ""
+
+msgid "Marichyasana D bound"
+msgstr ""
+
+msgid "Supta Kurmasana"
+msgstr ""
+
+msgid "Intermediate series"
+msgstr "Междинна серия"
+
+msgid "Backbends to Kapotasana"
+msgstr ""
+
+msgid "Leg-behind-head postures"
+msgstr ""
+
+msgid "Seven headstands"
+msgstr ""
+
+msgid "Advanced A"
+msgstr "Advanced A"
+
+msgid "Arm balances of Advanced A"
+msgstr ""
+
+msgid "Daily practice of six days a week"
+msgstr ""
+
+msgid "Strongman Levels"
+msgstr "Нива по стронгмен"
+
+msgid "Palee levels (strongman has no athlete ladder)"
+msgstr "Нива на Palee (стронгменът няма стълбица за атлети)"
+
+msgid "Barbell deadlift with neutral spine and full lockout"
+msgstr ""
+
+msgid "Back squat to depth with braced trunk"
+msgstr ""
+
+msgid "Strict overhead press with full lockout"
+msgstr ""
+
+msgid "Correct belt bracing (breath into belt) on heavy sets"
+msgstr ""
+
+msgid "Farmer's carry with handles: upright posture for 20 m"
+msgstr ""
+
+msgid "Sandbag lap and shoulder from the floor"
+msgstr ""
+
+msgid "Sled drag forward and backward"
+msgstr ""
+
+msgid "Safe dropping and bailing of implements"
+msgstr ""
+
+msgid "Chalk and tacky use and grip hygiene"
+msgstr ""
+
+msgid "Warm-up routine for hips · shoulders · grip"
+msgstr ""
+
+msgid "Implement Novice"
+msgstr ""
+
+msgid "Log clean to rack in one continuous movement"
+msgstr ""
+
+msgid "Log push press and log jerk with locked finish"
+msgstr ""
+
+msgid "Axle continental clean to rack"
+msgstr ""
+
+msgid "Axle strict and push press"
+msgstr ""
+
+msgid "Atlas stone lap · stand-up and load to low platform"
+msgstr ""
+
+msgid "Yoke pick: braced set-up and short steps"
+msgstr ""
+
+msgid "Farmer's walk with pick · walk · controlled set-down"
+msgstr ""
+
+msgid "Tyre flip with chest drive and no bicep curl"
+msgstr ""
+
+msgid "Keg or sandbag carry over 20 m"
+msgstr ""
+
+msgid "Frame or front carry with stable trunk"
+msgstr ""
+
+msgid "Deadlift from 18-inch or with straps correctly set"
+msgstr ""
+
+msgid "Novice Competitor"
+msgstr ""
+
+msgid "Log press for max reps in a timed window (contest format)"
+msgstr ""
+
+msgid "Ref load u95 kg: log 70 kg reps from floor in 75 s"
+msgstr ""
+
+msgid "Ref load u95 kg: farmers 100 kg x 25 m under 60 s"
+msgstr ""
+
+msgid "Ref load u95 kg: yoke 200 kg x 25 m under 60 s"
+msgstr ""
+
+msgid "Stone series: load 3 stones of rising weight"
+msgstr ""
+
+msgid "Medley: carry plus drag transition without rest"
+msgstr ""
+
+msgid "Turn on yoke or farmers course where allowed"
+msgstr ""
+
+msgid "Deadlift for max reps in 60 s with full lockout each rep"
+msgstr ""
+
+msgid "Knows judging standards: lockout · down signal · line"
+msgstr ""
+
+msgid "Weigh-in · warm-up timing and attempt planning on contest day"
+msgstr ""
+
+msgid "Circus dumbbell clean and press each arm"
+msgstr ""
+
+msgid "Viking press with lockout and controlled lowering"
+msgstr ""
+
+msgid "Atlas stone to shoulder-height platform"
+msgstr ""
+
+msgid "Stone over bar for reps"
+msgstr ""
+
+msgid "Keg toss or weight over bar with full hip drive"
+msgstr ""
+
+msgid "Hussafell or sandbag bear-hug carry for distance"
+msgstr ""
+
+msgid "Hercules or grip hold with braced shoulders"
+msgstr ""
+
+msgid "Power stairs or loading race with fast transitions"
+msgstr ""
+
+msgid "Truck or vehicle pull with harness and rope technique"
+msgstr ""
+
+msgid "Runs a peaking block for a contest"
+msgstr ""
+
+msgid "Log or axle press at contest-qualifying load for class"
+msgstr ""
+
+msgid "Full 5-stone series on time with no misses"
+msgstr ""
+
+msgid "Yoke and farmers at open-class loads with turn"
+msgstr ""
+
+msgid "Car or frame deadlift with straps"
+msgstr ""
+
+msgid "Medley of 3+ implements within time cap"
+msgstr ""
+
+msgid "Places in a regional or national qualifier"
+msgstr ""
+
+msgid "Manages weight class (cut or gain) safely"
+msgstr ""
+
+msgid "Coaches a novice through stone and log technique"
+msgstr ""
+
+msgid "Open Competitor"
+msgstr ""
+
+msgid "Competes in open or national championship class"
+msgstr ""
+
+msgid "Completes all events of a full open contest"
+msgstr ""
+
+msgid "Event-specific weaknesses identified and programmed"
+msgstr ""
+
+msgid "Annual competition plan with peaks and deloads"
+msgstr ""
+
+msgid "Pro-level benchmark attempts logged (local→national tier)"
+msgstr ""
+
+msgid "Kettlebell Levels"
+msgstr "Нива с пудовка"
+
+msgid "Palee levels from StrongFirst standards"
+msgstr "Нива на Palee по стандартите на StrongFirst"
+
+msgid "Hip hinge with dowel: three points of contact kept"
+msgstr ""
+
+msgid "Kettlebell deadlift with neutral spine"
+msgstr ""
+
+msgid "Goblet squat to depth with heels down"
+msgstr ""
+
+msgid "Plank with full-body tension 30 s"
+msgstr ""
+
+msgid "Hike pass to the rear with flat back"
+msgstr ""
+
+msgid "Two-hand swing: hip snap and vertical plank at top"
+msgstr ""
+
+msgid "Safe park of the bell after the last rep"
+msgstr ""
+
+msgid "Half get-up to tall sit each side"
+msgstr ""
+
+msgid "Suitcase and rack carry 20 m each side"
+msgstr ""
+
+msgid "Swing and Get-up"
+msgstr ""
+
+msgid "One-arm swing x10 each side with crisp lockout of hips"
+msgstr ""
+
+msgid "Hand-to-hand swing switch without losing timing"
+msgstr ""
+
+msgid "Full Turkish get-up x1 each side with eyes on bell"
+msgstr ""
+
+msgid "Get-up high bridge and leg sweep correct"
+msgstr ""
+
+msgid "Breathing matched to swing (power breath at top)"
+msgstr ""
+
+msgid "10 sets of 10 two-hand swings with good form"
+msgstr ""
+
+msgid "Arm bar and windmill each side"
+msgstr ""
+
+msgid "Clean and Press"
+msgstr ""
+
+msgid "Single clean to rack: no bell flop on forearm"
+msgstr ""
+
+msgid "Rack position: wrist neutral · elbow on hip"
+msgstr ""
+
+msgid "Strict press x5 each side with full lockout"
+msgstr ""
+
+msgid "Front squat from rack x5 each side"
+msgstr ""
+
+msgid "Clean and press ladder (1-2-3) with control"
+msgstr ""
+
+msgid "Bent-over and renegade row with square hips"
+msgstr ""
+
+msgid "Bottoms-up hold or press for shoulder control"
+msgstr ""
+
+msgid "Snatch"
+msgstr ""
+
+msgid "High pull with hip drive and relaxed grip"
+msgstr ""
+
+msgid "Snatch x5 each side: punch through and no forearm bang"
+msgstr ""
+
+msgid "Snatch lockout held still before descent"
+msgstr ""
+
+msgid "Snatch descent without touching chest or shoulder"
+msgstr ""
+
+msgid "Hand care routine (callus management)"
+msgstr ""
+
+msgid "Snatch intervals with heart-rate or rest control"
+msgstr ""
+
+msgid "Simple Standard"
+msgstr ""
+
+msgid "100 one-arm swings in 5 min (sets of 10)"
+msgstr ""
+
+msgid "10 get-ups in 10 min alternating sides"
+msgstr ""
+
+msgid "Simple bell: men 32 kg swing and get-up"
+msgstr ""
+
+msgid "Simple bell: women 24 kg swing · 16 kg get-up"
+msgstr ""
+
+msgid "Daily practice logged for 4+ weeks"
+msgstr ""
+
+msgid "SFG Standard"
+msgstr ""
+
+msgid "Double-bell swing x10 to SFG standard"
+msgstr ""
+
+msgid "Double clean x5"
+msgstr ""
+
+msgid "Press x5 each side with SFG test bell"
+msgstr ""
+
+msgid "Double front squat x5"
+msgstr ""
+
+msgid "Snatch x5 each side and get-up x1 each side"
+msgstr ""
+
+msgid "Snatch test 100 reps in 5 min with category bell"
+msgstr ""
+
+msgid "Snatch test bell: women 12 or 16 kg · men 20/24/28 kg"
+msgstr ""
+
+msgid "No 'no count' reps: elbow and knees locked at top"
+msgstr ""
+
+msgid "Sinister"
+msgstr ""
+
+msgid "Simple & Sinister session with Sinister bells"
+msgstr ""
+
+msgid "Sinister bell: men 48 kg swing and get-up"
+msgstr ""
+
+msgid "Sinister bell: women 32 kg swing · 24 kg get-up"
+msgstr ""
+
+msgid "Double-bell complex (clean · press · squat) planned and executed"
+msgstr ""
+
+msgid "Teaches the hinge and swing to a beginner"
+msgstr ""
+
+msgid "Kettlebell Sport Ranks"
+msgstr "Разряди по гиреви спорт"
+
+msgid "Kettlebell sport ranks (IUKL and IKO)"
+msgstr "Разряди по гиреви спорт (IUKL и IKO)"
+
+msgid "Rank 3"
+msgstr ""
+
+msgid "Competition bell rack: bell on chest · elbows on hips"
+msgstr ""
+
+msgid "Breathing pattern in rack and overhead"
+msgstr ""
+
+msgid "Jerk: half dip · bump · undersquat · fixation"
+msgstr ""
+
+msgid "Snatch: soft grip · one hand switch · fixation"
+msgstr ""
+
+msgid "Long cycle: clean · jerk · drop to rack · re-clean"
+msgstr ""
+
+msgid "Completes 10-min set without setting bell down"
+msgstr ""
+
+msgid "Reaches Rank 3 reps for own bodyweight class and bell"
+msgstr ""
+
+msgid "Knows no-rep rules (fixation · touching body · drop)"
+msgstr ""
+
+msgid "Rank 2"
+msgstr ""
+
+msgid "Steady pace plan (reps per minute) held all 10 min"
+msgstr ""
+
+msgid "Grip and hand-care routine for snatch volume"
+msgstr ""
+
+msgid "Jerk lockout without press-out"
+msgstr ""
+
+msgid "Biathlon: jerk set then snatch set same day"
+msgstr ""
+
+msgid "Reaches Rank 2 reps for own class"
+msgstr ""
+
+msgid "Uses chalk only · no gloves or wraps"
+msgstr ""
+
+msgid "Rank 1"
+msgstr ""
+
+msgid "Competes at amateur bell (men 24 kg · women 16 kg)"
+msgstr ""
+
+msgid "Two-bell jerk or long cycle with stable rack rest"
+msgstr ""
+
+msgid "Reaches Rank 1 reps for own class"
+msgstr ""
+
+msgid "Periodised block towards a sanctioned meet"
+msgstr ""
+
+msgid "Has completed a sanctioned competition with judges"
+msgstr ""
+
+msgid "CMS (Candidate Master of Sport)"
+msgstr ""
+
+msgid "Trains with professional bell (men 32 kg · women 24 kg)"
+msgstr ""
+
+msgid "Reaches CMS reps in a sanctioned meet for own class"
+msgstr ""
+
+msgid "Clean pacing graph: last minute close to first"
+msgstr ""
+
+msgid "Efficient hand switch under 2 s in snatch"
+msgstr ""
+
+msgid "Travel and weigh-in routine for meets"
+msgstr ""
+
+msgid "MS (Master of Sport)"
+msgstr ""
+
+msgid "Reaches MS reps at a sanctioned national or international meet"
+msgstr ""
+
+msgid "Mentors lower-rank lifters in technique"
+msgstr ""
+
+msgid "MSIC (Master of Sport International Class)"
+msgstr ""
+
+msgid "Reaches MSIC reps at an international championship"
+msgstr ""
+
+msgid "Competes with professional bell in classic events"
+msgstr ""
+
+msgid "Running Levels"
+msgstr "Нива по бягане"
+
+msgid "Palee levels for recreational runners"
+msgstr "Нива на Palee за любители бегачи"
+
+msgid "Walk-Run Starter"
+msgstr ""
+
+msgid "5-min brisk walk warm-up and 5-min cool-down every session"
+msgstr ""
+
+msgid "Run 1 min / walk 90 s x8 (C25K week 1)"
+msgstr ""
+
+msgid "Three sessions a week for 3 consecutive weeks"
+msgstr ""
+
+msgid "Conversational (talk test) easy pace"
+msgstr ""
+
+msgid "Upright posture · relaxed shoulders · soft landing"
+msgstr ""
+
+msgid "Correct running shoes and basic kit chosen"
+msgstr ""
+
+msgid "Knows RPE 1-10 and keeps runs easy"
+msgstr ""
+
+msgid "First 5K"
+msgstr ""
+
+msgid "Run 20 min continuous (C25K week 5 run 3)"
+msgstr ""
+
+msgid "Run 30 min continuous x3 in one week (C25K week 9)"
+msgstr ""
+
+msgid "Completes a 5 km run or parkrun without walking"
+msgstr ""
+
+msgid "Dynamic warm-up: leg swings · skips · strides"
+msgstr ""
+
+msgid "Basic post-run stretching for calves · hamstrings · hips"
+msgstr ""
+
+msgid "Logs runs (time · distance · RPE)"
+msgstr ""
+
+msgid "5K Improver"
+msgstr ""
+
+msgid "Four runs a week including one long easy run"
+msgstr ""
+
+msgid "Strides x6 after easy runs"
+msgstr ""
+
+msgid "Interval session (e.g. 400 m repeats) at controlled effort"
+msgstr ""
+
+msgid "Running drills: A-skip · B-skip · high knees · butt kicks"
+msgstr ""
+
+msgid "Runs a timed 5K and records a PB"
+msgstr ""
+
+msgid "Two strength sessions a week for runners (calf · glute · core)"
+msgstr ""
+
+msgid "Even pacing: second half not slower than first"
+msgstr ""
+
+msgid "10K"
+msgstr ""
+
+msgid "Long run of 60 min continuous"
+msgstr ""
+
+msgid "Tempo run at comfortably hard effort for 20 min"
+msgstr ""
+
+msgid "Hill repeats with good form uphill and downhill"
+msgstr ""
+
+msgid "Completes a 10 km race or timed run"
+msgstr ""
+
+msgid "Understands easy · tempo · interval training zones"
+msgstr ""
+
+msgid "Recovery habits: sleep · fuel · easy days easy"
+msgstr ""
+
+msgid "Half Marathon"
+msgstr ""
+
+msgid "Follows a 12-week novice half plan (e.g. Higdon Novice 1)"
+msgstr ""
+
+msgid "Long run progressively built to 10 miles (16 km)"
+msgstr ""
+
+msgid "Practises race-day fuelling and hydration on long runs"
+msgstr ""
+
+msgid "Completes 21.1 km race"
+msgstr ""
+
+msgid "Taper week before race"
+msgstr ""
+
+msgid "Pacing strategy written and executed"
+msgstr ""
+
+msgid "Marathon"
+msgstr ""
+
+msgid "Follows an 18-week novice marathon plan"
+msgstr ""
+
+msgid "Long runs built from 6 to 20 miles (32 km)"
+msgstr ""
+
+msgid "Four run days plus one cross-training day weekly"
+msgstr ""
+
+msgid "Gels or carbs taken on schedule during 2h+ runs"
+msgstr ""
+
+msgid "Three-week taper completed"
+msgstr ""
+
+msgid "Completes 42.195 km marathon"
+msgstr ""
+
+msgid "Performance Runner"
+msgstr ""
+
+msgid "Periodised season with base · build · peak · recovery"
+msgstr ""
+
+msgid "Threshold and VO2max sessions programmed weekly"
+msgstr ""
+
+msgid "Uses heart-rate or pace zones from a field test"
+msgstr ""
+
+msgid "Negative split in a goal race"
+msgstr ""
+
+msgid "Injury-prevention routine maintained all season"
+msgstr ""
+
+msgid "Road Cycling Levels"
+msgstr "Нива шосейно колоездене"
+
+msgid "Palee levels (the first three follow Bikeability)"
+msgstr "Нива на Palee (първите три следват Bikeability)"
+
+msgid "Bike Handling"
+msgstr ""
+
+msgid "Pre-ride bike check: brakes · tyres · chain · quick releases"
+msgstr ""
+
+msgid "Helmet and clothing fitted correctly"
+msgstr ""
+
+msgid "Start and stop under control from either pedal"
+msgstr ""
+
+msgid "Ride in a straight line one-handed while signalling"
+msgstr ""
+
+msgid "Look behind over shoulder without wobbling"
+msgstr ""
+
+msgid "Controlled braking: both brakes · weight back"
+msgstr ""
+
+msgid "Gear selection before hills and stops"
+msgstr ""
+
+msgid "Avoid a hazard with a swerve or emergency stop"
+msgstr ""
+
+msgid "Road Ready"
+msgstr ""
+
+msgid "Start and finish an on-road journey safely"
+msgstr ""
+
+msgid "Primary and secondary riding position chosen correctly"
+msgstr ""
+
+msgid "Pass parked vehicles and side roads"
+msgstr ""
+
+msgid "Turn left and right at simple junctions"
+msgstr ""
+
+msgid "Communicate intentions with signals and eye contact"
+msgstr ""
+
+msgid "Fix a puncture and refit wheel"
+msgstr ""
+
+msgid "Confident Road Rider"
+msgstr ""
+
+msgid "Ride complex junctions and roundabouts"
+msgstr ""
+
+msgid "Multi-lane roads and lane changes with planning"
+msgstr ""
+
+msgid "Plans and rides a route independently"
+msgstr ""
+
+msgid "Descends with braking before corners and correct line"
+msgstr ""
+
+msgid "Climbs seated and standing with cadence control"
+msgstr ""
+
+msgid "Eats and drinks while riding"
+msgstr ""
+
+msgid "Group Rider"
+msgstr ""
+
+msgid "Holds a wheel at steady distance in a group"
+msgstr ""
+
+msgid "Rides two abreast and single-file on call"
+msgstr ""
+
+msgid "Uses group hand signals and calls (car back · hole · stopping)"
+msgstr ""
+
+msgid "Through-and-off chain gang rotation"
+msgstr ""
+
+msgid "Smooth pace when on the front · no surges"
+msgstr ""
+
+msgid "Club ride of 2 h without being dropped"
+msgstr ""
+
+msgid "Endurance Rider"
+msgstr ""
+
+msgid "Completes a 100 km ride or sportive"
+msgstr ""
+
+msgid "Fuelling plan per hour on long rides"
+msgstr ""
+
+msgid "Basic bike maintenance: chain clean · lube · brake pads"
+msgstr ""
+
+msgid "Bike fit checked: saddle height · reach · cleats"
+msgstr ""
+
+msgid "Rides in wind and rain with suitable kit"
+msgstr ""
+
+msgid "Performance Cyclist"
+msgstr ""
+
+msgid "FTP field test (20-min) done and zones set"
+msgstr ""
+
+msgid "Structured intervals: sweet spot · threshold · VO2max"
+msgstr ""
+
+msgid "Cornering at speed with counter-steer and lean"
+msgstr ""
+
+msgid "Sprint out of the saddle and in the drops"
+msgstr ""
+
+msgid "Races or rides a timed event (TT · crit · gran fondo)"
+msgstr ""
+
+msgid "Indoor Cycling Levels"
+msgstr "Нива по спининг"
+
+msgid "Palee levels (programmes certify coaches only)"
+msgstr "Нива на Palee (програмите сертифицират само инструктори)"
+
+msgid "Bike Set-up"
+msgstr ""
+
+msgid "Sets saddle height: slight knee bend at bottom of stroke"
+msgstr ""
+
+msgid "Sets saddle fore-aft and handlebar height"
+msgstr ""
+
+msgid "Clips in or straps feet securely"
+msgstr ""
+
+msgid "Uses resistance knob and emergency brake"
+msgstr ""
+
+msgid "Hand positions 1 · 2 · 3 known"
+msgstr ""
+
+msgid "Never spins with no resistance (always some load)"
+msgstr ""
+
+msgid "Hydration and towel ready · knows when to sit and recover"
+msgstr ""
+
+msgid "Core Movements"
+msgstr ""
+
+msgid "Seated flat with smooth round pedal stroke"
+msgstr ""
+
+msgid "Seated climb at lower cadence with added resistance"
+msgstr ""
+
+msgid "Standing climb with hips over pedals"
+msgstr ""
+
+msgid "Standing flat (run) with stable upper body"
+msgstr ""
+
+msgid "Jumps: smooth transitions seated to standing"
+msgstr ""
+
+msgid "Keeps cadence inside 60-110 rpm envelope"
+msgstr ""
+
+msgid "Completes a full 45-min class"
+msgstr ""
+
+msgid "Intensity Control"
+msgstr ""
+
+msgid "Matches instructor RPE cues 1-10"
+msgstr ""
+
+msgid "Uses heart-rate zones from a monitor"
+msgstr ""
+
+msgid "Rides to the beat for cadence drills"
+msgstr ""
+
+msgid "Recovers HR between intervals before next effort"
+msgstr ""
+
+msgid "Sprint 20-30 s with resistance and safe deceleration"
+msgstr ""
+
+msgid "Power Rider"
+msgstr ""
+
+msgid "Completes a 20-min FTP test on a power bike"
+msgstr ""
+
+msgid "Rides power zones on cue (watts or percent of FTP)"
+msgstr ""
+
+msgid "Threshold block of 2x10 min held steady"
+msgstr ""
+
+msgid "Back-to-back classes or 60+ min ride"
+msgstr ""
+
+msgid "Class Leader"
+msgstr ""
+
+msgid "Demonstrates every movement with correct form"
+msgstr ""
+
+msgid "Builds a class profile (warm-up · main set · cool-down)"
+msgstr ""
+
+msgid "Sets up a new rider's bike correctly"
+msgstr ""
+
+msgid "Improves FTP between two tests"
+msgstr ""
+
+msgid "Rowing Levels"
+msgstr "Нива по гребане"
+
+msgid "Palee levels from British Rowing and Concept2 technique"
+msgstr "Нива на Palee по техниката на British Rowing и Concept2"
+
+msgid "Stroke Basics"
+msgstr ""
+
+msgid "Foot straps set across widest part of foot"
+msgstr ""
+
+msgid "Loose hook grip with flat wrists"
+msgstr ""
+
+msgid "Tall posture: pivot from hips not lower back"
+msgstr ""
+
+msgid "Drive order legs · body · arms"
+msgstr ""
+
+msgid "Recovery order arms · body · legs"
+msgstr ""
+
+msgid "Catch: shins vertical · arms long · body forward"
+msgstr ""
+
+msgid "Finish: handle to lower ribs · slight lean back"
+msgstr ""
+
+msgid "Reads monitor: split /500 m · stroke rate · time"
+msgstr ""
+
+msgid "Sets damper and knows drag factor"
+msgstr ""
+
+msgid "Drills and Rhythm"
+msgstr ""
+
+msgid "Pick drill: arms only → arms and body → full slide"
+msgstr ""
+
+msgid "Legs-only rowing with fixed upper body"
+msgstr ""
+
+msgid "Pause drills at finish and at body-over"
+msgstr ""
+
+msgid "Count rhythm: drive on 1 · recovery on 2-3-4"
+msgstr ""
+
+msgid "Holds constant split at a set stroke rate"
+msgstr ""
+
+msgid "Changes rate on command without losing length"
+msgstr ""
+
+msgid "Rows 20 min continuous steady state"
+msgstr ""
+
+msgid "Fitness Rower"
+msgstr ""
+
+msgid "30-min steady row at low rate"
+msgstr ""
+
+msgid "Interval sessions (e.g. 500 m repeats) with even splits"
+msgstr ""
+
+msgid "Completes 5000 m test"
+msgstr ""
+
+msgid "Uses heart-rate or RPE training zones"
+msgstr ""
+
+msgid "Logs results in a training log or Concept2 logbook"
+msgstr ""
+
+msgid "Test Ready"
+msgstr ""
+
+msgid "Completes 2000 m test with a race plan (start · settle · sprint)"
+msgstr ""
+
+msgid "Pacing within a narrow split range through middle 1000 m"
+msgstr ""
+
+msgid "Power strokes from frontstops for a fast start"
+msgstr ""
+
+msgid "Re-tests and improves 2k after a training block"
+msgstr ""
+
+msgid "Posts a result to Concept2 online ranking"
+msgstr ""
+
+msgid "Water Transition"
+msgstr ""
+
+msgid "Capsize/swim test and water safety briefing passed"
+msgstr ""
+
+msgid "Carries and launches a boat with a crew"
+msgstr ""
+
+msgid "Squaring and feathering the blade"
+msgstr ""
+
+msgid "Blade placement at catch and clean extraction"
+msgstr ""
+
+msgid "Stops the boat and backs down on command"
+msgstr ""
+
+msgid "Advanced Rower"
+msgstr ""
+
+msgid "Periodised plan with UT2 · UT1 · AT · race-pace work"
+msgstr ""
+
+msgid "Competes in an indoor rowing race or regatta"
+msgstr ""
+
+msgid "Coaches stroke sequence to a beginner"
+msgstr ""
+
+msgid "Long distance: 10 000 m or half-marathon row"
+msgstr ""
+
+msgid "Pilates Mat Levels"
+msgstr "Нива пилатес на постелка"
+
+msgid "Palee levels from the classical mat order"
+msgstr "Нива на Palee по класическия ред на постелката"
+
+msgid "Fundamentals"
+msgstr ""
+
+msgid "Lateral (ribcage) breathing coordinated with movement"
+msgstr ""
+
+msgid "Finds neutral pelvis and imprint on demand"
+msgstr ""
+
+msgid "Powerhouse engagement without breath holding"
+msgstr ""
+
+msgid "Pelvic curl articulating bone by bone"
+msgstr ""
+
+msgid "Chest lift with neck long"
+msgstr ""
+
+msgid "Pilates stance and scapular stability"
+msgstr ""
+
+msgid "Dead bug or toe taps with stable pelvis"
+msgstr ""
+
+msgid "Basic Order"
+msgstr ""
+
+msgid "The Hundred: 100 pumps with breath"
+msgstr ""
+
+msgid "Roll Up 3-5x without momentum"
+msgstr ""
+
+msgid "Single Leg Circles 3-5x each direction"
+msgstr ""
+
+msgid "Rolling Like a Ball 5-10x"
+msgstr ""
+
+msgid "Single Leg Stretch 5-10 sets"
+msgstr ""
+
+msgid "Double Leg Stretch 5-10x"
+msgstr ""
+
+msgid "Spine Stretch Forward 3-5x"
+msgstr ""
+
+msgid "Flows the 7 exercises in order with transitions"
+msgstr ""
+
+msgid "Intermediate Order"
+msgstr ""
+
+msgid "Single and Double Straight Leg Stretch 5-10x"
+msgstr ""
+
+msgid "Criss Cross 5-10 sets"
+msgstr ""
+
+msgid "Open Leg Rocker 6x with balance"
+msgstr ""
+
+msgid "Corkscrew 3-5 sets"
+msgstr ""
+
+msgid "Saw 3-4 sets"
+msgstr ""
+
+msgid "Neck Roll 3 sets"
+msgstr ""
+
+msgid "Single Leg Kicks 5 sets"
+msgstr ""
+
+msgid "Double Leg Kicks 3 sets"
+msgstr ""
+
+msgid "Neck Pull 5x"
+msgstr ""
+
+msgid "Side Kick Series: front/back · up/down · small circles"
+msgstr ""
+
+msgid "Teaser 1 3x"
+msgstr ""
+
+msgid "Seal 6x"
+msgstr ""
+
+msgid "Full intermediate order with no rest between exercises"
+msgstr ""
+
+msgid "Advanced Order"
+msgstr ""
+
+msgid "Roll Over 3 sets"
+msgstr ""
+
+msgid "Corkscrew with hips over 3-5 sets"
+msgstr ""
+
+msgid "Swan Dive 3-5x"
+msgstr ""
+
+msgid "High Scissors and High Bicycle 3-5 sets"
+msgstr ""
+
+msgid "Shoulder Bridge 3-5 kicks each leg"
+msgstr ""
+
+msgid "Spine Twist 3 sets"
+msgstr ""
+
+msgid "Jackknife 3x"
+msgstr ""
+
+msgid "Side Kicks advanced: bicycle · inner thigh · big scissors"
+msgstr ""
+
+msgid "Teaser 1 · 2 · 3 3x"
+msgstr ""
+
+msgid "Hip Circles 3 sets"
+msgstr ""
+
+msgid "Swimming 3 breaths"
+msgstr ""
+
+msgid "Leg Pull Front and Leg Pull Back 3 sets"
+msgstr ""
+
+msgid "Master Repertoire"
+msgstr ""
+
+msgid "High Bridge 1x"
+msgstr ""
+
+msgid "Kneeling Side Kicks 4 sets"
+msgstr ""
+
+msgid "Mermaid 3 sets and Side Bend 3x each side"
+msgstr ""
+
+msgid "Snake/Twist 3 sets"
+msgstr ""
+
+msgid "Boomerang 3 sets"
+msgstr ""
+
+msgid "Crab 3-6x and Rocking 5x"
+msgstr ""
+
+msgid "Control Balance 3x"
+msgstr ""
+
+msgid "Push Ups 3-10x"
+msgstr ""
+
+msgid "Full Return to Life 34-exercise order in sequence"
+msgstr ""
+
+msgid "Flowing transitions with no breaks in the full order"
+msgstr ""
+
+msgid "Pilates Reformer Levels"
+msgstr "Нива пилатес реформър"
+
+msgid "Palee levels from the classical Reformer order"
+msgstr "Нива на Palee по класическия ред на Reformer"
+
+msgid "Reformer Orientation"
+msgstr ""
+
+msgid "Safe getting on and off the carriage"
+msgstr ""
+
+msgid "Changes springs · headrest and footbar safely"
+msgstr ""
+
+msgid "Neutral spine and breathing on the carriage"
+msgstr ""
+
+msgid "Footwork: toes · arches · heels · tendon stretch"
+msgstr ""
+
+msgid "Controls carriage return without banging"
+msgstr ""
+
+msgid "Basic Reformer"
+msgstr ""
+
+msgid "The Hundred on the reformer"
+msgstr ""
+
+msgid "Frogs and leg circles in straps"
+msgstr ""
+
+msgid "Stomach Massage round back"
+msgstr ""
+
+msgid "Short Box: round back and flat back"
+msgstr ""
+
+msgid "Elephant with carriage control"
+msgstr ""
+
+msgid "Knee Stretches round and flat"
+msgstr ""
+
+msgid "Running and Pelvic Lift"
+msgstr ""
+
+msgid "Rowing into the sternum and 90 degrees"
+msgstr ""
+
+msgid "Basic order flowed with correct spring changes"
+msgstr ""
+
+msgid "Intermediate Reformer"
+msgstr ""
+
+msgid "Coordination"
+msgstr ""
+
+msgid "Full Rowing series (1-6)"
+msgstr ""
+
+msgid "Long Box: Pull Straps · T Pull · Backstroke"
+msgstr ""
+
+msgid "Long Box: Teaser and Breaststroke"
+msgstr ""
+
+msgid "Long Stretch series: Long · Down · Up Stretch"
+msgstr ""
+
+msgid "Long Back Stretch"
+msgstr ""
+
+msgid "Short Box: side to side · twist and reach · tree"
+msgstr ""
+
+msgid "Short Spine Massage"
+msgstr ""
+
+msgid "Semi Circle"
+msgstr ""
+
+msgid "Chest Expansion and Thigh Stretch"
+msgstr ""
+
+msgid "Knee Stretches knees off"
+msgstr ""
+
+msgid "Side Splits"
+msgstr ""
+
+msgid "Mermaid"
+msgstr ""
+
+msgid "Advanced Reformer"
+msgstr ""
+
+msgid "Overhead"
+msgstr ""
+
+msgid "Swan on the footbar"
+msgstr ""
+
+msgid "Horseback and Hamstring Curls"
+msgstr ""
+
+msgid "Single Leg Elephant"
+msgstr ""
+
+msgid "Tendon Stretch and Single Leg Tendon Stretch"
+msgstr ""
+
+msgid "Side Sit Ups"
+msgstr ""
+
+msgid "Backbends and Arm Circles"
+msgstr ""
+
+msgid "Snake and Twist"
+msgstr ""
+
+msgid "Corkscrew and Tic Toc"
+msgstr ""
+
+msgid "Second Long Box: Grasshopper · Swimming · Rocking"
+msgstr ""
+
+msgid "Long Spine Massage"
+msgstr ""
+
+msgid "High Bridge"
+msgstr ""
+
+msgid "Front Splits"
+msgstr ""
+
+msgid "Master Reformer"
+msgstr ""
+
+msgid "Headstands facing down and facing up"
+msgstr ""
+
+msgid "Headstands with straps"
+msgstr ""
+
+msgid "Control Balance Off"
+msgstr ""
+
+msgid "Control Balance Push Ups front and back"
+msgstr ""
+
+msgid "Star"
+msgstr ""
+
+msgid "Russian Splits"
+msgstr ""
+
+msgid "Russian Squat"
+msgstr ""
+
+msgid "Full classical reformer order in sequence"
+msgstr ""
+
+msgid "Mobility Levels"
+msgstr "Нива на мобилност"
+
+msgid "Palee levels (no standard system)"
+msgstr "Нива на Palee (няма стандартна система)"
+
+msgid "Joint Health"
+msgstr ""
+
+msgid "Daily CARs routine: neck · shoulders · spine · hips · ankles"
+msgstr ""
+
+msgid "Deep squat hold 60 s with heels down (assisted ok)"
+msgstr ""
+
+msgid "Hip hinge toe-reach with straight knees"
+msgstr ""
+
+msgid "90/90 hip switch without hands"
+msgstr ""
+
+msgid "Wall shoulder flexion: arms overhead with ribs down"
+msgstr ""
+
+msgid "Glute bridge hold 30 s"
+msgstr ""
+
+msgid "Cat-cow segmental spine control"
+msgstr ""
+
+msgid "Range Builder"
+msgstr ""
+
+msgid "Couch stretch 60 s each side upright"
+msgstr ""
+
+msgid "Half split with front heel on block 30 s"
+msgstr ""
+
+msgid "Seated pike: hands reach past toes"
+msgstr ""
+
+msgid "Straddle sit upright with hands on floor in front"
+msgstr ""
+
+msgid "Table-top bridge with hips level"
+msgstr ""
+
+msgid "Thoracic rotation open book 10 each side"
+msgstr ""
+
+msgid "Ankle knee-to-wall test progression logged"
+msgstr ""
+
+msgid "Active Flexibility"
+msgstr ""
+
+msgid "PAILs and RAILs in hip 90/90 paired"
+msgstr ""
+
+msgid "Active straight-leg raise held 5 s each side"
+msgstr ""
+
+msgid "Jefferson curl light with segmental control"
+msgstr ""
+
+msgid "Cossack squat to full depth each side"
+msgstr ""
+
+msgid "Head-on-floor bridge (crown) with control"
+msgstr ""
+
+msgid "Shoulder dislocates with band or dowel"
+msgstr ""
+
+msgid "Front split with hips on cushion or blocks"
+msgstr ""
+
+msgid "Intermediate Shapes"
+msgstr ""
+
+msgid "Full bridge from floor with arms straight"
+msgstr ""
+
+msgid "Pike fold chest toward thighs with flat back"
+msgstr ""
+
+msgid "Pancake: elbows to floor in straddle"
+msgstr ""
+
+msgid "Front split within a hand-width of floor each side"
+msgstr ""
+
+msgid "Middle split hips at knee height or lower"
+msgstr ""
+
+msgid "Skin-the-cat or German hang shoulder extension"
+msgstr ""
+
+msgid "Pigeon pose upright with square hips"
+msgstr ""
+
+msgid "Advanced Shapes"
+msgstr ""
+
+msgid "Full front split on floor both sides with square hips"
+msgstr ""
+
+msgid "Chest-to-floor pancake"
+msgstr ""
+
+msgid "Bridge with shoulders over wrists and straight legs"
+msgstr ""
+
+msgid "Wall walk-down to bridge and back up"
+msgstr ""
+
+msgid "Active pike compression: lift legs from floor in pike"
+msgstr ""
+
+msgid "Deep squat with arms overhead and upright torso"
+msgstr ""
+
+msgid "Elite Mobility"
+msgstr ""
+
+msgid "Middle split on floor"
+msgstr ""
+
+msgid "Standing drop-back to bridge without wall"
+msgstr ""
+
+msgid "Stand up from bridge to standing"
+msgstr ""
+
+msgid "Oversplit or split with back-leg bend (needle prep)"
+msgstr ""
+
+msgid "Maintains end-range strength routine 3x weekly"
+msgstr ""
+
+msgid "HIIT Levels"
+msgstr "Нива по HIIT"
+
+msgid "Palee levels for interval training (no standard system)"
+msgstr "Нива на Palee за интервална тренировка (няма стандартна система)"
+
+msgid "Starter"
+msgstr "Начало"
+
+msgid "Completes 30 s work / 15 s rest intervals at RPE 4-6"
+msgstr ""
+
+msgid "Bodyweight squat to depth with heels down"
+msgstr ""
+
+msgid "Incline or knee push-up with straight body line"
+msgstr ""
+
+msgid "Step-back burpee without jump"
+msgstr ""
+
+msgid "Forearm plank 30 s"
+msgstr ""
+
+msgid "Reverse lunge with knee control"
+msgstr ""
+
+msgid "Knows RPE scale and when to scale down"
+msgstr ""
+
+msgid "Completes a full 30-min class with modifications"
+msgstr ""
+
+msgid "Equal work:rest intervals (e.g. 40:40) sustained"
+msgstr ""
+
+msgid "Full push-up x10 with chest to fist height"
+msgstr ""
+
+msgid "Full burpee with chest to floor x10"
+msgstr ""
+
+msgid "Jump squat with soft landing"
+msgstr ""
+
+msgid "Mountain climbers with hips level 30 s"
+msgstr ""
+
+msgid "Kettlebell or dumbbell swing with hip hinge"
+msgstr ""
+
+msgid "Bear crawl forward and back 10 m"
+msgstr ""
+
+msgid "Jumping jacks and high knees for 60 s"
+msgstr ""
+
+msgid "Tabata 20:10 x8 with consistent reps"
+msgstr ""
+
+msgid "EMOM 10 min with planned reps"
+msgstr ""
+
+msgid "Jumping lunges with upright torso"
+msgstr ""
+
+msgid "Box or step jump with full hip extension and step down"
+msgstr ""
+
+msgid "Plank variations: shoulder taps and side plank 30 s"
+msgstr ""
+
+msgid "Shuttle sprints with sharp turns"
+msgstr ""
+
+msgid "Medicine-ball slams and throws"
+msgstr ""
+
+msgid "Partner drills (wheelbarrow · plank high-fives)"
+msgstr ""
+
+msgid "Work:rest of 2:1 or longer intervals at RPE 8-9"
+msgstr ""
+
+msgid "Burpee broad jumps or burpee box jumps"
+msgstr ""
+
+msgid "Plyometric push-up"
+msgstr ""
+
+msgid "Sled push or sprint intervals outdoors"
+msgstr ""
+
+msgid "AMRAP 20 min with steady pacing"
+msgstr ""
+
+msgid "Heart-rate recovery tracked between rounds"
+msgstr ""
+
+msgid "Bootcamp obstacle or partner carry course"
+msgstr ""
+
+msgid "Athlete"
+msgstr ""
+
+msgid "Completes a benchmark HIIT test and re-tests to improve"
+msgstr ""
+
+msgid "Scales any session for self and a partner"
+msgstr ""
+
+msgid "Leads warm-up and demonstrates all standards"
+msgstr ""
+
+msgid "Balances HIIT with recovery days (max 2-3 hard/week)"
+msgstr ""
+
+msgid "Strength Training Levels"
+msgstr "Нива силова тренировка"
+
+msgid "Palee levels from novice to advanced lifter"
+msgstr "Нива на Palee от начинаещ до напреднал"
+
+msgid "Movement Foundations"
+msgstr ""
+
+msgid "Squat pattern: goblet squat to depth"
+msgstr ""
+
+msgid "Hinge pattern: Romanian deadlift with neutral spine"
+msgstr ""
+
+msgid "Push: push-up with straight body x10"
+msgstr ""
+
+msgid "Pull: inverted row or assisted pull-up"
+msgstr ""
+
+msgid "Lunge or split squat with knee tracking"
+msgstr ""
+
+msgid "Loaded carry with tall posture"
+msgstr ""
+
+msgid "Bracing: Valsalva breath before each rep"
+msgstr ""
+
+msgid "Warm-up sets ramp to working weight"
+msgstr ""
+
+msgid "Novice Lifter"
+msgstr ""
+
+msgid "Barbell back squat below parallel"
+msgstr ""
+
+msgid "Bench press with arch · leg drive · bar touch chest"
+msgstr ""
+
+msgid "Standing overhead press with full lockout"
+msgstr ""
+
+msgid "Conventional deadlift from floor each rep reset"
+msgstr ""
+
+msgid "Power clean or barbell row technique"
+msgstr ""
+
+msgid "Linear progression: adds load each session for 8+ weeks"
+msgstr ""
+
+msgid "Sets safety pins or uses a spotter correctly"
+msgstr ""
+
+msgid "Logs every session (sets · reps · load)"
+msgstr ""
+
+msgid "Advanced Novice"
+msgstr ""
+
+msgid "Heavy and light squat days within the week"
+msgstr ""
+
+msgid "Chin-up or pull-up strict x5"
+msgstr ""
+
+msgid "Deadlift 1.5x bodyweight (Dan John 'expected' ref)"
+msgstr ""
+
+msgid "Manages a stall with a reset or deload"
+msgstr ""
+
+msgid "Uses RPE or reps in reserve on top sets"
+msgstr ""
+
+msgid "Belt and lifting shoes used appropriately"
+msgstr ""
+
+msgid "Intermediate Lifter"
+msgstr ""
+
+msgid "Weekly progression programme (e.g. Texas Method or 5/3/1)"
+msgstr ""
+
+msgid "Volume · intensity and recovery days structured in the week"
+msgstr ""
+
+msgid "Accessory work chosen for weak points"
+msgstr ""
+
+msgid "Tests a 1RM or rep max safely with spotters"
+msgstr ""
+
+msgid "Front squat and pause variations"
+msgstr ""
+
+msgid "Bodyweight bench press for reps"
+msgstr ""
+
+msgid "Advanced Lifter"
+msgstr ""
+
+msgid "Block or monthly periodisation planned"
+msgstr ""
+
+msgid "Deadlift 2x bodyweight (Dan John 'game changer' ref)"
+msgstr ""
+
+msgid "Pull-ups x15 strict (Dan John 'game changer' ref)"
+msgstr ""
+
+msgid "Bodyweight squat x15 (Dan John 'game changer' ref)"
+msgstr ""
+
+msgid "Autoregulates load from daily readiness"
+msgstr ""
+
+msgid "Coaches a novice through the main lifts"
+msgstr ""
+
+msgid "Ballet graded levels (RAD structure)"
+msgstr "Степени по балет (структура RAD)"
+
+msgid "RAD graded structure (not affiliated)"
+msgstr "Структура на степените на RAD (без връзка)"
+
+msgctxt "exam"
+msgid "Pre-Primary"
+msgstr "Pre-Primary (подготвително)"
+
+msgid "Posture and parallel feet"
+msgstr ""
+
+msgid "Pointing and flexing feet"
+msgstr ""
+
+msgid "Skips and galops to music"
+msgstr ""
+
+msgid "Free movement to a story"
+msgstr ""
+
+msgctxt "exam"
+msgid "Primary"
+msgstr "Primary (начално)"
+
+msgid "First position and demi-plie"
+msgstr ""
+
+msgid "Transfer of weight and balance on demi-pointe"
+msgstr ""
+
+msgid "Sautes in first position"
+msgstr ""
+
+msgid "Curtsey or bow and a dance"
+msgstr ""
+
+msgid "Grade %{n}"
+msgstr "Степен %{n}"
+
+msgid "Plies in first and second"
+msgstr ""
+
+msgid "Battements tendus"
+msgstr ""
+
+msgid "Port de bras first to fifth"
+msgstr ""
+
+msgid "Character dance"
+msgstr ""
+
+msgid "Glissés and retirés"
+msgstr ""
+
+msgid "Changements and echappes sautes"
+msgstr ""
+
+msgid "Polka and spring points"
+msgstr ""
+
+msgid "Pirouette preparations and quarter turns"
+msgstr ""
+
+msgid "Petit allegro with assembles"
+msgstr ""
+
+msgid "Grand battement"
+msgstr ""
+
+msgid "Single pirouette en dehors"
+msgstr ""
+
+msgid "Glissade and jeté combinations"
+msgstr ""
+
+msgid "Adage with developpes"
+msgstr ""
+
+msgid "Pirouettes en dedans"
+msgstr ""
+
+msgid "Grand jeté and sissonne"
+msgstr ""
+
+msgid "Free movement section"
+msgstr ""
+
+msgid "Fouette preparations and double pirouette drills"
+msgstr ""
+
+msgid "Batterie (entrechat quatre)"
+msgstr ""
+
+msgid "Character and free movement dances"
+msgstr ""
+
+msgid "Grand allegro sequences"
+msgstr ""
+
+msgid "Advanced adage with balances"
+msgstr ""
+
+msgid "Solo performance with artistry"
+msgstr ""
+
+msgid "Music and style interpretation across eras"
+msgstr ""
+
+msgid "Ballet vocational levels (RAD structure)"
+msgstr "Професионални степени по балет (структура RAD)"
+
+msgid "RAD vocational structure (not affiliated)"
+msgstr "Професионална структура на RAD (без връзка)"
+
+msgctxt "exam"
+msgid "Intermediate Foundation"
+msgstr "Intermediate Foundation (предсредно)"
+
+msgid "Barre and centre at vocational standard"
+msgstr ""
+
+msgid "Pointe work introduction"
+msgstr ""
+
+msgid "Double pirouette en dehors"
+msgstr ""
+
+msgctxt "exam"
+msgid "Intermediate"
+msgstr "Intermediate (средно)"
+
+msgid "Pointe enchaînements"
+msgstr ""
+
+msgid "Fouetté rond de jambe en tournant"
+msgstr ""
+
+msgid "Grand allegro with tours en l'air (male)"
+msgstr ""
+
+msgctxt "exam"
+msgid "Advanced Foundation"
+msgstr "Advanced Foundation (предварително напреднало)"
+
+msgid "Multiple pirouettes and fouettés"
+msgstr ""
+
+msgid "Batterie with entrechat six"
+msgstr ""
+
+msgctxt "exam"
+msgid "Advanced 1"
+msgstr "Advanced 1 (напреднало 1)"
+
+msgid "Classical solo variation"
+msgstr ""
+
+msgid "Sustained adage on pointe"
+msgstr ""
+
+msgctxt "exam"
+msgid "Advanced 2"
+msgstr "Advanced 2 (напреднало 2)"
+
+msgid "Professional-level class"
+msgstr ""
+
+msgid "Two solo variations"
+msgstr ""
+
+msgctxt "exam"
+msgid "Solo Seal"
+msgstr "Solo Seal (солово отличие)"
+
+msgid "Solo Seal variations and own solo"
+msgstr ""
+
+msgid "Contemporary dance grades"
+msgstr "Степени съвременен танц"
+
+msgid "Palee grades (the ISTD has no graded contemporary exams)"
+msgstr "Степени на Palee (ISTD няма изпити по контемпорари)"
+
+msgid "Parallel and turned-out positions"
+msgstr ""
+
+msgid "Spinal curves and contractions"
+msgstr ""
+
+msgid "Floor rolls and weight transfer"
+msgstr ""
+
+msgid "Swings and suspensions"
+msgstr ""
+
+msgid "Falls and recovery"
+msgstr ""
+
+msgid "Travelling phrase with direction changes"
+msgstr ""
+
+msgid "Spirals and tilts"
+msgstr ""
+
+msgid "Inversions with safe weight bearing"
+msgstr ""
+
+msgid "Improvised task"
+msgstr ""
+
+msgid "Release technique phrases"
+msgstr ""
+
+msgid "Jumps with spine articulation"
+msgstr ""
+
+msgid "Partner contact basics"
+msgstr ""
+
+msgid "Floor work sequences"
+msgstr ""
+
+msgid "Contact improvisation lifts"
+msgstr ""
+
+msgid "Own short choreography"
+msgstr ""
+
+msgid "Performance of a set solo"
+msgstr ""
+
+msgid "Choreography with a clear intention"
+msgstr ""
+
+msgid "Latin American medal levels"
+msgstr "Медали по латиноамерикански танци"
+
+msgid "Medal tests like the ISTD and IDTA (not affiliated)"
+msgstr "Медални тестове като ISTD и IDTA (без връзка)"
+
+msgid "Social"
+msgstr "Социален"
+
+msgid "Cha cha and rumba basic movement"
+msgstr ""
+
+msgid "Leading and following in closed hold"
+msgstr ""
+
+msgid "Chosen dances from cha cha samba rumba paso doble and jive"
+msgstr ""
+
+msgid "Bronze figures with timing"
+msgstr ""
+
+msgid "Hip action (Cuban motion)"
+msgstr ""
+
+msgid "Silver figures in the chosen dances"
+msgstr ""
+
+msgid "Spins and turns with spotting"
+msgstr ""
+
+msgid "Gold figures in the chosen dances"
+msgstr ""
+
+msgid "Musicality and floorcraft"
+msgstr ""
+
+msgid "Gold Star"
+msgstr "Златна звезда"
+
+msgid "Gold Star awards in the chosen dances"
+msgstr ""
+
+msgid "Competition-ready routines"
+msgstr ""
+
+msgid "Salsa levels"
+msgstr "Нива по салса"
+
+msgid "Palee levels (common school progression)"
+msgstr "Нива на Palee (обичайна прогресия в школите)"
+
+msgid "Beginner %{n}"
+msgstr "Начинаещи %{n}"
+
+msgid "Basic step on1 or on2 in time"
+msgstr ""
+
+msgid "Side basic and back basic"
+msgstr ""
+
+msgid "Right turn for the follower"
+msgstr ""
+
+msgid "Cross-body lead"
+msgstr ""
+
+msgid "Left turn and inside turn"
+msgstr ""
+
+msgid "Open and closed hold changes"
+msgstr ""
+
+msgid "Hears the clave and the one"
+msgstr ""
+
+msgid "Improver"
+msgstr "Напреднал начинаещ"
+
+msgid "Cross-body lead variations"
+msgstr ""
+
+msgid "Copa and hammerlock"
+msgstr ""
+
+msgid "Basic shines"
+msgstr ""
+
+msgid "Double turns with spotting"
+msgstr ""
+
+msgid "Hand-change combinations"
+msgstr ""
+
+msgid "Styling for leaders and followers"
+msgstr ""
+
+msgid "Multiple spins and turn patterns"
+msgstr ""
+
+msgid "Shines in partnerwork"
+msgstr ""
+
+msgid "Musical breaks and accents"
+msgstr ""
+
+msgid "Performance"
+msgstr "Изпълнение"
+
+msgid "Team choreography"
+msgstr ""
+
+msgid "Lifts and dips with safe technique"
+msgstr ""
+
+msgid "Bachata levels"
+msgstr "Нива по бачата"
+
+msgid "Palee levels (sensual and Dominican styles)"
+msgstr "Нива на Palee (сензуален и доминикански стил)"
+
+msgid "Basic step with the tap on 4 and 8"
+msgstr ""
+
+msgid "Side and box basics"
+msgstr ""
+
+msgid "Closed and open hold"
+msgstr ""
+
+msgid "Right and left turns"
+msgstr ""
+
+msgid "Hip motion in time"
+msgstr ""
+
+msgid "Leading through the frame"
+msgstr ""
+
+msgid "Body rolls and waves (sensual)"
+msgstr ""
+
+msgid "Dominican footwork"
+msgstr ""
+
+msgid "Turn combinations"
+msgstr ""
+
+msgid "Head rolls and hair whips with neck safety"
+msgstr ""
+
+msgid "Musicality: breaks and the derecho"
+msgstr ""
+
+msgid "Connection in close embrace"
+msgstr ""
+
+msgid "Counter-body movements and isolations"
+msgstr ""
+
+msgid "Dips and drops with safe technique"
+msgstr ""
+
+msgid "Social leading of complex patterns"
+msgstr ""
+
+msgid "Hip-hop levels"
+msgstr "Нива по хип-хоп"
+
+msgid "ISTD street dance medals plus a Palee starter level"
+msgstr "Медали по стрийт денс на ISTD и начално ниво на Palee"
+
+msgid "Bounce and rock grooves"
+msgstr ""
+
+msgid "Two-step and side step"
+msgstr ""
+
+msgid "On-beat counting in eights"
+msgstr ""
+
+msgid "Running man and Roger Rabbit"
+msgstr ""
+
+msgid "Party dances: Bart Simpson and Cabbage Patch"
+msgstr ""
+
+msgid "32-count routine"
+msgstr ""
+
+msgid "Isolations: chest head and arms"
+msgstr ""
+
+msgid "Footwork: kick ball change and heel-toe"
+msgstr ""
+
+msgid "Freestyle 30 seconds in a circle"
+msgstr ""
+
+msgid "Texture changes (hit glide and flow)"
+msgstr ""
+
+msgid "Choreography with formations"
+msgstr ""
+
+msgid "Freestyle battle round"
+msgstr ""
+
+msgid "Commercial and R&B levels"
+msgstr "Нива по комършъл и R&B"
+
+msgid "Palee levels for commercial dance classes"
+msgstr "Нива на Palee за класове по комършъл денс"
+
+msgid "Grooves in R&B tempo"
+msgstr ""
+
+msgid "Body rolls and isolations"
+msgstr ""
+
+msgid "Learns an 8-count phrase quickly"
+msgstr ""
+
+msgid "Floor transitions and knee spins"
+msgstr ""
+
+msgid "Facials and performance to camera"
+msgstr ""
+
+msgid "64-count choreography"
+msgstr ""
+
+msgid "Speed changes and accents on lyrics"
+msgstr ""
+
+msgid "Turns and jumps within choreography"
+msgstr ""
+
+msgid "Music video style piece"
+msgstr ""
+
+msgid "Own choreography for a short track"
+msgstr ""
+
+msgid "Breaking levels"
+msgstr "Нива по брейкинг"
+
+msgid "Palee levels from WDSF breaking elements"
+msgstr "Нива на Palee по елементите на брейкинг на WDSF"
+
+msgid "Toprock: Indian step and two-step"
+msgstr ""
+
+msgid "Six-step"
+msgstr ""
+
+msgid "Baby freeze"
+msgstr ""
+
+msgid "Three-step and CC footwork"
+msgstr ""
+
+msgid "Chair freeze"
+msgstr ""
+
+msgid "Go-down transitions"
+msgstr ""
+
+msgid "Backspin and turtle drills"
+msgstr ""
+
+msgid "Headstand freeze"
+msgstr ""
+
+msgid "Combo of toprock footwork and freeze"
+msgstr ""
+
+msgid "Windmill"
+msgstr ""
+
+msgid "Air baby and hollowback drills"
+msgstr ""
+
+msgid "One-minute set in a cypher"
+msgstr ""
+
+msgid "Flares or headspins"
+msgstr ""
+
+msgid "Power move combos"
+msgstr ""
+
+msgid "Battle rounds with musicality"
+msgstr ""
+
+msgid "Reggaeton levels"
+msgstr "Нива по регетон"
+
+msgid "Palee levels (urban Latin)"
+msgstr "Нива на Palee (градска латино)"
+
+msgid "Dembow rhythm in the feet"
+msgstr ""
+
+msgid "Basic perreo step with safe posture"
+msgstr ""
+
+msgid "Hip circles"
+msgstr ""
+
+msgid "Isolations of hips and chest"
+msgstr ""
+
+msgid "Travelling steps and turns"
+msgstr ""
+
+msgid "Floor work and level changes"
+msgstr ""
+
+msgid "Accents on the snare"
+msgstr ""
+
+msgid "Freestyle 30 seconds"
+msgstr ""
+
+msgid "Performance choreography with styling"
+msgstr ""
+
+msgid "Partner reggaeton basics"
+msgstr ""
+
+msgid "Heels levels"
+msgstr "Нива по хийлс"
+
+msgid "Palee levels for heels classes"
+msgstr "Нива на Palee за класове по хийлс"
+
+msgid "Walks and turns in heels with ankle control"
+msgstr ""
+
+msgid "Posture and hip sway"
+msgstr ""
+
+msgid "Hair flicks with neck safety"
+msgstr ""
+
+msgid "Floor work: kneeling transitions"
+msgstr ""
+
+msgid "Leg lines and extensions"
+msgstr ""
+
+msgid "32-count choreography"
+msgstr ""
+
+msgid "Floor spins and slides"
+msgstr ""
+
+msgid "Chair work basics"
+msgstr ""
+
+msgid "Performance with facials"
+msgstr ""
+
+msgid "Drops and splits in heels (when flexible enough)"
+msgstr ""
+
+msgid "Pole levels"
+msgstr "Нива по пол"
+
+msgid "Palee levels from common studio grading"
+msgstr "Нива на Palee по обичайното оценяване в студията"
+
+msgid "Walks and pivots around the pole"
+msgstr ""
+
+msgid "Fireman spin and back hook spin"
+msgstr ""
+
+msgid "Chair spin"
+msgstr ""
+
+msgid "Basic climb and sit"
+msgstr ""
+
+msgid "Pole sit hands-free"
+msgstr ""
+
+msgid "Crucifix"
+msgstr ""
+
+msgid "Spin combinations on static and spinning pole"
+msgstr ""
+
+msgid "Inverted crunch drills"
+msgstr ""
+
+msgid "Basic invert from the floor"
+msgstr ""
+
+msgid "Outside leg hang and inside leg hang"
+msgstr ""
+
+msgid "Butterfly"
+msgstr ""
+
+msgid "Aerial invert"
+msgstr ""
+
+msgid "Shoulder mount from the floor"
+msgstr ""
+
+msgid "Gemini and cupid"
+msgstr ""
+
+msgid "Ayesha (elbow grip)"
+msgstr ""
+
+msgid "Deadlift shoulder mount"
+msgstr ""
+
+msgid "Iron X drills"
+msgstr ""
+
+msgid "Handspring (twisted grip)"
+msgstr ""
+
+msgid "Flags and drops with control"
+msgstr ""
+
+msgid "Routine of 2 minutes on both sides"
+msgstr ""
+
+msgid "Aerial silks levels"
+msgstr "Нива въздушни ленти"
+
+msgid "Palee levels from circus school progression"
+msgstr "Нива на Palee по прогресията на циркови школи"
+
+msgid "Single foot lock from the ground"
+msgstr ""
+
+msgid "Basic climb (Russian or French)"
+msgstr ""
+
+msgid "Invert in the knot"
+msgstr ""
+
+msgid "Double foot locks in the air"
+msgstr ""
+
+msgid "Hip key"
+msgstr ""
+
+msgid "Straddle back inversion"
+msgstr ""
+
+msgid "Scorpion and diaper wrap"
+msgstr ""
+
+msgid "Inverted climb"
+msgstr ""
+
+msgid "Single star drop"
+msgstr ""
+
+msgid "Sequence of three poses"
+msgstr ""
+
+msgid "Wheel-downs"
+msgstr ""
+
+msgid "Salto drop"
+msgstr ""
+
+msgid "Belay and Russian climbs mixed"
+msgstr ""
+
+msgid "Double star drop"
+msgstr ""
+
+msgid "Aerial routine of 2 minutes"
+msgstr ""
+
+msgid "Aerial hoop levels"
+msgstr "Нива въздушен обръч"
+
+msgid "Hip-hang and seated mount from the ground"
+msgstr ""
+
+msgid "Bird's nest under the bar"
+msgstr ""
+
+msgid "Pike beat mount drills"
+msgstr ""
+
+msgid "Pike beat mount"
+msgstr ""
+
+msgid "Mermaid and man in the moon"
+msgstr ""
+
+msgid "Spinning poses"
+msgstr ""
+
+msgid "Front balance and back balance"
+msgstr ""
+
+msgid "Gazelle"
+msgstr ""
+
+msgid "Straddle mount"
+msgstr ""
+
+msgid "Angel and top-bar standing"
+msgstr ""
+
+msgid "Ankle hang"
+msgstr ""
+
+msgid "Rolls and drops with control"
+msgstr ""
+
+msgid "Routine of 2 minutes"
+msgstr ""
+
+msgid "Tap dance"
+msgstr "Степени степ"
+
+msgid "ISTD tap structure (not affiliated)"
+msgstr "Структура по степ на ISTD (без връзка)"
+
+msgid "Bounce in time to music"
+msgstr ""
+
+msgid "Step and jump with clear sounds"
+msgstr ""
+
+msgid "Ball taps and ball beats"
+msgstr ""
+
+msgid "Toe taps"
+msgstr ""
+
+msgid "Heel beats"
+msgstr ""
+
+msgid "Step ball change"
+msgstr ""
+
+msgid "Gallops across the room"
+msgstr ""
+
+msgid "Step clap stamp clap pattern"
+msgstr ""
+
+msgid "Keeps a steady beat when clapping"
+msgstr ""
+
+msgid "Performs a short teacher-led tap routine"
+msgstr ""
+
+msgid "All Pre-Primary steps clean and in time"
+msgstr ""
+
+msgid "Ball change"
+msgstr ""
+
+msgid "Single paradiddle (paddle)"
+msgstr ""
+
+msgid "Preparation for shuffles (forward and back brush)"
+msgstr ""
+
+msgid "Ball and heel beats sequence"
+msgstr ""
+
+msgid "Skips and travelling steps to music"
+msgstr ""
+
+msgid "Claps a simple given rhythm"
+msgstr ""
+
+msgid "Performs a short dance with a partner or group"
+msgstr ""
+
+msgid "Tap step and heel tap"
+msgstr ""
+
+msgid "Ball dig and heel dig"
+msgstr ""
+
+msgid "Spring"
+msgstr ""
+
+msgid "Forward shuffle"
+msgstr ""
+
+msgid "Standard flap and flaps to the toe"
+msgstr ""
+
+msgid "Basic crawl and sideways crawl (feet together)"
+msgstr ""
+
+msgid "Pick up step"
+msgstr ""
+
+msgid "Tap step ball change"
+msgstr ""
+
+msgid "Shuffle ball change"
+msgstr ""
+
+msgid "Rag style: step heel beat"
+msgstr ""
+
+msgid "Jazz style: pick up steps"
+msgstr ""
+
+msgid "Boogie style: tap step heels and tap step ball change"
+msgstr ""
+
+msgid "Swing style: shuffle ball changes"
+msgstr ""
+
+msgid "Blues style: ball changes"
+msgstr ""
+
+msgid "Performs a solo dance up to 45 seconds"
+msgstr ""
+
+msgid "Stomp and drop"
+msgstr ""
+
+msgid "Side shuffle and shuffles round the side"
+msgstr ""
+
+msgid "4 beat cramp roll"
+msgstr ""
+
+msgid "Pick ups on 2 feet"
+msgstr ""
+
+msgid "Pick up spring and pick up hop"
+msgstr ""
+
+msgid "Shuffle hop step"
+msgstr ""
+
+msgid "4 beat riff"
+msgstr ""
+
+msgid "Separated crawl sideways"
+msgstr ""
+
+msgid "Double paradiddle (paddle)"
+msgstr ""
+
+msgid "Single time step"
+msgstr ""
+
+msgid "Travelling pick ups (Celtic style)"
+msgstr ""
+
+msgid "Turning step on the diagonal both sides"
+msgstr ""
+
+msgid "Toe flam"
+msgstr ""
+
+msgid "Back shuffle"
+msgstr ""
+
+msgid "5 beat cramp roll"
+msgstr ""
+
+msgid "3 beat riff forward and 5 beat riff"
+msgstr ""
+
+msgid "Pick up on 1 foot (with preparation)"
+msgstr ""
+
+msgid "Pick up change and pick up ball change"
+msgstr ""
+
+msgid "Shuffle spring"
+msgstr ""
+
+msgid "Basic waltz step single and double"
+msgstr ""
+
+msgid "Double time step"
+msgstr ""
+
+msgid "Paddles exercise"
+msgstr ""
+
+msgid "Unseen sequence of 2 known steps set by teacher"
+msgstr ""
+
+msgid "Double shuffle"
+msgstr ""
+
+msgid "Flap to toe sideways"
+msgstr ""
+
+msgid "3 beat riff forwards and backwards"
+msgstr ""
+
+msgid "3 beat ripple"
+msgstr ""
+
+msgid "Shuffle pick up change"
+msgstr ""
+
+msgid "Pull back (on two feet)"
+msgstr ""
+
+msgid "Bufalino crawl and close work crawl"
+msgstr ""
+
+msgid "Riffs and cramp rolls in 3/4"
+msgstr ""
+
+msgid "Triple time steps"
+msgstr ""
+
+msgid "Claps 16th notes and improvises footwork"
+msgstr ""
+
+msgid "Turning step both sides"
+msgstr ""
+
+msgid "3 beat paddle"
+msgstr ""
+
+msgid "Double shuffle to the side"
+msgstr ""
+
+msgid "Flam"
+msgstr ""
+
+msgid "4 beat ripple"
+msgstr ""
+
+msgid "Round the sides"
+msgstr ""
+
+msgid "3 beat and 4 beat wing preparation"
+msgstr ""
+
+msgid "Maxi Ford with toe tap"
+msgstr ""
+
+msgid "Sugars"
+msgstr ""
+
+msgid "Pick up time steps single double and triple"
+msgstr ""
+
+msgid "Shuffle time step solo"
+msgstr ""
+
+msgid "Basic Shim Sham"
+msgstr ""
+
+msgid "Optional: double wings and toe beat crawl"
+msgstr ""
+
+msgid "4 beat progressive tap"
+msgstr ""
+
+msgid "Criss cross shuffle"
+msgstr ""
+
+msgid "Progressive shuffle"
+msgstr ""
+
+msgid "4 beat cramp roll change"
+msgstr ""
+
+msgid "Double scuffle and twist scuffle"
+msgstr ""
+
+msgid "5 beat open riff"
+msgstr ""
+
+msgid "Wing preparations in sequence"
+msgstr ""
+
+msgid "Single · double · triple shuffle time steps with breaks and half breaks"
+msgstr ""
+
+msgid "Time steps starting on 8 or on 1"
+msgstr ""
+
+msgid "Solo dance of own style choice"
+msgstr ""
+
+msgid "Slap · splat · snatch and slam"
+msgstr ""
+
+msgid "3 beat shuffles · flaps and pull backs"
+msgstr ""
+
+msgid "Drum cramp roll and 6 beat cramp roll"
+msgstr ""
+
+msgid "Inside flam and outside flam"
+msgstr ""
+
+msgid "Suzie Q"
+msgstr ""
+
+msgid "Maxi Ford with step"
+msgstr ""
+
+msgid "Cahito"
+msgstr ""
+
+msgid "Compass turn and rhythm turn with shuffle"
+msgstr ""
+
+msgid "Shuffle off to Buffalo"
+msgstr ""
+
+msgid "5 beat paddle"
+msgstr ""
+
+msgid "6 beat and 7 beat riffs"
+msgstr ""
+
+msgid "11 beat criss cross riff"
+msgstr ""
+
+msgid "Ripple down"
+msgstr ""
+
+msgid "Rhythm · travelling and wing-preparation time steps"
+msgstr ""
+
+msgid "Cross accent and light and shade exercises"
+msgstr ""
+
+msgid "Theatre tap and commercial tap sequences"
+msgstr ""
+
+msgid "Own dance composition up to 2 minutes"
+msgstr ""
+
+msgid "Progressive taps"
+msgstr ""
+
+msgid "Roll time steps"
+msgstr ""
+
+msgid "12 beat criss cross riffs"
+msgstr ""
+
+msgid "Closed pull backs"
+msgstr ""
+
+msgid "2 bar single · double and triple wing preparation time steps"
+msgstr ""
+
+msgid "Turning step with Maxi Ford"
+msgstr ""
+
+msgid "Suzie Q technical exercise"
+msgstr ""
+
+msgid "Examiner-set time steps with syncopation and tacet"
+msgstr ""
+
+msgid "Improvises a 2 bar 4/4 rhythm with 16ths"
+msgstr ""
+
+msgid "Blues and quick jazz sequences"
+msgstr ""
+
+msgid "Optional: mixed Maxi Ford · wing on one foot · wing change"
+msgstr ""
+
+msgid "Single · double · triple and double-triple cramp roll time steps"
+msgstr ""
+
+msgid "4 beat press cramp roll"
+msgstr ""
+
+msgid "Syncopated shuffle pick up change"
+msgstr ""
+
+msgid "Open and closed pull backs"
+msgstr ""
+
+msgid "Eddie's riff and Eddie's travel"
+msgstr ""
+
+msgid "Rattle: basic · progressive and double toe"
+msgstr ""
+
+msgid "Back travel and side travel"
+msgstr ""
+
+msgid "Wings or ripples turning"
+msgstr ""
+
+msgid "Spanish waltz amalgamation"
+msgstr ""
+
+msgid "Free improvisation to examiner's music"
+msgstr ""
+
+msgid "Optional: pendulum wings"
+msgstr ""
+
+msgid "Jazz dance"
+msgstr "Степени джаз танц"
+
+msgid "ISTD Modern Theatre structure (not affiliated)"
+msgstr "Структура Modern Theatre на ISTD (без връзка)"
+
+msgid "Natural walks on the diagonal in time"
+msgstr ""
+
+msgid "Limbering: magic feet · leg stretching · squeeze and stretch"
+msgstr ""
+
+msgid "Running in a circle with control"
+msgstr ""
+
+msgid "Claps and marks a simple rhythm (1234&5)"
+msgstr ""
+
+msgid "Skipping and galloping patterns"
+msgstr ""
+
+msgid "Bounces together with the group"
+msgstr ""
+
+msgid "Running with action (arms and focus)"
+msgstr ""
+
+msgid "Performs a 45-second character dance"
+msgstr ""
+
+msgid "Set warm-up from memory"
+msgstr ""
+
+msgid "Side stretch and forward stretch"
+msgstr ""
+
+msgid "Foot exercise: point and flex"
+msgstr ""
+
+msgid "Abdominal strengthening exercise"
+msgstr ""
+
+msgid "Front kicks with straight legs"
+msgstr ""
+
+msgid "Tendus in parallel"
+msgstr ""
+
+msgid "Jazz walks in a circle"
+msgstr ""
+
+msgid "Split runs"
+msgstr ""
+
+msgid "Basic turn on the spot"
+msgstr ""
+
+msgid "Claps and marks a 2-bar free rhythm"
+msgstr ""
+
+msgid "Solo dance of 16 bars"
+msgstr ""
+
+msgid "Limbering sequence with spine roll-downs"
+msgstr ""
+
+msgid "Front kicks to 90° with control"
+msgstr ""
+
+msgid "Simple head and shoulder isolations"
+msgstr ""
+
+msgid "Jazz walks with arm lines"
+msgstr ""
+
+msgid "Step ball change travelling"
+msgstr ""
+
+msgid "Jazz pas de bourrée on the spot"
+msgstr ""
+
+msgid "Chassé travelling"
+msgstr ""
+
+msgid "Step turn at low level"
+msgstr ""
+
+msgid "Sautés in parallel"
+msgstr ""
+
+msgid "Set rhythm 1&2 3&4 clapped and danced"
+msgstr ""
+
+msgid "Set amalgamation from memory"
+msgstr ""
+
+msgid "Side stretch option A or B"
+msgstr ""
+
+msgid "Leg stretching with front kicks"
+msgstr ""
+
+msgid "Side kicks exercise"
+msgstr ""
+
+msgid "Head · shoulder · ribcage and hip isolations"
+msgstr ""
+
+msgid "Triple runs"
+msgstr ""
+
+msgid "Jazz pas de bourrée travelling"
+msgstr ""
+
+msgid "Split jump"
+msgstr ""
+
+msgid "Step and front kick"
+msgstr ""
+
+msgid "Front and side step ball change"
+msgstr ""
+
+msgid "Step turn at high and low level"
+msgstr ""
+
+msgid "Front and side flick kicks"
+msgstr ""
+
+msgid "Claps and marks free rhythm with half and quarter notes"
+msgstr ""
+
+msgid "Forward and side stretch with spine loosening"
+msgstr ""
+
+msgid "Front and side kicks set exercise"
+msgstr ""
+
+msgid "Hip loosening or push-aways exercise"
+msgstr ""
+
+msgid "Body strengthening floor sequence"
+msgstr ""
+
+msgid "Set isolation exercise"
+msgstr ""
+
+msgid "Free rhythm with 12th notes and missed beats"
+msgstr ""
+
+msgid "Single turns both sides"
+msgstr ""
+
+msgid "Kicks set exercise both sides"
+msgstr ""
+
+msgid "Split runs travelling"
+msgstr ""
+
+msgid "Two combination steps danced consecutively"
+msgstr ""
+
+msgid "Solo dance of 1 to 1½ minutes"
+msgstr ""
+
+msgid "Isolations seen individually"
+msgstr ""
+
+msgid "Improvisation to unseen music"
+msgstr ""
+
+msgid "Drag runs forwards and sideways"
+msgstr ""
+
+msgid "Step and sideways split run"
+msgstr ""
+
+msgid "Step and forward split run"
+msgstr ""
+
+msgid "Circular spring without body line"
+msgstr ""
+
+msgid "Accented hop"
+msgstr ""
+
+msgid "Step and coupé turn with extended leg"
+msgstr ""
+
+msgid "Turns option A or B both sides"
+msgstr ""
+
+msgid "Unset sequence given by the teacher"
+msgstr ""
+
+msgid "Jazz · musical theatre or lyrical amalgamation"
+msgstr ""
+
+msgid "Limbering set exercise with full range"
+msgstr ""
+
+msgid "Jazz arm exercise"
+msgstr ""
+
+msgid "Step and retiré with body line and fondu"
+msgstr ""
+
+msgid "Tilts"
+msgstr ""
+
+msgid "Extended spring sideways"
+msgstr ""
+
+msgid "Accented hop with varying leg line"
+msgstr ""
+
+msgid "Accented hop with half turn"
+msgstr ""
+
+msgid "Forward leap"
+msgstr ""
+
+msgid "Kicks option A or B"
+msgstr ""
+
+msgid "Dance vocabulary sequence with 4-count improvisation"
+msgstr ""
+
+msgid "Lyrical · musical theatre or jazz amalgamation"
+msgstr ""
+
+msgid "Circular walk and triple run"
+msgstr ""
+
+msgid "Drag run"
+msgstr ""
+
+msgid "Jazz change of weight"
+msgstr ""
+
+msgid "Jazz pas de bourrée travelling · turning and on the spot"
+msgstr ""
+
+msgid "Drag turns front and back"
+msgstr ""
+
+msgid "Jazz pirouette at low level"
+msgstr ""
+
+msgid "Twist turn and swivel turn"
+msgstr ""
+
+msgid "Travelling jump with turn"
+msgstr ""
+
+msgid "Front kick with bent or straight supporting leg"
+msgstr ""
+
+msgid "Extended spring sideways and accented hops"
+msgstr ""
+
+msgid "Circular spring and forward leap"
+msgstr ""
+
+msgid "Isolations and set rhythm clapping"
+msgstr ""
+
+msgid "Barre work: figure of 8 leg swings"
+msgstr ""
+
+msgid "Développé walk with lay back"
+msgstr ""
+
+msgid "Trudging · cushion and circular walks"
+msgstr ""
+
+msgid "Jazz pas de bourrée turning"
+msgstr ""
+
+msgid "Single pirouettes outwards and inwards at low and high level"
+msgstr ""
+
+msgid "Front and back twist turns · spin · open turns"
+msgstr ""
+
+msgid "Front · side and round kicks"
+msgstr ""
+
+msgid "Side kick with tilt"
+msgstr ""
+
+msgid "Forward leap with développé"
+msgstr ""
+
+msgid "Extended tuck jump"
+msgstr ""
+
+msgid "Step and spring turn with picked-up leg"
+msgstr ""
+
+msgid "Split · picked-up and turning ball changes"
+msgstr ""
+
+msgid "Leaps on the diagonal and elevated turns"
+msgstr ""
+
+msgid "Interprets free rhythm with syncopation"
+msgstr ""
+
+msgid "Jazz adage set exercise"
+msgstr ""
+
+msgid "Falls: knee drop and back fall"
+msgstr ""
+
+msgid "Triple walk and walks set exercise"
+msgstr ""
+
+msgid "Double pirouettes at low and high level"
+msgstr ""
+
+msgid "Barrel turn (single or more)"
+msgstr ""
+
+msgid "Single turn with leg in attitude"
+msgstr ""
+
+msgid "Multiple pirouettes in 2nd with fouetté action"
+msgstr ""
+
+msgid "Kicks with hip extension front and side"
+msgstr ""
+
+msgid "Round kicks outward and inward"
+msgstr ""
+
+msgid "Développé side leap and stag leap"
+msgstr ""
+
+msgid "Leap turn with varying leg lines"
+msgstr ""
+
+msgid "Accented hops with a whole turn"
+msgstr ""
+
+msgid "Improvises immediately to examiner's free amalgamation"
+msgstr ""
+
+msgid "Technical floor sequence"
+msgstr ""
+
+msgid "Falls and tilts set exercise"
+msgstr ""
+
+msgid "Extended walks with body tilt"
+msgstr ""
+
+msgid "Double or more pirouettes in parallel or turned out"
+msgstr ""
+
+msgid "Spin turns (chaînés) at various levels"
+msgstr ""
+
+msgid "Barrel turns with bent or straight legs"
+msgstr ""
+
+msgid "Double tour en l'air"
+msgstr ""
+
+msgid "Kicks with layout or back bend"
+msgstr ""
+
+msgid "Attitude leaps and scissor hop"
+msgstr ""
+
+msgid "Jazz sissonne and straddle jump"
+msgstr ""
+
+msgid "Turns on the diagonal set exercise"
+msgstr ""
+
+msgid "Two contrasting set amalgamations (e.g. blues)"
+msgstr ""
+
+msgid "Own solo of 1½ minutes"
+msgstr ""
+
+msgid "Ballet (Cecchetti method)"
+msgstr "Балет (метод Чекети)"
+
+msgid "ISTD Cecchetti structure (not affiliated)"
+msgstr "Структура Чекети на ISTD (без връзка)"
+
+msgid "Demi-pliés in 1st position"
+msgstr ""
+
+msgid "Walking on tip toes"
+msgstr ""
+
+msgid "Flexing and pointing the feet"
+msgstr ""
+
+msgid "Point and close"
+msgstr ""
+
+msgid "Curling and stretching the body"
+msgstr ""
+
+msgid "Hand movements to music"
+msgstr ""
+
+msgid "Jumps in 1st position"
+msgstr ""
+
+msgid "Responds to music in imaginative scenes"
+msgstr ""
+
+msgid "Curtsey or bow"
+msgstr ""
+
+msgid "Skips into the room to music"
+msgstr ""
+
+msgid "Demi-pliés and rises"
+msgstr ""
+
+msgid "Battement tendu"
+msgstr ""
+
+msgid "Foot stretching and marching"
+msgstr ""
+
+msgid "Hand exercises · arm lifting · arm sways"
+msgstr ""
+
+msgid "Sautés"
+msgstr ""
+
+msgid "Galops sideways and pony canters forwards"
+msgstr ""
+
+msgid "Échappés sautés"
+msgstr ""
+
+msgid "Preparatory polka with spring points"
+msgstr ""
+
+msgid "Improvises to unheard music"
+msgstr ""
+
+msgid "Expressive solo up to 45 seconds"
+msgstr ""
+
+msgid "Knows points of the room corners 1-4"
+msgstr ""
+
+msgid "Knows 1st · 2nd and 3rd positions of the feet"
+msgstr ""
+
+msgid "Barre: demi-pliés in 2nd and 1st"
+msgstr ""
+
+msgid "Battements tendus à la seconde facing the barre"
+msgstr ""
+
+msgid "Grands battements devant sideways to the barre"
+msgstr ""
+
+msgid "Rises combined with running on the toes"
+msgstr ""
+
+msgid "Port de bras in the centre"
+msgstr ""
+
+msgid "Retirés and exercise for 3rd arabesque"
+msgstr ""
+
+msgid "Quarter turns with use of the head"
+msgstr ""
+
+msgid "Échappé sauté from 1st with sautés"
+msgstr ""
+
+msgid "Simple sideways polka with spring points"
+msgstr ""
+
+msgid "Posé temps levé and galops"
+msgstr ""
+
+msgid "Classical or demi-caractère solo up to 45 seconds"
+msgstr ""
+
+msgid "Révérence"
+msgstr ""
+
+msgid "Works in 3rd position of the feet"
+msgstr ""
+
+msgid "Knows 4th and 5th positions and arm positions 2nd · 5th en bas/avant/haut"
+msgstr ""
+
+msgid "Rise and demi-pliés in 2nd · 1st and 3rd"
+msgstr ""
+
+msgid "Battements tendus en croix"
+msgstr ""
+
+msgid "Grands battements devant and à la seconde"
+msgstr ""
+
+msgid "Ronds de jambe à terre"
+msgstr ""
+
+msgid "Échappés relevés"
+msgstr ""
+
+msgid "Retiré passé"
+msgstr ""
+
+msgid "Preparatory exercise for tour en l'air (head use)"
+msgstr ""
+
+msgid "Pas de chat with changements"
+msgstr ""
+
+msgid "Petits jetés devant or derrière"
+msgstr ""
+
+msgid "Balletic polka forwards and sideways"
+msgstr ""
+
+msgid "Unseen enchaînement with échappés and changements"
+msgstr ""
+
+msgid "Works in 5th position of the feet"
+msgstr ""
+
+msgid "Knows directions of the body and terms plier and sauter"
+msgstr ""
+
+msgid "Battements dégagés from 1st"
+msgstr ""
+
+msgid "Grands battements derrière facing the barre"
+msgstr ""
+
+msgid "Battements frappés"
+msgstr ""
+
+msgid "Retirés and développés"
+msgstr ""
+
+msgid "Fouetté à terre into arabesque"
+msgstr ""
+
+msgid "Développé and temps lié in the centre"
+msgstr ""
+
+msgid "1st and 3rd arabesques"
+msgstr ""
+
+msgid "Relevés with bourrée en tournant"
+msgstr ""
+
+msgid "Preparation for pirouette en dehors"
+msgstr ""
+
+msgid "Assemblés dessus and dessous soutenu"
+msgstr ""
+
+msgid "Pas de bourrée dessous soutenu and de suite"
+msgstr ""
+
+msgid "Jetés temps levés with coupés"
+msgstr ""
+
+msgid "Balancés sideways"
+msgstr ""
+
+msgid "Knows five positions of the head and arabesques 1-3"
+msgstr ""
+
+msgid "Full pliés in 2nd · 1st and 5th"
+msgstr ""
+
+msgid "Single and double battements frappés"
+msgstr ""
+
+msgid "Fondu movements"
+msgstr ""
+
+msgid "Développé and demi-rond de jambe"
+msgstr ""
+
+msgid "Relevés devant · derrière and passé"
+msgstr ""
+
+msgid "Adage with 1st · 2nd and 3rd arabesques both sides"
+msgstr ""
+
+msgid "Single relevé pirouette en dehors"
+msgstr ""
+
+msgid "Glissades devant and derrière soutenu"
+msgstr ""
+
+msgid "Sissonnes en avant fermées"
+msgstr ""
+
+msgid "Temps levé chassé pas de bourrée"
+msgstr ""
+
+msgid "Coupé chassé temps levé round the room"
+msgstr ""
+
+msgid "Soutenu turns en dedans on the diagonal"
+msgstr ""
+
+msgid "Batterie: échappé sauté closing with a beat"
+msgstr ""
+
+msgid "Classical solo up to one minute"
+msgstr ""
+
+msgid "Petits battements at the barre"
+msgstr ""
+
+msgid "Développé with grand rond de jambe en l'air"
+msgstr ""
+
+msgid "Battements balancés"
+msgstr ""
+
+msgid "Grand plié · développé and demi-rond in the centre"
+msgstr ""
+
+msgid "4th and 5th arabesques"
+msgstr ""
+
+msgid "Pirouette en dehors and pirouette en dedans"
+msgstr ""
+
+msgid "Changements and soubresauts"
+msgstr ""
+
+msgid "Glissade assemblé"
+msgstr ""
+
+msgid "Sissonne en avant ouverte and en arrière fermée"
+msgstr ""
+
+msgid "Entrechat quatre"
+msgstr ""
+
+msgid "Jeté en attitude devant round the room"
+msgstr ""
+
+msgid "Balancé en tournant"
+msgstr ""
+
+msgid "Petits tours on the diagonal both sides"
+msgstr ""
+
+msgid "Unseen enchaînement of up to 3 steps"
+msgstr ""
+
+msgid "Knows effacée · attitudes and five movements of the foot"
+msgstr ""
+
+msgid "Battements dégagés with piqués"
+msgstr ""
+
+msgid "Grands battements and frappés en croix"
+msgstr ""
+
+msgid "Deux grands ronds de jambe en l'air avec arabesque"
+msgstr ""
+
+msgid "Attitudes with pirouette en dedans"
+msgstr ""
+
+msgid "Pirouette en dehors from 4th position"
+msgstr ""
+
+msgid "Échappés sautés with pas de bourrée dessous"
+msgstr ""
+
+msgid "Pas de bourrée couru"
+msgstr ""
+
+msgid "Demi-contretemps and assemblé élancé on the diagonal"
+msgstr ""
+
+msgid "Grands jetés en tournant"
+msgstr ""
+
+msgid "Posé tours and petits tours on the diagonal"
+msgstr ""
+
+msgid "Entrechat royale and entrechat trois"
+msgstr ""
+
+msgid "Unseen enchaînement of up to 4 steps"
+msgstr ""
+
+msgid "Theory: positions · seven movements · eight directions · five arabesques"
+msgstr ""
+
+msgid "Uses the eight fixed points of the room"
+msgstr ""
+
+msgid "Full traditional barre from pliés to relevés"
+msgstr ""
+
+msgid "Adage with attitude and grand rond de jambe en l'air"
+msgstr ""
+
+msgid "Pirouettes en dedans and en dehors from 4th"
+msgstr ""
+
+msgid "Brisé dessus soutenu"
+msgstr ""
+
+msgid "Entrechat trois derrière and devant"
+msgstr ""
+
+msgid "Glissade jeté and jeté temps levé"
+msgstr ""
+
+msgid "Grands jetés en tournant both sides"
+msgstr ""
+
+msgid "Posé tours en dedans or petits tours on the diagonal"
+msgstr ""
+
+msgid "Pointe (girls): flexing · rises · échappés relevés"
+msgstr ""
+
+msgid "Boys option: grands changements and échappés battus"
+msgstr ""
+
+msgid "Classical solo up to one minute (not on pointe)"
+msgstr ""
+
+msgid "Theory of port de bras and correct movements of the foot"
+msgstr ""
+
+msgid "Ronds de jambe en l'air and fouettés à terre"
+msgstr ""
+
+msgid "Grand fouetté and développé en tournant"
+msgstr ""
+
+msgid "Preparation for fouettés rond de jambe en tournant"
+msgstr ""
+
+msgid "Grande préparation and pirouettes en dehors from 4th"
+msgstr ""
+
+msgid "Pirouettes en dedans from a lunge and from 4th"
+msgstr ""
+
+msgid "Ballonné simple and écarté"
+msgstr ""
+
+msgid "Échappé battu beating out and in"
+msgstr ""
+
+msgid "Pas de bourrée en tournant en dehors and en dedans"
+msgstr ""
+
+msgid "Entrechat quatre and royale combinations"
+msgstr ""
+
+msgid "Cabriole devant ouverte"
+msgstr ""
+
+msgid "Grand jeté en tournant to posé in 2nd arabesque"
+msgstr ""
+
+msgid "Petits pas de basque en tournant"
+msgstr ""
+
+msgid "Pointe: pas de bourrée piqués · couru · posés coupés and emboîtés"
+msgstr ""
+
+msgid "Boys: tour en l'air from changement and from relevé"
+msgstr ""
+
+msgid "Traditional and additional barre including battements jetés at 45°"
+msgstr ""
+
+msgid "Adage study and jetés of adage"
+msgstr ""
+
+msgid "Arabesque penchée"
+msgstr ""
+
+msgid "Promenades in arabesque · attitude and 2nd"
+msgstr ""
+
+msgid "Cinq relevés · pas de chaconne · temps de courante"
+msgstr ""
+
+msgid "Pirouettes en dedans in attitude or arabesque"
+msgstr ""
+
+msgid "Pirouettes en dehors with extension en l'air"
+msgstr ""
+
+msgid "Fouettés rond de jambe en tournant"
+msgstr ""
+
+msgid "Entrechat cinq and brisé dessous"
+msgstr ""
+
+msgid "Cabriole derrière and jeté battu à la seconde"
+msgstr ""
+
+msgid "Sissonnes battues and temps de cuisse"
+msgstr ""
+
+msgid "Ballonné à trois temps"
+msgstr ""
+
+msgid "Pointe: soutenu turns · posé tours · posé développé"
+msgstr ""
+
+msgid "Boys: double tour en l'air and tours à la seconde"
+msgstr ""
+
+msgid "Full traditional barre with option A or B additions"
+msgstr ""
+
+msgid "Battements tendus with dégagé en tournant"
+msgstr ""
+
+msgid "Advanced adages from the Cecchetti days of the week"
+msgstr ""
+
+msgid "Grands jetés en attitude and à la seconde"
+msgstr ""
+
+msgid "Entrechat six and entrechat six de côté"
+msgstr ""
+
+msgid "Assemblé Cecchetti"
+msgstr ""
+
+msgid "Jeté double rond de jambe sauté en avant and en arrière"
+msgstr ""
+
+msgid "Sissonnes retombées with entrechat six"
+msgstr ""
+
+msgid "Jeté fouetté sauté en tournant"
+msgstr ""
+
+msgid "Coupé jeté en tournant round the room"
+msgstr ""
+
+msgid "Douze jetés en tournant and petits tours both sides"
+msgstr ""
+
+msgid "Pointe: advanced enchaînements on softened blocked shoes"
+msgstr ""
+
+msgid "Classical solo (tutu optional)"
+msgstr ""
+
+msgid "Ballet (Vaganova method)"
+msgstr "Балет (метод Ваганова)"
+
+msgid "Vaganova 8-year programme (yearly content reconstructed)"
+msgstr "Осемгодишна програма Ваганова (съдържанието по години е реконструирано)"
+
+msgid "Year 1"
+msgstr ""
+
+msgid "Five positions of the feet and preparatory arm position"
+msgstr ""
+
+msgid "Demi-plié and grand plié facing the barre"
+msgstr ""
+
+msgid "Battement tendu and tendu jeté"
+msgstr ""
+
+msgid "Rond de jambe par terre en dehors and en dedans"
+msgstr ""
+
+msgid "Sur le cou-de-pied positions"
+msgstr ""
+
+msgid "Battement frappé and battement fondu (basic)"
+msgstr ""
+
+msgid "Relevé on demi-pointe in 1st · 2nd and 5th"
+msgstr ""
+
+msgid "Grand battement jeté"
+msgstr ""
+
+msgid "Port de bras 1st and 2nd"
+msgstr ""
+
+msgid "Épaulement croisé and effacé introduced"
+msgstr ""
+
+msgid "Temps lié par terre"
+msgstr ""
+
+msgid "Sauté in 1st · 2nd and 5th"
+msgstr ""
+
+msgid "Changement de pieds and échappé sauté"
+msgstr ""
+
+msgid "Pointe (girls): relevés in 1st and 2nd facing the barre"
+msgstr ""
+
+msgid "Year 2"
+msgstr ""
+
+msgid "Barre exercises sideways to the barre en croix"
+msgstr ""
+
+msgid "Rond de jambe en l'air"
+msgstr ""
+
+msgid "Petit battement sur le cou-de-pied"
+msgstr ""
+
+msgid "Battement développé to 90°"
+msgstr ""
+
+msgid "Double frappé"
+msgstr ""
+
+msgid "Port de bras 3rd"
+msgstr ""
+
+msgid "Small poses croisée · effacée · écartée"
+msgstr ""
+
+msgid "1st to 4th arabesques"
+msgstr ""
+
+msgid "Preparation for pirouettes (quarter and half turns)"
+msgstr ""
+
+msgid "Assemblé and glissade"
+msgstr ""
+
+msgid "Sissonne simple and sissonne fermée"
+msgstr ""
+
+msgid "Pas de chat and jeté"
+msgstr ""
+
+msgid "Pas de bourrée with change of feet"
+msgstr ""
+
+msgid "Pointe: échappé · pas de bourrée suivi in the centre"
+msgstr ""
+
+msgid "Year 3"
+msgstr ""
+
+msgid "Grand rond de jambe jeté"
+msgstr ""
+
+msgid "Flic-flac"
+msgstr ""
+
+msgid "Battement développé in big poses"
+msgstr ""
+
+msgid "Port de bras 4th"
+msgstr ""
+
+msgid "Single pirouette en dehors and en dedans from 5th and 2nd"
+msgstr ""
+
+msgid "Pas de basque"
+msgstr ""
+
+msgid "Sissonne ouverte at 45°"
+msgstr ""
+
+msgid "Entrechat quatre · royale and trois"
+msgstr ""
+
+msgid "Grand changement de pieds"
+msgstr ""
+
+msgid "Pas de chat and petit jeté combinations"
+msgstr ""
+
+msgid "Pas couru"
+msgstr ""
+
+msgid "Pointe: tours chaînés and pas de bourrée en tournant"
+msgstr ""
+
+msgid "Year 4"
+msgstr ""
+
+msgid "Pirouette from 4th en dehors and en dedans"
+msgstr ""
+
+msgid "Double pirouettes from 5th"
+msgstr ""
+
+msgid "Preparation for tours in big poses"
+msgstr ""
+
+msgid "Fouetté at 45°"
+msgstr ""
+
+msgid "Renversé (preparatory)"
+msgstr ""
+
+msgid "Entrechat cinq"
+msgstr ""
+
+msgid "Brisé"
+msgstr ""
+
+msgid "Cabriole at 45°"
+msgstr ""
+
+msgid "Grand jeté in 1st arabesque"
+msgstr ""
+
+msgid "Sissonne tombée"
+msgstr ""
+
+msgid "Pointe: tours piqués and beaten steps on pointe"
+msgstr ""
+
+msgid "Year 5"
+msgstr ""
+
+msgid "Tours in big poses (attitude and arabesque)"
+msgstr ""
+
+msgid "Double tours from 4th"
+msgstr ""
+
+msgid "Tours chaînés on demi-pointe and pointe"
+msgstr ""
+
+msgid "Grand fouetté (adagio)"
+msgstr ""
+
+msgid "Jeté entrelacé"
+msgstr ""
+
+msgid "Saut de basque"
+msgstr ""
+
+msgid "Cabriole at 90°"
+msgstr ""
+
+msgid "Entrechat six"
+msgstr ""
+
+msgid "Grand assemblé en tournant"
+msgstr ""
+
+msgid "Boys: single tour en l'air"
+msgstr ""
+
+msgid "Pointe: tours from 5th and from 4th"
+msgstr ""
+
+msgid "Year 6"
+msgstr ""
+
+msgid "Renversé en dehors and en dedans"
+msgstr ""
+
+msgid "Grand fouetté en tournant"
+msgstr ""
+
+msgid "Double tours in big poses"
+msgstr ""
+
+msgid "Fouettés en tournant (8-16)"
+msgstr ""
+
+msgid "Grand sissonne renversée"
+msgstr ""
+
+msgid "Double assemblé (boys)"
+msgstr ""
+
+msgid "Boys: double tour en l'air"
+msgstr ""
+
+msgid "Jeté en tournant in series"
+msgstr ""
+
+msgid "Pointe: tours in big poses on pointe"
+msgstr ""
+
+msgid "Duet class basics (supported pirouettes)"
+msgstr ""
+
+msgid "Year 7"
+msgstr ""
+
+msgid "Multiple pirouettes (3+) en dehors and en dedans"
+msgstr ""
+
+msgid "32 fouettés en tournant (girls)"
+msgstr ""
+
+msgid "Grandes pirouettes à la seconde (boys)"
+msgstr ""
+
+msgid "Entrechat huit and brisé dessus-dessous"
+msgstr ""
+
+msgid "Revoltade and double cabriole (boys)"
+msgstr ""
+
+msgid "Grand allegro combinations across the floor"
+msgstr ""
+
+msgid "Pas de deux: lifts and supported adagio"
+msgstr ""
+
+msgid "Character and historical dance styles"
+msgstr ""
+
+msgid "Classical variation from repertoire"
+msgstr ""
+
+msgid "Year 8"
+msgstr ""
+
+msgid "Full virtuoso class at professional tempo"
+msgstr ""
+
+msgid "Multiple tours in big poses and fouettés with doubles"
+msgstr ""
+
+msgid "Manège of piqués or jetés en tournant"
+msgstr ""
+
+msgid "Coda-level grand allegro"
+msgstr ""
+
+msgid "Pas de deux with full lifts and fish dives"
+msgstr ""
+
+msgid "Two repertoire variations performed"
+msgstr ""
+
+msgid "Final state examination class"
+msgstr ""
+
+msgid "Stage performance in a full ballet"
+msgstr ""
+
+msgid "Kizomba"
+msgstr "Нива по кизомба"
+
+msgid "Palee levels (no examining body)"
+msgstr "Нива на Palee (няма изпитващ орган)"
+
+msgid "Level 1 · Foundations"
+msgstr ""
+
+msgid "Finds the main beat in kizomba music"
+msgstr ""
+
+msgid "Closed embrace (abraço) with relaxed frame"
+msgstr ""
+
+msgid "Weight transfer on every step"
+msgstr ""
+
+msgid "Musical walk forward and back"
+msgstr ""
+
+msgid "Basic step (passo básico) in place"
+msgstr ""
+
+msgid "Side step (passo lateral)"
+msgstr ""
+
+msgid "Basic step forward and back"
+msgstr ""
+
+msgid "Leader's exit (saída) to the side"
+msgstr ""
+
+msgid "Lead and follow through the chest"
+msgstr ""
+
+msgid "Pause and restart on the beat"
+msgstr ""
+
+msgid "Level 2 · Improver"
+msgstr ""
+
+msgid "Saída da dama (follower's exit)"
+msgstr ""
+
+msgid "Retrocesso (backward walk of the follower)"
+msgstr ""
+
+msgid "Vírgula"
+msgstr ""
+
+msgid "3x3 (three-by-three) pattern"
+msgstr ""
+
+msgid "Balance (balanço) in place"
+msgstr ""
+
+msgid "Basic pivots in closed hold"
+msgstr ""
+
+msgid "Simple follower turn and return to embrace"
+msgstr ""
+
+msgid "Corridinha (small running steps)"
+msgstr ""
+
+msgid "Navigation on a social floor without collisions"
+msgstr ""
+
+msgid "Dances a full song without losing the beat"
+msgstr ""
+
+msgid "Level 3 · Intermediate"
+msgstr ""
+
+msgid "Cruzado (cross step) for leader and follower"
+msgstr ""
+
+msgid "Around the world"
+msgstr ""
+
+msgid "Foot swipe (rasteira)"
+msgstr ""
+
+msgid "Opening to open hold and closing again"
+msgstr ""
+
+msgid "Double-time steps (contratempo) on the leader cue"
+msgstr ""
+
+msgid "Linked combinations of 4+ figures"
+msgstr ""
+
+msgid "Follower hip and body styling (ginga)"
+msgstr ""
+
+msgid "Leader body isolation to signal changes"
+msgstr ""
+
+msgid "Musicality: stops and breaks in the song"
+msgstr ""
+
+msgid "Dances with partners of different levels"
+msgstr ""
+
+msgid "Level 4 · Advanced"
+msgstr ""
+
+msgid "Kota and semba-rooted steps"
+msgstr ""
+
+msgid "Multiple follower turns with clean finish"
+msgstr ""
+
+msgid "Shadow position walks and exits"
+msgstr ""
+
+msgid "Tarraxinha slow isolations"
+msgstr ""
+
+msgid "Urban kiz basics: lines and freezes"
+msgstr ""
+
+msgid "Improvises fully led sequences"
+msgstr ""
+
+msgid "Interprets melody and percussion layers"
+msgstr ""
+
+msgid "Leads or follows both roles at basic level"
+msgstr ""
+
+msgid "Smooth recovery from mis-leads"
+msgstr ""
+
+msgid "Level 5 · Master"
+msgstr ""
+
+msgid "Signature style with own variations"
+msgstr ""
+
+msgid "Semba · kizomba · urban kiz switching in one song"
+msgstr ""
+
+msgid "Dynamic contrast: slow motion and fast footwork"
+msgstr ""
+
+msgid "Choreographed couple routine of 2+ minutes"
+msgstr ""
+
+msgid "Assists teaching a beginner class"
+msgstr ""
+
+msgid "Gives clear connection feedback to partners"
+msgstr ""
+
+msgid "Zumba / dance fitness"
+msgstr "Зумба / танцов фитнес"
+
+msgid "Palee levels for dance fitness classes"
+msgstr "Нива на Palee за танцов фитнес"
+
+msgid "Follows the instructor's visual cues"
+msgstr ""
+
+msgid "Merengue march and side-to-side step"
+msgstr ""
+
+msgid "Salsa basic step forward and back"
+msgstr ""
+
+msgid "Cumbia tap step with arm sway"
+msgstr ""
+
+msgid "Reggaeton tap and lean step"
+msgstr ""
+
+msgid "Low-impact options for each move"
+msgstr ""
+
+msgid "Completes 30 minutes of class"
+msgstr ""
+
+msgid "Hydration and self-monitoring of intensity"
+msgstr ""
+
+msgid "Core Rhythms"
+msgstr ""
+
+msgid "Merengue with arms and travelling"
+msgstr ""
+
+msgid "Salsa side basic and cross-body styling"
+msgstr ""
+
+msgid "Cumbia with turns"
+msgstr ""
+
+msgid "Reggaeton bounce and body roll"
+msgstr ""
+
+msgid "Recognises verse · chorus and bridge of a song"
+msgstr ""
+
+msgid "Changes moves on the musical phrase (8-count)"
+msgstr ""
+
+msgid "Completes a full 60-minute class"
+msgstr ""
+
+msgid "World Rhythms"
+msgstr ""
+
+msgid "Bachata basic with hip motion"
+msgstr ""
+
+msgid "Cha-cha chassé"
+msgstr ""
+
+msgid "Samba bounce and samba walks"
+msgstr ""
+
+msgid "Soca jump and wine"
+msgstr ""
+
+msgid "Bhangra shoulder bounce"
+msgstr ""
+
+msgid "Belly dance hip shimmy"
+msgstr ""
+
+msgid "Hip-hop groove and step touch"
+msgstr ""
+
+msgid "Learns a new song routine in one class"
+msgstr ""
+
+msgid "High Energy"
+msgstr ""
+
+msgid "High-impact jumps on every peak song"
+msgstr ""
+
+msgid "Squat and lunge toning tracks with good form"
+msgstr ""
+
+msgid "Full class at high intensity without breaks"
+msgstr ""
+
+msgid "Clean timing on fast tempo (140+ bpm)"
+msgstr ""
+
+msgid "Knows 10+ class routines from memory"
+msgstr ""
+
+msgid "Adds own styling and energy to moves"
+msgstr ""
+
+msgid "Leader"
+msgstr ""
+
+msgid "Demonstrates moves in mirror image"
+msgstr ""
+
+msgid "Gives non-verbal cues one count early"
+msgstr ""
+
+msgid "Leads one full song for the group"
+msgstr ""
+
+msgid "Builds a routine on verse-chorus structure"
+msgstr ""
+
+msgid "Offers modifications for beginners"
+msgstr ""
+
+msgid "Aerial hammock / aerial yoga"
+msgstr "Въздушна йога / хамак"
+
+msgid "Palee levels (no body grades students)"
+msgstr "Нива на Palee (няма орган, който оценява учениците)"
+
+msgid "Intro"
+msgstr ""
+
+msgid "Sets hammock height for seated and standing work"
+msgstr ""
+
+msgid "Safe mount into seat and safe exit"
+msgstr ""
+
+msgid "Supported standing postures (warrior · tree)"
+msgstr ""
+
+msgid "Hammock-supported forward fold"
+msgstr ""
+
+msgid "Swinging seat and cocoon relaxation"
+msgstr ""
+
+msgid "Supported back bend over the hammock"
+msgstr ""
+
+msgid "Feet-on-floor assisted inversion"
+msgstr ""
+
+msgid "Basic invert (bat) from seat with control"
+msgstr ""
+
+msgid "Straddle inversion repeated 3 times"
+msgstr ""
+
+msgid "Diamond leg inversion"
+msgstr ""
+
+msgid "Buddha (lotus) inverted"
+msgstr ""
+
+msgid "Thigh lock"
+msgstr ""
+
+msgid "Double knee hook (diaper) wrap"
+msgstr ""
+
+msgid "Shoulder stand variation"
+msgstr ""
+
+msgid "Comes out of every invert slowly to the floor"
+msgstr ""
+
+msgid "Pullover from standing into front balance"
+msgstr ""
+
+msgid "Swan pose"
+msgstr ""
+
+msgid "Pullover 3-5 times in a row"
+msgstr ""
+
+msgid "Cross back straddle entry"
+msgstr ""
+
+msgid "Higher inversions above the hammock seat"
+msgstr ""
+
+msgid "Back walkover off the hammock"
+msgstr ""
+
+msgid "Bomb drop"
+msgstr ""
+
+msgid "Waterfall"
+msgstr ""
+
+msgid "Linked sequence of 4 poses without touching the floor"
+msgstr ""
+
+msgid "Climb into the hammock from the floor"
+msgstr ""
+
+msgid "Hip key to inverted splits"
+msgstr ""
+
+msgid "Inverted crucifix"
+msgstr ""
+
+msgid "Star drop"
+msgstr ""
+
+msgid "Pinwheel or rollover sequence"
+msgstr ""
+
+msgid "Spinning poses with controlled momentum"
+msgstr ""
+
+msgid "Choreographed 2-minute routine"
+msgstr ""
+
+msgid "Dynamic drops linked into flows"
+msgstr ""
+
+msgid "One-arm and one-leg holds"
+msgstr ""
+
+msgid "Inverted strength skills (e.g. straddle-up without kick)"
+msgstr ""
+
+msgid "Performance routine of 3+ minutes"
+msgstr ""
+
+msgid "Spots and cues a beginner safely"
+msgstr ""
+
+msgid "Skateboarding levels"
+msgstr "Нива по скейтборд"
+
+msgid "Palee levels from Skateboard GB awards"
+msgstr "Нива на Palee по наградите на Skateboard GB"
+
+msgid "Stance (regular or goofy) and pushing"
+msgstr ""
+
+msgid "Stopping with the foot and the tail"
+msgstr ""
+
+msgid "Carving turns"
+msgstr ""
+
+msgid "Falling safely with pads"
+msgstr ""
+
+msgid "Kickturns"
+msgstr ""
+
+msgid "Tic-tacs"
+msgstr ""
+
+msgid "Roll up and down a small ramp"
+msgstr ""
+
+msgid "Drop in on a mini ramp"
+msgstr ""
+
+msgid "Ollie on flat"
+msgstr ""
+
+msgid "Manual 2 metres"
+msgstr ""
+
+msgid "Ollie onto a curb"
+msgstr ""
+
+msgid "50-50 grind"
+msgstr ""
+
+msgid "Frontside and backside 180"
+msgstr ""
+
+msgid "Kickflip"
+msgstr ""
+
+msgid "Pop shove-it"
+msgstr ""
+
+msgid "Rock to fakie on a ramp"
+msgstr ""
+
+msgid "Boardslide on a rail"
+msgstr ""
+
+msgid "Heelflip or varial flip"
+msgstr ""
+
+msgid "Line of three tricks"
+msgstr ""
+
+msgid "Indoor climbing levels"
+msgstr "Нива катерене в зала"
+
+msgid "NICAS levels 1-5 (UK indoor climbing scheme)"
+msgstr "Нива NICAS 1-5 (британска програма за катерене в зала)"
+
+msgid "New climber"
+msgstr "Нов катерач"
+
+msgid "Fits a harness and helmet correctly"
+msgstr ""
+
+msgid "Figure-eight knot checked by a partner"
+msgstr ""
+
+msgid "Climbs a top-rope route and is lowered"
+msgstr ""
+
+msgid "Foundation climber"
+msgstr "Катерач основно ниво"
+
+msgid "Belays top-rope with an assisted device"
+msgstr ""
+
+msgid "Safe bouldering falls"
+msgstr ""
+
+msgid "Climbs smoothly with straight arms"
+msgstr ""
+
+msgid "Technical climber"
+msgstr "Технически катерач"
+
+msgid "Footwork: edging and smearing"
+msgstr ""
+
+msgid "Flagging and drop knee"
+msgstr ""
+
+msgid "Lead climber"
+msgstr "Катерач с долна осигуровка"
+
+msgid "Lead climbs and clips in sequence"
+msgstr ""
+
+msgid "Lead belays with dynamic catches"
+msgstr ""
+
+msgid "Takes practice lead falls"
+msgstr ""
+
+msgid "Advanced climber"
+msgstr "Напреднал катерач"
+
+msgid "Plans training and route reading"
+msgstr ""
+
+msgid "Takes part in a competition"
+msgstr ""
+
+msgid "Bouldering grades"
+msgstr "Категории боулдър"
+
+msgid "Palee levels by V-grade (Font in brackets)"
+msgstr "Нива на Palee по V-степен (Font в скоби)"
+
+msgid "V0 (4)"
+msgstr ""
+
+msgid "Tops three different V0 problems"
+msgstr ""
+
+msgid "V1 (5)"
+msgstr ""
+
+msgid "Tops three different V1 problems"
+msgstr ""
+
+msgid "V2 (5+)"
+msgstr ""
+
+msgid "Tops three different V2 problems"
+msgstr ""
+
+msgid "V3 (6A)"
+msgstr ""
+
+msgid "Tops three different V3 problems"
+msgstr ""
+
+msgid "Heel hooks and toe hooks"
+msgstr ""
+
+msgid "V4 (6B)"
+msgstr ""
+
+msgid "Tops three different V4 problems"
+msgstr ""
+
+msgid "Dynos and coordination moves"
+msgstr ""
+
+msgid "V5 (6C)"
+msgstr ""
+
+msgid "Tops three different V5 problems"
+msgstr ""
+
+msgid "V6 (7A)"
+msgstr ""
+
+msgid "Tops three different V6 problems"
+msgstr ""
+
+msgid "Campus and fingerboard basics with care"
+msgstr ""
+
+msgid "V7 (7A+)"
+msgstr ""
+
+msgid "Tops three different V7 problems"
+msgstr ""
+
+msgid "V8 (7B)"
+msgstr ""
+
+msgid "Tops three different V8 problems"
+msgstr ""

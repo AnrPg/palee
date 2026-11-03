@@ -27,5 +27,13 @@ defmodule Palee.Ranks.RankStore do
   @impl true
   def revoke_award(award, attrs), do: adapter().revoke_award(award, attrs)
 
+  @impl true
+  def list_skill_checks(user_id), do: adapter().list_skill_checks(user_id)
+  @impl true
+  def put_skill_check(attrs), do: adapter().put_skill_check(attrs)
+  @impl true
+  def delete_skill_check(user_id, rank_id, skill),
+    do: adapter().delete_skill_check(user_id, rank_id, skill)
+
   defp adapter, do: Application.fetch_env!(:palee, :rank_store)
 end

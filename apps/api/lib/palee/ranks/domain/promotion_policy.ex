@@ -33,13 +33,23 @@ defmodule Palee.Ranks.Domain.PromotionPolicy do
   end
 
   @doc """
-  Progress to `next`: `%{classes, days, skills, ready}`. `attended` counts
-  classes since `since` (the current award's date, nil for never).
+  Progress to `next`: `%{classes, days, skills, skills_checked,
+  all_skills_checked, ready}`. `attended` counts classes since `since` (the
+  current award's date, nil for never). `checks` are the person's ticked
+  skills (ADR-400, `%{rank_id, skill, checked_on, note}`): those of `next`
+  that are still on its list show as `skills_checked`. `ready` stays the
+  counted requirements only; `all_skills_checked` says every listed skill
+  is ticked (true when the rank lists none).
   """
-  def progress(nil, _since, _attended, _today), do: nil
+  def progress(next, since, attended, today, checks \\ [])
 
-  def progress(next, since, attended, today) do
+  def progress(nil, _since, _attended, _today, _checks), do: nil
+
+  def progress(next, since, attended, today, checks) do
     requirements = next.requirements || %{}
+    skills = requirements["skills"] || []
+    checked = skills_checked(next, skills, checks)
+    checked_names = Enum.map(checked, & &1.skill)
     classes_needed = requirements["min_classes"]
     days_needed = requirements["min_days"]
     days = if since, do: Date.diff(today, since), else: nil
@@ -48,12 +58,23 @@ defmodule Palee.Ranks.Domain.PromotionPolicy do
       rank_id: next.id,
       classes: %{done: attended, needed: classes_needed},
       days: %{done: days, needed: days_needed},
-      skills: requirements["skills"] || [],
+      skills: skills,
+      skills_checked: checked,
+      all_skills_checked: Enum.all?(skills, &(&1 in checked_names)),
       ready:
         (is_nil(classes_needed) or attended >= classes_needed) and
           (is_nil(days_needed) or (is_integer(days) and days >= days_needed))
     }
   end
+
+  defp skills_checked(next, skills, checks) do
+    checks
+    |> Enum.filter(&(&1.rank_id == next.id and &1.skill in skills))
+    |> Enum.map(&%{skill: &1.skill, checked_on: &1.checked_on, note: &1.note})
+  end
+
+  @doc "Whether `skill` is one of `rank`'s listed skills."
+  def listed_skill?(rank, skill), do: skill in ((rank.requirements || %{})["skills"] || [])
 
   @doc """
   Checks a new award against the current one: `:ok` or

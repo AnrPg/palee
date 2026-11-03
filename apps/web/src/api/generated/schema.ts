@@ -16496,6 +16496,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/staff/clients/{user_id}/ranks/skills": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Tick or untick one skill of a rank for a client, between promotions (ADR-400) */
+        put: operations["PaleeWeb.StaffRanksController.check_skill"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/staff/clients/{user_id}/training-goal": {
         parameters: {
             query?: never;
@@ -25551,7 +25568,7 @@ export interface components {
                 video_url?: string | null;
                 width: number | null;
             } | null;
-            disciplines: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "physio_rehab" | "sports_massage" | "recovery")[];
+            disciplines: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "physio_rehab" | "sports_massage" | "recovery")[];
             languages: string[];
             lock_version: number;
             /** @description What the draft still needs before it can be published. */
@@ -25655,7 +25672,7 @@ export interface components {
                     video_url?: string | null;
                     width: number | null;
                 } | null;
-                disciplines: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "physio_rehab" | "sports_massage" | "recovery")[];
+                disciplines: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "physio_rehab" | "sports_massage" | "recovery")[];
                 languages: string[];
                 lock_version: number;
                 /** @description What the draft still needs before it can be published. */
@@ -25708,7 +25725,7 @@ export interface components {
             coach_ids?: string[];
             /** Format: uuid */
             cover_photo_id?: string | null;
-            disciplines?: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "physio_rehab" | "sports_massage" | "recovery")[];
+            disciplines?: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "physio_rehab" | "sports_massage" | "recovery")[];
             languages?: string[];
             /** @description The version the editor read. */
             lock_version?: number;
@@ -26747,7 +26764,7 @@ export interface components {
             amenities: ("showers" | "changing_rooms" | "lockers" | "towels" | "parking" | "bike_parking" | "public_transport_nearby" | "air_conditioning" | "sauna" | "cold_plunge" | "childcare" | "wheelchair_accessible" | "accessible_restroom" | "gender_neutral_restroom" | "wifi" | "water_refill" | "outdoor_area" | "drop_in_friendly")[];
             audiences: ("beginners" | "women_only" | "kids" | "teens" | "over_40" | "seniors" | "prenatal_postnatal" | "adaptive" | "athletes" | "students" | "lgbtq_friendly" | "returning_from_injury")[];
             discipline_groups: {
-                items: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "physio_rehab" | "sports_massage" | "recovery")[];
+                items: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "physio_rehab" | "sports_massage" | "recovery")[];
                 key: string;
             }[];
             services: ("personal_training" | "small_group_training" | "open_gym" | "nutrition_coaching" | "online_coaching" | "corporate")[];
@@ -44495,6 +44512,11 @@ export interface components {
         RankLadderRequest: {
             class_type_ids?: string[];
             discipline?: string;
+            /**
+             * @description The language of template names and skills; Greek when left out
+             * @enum {string}
+             */
+            locale?: "en" | "el" | "ar" | "ru" | "de" | "es" | "pt-PT" | "he" | "it" | "bg" | "nl" | "fr";
             name?: string;
             position?: number;
             ranks?: {
@@ -44591,7 +44613,34 @@ export interface components {
                 style: "belt" | "level";
             }[];
             templates: {
-                [key: string]: unknown;
+                discipline: string;
+                family?: string | null;
+                key: string;
+                name: string;
+                ranks: {
+                    /**
+                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                     * @enum {string|null}
+                     */
+                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                    max_stripes: number;
+                    name: string;
+                    /** RankRequirements */
+                    requirements: {
+                        min_classes?: number;
+                        min_days?: number;
+                        skills?: string[];
+                    };
+                }[];
+                /**
+                 * @description A federation's or school's system, or Palee's own levels
+                 * @enum {string}
+                 */
+                source: "federation" | "palee";
+                /** @enum {string} */
+                style: "belt" | "level";
+                /** @description The system it follows, in the requested language */
+                system: string;
             }[];
         };
         /** RankRequirements */
@@ -44599,6 +44648,20 @@ export interface components {
             min_classes?: number;
             min_days?: number;
             skills?: string[];
+        };
+        /**
+         * RankSkillCheckRequest
+         * @description ADR-400: tick (or untick) one skill of a rank for a client, between promotions
+         */
+        RankSkillCheckRequest: {
+            /** @description false unticks; true when left out */
+            checked?: boolean;
+            /** Format: date */
+            checked_on?: string;
+            note?: string | null;
+            /** Format: uuid */
+            rank_id: string;
+            skill: string;
         };
         /** RankStanding */
         RankStanding: {
@@ -44703,6 +44766,8 @@ export interface components {
             } | null;
             /** @description Towards the next rank; `ready` only says the counted requirements are met */
             progress: {
+                /** @description Every listed skill is ticked (true when the rank lists none) */
+                all_skills_checked?: boolean;
                 classes: {
                     done: number | null;
                     needed: number | null;
@@ -44715,6 +44780,13 @@ export interface components {
                 rank_id: string;
                 ready: boolean;
                 skills: string[];
+                /** @description ADR-400: the next rank's skills the coach ticked so far */
+                skills_checked?: {
+                    /** Format: date */
+                    checked_on: string;
+                    note?: string | null;
+                    skill: string;
+                }[];
             } | null;
         };
         /** RankStandingsResponse */
@@ -44821,6 +44893,8 @@ export interface components {
                 } | null;
                 /** @description Towards the next rank; `ready` only says the counted requirements are met */
                 progress: {
+                    /** @description Every listed skill is ticked (true when the rank lists none) */
+                    all_skills_checked?: boolean;
                     classes: {
                         done: number | null;
                         needed: number | null;
@@ -44833,10 +44907,51 @@ export interface components {
                     rank_id: string;
                     ready: boolean;
                     skills: string[];
+                    /** @description ADR-400: the next rank's skills the coach ticked so far */
+                    skills_checked?: {
+                        /** Format: date */
+                        checked_on: string;
+                        note?: string | null;
+                        skill: string;
+                    }[];
                 } | null;
             }[];
             /** Format: uuid */
             user_id?: string;
+        };
+        /**
+         * RankTemplate
+         * @description A ready-made ladder (ADR-400) in the requested language; a starting point the box edits freely
+         */
+        RankTemplate: {
+            discipline: string;
+            family?: string | null;
+            key: string;
+            name: string;
+            ranks: {
+                /**
+                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                 * @enum {string|null}
+                 */
+                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                max_stripes: number;
+                name: string;
+                /** RankRequirements */
+                requirements: {
+                    min_classes?: number;
+                    min_days?: number;
+                    skills?: string[];
+                };
+            }[];
+            /**
+             * @description A federation's or school's system, or Palee's own levels
+             * @enum {string}
+             */
+            source: "federation" | "palee";
+            /** @enum {string} */
+            style: "belt" | "level";
+            /** @description The system it follows, in the requested language */
+            system: string;
         };
         /** ReferralClaim */
         ReferralClaim: {
@@ -58248,7 +58363,7 @@ export interface operations {
                         amenities: ("showers" | "changing_rooms" | "lockers" | "towels" | "parking" | "bike_parking" | "public_transport_nearby" | "air_conditioning" | "sauna" | "cold_plunge" | "childcare" | "wheelchair_accessible" | "accessible_restroom" | "gender_neutral_restroom" | "wifi" | "water_refill" | "outdoor_area" | "drop_in_friendly")[];
                         audiences: ("beginners" | "women_only" | "kids" | "teens" | "over_40" | "seniors" | "prenatal_postnatal" | "adaptive" | "athletes" | "students" | "lgbtq_friendly" | "returning_from_injury")[];
                         discipline_groups: {
-                            items: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "physio_rehab" | "sports_massage" | "recovery")[];
+                            items: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "physio_rehab" | "sports_massage" | "recovery")[];
                             key: string;
                         }[];
                         services: ("personal_training" | "small_group_training" | "open_gym" | "nutrition_coaching" | "online_coaching" | "corporate")[];
@@ -81811,7 +81926,7 @@ export interface operations {
                     } | {
                         count: number;
                         /** @enum {string} */
-                        type_filter: "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "outdoor_training" | "climbing_bouldering" | "recovery";
+                        type_filter: "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "recovery";
                     } | {
                         count: number;
                         increment_per_completion: number;
@@ -81941,7 +82056,7 @@ export interface operations {
                     } | {
                         count: number;
                         /** @enum {string} */
-                        type_filter: "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "outdoor_training" | "climbing_bouldering" | "recovery";
+                        type_filter: "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "recovery";
                     } | {
                         count: number;
                         increment_per_completion: number;
@@ -109403,7 +109518,7 @@ export interface operations {
                                 video_url?: string | null;
                                 width: number | null;
                             } | null;
-                            disciplines: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "physio_rehab" | "sports_massage" | "recovery")[];
+                            disciplines: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "physio_rehab" | "sports_massage" | "recovery")[];
                             languages: string[];
                             lock_version: number;
                             /** @description What the draft still needs before it can be published. */
@@ -109468,7 +109583,7 @@ export interface operations {
                     coach_ids?: string[];
                     /** Format: uuid */
                     cover_photo_id?: string | null;
-                    disciplines?: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "physio_rehab" | "sports_massage" | "recovery")[];
+                    disciplines?: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "physio_rehab" | "sports_massage" | "recovery")[];
                     languages?: string[];
                     /** @description The version the editor read. */
                     lock_version?: number;
@@ -109533,7 +109648,7 @@ export interface operations {
                                 video_url?: string | null;
                                 width: number | null;
                             } | null;
-                            disciplines: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "physio_rehab" | "sports_massage" | "recovery")[];
+                            disciplines: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "physio_rehab" | "sports_massage" | "recovery")[];
                             languages: string[];
                             lock_version: number;
                             /** @description What the draft still needs before it can be published. */
@@ -109760,7 +109875,7 @@ export interface operations {
                                 video_url?: string | null;
                                 width: number | null;
                             } | null;
-                            disciplines: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "physio_rehab" | "sports_massage" | "recovery")[];
+                            disciplines: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "physio_rehab" | "sports_massage" | "recovery")[];
                             languages: string[];
                             lock_version: number;
                             /** @description What the draft still needs before it can be published. */
@@ -109939,7 +110054,7 @@ export interface operations {
                                 video_url?: string | null;
                                 width: number | null;
                             } | null;
-                            disciplines: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "physio_rehab" | "sports_massage" | "recovery")[];
+                            disciplines: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "physio_rehab" | "sports_massage" | "recovery")[];
                             languages: string[];
                             lock_version: number;
                             /** @description What the draft still needs before it can be published. */
@@ -109989,7 +110104,10 @@ export interface operations {
     };
     "PaleeWeb.AdminRankLaddersController.index": {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description The language of the templates (ADR-400); Greek when left out */
+                locale?: "en" | "el" | "ar" | "ru" | "de" | "es" | "pt-PT" | "he" | "it" | "bg" | "nl" | "fr";
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -110035,7 +110153,34 @@ export interface operations {
                             style: "belt" | "level";
                         }[];
                         templates: {
-                            [key: string]: unknown;
+                            discipline: string;
+                            family?: string | null;
+                            key: string;
+                            name: string;
+                            ranks: {
+                                /**
+                                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                 * @enum {string|null}
+                                 */
+                                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                max_stripes: number;
+                                name: string;
+                                /** RankRequirements */
+                                requirements: {
+                                    min_classes?: number;
+                                    min_days?: number;
+                                    skills?: string[];
+                                };
+                            }[];
+                            /**
+                             * @description A federation's or school's system, or Palee's own levels
+                             * @enum {string}
+                             */
+                            source: "federation" | "palee";
+                            /** @enum {string} */
+                            style: "belt" | "level";
+                            /** @description The system it follows, in the requested language */
+                            system: string;
                         }[];
                     };
                 };
@@ -110054,6 +110199,11 @@ export interface operations {
                 "application/json": {
                     class_type_ids?: string[];
                     discipline?: string;
+                    /**
+                     * @description The language of template names and skills; Greek when left out
+                     * @enum {string}
+                     */
+                    locale?: "en" | "el" | "ar" | "ru" | "de" | "es" | "pt-PT" | "he" | "it" | "bg" | "nl" | "fr";
                     name?: string;
                     position?: number;
                     ranks?: {
@@ -110153,6 +110303,11 @@ export interface operations {
                 "application/json": {
                     class_type_ids?: string[];
                     discipline?: string;
+                    /**
+                     * @description The language of template names and skills; Greek when left out
+                     * @enum {string}
+                     */
+                    locale?: "en" | "el" | "ar" | "ru" | "de" | "es" | "pt-PT" | "he" | "it" | "bg" | "nl" | "fr";
                     name?: string;
                     position?: number;
                     ranks?: {
@@ -113303,7 +113458,7 @@ export interface operations {
                             /** @description ADR-163: starting value of «Εμφάνιση στόχων στα μέλη» for a workout without goals of its own */
                             wod_goals_visible_by_default: boolean;
                             /** @description ADR-275: the workout kinds the gym's editors offer, in catalogue order; null offers every kind */
-                            workout_types: ("crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "outdoor_training" | "climbing_bouldering" | "recovery")[] | null;
+                            workout_types: ("crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "recovery")[] | null;
                         };
                     };
                 };
@@ -113357,7 +113512,7 @@ export interface operations {
                         /** @description ADR-163: starting value of «Εμφάνιση στόχων στα μέλη» for a workout without goals of its own */
                         wod_goals_visible_by_default?: boolean;
                         /** @description ADR-275: the workout kinds the gym's editors offer, in catalogue order; null offers every kind */
-                        workout_types?: ("crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "outdoor_training" | "climbing_bouldering" | "recovery")[] | null;
+                        workout_types?: ("crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "recovery")[] | null;
                     };
                 };
             };
@@ -113436,7 +113591,7 @@ export interface operations {
                             /** @description ADR-163: starting value of «Εμφάνιση στόχων στα μέλη» for a workout without goals of its own */
                             wod_goals_visible_by_default: boolean;
                             /** @description ADR-275: the workout kinds the gym's editors offer, in catalogue order; null offers every kind */
-                            workout_types: ("crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "outdoor_training" | "climbing_bouldering" | "recovery")[] | null;
+                            workout_types: ("crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "recovery")[] | null;
                         };
                     };
                 };
@@ -121093,7 +121248,7 @@ export interface operations {
                     tags?: string[];
                     title?: string | null;
                     /** @enum {string|null} */
-                    type?: "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "outdoor_training" | "climbing_bouldering" | "recovery" | null;
+                    type?: "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "recovery" | null;
                     workout_metadata?: {
                         [key: string]: unknown;
                     };
@@ -122615,7 +122770,7 @@ export interface operations {
                     tags?: string[];
                     title?: string | null;
                     /** @enum {string|null} */
-                    type?: "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "outdoor_training" | "climbing_bouldering" | "recovery" | null;
+                    type?: "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "recovery" | null;
                     workout_metadata?: {
                         [key: string]: unknown;
                     };
@@ -132564,6 +132719,8 @@ export interface operations {
                             } | null;
                             /** @description Towards the next rank; `ready` only says the counted requirements are met */
                             progress: {
+                                /** @description Every listed skill is ticked (true when the rank lists none) */
+                                all_skills_checked?: boolean;
                                 classes: {
                                     done: number | null;
                                     needed: number | null;
@@ -132576,6 +132733,13 @@ export interface operations {
                                 rank_id: string;
                                 ready: boolean;
                                 skills: string[];
+                                /** @description ADR-400: the next rank's skills the coach ticked so far */
+                                skills_checked?: {
+                                    /** Format: date */
+                                    checked_on: string;
+                                    note?: string | null;
+                                    skill: string;
+                                }[];
                             } | null;
                         }[];
                         /** Format: uuid */
@@ -138594,6 +138758,8 @@ export interface operations {
                             } | null;
                             /** @description Towards the next rank; `ready` only says the counted requirements are met */
                             progress: {
+                                /** @description Every listed skill is ticked (true when the rank lists none) */
+                                all_skills_checked?: boolean;
                                 classes: {
                                     done: number | null;
                                     needed: number | null;
@@ -138606,6 +138772,13 @@ export interface operations {
                                 rank_id: string;
                                 ready: boolean;
                                 skills: string[];
+                                /** @description ADR-400: the next rank's skills the coach ticked so far */
+                                skills_checked?: {
+                                    /** Format: date */
+                                    checked_on: string;
+                                    note?: string | null;
+                                    skill: string;
+                                }[];
                             } | null;
                         }[];
                         /** Format: uuid */
@@ -138696,6 +138869,191 @@ export interface operations {
                 };
             };
             /** @description Not a step up, or invalid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.StaffRanksController.check_skill": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description false unticks; true when left out */
+                    checked?: boolean;
+                    /** Format: date */
+                    checked_on?: string;
+                    note?: string | null;
+                    /** Format: uuid */
+                    rank_id: string;
+                    skill: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Standing */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        ladders: {
+                            current: {
+                                /** Format: uuid */
+                                award_id: string;
+                                /** Format: date */
+                                awarded_on: string;
+                                /** Rank */
+                                rank: {
+                                    /**
+                                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                     * @enum {string|null}
+                                     */
+                                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                    /** Format: uuid */
+                                    id: string;
+                                    max_stripes: number;
+                                    name: string;
+                                    position: number;
+                                    /** RankRequirements */
+                                    requirements: {
+                                        min_classes?: number;
+                                        min_days?: number;
+                                        skills?: string[];
+                                    };
+                                    scale_level_slug?: string | null;
+                                };
+                                stripes: number;
+                            } | null;
+                            history: {
+                                /** Format: date */
+                                awarded_on: string;
+                                certificate_number: string;
+                                /**
+                                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                 * @enum {string|null}
+                                 */
+                                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                ladder_id: string;
+                                note?: string | null;
+                                /** Format: uuid */
+                                rank_id: string;
+                                rank_name?: string | null;
+                                revoke_reason?: string | null;
+                                revoked: boolean;
+                                skills_checked: string[];
+                                stripes: number;
+                            }[];
+                            /** RankLadder */
+                            ladder: {
+                                class_type_ids: string[];
+                                /** @description A workout type (ADR-275) */
+                                discipline: string;
+                                family?: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                name: string;
+                                ranks: {
+                                    /**
+                                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                     * @enum {string|null}
+                                     */
+                                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                    /** Format: uuid */
+                                    id: string;
+                                    max_stripes: number;
+                                    name: string;
+                                    position: number;
+                                    /** RankRequirements */
+                                    requirements: {
+                                        min_classes?: number;
+                                        min_days?: number;
+                                        skills?: string[];
+                                    };
+                                    scale_level_slug?: string | null;
+                                }[];
+                                /** @enum {string} */
+                                style: "belt" | "level";
+                            };
+                            next: {
+                                /**
+                                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                 * @enum {string|null}
+                                 */
+                                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                /** Format: uuid */
+                                id: string;
+                                max_stripes: number;
+                                name: string;
+                                position: number;
+                                /** RankRequirements */
+                                requirements: {
+                                    min_classes?: number;
+                                    min_days?: number;
+                                    skills?: string[];
+                                };
+                                scale_level_slug?: string | null;
+                            } | null;
+                            /** @description Towards the next rank; `ready` only says the counted requirements are met */
+                            progress: {
+                                /** @description Every listed skill is ticked (true when the rank lists none) */
+                                all_skills_checked?: boolean;
+                                classes: {
+                                    done: number | null;
+                                    needed: number | null;
+                                };
+                                days: {
+                                    done: number | null;
+                                    needed: number | null;
+                                };
+                                /** Format: uuid */
+                                rank_id: string;
+                                ready: boolean;
+                                skills: string[];
+                                /** @description ADR-400: the next rank's skills the coach ticked so far */
+                                skills_checked?: {
+                                    /** Format: date */
+                                    checked_on: string;
+                                    note?: string | null;
+                                    skill: string;
+                                }[];
+                            } | null;
+                        }[];
+                        /** Format: uuid */
+                        user_id?: string;
+                    };
+                };
+            };
+            /** @description Not your client */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Not a skill of that rank */
             422: {
                 headers: {
                     [name: string]: unknown;

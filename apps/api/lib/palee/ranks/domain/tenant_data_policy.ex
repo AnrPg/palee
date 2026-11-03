@@ -14,6 +14,7 @@ defmodule Palee.Ranks.Domain.TenantDataPolicy do
             basis:
               "Belts and levels are the box's teaching records; nothing requires keeping them after the box leaves.",
             tables: [
+              %{table: "rank_skill_checks"},
               %{table: "rank_awards"},
               %{table: "ranks"},
               %{table: "rank_ladders"}

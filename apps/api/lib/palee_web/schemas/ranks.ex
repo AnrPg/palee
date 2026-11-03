@@ -93,6 +93,7 @@ defmodule PaleeWeb.Schemas.Ranks do
           type: :string,
           description: "Start from a template («Πρότυπα»); fields sent override it"
         },
+        locale: locale(),
         name: %Schema{type: :string, maxLength: 60},
         discipline: %Schema{type: :string},
         style: %Schema{type: :string, enum: ~w(belt level)},
@@ -100,6 +101,54 @@ defmodule PaleeWeb.Schemas.Ranks do
         position: %Schema{type: :integer, minimum: 0},
         ranks: %Schema{type: :array, minItems: 1, maxItems: 30, items: rank_input()}
       }
+    }
+  end
+
+  @doc "A web language; templates come in it (ADR-400)."
+  def locale do
+    %Schema{
+      type: :string,
+      enum: ~w(en el ar ru de es pt-PT he it bg nl fr),
+      description: "The language of template names and skills; Greek when left out"
+    }
+  end
+
+  def template do
+    %Schema{
+      title: "RankTemplate",
+      type: :object,
+      description:
+        "A ready-made ladder (ADR-400) in the requested language; a starting point the box edits freely",
+      properties: %{
+        key: %Schema{type: :string},
+        name: %Schema{type: :string},
+        discipline: %Schema{type: :string},
+        family: @maybe_string,
+        style: %Schema{type: :string, enum: ~w(belt level)},
+        source: %Schema{
+          type: :string,
+          enum: ~w(federation palee),
+          description: "A federation's or school's system, or Palee's own levels"
+        },
+        system: %Schema{
+          type: :string,
+          description: "The system it follows, in the requested language"
+        },
+        ranks: %Schema{
+          type: :array,
+          items: %Schema{
+            type: :object,
+            properties: %{
+              name: %Schema{type: :string},
+              color: @color,
+              max_stripes: %Schema{type: :integer},
+              requirements: requirements()
+            },
+            required: [:name, :max_stripes, :requirements]
+          }
+        }
+      },
+      required: [:key, :name, :discipline, :style, :source, :system, :ranks]
     }
   end
 
@@ -118,10 +167,7 @@ defmodule PaleeWeb.Schemas.Ranks do
       type: :object,
       properties: %{
         ladders: %Schema{type: :array, items: ladder()},
-        templates: %Schema{
-          type: :array,
-          items: %Schema{type: :object, additionalProperties: true}
-        },
+        templates: %Schema{type: :array, items: template()},
         colors: %Schema{type: :array, items: %Schema{type: :string}}
       },
       required: [:colors, :ladders, :templates]
@@ -193,6 +239,23 @@ defmodule PaleeWeb.Schemas.Ranks do
             classes: count,
             days: count,
             skills: %Schema{type: :array, items: %Schema{type: :string}},
+            skills_checked: %Schema{
+              type: :array,
+              description: "ADR-400: the next rank's skills the coach ticked so far",
+              items: %Schema{
+                type: :object,
+                properties: %{
+                  skill: %Schema{type: :string},
+                  checked_on: %Schema{type: :string, format: :date},
+                  note: @maybe_string
+                },
+                required: [:skill, :checked_on]
+              }
+            },
+            all_skills_checked: %Schema{
+              type: :boolean,
+              description: "Every listed skill is ticked (true when the rank lists none)"
+            },
             ready: %Schema{type: :boolean}
           },
           required: [:classes, :days, :rank_id, :ready, :skills]
@@ -228,6 +291,23 @@ defmodule PaleeWeb.Schemas.Ranks do
         skills_checked: %Schema{type: :array, maxItems: 30, items: %Schema{type: :string}}
       },
       required: [:ladder_id, :rank_id]
+    }
+  end
+
+  def skill_check_request do
+    %Schema{
+      title: "RankSkillCheckRequest",
+      type: :object,
+      description:
+        "ADR-400: tick (or untick) one skill of a rank for a client, between promotions",
+      properties: %{
+        rank_id: @uuid,
+        skill: %Schema{type: :string, minLength: 1, maxLength: 120},
+        checked: %Schema{type: :boolean, description: "false unticks; true when left out"},
+        checked_on: %Schema{type: :string, format: :date},
+        note: %Schema{type: :string, maxLength: 280, nullable: true}
+      },
+      required: [:rank_id, :skill]
     }
   end
 
