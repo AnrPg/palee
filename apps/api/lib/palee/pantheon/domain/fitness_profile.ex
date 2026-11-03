@@ -87,7 +87,8 @@ defmodule Palee.Pantheon.Domain.FitnessProfile do
       neutral_standards: is_nil(division),
       overall: overall(scored),
       domains: domains,
-      focus: focus(domains, Map.get(input, :qualities), injured, Map.get(input, :active_injury, false)),
+      focus:
+        focus(domains, Map.get(input, :qualities), injured, Map.get(input, :active_injury, false)),
       injury_caution: Map.get(input, :active_injury, false) or MapSet.size(injured) > 0,
       benchmarks_known: length(FitnessBenchmarks.all())
     }
