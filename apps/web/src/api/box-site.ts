@@ -132,13 +132,13 @@ export function getReviewAskSummary(token: string) {
 // ── Members ────────────────────────────────────────────────────────────────
 
 export async function fetchReviewAsk(token: string) {
-  return (await apiRequest<{ ask: ReviewAsk | null }>("/me/review-ask", { token })).ask;
+  return (await apiRequest<{ ask: ReviewAsk | null }>("/me/review-ask", { token })).ask ?? null;
 }
 
 export async function respondToReviewAsk(token: string, id: string, action: ReviewAskAction) {
   return (
     await apiRequest<{ ask: ReviewAsk | null }>(`/me/review-asks/${id}/respond`, { method: "POST", token, body: { action } })
-  ).ask;
+  ).ask ?? null;
 }
 
 export async function setReviewAskOptOut(token: string, optedOut: boolean) {
