@@ -30,8 +30,12 @@ defmodule Palee.Application.UpdateExecutionProgress do
 
   defp record_implied_splits(previous, execution, segments) do
     case Execution.split_marks_from_progress(previous, execution, segments) do
-      [] -> :ok
-      rows -> {:ok, _stored} = SplitStore.insert_splits(execution.id, execution.user_id, rows, Clock.now())
+      [] ->
+        :ok
+
+      rows ->
+        {:ok, _stored} =
+          SplitStore.insert_splits(execution.id, execution.user_id, rows, Clock.now())
     end
 
     :ok

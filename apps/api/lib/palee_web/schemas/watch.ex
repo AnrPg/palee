@@ -327,7 +327,8 @@ defmodule PaleeWeb.Schemas.Watch do
         ask_limit: %Schema{
           type: :integer,
           nullable: true,
-          description: "Box members are asked this many times; null for free athletes (always asked)"
+          description:
+            "Box members are asked this many times; null for free athletes (always asked)"
         }
       },
       required: [:answer, :ask_limit, :asked_count, :mode, :reason]

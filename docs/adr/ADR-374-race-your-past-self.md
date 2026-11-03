@@ -61,3 +61,15 @@ comparable, which is the whole point of `WorkoutIdentity`.
   `ExecutionTimerSequence` (the segments of an execution, shared with the
   watch plan).
 - Migration `20270602100000_execution_splits.exs`.
+
+## Amendment 2026-11-03: progress saves leave marks
+`UpdateExecutionProgress` stores the marks a progress save implies
+(`SplitMarks.from_progress/3`): every segment the save moved past ended,
+and every new count in `segment_cycle_counts` (the AMRAP «Γύρος» taps)
+finished that round, all at the save's `total_elapsed_ms`. Every timer
+that saves progress (web, phone, box screen, the watch through the phone)
+therefore feeds the pace line without posting marks. `POST /:id/splits`
+stays for exact marks (a watch, offline batches); because the store keeps
+the first mark of a segment and round, a timer that wants exact times
+posts its marks before the progress save. Marks the segments do not allow
+are dropped silently: a progress save never fails because of them.

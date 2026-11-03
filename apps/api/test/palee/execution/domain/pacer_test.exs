@@ -83,6 +83,47 @@ defmodule Palee.Execution.Domain.PacerTest do
     end
   end
 
+  describe "SplitMarks.from_progress/3" do
+    @keyed Enum.with_index(@segments, fn segment, index ->
+             Map.put(segment, :segment_key, "segment:#{index}")
+           end)
+
+    test "segments moved past end, new AMRAP counts finish rounds, all at the update's time" do
+      previous = %{current_segment_index: 0, segment_cycle_counts: %{"segment:0" => 1}}
+
+      updated = %{
+        current_segment_index: 2,
+        total_elapsed_ms: 660_000,
+        segment_cycle_counts: %{"segment:0" => 3}
+      }
+
+      rows = SplitMarks.from_progress(previous, updated, @keyed)
+
+      assert Enum.map(rows, &{&1.segment_index, &1.round, &1.elapsed_ms}) == [
+               {0, 0, 660_000},
+               {1, 0, 660_000},
+               {0, 2, 660_000},
+               {0, 3, 660_000}
+             ]
+    end
+
+    test "nothing new, an unknown segment key or rounds a fixed segment lacks give no marks" do
+      same = %{current_segment_index: 2, total_elapsed_ms: 1, segment_cycle_counts: %{}}
+      assert SplitMarks.from_progress(same, same, @keyed) == []
+
+      forged = %{same | segment_cycle_counts: %{"forged" => 4}}
+      assert SplitMarks.from_progress(same, forged, @keyed) == []
+
+      # The EMOM segment has 3 rounds: counts beyond them are dropped.
+      emom = %{same | segment_cycle_counts: %{"segment:2" => 9}}
+
+      assert [1, 2, 3] =
+               same |> SplitMarks.from_progress(emom, @keyed) |> Enum.map(& &1.round)
+
+      assert SplitMarks.from_progress(same, emom, []) == []
+    end
+  end
+
   describe "pick_previous/2" do
     test "the newest earlier attempt with the same identity, same scale first" do
       start = ~U[2026-10-30 10:00:00Z]

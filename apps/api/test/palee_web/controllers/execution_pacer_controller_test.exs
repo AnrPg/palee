@@ -178,6 +178,111 @@ defmodule PaleeWeb.ExecutionPacerControllerTest do
              |> json_response(200)
   end
 
+  test "a progress save leaves split marks: AMRAP round counts become round marks", ctx do
+    execution = start!(ctx.conn, ctx.member, ctx.workout)
+
+    version =
+      ctx.conn
+      |> as(ctx.member)
+      |> get("/api/executions/#{execution}")
+      |> json_response(200)
+      |> get_in(["execution", "lock_version"])
+
+    ctx.conn
+    |> as(ctx.member)
+    |> patch("/api/executions/#{execution}/progress", %{
+      expected_version: version,
+      operation_id: Ecto.UUID.generate(),
+      checked_exercise_ids: [],
+      current_segment_index: 0,
+      status: "active",
+      paused_elapsed_ms: 0,
+      total_elapsed_ms: 90_000,
+      section_elapsed_ms: %{},
+      segment_cycle_counts: %{"segment:0" => 2}
+    })
+    |> json_response(200)
+
+    # Rounds 1 and 2 are already there; the timer's own mark is not new.
+    assert %{"stored" => 0, "total" => 2} =
+             ctx.conn
+             |> as(ctx.member)
+             |> json_post("/api/executions/#{execution}/splits", %{
+               marks: [%{segment_index: 0, round: 1, elapsed_ms: 40_000}]
+             })
+             |> json_response(200)
+  end
+
+  test "the watch offer follows ANR's D8 rules for a box member", ctx do
+    offer = fn id, body ->
+      ctx.conn
+      |> as(ctx.member)
+      |> json_post("/api/executions/#{id}/watch-offer", body)
+    end
+
+    first = start!(ctx.conn, ctx.member, ctx.workout)
+
+    # Not connected at this moment: nothing, and nothing is counted.
+    assert %{"mode" => "none", "reason" => "watch_not_connected", "asked_count" => 0} =
+             offer.(first, %{platform: "apple_watch", watch_connected: false})
+             |> json_response(200)
+
+    assert %{"mode" => "ask", "reason" => "first_wods", "asked_count" => 1, "ask_limit" => 5} =
+             offer.(first, %{platform: "apple_watch", watch_connected: true})
+             |> json_response(200)
+
+    # Opening the same WOD again asks again but counts once.
+    assert %{"mode" => "ask", "reason" => "not_answered", "asked_count" => 1} =
+             offer.(first, %{platform: "apple_watch", watch_connected: true})
+             |> json_response(200)
+
+    assert %{"mode" => "start", "answer" => "yes"} =
+             ctx.conn
+             |> as(ctx.member)
+             |> send_json(:put, "/api/executions/#{first}/watch-offer/answer", %{answer: "yes"})
+             |> json_response(200)
+
+    assert %{"mode" => "start", "reason" => "answered_yes"} =
+             offer.(first, %{platform: "apple_watch", watch_connected: true})
+             |> json_response(200)
+
+    complete!(ctx.conn, ctx.member, first)
+
+    assert %{"mode" => "none", "reason" => "execution_closed"} =
+             offer.(first, %{platform: "apple_watch", watch_connected: true})
+             |> json_response(200)
+
+    # Four more WODs are asked (five in all), then the watch starts on its own.
+    for _ <- 1..4 do
+      id = start!(ctx.conn, ctx.member, ctx.workout)
+
+      assert %{"mode" => "ask"} =
+               offer.(id, %{platform: "wear_os", watch_connected: true}) |> json_response(200)
+
+      complete!(ctx.conn, ctx.member, id)
+    end
+
+    sixth = start!(ctx.conn, ctx.member, ctx.workout)
+
+    assert %{"mode" => "start", "reason" => "box_member_after_first_wods", "asked_count" => 5} =
+             offer.(sixth, %{platform: "wear_os", watch_connected: true}) |> json_response(200)
+
+    # Nobody asked on this one, so there is nothing to answer.
+    assert %{"code" => "watch_offer_not_asked"} =
+             ctx.conn
+             |> as(ctx.member)
+             |> send_json(:put, "/api/executions/#{sixth}/watch-offer/answer", %{answer: "no"})
+             |> json_response(409)
+
+    assert ctx.conn
+           |> as(ctx.other)
+           |> json_post("/api/executions/#{sixth}/watch-offer", %{
+             platform: "wear_os",
+             watch_connected: true
+           })
+           |> json_response(404)
+  end
+
   defp start!(conn, user, workout) do
     conn
     |> as(user)
@@ -194,6 +299,12 @@ defmodule PaleeWeb.ExecutionPacerControllerTest do
   end
 
   defp as(conn, user), do: conn |> recycle() |> put_bearer_token(user)
+
+  defp send_json(conn, method, path, body) do
+    conn
+    |> put_req_header("content-type", "application/json")
+    |> dispatch(@endpoint, method, path, Jason.encode!(body))
+  end
 
   defp json_post(conn, path, body) do
     conn

@@ -158,8 +158,10 @@ defmodule Palee.Application.WatchCompanion do
             existing
         end
 
-      newly_asked = if is_nil(facts.existing) and offer && offer.mode == "asked", do: 1, else: 0
-      {:ok, present_offer(outcome, offer, %{facts | asked_before: facts.asked_before + newly_asked})}
+      newly_asked = if (is_nil(facts.existing) and offer) && offer.mode == "asked", do: 1, else: 0
+
+      {:ok,
+       present_offer(outcome, offer, %{facts | asked_before: facts.asked_before + newly_asked})}
     end
   end
 
@@ -188,10 +190,10 @@ defmodule Palee.Application.WatchCompanion do
         {WatchStore.get_offer(execution.id), WatchStore.count_asked_offers(user_id)}
       end)
 
-    class_wod? = execution.source == :class_booking
+    class_wod? = to_string(execution.source) == "class_booking"
 
     %{
-      execution_open?: execution.status in [:active, :paused],
+      execution_open?: to_string(execution.status) in ~w(active paused),
       watch_connected?: connected?,
       class_wod?: class_wod?,
       checked_in?: class_wod? and checked_in?(execution),

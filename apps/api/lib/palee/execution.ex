@@ -261,6 +261,7 @@ defmodule Palee.Execution do
   defdelegate split_marks_from_progress(previous, updated, segments),
     to: SplitMarks,
     as: :from_progress
+
   defdelegate pick_previous_attempt(candidates, current), to: Pacer, as: :pick_previous
   defdelegate pace_checkpoints(splits), to: Pacer, as: :checkpoints
   defdelegate pace_section_times(section_elapsed_ms, ordinals), to: Pacer, as: :section_times

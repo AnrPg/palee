@@ -77,3 +77,24 @@ machine; nothing here builds it):
   `20270602200000`), `Palee.Application.WatchCompanion`, `WatchController`.
 - The native targets were not scaffolded in the repo: an un-buildable
   Xcode target or Gradle module would break `cap sync` and CI for everyone.
+
+## Amendment 2026-11-03: when the watch is offered (ANR's D8 rules, 2026-11-01)
+- The phone asks «Το χρονόμετρο και στο ρολόι;» **only when a WOD is opened
+  for execution**, never through a notification, a daily reminder or a
+  schedule. `POST /api/executions/:id/watch-offer` (`platform`,
+  `watch_connected`) answers `mode` = `ask` | `start` | `none` with a
+  `reason`; `PUT /api/executions/:id/watch-offer/answer` stores yes/no.
+- Conditions, all at that moment (`Devices.Domain.WatchOfferPolicy`):
+  the execution is open; the phone says the watch is **detected and
+  connected** (`watch_connected: true`); a **box class WOD**
+  (`source = class_booking`) only when the person is **checked in** to
+  that class (attendance `attended`).
+- **Box members** (an active membership in any box) are asked on their
+  first **5** qualifying WODs; after that the watch **starts on its own**
+  under the same conditions. **Free athletes** (no box) are asked **every
+  time**.
+- One row per execution (`watch_offers`, migration `20270602500000`,
+  owner-only RLS, GDPR export, account deletion): reopening a WOD repeats
+  its outcome and never counts twice.
+- Supersedes the mockup's «Προχωρημένα» pairing as the only entry: the row
+  in Εγώ › Συνδεδεμένες συσκευές stays for settings and unpairing.
