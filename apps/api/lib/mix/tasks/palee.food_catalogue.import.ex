@@ -92,6 +92,7 @@ defmodule Mix.Tasks.Palee.FoodCatalogue.Import do
   defp ok_or_raise({:ok, parsed}), do: {:ok, parsed}
   defp ok_or_raise({:error, reason}), do: Mix.raise("Could not read the CSV: #{reason}")
 
+  @spec usage!() :: no_return()
   defp usage! do
     Mix.raise(
       "Usage: mix palee.food_catalogue.import FILE.csv --list NAME --source SOURCE " <>
