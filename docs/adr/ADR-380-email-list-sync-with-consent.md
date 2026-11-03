@@ -58,3 +58,16 @@ mailing list.
   adapters `MailchimpAudience`, `BrevoAudience`, `SandboxAudience` (dev/test only); Req options
   from `config :palee, :audience_http`.
 - Settings: `GET|PUT|DELETE /admin/integrations/email-list`, `POST /admin/integrations/email-list/sync`.
+
+## Amendment 2026-11-03: consent model and screens (W10 screen 3, option A)
+- **Consent stays in its own table.** W3's channel consents (ADR-348..351, 368, 369, 390) are keyed by a
+  phone contact (`channel_contacts.phone_e164` is required, and STOP withdraws by number). An email-only
+  consent would need W3's table and every SMS path to change, so `integration_marketing_consents` keeps the
+  same shape (person, purpose, granted/withdrawn, source, time) without sharing rows. One ledger for
+  every consent (mockup option 3C) is left to ANR.
+- **The member's switch lives in Box › Ειδοποιήσεις** («Ενημερώσεις με email από το {box}»), next to W3's
+  SMS switches, and only when the box has connected a list; not under Προφίλ, because a box's own
+  consents already live in Box.
+- Settings › Συνδέσεις › Λίστα email connects Mailchimp or Brevo (service, key, list id; errors stay on
+  their field), shows the last sync and «Συγχρονισμός τώρα», and reminds the box to name the service in
+  its privacy notice. Subscriber counts are not shown: the API does not return them yet.

@@ -91,3 +91,9 @@ queue service, the pattern used elsewhere (ADR-212 email outbox).
   `palee_webhook_due_organizations(timestamp)` lets the sweeper find boxes with due rows.
 - Settings: `/admin/integrations/webhooks[/:id[/test|/rotate-secret|/deliveries]]`,
   `/admin/integrations/deliveries/:id[/replay]`.
+
+## Amendment 2026-11-03: screens (W10 screen 2, option A with C's health)
+- The list shows each webhook with a health badge (OK, failing, off). Each opens its own page,
+  `/admin/settings/webhooks/:id`: events, on/off, test, new secret, delete, and the delivery log
+  (all, retrying, failed) with each delivery's payload, attempts and «Ξανά».
+- The signing secret is shown once, on creation and on rotation.

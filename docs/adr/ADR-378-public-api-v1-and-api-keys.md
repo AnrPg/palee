@@ -84,3 +84,10 @@ outlive a staff member's role.
 - Settings: `GET|POST /admin/integrations/api-keys`, `POST .../:id/rotate`, `DELETE .../:id`.
 - `members.invite` is `risk: :outward` (it emails a person); `member_packages.assign` is `:money`.
 - `classes.list` reads at most 31 days per call.
+
+## Amendment 2026-11-03: screens (W10 screen 1, option B)
+- Settings › «Συνδέσεις» has four tabs: Μηνύματα SMS (W3) · Κλειδιά API · Webhooks · Λίστα email
+  (`?connections=` opens a tab).
+- «+ Νέο κλειδί» is a three-step guide: what it is for (Zapier/Make, the box's website, own system),
+  which picks the fewest scopes; name and the scope grid (payments read only); the key once, with a copy
+  button. Rotate and revoke ask first.

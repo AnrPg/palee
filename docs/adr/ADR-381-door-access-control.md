@@ -79,3 +79,16 @@ the cheapest path for the typical Greek box; Kisi shows the port fits a real acc
   `palee_door_controller_lookup(uuid)` resolves a door's box for the event URL.
 - Settings: `GET /admin/doors/catalog`, `GET|POST /admin/doors`, `PATCH|DELETE /admin/doors/:id`,
   `POST /admin/doors/:id/event-token`, `POST /admin/doors/:id/unlock`, `GET /admin/access-events`.
+
+## Amendment 2026-11-03: screens (W10 screens 4–6, option A)
+- **Doors live in the branch** (Ρυθμίσεις › Χώροι › branch): status, «Άνοιγμα» from the desk, and a menu
+  for entry rules, on/off and removal (asks first). Entry rules open in a dialog (the branch page is one
+  form): three who-options, door hours on the branch hours editor, and minutes, seconds and «Το
+  προσωπικό ανοίγει κάθε ώρα» under «Προχωρημένα». The event URL is shown once, under «Προχωρημένα».
+- **The member's door opens with the same scan** only from the rotating door QR or the NFC tag at the door,
+  never the printed poster (a photo can share it), and never for a visitor. One answer: opened, why not
+  (and what to do), offline, or which door when the branch has two.
+- **Ημερολόγιο εισόδων** is `/admin/check-in/access-log`, linked from the desk and the branch's doors:
+  a timeline with filters (all, refusals and faults, staff) and a door picker. `GET /admin/access-events`
+  now returns `person_name`, `actor_name` and `door_name`.
+- Not built yet (API gaps): the live desk card (6C) and the weekly hours grid (4C).
