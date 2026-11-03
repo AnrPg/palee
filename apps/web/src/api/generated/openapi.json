@@ -44646,6 +44646,230 @@
         "title": "DeviceSyncPrefs",
         "type": "object"
       },
+      "DiplomaSignature": {
+        "nullable": true,
+        "properties": {
+          "byte_size": {
+            "type": "integer"
+          },
+          "content_type": {
+            "enum": [
+              "image/png",
+              "image/jpeg"
+            ],
+            "type": "string"
+          },
+          "height": {
+            "type": "integer"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "width": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "content_type",
+          "byte_size",
+          "width",
+          "height",
+          "updated_at"
+        ],
+        "title": "DiplomaSignature",
+        "type": "object"
+      },
+      "DiplomaSignatureLimits": {
+        "properties": {
+          "content_types": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "max_bytes": {
+            "type": "integer"
+          },
+          "max_height": {
+            "type": "integer"
+          },
+          "max_width": {
+            "type": "integer"
+          },
+          "min_height": {
+            "type": "integer"
+          },
+          "min_width": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "max_bytes",
+          "content_types",
+          "min_width",
+          "min_height",
+          "max_width",
+          "max_height"
+        ],
+        "title": "DiplomaSignatureLimits",
+        "type": "object"
+      },
+      "DiplomaSignatureResponse": {
+        "properties": {
+          "eligible": {
+            "description": "Whether the person awards ranks somewhere (owner, admin or coach)",
+            "type": "boolean"
+          },
+          "limits": {
+            "properties": {
+              "content_types": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "max_bytes": {
+                "type": "integer"
+              },
+              "max_height": {
+                "type": "integer"
+              },
+              "max_width": {
+                "type": "integer"
+              },
+              "min_height": {
+                "type": "integer"
+              },
+              "min_width": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "max_bytes",
+              "content_types",
+              "min_width",
+              "min_height",
+              "max_width",
+              "max_height"
+            ],
+            "title": "DiplomaSignatureLimits",
+            "type": "object"
+          },
+          "signature": {
+            "nullable": true,
+            "properties": {
+              "byte_size": {
+                "type": "integer"
+              },
+              "content_type": {
+                "enum": [
+                  "image/png",
+                  "image/jpeg"
+                ],
+                "type": "string"
+              },
+              "height": {
+                "type": "integer"
+              },
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "updated_at": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "width": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "id",
+              "content_type",
+              "byte_size",
+              "width",
+              "height",
+              "updated_at"
+            ],
+            "title": "DiplomaSignature",
+            "type": "object"
+          }
+        },
+        "required": [
+          "eligible",
+          "signature",
+          "limits"
+        ],
+        "title": "DiplomaSignatureResponse",
+        "type": "object"
+      },
+      "DiplomaSignatureUpload": {
+        "properties": {
+          "image_base64": {
+            "description": "The PNG or JPEG file, base64 (a data: URL prefix is accepted)",
+            "type": "string"
+          }
+        },
+        "required": [
+          "image_base64"
+        ],
+        "title": "DiplomaSignatureUpload",
+        "type": "object"
+      },
+      "DiplomaSignatureUploadResponse": {
+        "properties": {
+          "signature": {
+            "nullable": true,
+            "properties": {
+              "byte_size": {
+                "type": "integer"
+              },
+              "content_type": {
+                "enum": [
+                  "image/png",
+                  "image/jpeg"
+                ],
+                "type": "string"
+              },
+              "height": {
+                "type": "integer"
+              },
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "updated_at": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "width": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "id",
+              "content_type",
+              "byte_size",
+              "width",
+              "height",
+              "updated_at"
+            ],
+            "title": "DiplomaSignature",
+            "type": "object"
+          }
+        },
+        "required": [
+          "signature"
+        ],
+        "title": "DiplomaSignatureUploadResponse",
+        "type": "object"
+      },
       "Door": {
         "properties": {
           "credentials_saved": {
@@ -151469,6 +151693,312 @@
         "summary": "Pair a watch (or refresh its app version and settings)",
         "tags": [
           "Watch"
+        ]
+      }
+    },
+    "/api/me/diploma-signature": {
+      "delete": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.DiplomaSignatureController.delete",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Removed"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Remove my diploma signature (diplomas drawn afterwards show an empty line)",
+        "tags": [
+          "Ranks"
+        ]
+      },
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.DiplomaSignatureController.show",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "eligible": {
+                      "description": "Whether the person awards ranks somewhere (owner, admin or coach)",
+                      "type": "boolean"
+                    },
+                    "limits": {
+                      "properties": {
+                        "content_types": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "max_bytes": {
+                          "type": "integer"
+                        },
+                        "max_height": {
+                          "type": "integer"
+                        },
+                        "max_width": {
+                          "type": "integer"
+                        },
+                        "min_height": {
+                          "type": "integer"
+                        },
+                        "min_width": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "max_bytes",
+                        "content_types",
+                        "min_width",
+                        "min_height",
+                        "max_width",
+                        "max_height"
+                      ],
+                      "title": "DiplomaSignatureLimits",
+                      "type": "object"
+                    },
+                    "signature": {
+                      "nullable": true,
+                      "properties": {
+                        "byte_size": {
+                          "type": "integer"
+                        },
+                        "content_type": {
+                          "enum": [
+                            "image/png",
+                            "image/jpeg"
+                          ],
+                          "type": "string"
+                        },
+                        "height": {
+                          "type": "integer"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "width": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "content_type",
+                        "byte_size",
+                        "width",
+                        "height",
+                        "updated_at"
+                      ],
+                      "title": "DiplomaSignature",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "eligible",
+                    "signature",
+                    "limits"
+                  ],
+                  "title": "DiplomaSignatureResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Signature"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "My diploma signature, whether I can keep one, and the limits",
+        "tags": [
+          "Ranks"
+        ]
+      },
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.DiplomaSignatureController.create",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "image_base64": {
+                    "description": "The PNG or JPEG file, base64 (a data: URL prefix is accepted)",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "image_base64"
+                ],
+                "title": "DiplomaSignatureUpload",
+                "type": "object"
+              }
+            }
+          },
+          "description": "Image",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "signature": {
+                      "nullable": true,
+                      "properties": {
+                        "byte_size": {
+                          "type": "integer"
+                        },
+                        "content_type": {
+                          "enum": [
+                            "image/png",
+                            "image/jpeg"
+                          ],
+                          "type": "string"
+                        },
+                        "height": {
+                          "type": "integer"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "width": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "content_type",
+                        "byte_size",
+                        "width",
+                        "height",
+                        "updated_at"
+                      ],
+                      "title": "DiplomaSignature",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "signature"
+                  ],
+                  "title": "DiplomaSignatureUploadResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Stored"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not staff who award ranks"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unusable image"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Storage unavailable"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Set or replace my diploma signature (PNG or JPEG, base64)",
+        "tags": [
+          "Ranks"
+        ]
+      }
+    },
+    "/api/me/diploma-signature/image": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.DiplomaSignatureController.image",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "image/png": {
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Image"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No signature"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "My own diploma signature image (for the preview; never anyone else's)",
+        "tags": [
+          "Ranks"
         ]
       }
     },

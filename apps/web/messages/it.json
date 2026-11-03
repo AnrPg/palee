@@ -17368,5 +17368,26 @@
     "display_none": "Niente",
     "hint": "Con «Solo progressi» o «Niente», la sua scheda dice «Deciso dal tuo coach».",
     "theirsIsStricter": "{name} ha scelto «{choice}», che è più restrittivo, quindi resta così."
+  },
+  "DiplomaSignature": {
+    "title": "Firma per i diplomi",
+    "description": "Compare sopra il tuo nome sui diplomi delle promozioni che assegni.",
+    "fieldLabel": "Immagine della firma",
+    "upload": "Carica la firma",
+    "replace": "Sostituisci",
+    "remove": "Rimuovi",
+    "uploading": "Caricamento…",
+    "previewLabel": "La tua firma come appare sui diplomi",
+    "previewAlt": "La tua firma",
+    "signedAs": "{name} · Coach",
+    "empty": "Nessuna firma per ora. I diplomi mostrano una riga vuota sopra il tuo nome.",
+    "help": "PNG, JPEG o WebP, fino a {size} KB. Rende meglio un PNG con sfondo trasparente. Solo tu la vedi qui; si usa solo nei diplomi.",
+    "snapshotNote": "Ogni diploma mantiene la firma che avevi al momento della promozione. Se la rimuovi, la riga resta vuota su tutti i diplomi.",
+    "errorType": "Scegli un’immagine PNG, JPEG o WebP.",
+    "errorSize": "L’immagine supera {size} KB.",
+    "errorSmall": "L’immagine è troppo piccola: almeno {width}×{height} pixel.",
+    "errorDimensions": "L’immagine è troppo grande: al massimo {width}×{height} pixel.",
+    "errorSave": "La firma non è stata salvata. Riprova.",
+    "errorRemove": "La firma non è stata rimossa. Riprova."
   }
 }

@@ -17368,5 +17368,26 @@
     "display_none": "Nichts",
     "hint": "Bei „Nur Fortschritt“ oder „Nichts“ steht auf der Karte „Von deinem Coach festgelegt“.",
     "theirsIsStricter": "{name} hat „{choice}“ gewählt, das ist strenger und bleibt deshalb."
+  },
+  "DiplomaSignature": {
+    "title": "Unterschrift für Urkunden",
+    "description": "Steht über deinem Namen auf den Urkunden der Graduierungen, die du vergibst.",
+    "fieldLabel": "Bild der Unterschrift",
+    "upload": "Unterschrift hochladen",
+    "replace": "Ersetzen",
+    "remove": "Entfernen",
+    "uploading": "Wird hochgeladen…",
+    "previewLabel": "Deine Unterschrift, wie Urkunden sie zeigen",
+    "previewAlt": "Deine Unterschrift",
+    "signedAs": "{name} · Coach",
+    "empty": "Noch keine Unterschrift. Urkunden zeigen über deinem Namen eine leere Linie.",
+    "help": "PNG, JPEG oder WebP, bis {size} KB. Am besten ein PNG mit transparentem Hintergrund. Nur du siehst sie hier; sie wird nur in Urkunden verwendet.",
+    "snapshotNote": "Eine Urkunde behält die Unterschrift, die du bei der Graduierung hattest. Entfernst du sie, bleibt die Linie auf allen Urkunden leer.",
+    "errorType": "Wähle ein PNG-, JPEG- oder WebP-Bild.",
+    "errorSize": "Das Bild ist größer als {size} KB.",
+    "errorSmall": "Das Bild ist zu klein: mindestens {width}×{height} Pixel.",
+    "errorDimensions": "Das Bild ist zu groß: höchstens {width}×{height} Pixel.",
+    "errorSave": "Die Unterschrift wurde nicht gespeichert. Versuche es erneut.",
+    "errorRemove": "Die Unterschrift wurde nicht entfernt. Versuche es erneut."
   }
 }

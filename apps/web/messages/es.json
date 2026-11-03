@@ -17368,5 +17368,26 @@
     "display_none": "Nada",
     "hint": "Con «Solo progreso» o «Nada», su tarjeta dice «Lo ha decidido tu coach».",
     "theirsIsStricter": "{name} eligió «{choice}», que es más estricto, así que se mantiene."
+  },
+  "DiplomaSignature": {
+    "title": "Firma para diplomas",
+    "description": "Aparece sobre tu nombre en los diplomas de las promociones que otorgas.",
+    "fieldLabel": "Imagen de la firma",
+    "upload": "Subir firma",
+    "replace": "Sustituir",
+    "remove": "Quitar",
+    "uploading": "Subiendo…",
+    "previewLabel": "Tu firma tal como la muestran los diplomas",
+    "previewAlt": "Tu firma",
+    "signedAs": "{name} · Coach",
+    "empty": "Aún no tienes firma. Los diplomas muestran una línea vacía sobre tu nombre.",
+    "help": "PNG, JPEG o WebP, hasta {size} KB. Queda mejor un PNG con fondo transparente. Solo tú la ves aquí; se usa solo dentro de los diplomas.",
+    "snapshotNote": "Cada diploma conserva la firma que tenías al otorgar la promoción. Si la quitas, la línea queda vacía en todos los diplomas.",
+    "errorType": "Elige una imagen PNG, JPEG o WebP.",
+    "errorSize": "La imagen supera {size} KB.",
+    "errorSmall": "La imagen es demasiado pequeña: al menos {width}×{height} píxeles.",
+    "errorDimensions": "La imagen es demasiado grande: como máximo {width}×{height} píxeles.",
+    "errorSave": "La firma no se guardó. Inténtalo de nuevo.",
+    "errorRemove": "La firma no se quitó. Inténtalo de nuevo."
   }
 }

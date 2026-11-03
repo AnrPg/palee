@@ -17368,5 +17368,26 @@
     "display_none": "Niets",
     "hint": "Bij ‘Alleen voortgang’ of ‘Niets’ staat op de kaart ‘Ingesteld door je coach’.",
     "theirsIsStricter": "{name} koos ‘{choice}’, dat is strenger, dus dat blijft."
+  },
+  "DiplomaSignature": {
+    "title": "Handtekening voor diploma’s",
+    "description": "Staat boven je naam op de diploma’s van de promoties die je toekent.",
+    "fieldLabel": "Afbeelding van de handtekening",
+    "upload": "Handtekening uploaden",
+    "replace": "Vervangen",
+    "remove": "Verwijderen",
+    "uploading": "Uploaden…",
+    "previewLabel": "Je handtekening zoals diploma’s die tonen",
+    "previewAlt": "Je handtekening",
+    "signedAs": "{name} · Coach",
+    "empty": "Nog geen handtekening. Diploma’s tonen een lege lijn boven je naam.",
+    "help": "PNG, JPEG of WebP, tot {size} KB. Een PNG met transparante achtergrond ziet er het best uit. Alleen jij ziet hem hier; hij wordt alleen in diploma’s gebruikt.",
+    "snapshotNote": "Een diploma houdt de handtekening die je bij de promotie had. Verwijder je hem, dan blijft de lijn op alle diploma’s leeg.",
+    "errorType": "Kies een PNG-, JPEG- of WebP-afbeelding.",
+    "errorSize": "De afbeelding is groter dan {size} KB.",
+    "errorSmall": "De afbeelding is te klein: minstens {width}×{height} pixels.",
+    "errorDimensions": "De afbeelding is te groot: hoogstens {width}×{height} pixels.",
+    "errorSave": "De handtekening is niet opgeslagen. Probeer het opnieuw.",
+    "errorRemove": "De handtekening is niet verwijderd. Probeer het opnieuw."
   }
 }

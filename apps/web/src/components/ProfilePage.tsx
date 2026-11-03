@@ -23,6 +23,7 @@ import { YourDataSection } from "@/components/account/YourDataSection";
 import { BusinessAccountSettings } from "@/components/business/BusinessAccountSettings";
 import { AvatarEditorModal } from "@/components/profile/AvatarEditorModal";
 import { CollapsibleSection } from "@/components/profile/CollapsibleSection";
+import { DiplomaSignatureSection } from "@/components/profile/DiplomaSignatureSection";
 import { NotificationSettings } from "@/components/notifications/NotificationSettings";
 import { AutomaticMessagesSettings } from "@/components/settings/AutomaticMessagesSettings";
 import { AroundAreaSetting } from "@/components/around/AroundSettings";
@@ -386,6 +387,9 @@ export function ProfilePage() {
             )}
           </div>
         </CollapsibleSection>
+
+        {/* ADR-377 addendum: staff who award ranks keep their diploma signature here. */}
+        <DiplomaSignatureSection />
 
         {/* ADR-267: download my data, privacy policy and terms. */}
         <YourDataSection />

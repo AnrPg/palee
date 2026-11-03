@@ -17368,5 +17368,26 @@
     "display_none": "Nothing",
     "hint": "With “Progress only” or “Nothing”, their card says “Set by your coach”.",
     "theirsIsStricter": "{name} chose “{choice}”, which is stricter, so that stays."
+  },
+  "DiplomaSignature": {
+    "title": "Signature for diplomas",
+    "description": "Shown above your name on the diplomas of the promotions you award.",
+    "fieldLabel": "Signature image",
+    "upload": "Upload signature",
+    "replace": "Replace",
+    "remove": "Remove",
+    "uploading": "Uploading…",
+    "previewLabel": "Your signature as diplomas show it",
+    "previewAlt": "Your signature",
+    "signedAs": "{name} · Coach",
+    "empty": "No signature yet. Diplomas show an empty line above your name.",
+    "help": "PNG, JPEG or WebP, up to {size} KB. A PNG with a transparent background looks best. Only you see it here; it is used only inside diplomas.",
+    "snapshotNote": "A diploma keeps the signature you had when the promotion was awarded. Removing it leaves the line empty on every diploma.",
+    "errorType": "Choose a PNG, JPEG or WebP image.",
+    "errorSize": "The image is larger than {size} KB.",
+    "errorSmall": "The image is too small: at least {width}×{height} pixels.",
+    "errorDimensions": "The image is too large: at most {width}×{height} pixels.",
+    "errorSave": "The signature was not saved. Try again.",
+    "errorRemove": "The signature was not removed. Try again."
   }
 }
