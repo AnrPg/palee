@@ -129,10 +129,10 @@ must have an ADR. See `template.md` for the format.
 | ADR-121 | Tenant logo upload | Accepted |
 | ADR-122 | Organization name and slug editing | Accepted |
 | ADR-123 | Comprehensive analytics instrumentation | Accepted |
-| ADR-127 | Web dependency security refresh and patched OpenAPI generator chain | Accepted |
 | ADR-124 | Injury-aware workout safety warnings | Accepted |
 | ADR-125 | Personalized member programming | Accepted |
 | ADR-126 | Refund receipts, provider reconciliation and accounting exports | Accepted |
+| ADR-127 | Web dependency security refresh and patched OpenAPI generator chain | Accepted |
 | ADR-128 | Tenant-owned scale levels | Accepted |
 | ADR-129 | PR visibility for gym coaches and explicit sharing grants | Accepted |
 | ADR-130 | Injury warnings on the ready screen, scaled variations and drop-off facts | Accepted |
@@ -191,9 +191,9 @@ must have an ADR. See `template.md` for the format.
 | ADR-190 | E-shop: catalog, inventory, orders and revenue lineage | Accepted |
 | ADR-191 | Partner perks: redemption methods, an open policy model and versioned terms | Accepted |
 | ADR-192 | Shop analytics, revenue by stream and revenue lineage reporting | Accepted |
+| ADR-193 | In-app walkthroughs: one guide engine over real screens | Accepted |
 | ADR-195 | One red error notice everywhere, and a language picker on the signed-out pages | Accepted |
 | ADR-196 | One inbox, the fixed Εγώ list, and a home for every sharing choice | Accepted |
-| ADR-193 | In-app walkthroughs: one guide engine over real screens | Accepted |
 | ADR-197 | One filter pattern on every list; feed types, Around level, partner disciplines and distance | Accepted (partner distance in open clubs superseded by ADR-280) |
 | ADR-198 | Box › «Πελάτες μου»: the coach's home in the member app | Accepted |
 | ADR-199 | Notification preferences per category and channel, checked at the bell and push chokepoints | Accepted |
@@ -266,47 +266,51 @@ must have an ADR. See `template.md` for the format.
 | ADR-286 | Injuries a member records reach their boxes per injury («Να το δει το box μου», on by default); coaches reach own clients only on every injury action; staff profile shows admin_only reports; every staff read logged in injury_access_log | Accepted |
 | ADR-290 | Floor plans grow: the room of a class coloured on the plan from the class details (gym switch, per-floor when >1 floor), room photos (each off the public page until 🌐), a visual cleaning checklist answered point by point (note required when not cleaned, front desk told), up to 10 photos per machine log line, machine pins on the plan under the log | Accepted |
 | ADR-291 | A box without online payments: packages shown with «Το θέλω» and desk instructions; a request waits 14 days as «Περιμένει πληρωμή» (own table, grants nothing) in «Εκκρεμότητες», where «Είσπραξη» assigns and records it via ADR-222; queue names link to the account; shop orders get QR + pickup code with a saved PNG pass and no disabled online option | Accepted |
+| ADR-300 | Operation registry: one spec per use case generates REST, MCP and LLM tools; previewable commands, problem details, idempotency keys, ETags (v4) | Proposed |
+| ADR-301 | AI agents as delegated principals: rights intersected on every call, durable runs, Rule-of-Two policy, approvals, one LLM provider port, multi-agent via delegation (v4) | Proposed |
+| ADR-340 | Card surcharge on online and desk card payments, per box, only where the law of the box's country allows it (EEA/UK non-consumer cards, US/CA credit cards with caps, none elsewhere); quoted before paying, recorded as revenue on the receipt | Accepted |
+| ADR-341 | Coach pay and commissions: own context with rules (per class, attendee, session, % of sales), periods, statements, approval and CSV export; reads Scheduling, Appointments and Finance through a port; never a fiscal document | Accepted |
+
+| ADR-342 | Purchase and booking rules per package (who may buy, purchases per person, prerequisites, bookings per day/week/open) enforced by the API at purchase and booking | Accepted |
 | ADR-344 | Leads («Ενδιαφερόμενοι»): one fixed pipeline per box (new, trial, offer, converted, lost with reason), owner, tasks, history kept after conversion (automatic on membership activation), CSV import, idempotent intake ports for the box site and prospects | Accepted |
 | ADR-345 | Public lead intake: published boxes only, rate limit + honeypot + timing + link rules (spam answered like an enquiry), required contact consent with text version, separate marketing consent, lost leads purged after two years | Accepted |
 | ADR-346 | Automations from six ready recipes (welcome, trial follow-up, missed classes, renewal, birthday, win-back), off by default; outbox with SKIP LOCKED, quiet hours in the box's zone, opt-out, consent; channel port with in-app and email now, SMS (Brevo, W3) later | Accepted |
+
 | ADR-347 | Members at risk («Σε κίνδυνο»): nightly rule-based 0–100 score with reasons and points, levels, suggested action, staff list with «Επικοινώνησα» and snooze; entering high starts the win-back recipe | Accepted |
+| ADR-348 | SMS (Viber, WhatsApp later) from the box through one `MessagingChannel` port: sandbox and Brevo SMS adapters (ANR's choice), an idempotent outbox with row-locked claims, retries and receipts, one tokened webhook URL per box, E.164 numbers; provider comparison with prices | Accepted |
+| ADR-349 | Palee's Brevo account by default (the box's own key under «Προχωρημένα»), estimated and charged cost per message, monthly budget cap per box, quiet hours on the box's clock (21:00–09:00), SMS parts | Accepted |
+
+| ADR-350 | Consent per contact, channel and purpose (Ενημερώσεις / Προσφορές), never assumed; STOP replies stop every channel; message wording per key and language (box overrides, WhatsApp approved templates) | Accepted |
+| ADR-351 | `SendThroughChannel`: the narrow API automations, staff and system notices use; `AutomationSmsChannel` for W2's automations | Accepted |
+| ADR-352 | Box website: section keys filled from the box's own data (no page builder), optional public timetable, `/api/public/sites/:slug`, custom domains with DNS TXT proof and CNAME, TLS by the existing ingress (ops list + Caddy ask endpoint) | Accepted |
+| ADR-353 | Website forms (trial, contact) through an outbox to the `LeadIntake` port W2 implements; idempotent on submission id; personal fields cleared after delivery | Accepted |
+| ADR-354 | Box tags (Meta Pixel, GA4, GTM) load only after consent; equal accept/reject; 6-month choice; insert-only pseudonymous consent log; optional Meta Conversions API with hashed data and an encrypted token | Accepted |
+| ADR-355 | Google review asks at an attendance milestone for every eligible member alike; never gated by a score or rewarded; opt-out; staff see counts only | Accepted |
 
 | ADR-356 | WOD leaderboard filters (division, age group, scale, branch, window, buddies) and a percentile per score (≥ 5 results); division and birth year on the per-box opt-in; comparison only for those who opted in | Accepted |
 | ADR-357 | Content-addressed WOD snapshots on assignment, run completion and logged score; day tags Χωρίς WOD / Μερικά με WOD / Όλα με WOD in day-workouts | Accepted |
 | ADR-358 | Explainable fitness profile v1: benchmark PRs → points per domain with reasons, overall from ≥ 2 domains, «Τι να δουλέψεις», own data only | Accepted |
 | ADR-359 | Visit badges on class lists and check-in; calendar feed with stable UIDs, SEQUENCE, CANCELLED seats and a per-booking invite; staff notes the front desk reads | Accepted |
 
-| ADR-340 | Card surcharge on online and desk card payments, per box, only where the law of the box's country allows it (EEA/UK non-consumer cards, US/CA credit cards with caps, none elsewhere); quoted before paying, recorded as revenue on the receipt | Accepted |
-| ADR-341 | Coach pay and commissions: own context with rules (per class, attendee, session, % of sales), periods, statements, approval and CSV export; reads Scheduling, Appointments and Finance through a port; never a fiscal document | Accepted |
-| ADR-342 | Purchase and booking rules per package (who may buy, purchases per person, prerequisites, bookings per day/week/open) enforced by the API at purchase and booking | Accepted |
-
-| ADR-378 | Public API v1 at `/api/public/v1`, generated from the first operations of the ADR-300 registry; per-box API keys (hashed, scoped, rotated with 24 h overlap) acting for their maker with rights recomputed per call; Idempotency-Key, preview, problem details, 120 req/min per key; OpenAPI 3.1 document | Accepted |
-| ADR-379 | Signed webhooks: thin events from domain events, outbox with leases, `Palee-Signature` HMAC with timestamp, 9 attempts over ~3 days, delivery log and replay, SSRF guard; REST hooks and the Zapier/Make mapping and submission list | Accepted |
-| ADR-380 | Mailchimp/Brevo list sync: only members who said yes (own consent, off by default), email + first name, unsubscribe never delete, hash-only memory, unsubscribed on account deletion | Accepted |
-| ADR-381 | Doors: DoorController port with sandbox, Shelly and Kisi adapters; opening with the check-in proof of presence; entry rules (staff, active member, hours, booked window or open gym); fail-secure when offline; 180-day access log | Accepted |
-| ADR-300 | Operation registry: one spec per use case generates REST, MCP and LLM tools; previewable commands, problem details, idempotency keys, ETags (v4) | Proposed |
-| ADR-301 | AI agents as delegated principals: rights intersected on every call, durable runs, Rule-of-Two policy, approvals, one LLM provider port, multi-agent via delegation (v4) | Proposed |
-
-| ADR-348 | SMS (Viber, WhatsApp later) from the box through one `MessagingChannel` port: sandbox and Brevo SMS adapters (ANR's choice), an idempotent outbox with row-locked claims, retries and receipts, one tokened webhook URL per box, E.164 numbers; provider comparison with prices | Accepted |
-| ADR-349 | Palee's Brevo account by default (the box's own key under «Προχωρημένα»), estimated and charged cost per message, monthly budget cap per box, quiet hours on the box's clock (21:00–09:00), SMS parts | Accepted |
-| ADR-350 | Consent per contact, channel and purpose (Ενημερώσεις / Προσφορές), never assumed; STOP replies stop every channel; message wording per key and language (box overrides, WhatsApp approved templates) | Accepted |
-| ADR-351 | `SendThroughChannel`: the narrow API automations, staff and system notices use; `AutomationSmsChannel` for W2's automations | Accepted |
-
-| ADR-352 | Box website: section keys filled from the box's own data (no page builder), optional public timetable, `/api/public/sites/:slug`, custom domains with DNS TXT proof and CNAME, TLS by the existing ingress (ops list + Caddy ask endpoint) | Accepted |
-| ADR-353 | Website forms (trial, contact) through an outbox to the `LeadIntake` port W2 implements; idempotent on submission id; personal fields cleared after delivery | Accepted |
-| ADR-354 | Box tags (Meta Pixel, GA4, GTM) load only after consent; equal accept/reject; 6-month choice; insert-only pseudonymous consent log; optional Meta Conversions API with hashed data and an encrypted token | Accepted |
-| ADR-355 | Google review asks at an attendance milestone for every eligible member alike; never gated by a score or rewarded; opt-out; staff see counts only | Accepted |
-
 | ADR-364 | Public status page (CP-G4): per-minute probes of app, search, files, email, payments and fiscal; incidents and maintenance from the platform console; public cacheable data API with 90-day uptime; double opt-in status emails; documented option to host it outside the cluster | Accepted |
 | ADR-365 | The box downloads all its data at any time (CP-G5): owners get one ZIP of CSV files built from every context's ADR-117 export in their own RLS session, without members' personal tables or secrets, one a day, kept 7 days | Accepted |
 | ADR-366 | Status incidents in any language: Gemini translation port with an editable English preview marked as automatic (published untranslated when it fails), stored source language and English copy, publisher shown in the console; public page at status.palee.app and /status, platform console, in-app strip for affected people only | Accepted |
 | ADR-367 | The box's data export carries its photos and PDFs in ZIP parts of bounded size next to the CSV ZIP, and one email to the owner when it is ready; card in Settings › Business between ownership transfer and closing | Accepted |
+
 | ADR-368 | A box's own email provider over SMTP (advanced; Palee sends by default): encrypted password never returned or exported, «Δοκιμή σύνδεσης», box-origin templates go through it when checked, platform mail always through Palee, fallback on a refused password, DNS guide data, no private hosts | Accepted |
 | ADR-369 | Palee's margin on Palee-managed messages: platform setting in basis points per channel (vendor console), box price = provider cost + margin rounded up and frozen per message, budget cap on the box price, monthly charge read model for billing; no margin on the box's own account | Accepted |
 | ADR-370 | Programme marketplace: boxes and coaches sell programmes built from their own structured WODs; publishing freezes the WODs as hidden copies into immutable versions; `box` or `marketplace` listing (cross-business catalogue through a SECURITY DEFINER projection); preview days; one review per purchase, hidden with a reason, never deleted by the seller | Accepted |
 | ADR-371 | Buying a programme: checkout on the seller's own provider (purpose `programme`), Finance stream sale `other` / `programme_purchase` with its fiscal document, the purchase as the grant (WODs scheduled from the buyer's start date), withdrawal within 14 days less the part provided plus the seller's refund rule, staff refunds, web only (ADR-256) | Accepted |
 | ADR-372 | Reserved for the prospect assistant on the box's public page (CP-C8): moved to v4 with the shared LLM port (ADR-360..363), number kept unused | Moved to v4 |
 | ADR-373 | Reserved for prospect leads and hand-off from the assistant (CP-C8): moved to v4, number kept unused | Moved to v4 |
+| ADR-374 | Race your past self: idempotent split marks per segment/round (section ordinals align copies of a benchmark), the previous attempt by workout identity, a pace line live and in results; progress saves leave marks (amended 2026-11-03) | Accepted |
+| ADR-375 | Watch companion: the watch talks only to the phone; contract v1 (watch plan, commands over existing idempotent calls, numbered heart-rate batches, pairing with 426 upgrade); offline queueing; native targets pending; offered only when a WOD is opened with a connected watch, class WODs after check-in, box members asked 5 times then auto, free athletes always asked (amended 2026-11-03) | Accepted |
+| ADR-376 | Barcode in meals: GS1 check, Open Food Facts behind a port with a cache/outbox (ODbL attribution), no energy stored, a suggested hand portion, macros only with a coach's macros and not hidden, own foods as the manual fallback | Accepted |
+| ADR-377 | Belts and levels: ladders per discipline (a workout type), ranks with stripes, requirements and a suggested scale level, coach-decided promotions and withdrawals, PDF diplomas | Accepted |
+| ADR-378 | Public API v1 at `/api/public/v1`, generated from the first operations of the ADR-300 registry; per-box API keys (hashed, scoped, rotated with 24 h overlap) acting for their maker with rights recomputed per call; Idempotency-Key, preview, problem details, 120 req/min per key; OpenAPI 3.1 document | Accepted |
+| ADR-379 | Signed webhooks: thin events from domain events, outbox with leases, `Palee-Signature` HMAC with timestamp, 9 attempts over ~3 days, delivery log and replay, SSRF guard; REST hooks and the Zapier/Make mapping and submission list | Accepted |
+| ADR-380 | Mailchimp/Brevo list sync: only members who said yes (own consent, off by default), email + first name, unsubscribe never delete, hash-only memory, unsubscribed on account deletion | Accepted |
+| ADR-381 | Doors: DoorController port with sandbox, Shelly and Kisi adapters; opening with the check-in proof of presence; entry rules (staff, active member, hours, booked window or open gym); fail-secure when offline; 180-day access log | Accepted |
 | ADR-382 | Coach pay additions: fixed pay prorated by days, % of own clients' or all subscriptions, groups per rule, payments by hand and non-taxable reimbursements with notes, overtime (hours above a weekly threshold) and allowances catalogue, gross/net per line with separate subtotals, internal pay statement PDF, profile and Finance summary | Accepted |
 | ADR-383 | Money UI placement: card surcharge 3-step guide in Settings › Πληρωμές, surcharge line in member checkout, «Τι κάρτα έδωσε;» at «Κάρτα στο POS», «Αμοιβές coaches» tab in Finance (rules, periods, overtime and allowances), pay in the staff profile, «Οι αμοιβές μου» at /admin/my-pay; package rules under «Προχωρημένα» in the wizard; `booking.weekly_limit` removed | Accepted |
 | ADR-384 | Leads and members at risk: every staff action is logged with who and when (`retention_risk_actions` for «Επικοινώνησα» and «Αργότερα», leads already in `lead_events`); member detail answers `{member, actions}`; the staff screens show both logs | Accepted |
@@ -320,9 +324,5 @@ must have an ADR. See `template.md` for the format.
 | ADR-393 | Only the people who logged a WOD hear that staff changed it: notification `logged_workout_changed` (category `coach`) once per save, about their latest run or score whose snapshot now differs, never the editor, linking to the Journal entry with «Το WOD άλλαξε από τότε» | Accepted |
 | ADR-394 | A Palee-wide board for benchmark WODs: the coach tags a WOD from a 33-benchmark list (23 anchored + 10 leaderboard-only), scope chip «Όλο το Palee», separate consent (`share` / `see_only`), cross-box read only through two narrow SECURITY DEFINER functions | Accepted |
 | ADR-396 | A box's own SMS vendor besides Brevo: Twilio, Vonage, Infobip, Yuboto, Apifon adapters behind the MessagingChannel port (own account only), each vendor's fields (`VendorRules`), secrets encrypted incl. Vonage's signature secret (`webhook_secret`), signed receipts where offered (Twilio, Vonage), GET webhook for Yuboto, ADR-390 rules unchanged; vendor picker and guides under «Προχωρημένα» | Accepted |
-| ADR-398 | Own-domain certificates: the API creates one Ingress per verified custom host in its own namespace (service account, server-side apply, outbox with retries, hourly sweep of orphans), cert-manager issues the certificate through a namespaced HTTP-01 Issuer, and the domain card shows the certificate's state with a plain reason | Accepted |
-| ADR-374 | Race your past self: idempotent split marks per segment/round (section ordinals align copies of a benchmark), the previous attempt by workout identity, a pace line live and in results; progress saves leave marks (amended 2026-11-03) | Accepted |
-| ADR-375 | Watch companion: the watch talks only to the phone; contract v1 (watch plan, commands over existing idempotent calls, numbered heart-rate batches, pairing with 426 upgrade); offline queueing; native targets pending; offered only when a WOD is opened with a connected watch, class WODs after check-in, box members asked 5 times then auto, free athletes always asked (amended 2026-11-03) | Accepted |
-| ADR-376 | Barcode in meals: GS1 check, Open Food Facts behind a port with a cache/outbox (ODbL attribution), no energy stored, a suggested hand portion, macros only with a coach's macros and not hidden, own foods as the manual fallback | Accepted |
-| ADR-377 | Belts and levels: ladders per discipline (a workout type), ranks with stripes, requirements and a suggested scale level, coach-decided promotions and withdrawals, PDF diplomas | Accepted |
 | ADR-397 | «Αναφορά» on box reviews by members or by the box, decided only by the Palee team (keep, hide, remove) in a cross-box queue; a report changes nothing until then, so a box can never hide a review; fixed reasons, rate limits, statement of reasons to the author and outcome to the reporter (DSA Art. 16, 17), restore from the decided list, moderation address in the website footer, removed texts purged after 6 months, daily summary to the Palee team, audit trail, GDPR export and deletion | Accepted |
+| ADR-398 | Own-domain certificates: the API creates one Ingress per verified custom host in its own namespace (service account, server-side apply, outbox with retries, hourly sweep of orphans), cert-manager issues the certificate through a namespaced HTTP-01 Issuer, and the domain card shows the certificate's state with a plain reason | Accepted |
