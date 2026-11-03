@@ -51,3 +51,9 @@ while giving the desk Kilo's «internal comments».
 - «Member of another box» is not shown: it would leak memberships across tenants. Open question.
 - Notes are not in the member's data download (they are about, not by, the member), as before.
 - Screens wait for the product owner's mockup pick.
+
+## Amendment (ADR-392, 2026-11-03)
+The «push only» line under «Alternatives Considered» is superseded: a confirmed seat, its class's
+move and its cancellation now send one email with this invite attached (`METHOD:REQUEST`, the same
+UID; `METHOD:CANCEL` once cancelled), unless the person turns «Email κράτησης με ημερολόγιο» off.
+
