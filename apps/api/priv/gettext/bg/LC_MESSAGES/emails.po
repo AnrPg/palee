@@ -225,3 +225,63 @@ msgstr "Общо"
 
 msgid "Keep it for your records. For questions about it, contact the business."
 msgstr "Запазете го за архива си. За въпроси относно него се свържете с фирмата."
+
+msgid "Booked: %{class}, %{when}"
+msgstr "Записване: %{class}, %{when}"
+
+msgid "Class changed: %{class}, %{when}"
+msgstr "Променен час: %{class}, %{when}"
+
+msgid "Cancelled: %{class}, %{when}"
+msgstr "Отменено: %{class}, %{when}"
+
+msgid "Your place in %{class} at «%{business}» is booked."
+msgstr "Мястото Ви в %{class} в „%{business}“ е записано."
+
+msgid "%{class} at «%{business}» changed. Your place is kept."
+msgstr "%{class} в „%{business}“ се промени. Мястото Ви се запазва."
+
+msgid "Your place in %{class} at «%{business}» is cancelled."
+msgstr "Мястото Ви в %{class} в „%{business}“ е отменено."
+
+msgid "Class"
+msgstr "Час"
+
+msgid "Where"
+msgstr "Къде"
+
+msgid "The attached invite adds the class to your calendar, or updates it."
+msgstr "Приложената покана добавя часа в календара Ви или го обновява."
+
+msgid "The attached invite removes the class from your calendar."
+msgstr "Приложената покана премахва часа от календара Ви."
+
+msgid "Open in the app"
+msgstr "Отваряне в приложението"
+
+msgid "You can turn these emails off in Settings › Notifications."
+msgstr "Можете да изключите тези имейли от Настройки › Известия."
+
+msgid "%{weekday} %{date_time}"
+msgstr "%{weekday}, %{date_time}"
+
+msgid "Monday"
+msgstr "понеделник"
+
+msgid "Tuesday"
+msgstr "вторник"
+
+msgid "Wednesday"
+msgstr "сряда"
+
+msgid "Thursday"
+msgstr "четвъртък"
+
+msgid "Friday"
+msgstr "петък"
+
+msgid "Saturday"
+msgstr "събота"
+
+msgid "Sunday"
+msgstr "неделя"

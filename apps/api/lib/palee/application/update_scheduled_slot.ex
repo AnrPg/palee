@@ -16,7 +16,7 @@ defmodule Palee.Application.UpdateScheduledSlot do
   }
 
   alias Palee.Scheduling
-  alias Palee.Scheduling.Domain.SeriesEdit
+  alias Palee.Scheduling.Domain.{BookingInviteEmail, SeriesEdit}
   alias Palee.Workouts
 
   @doc "Edits only this class; see `update_in_scope/3` for a series."
@@ -44,9 +44,10 @@ defmodule Palee.Application.UpdateScheduledSlot do
            ClassLocation.check_change(context, params, ClassLocation.class_location(context, id)),
          {:ok, resolved} <- SeriesScope.resolve(context, id, scope),
          :ok <- ClassSpace.check_edit(context, id, params, resolved),
+         before = placements([resolved.current | resolved.targets]),
          {:ok, {slot, others}} <- update(context, params, resolved),
          {:ok, [slot | others]} <- inherit_day_workout(context, [slot | others]) do
-      Enum.each([slot | others], &after_update(context, &1))
+      Enum.each([slot | others], &after_update(context, &1, before))
       {:ok, %{slot: slot, updated_count: 1 + length(others)}}
     end
   end
@@ -121,10 +122,34 @@ defmodule Palee.Application.UpdateScheduledSlot do
     end
   end
 
-  defp after_update(context, slot) do
+  defp after_update(context, slot, before) do
     broadcast_slot_updated(slot)
     # A larger capacity may admit waitlisted members (ADR-097).
     PromoteClassWaitlist.call(context, slot.id)
+    announce_move(context, slot, Map.get(before, slot.id))
+  end
+
+  # ADR-392: where and when each class was before the edit.
+  defp placements(slots),
+    do:
+      Map.new(slots, fn slot ->
+        {slot.id, Map.take(slot, [:scheduled_at, :duration_minutes, :location_id])}
+      end)
+
+  # ADR-392: the people booked hear of another start, length or branch (the
+  # booking email with its updated invite).
+  defp announce_move(_context, _slot, nil), do: :ok
+
+  defp announce_move(context, slot, before) do
+    if BookingInviteEmail.moved?(before, slot) do
+      Palee.DomainEvents.publish(:class_moved, %{
+        organization_id: context.organization_id,
+        scheduled_class_id: slot.id,
+        at: DateTime.utc_now()
+      })
+    end
+
+    :ok
   end
 
   defp value(map, key), do: Map.get(map, key, Map.get(map, Atom.to_string(key)))

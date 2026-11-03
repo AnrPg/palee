@@ -51,6 +51,8 @@ defmodule Palee.Application.WithdrawBooking do
       user_id: booking.user_id,
       kind: Map.get(booking, :kind, "member"),
       by: by,
+      # ADR-392: only a seat that was confirmed hears of its cancellation.
+      previous_status: booking.status,
       at: DateTime.utc_now()
     })
 

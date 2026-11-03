@@ -225,3 +225,63 @@ msgstr "الإجمالي"
 
 msgid "Keep it for your records. For questions about it, contact the business."
 msgstr "احتفظ به في سجلاتك. للاستفسار عنه، تواصل مع النشاط التجاري."
+
+msgid "Booked: %{class}, %{when}"
+msgstr "تم الحجز: %{class}، %{when}"
+
+msgid "Class changed: %{class}, %{when}"
+msgstr "تغيّرت الحصة: %{class}، %{when}"
+
+msgid "Cancelled: %{class}, %{when}"
+msgstr "أُلغي: %{class}، %{when}"
+
+msgid "Your place in %{class} at «%{business}» is booked."
+msgstr "تم حجز مكانك في %{class} لدى «%{business}»."
+
+msgid "%{class} at «%{business}» changed. Your place is kept."
+msgstr "تغيّرت حصة %{class} لدى «%{business}». مكانك محفوظ."
+
+msgid "Your place in %{class} at «%{business}» is cancelled."
+msgstr "أُلغي مكانك في %{class} لدى «%{business}»."
+
+msgid "Class"
+msgstr "الحصة"
+
+msgid "Where"
+msgstr "أين"
+
+msgid "The attached invite adds the class to your calendar, or updates it."
+msgstr "الدعوة المرفقة تضيف الحصة إلى تقويمك أو تحدّثها."
+
+msgid "The attached invite removes the class from your calendar."
+msgstr "الدعوة المرفقة تزيل الحصة من تقويمك."
+
+msgid "Open in the app"
+msgstr "فتح في التطبيق"
+
+msgid "You can turn these emails off in Settings › Notifications."
+msgstr "يمكنك إيقاف رسائل البريد هذه من الإعدادات › الإشعارات."
+
+msgid "%{weekday} %{date_time}"
+msgstr "%{weekday} %{date_time}"
+
+msgid "Monday"
+msgstr "الاثنين"
+
+msgid "Tuesday"
+msgstr "الثلاثاء"
+
+msgid "Wednesday"
+msgstr "الأربعاء"
+
+msgid "Thursday"
+msgstr "الخميس"
+
+msgid "Friday"
+msgstr "الجمعة"
+
+msgid "Saturday"
+msgstr "السبت"
+
+msgid "Sunday"
+msgstr "الأحد"

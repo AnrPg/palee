@@ -226,3 +226,63 @@ msgstr ""
 
 msgid "Keep it for your records. For questions about it, contact the business."
 msgstr ""
+
+msgid "Booked: %{class}, %{when}"
+msgstr ""
+
+msgid "Class changed: %{class}, %{when}"
+msgstr ""
+
+msgid "Cancelled: %{class}, %{when}"
+msgstr ""
+
+msgid "Your place in %{class} at «%{business}» is booked."
+msgstr ""
+
+msgid "%{class} at «%{business}» changed. Your place is kept."
+msgstr ""
+
+msgid "Your place in %{class} at «%{business}» is cancelled."
+msgstr ""
+
+msgid "Class"
+msgstr ""
+
+msgid "Where"
+msgstr ""
+
+msgid "The attached invite adds the class to your calendar, or updates it."
+msgstr ""
+
+msgid "The attached invite removes the class from your calendar."
+msgstr ""
+
+msgid "Open in the app"
+msgstr ""
+
+msgid "You can turn these emails off in Settings › Notifications."
+msgstr ""
+
+msgid "%{weekday} %{date_time}"
+msgstr ""
+
+msgid "Monday"
+msgstr ""
+
+msgid "Tuesday"
+msgstr ""
+
+msgid "Wednesday"
+msgstr ""
+
+msgid "Thursday"
+msgstr ""
+
+msgid "Friday"
+msgstr ""
+
+msgid "Saturday"
+msgstr ""
+
+msgid "Sunday"
+msgstr ""

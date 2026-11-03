@@ -225,3 +225,63 @@ msgstr "סה״כ"
 
 msgid "Keep it for your records. For questions about it, contact the business."
 msgstr "שמור/י אותו לרישומים שלך. לשאלות לגביו, פנה/י לעסק."
+
+msgid "Booked: %{class}, %{when}"
+msgstr "הוזמן: %{class}, %{when}"
+
+msgid "Class changed: %{class}, %{when}"
+msgstr "השיעור השתנה: %{class}, %{when}"
+
+msgid "Cancelled: %{class}, %{when}"
+msgstr "בוטל: %{class}, %{when}"
+
+msgid "Your place in %{class} at «%{business}» is booked."
+msgstr "המקום שלך ב%{class} ב„%{business}” הוזמן."
+
+msgid "%{class} at «%{business}» changed. Your place is kept."
+msgstr "השיעור %{class} ב„%{business}” השתנה. המקום שלך נשמר."
+
+msgid "Your place in %{class} at «%{business}» is cancelled."
+msgstr "המקום שלך ב%{class} ב„%{business}” בוטל."
+
+msgid "Class"
+msgstr "שיעור"
+
+msgid "Where"
+msgstr "איפה"
+
+msgid "The attached invite adds the class to your calendar, or updates it."
+msgstr "ההזמנה המצורפת מוסיפה את השיעור ליומן שלך או מעדכנת אותו."
+
+msgid "The attached invite removes the class from your calendar."
+msgstr "ההזמנה המצורפת מסירה את השיעור מהיומן שלך."
+
+msgid "Open in the app"
+msgstr "פתיחה באפליקציה"
+
+msgid "You can turn these emails off in Settings › Notifications."
+msgstr "אפשר לכבות את המיילים האלה בהגדרות › התראות."
+
+msgid "%{weekday} %{date_time}"
+msgstr "יום %{weekday} %{date_time}"
+
+msgid "Monday"
+msgstr "שני"
+
+msgid "Tuesday"
+msgstr "שלישי"
+
+msgid "Wednesday"
+msgstr "רביעי"
+
+msgid "Thursday"
+msgstr "חמישי"
+
+msgid "Friday"
+msgstr "שישי"
+
+msgid "Saturday"
+msgstr "שבת"
+
+msgid "Sunday"
+msgstr "ראשון"

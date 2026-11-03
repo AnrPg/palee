@@ -73,12 +73,24 @@ defmodule Palee.Application.ResolveBooking do
 
     Palee.Notifications.dispatch_event(:booking_resolved, notification_payload)
     broadcast_resolution(booking)
+    if status == :approved, do: confirmed(booking)
 
     TrackAnalyticsEvent.call(resolution_event(status), context, booking, %{
       metadata: %{
         member_id: booking.user_id,
         has_admin_message: admin_message not in [nil, ""]
       }
+    })
+  end
+
+  # ADR-392: a seat confirmed by staff (the booking email with its invite).
+  defp confirmed(booking) do
+    Palee.DomainEvents.publish(:booking_confirmed, %{
+      organization_id: booking.organization_id,
+      scheduled_class_id: booking.scheduled_class_id,
+      booking_id: booking.id,
+      user_id: booking.user_id,
+      at: DateTime.utc_now()
     })
   end
 
