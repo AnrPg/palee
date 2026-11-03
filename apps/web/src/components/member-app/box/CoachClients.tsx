@@ -16,6 +16,8 @@ import {
   type ReplyQueueItem,
 } from "@/api/staff";
 import { AvatarChips, CountBadge } from "@/components/admin/DashboardWidgets";
+import { ClassSkillTicks } from "@/components/body-devices/ClassSkillTicks";
+import { RankReadyList } from "@/components/body-devices/RankReadyList";
 import { HubCard } from "@/components/member-app/HubParts";
 import type { BoxExtensionProps } from "@/components/member-app/box/box-extensions";
 import { useBoxSchedule } from "@/components/member-app/box/BoxToday";
@@ -120,7 +122,9 @@ function CoachClients({ membership }: Pick<BoxExtensionProps, "membership">) {
       </h2>
       {replyItems.length > 0 ? <ReplyPart items={replyItems} /> : null}
       {reviewItems.length > 0 ? <ReviewPart items={reviewItems} /> : null}
-      {desk.length > 0 ? <DeskPart sessions={desk} /> : null}
+      {desk.length > 0 ? <DeskPart sessions={desk} coaching={coaching} /> : null}
+      {/* ADR-400 follow-up: who meets their ladder's requirements; hidden when nobody does. */}
+      {coaching && token ? <RankReadyList token={token} slug={membership.organization.slug} /> : null}
       {clientItems.length > 0 ? (
         <ClientsPart people={clientItems.map((item) => ({ id: item.client_user_id, name: item.client_nickname ?? t("unknownClient") }))} />
       ) : null}
@@ -238,7 +242,7 @@ function ReviewPart({ items }: { items: FormReview[] }) {
 }
 
 /** «Check-in σήμερα»: today's classes and sessions the coach runs; a row opens its roster. */
-function DeskPart({ sessions }: { sessions: DeskSession[] }) {
+function DeskPart({ sessions, coaching }: { sessions: DeskSession[]; coaching: boolean }) {
   const t = useTranslations("CoachClients");
   const tCoach = useTranslations("SoloCoach");
   const locale = useUiLocale();
@@ -283,9 +287,24 @@ function DeskPart({ sessions }: { sessions: DeskSession[] }) {
               <RosterRow key={person.bookingId} session={open} person={person} index={index} />
             ))}
           </ul>
+          {/* ADR-400 follow-up (mockup 3B): one skill for several people of the class. */}
+          {coaching && open.kind === "class" ? <DeskSkillTicks session={open} /> : null}
         </Dialog>
       ) : null}
     </HubCard>
+  );
+}
+
+function DeskSkillTicks({ session }: { session: DeskSession }) {
+  const t = useTranslations("CoachClients");
+  const { tokens } = useSession();
+  const slug = useOrganizationSlug();
+  if (!tokens?.access_token || !slug) return null;
+  const people = session.roster.map((person) => ({ userId: person.userId, name: person.name ?? t("unknownClient") }));
+  return (
+    <div className="mt-3 flex">
+      <ClassSkillTicks token={tokens.access_token} slug={slug} people={people} />
+    </div>
   );
 }
 
