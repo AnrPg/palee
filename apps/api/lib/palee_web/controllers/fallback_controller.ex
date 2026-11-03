@@ -3490,6 +3490,9 @@ defmodule PaleeWeb.FallbackController do
     not_a_client: {:unprocessable_entity, "That person is not a member or athlete here"},
     only_athletes_self_assigned: {:unprocessable_entity, "Coaches can take athletes only"},
     not_your_client: {:forbidden, "Not one of your clients"},
+    # ADR-395: what a coach may choose the client's fitness card shows.
+    invalid_fitness_display:
+      {:unprocessable_entity, "Choose progress only, nothing or the client's own choice"},
     # ADR-286: a member's own injury report is theirs to change.
     injury_owned_by_member: {:forbidden, "The member keeps this report up to date"},
     invalid_sharing: {:unprocessable_entity, "Choose whether your box sees it"},

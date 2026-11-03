@@ -1029,6 +1029,9 @@ defmodule PaleeWeb.Router do
     get("/clients/:user_id/wellness-summary", ClientWellnessSummaryController, :show)
     # ADR-165: a client's coverage, qualities and load from shared entries.
     get("/clients/:user_id/progress-depth", TrainingDepthController, :client)
+    # ADR-395: what a client's fitness card shows, set by their coach.
+    get("/clients/:user_id/fitness-display", ClientFitnessDisplayController, :show)
+    put("/clients/:user_id/fitness-display", ClientFitnessDisplayController, :update)
     post("/clients/:user_id/coach-notes", CoachNotesController, :create)
     patch("/coach-notes/:id", CoachNotesController, :update)
     delete("/coach-notes/:id", CoachNotesController, :delete)
@@ -2310,6 +2313,9 @@ defmodule PaleeWeb.Router do
     get("/me/progress/depth", TrainingDepthController, :show)
     # ADR-358 (CP-D6): fitness score per domain and what to work on.
     get("/me/fitness-profile", FitnessProfileController, :show)
+    # ADR-395: the card's own settings (body weight, birth year, what it shows).
+    get("/me/fitness-profile/settings", FitnessProfileController, :settings)
+    put("/me/fitness-profile/settings", FitnessProfileController, :update_settings)
     # ADR-394: the answer about the Palee-wide benchmark board.
     get("/me/palee-leaderboard", PaleeLeaderboardConsentController, :show)
     put("/me/palee-leaderboard", PaleeLeaderboardConsentController, :update)
