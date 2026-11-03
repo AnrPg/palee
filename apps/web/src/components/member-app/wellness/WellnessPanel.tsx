@@ -295,8 +295,8 @@ export function WellnessPanel({ initialCraving }: { initialCraving?: string | nu
           slot={sheet.slot}
           meal={sheet.meal}
           plan={plan}
-          photo={sheet.meal?.value.media_id ? data.photos[String(sheet.meal.value.media_id)] ?? null : null}
-          photoTypes={data.photo_capabilities.content_types}
+          photo={sheet.meal?.value.media_id ? data.photos?.[String(sheet.meal.value.media_id)] ?? null : null}
+          photoTypes={data.photo_capabilities?.content_types ?? []}
           onClose={() => setSheet(null)}
           onSaved={() => {
             setSheet(null);

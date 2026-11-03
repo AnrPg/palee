@@ -160,6 +160,8 @@ test.describe("body and devices", () => {
           days: [],
           plans: [],
           cravings: [],
+          photos: {},
+          photo_capabilities: { content_types: ["image/jpeg", "image/png", "image/webp"], max_bytes: 10_000_000 },
           week: { water_days_logged: 0, water_days_on_goal: 0, nights_logged: 0, nights_on_goal: 0, meal_days_logged: 0, cravings: 0 },
         }),
       ),
