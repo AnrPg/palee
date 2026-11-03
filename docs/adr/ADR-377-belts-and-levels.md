@@ -54,3 +54,48 @@ sensible default scale without a second vocabulary.
 - Migration `20270602400000_rank_ladders.exs`; `Palee.Ranks`,
   `Application.RankLadders`, `RankPromotions`, `MyRanks`, `RankStanding`,
   `RankCertificates`.
+
+## Diploma logo and coach signature Amendment — 2026-11-03 (option Γ)
+The product owner chose option Γ of the diploma mockup: the box logo at the
+top and the awarding coach's digital signature above a line with
+«<name> · Coach». The diploma number stays and a withdrawn diploma still
+prints «Ανακλήθηκε».
+
+- **Logo**: the box's uploaded brand logo (ADR-121, `brand_logo_object_key`),
+  read from storage when the PDF is drawn and fitted into 120 × 64 pt above
+  the box name. No uploaded logo, a logo given as a link to another site
+  (nothing is fetched from the network) or a WebP logo (PDF cannot hold
+  WebP and there is no image library): only the name, as before. Solo
+  coaches follow the same rule through their own business's brand.
+- **Signature** («Υπογραφή για διπλώματα», Εγώ › Ρυθμίσεις, shown to anyone
+  who is owner, admin or coach somewhere): one PNG or JPEG image per person,
+  at most 512 KB and 60 × 20 to 1600 × 800 px; the browser turns a WebP, or
+  a larger image, into a PNG first. Transparent PNG recommended. Uploaded
+  as base64 JSON to `POST /api/me/diploma-signature`; `GET` (state and
+  limits), `GET /image` (owner's preview) and `DELETE` are the person's
+  own; nobody else ever receives the image except drawn inside a diploma.
+- **Storage and security**: private media bucket, under the person's own
+  prefix `users/<id>/diploma-signature/<id>.<ext>`, never a public URL.
+  Table `diploma_signatures` (one current row, older ones retired) and the
+  insert-only trail `diploma_signature_events` (`set`, `removed`), both
+  readable only by the person and system sessions (forced RLS). The PDF is
+  drawn server-side, reading the row as the system.
+- **Snapshot, not current**: an award stores the coach's current
+  `signature_id` when it is made (`rank_awards.signature_id`). Replacing the
+  signature retires the old row and keeps its image, so issued diplomas do
+  not change; removing it deletes every version, so every diploma drawn
+  afterwards shows an empty line. Awards made before this change have no
+  snapshot and show the empty line.
+- **Lifecycle**: account deletion removes rows and images
+  (`DiplomaSignatures.purge_person/1`); the person's data export has both
+  tables (section `signatures`, object keys left out) and the images under
+  `files/diploma-signature/`.
+- **PDF**: `Palee.Pdf.image/6` with `Palee.Pdf.Image`, still with no
+  dependency: JPEG as is (`DCTDecode`), PNG without alpha as its own data
+  with PNG predictors, PNG with alpha (8-bit) unfiltered and split into an
+  image and a soft mask; interlaced, 16-bit-with-alpha and other formats
+  are left out.
+- Migration `20270701100000_diploma_signatures.exs`;
+  `Application.DiplomaSignatures`, `Ranks.Domain.SignaturePolicy`,
+  `PaleeWeb.DiplomaSignatureController`; web
+  `components/profile/DiplomaSignatureSection.tsx`.
