@@ -107,6 +107,14 @@ defmodule Palee.Organizations.Domain.AccessPolicyTest do
     assert :manage_spaces in AccessPolicy.grantable().front_desk
   end
 
+  test "a gym may open business analytics to its front desk (ANR 2026-11-03)" do
+    refute AccessPolicy.can?(caps([:front_desk]), :view_business_analytics)
+    assert :view_business_analytics in AccessPolicy.grantable().front_desk
+
+    granted = caps([:front_desk], role_grants: %{"front_desk" => ["view_business_analytics"]})
+    assert AccessPolicy.can?(granted, :view_business_analytics)
+  end
+
   test "health certificate files are for owners and admins, grantable to front desk (ADR-252)" do
     assert AccessPolicy.scope(caps([:owner]), :manage_health_certificates) == :all
     assert AccessPolicy.scope(caps([:admin]), :manage_health_certificates) == :all

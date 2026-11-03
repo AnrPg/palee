@@ -4566,6 +4566,8 @@
     "groupProgrammingRemovePerson": "הסר את {nickname}",
     "groupProgrammingNoMatches": "אין התאמות.",
     "roleAccessSpaces": "חללים ותוכניות קומה",
+    "roleAccessShop": "חנות",
+    "roleAccessAnalytics": "סטטיסטיקה ושיווק",
     "roleAccessHealthCertificates": "אישורים רפואיים",
     "apiErrorSpaceUnavailable": "החלל לא זמין בזמן הזה. בחרו חלל אחר או שעה אחרת.",
     "apiErrorSpaceArchived": "החלל הזה בארכיון.",

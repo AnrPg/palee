@@ -70,6 +70,8 @@ Optional (off by default):
 | Campaigns and referrals | promotions, codes, referral programs and rewards (`manage_promotions`) |
 | Packages | create and edit packages (`manage_packages`) |
 | Finance reports | summary, queues, finance analytics (`view_finance_reports`) |
+| Shop | manage the e-shop, orders and stock (`manage_shop`) |
+| Analytics and marketing | the whole «Στατιστικά & Μάρκετινγκ» section, also a staff-home header shortcut (`view_business_analytics`) |
 
 The toggles add capabilities to the front desk role in that gym only
 (ADR-099 extension).

@@ -4566,6 +4566,8 @@
     "groupProgrammingRemovePerson": "{nickname} entfernen",
     "groupProgrammingNoMatches": "Niemand gefunden.",
     "roleAccessSpaces": "Räume und Grundrisse",
+    "roleAccessShop": "Shop",
+    "roleAccessAnalytics": "Statistiken und Marketing",
     "roleAccessHealthCertificates": "Ärztliche Bescheinigungen",
     "apiErrorSpaceUnavailable": "Der Raum ist zu dieser Zeit gesperrt. Wähle einen anderen Raum oder eine andere Zeit.",
     "apiErrorSpaceArchived": "Dieser Raum ist archiviert.",

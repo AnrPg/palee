@@ -4566,6 +4566,8 @@
     "groupProgrammingRemovePerson": "Rimuovi {nickname}",
     "groupProgrammingNoMatches": "Nessuna corrispondenza.",
     "roleAccessSpaces": "Spazi e planimetrie",
+    "roleAccessShop": "Negozio",
+    "roleAccessAnalytics": "Statistiche e marketing",
     "roleAccessHealthCertificates": "Certificati medici",
     "apiErrorSpaceUnavailable": "Lo spazio non è disponibile in quel momento. Scegli un altro spazio o un altro orario.",
     "apiErrorSpaceArchived": "Questo spazio è archiviato.",

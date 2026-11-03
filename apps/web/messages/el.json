@@ -4566,6 +4566,8 @@
     "groupProgrammingRemovePerson": "Αφαίρεση {nickname}",
     "groupProgrammingNoMatches": "Κανείς δεν ταιριάζει.",
     "roleAccessSpaces": "Χώροι και κατόψεις",
+    "roleAccessShop": "Κατάστημα",
+    "roleAccessAnalytics": "Στατιστικά και μάρκετινγκ",
     "roleAccessHealthCertificates": "Βεβαιώσεις υγείας",
     "apiErrorSpaceUnavailable": "Ο χώρος δεν είναι διαθέσιμος εκείνη την ώρα. Διάλεξε άλλον χώρο ή άλλη ώρα.",
     "apiErrorSpaceArchived": "Αυτός ο χώρος είναι αρχειοθετημένος.",

@@ -215,8 +215,10 @@ test.describe("staff home tools", () => {
   });
 
   test("an owner's content group holds the vault, plans, public page and documents", async ({ page }) => {
-    await stubApi(page, { manage_workouts: true, manage_settings: true });
+    await stubApi(page, { manage_workouts: true, manage_settings: true, view_business_analytics: true });
     await page.goto("/org/kypseli/admin");
+    // An owner's header: check-in, analytics, then spaces (the shop is in the top bar; ANR kept it there only).
+    await expect(page.getByTestId("home-header-shortcut")).toHaveText(["Check-in", "Στατιστικά & Μάρκετινγκ", "Χώροι"]);
     const group = page.getByText("Περιεχόμενο", { exact: true }).locator("..");
     await expect(group.getByRole("link")).toHaveText(["Αρχείο WOD", "Διατροφικά πλάνα", "Δημόσια σελίδα", "Έγγραφα"]);
     await expect(group.getByRole("link", { name: "Έγγραφα" })).toHaveAttribute("href", "/org/kypseli/admin/documents");

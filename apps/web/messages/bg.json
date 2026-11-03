@@ -4566,6 +4566,8 @@
     "groupProgrammingRemovePerson": "Премахни {nickname}",
     "groupProgrammingNoMatches": "Няма съвпадения.",
     "roleAccessSpaces": "Помещения и планове на етажи",
+    "roleAccessShop": "Магазин",
+    "roleAccessAnalytics": "Статистика и маркетинг",
     "roleAccessHealthCertificates": "Медицински бележки",
     "apiErrorSpaceUnavailable": "Помещението е недостъпно по това време. Изберете друго помещение или друг час.",
     "apiErrorSpaceArchived": "Това помещение е архивирано.",

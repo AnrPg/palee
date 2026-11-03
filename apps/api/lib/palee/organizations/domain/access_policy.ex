@@ -175,7 +175,9 @@ defmodule Palee.Organizations.Domain.AccessPolicy do
       # ADR-202: adding and archiving spaces and drawing floor plans.
       :manage_spaces,
       # ADR-252: the desk collecting clients' health certificates.
-      :manage_health_certificates
+      :manage_health_certificates,
+      # ANR 2026-11-03: a box may open Στατιστικά & Μάρκετινγκ to its desk.
+      :view_business_analytics
     ]
   }
 

@@ -4566,6 +4566,8 @@
     "groupProgrammingRemovePerson": "إزالة {nickname}",
     "groupProgrammingNoMatches": "لا يوجد تطابق.",
     "roleAccessSpaces": "المساحات ومخططات الطوابق",
+    "roleAccessShop": "المتجر",
+    "roleAccessAnalytics": "الإحصاءات والتسويق",
     "roleAccessHealthCertificates": "الشهادات الصحية",
     "apiErrorSpaceUnavailable": "المساحة غير متاحة في ذلك الوقت. اختر مساحة أخرى أو وقتًا آخر.",
     "apiErrorSpaceArchived": "هذه المساحة مؤرشفة.",
