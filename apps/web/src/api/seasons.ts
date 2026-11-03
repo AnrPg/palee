@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 import type { components } from "@/api/generated/schema";
 
 /**
@@ -60,7 +60,7 @@ export async function fetchStaffSeasons(token: string) {
 
 export async function fetchStaffSeason(token: string, seasonId: string) {
   const data = await apiRequest<{ season: StaffSeasonDetail }>(`/admin/seasons/${id(seasonId)}`, { token });
-  return data.season;
+  return requiredField(data.season, "season");
 }
 
 export async function createSeason(token: string, body: SeasonCreate) {

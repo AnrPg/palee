@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 import type { operations } from "@/api/generated/schema";
 
 // Spaces of each branch, their floor plans and unavailability (ADR-202), and
@@ -44,7 +44,7 @@ export async function fetchSpaces(token: string, options: { locationId?: string;
 
 export async function fetchSpace(token: string, id: string) {
   const response = await apiRequest<ShowResponse>(`/staff/spaces/${id}`, { token });
-  return response.space;
+  return requiredField(response.space, "space");
 }
 
 export async function createSpace(token: string, body: SpaceInput) {
@@ -99,7 +99,7 @@ export async function deleteFloorPlan(token: string, id: string) {
 
 export async function fetchCleaningSchedules(token: string) {
   const response = await apiRequest<SchedulesResponse>("/staff/cleaning/schedules", { token });
-  return response.schedules;
+  return response.schedules ?? [];
 }
 
 export async function putCleaningSchedule(token: string, spaceId: string, body: CleaningScheduleInput) {
@@ -133,7 +133,7 @@ export type PhotoKind = "photos" | "points";
 
 export async function fetchSpaceSettings(token: string) {
   const response = await apiRequest<SettingsResponse>("/staff/space-settings", { token });
-  return response.settings;
+  return requiredField(response.settings, "settings");
 }
 
 export async function putSpaceSettings(token: string, body: { floor_plans_in_classes: boolean }) {
@@ -180,7 +180,7 @@ export async function deleteSpacePhoto(token: string, id: string) {
 
 export async function orderSpacePhotos(token: string, spaceId: string, ids: string[]) {
   const response = await apiRequest<PhotosOrderResponse>(`/staff/spaces/${spaceId}/photos/order`, { method: "PUT", token, body: { ids } });
-  return response.photos;
+  return response.photos ?? [];
 }
 
 export async function addCleaningPoint(token: string, spaceId: string, body: CleaningPointInput) {
@@ -199,5 +199,5 @@ export async function deleteCleaningPoint(token: string, id: string) {
 
 export async function orderCleaningPoints(token: string, spaceId: string, ids: string[]) {
   const response = await apiRequest<PointsOrderResponse>(`/staff/spaces/${spaceId}/cleaning-points/order`, { method: "PUT", token, body: { ids } });
-  return response.points;
+  return response.points ?? [];
 }

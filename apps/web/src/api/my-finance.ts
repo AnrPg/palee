@@ -108,7 +108,7 @@ export async function fetchCorporateEnrollmentOffer(token: string) {
   const data = await apiRequest<{ offer: CorporateEnrollmentOffer | null }>("/me/corporate-enrollment", {
     token,
   });
-  return data.offer;
+  return data.offer ?? null;
 }
 
 /** ADR-205: the code a domain match answers until the email is confirmed. */

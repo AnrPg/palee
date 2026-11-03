@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 import type { components } from "@/api/generated/schema";
 import type { WorkoutExecution } from "@/api/executions";
 import type { PRRecord } from "@/api/gamification";
@@ -211,7 +211,7 @@ export async function setEntryAudience(token: string, kind: AudienceKind, id: st
     `/me/journal/entries/${kind}/${id}/audience`,
     { method: "PUT", token, body: { coaches } },
   );
-  return data.audience;
+  return data.audience ?? null;
 }
 
 /** «Εξαγωγή» of the whole journal, every provider (board 17 Q6 extra). */
@@ -244,7 +244,7 @@ export const ENTRY_DEFAULTS_KEY = ["my", "journal", "visibility-defaults"] as co
 
 export async function fetchEntryDefaults(token: string) {
   const data = await apiRequest<{ defaults: EntryDefaults }>("/me/journal/visibility-defaults", { token });
-  return data.defaults;
+  return requiredField(data.defaults, "defaults");
 }
 
 export async function saveEntryDefault(token: string, kind: DefaultKind, visibility: DefaultRung) {

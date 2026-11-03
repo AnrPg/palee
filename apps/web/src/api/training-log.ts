@@ -25,7 +25,7 @@ const BASE = "/me/training-log";
 
 export async function listTrainingLogEntries(token: string): Promise<TrainingLogEntry[]> {
   const data = await apiRequest<ListResponse>(`${BASE}/entries`, { token });
-  return data.entries;
+  return data.entries ?? [];
 }
 
 export async function fetchTrainingLogSources(token: string): Promise<TrainingLogSources> {

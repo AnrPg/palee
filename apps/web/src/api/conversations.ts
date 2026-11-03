@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 import type { components } from "@/api/generated/schema";
 
 /**
@@ -66,8 +66,8 @@ export async function openConversation(token: string, personId: string) {
 }
 
 export async function fetchConversation(token: string, conversationId: string) {
-  return (await apiRequest<{ conversation: PersonConversation }>(`/me/conversations/${id(conversationId)}`, { token, scope: "account" }))
-    .conversation;
+  return requiredField((await apiRequest<{ conversation: PersonConversation }>(`/me/conversations/${id(conversationId)}`, { token, scope: "account" }))
+    .conversation, "conversation");
 }
 
 /** A page of messages, newest first; `next_cursor` pages back in time. */
@@ -111,5 +111,5 @@ export async function declineConversation(token: string, conversationId: string)
 /** People search across Palee (ADR-193 §4), ranked by shared clubs, Buddies, follows, nearby, public. */
 export async function searchPeople(token: string, text: string, signal?: AbortSignal) {
   return (await apiRequest<{ people: PeopleSearchPerson[] }>(`/people-search${query({ q: text })}`, { token, scope: "account", signal }))
-    .people;
+    .people ?? [];
 }

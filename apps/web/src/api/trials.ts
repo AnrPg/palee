@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 import type { components } from "@/api/generated/schema";
 import type { MessageTopic } from "@/api/messaging";
 
@@ -42,12 +42,12 @@ export async function requestTrial(token: string, slug: string, ask: TrialAsk) {
 
 export async function fetchMyTrials(token: string) {
   const data = await apiRequest<{ trials: MyTrial[] }>("/me/trials", { token });
-  return data.trials;
+  return data.trials ?? [];
 }
 
 export async function fetchMyTrial(token: string, id: string) {
   const data = await apiRequest<{ trial: MyTrial }>(`/me/trials/${encodeURIComponent(id)}`, { token });
-  return data.trial;
+  return requiredField(data.trial, "trial");
 }
 
 export async function cancelTrial(token: string, id: string) {
@@ -74,7 +74,7 @@ export async function openBoxConversation(token: string, slug: string) {
 
 export async function fetchBoxConversation(token: string, slug: string) {
   const data = await apiRequest<{ conversation: BoxConversation }>(`${box(slug)}/conversation?limit=100`, { token });
-  return data.conversation;
+  return requiredField(data.conversation, "conversation");
 }
 
 export async function sendBoxMessage(
@@ -102,7 +102,7 @@ export function markBoxConversationRead(token: string, slug: string, messageId: 
 
 export async function fetchBoxConversations(token: string) {
   const data = await apiRequest<{ conversations: BoxConversationSummary[] }>("/me/box-conversations", { token });
-  return data.conversations;
+  return data.conversations ?? [];
 }
 
 // Staff ------------------------------------------------------------------

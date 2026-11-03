@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 import type { components } from "@/api/generated/schema";
 
 /** «Τι κάνεις» (ADR-183): disciplines are box-vocabulary keys, level a Partners level. */
@@ -9,7 +9,7 @@ export const INTEREST_LEVELS: InterestLevel[] = ["beginner", "intermediate", "ad
 
 export async function fetchMyInterests(token: string) {
   const data = await apiRequest<components["schemas"]["AccountInterestsResponse"]>("/me/interests", { token });
-  return data.interests;
+  return requiredField(data.interests, "interests");
 }
 
 export async function saveMyInterests(token: string, interests: AccountInterests) {

@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 import type { components, operations } from "@/api/generated/schema";
 import type { WorkoutContentEntry } from "@/components/workouts/WorkoutContent";
 import type { WorkoutDslVocabulary } from "@/lib/workout-dsl-suggestions";
@@ -306,7 +306,7 @@ export type WorkoutDslPublishResult = {
 
 export async function listScaleLevels(token: string) {
   const response = await apiRequest<{ scale_levels: ScaleLevel[] }>("/admin/scale-levels", { token });
-  return response.scale_levels;
+  return response.scale_levels ?? [];
 }
 
 export type FreeTextWorkoutAnalysis = components["schemas"]["FreeTextWorkoutAnalysis"];
@@ -369,17 +369,17 @@ export async function replaceScaleLevels(token: string, payload: ReplaceScaleLev
     body: payload,
   });
 
-  return response.scale_levels;
+  return response.scale_levels ?? [];
 }
 
 export async function listAdminWorkouts(token: string) {
   const response = await apiRequest<{ workouts: WorkoutRecord[] }>("/admin/workouts", { token });
-  return response.workouts;
+  return response.workouts ?? [];
 }
 
 export async function listWorkoutFolders(token: string) {
   const response = await apiRequest<{ folders: WorkoutFolder[] }>("/admin/workout-folders", { token });
-  return response.folders;
+  return response.folders ?? [];
 }
 
 export function createWorkoutFolder(token: string, body: { name: string; parent_id: string | null }) {
@@ -547,7 +547,7 @@ export async function publishWorkoutDraft(
 
 export async function fetchAdminWorkout(token: string, id: string) {
   const response = await apiRequest<{ workout: WorkoutRecord }>(`/admin/workouts/${id}`, { token });
-  return response.workout;
+  return requiredField(response.workout, "workout");
 }
 
 export async function deleteWorkout(token: string, id: string) {
@@ -615,7 +615,7 @@ export async function duplicateWorkout(
 
 export async function fetchWorkout(token: string, id: string) {
   const response = await apiRequest<{ workout: WorkoutRecord }>(`/workouts/${id}`, { token });
-  return response.workout;
+  return requiredField(response.workout, "workout");
 }
 
 export async function fetchMaterializedWorkout(token: string, id: string) {

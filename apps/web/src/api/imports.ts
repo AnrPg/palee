@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 import type { operations } from "@/api/generated/schema";
 
 // ADR-254: importing clients from another system's CSV file.
@@ -41,7 +41,7 @@ export function fetchImportCatalog(token: string) {
 
 export async function listImports(token: string) {
   const body = await apiRequest<{ imports: PeopleImport[] }>(BASE, { token });
-  return body.imports;
+  return body.imports ?? [];
 }
 
 export async function uploadImport(token: string, file: File, source?: ImportSource | null) {
@@ -54,7 +54,7 @@ export async function uploadImport(token: string, file: File, source?: ImportSou
 
 export async function fetchImport(token: string, id: string) {
   const body = await apiRequest<{ import: PeopleImport }>(`${BASE}/${id}`, { token });
-  return body.import;
+  return requiredField(body.import, "import");
 }
 
 export function fetchImportRows(token: string, id: string, filters: ImportRowFilters = {}) {

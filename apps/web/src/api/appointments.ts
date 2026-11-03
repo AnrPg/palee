@@ -32,12 +32,12 @@ export function bookingSlot(booking: AppointmentBooking): BookingSlot | null {
 
 export async function fetchOfferedSlots(token: string): Promise<OfferedSlot[]> {
   const data = await apiRequest<SlotsResponse>("/me/appointments/slots", { token });
-  return data.slots;
+  return data.slots ?? [];
 }
 
 export async function fetchMyAppointments(token: string): Promise<AppointmentBooking[]> {
   const data = await apiRequest<AppointmentsResponse>("/me/appointments", { token });
-  return data.appointments;
+  return data.appointments ?? [];
 }
 
 export async function bookAppointment(token: string, slotId: string): Promise<AppointmentBooking> {

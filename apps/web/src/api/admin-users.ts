@@ -350,7 +350,7 @@ export type MembershipFreeze = {
 
 export async function fetchAdminUserFreezes(token: string, userId: string) {
   const response = await apiRequest<{ freezes: MembershipFreeze[] }>(`/admin/users/${userId}/freezes`, { token });
-  return response.freezes;
+  return response.freezes ?? [];
 }
 
 export function createAdminUserFreeze(

@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 import type { components } from "@/api/generated/schema";
 
 /**
@@ -33,7 +33,7 @@ export async function completeMediaUpload(token: string, mediaId: string, signal
 }
 
 export async function fetchMedia(token: string, mediaId: string, signal?: AbortSignal) {
-  return (await apiRequest<{ media: MediaRecord }>(`/me/media/${id(mediaId)}`, { token, signal })).media;
+  return requiredField((await apiRequest<{ media: MediaRecord }>(`/me/media/${id(mediaId)}`, { token, signal })).media, "media");
 }
 
 export async function updateMediaAltText(token: string, mediaId: string, altText: string | null) {

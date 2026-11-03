@@ -34,7 +34,7 @@ export async function fetchMyInjuries(token: string) {
 }
 
 export async function fetchMyInjuryAccessLog(token: string) {
-  return (await apiRequest<InjuryAccessLogResponse>("/wellbeing/injuries/access-log", { token })).entries;
+  return (await apiRequest<InjuryAccessLogResponse>("/wellbeing/injuries/access-log", { token })).entries ?? [];
 }
 
 /** ADR-286: «Να το δει το box μου» on one of the member's own injuries. */

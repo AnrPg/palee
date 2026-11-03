@@ -194,7 +194,7 @@ export async function fetchAssignmentMessages(
     : `/my-workouts/assignments/${assignmentId}/messages`;
   const path = athleteId ? `${basePath}?athlete_id=${encodeURIComponent(athleteId)}` : basePath;
   const data = await apiRequest<{ messages: AssignmentMessage[] }>(path, { token });
-  return data.messages;
+  return data.messages ?? [];
 }
 
 export async function postAssignmentMessage(
@@ -261,5 +261,5 @@ export async function listAthletes(
 
   const suffix = search.toString() ? `?${search.toString()}` : "";
   const response = await apiRequest<{ athletes: AthleteOption[] }>(`/admin/athletes${suffix}`, { token });
-  return response.athletes;
+  return response.athletes ?? [];
 }
