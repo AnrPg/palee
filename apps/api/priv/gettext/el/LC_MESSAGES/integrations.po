@@ -1,0 +1,50 @@
+msgid ""
+msgstr ""
+"Language: el\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "A webhook of %{box} was turned off"
+msgstr "Ένα webhook του %{box} απενεργοποιήθηκε"
+
+msgid "Open the webhook"
+msgstr "Άνοιγμα webhook"
+
+msgid "Palee stopped sending events to %{host}."
+msgstr "Το Palee σταμάτησε να στέλνει συμβάντα στο %{host}."
+
+msgid "The receiver answered that the address no longer exists."
+msgstr "Ο παραλήπτης απάντησε ότι η διεύθυνση δεν υπάρχει πια."
+
+msgid "The address now points to a private network, which Palee does not call."
+msgstr "Η διεύθυνση δείχνει πλέον σε ιδιωτικό δίκτυο, που το Palee δεν καλεί."
+
+msgid "Every delivery failed many times in a row, so Palee stopped trying."
+msgstr "Όλες οι αποστολές απέτυχαν πολλές φορές στη σειρά, οπότε το Palee σταμάτησε να προσπαθεί."
+
+msgid "Check the receiver, then turn the webhook back on from its page and resend what failed."
+msgstr "Έλεγξε τον παραλήπτη, μετά ενεργοποίησε ξανά το webhook από τη σελίδα του και στείλε ξανά ό,τι απέτυχε."
+
+msgid "New API key for %{box}"
+msgstr "Νέο κλειδί API για το %{box}"
+
+msgid "Open API keys"
+msgstr "Άνοιγμα κλειδιών API"
+
+msgid "A new API key can now read or change %{box}'s data through Palee's public API."
+msgstr "Ένα νέο κλειδί API μπορεί πλέον να διαβάζει ή να αλλάζει δεδομένα του %{box} μέσω του δημόσιου API του Palee."
+
+msgid "Key"
+msgstr "Κλειδί"
+
+msgid "Access"
+msgstr "Πρόσβαση"
+
+msgid "Made by"
+msgstr "Δημιουργήθηκε από"
+
+msgid "When"
+msgstr "Πότε"
+
+msgid "If nobody at the box made it, revoke it now from Settings › Connections."
+msgstr "Αν δεν το έφτιαξε κανείς από το box, ανάκλησέ το τώρα από τις Ρυθμίσεις › Συνδέσεις."

@@ -279,6 +279,11 @@ must have an ADR. See `template.md` for the format.
 | ADR-340 | Card surcharge on online and desk card payments, per box, only where the law of the box's country allows it (EEA/UK non-consumer cards, US/CA credit cards with caps, none elsewhere); quoted before paying, recorded as revenue on the receipt | Accepted |
 | ADR-341 | Coach pay and commissions: own context with rules (per class, attendee, session, % of sales), periods, statements, approval and CSV export; reads Scheduling, Appointments and Finance through a port; never a fiscal document | Accepted |
 | ADR-342 | Purchase and booking rules per package (who may buy, purchases per person, prerequisites, bookings per day/week/open) enforced by the API at purchase and booking | Accepted |
+
+| ADR-378 | Public API v1 at `/api/public/v1`, generated from the first operations of the ADR-300 registry; per-box API keys (hashed, scoped, rotated with 24 h overlap) acting for their maker with rights recomputed per call; Idempotency-Key, preview, problem details, 120 req/min per key; OpenAPI 3.1 document | Accepted |
+| ADR-379 | Signed webhooks: thin events from domain events, outbox with leases, `Palee-Signature` HMAC with timestamp, 9 attempts over ~3 days, delivery log and replay, SSRF guard; REST hooks and the Zapier/Make mapping and submission list | Accepted |
+| ADR-380 | Mailchimp/Brevo list sync: only members who said yes (own consent, off by default), email + first name, unsubscribe never delete, hash-only memory, unsubscribed on account deletion | Accepted |
+| ADR-381 | Doors: DoorController port with sandbox, Shelly and Kisi adapters; opening with the check-in proof of presence; entry rules (staff, active member, hours, booked window or open gym); fail-secure when offline; 180-day access log | Accepted |
 | ADR-300 | Operation registry: one spec per use case generates REST, MCP and LLM tools; previewable commands, problem details, idempotency keys, ETags (v4) | Proposed |
 | ADR-301 | AI agents as delegated principals: rights intersected on every call, durable runs, Rule-of-Two policy, approvals, one LLM provider port, multi-agent via delegation (v4) | Proposed |
 

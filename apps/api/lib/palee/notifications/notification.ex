@@ -133,7 +133,9 @@ defmodule Palee.Notifications.Notification do
     :logged_workout_changed,
     # ADR-397: the Palee team's decision on a reported review.
     :box_review_moderated,
-    :box_review_report_decided
+    :box_review_report_decided,
+    # ADR-379: Palee turned off a webhook that kept failing.
+    :webhook_disabled
   ]
 
   schema "notifications" do

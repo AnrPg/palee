@@ -850,3 +850,8 @@ msgstr "צוות Palee החזיר את הביקורת שלך"
 
 msgid "Your review shows again in the box's reviews."
 msgstr "הביקורת שלך מוצגת שוב בביקורות של המכון."
+msgid "A webhook was turned off"
+msgstr "webhook כובה"
+
+msgid "Palee stopped sending events to %{host}. Open the webhook to check it and turn it back on."
+msgstr "Palee הפסיק לשלוח אירועים אל %{host}. פתחו את ה-webhook כדי לבדוק אותו ולהפעיל אותו מחדש."

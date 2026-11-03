@@ -850,3 +850,8 @@ msgstr "Η ομάδα Palee επανέφερε την κριτική σου"
 
 msgid "Your review shows again in the box's reviews."
 msgstr "Η κριτική σου φαίνεται ξανά στις κριτικές του box."
+msgid "A webhook was turned off"
+msgstr "Ένα webhook απενεργοποιήθηκε"
+
+msgid "Palee stopped sending events to %{host}. Open the webhook to check it and turn it back on."
+msgstr "Το Palee σταμάτησε να στέλνει συμβάντα στο %{host}. Άνοιξε το webhook για να το ελέγξεις και να το ενεργοποιήσεις ξανά."

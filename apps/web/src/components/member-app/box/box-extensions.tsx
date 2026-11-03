@@ -9,6 +9,7 @@ import { CoachClientsBoxExtension } from "@/components/member-app/box/CoachClien
 import { BoxReviewsSection } from "@/components/reviews/BoxReviewsSection";
 import { ShopBoxCard } from "@/components/shop/ShopBoxCard";
 import { BoxSmsCard } from "@/components/channels/MySmsSettings";
+import { BoxEmailListCard } from "@/components/integrations/BoxEmailListCard";
 
 export type BoxExtensionProps = {
   membership: OrganizationMembership;
@@ -41,6 +42,8 @@ export const BOX_EXTENSIONS: BoxExtension[] = [
   { id: "coach-clients", kinds: ["gym", "coach"], Component: CoachClientsBoxExtension },
   // W3 screen 2 A (ADR-350): Ειδοποιήσεις, the mobile and SMS switches, only where the box sends SMS.
   { id: "sms", kinds: ["gym", "coach"], Component: BoxSmsCard },
+  // W10 screen 3 A (ADR-380): «Ενημερώσεις με email», only where the box has an email list.
+  { id: "email-list", kinds: ["gym", "coach"], Component: BoxEmailListCard },
   // ADR-386: «Κριτικές», the members' reviews and Google's rating apart.
   { id: "reviews", kinds: ["gym"], Component: BoxReviewsSection },
 ];

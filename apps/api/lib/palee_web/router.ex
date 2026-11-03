@@ -325,6 +325,30 @@ defmodule PaleeWeb.Router do
     plug(PaleeWeb.Plugs.ResolveTenantContext)
   end
 
+  # ADR-378: the public API v1. Problem details first, so its own refusals
+  # (no key, rate limited) have the same form as the operations'.
+  pipeline :public_api do
+    plug(:accepts, ["json"])
+    plug(PaleeWeb.Plugs.ProblemDetails)
+    plug(PaleeWeb.Plugs.AuthenticateApiKey)
+
+    plug(PaleeWeb.Plugs.RateLimit,
+      max: 120,
+      interval: 60_000,
+      bucket: "public-api",
+      per_actor: true
+    )
+  end
+
+  # ADR-381: a door controller's own events (Shelly calls with GET).
+  pipeline :door_events do
+    plug(PaleeWeb.Plugs.RateLimit, max: 120, interval: 60_000, bucket: "door-events")
+  end
+
+  pipeline :list_events do
+    plug(PaleeWeb.Plugs.RateLimit, max: 120, interval: 60_000, bucket: "list-events")
+  end
+
   pipeline :organization_admin do
     plug(PaleeWeb.Plugs.RequireRouteCapability)
   end
@@ -382,6 +406,38 @@ defmodule PaleeWeb.Router do
     get("/programmes", PublicProgrammeController, :catalogue)
     get("/boxes/:slug/programmes", PublicProgrammeController, :index)
     get("/boxes/:slug/programmes/:id", PublicProgrammeController, :show)
+  end
+
+  # ADR-378: the public API v1, one route per registered operation
+  # (ADR-300), and its OpenAPI document (no key).
+  scope "/api/public/v1", PaleeWeb do
+    pipe_through([:api, :public_box_rate_limited])
+
+    get("/openapi.json", PublicApiController, :openapi)
+  end
+
+  scope "/api/public/v1", PaleeWeb do
+    pipe_through([:public_api])
+
+    for {method, path, name} <- Palee.Operations.routes() do
+      match(method, path, PublicApiController, :run, private: %{palee_operation: name})
+    end
+  end
+
+  # ADR-381: door controllers' events, authenticated by the door's token.
+  scope "/api/access/doors", PaleeWeb do
+    pipe_through([:api, :door_events])
+
+    get("/:id/events", DoorAccessController, :ingest)
+    post("/:id/events", DoorAccessController, :ingest)
+  end
+
+  # ADR-380: Mailchimp's and Brevo's unsubscribe webhook, by the connection's token.
+  scope "/api/integrations/email-list", PaleeWeb do
+    pipe_through([:api, :list_events])
+
+    get("/:id/unsubscribe", EmailListHookController, :unsubscribe)
+    post("/:id/unsubscribe", EmailListHookController, :unsubscribe)
   end
 
   # ADR-272: a walk-in's receipt behind the QR on the staff phone.
@@ -682,6 +738,9 @@ defmodule PaleeWeb.Router do
     # ADR-377: my belts and levels at this box.
     get("/ranks", MyRanksController, :index)
     get("/ranks/awards/:id/certificate", MyRanksController, :certificate)
+    # ADR-380: the member's own yes or no to the box's marketing email.
+    get("/marketing-consent", MarketingConsentController, :show)
+    put("/marketing-consent", MarketingConsentController, :update)
     # ADR-246/247: paying invoices online and saved cards.
     get("/invoices/:id/payment-terms", MyPaymentsController, :terms)
     post("/invoices/:id/pay", MyPaymentsController, :pay)
@@ -1651,6 +1710,47 @@ defmodule PaleeWeb.Router do
       :sandbox_complete
     )
 
+    # ADR-378..380: «Συνδέσεις»: API keys, webhooks and the email list.
+    get("/integrations/catalog", AdminIntegrationsController, :catalog)
+    get("/integrations/api-keys", AdminIntegrationsController, :keys)
+    post("/integrations/api-keys", AdminIntegrationsController, :create_key)
+    post("/integrations/api-keys/:id/rotate", AdminIntegrationsController, :rotate_key)
+    delete("/integrations/api-keys/:id", AdminIntegrationsController, :revoke_key)
+    get("/integrations/webhooks", AdminIntegrationsController, :webhooks)
+    post("/integrations/webhooks", AdminIntegrationsController, :create_webhook)
+    patch("/integrations/webhooks/:id", AdminIntegrationsController, :update_webhook)
+    delete("/integrations/webhooks/:id", AdminIntegrationsController, :delete_webhook)
+
+    post(
+      "/integrations/webhooks/:id/rotate-secret",
+      AdminIntegrationsController,
+      :rotate_webhook_secret
+    )
+
+    post("/integrations/webhooks/:id/test", AdminIntegrationsController, :test_webhook)
+    get("/integrations/webhooks/:id/deliveries", AdminIntegrationsController, :deliveries)
+    get("/integrations/deliveries/:id", AdminIntegrationsController, :delivery)
+    post("/integrations/deliveries/:id/replay", AdminIntegrationsController, :replay)
+    get("/integrations/email-list", AdminIntegrationsController, :audience)
+    put("/integrations/email-list", AdminIntegrationsController, :save_audience)
+    delete("/integrations/email-list", AdminIntegrationsController, :delete_audience)
+    post("/integrations/email-list/sync", AdminIntegrationsController, :sync_audience)
+
+    post(
+      "/integrations/email-list/unsubscribe-url",
+      AdminIntegrationsController,
+      :rotate_unsubscribe_url
+    )
+
+    # ADR-381: doors, their controllers and the access log.
+    get("/doors/catalog", AdminDoorsController, :catalog)
+    get("/doors", AdminDoorsController, :index)
+    post("/doors", AdminDoorsController, :create)
+    patch("/doors/:id", AdminDoorsController, :update)
+    delete("/doors/:id", AdminDoorsController, :delete)
+    post("/doors/:id/event-token", AdminDoorsController, :rotate_event_token)
+    post("/doors/:id/unlock", AdminDoorsController, :unlock)
+    get("/access-events", AdminDoorsController, :events)
     # ADR-250: Peppol e-invoicing.
     get("/fiscal/peppol-connection", AdminFiscalEInvoicingController, :connection)
     put("/fiscal/peppol-connection", AdminFiscalEInvoicingController, :save_connection)
@@ -2674,6 +2774,8 @@ defmodule PaleeWeb.Router do
     ])
 
     post("/check-in/scan", ScanCheckInController, :scan)
+    # ADR-381: open the door with the same proof of presence.
+    post("/access/open", DoorAccessController, :open)
     delete("/check-in/scan/:undo_token", ScanCheckInController, :undo)
     # ADR-173: the arrival reminder's regions for the store apps.
     get("/me/check-in/geofences", ScanCheckInController, :geofences)

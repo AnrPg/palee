@@ -2,6 +2,184 @@
   "components": {
     "responses": {},
     "schemas": {
+      "AccessEvent": {
+        "properties": {
+          "actor_id": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "actor_name": {
+            "description": "Who opened from the desk",
+            "nullable": true,
+            "type": "string"
+          },
+          "door_controller_id": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "door_name": {
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "granted",
+              "denied",
+              "unlock_failed",
+              "staff_unlock",
+              "door_event"
+            ],
+            "type": "string"
+          },
+          "location_id": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "method": {
+            "enum": [
+              "qr",
+              "nfc",
+              "staff",
+              "provider"
+            ],
+            "type": "string"
+          },
+          "occurred_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "person_name": {
+            "description": "Who entered or was refused",
+            "nullable": true,
+            "type": "string"
+          },
+          "provider_event": {
+            "nullable": true,
+            "type": "string"
+          },
+          "reason": {
+            "nullable": true,
+            "type": "string"
+          },
+          "user_id": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "method",
+          "occurred_at"
+        ],
+        "title": "AccessEvent",
+        "type": "object"
+      },
+      "AccessEventPage": {
+        "properties": {
+          "events": {
+            "items": {
+              "properties": {
+                "actor_id": {
+                  "format": "uuid",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "actor_name": {
+                  "description": "Who opened from the desk",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "door_controller_id": {
+                  "format": "uuid",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "door_name": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "kind": {
+                  "enum": [
+                    "granted",
+                    "denied",
+                    "unlock_failed",
+                    "staff_unlock",
+                    "door_event"
+                  ],
+                  "type": "string"
+                },
+                "location_id": {
+                  "format": "uuid",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "method": {
+                  "enum": [
+                    "qr",
+                    "nfc",
+                    "staff",
+                    "provider"
+                  ],
+                  "type": "string"
+                },
+                "occurred_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "person_name": {
+                  "description": "Who entered or was refused",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "provider_event": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "reason": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "user_id": {
+                  "format": "uuid",
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "kind",
+                "method",
+                "occurred_at"
+              ],
+              "title": "AccessEvent",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "total": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "events",
+          "total"
+        ],
+        "title": "AccessEventPage",
+        "type": "object"
+      },
       "AccountHistoryPage": {
         "properties": {
           "entries": {
@@ -1444,6 +1622,200 @@
           "roles"
         ],
         "title": "AnatomyTaxonomy",
+        "type": "object"
+      },
+      "ApiKey": {
+        "description": "A key's description. The secret itself is never shown again.",
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "created_by_id": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "expires_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "last_used_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "masked": {
+            "description": "palee_live_ABCD…_••••",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "prefix": {
+            "type": "string"
+          },
+          "previous_secret_expires_at": {
+            "description": "Until then the secret before the last rotation still works",
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "revoked_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "rotated_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "scopes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "active",
+              "revoked"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "masked",
+          "name",
+          "prefix",
+          "scopes",
+          "status"
+        ],
+        "title": "ApiKey",
+        "type": "object"
+      },
+      "ApiKeyBody": {
+        "properties": {
+          "expires_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 80,
+            "minLength": 1,
+            "type": "string"
+          },
+          "scopes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "name",
+          "scopes"
+        ],
+        "title": "ApiKeyBody",
+        "type": "object"
+      },
+      "ApiKeyWithToken": {
+        "properties": {
+          "key": {
+            "description": "A key's description. The secret itself is never shown again.",
+            "properties": {
+              "created_at": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "created_by_id": {
+                "format": "uuid",
+                "nullable": true,
+                "type": "string"
+              },
+              "expires_at": {
+                "format": "date-time",
+                "nullable": true,
+                "type": "string"
+              },
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "last_used_at": {
+                "format": "date-time",
+                "nullable": true,
+                "type": "string"
+              },
+              "masked": {
+                "description": "palee_live_ABCD…_••••",
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "prefix": {
+                "type": "string"
+              },
+              "previous_secret_expires_at": {
+                "description": "Until then the secret before the last rotation still works",
+                "format": "date-time",
+                "nullable": true,
+                "type": "string"
+              },
+              "revoked_at": {
+                "format": "date-time",
+                "nullable": true,
+                "type": "string"
+              },
+              "rotated_at": {
+                "format": "date-time",
+                "nullable": true,
+                "type": "string"
+              },
+              "scopes": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "status": {
+                "enum": [
+                  "active",
+                  "revoked"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "masked",
+              "name",
+              "prefix",
+              "scopes",
+              "status"
+            ],
+            "title": "ApiKey",
+            "type": "object"
+          },
+          "token": {
+            "description": "Shown once: copy it now",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "token"
+        ],
+        "title": "ApiKeyWithToken",
         "type": "object"
       },
       "AppointmentBooking": {
@@ -12245,6 +12617,90 @@
           "sets"
         ],
         "title": "AtlasTopExercise",
+        "type": "object"
+      },
+      "AudienceConnection": {
+        "nullable": true,
+        "properties": {
+          "key_saved": {
+            "type": "boolean"
+          },
+          "last_error": {
+            "nullable": true,
+            "type": "string"
+          },
+          "last_synced_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "list_id": {
+            "type": "string"
+          },
+          "provider": {
+            "enum": [
+              "sandbox",
+              "mailchimp",
+              "brevo"
+            ],
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "active",
+              "invalid"
+            ],
+            "type": "string"
+          },
+          "sync_requested_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "unsubscribe_hook": {
+            "description": "Whether the provider's unsubscribe webhook address was made",
+            "type": "boolean"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "key_saved",
+          "list_id",
+          "provider",
+          "status"
+        ],
+        "title": "AudienceConnection",
+        "type": "object"
+      },
+      "AudienceConnectionBody": {
+        "properties": {
+          "api_key": {
+            "description": "Kept encrypted, never shown again; leave out to keep the saved one",
+            "maxLength": 200,
+            "type": "string"
+          },
+          "list_id": {
+            "maxLength": 100,
+            "type": "string"
+          },
+          "provider": {
+            "enum": [
+              "sandbox",
+              "mailchimp",
+              "brevo"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "list_id",
+          "provider"
+        ],
+        "title": "AudienceConnectionBody",
         "type": "object"
       },
       "BarcodeLookup": {
@@ -44124,6 +44580,333 @@
         "title": "DeviceSyncPrefs",
         "type": "object"
       },
+      "Door": {
+        "properties": {
+          "credentials_saved": {
+            "type": "boolean"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "last_error": {
+            "nullable": true,
+            "type": "string"
+          },
+          "last_seen_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "location_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "provider": {
+            "enum": [
+              "sandbox",
+              "shelly",
+              "kisi"
+            ],
+            "type": "string"
+          },
+          "rules": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "settings": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "status": {
+            "enum": [
+              "active",
+              "disabled",
+              "invalid"
+            ],
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "credentials_saved",
+          "id",
+          "location_id",
+          "name",
+          "provider",
+          "rules",
+          "status"
+        ],
+        "title": "Door",
+        "type": "object"
+      },
+      "DoorBody": {
+        "properties": {
+          "credentials": {
+            "additionalProperties": true,
+            "description": "Written, never read back (Shelly `auth_key`, Kisi `api_key`)",
+            "type": "object"
+          },
+          "location_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 80,
+            "minLength": 1,
+            "type": "string"
+          },
+          "provider": {
+            "enum": [
+              "sandbox",
+              "shelly",
+              "kisi"
+            ],
+            "type": "string"
+          },
+          "rules": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "settings": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "status": {
+            "enum": [
+              "active",
+              "disabled"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "location_id",
+          "name",
+          "provider"
+        ],
+        "title": "DoorBody",
+        "type": "object"
+      },
+      "DoorCatalog": {
+        "properties": {
+          "defaults": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "log_days": {
+            "type": "integer"
+          },
+          "providers": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "who": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "defaults",
+          "log_days",
+          "providers",
+          "who"
+        ],
+        "title": "DoorCatalog",
+        "type": "object"
+      },
+      "DoorOpenRequest": {
+        "description": "Proof of presence at the door: `location_id` + `code` (the door screen's QR) or `nfc_code`; `door_id` when the branch has several doors. A `poster_code` is refused with `door_needs_door_scan`",
+        "properties": {
+          "code": {
+            "maxLength": 64,
+            "type": "string"
+          },
+          "door_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "location_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "nfc_code": {
+            "maxLength": 64,
+            "type": "string"
+          },
+          "poster_code": {
+            "maxLength": 64,
+            "type": "string"
+          }
+        },
+        "title": "DoorOpenRequest",
+        "type": "object"
+      },
+      "DoorOpenResult": {
+        "properties": {
+          "door": {
+            "properties": {
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name"
+            ],
+            "type": "object"
+          },
+          "opened": {
+            "type": "boolean"
+          },
+          "reason": {
+            "enum": [
+              "staff",
+              "member",
+              "booked_class",
+              "open_gym"
+            ],
+            "type": "string"
+          },
+          "seconds": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "door",
+          "opened",
+          "reason",
+          "seconds"
+        ],
+        "title": "DoorOpenResult",
+        "type": "object"
+      },
+      "DoorUpdate": {
+        "properties": {
+          "credentials": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "name": {
+            "maxLength": 80,
+            "minLength": 1,
+            "type": "string"
+          },
+          "rules": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "settings": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "status": {
+            "enum": [
+              "active",
+              "disabled"
+            ],
+            "type": "string"
+          }
+        },
+        "title": "DoorUpdate",
+        "type": "object"
+      },
+      "DoorWithEventUrl": {
+        "properties": {
+          "door": {
+            "properties": {
+              "credentials_saved": {
+                "type": "boolean"
+              },
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "last_error": {
+                "nullable": true,
+                "type": "string"
+              },
+              "last_seen_at": {
+                "format": "date-time",
+                "nullable": true,
+                "type": "string"
+              },
+              "location_id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "provider": {
+                "enum": [
+                  "sandbox",
+                  "shelly",
+                  "kisi"
+                ],
+                "type": "string"
+              },
+              "rules": {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              "settings": {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              "status": {
+                "enum": [
+                  "active",
+                  "disabled",
+                  "invalid"
+                ],
+                "type": "string"
+              },
+              "updated_at": {
+                "format": "date-time",
+                "nullable": true,
+                "type": "string"
+              }
+            },
+            "required": [
+              "credentials_saved",
+              "id",
+              "location_id",
+              "name",
+              "provider",
+              "rules",
+              "status"
+            ],
+            "title": "Door",
+            "type": "object"
+          },
+          "event_url": {
+            "description": "For the controller's own notifications; its token is shown once",
+            "type": "string"
+          }
+        },
+        "required": [
+          "door",
+          "event_url"
+        ],
+        "title": "DoorWithEventUrl",
+        "type": "object"
+      },
       "EntryAudience": {
         "description": "Coaches a coach rung on this entry reaches (and their providers); `custom` when the entry has its own audience.",
         "nullable": true,
@@ -50043,6 +50826,68 @@
         "title": "InsightParams",
         "type": "object"
       },
+      "IntegrationCatalog": {
+        "properties": {
+          "audience_providers": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "events": {
+            "items": {
+              "properties": {
+                "el": {
+                  "type": "string"
+                },
+                "en": {
+                  "type": "string"
+                },
+                "scope": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "el",
+                "en"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "scopes": {
+            "items": {
+              "properties": {
+                "el": {
+                  "type": "string"
+                },
+                "en": {
+                  "type": "string"
+                },
+                "scope": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "el",
+                "en"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "audience_providers",
+          "events",
+          "scopes"
+        ],
+        "title": "IntegrationCatalog",
+        "type": "object"
+      },
       "InventoryLowReport": {
         "properties": {
           "id": {
@@ -52411,6 +53256,49 @@
           "quantity"
         ],
         "title": "MachinePlacement",
+        "type": "object"
+      },
+      "MarketingConsent": {
+        "properties": {
+          "granted": {
+            "type": "boolean"
+          },
+          "granted_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "list_connected": {
+            "description": "Whether the box has an email list",
+            "type": "boolean"
+          },
+          "text_version": {
+            "nullable": true,
+            "type": "string"
+          },
+          "withdrawn_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "granted",
+          "list_connected"
+        ],
+        "title": "MarketingConsent",
+        "type": "object"
+      },
+      "MarketingConsentBody": {
+        "properties": {
+          "granted": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "granted"
+        ],
+        "title": "MarketingConsentBody",
         "type": "object"
       },
       "MarketplaceProgramme": {
@@ -106533,6 +107421,463 @@
         "title": "WatchSettings",
         "type": "object"
       },
+      "WebhookDelivery": {
+        "properties": {
+          "attempts": {
+            "type": "integer"
+          },
+          "attempts_log": {
+            "description": "Detail only",
+            "items": {
+              "properties": {
+                "attempt": {
+                  "type": "integer"
+                },
+                "duration_ms": {
+                  "nullable": true,
+                  "type": "integer"
+                },
+                "error": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "outcome": {
+                  "type": "string"
+                },
+                "response_excerpt": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "started_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "status_code": {
+                  "nullable": true,
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "attempt",
+                "outcome",
+                "started_at"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "delivered_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "endpoint_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "event_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "event_type": {
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "last_error": {
+            "nullable": true,
+            "type": "string"
+          },
+          "last_status_code": {
+            "nullable": true,
+            "type": "integer"
+          },
+          "next_attempt_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "description": "Detail only",
+            "type": "object"
+          },
+          "replay_of_id": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "succeeded",
+              "failed"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "attempts",
+          "endpoint_id",
+          "event_id",
+          "event_type",
+          "id",
+          "status"
+        ],
+        "title": "WebhookDelivery",
+        "type": "object"
+      },
+      "WebhookDeliveryPage": {
+        "properties": {
+          "deliveries": {
+            "items": {
+              "properties": {
+                "attempts": {
+                  "type": "integer"
+                },
+                "attempts_log": {
+                  "description": "Detail only",
+                  "items": {
+                    "properties": {
+                      "attempt": {
+                        "type": "integer"
+                      },
+                      "duration_ms": {
+                        "nullable": true,
+                        "type": "integer"
+                      },
+                      "error": {
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "outcome": {
+                        "type": "string"
+                      },
+                      "response_excerpt": {
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "started_at": {
+                        "format": "date-time",
+                        "type": "string"
+                      },
+                      "status_code": {
+                        "nullable": true,
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "attempt",
+                      "outcome",
+                      "started_at"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "created_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "delivered_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "endpoint_id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "event_id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "event_type": {
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "last_error": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "last_status_code": {
+                  "nullable": true,
+                  "type": "integer"
+                },
+                "next_attempt_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "payload": {
+                  "additionalProperties": true,
+                  "description": "Detail only",
+                  "type": "object"
+                },
+                "replay_of_id": {
+                  "format": "uuid",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "pending",
+                    "succeeded",
+                    "failed"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "attempts",
+                "endpoint_id",
+                "event_id",
+                "event_type",
+                "id",
+                "status"
+              ],
+              "title": "WebhookDelivery",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "total": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "deliveries",
+          "total"
+        ],
+        "title": "WebhookDeliveryPage",
+        "type": "object"
+      },
+      "WebhookEndpoint": {
+        "properties": {
+          "api_key_id": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "consecutive_failures": {
+            "type": "integer"
+          },
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "description": {
+            "nullable": true,
+            "type": "string"
+          },
+          "disabled_reason": {
+            "nullable": true,
+            "type": "string"
+          },
+          "events": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "last_failure_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "last_success_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "secret_rotating_until": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "source": {
+            "enum": [
+              "staff",
+              "api"
+            ],
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "active",
+              "disabled"
+            ],
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "events",
+          "id",
+          "source",
+          "status",
+          "url"
+        ],
+        "title": "WebhookEndpoint",
+        "type": "object"
+      },
+      "WebhookEndpointBody": {
+        "properties": {
+          "description": {
+            "maxLength": 200,
+            "nullable": true,
+            "type": "string"
+          },
+          "events": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "url": {
+            "maxLength": 2000,
+            "type": "string"
+          }
+        },
+        "required": [
+          "events",
+          "url"
+        ],
+        "title": "WebhookEndpointBody",
+        "type": "object"
+      },
+      "WebhookEndpointUpdate": {
+        "properties": {
+          "description": {
+            "maxLength": 200,
+            "nullable": true,
+            "type": "string"
+          },
+          "events": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "active",
+              "disabled"
+            ],
+            "type": "string"
+          },
+          "url": {
+            "maxLength": 2000,
+            "type": "string"
+          }
+        },
+        "title": "WebhookEndpointUpdate",
+        "type": "object"
+      },
+      "WebhookEndpointWithSecret": {
+        "properties": {
+          "endpoint": {
+            "properties": {
+              "api_key_id": {
+                "format": "uuid",
+                "nullable": true,
+                "type": "string"
+              },
+              "consecutive_failures": {
+                "type": "integer"
+              },
+              "created_at": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "description": {
+                "nullable": true,
+                "type": "string"
+              },
+              "disabled_reason": {
+                "nullable": true,
+                "type": "string"
+              },
+              "events": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "last_failure_at": {
+                "format": "date-time",
+                "nullable": true,
+                "type": "string"
+              },
+              "last_success_at": {
+                "format": "date-time",
+                "nullable": true,
+                "type": "string"
+              },
+              "secret_rotating_until": {
+                "format": "date-time",
+                "nullable": true,
+                "type": "string"
+              },
+              "source": {
+                "enum": [
+                  "staff",
+                  "api"
+                ],
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "active",
+                  "disabled"
+                ],
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "events",
+              "id",
+              "source",
+              "status",
+              "url"
+            ],
+            "title": "WebhookEndpoint",
+            "type": "object"
+          },
+          "secret": {
+            "description": "The signing secret, shown once",
+            "type": "string"
+          }
+        },
+        "required": [
+          "endpoint",
+          "secret"
+        ],
+        "title": "WebhookEndpointWithSecret",
+        "type": "object"
+      },
       "WellnessAccessLog": {
         "properties": {
           "entries": {
@@ -110895,6 +112240,266 @@
   },
   "openapi": "3.0.0",
   "paths": {
+    "/api/access/doors/{id}/events": {
+      "get": {
+        "callbacks": {},
+        "description": "The URL with its token is shown in the door's settings. An unknown door and a wrong token answer the same 404.",
+        "operationId": "PaleeWeb.DoorAccessController.ingest",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "maxLength": 200,
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": true,
+                "type": "object"
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "recorded": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "recorded"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Recorded"
+          }
+        },
+        "security": [],
+        "summary": "A door controller's own event (door opened, forced, held open); GET or POST",
+        "tags": [
+          "Doors"
+        ]
+      },
+      "post": {
+        "callbacks": {},
+        "description": "The URL with its token is shown in the door's settings. An unknown door and a wrong token answer the same 404.",
+        "operationId": "PaleeWeb.DoorAccessController.ingest (2)",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "maxLength": 200,
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": true,
+                "type": "object"
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "recorded": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "recorded"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Recorded"
+          }
+        },
+        "security": [],
+        "summary": "A door controller's own event (door opened, forced, held open); GET or POST",
+        "tags": [
+          "Doors"
+        ]
+      }
+    },
+    "/api/access/open": {
+      "post": {
+        "callbacks": {},
+        "description": "Refused with `entry_denied` (`params.reason`: `not_a_member`, `outside_hours`, `no_booking_in_window`, `staff_only`), `choose_door` (`params.doors`) when the branch has several doors, `no_door_here`, `door_needs_door_scan` for the printed poster or the arrival reminder, or `door_offline` when the controller cannot be reached: the door stays locked and the member goes to the desk.",
+        "operationId": "PaleeWeb.DoorAccessController.open",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "Proof of presence at the door: `location_id` + `code` (the door screen's QR) or `nfc_code`; `door_id` when the branch has several doors. A `poster_code` is refused with `door_needs_door_scan`",
+                "properties": {
+                  "code": {
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "door_id": {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "location_id": {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "nfc_code": {
+                    "maxLength": 64,
+                    "type": "string"
+                  },
+                  "poster_code": {
+                    "maxLength": 64,
+                    "type": "string"
+                  }
+                },
+                "title": "DoorOpenRequest",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "door": {
+                      "properties": {
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name"
+                      ],
+                      "type": "object"
+                    },
+                    "opened": {
+                      "type": "boolean"
+                    },
+                    "reason": {
+                      "enum": [
+                        "staff",
+                        "member",
+                        "booked_class",
+                        "open_gym"
+                      ],
+                      "type": "string"
+                    },
+                    "seconds": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "door",
+                    "opened",
+                    "reason",
+                    "seconds"
+                  ],
+                  "title": "DoorOpenResult",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Opened"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Entry refused"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Choose a door"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "The door controller is offline"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Open the door: proof of presence, then the box's entry rules",
+        "tags": [
+          "Doors"
+        ]
+      }
+    },
     "/api/anatomy/taxonomy": {
       "get": {
         "callbacks": {},
@@ -128506,6 +130111,142 @@
         "summary": "Read API health",
         "tags": [
           "Health"
+        ]
+      }
+    },
+    "/api/integrations/email-list/{id}/unsubscribe": {
+      "get": {
+        "callbacks": {},
+        "description": "The address with its token is made in Settings › Connections › Email list. An unknown connection and a wrong token answer the same 404. Mailchimp posts a form (`type=unsubscribe`), Brevo posts JSON (`event: unsubscribed`); other events are ignored.",
+        "operationId": "PaleeWeb.EmailListHookController.unsubscribe",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "maxLength": 200,
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": true,
+                "type": "object"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "additionalProperties": true,
+                "type": "object"
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "withdrawn": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "withdrawn"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Handled"
+          }
+        },
+        "security": [],
+        "summary": "The email list's unsubscribe webhook (Mailchimp or Brevo); GET checks the address",
+        "tags": [
+          "Integrations"
+        ]
+      },
+      "post": {
+        "callbacks": {},
+        "description": "The address with its token is made in Settings › Connections › Email list. An unknown connection and a wrong token answer the same 404. Mailchimp posts a form (`type=unsubscribe`), Brevo posts JSON (`event: unsubscribed`); other events are ignored.",
+        "operationId": "PaleeWeb.EmailListHookController.unsubscribe (2)",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "maxLength": 200,
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": true,
+                "type": "object"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "additionalProperties": true,
+                "type": "object"
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "withdrawn": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "withdrawn"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Handled"
+          }
+        },
+        "security": [],
+        "summary": "The email list's unsubscribe webhook (Mailchimp or Brevo); GET checks the address",
+        "tags": [
+          "Integrations"
         ]
       }
     },
@@ -177528,6 +179269,190 @@
         ]
       }
     },
+    "/api/org/{organization_slug}/admin/access-events": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminDoorsController.events",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "door_id",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "location_id",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "user_id",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "kind",
+            "required": false,
+            "schema": {
+              "enum": [
+                "granted",
+                "denied",
+                "unlock_failed",
+                "staff_unlock",
+                "door_event"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "maximum": 200,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "events": {
+                      "items": {
+                        "properties": {
+                          "actor_id": {
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "actor_name": {
+                            "description": "Who opened from the desk",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "door_controller_id": {
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "door_name": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "kind": {
+                            "enum": [
+                              "granted",
+                              "denied",
+                              "unlock_failed",
+                              "staff_unlock",
+                              "door_event"
+                            ],
+                            "type": "string"
+                          },
+                          "location_id": {
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "method": {
+                            "enum": [
+                              "qr",
+                              "nfc",
+                              "staff",
+                              "provider"
+                            ],
+                            "type": "string"
+                          },
+                          "occurred_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "person_name": {
+                            "description": "Who entered or was refused",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "provider_event": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "reason": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "user_id": {
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "kind",
+                          "method",
+                          "occurred_at"
+                        ],
+                        "title": "AccessEvent",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "events",
+                    "total"
+                  ],
+                  "title": "AccessEventPage",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Access log"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The access log, newest first (kept 180 days)",
+        "tags": [
+          "Doors"
+        ]
+      }
+    },
     "/api/org/{organization_slug}/admin/ai-settings": {
       "get": {
         "callbacks": {},
@@ -213513,6 +215438,618 @@
         ]
       }
     },
+    "/api/org/{organization_slug}/admin/doors": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminDoorsController.index",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "location_id",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "doors": {
+                      "items": {
+                        "properties": {
+                          "credentials_saved": {
+                            "type": "boolean"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "last_error": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "last_seen_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "location_id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "provider": {
+                            "enum": [
+                              "sandbox",
+                              "shelly",
+                              "kisi"
+                            ],
+                            "type": "string"
+                          },
+                          "rules": {
+                            "additionalProperties": true,
+                            "type": "object"
+                          },
+                          "settings": {
+                            "additionalProperties": true,
+                            "type": "object"
+                          },
+                          "status": {
+                            "enum": [
+                              "active",
+                              "disabled",
+                              "invalid"
+                            ],
+                            "type": "string"
+                          },
+                          "updated_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "credentials_saved",
+                          "id",
+                          "location_id",
+                          "name",
+                          "provider",
+                          "rules",
+                          "status"
+                        ],
+                        "title": "Door",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "doors"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Doors"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The doors, optionally of one branch",
+        "tags": [
+          "Doors"
+        ]
+      },
+      "post": {
+        "callbacks": {},
+        "description": "Answers the door and, once, the event URL for the controller's own notifications.",
+        "operationId": "PaleeWeb.AdminDoorsController.create",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "credentials": {
+                    "additionalProperties": true,
+                    "description": "Written, never read back (Shelly `auth_key`, Kisi `api_key`)",
+                    "type": "object"
+                  },
+                  "location_id": {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "name": {
+                    "maxLength": 80,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "provider": {
+                    "enum": [
+                      "sandbox",
+                      "shelly",
+                      "kisi"
+                    ],
+                    "type": "string"
+                  },
+                  "rules": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  },
+                  "settings": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  },
+                  "status": {
+                    "enum": [
+                      "active",
+                      "disabled"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "location_id",
+                  "name",
+                  "provider"
+                ],
+                "title": "DoorBody",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "door": {
+                      "properties": {
+                        "credentials_saved": {
+                          "type": "boolean"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "last_error": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "last_seen_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "location_id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "provider": {
+                          "enum": [
+                            "sandbox",
+                            "shelly",
+                            "kisi"
+                          ],
+                          "type": "string"
+                        },
+                        "rules": {
+                          "additionalProperties": true,
+                          "type": "object"
+                        },
+                        "settings": {
+                          "additionalProperties": true,
+                          "type": "object"
+                        },
+                        "status": {
+                          "enum": [
+                            "active",
+                            "disabled",
+                            "invalid"
+                          ],
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "credentials_saved",
+                        "id",
+                        "location_id",
+                        "name",
+                        "provider",
+                        "rules",
+                        "status"
+                      ],
+                      "title": "Door",
+                      "type": "object"
+                    },
+                    "event_url": {
+                      "description": "For the controller's own notifications; its token is shown once",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "door",
+                    "event_url"
+                  ],
+                  "title": "DoorWithEventUrl",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Door"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Add a door with its controller; the controller is checked first",
+        "tags": [
+          "Doors"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/doors/catalog": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminDoorsController.catalog",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "defaults": {
+                      "additionalProperties": true,
+                      "type": "object"
+                    },
+                    "log_days": {
+                      "type": "integer"
+                    },
+                    "providers": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "who": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "defaults",
+                    "log_days",
+                    "providers",
+                    "who"
+                  ],
+                  "title": "DoorCatalog",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Catalog"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Door controllers, entry rules' defaults and how long the access log is kept",
+        "tags": [
+          "Doors"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/doors/{id}": {
+      "delete": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminDoorsController.delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "ok"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Removed"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Remove a door (its access log stays until it ages out)",
+        "tags": [
+          "Doors"
+        ]
+      },
+      "patch": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminDoorsController.update",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "credentials": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  },
+                  "name": {
+                    "maxLength": 80,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "rules": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  },
+                  "settings": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  },
+                  "status": {
+                    "enum": [
+                      "active",
+                      "disabled"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "title": "DoorUpdate",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "door": {
+                      "properties": {
+                        "credentials_saved": {
+                          "type": "boolean"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "last_error": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "last_seen_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "location_id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "provider": {
+                          "enum": [
+                            "sandbox",
+                            "shelly",
+                            "kisi"
+                          ],
+                          "type": "string"
+                        },
+                        "rules": {
+                          "additionalProperties": true,
+                          "type": "object"
+                        },
+                        "settings": {
+                          "additionalProperties": true,
+                          "type": "object"
+                        },
+                        "status": {
+                          "enum": [
+                            "active",
+                            "disabled",
+                            "invalid"
+                          ],
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "credentials_saved",
+                        "id",
+                        "location_id",
+                        "name",
+                        "provider",
+                        "rules",
+                        "status"
+                      ],
+                      "title": "Door",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "door"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Door"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Change a door's name, controller settings, key, rules or status",
+        "tags": [
+          "Doors"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/doors/{id}/event-token": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminDoorsController.rotate_event_token",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "event_url": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "event_url"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Event URL"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "A new event URL for the controller's notifications (the old one stops)",
+        "tags": [
+          "Doors"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/doors/{id}/unlock": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminDoorsController.unlock",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "opened": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "opened"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Opened"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "«Άνοιγμα»: open the door from the desk; logged with who opened it",
+        "tags": [
+          "Doors"
+        ]
+      }
+    },
     "/api/org/{organization_slug}/admin/finance/accounting-exports": {
       "get": {
         "callbacks": {},
@@ -236149,6 +238686,2156 @@
         "summary": "Undo an applied import (within 7 days of its end)",
         "tags": [
           "Imports"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/integrations/api-keys": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminIntegrationsController.keys",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "keys": {
+                      "items": {
+                        "description": "A key's description. The secret itself is never shown again.",
+                        "properties": {
+                          "created_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "created_by_id": {
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "expires_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "last_used_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "masked": {
+                            "description": "palee_live_ABCD…_••••",
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "prefix": {
+                            "type": "string"
+                          },
+                          "previous_secret_expires_at": {
+                            "description": "Until then the secret before the last rotation still works",
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "revoked_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "rotated_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "scopes": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "status": {
+                            "enum": [
+                              "active",
+                              "revoked"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "masked",
+                          "name",
+                          "prefix",
+                          "scopes",
+                          "status"
+                        ],
+                        "title": "ApiKey",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "keys"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Keys"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The box's public API keys (never their secrets)",
+        "tags": [
+          "Integrations"
+        ]
+      },
+      "post": {
+        "callbacks": {},
+        "description": "The token is answered once. The key can never do more than the person who made it can do now; when they leave or lose the role, the key stops working.",
+        "operationId": "PaleeWeb.AdminIntegrationsController.create_key",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "expires_at": {
+                    "format": "date-time",
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "name": {
+                    "maxLength": 80,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "scopes": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "name",
+                  "scopes"
+                ],
+                "title": "ApiKeyBody",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "key": {
+                      "description": "A key's description. The secret itself is never shown again.",
+                      "properties": {
+                        "created_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "created_by_id": {
+                          "format": "uuid",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "expires_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "last_used_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "masked": {
+                          "description": "palee_live_ABCD…_••••",
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "prefix": {
+                          "type": "string"
+                        },
+                        "previous_secret_expires_at": {
+                          "description": "Until then the secret before the last rotation still works",
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "revoked_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "rotated_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "scopes": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "status": {
+                          "enum": [
+                            "active",
+                            "revoked"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "masked",
+                        "name",
+                        "prefix",
+                        "scopes",
+                        "status"
+                      ],
+                      "title": "ApiKey",
+                      "type": "object"
+                    },
+                    "token": {
+                      "description": "Shown once: copy it now",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "key",
+                    "token"
+                  ],
+                  "title": "ApiKeyWithToken",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Key and token"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Make an API key that acts for you, narrowed to the chosen scopes",
+        "tags": [
+          "Integrations"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/integrations/api-keys/{id}": {
+      "delete": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminIntegrationsController.revoke_key",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "key": {
+                      "description": "A key's description. The secret itself is never shown again.",
+                      "properties": {
+                        "created_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "created_by_id": {
+                          "format": "uuid",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "expires_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "last_used_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "masked": {
+                          "description": "palee_live_ABCD…_••••",
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "prefix": {
+                          "type": "string"
+                        },
+                        "previous_secret_expires_at": {
+                          "description": "Until then the secret before the last rotation still works",
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "revoked_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "rotated_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "scopes": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "status": {
+                          "enum": [
+                            "active",
+                            "revoked"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "masked",
+                        "name",
+                        "prefix",
+                        "scopes",
+                        "status"
+                      ],
+                      "title": "ApiKey",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "key"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Key"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Revoke a key at once (its webhook subscriptions go with it)",
+        "tags": [
+          "Integrations"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/integrations/api-keys/{id}/rotate": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminIntegrationsController.rotate_key",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "key": {
+                      "description": "A key's description. The secret itself is never shown again.",
+                      "properties": {
+                        "created_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "created_by_id": {
+                          "format": "uuid",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "expires_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "last_used_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "masked": {
+                          "description": "palee_live_ABCD…_••••",
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "prefix": {
+                          "type": "string"
+                        },
+                        "previous_secret_expires_at": {
+                          "description": "Until then the secret before the last rotation still works",
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "revoked_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "rotated_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "scopes": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "status": {
+                          "enum": [
+                            "active",
+                            "revoked"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "masked",
+                        "name",
+                        "prefix",
+                        "scopes",
+                        "status"
+                      ],
+                      "title": "ApiKey",
+                      "type": "object"
+                    },
+                    "token": {
+                      "description": "Shown once: copy it now",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "key",
+                    "token"
+                  ],
+                  "title": "ApiKeyWithToken",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Key and new token"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Rotate a key's secret; the old one keeps working for 24 hours",
+        "tags": [
+          "Integrations"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/integrations/catalog": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminIntegrationsController.catalog",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "audience_providers": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "events": {
+                      "items": {
+                        "properties": {
+                          "el": {
+                            "type": "string"
+                          },
+                          "en": {
+                            "type": "string"
+                          },
+                          "scope": {
+                            "type": "string"
+                          },
+                          "type": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "el",
+                          "en"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "scopes": {
+                      "items": {
+                        "properties": {
+                          "el": {
+                            "type": "string"
+                          },
+                          "en": {
+                            "type": "string"
+                          },
+                          "scope": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "el",
+                          "en"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "audience_providers",
+                    "events",
+                    "scopes"
+                  ],
+                  "title": "IntegrationCatalog",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Catalog"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Scopes, webhook events and email list providers the settings can offer (EN, EL)",
+        "tags": [
+          "Integrations"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/integrations/deliveries/{id}": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminIntegrationsController.delivery",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "delivery": {
+                      "properties": {
+                        "attempts": {
+                          "type": "integer"
+                        },
+                        "attempts_log": {
+                          "description": "Detail only",
+                          "items": {
+                            "properties": {
+                              "attempt": {
+                                "type": "integer"
+                              },
+                              "duration_ms": {
+                                "nullable": true,
+                                "type": "integer"
+                              },
+                              "error": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "outcome": {
+                                "type": "string"
+                              },
+                              "response_excerpt": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "started_at": {
+                                "format": "date-time",
+                                "type": "string"
+                              },
+                              "status_code": {
+                                "nullable": true,
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "attempt",
+                              "outcome",
+                              "started_at"
+                            ],
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
+                        "created_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "delivered_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "endpoint_id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "event_id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "event_type": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "last_error": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "last_status_code": {
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "next_attempt_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "payload": {
+                          "additionalProperties": true,
+                          "description": "Detail only",
+                          "type": "object"
+                        },
+                        "replay_of_id": {
+                          "format": "uuid",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "pending",
+                            "succeeded",
+                            "failed"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "attempts",
+                        "endpoint_id",
+                        "event_id",
+                        "event_type",
+                        "id",
+                        "status"
+                      ],
+                      "title": "WebhookDelivery",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "delivery"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Delivery"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "One delivery with its payload and every attempt",
+        "tags": [
+          "Integrations"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/integrations/deliveries/{id}/replay": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminIntegrationsController.replay",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "delivery": {
+                      "properties": {
+                        "attempts": {
+                          "type": "integer"
+                        },
+                        "attempts_log": {
+                          "description": "Detail only",
+                          "items": {
+                            "properties": {
+                              "attempt": {
+                                "type": "integer"
+                              },
+                              "duration_ms": {
+                                "nullable": true,
+                                "type": "integer"
+                              },
+                              "error": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "outcome": {
+                                "type": "string"
+                              },
+                              "response_excerpt": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "started_at": {
+                                "format": "date-time",
+                                "type": "string"
+                              },
+                              "status_code": {
+                                "nullable": true,
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "attempt",
+                              "outcome",
+                              "started_at"
+                            ],
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
+                        "created_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "delivered_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "endpoint_id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "event_id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "event_type": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "last_error": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "last_status_code": {
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "next_attempt_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "payload": {
+                          "additionalProperties": true,
+                          "description": "Detail only",
+                          "type": "object"
+                        },
+                        "replay_of_id": {
+                          "format": "uuid",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "pending",
+                            "succeeded",
+                            "failed"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "attempts",
+                        "endpoint_id",
+                        "event_id",
+                        "event_type",
+                        "id",
+                        "status"
+                      ],
+                      "title": "WebhookDelivery",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "delivery"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Delivery"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Send a delivery's event again (same event id, a new delivery)",
+        "tags": [
+          "Integrations"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/integrations/email-list": {
+      "delete": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminIntegrationsController.delete_audience",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "ok"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Removed"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Disconnect the email list (the list itself is left as it is)",
+        "tags": [
+          "Integrations"
+        ]
+      },
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminIntegrationsController.audience",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "connection": {
+                      "nullable": true,
+                      "properties": {
+                        "key_saved": {
+                          "type": "boolean"
+                        },
+                        "last_error": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "last_synced_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "list_id": {
+                          "type": "string"
+                        },
+                        "provider": {
+                          "enum": [
+                            "sandbox",
+                            "mailchimp",
+                            "brevo"
+                          ],
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "active",
+                            "invalid"
+                          ],
+                          "type": "string"
+                        },
+                        "sync_requested_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "unsubscribe_hook": {
+                          "description": "Whether the provider's unsubscribe webhook address was made",
+                          "type": "boolean"
+                        },
+                        "updated_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "key_saved",
+                        "list_id",
+                        "provider",
+                        "status"
+                      ],
+                      "title": "AudienceConnection",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "connection"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Connection"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The box's email list connection (never its key)",
+        "tags": [
+          "Integrations"
+        ]
+      },
+      "put": {
+        "callbacks": {},
+        "description": "The provider is asked first; a refused key or unknown list is not saved. A sync follows: members with marketing consent are subscribed, others unsubscribed.",
+        "operationId": "PaleeWeb.AdminIntegrationsController.save_audience",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "api_key": {
+                    "description": "Kept encrypted, never shown again; leave out to keep the saved one",
+                    "maxLength": 200,
+                    "type": "string"
+                  },
+                  "list_id": {
+                    "maxLength": 100,
+                    "type": "string"
+                  },
+                  "provider": {
+                    "enum": [
+                      "sandbox",
+                      "mailchimp",
+                      "brevo"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "list_id",
+                  "provider"
+                ],
+                "title": "AudienceConnectionBody",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "connection": {
+                      "nullable": true,
+                      "properties": {
+                        "key_saved": {
+                          "type": "boolean"
+                        },
+                        "last_error": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "last_synced_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "list_id": {
+                          "type": "string"
+                        },
+                        "provider": {
+                          "enum": [
+                            "sandbox",
+                            "mailchimp",
+                            "brevo"
+                          ],
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "active",
+                            "invalid"
+                          ],
+                          "type": "string"
+                        },
+                        "sync_requested_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "unsubscribe_hook": {
+                          "description": "Whether the provider's unsubscribe webhook address was made",
+                          "type": "boolean"
+                        },
+                        "updated_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "key_saved",
+                        "list_id",
+                        "provider",
+                        "status"
+                      ],
+                      "title": "AudienceConnection",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "connection"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Connection"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Connect Mailchimp or Brevo; only members who said yes are sent",
+        "tags": [
+          "Integrations"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/integrations/email-list/sync": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminIntegrationsController.sync_audience",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "ok"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Requested"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Sync the email list now",
+        "tags": [
+          "Integrations"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/integrations/email-list/unsubscribe-url": {
+      "post": {
+        "callbacks": {},
+        "description": "Paste it into the provider's webhook settings (Mailchimp: «Unsubscribes»; Brevo: marketing event «Unsubscribed»). Someone who unsubscribes there has their switch in Palee turned off too. The old address stops working at once.",
+        "operationId": "PaleeWeb.AdminIntegrationsController.rotate_unsubscribe_url",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "url": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "url"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Address"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "A new address for Mailchimp's or Brevo's unsubscribe webhook (shown once)",
+        "tags": [
+          "Integrations"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/integrations/webhooks": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminIntegrationsController.webhooks",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "webhooks": {
+                      "items": {
+                        "properties": {
+                          "api_key_id": {
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "consecutive_failures": {
+                            "type": "integer"
+                          },
+                          "created_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "description": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "disabled_reason": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "events": {
+                            "items": {
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "last_failure_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "last_success_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "secret_rotating_until": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "source": {
+                            "enum": [
+                              "staff",
+                              "api"
+                            ],
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "active",
+                              "disabled"
+                            ],
+                            "type": "string"
+                          },
+                          "url": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "events",
+                          "id",
+                          "source",
+                          "status",
+                          "url"
+                        ],
+                        "title": "WebhookEndpoint",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "webhooks"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Endpoints"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The box's webhook endpoints",
+        "tags": [
+          "Integrations"
+        ]
+      },
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminIntegrationsController.create_webhook",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "description": {
+                    "maxLength": 200,
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "events": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "url": {
+                    "maxLength": 2000,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "events",
+                  "url"
+                ],
+                "title": "WebhookEndpointBody",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "endpoint": {
+                      "properties": {
+                        "api_key_id": {
+                          "format": "uuid",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "consecutive_failures": {
+                          "type": "integer"
+                        },
+                        "created_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "description": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "disabled_reason": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "events": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "last_failure_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "last_success_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "secret_rotating_until": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "source": {
+                          "enum": [
+                            "staff",
+                            "api"
+                          ],
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "active",
+                            "disabled"
+                          ],
+                          "type": "string"
+                        },
+                        "url": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "events",
+                        "id",
+                        "source",
+                        "status",
+                        "url"
+                      ],
+                      "title": "WebhookEndpoint",
+                      "type": "object"
+                    },
+                    "secret": {
+                      "description": "The signing secret, shown once",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "endpoint",
+                    "secret"
+                  ],
+                  "title": "WebhookEndpointWithSecret",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Endpoint and secret"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Add a webhook endpoint (https); its signing secret is answered once",
+        "tags": [
+          "Integrations"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/integrations/webhooks/{id}": {
+      "delete": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminIntegrationsController.delete_webhook",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "ok"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Removed"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Remove an endpoint and its delivery log",
+        "tags": [
+          "Integrations"
+        ]
+      },
+      "patch": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminIntegrationsController.update_webhook",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "description": {
+                    "maxLength": 200,
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "events": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "status": {
+                    "enum": [
+                      "active",
+                      "disabled"
+                    ],
+                    "type": "string"
+                  },
+                  "url": {
+                    "maxLength": 2000,
+                    "type": "string"
+                  }
+                },
+                "title": "WebhookEndpointUpdate",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "endpoint": {
+                      "properties": {
+                        "api_key_id": {
+                          "format": "uuid",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "consecutive_failures": {
+                          "type": "integer"
+                        },
+                        "created_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "description": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "disabled_reason": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "events": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "last_failure_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "last_success_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "secret_rotating_until": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "source": {
+                          "enum": [
+                            "staff",
+                            "api"
+                          ],
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "active",
+                            "disabled"
+                          ],
+                          "type": "string"
+                        },
+                        "url": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "events",
+                        "id",
+                        "source",
+                        "status",
+                        "url"
+                      ],
+                      "title": "WebhookEndpoint",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "endpoint"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Endpoint"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Change an endpoint's address, events or description, or turn it on or off",
+        "tags": [
+          "Integrations"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/integrations/webhooks/{id}/deliveries": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminIntegrationsController.deliveries",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "enum": [
+                "pending",
+                "succeeded",
+                "failed"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "deliveries": {
+                      "items": {
+                        "properties": {
+                          "attempts": {
+                            "type": "integer"
+                          },
+                          "attempts_log": {
+                            "description": "Detail only",
+                            "items": {
+                              "properties": {
+                                "attempt": {
+                                  "type": "integer"
+                                },
+                                "duration_ms": {
+                                  "nullable": true,
+                                  "type": "integer"
+                                },
+                                "error": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "outcome": {
+                                  "type": "string"
+                                },
+                                "response_excerpt": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "started_at": {
+                                  "format": "date-time",
+                                  "type": "string"
+                                },
+                                "status_code": {
+                                  "nullable": true,
+                                  "type": "integer"
+                                }
+                              },
+                              "required": [
+                                "attempt",
+                                "outcome",
+                                "started_at"
+                              ],
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "created_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "delivered_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "endpoint_id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "event_id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "event_type": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "last_error": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "last_status_code": {
+                            "nullable": true,
+                            "type": "integer"
+                          },
+                          "next_attempt_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "payload": {
+                            "additionalProperties": true,
+                            "description": "Detail only",
+                            "type": "object"
+                          },
+                          "replay_of_id": {
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "pending",
+                              "succeeded",
+                              "failed"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "attempts",
+                          "endpoint_id",
+                          "event_id",
+                          "event_type",
+                          "id",
+                          "status"
+                        ],
+                        "title": "WebhookDelivery",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "deliveries",
+                    "total"
+                  ],
+                  "title": "WebhookDeliveryPage",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Deliveries"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "An endpoint's delivery log, newest first",
+        "tags": [
+          "Integrations"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/integrations/webhooks/{id}/rotate-secret": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminIntegrationsController.rotate_webhook_secret",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "endpoint": {
+                      "properties": {
+                        "api_key_id": {
+                          "format": "uuid",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "consecutive_failures": {
+                          "type": "integer"
+                        },
+                        "created_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "description": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "disabled_reason": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "events": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "last_failure_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "last_success_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "secret_rotating_until": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "source": {
+                          "enum": [
+                            "staff",
+                            "api"
+                          ],
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "active",
+                            "disabled"
+                          ],
+                          "type": "string"
+                        },
+                        "url": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "events",
+                        "id",
+                        "source",
+                        "status",
+                        "url"
+                      ],
+                      "title": "WebhookEndpoint",
+                      "type": "object"
+                    },
+                    "secret": {
+                      "description": "The signing secret, shown once",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "endpoint",
+                    "secret"
+                  ],
+                  "title": "WebhookEndpointWithSecret",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Endpoint and secret"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "New signing secret; for 24 hours deliveries are signed with both",
+        "tags": [
+          "Integrations"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/integrations/webhooks/{id}/test": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminIntegrationsController.test_webhook",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "delivery": {
+                      "properties": {
+                        "attempts": {
+                          "type": "integer"
+                        },
+                        "attempts_log": {
+                          "description": "Detail only",
+                          "items": {
+                            "properties": {
+                              "attempt": {
+                                "type": "integer"
+                              },
+                              "duration_ms": {
+                                "nullable": true,
+                                "type": "integer"
+                              },
+                              "error": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "outcome": {
+                                "type": "string"
+                              },
+                              "response_excerpt": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "started_at": {
+                                "format": "date-time",
+                                "type": "string"
+                              },
+                              "status_code": {
+                                "nullable": true,
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "attempt",
+                              "outcome",
+                              "started_at"
+                            ],
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
+                        "created_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "delivered_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "endpoint_id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "event_id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "event_type": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "last_error": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "last_status_code": {
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "next_attempt_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "payload": {
+                          "additionalProperties": true,
+                          "description": "Detail only",
+                          "type": "object"
+                        },
+                        "replay_of_id": {
+                          "format": "uuid",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "status": {
+                          "enum": [
+                            "pending",
+                            "succeeded",
+                            "failed"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "attempts",
+                        "endpoint_id",
+                        "event_id",
+                        "event_type",
+                        "id",
+                        "status"
+                      ],
+                      "title": "WebhookDelivery",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "delivery"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Delivery"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Send a `ping` event to the endpoint now",
+        "tags": [
+          "Integrations"
         ]
       }
     },
@@ -318726,6 +323413,136 @@
         "summary": "Set your division and birth year (only after opting in to leaderboards)",
         "tags": [
           "Leaderboards"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/me/marketing-consent": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.MarketingConsentController.show",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "granted": {
+                      "type": "boolean"
+                    },
+                    "granted_at": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "list_connected": {
+                      "description": "Whether the box has an email list",
+                      "type": "boolean"
+                    },
+                    "text_version": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "withdrawn_at": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "granted",
+                    "list_connected"
+                  ],
+                  "title": "MarketingConsent",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Consent"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Whether I agreed to the box's marketing email",
+        "tags": [
+          "Integrations"
+        ]
+      },
+      "put": {
+        "callbacks": {},
+        "description": "Yes adds me to the box's email list (Mailchimp or Brevo) at the next sync with my email and first name only; no unsubscribes me there.",
+        "operationId": "PaleeWeb.MarketingConsentController.update",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "granted": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "granted"
+                ],
+                "title": "MarketingConsentBody",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "granted": {
+                      "type": "boolean"
+                    },
+                    "granted_at": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "list_connected": {
+                      "description": "Whether the box has an email list",
+                      "type": "boolean"
+                    },
+                    "text_version": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "withdrawn_at": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "granted",
+                    "list_connected"
+                  ],
+                  "title": "MarketingConsent",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Consent"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Say yes or no to the box's marketing email",
+        "tags": [
+          "Integrations"
         ]
       }
     },

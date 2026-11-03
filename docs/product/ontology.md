@@ -753,6 +753,27 @@ A member, or the box, reports a box review to the Palee team; only the Palee tea
 | Restore | Επαναφορά | `outcome: restore` | The Palee team shows a hidden review again from «Αποφασισμένες», with a statement to the author. Only a hidden review; a removed text is gone. | Undoing the author's own «Διαγραφή» (not possible). |
 | Report contact | Αναφορά περιεχομένου | `site.report_contact`, `review_moderation.contact_email` | Palee's moderation address in the box website's footer and in every statement of reasons. | The box's own contact form. |
 | Statement of reasons | Αιτιολόγηση | `box_review_decisions`, `mine.moderation` | What the author reads when the Palee team hid or removed their review: what changed, why (Palee's terms or the law), that a person decided, where to seek redress (the moderation address, the courts). | The box's reply («Απάντηση από …»). |
+### 4.28 Connections and doors (ADR-378, ADR-379, ADR-380, ADR-381)
+
+What a box connects Palee to (Settings › «Συνδέσεις») and the doors that open from the app.
+
+| English | Ελληνικά | Code | What it is | Not to be confused with |
+|---|---|---|---|---|
+| Connections | Συνδέσεις | Settings › Connections, `/admin/integrations/*` | The settings page for API keys, webhooks and the email list. | Connected devices («Συνδεδεμένες συσκευές», Garmin, ADR-161); fiscal connections (ADR-273). |
+| API key | Κλειδί API | `api_keys`, `palee_live_…` | A secret that lets another system use the box's data through the public API, acting for the staff member who made it and only within its scopes. Shown once. | Password; widget token; the provider keys a box saves for Peppol or payments. |
+| Scope | Δικαίωμα κλειδιού | `members:read`, … | One thing a key may do (read or write one kind of object). Narrows the key; never adds rights. | Capability («Δικαίωμα» of a role, ADR-099). |
+| Public API | Δημόσιο API | `/api/public/v1` | Palee's versioned API for other systems, with its own OpenAPI document. | Palee's own app API (`/api/org/:slug/*`). |
+| Webhook | Webhook | `webhook_endpoints` | An address of another system that Palee notifies when something happens (a booking, a payment). Kept in English in Greek too. | Provider webhooks Palee receives (payments, Peppol, Brevo). |
+| Event | Συμβάν | `booking.created`, … | One kind of change a webhook can be told about. | Community event («Εκδήλωση»); domain event (code only). |
+| Delivery | Αποστολή | `webhook_deliveries` | One try-until-done of telling a webhook about an event; with its attempts in the delivery log («Ιστορικό αποστολών»). | Email delivery. |
+| Signing secret | Μυστικό υπογραφής | `whsec_…` | The secret a receiver uses to check that a delivery came from Palee. Shown once. | API key. |
+| Email list | Λίστα email | `audience_connections` | The box's Mailchimp or Brevo audience that Palee keeps in step with members' consent. Its unsubscribe address («Διαγραφές από τη λίστα») lets an unsubscribe there turn the member's switch off too. | Palee's own emails to members. |
+| Marketing email consent | Ενημερώσεις με email | `integration_marketing_consents` | The member's own yes or no to the box's newsletters and offers. Off by default; only the member changes it, in Box › «Ειδοποιήσεις». | Notification preferences (ADR-199); W3's phone channel consents (SMS, Viber, WhatsApp). |
+| Door | Πόρτα | `door_controllers` | An entrance of a branch whose lock Palee can open, with its controller and entry rules. | Door screen («Οθόνη πόρτας», the check-in QR display, ADR-155); NFC door tag. |
+| Door controller | Ελεγκτής πόρτας | `provider`: `shelly`, `kisi`, `sandbox` | The device or service that opens the lock (a Shelly relay, Kisi). | Payment terminal. |
+| Entry rules | Κανόνες εισόδου | `rules.who`: `booked_or_covered`, `members`, `staff_only` | Who a door opens for and when: staff always, members with a booked class in its window or open-gym cover, opening hours. | Booking rules (ADR-226). |
+| Open the door | Άνοιγμα πόρτας | `POST /api/access/open` | The member's button after the door scan, or «Άνοιγμα» at the desk. | Check-in («Check-in» is recorded separately). |
+| Access log | Ημερολόγιο εισόδων | `access_events` | Every opening, refusal and door event, kept 180 days. | Check-ins list; audit log. |
 
 ## 5. Name clashes found, and proposals
 

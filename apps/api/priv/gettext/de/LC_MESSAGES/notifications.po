@@ -850,3 +850,8 @@ msgstr "Das Palee-Team hat deine Bewertung wiederhergestellt"
 
 msgid "Your review shows again in the box's reviews."
 msgstr "Deine Bewertung ist wieder in den Bewertungen der Box sichtbar."
+msgid "A webhook was turned off"
+msgstr "Ein Webhook wurde ausgeschaltet"
+
+msgid "Palee stopped sending events to %{host}. Open the webhook to check it and turn it back on."
+msgstr "Palee sendet keine Ereignisse mehr an %{host}. Öffne den Webhook, um ihn zu prüfen und wieder einzuschalten."

@@ -1041,6 +1041,17 @@ defmodule Palee.Notifications do
         url: field(payload, :url)
       })
 
+  # ADR-379: Palee turned off a failing webhook; to each person who manages
+  # settings, once per turn-off (the dedupe key has the endpoint and time).
+  def process_event("webhook_disabled", payload),
+    do:
+      enqueue_simple(:webhook_disabled, payload, %{
+        host: field(payload, :host),
+        reason: field(payload, :reason),
+        dedupe_key: field(payload, :dedupe_key),
+        url: field(payload, :url)
+      })
+
   def process_event("shop_order_ready", payload),
     do:
       enqueue_simple(:shop_order_ready, payload, %{

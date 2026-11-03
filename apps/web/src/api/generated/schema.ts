@@ -4,6 +4,50 @@
  */
 
 export interface paths {
+    "/api/access/doors/{id}/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A door controller's own event (door opened, forced, held open); GET or POST
+         * @description The URL with its token is shown in the door's settings. An unknown door and a wrong token answer the same 404.
+         */
+        get: operations["PaleeWeb.DoorAccessController.ingest"];
+        put?: never;
+        /**
+         * A door controller's own event (door opened, forced, held open); GET or POST
+         * @description The URL with its token is shown in the door's settings. An unknown door and a wrong token answer the same 404.
+         */
+        post: operations["PaleeWeb.DoorAccessController.ingest (2)"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/access/open": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Open the door: proof of presence, then the box's entry rules
+         * @description Refused with `entry_denied` (`params.reason`: `not_a_member`, `outside_hours`, `no_booking_in_window`, `staff_only`), `choose_door` (`params.doors`) when the branch has several doors, `no_door_here`, `door_needs_door_scan` for the printed poster or the arrival reminder, or `door_offline` when the controller cannot be reached: the door stays locked and the member goes to the desk.
+         */
+        post: operations["PaleeWeb.DoorAccessController.open"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/anatomy/taxonomy": {
         parameters: {
             query?: never;
@@ -1289,6 +1333,30 @@ export interface paths {
         get: operations["PaleeWeb.HealthController.index"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/integrations/email-list/{id}/unsubscribe": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The email list's unsubscribe webhook (Mailchimp or Brevo); GET checks the address
+         * @description The address with its token is made in Settings › Connections › Email list. An unknown connection and a wrong token answer the same 404. Mailchimp posts a form (`type=unsubscribe`), Brevo posts JSON (`event: unsubscribed`); other events are ignored.
+         */
+        get: operations["PaleeWeb.EmailListHookController.unsubscribe"];
+        put?: never;
+        /**
+         * The email list's unsubscribe webhook (Mailchimp or Brevo); GET checks the address
+         * @description The address with its token is made in Settings › Connections › Email list. An unknown connection and a wrong token answer the same 404. Mailchimp posts a form (`type=unsubscribe`), Brevo posts JSON (`event: unsubscribed`); other events are ignored.
+         */
+        post: operations["PaleeWeb.EmailListHookController.unsubscribe (2)"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5190,6 +5258,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/access-events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The access log, newest first (kept 180 days) */
+        get: operations["PaleeWeb.AdminDoorsController.events"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/ai-settings": {
         parameters: {
             query?: never;
@@ -7480,6 +7565,96 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/doors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The doors, optionally of one branch */
+        get: operations["PaleeWeb.AdminDoorsController.index"];
+        put?: never;
+        /**
+         * Add a door with its controller; the controller is checked first
+         * @description Answers the door and, once, the event URL for the controller's own notifications.
+         */
+        post: operations["PaleeWeb.AdminDoorsController.create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/doors/catalog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Door controllers, entry rules' defaults and how long the access log is kept */
+        get: operations["PaleeWeb.AdminDoorsController.catalog"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/doors/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove a door (its access log stays until it ages out) */
+        delete: operations["PaleeWeb.AdminDoorsController.delete"];
+        options?: never;
+        head?: never;
+        /** Change a door's name, controller settings, key, rules or status */
+        patch: operations["PaleeWeb.AdminDoorsController.update"];
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/doors/{id}/event-token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** A new event URL for the controller's notifications (the old one stops) */
+        post: operations["PaleeWeb.AdminDoorsController.rotate_event_token"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/doors/{id}/unlock": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** «Άνοιγμα»: open the door from the desk; logged with who opened it */
+        post: operations["PaleeWeb.AdminDoorsController.unlock"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/finance/accounting-exports": {
         parameters: {
             query?: never;
@@ -9402,6 +9577,258 @@ export interface paths {
         put?: never;
         /** Undo an applied import (within 7 days of its end) */
         post: operations["PaleeWeb.AdminImportController.undo"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/integrations/api-keys": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box's public API keys (never their secrets) */
+        get: operations["PaleeWeb.AdminIntegrationsController.keys"];
+        put?: never;
+        /**
+         * Make an API key that acts for you, narrowed to the chosen scopes
+         * @description The token is answered once. The key can never do more than the person who made it can do now; when they leave or lose the role, the key stops working.
+         */
+        post: operations["PaleeWeb.AdminIntegrationsController.create_key"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/integrations/api-keys/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Revoke a key at once (its webhook subscriptions go with it) */
+        delete: operations["PaleeWeb.AdminIntegrationsController.revoke_key"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/integrations/api-keys/{id}/rotate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Rotate a key's secret; the old one keeps working for 24 hours */
+        post: operations["PaleeWeb.AdminIntegrationsController.rotate_key"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/integrations/catalog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Scopes, webhook events and email list providers the settings can offer (EN, EL) */
+        get: operations["PaleeWeb.AdminIntegrationsController.catalog"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/integrations/deliveries/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One delivery with its payload and every attempt */
+        get: operations["PaleeWeb.AdminIntegrationsController.delivery"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/integrations/deliveries/{id}/replay": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Send a delivery's event again (same event id, a new delivery) */
+        post: operations["PaleeWeb.AdminIntegrationsController.replay"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/integrations/email-list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box's email list connection (never its key) */
+        get: operations["PaleeWeb.AdminIntegrationsController.audience"];
+        /**
+         * Connect Mailchimp or Brevo; only members who said yes are sent
+         * @description The provider is asked first; a refused key or unknown list is not saved. A sync follows: members with marketing consent are subscribed, others unsubscribed.
+         */
+        put: operations["PaleeWeb.AdminIntegrationsController.save_audience"];
+        post?: never;
+        /** Disconnect the email list (the list itself is left as it is) */
+        delete: operations["PaleeWeb.AdminIntegrationsController.delete_audience"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/integrations/email-list/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Sync the email list now */
+        post: operations["PaleeWeb.AdminIntegrationsController.sync_audience"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/integrations/email-list/unsubscribe-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * A new address for Mailchimp's or Brevo's unsubscribe webhook (shown once)
+         * @description Paste it into the provider's webhook settings (Mailchimp: «Unsubscribes»; Brevo: marketing event «Unsubscribed»). Someone who unsubscribes there has their switch in Palee turned off too. The old address stops working at once.
+         */
+        post: operations["PaleeWeb.AdminIntegrationsController.rotate_unsubscribe_url"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/integrations/webhooks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box's webhook endpoints */
+        get: operations["PaleeWeb.AdminIntegrationsController.webhooks"];
+        put?: never;
+        /** Add a webhook endpoint (https); its signing secret is answered once */
+        post: operations["PaleeWeb.AdminIntegrationsController.create_webhook"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/integrations/webhooks/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove an endpoint and its delivery log */
+        delete: operations["PaleeWeb.AdminIntegrationsController.delete_webhook"];
+        options?: never;
+        head?: never;
+        /** Change an endpoint's address, events or description, or turn it on or off */
+        patch: operations["PaleeWeb.AdminIntegrationsController.update_webhook"];
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/integrations/webhooks/{id}/deliveries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** An endpoint's delivery log, newest first */
+        get: operations["PaleeWeb.AdminIntegrationsController.deliveries"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/integrations/webhooks/{id}/rotate-secret": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** New signing secret; for 24 hours deliveries are signed with both */
+        post: operations["PaleeWeb.AdminIntegrationsController.rotate_webhook_secret"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/integrations/webhooks/{id}/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Send a `ping` event to the endpoint now */
+        post: operations["PaleeWeb.AdminIntegrationsController.test_webhook"];
         delete?: never;
         options?: never;
         head?: never;
@@ -14236,6 +14663,27 @@ export interface paths {
         get: operations["PaleeWeb.WorkoutLeaderboardController.profile"];
         /** Set your division and birth year (only after opting in to leaderboards) */
         put: operations["PaleeWeb.WorkoutLeaderboardController.update_profile"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/marketing-consent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Whether I agreed to the box's marketing email */
+        get: operations["PaleeWeb.MarketingConsentController.show"];
+        /**
+         * Say yes or no to the box's marketing email
+         * @description Yes adds me to the box's email list (Mailchimp or Brevo) at the next sync with my email and first name only; no unsubscribes me there.
+         */
+        put: operations["PaleeWeb.MarketingConsentController.update"];
         post?: never;
         delete?: never;
         options?: never;
@@ -19511,6 +19959,61 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AccessEvent */
+        AccessEvent: {
+            /** Format: uuid */
+            actor_id?: string | null;
+            /** @description Who opened from the desk */
+            actor_name?: string | null;
+            /** Format: uuid */
+            door_controller_id?: string | null;
+            door_name?: string | null;
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            kind: "granted" | "denied" | "unlock_failed" | "staff_unlock" | "door_event";
+            /** Format: uuid */
+            location_id?: string | null;
+            /** @enum {string} */
+            method: "qr" | "nfc" | "staff" | "provider";
+            /** Format: date-time */
+            occurred_at: string;
+            /** @description Who entered or was refused */
+            person_name?: string | null;
+            provider_event?: string | null;
+            reason?: string | null;
+            /** Format: uuid */
+            user_id?: string | null;
+        };
+        /** AccessEventPage */
+        AccessEventPage: {
+            events: {
+                /** Format: uuid */
+                actor_id?: string | null;
+                /** @description Who opened from the desk */
+                actor_name?: string | null;
+                /** Format: uuid */
+                door_controller_id?: string | null;
+                door_name?: string | null;
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                kind: "granted" | "denied" | "unlock_failed" | "staff_unlock" | "door_event";
+                /** Format: uuid */
+                location_id?: string | null;
+                /** @enum {string} */
+                method: "qr" | "nfc" | "staff" | "provider";
+                /** Format: date-time */
+                occurred_at: string;
+                /** @description Who entered or was refused */
+                person_name?: string | null;
+                provider_event?: string | null;
+                reason?: string | null;
+                /** Format: uuid */
+                user_id?: string | null;
+            }[];
+            total: number;
+        };
         /** AccountHistoryPage */
         AccountHistoryPage: {
             entries: {
@@ -19933,6 +20436,82 @@ export interface components {
             qualities: string[];
             roles: ("primary" | "secondary" | "stabilizer")[];
             version: number;
+        };
+        /**
+         * ApiKey
+         * @description A key's description. The secret itself is never shown again.
+         */
+        ApiKey: {
+            /** Format: date-time */
+            created_at?: string;
+            /** Format: uuid */
+            created_by_id?: string | null;
+            /** Format: date-time */
+            expires_at?: string | null;
+            /** Format: uuid */
+            id: string;
+            /** Format: date-time */
+            last_used_at?: string | null;
+            /** @description palee_live_ABCD…_•••• */
+            masked: string;
+            name: string;
+            prefix: string;
+            /**
+             * Format: date-time
+             * @description Until then the secret before the last rotation still works
+             */
+            previous_secret_expires_at?: string | null;
+            /** Format: date-time */
+            revoked_at?: string | null;
+            /** Format: date-time */
+            rotated_at?: string | null;
+            scopes: string[];
+            /** @enum {string} */
+            status: "active" | "revoked";
+        };
+        /** ApiKeyBody */
+        ApiKeyBody: {
+            /** Format: date-time */
+            expires_at?: string | null;
+            name: string;
+            scopes: string[];
+        };
+        /** ApiKeyWithToken */
+        ApiKeyWithToken: {
+            /**
+             * ApiKey
+             * @description A key's description. The secret itself is never shown again.
+             */
+            key: {
+                /** Format: date-time */
+                created_at?: string;
+                /** Format: uuid */
+                created_by_id?: string | null;
+                /** Format: date-time */
+                expires_at?: string | null;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                last_used_at?: string | null;
+                /** @description palee_live_ABCD…_•••• */
+                masked: string;
+                name: string;
+                prefix: string;
+                /**
+                 * Format: date-time
+                 * @description Until then the secret before the last rotation still works
+                 */
+                previous_secret_expires_at?: string | null;
+                /** Format: date-time */
+                revoked_at?: string | null;
+                /** Format: date-time */
+                rotated_at?: string | null;
+                scopes: string[];
+                /** @enum {string} */
+                status: "active" | "revoked";
+            };
+            /** @description Shown once: copy it now */
+            token: string;
         };
         /** AppointmentBooking */
         AppointmentBooking: {
@@ -23362,6 +23941,32 @@ export interface components {
             exercise_ref: string;
             label: string;
             sets: number;
+        };
+        /** AudienceConnection */
+        AudienceConnection: {
+            key_saved: boolean;
+            last_error?: string | null;
+            /** Format: date-time */
+            last_synced_at?: string | null;
+            list_id: string;
+            /** @enum {string} */
+            provider: "sandbox" | "mailchimp" | "brevo";
+            /** @enum {string} */
+            status: "active" | "invalid";
+            /** Format: date-time */
+            sync_requested_at?: string | null;
+            /** @description Whether the provider's unsubscribe webhook address was made */
+            unsubscribe_hook?: boolean;
+            /** Format: date-time */
+            updated_at?: string | null;
+        } | null;
+        /** AudienceConnectionBody */
+        AudienceConnectionBody: {
+            /** @description Kept encrypted, never shown again; leave out to keep the saved one */
+            api_key?: string;
+            list_id: string;
+            /** @enum {string} */
+            provider: "sandbox" | "mailchimp" | "brevo";
         };
         /** BarcodeLookup */
         BarcodeLookup: {
@@ -33214,6 +33819,128 @@ export interface components {
             steps?: boolean;
             weight?: boolean;
         };
+        /** Door */
+        Door: {
+            credentials_saved: boolean;
+            /** Format: uuid */
+            id: string;
+            last_error?: string | null;
+            /** Format: date-time */
+            last_seen_at?: string | null;
+            /** Format: uuid */
+            location_id: string;
+            name: string;
+            /** @enum {string} */
+            provider: "sandbox" | "shelly" | "kisi";
+            rules: {
+                [key: string]: unknown;
+            };
+            settings?: {
+                [key: string]: unknown;
+            };
+            /** @enum {string} */
+            status: "active" | "disabled" | "invalid";
+            /** Format: date-time */
+            updated_at?: string | null;
+        };
+        /** DoorBody */
+        DoorBody: {
+            /** @description Written, never read back (Shelly `auth_key`, Kisi `api_key`) */
+            credentials?: {
+                [key: string]: unknown;
+            };
+            /** Format: uuid */
+            location_id: string;
+            name: string;
+            /** @enum {string} */
+            provider: "sandbox" | "shelly" | "kisi";
+            rules?: {
+                [key: string]: unknown;
+            };
+            settings?: {
+                [key: string]: unknown;
+            };
+            /** @enum {string} */
+            status?: "active" | "disabled";
+        };
+        /** DoorCatalog */
+        DoorCatalog: {
+            defaults: {
+                [key: string]: unknown;
+            };
+            log_days: number;
+            providers: string[];
+            who: string[];
+        };
+        /**
+         * DoorOpenRequest
+         * @description Proof of presence at the door: `location_id` + `code` (the door screen's QR) or `nfc_code`; `door_id` when the branch has several doors. A `poster_code` is refused with `door_needs_door_scan`
+         */
+        DoorOpenRequest: {
+            code?: string;
+            /** Format: uuid */
+            door_id?: string;
+            /** Format: uuid */
+            location_id?: string;
+            nfc_code?: string;
+            poster_code?: string;
+        };
+        /** DoorOpenResult */
+        DoorOpenResult: {
+            door: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+            };
+            opened: boolean;
+            /** @enum {string} */
+            reason: "staff" | "member" | "booked_class" | "open_gym";
+            seconds: number;
+        };
+        /** DoorUpdate */
+        DoorUpdate: {
+            credentials?: {
+                [key: string]: unknown;
+            };
+            name?: string;
+            rules?: {
+                [key: string]: unknown;
+            };
+            settings?: {
+                [key: string]: unknown;
+            };
+            /** @enum {string} */
+            status?: "active" | "disabled";
+        };
+        /** DoorWithEventUrl */
+        DoorWithEventUrl: {
+            /** Door */
+            door: {
+                credentials_saved: boolean;
+                /** Format: uuid */
+                id: string;
+                last_error?: string | null;
+                /** Format: date-time */
+                last_seen_at?: string | null;
+                /** Format: uuid */
+                location_id: string;
+                name: string;
+                /** @enum {string} */
+                provider: "sandbox" | "shelly" | "kisi";
+                rules: {
+                    [key: string]: unknown;
+                };
+                settings?: {
+                    [key: string]: unknown;
+                };
+                /** @enum {string} */
+                status: "active" | "disabled" | "invalid";
+                /** Format: date-time */
+                updated_at?: string | null;
+            };
+            /** @description For the controller's own notifications; its token is shown once */
+            event_url: string;
+        };
         /**
          * EntryAudience
          * @description Coaches a coach rung on this entry reaches (and their providers); `custom` when the entry has its own audience.
@@ -35010,6 +35737,21 @@ export interface components {
             trigger_count?: number | null;
             with_trigger?: number | null;
         };
+        /** IntegrationCatalog */
+        IntegrationCatalog: {
+            audience_providers: string[];
+            events: {
+                el: string;
+                en: string;
+                scope?: string;
+                type?: string;
+            }[];
+            scopes: {
+                el: string;
+                en: string;
+                scope?: string;
+            }[];
+        };
         /** InventoryLowReport */
         InventoryLowReport: {
             /** Format: uuid */
@@ -35682,6 +36424,21 @@ export interface components {
             quantity: number;
             /** Format: uuid */
             space_id: string;
+        };
+        /** MarketingConsent */
+        MarketingConsent: {
+            granted: boolean;
+            /** Format: date-time */
+            granted_at?: string | null;
+            /** @description Whether the box has an email list */
+            list_connected: boolean;
+            text_version?: string | null;
+            /** Format: date-time */
+            withdrawn_at?: string | null;
+        };
+        /** MarketingConsentBody */
+        MarketingConsentBody: {
+            granted: boolean;
         };
         /** MarketplaceProgramme */
         MarketplaceProgramme: {
@@ -51766,6 +52523,152 @@ export interface components {
             /** @description The previous attempt's pace line */
             show_pace?: boolean;
         };
+        /** WebhookDelivery */
+        WebhookDelivery: {
+            attempts: number;
+            /** @description Detail only */
+            attempts_log?: {
+                attempt: number;
+                duration_ms?: number | null;
+                error?: string | null;
+                outcome: string;
+                response_excerpt?: string | null;
+                /** Format: date-time */
+                started_at: string;
+                status_code?: number | null;
+            }[];
+            /** Format: date-time */
+            created_at?: string;
+            /** Format: date-time */
+            delivered_at?: string | null;
+            /** Format: uuid */
+            endpoint_id: string;
+            /** Format: uuid */
+            event_id: string;
+            event_type: string;
+            /** Format: uuid */
+            id: string;
+            last_error?: string | null;
+            last_status_code?: number | null;
+            /** Format: date-time */
+            next_attempt_at?: string | null;
+            /** @description Detail only */
+            payload?: {
+                [key: string]: unknown;
+            };
+            /** Format: uuid */
+            replay_of_id?: string | null;
+            /** @enum {string} */
+            status: "pending" | "succeeded" | "failed";
+        };
+        /** WebhookDeliveryPage */
+        WebhookDeliveryPage: {
+            deliveries: {
+                attempts: number;
+                /** @description Detail only */
+                attempts_log?: {
+                    attempt: number;
+                    duration_ms?: number | null;
+                    error?: string | null;
+                    outcome: string;
+                    response_excerpt?: string | null;
+                    /** Format: date-time */
+                    started_at: string;
+                    status_code?: number | null;
+                }[];
+                /** Format: date-time */
+                created_at?: string;
+                /** Format: date-time */
+                delivered_at?: string | null;
+                /** Format: uuid */
+                endpoint_id: string;
+                /** Format: uuid */
+                event_id: string;
+                event_type: string;
+                /** Format: uuid */
+                id: string;
+                last_error?: string | null;
+                last_status_code?: number | null;
+                /** Format: date-time */
+                next_attempt_at?: string | null;
+                /** @description Detail only */
+                payload?: {
+                    [key: string]: unknown;
+                };
+                /** Format: uuid */
+                replay_of_id?: string | null;
+                /** @enum {string} */
+                status: "pending" | "succeeded" | "failed";
+            }[];
+            total: number;
+        };
+        /** WebhookEndpoint */
+        WebhookEndpoint: {
+            /** Format: uuid */
+            api_key_id?: string | null;
+            consecutive_failures?: number;
+            /** Format: date-time */
+            created_at?: string;
+            description?: string | null;
+            disabled_reason?: string | null;
+            events: string[];
+            /** Format: uuid */
+            id: string;
+            /** Format: date-time */
+            last_failure_at?: string | null;
+            /** Format: date-time */
+            last_success_at?: string | null;
+            /** Format: date-time */
+            secret_rotating_until?: string | null;
+            /** @enum {string} */
+            source: "staff" | "api";
+            /** @enum {string} */
+            status: "active" | "disabled";
+            url: string;
+        };
+        /** WebhookEndpointBody */
+        WebhookEndpointBody: {
+            description?: string | null;
+            events: string[];
+            url: string;
+        };
+        /** WebhookEndpointUpdate */
+        WebhookEndpointUpdate: {
+            description?: string | null;
+            events?: string[];
+            /** @enum {string} */
+            status?: "active" | "disabled";
+            url?: string;
+        };
+        /** WebhookEndpointWithSecret */
+        WebhookEndpointWithSecret: {
+            /** WebhookEndpoint */
+            endpoint: {
+                /** Format: uuid */
+                api_key_id?: string | null;
+                consecutive_failures?: number;
+                /** Format: date-time */
+                created_at?: string;
+                description?: string | null;
+                disabled_reason?: string | null;
+                events: string[];
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                last_failure_at?: string | null;
+                /** Format: date-time */
+                last_success_at?: string | null;
+                /** Format: date-time */
+                secret_rotating_until?: string | null;
+                /** @enum {string} */
+                source: "staff" | "api";
+                /** @enum {string} */
+                status: "active" | "disabled";
+                url: string;
+            };
+            /** @description The signing secret, shown once */
+            secret: string;
+        };
         /** WellnessAccessLog */
         WellnessAccessLog: {
             entries: {
@@ -53036,6 +53939,145 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    "PaleeWeb.DoorAccessController.ingest": {
+        parameters: {
+            query: {
+                token: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    [key: string]: unknown;
+                };
+            };
+        };
+        responses: {
+            /** @description Recorded */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        recorded: number;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.DoorAccessController.ingest (2)": {
+        parameters: {
+            query: {
+                token: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    [key: string]: unknown;
+                };
+            };
+        };
+        responses: {
+            /** @description Recorded */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        recorded: number;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.DoorAccessController.open": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    code?: string;
+                    /** Format: uuid */
+                    door_id?: string;
+                    /** Format: uuid */
+                    location_id?: string;
+                    nfc_code?: string;
+                    poster_code?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Opened */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        door: {
+                            /** Format: uuid */
+                            id: string;
+                            name: string;
+                        };
+                        opened: boolean;
+                        /** @enum {string} */
+                        reason: "staff" | "member" | "booked_class" | "open_gym";
+                        seconds: number;
+                    };
+                };
+            };
+            /** @description Entry refused */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Choose a door */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description The door controller is offline */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AnatomyController.taxonomy": {
         parameters: {
             query?: never;
@@ -59899,6 +60941,76 @@ export interface operations {
                         status: string;
                         /** @example 0.1.0 */
                         version: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.EmailListHookController.unsubscribe": {
+        parameters: {
+            query: {
+                token: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    [key: string]: unknown;
+                };
+                "application/x-www-form-urlencoded": {
+                    [key: string]: unknown;
+                };
+            };
+        };
+        responses: {
+            /** @description Handled */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        withdrawn: number;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.EmailListHookController.unsubscribe (2)": {
+        parameters: {
+            query: {
+                token: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    [key: string]: unknown;
+                };
+                "application/x-www-form-urlencoded": {
+                    [key: string]: unknown;
+                };
+            };
+        };
+        responses: {
+            /** @description Handled */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        withdrawn: number;
                     };
                 };
             };
@@ -78428,6 +79540,60 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminDoorsController.events": {
+        parameters: {
+            query?: {
+                door_id?: string;
+                location_id?: string;
+                user_id?: string;
+                kind?: "granted" | "denied" | "unlock_failed" | "staff_unlock" | "door_event";
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Access log */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        events: {
+                            /** Format: uuid */
+                            actor_id?: string | null;
+                            /** @description Who opened from the desk */
+                            actor_name?: string | null;
+                            /** Format: uuid */
+                            door_controller_id?: string | null;
+                            door_name?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "granted" | "denied" | "unlock_failed" | "staff_unlock" | "door_event";
+                            /** Format: uuid */
+                            location_id?: string | null;
+                            /** @enum {string} */
+                            method: "qr" | "nfc" | "staff" | "provider";
+                            /** Format: date-time */
+                            occurred_at: string;
+                            /** @description Who entered or was refused */
+                            person_name?: string | null;
+                            provider_event?: string | null;
+                            reason?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                        }[];
+                        total: number;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminAiSettingsController.show": {
         parameters: {
             query?: never;
@@ -91432,6 +92598,284 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminDoorsController.index": {
+        parameters: {
+            query?: {
+                location_id?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Doors */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        doors: {
+                            credentials_saved: boolean;
+                            /** Format: uuid */
+                            id: string;
+                            last_error?: string | null;
+                            /** Format: date-time */
+                            last_seen_at?: string | null;
+                            /** Format: uuid */
+                            location_id: string;
+                            name: string;
+                            /** @enum {string} */
+                            provider: "sandbox" | "shelly" | "kisi";
+                            rules: {
+                                [key: string]: unknown;
+                            };
+                            settings?: {
+                                [key: string]: unknown;
+                            };
+                            /** @enum {string} */
+                            status: "active" | "disabled" | "invalid";
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminDoorsController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Written, never read back (Shelly `auth_key`, Kisi `api_key`) */
+                    credentials?: {
+                        [key: string]: unknown;
+                    };
+                    /** Format: uuid */
+                    location_id: string;
+                    name: string;
+                    /** @enum {string} */
+                    provider: "sandbox" | "shelly" | "kisi";
+                    rules?: {
+                        [key: string]: unknown;
+                    };
+                    settings?: {
+                        [key: string]: unknown;
+                    };
+                    /** @enum {string} */
+                    status?: "active" | "disabled";
+                };
+            };
+        };
+        responses: {
+            /** @description Door */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Door */
+                        door: {
+                            credentials_saved: boolean;
+                            /** Format: uuid */
+                            id: string;
+                            last_error?: string | null;
+                            /** Format: date-time */
+                            last_seen_at?: string | null;
+                            /** Format: uuid */
+                            location_id: string;
+                            name: string;
+                            /** @enum {string} */
+                            provider: "sandbox" | "shelly" | "kisi";
+                            rules: {
+                                [key: string]: unknown;
+                            };
+                            settings?: {
+                                [key: string]: unknown;
+                            };
+                            /** @enum {string} */
+                            status: "active" | "disabled" | "invalid";
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                        };
+                        /** @description For the controller's own notifications; its token is shown once */
+                        event_url: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminDoorsController.catalog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Catalog */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        defaults: {
+                            [key: string]: unknown;
+                        };
+                        log_days: number;
+                        providers: string[];
+                        who: string[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminDoorsController.delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        ok: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminDoorsController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    credentials?: {
+                        [key: string]: unknown;
+                    };
+                    name?: string;
+                    rules?: {
+                        [key: string]: unknown;
+                    };
+                    settings?: {
+                        [key: string]: unknown;
+                    };
+                    /** @enum {string} */
+                    status?: "active" | "disabled";
+                };
+            };
+        };
+        responses: {
+            /** @description Door */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Door */
+                        door: {
+                            credentials_saved: boolean;
+                            /** Format: uuid */
+                            id: string;
+                            last_error?: string | null;
+                            /** Format: date-time */
+                            last_seen_at?: string | null;
+                            /** Format: uuid */
+                            location_id: string;
+                            name: string;
+                            /** @enum {string} */
+                            provider: "sandbox" | "shelly" | "kisi";
+                            rules: {
+                                [key: string]: unknown;
+                            };
+                            settings?: {
+                                [key: string]: unknown;
+                            };
+                            /** @enum {string} */
+                            status: "active" | "disabled" | "invalid";
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminDoorsController.rotate_event_token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Event URL */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        event_url: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminDoorsController.unlock": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Opened */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        opened: boolean;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminFinanceAccountingController.exports": {
         parameters: {
             query?: {
@@ -99557,6 +101001,895 @@ export interface operations {
                             undo_until?: string | null;
                             /** Format: date-time */
                             undone_at?: string | null;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.keys": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Keys */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        keys: {
+                            /** Format: date-time */
+                            created_at?: string;
+                            /** Format: uuid */
+                            created_by_id?: string | null;
+                            /** Format: date-time */
+                            expires_at?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            last_used_at?: string | null;
+                            /** @description palee_live_ABCD…_•••• */
+                            masked: string;
+                            name: string;
+                            prefix: string;
+                            /**
+                             * Format: date-time
+                             * @description Until then the secret before the last rotation still works
+                             */
+                            previous_secret_expires_at?: string | null;
+                            /** Format: date-time */
+                            revoked_at?: string | null;
+                            /** Format: date-time */
+                            rotated_at?: string | null;
+                            scopes: string[];
+                            /** @enum {string} */
+                            status: "active" | "revoked";
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.create_key": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: date-time */
+                    expires_at?: string | null;
+                    name: string;
+                    scopes: string[];
+                };
+            };
+        };
+        responses: {
+            /** @description Key and token */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * ApiKey
+                         * @description A key's description. The secret itself is never shown again.
+                         */
+                        key: {
+                            /** Format: date-time */
+                            created_at?: string;
+                            /** Format: uuid */
+                            created_by_id?: string | null;
+                            /** Format: date-time */
+                            expires_at?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            last_used_at?: string | null;
+                            /** @description palee_live_ABCD…_•••• */
+                            masked: string;
+                            name: string;
+                            prefix: string;
+                            /**
+                             * Format: date-time
+                             * @description Until then the secret before the last rotation still works
+                             */
+                            previous_secret_expires_at?: string | null;
+                            /** Format: date-time */
+                            revoked_at?: string | null;
+                            /** Format: date-time */
+                            rotated_at?: string | null;
+                            scopes: string[];
+                            /** @enum {string} */
+                            status: "active" | "revoked";
+                        };
+                        /** @description Shown once: copy it now */
+                        token: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.revoke_key": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Key */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * ApiKey
+                         * @description A key's description. The secret itself is never shown again.
+                         */
+                        key: {
+                            /** Format: date-time */
+                            created_at?: string;
+                            /** Format: uuid */
+                            created_by_id?: string | null;
+                            /** Format: date-time */
+                            expires_at?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            last_used_at?: string | null;
+                            /** @description palee_live_ABCD…_•••• */
+                            masked: string;
+                            name: string;
+                            prefix: string;
+                            /**
+                             * Format: date-time
+                             * @description Until then the secret before the last rotation still works
+                             */
+                            previous_secret_expires_at?: string | null;
+                            /** Format: date-time */
+                            revoked_at?: string | null;
+                            /** Format: date-time */
+                            rotated_at?: string | null;
+                            scopes: string[];
+                            /** @enum {string} */
+                            status: "active" | "revoked";
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.rotate_key": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Key and new token */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * ApiKey
+                         * @description A key's description. The secret itself is never shown again.
+                         */
+                        key: {
+                            /** Format: date-time */
+                            created_at?: string;
+                            /** Format: uuid */
+                            created_by_id?: string | null;
+                            /** Format: date-time */
+                            expires_at?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            last_used_at?: string | null;
+                            /** @description palee_live_ABCD…_•••• */
+                            masked: string;
+                            name: string;
+                            prefix: string;
+                            /**
+                             * Format: date-time
+                             * @description Until then the secret before the last rotation still works
+                             */
+                            previous_secret_expires_at?: string | null;
+                            /** Format: date-time */
+                            revoked_at?: string | null;
+                            /** Format: date-time */
+                            rotated_at?: string | null;
+                            scopes: string[];
+                            /** @enum {string} */
+                            status: "active" | "revoked";
+                        };
+                        /** @description Shown once: copy it now */
+                        token: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.catalog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Catalog */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        audience_providers: string[];
+                        events: {
+                            el: string;
+                            en: string;
+                            scope?: string;
+                            type?: string;
+                        }[];
+                        scopes: {
+                            el: string;
+                            en: string;
+                            scope?: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.delivery": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Delivery */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** WebhookDelivery */
+                        delivery: {
+                            attempts: number;
+                            /** @description Detail only */
+                            attempts_log?: {
+                                attempt: number;
+                                duration_ms?: number | null;
+                                error?: string | null;
+                                outcome: string;
+                                response_excerpt?: string | null;
+                                /** Format: date-time */
+                                started_at: string;
+                                status_code?: number | null;
+                            }[];
+                            /** Format: date-time */
+                            created_at?: string;
+                            /** Format: date-time */
+                            delivered_at?: string | null;
+                            /** Format: uuid */
+                            endpoint_id: string;
+                            /** Format: uuid */
+                            event_id: string;
+                            event_type: string;
+                            /** Format: uuid */
+                            id: string;
+                            last_error?: string | null;
+                            last_status_code?: number | null;
+                            /** Format: date-time */
+                            next_attempt_at?: string | null;
+                            /** @description Detail only */
+                            payload?: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: uuid */
+                            replay_of_id?: string | null;
+                            /** @enum {string} */
+                            status: "pending" | "succeeded" | "failed";
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.replay": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Delivery */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** WebhookDelivery */
+                        delivery: {
+                            attempts: number;
+                            /** @description Detail only */
+                            attempts_log?: {
+                                attempt: number;
+                                duration_ms?: number | null;
+                                error?: string | null;
+                                outcome: string;
+                                response_excerpt?: string | null;
+                                /** Format: date-time */
+                                started_at: string;
+                                status_code?: number | null;
+                            }[];
+                            /** Format: date-time */
+                            created_at?: string;
+                            /** Format: date-time */
+                            delivered_at?: string | null;
+                            /** Format: uuid */
+                            endpoint_id: string;
+                            /** Format: uuid */
+                            event_id: string;
+                            event_type: string;
+                            /** Format: uuid */
+                            id: string;
+                            last_error?: string | null;
+                            last_status_code?: number | null;
+                            /** Format: date-time */
+                            next_attempt_at?: string | null;
+                            /** @description Detail only */
+                            payload?: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: uuid */
+                            replay_of_id?: string | null;
+                            /** @enum {string} */
+                            status: "pending" | "succeeded" | "failed";
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.audience": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Connection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** AudienceConnection */
+                        connection: {
+                            key_saved: boolean;
+                            last_error?: string | null;
+                            /** Format: date-time */
+                            last_synced_at?: string | null;
+                            list_id: string;
+                            /** @enum {string} */
+                            provider: "sandbox" | "mailchimp" | "brevo";
+                            /** @enum {string} */
+                            status: "active" | "invalid";
+                            /** Format: date-time */
+                            sync_requested_at?: string | null;
+                            /** @description Whether the provider's unsubscribe webhook address was made */
+                            unsubscribe_hook?: boolean;
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.save_audience": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Kept encrypted, never shown again; leave out to keep the saved one */
+                    api_key?: string;
+                    list_id: string;
+                    /** @enum {string} */
+                    provider: "sandbox" | "mailchimp" | "brevo";
+                };
+            };
+        };
+        responses: {
+            /** @description Connection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** AudienceConnection */
+                        connection: {
+                            key_saved: boolean;
+                            last_error?: string | null;
+                            /** Format: date-time */
+                            last_synced_at?: string | null;
+                            list_id: string;
+                            /** @enum {string} */
+                            provider: "sandbox" | "mailchimp" | "brevo";
+                            /** @enum {string} */
+                            status: "active" | "invalid";
+                            /** Format: date-time */
+                            sync_requested_at?: string | null;
+                            /** @description Whether the provider's unsubscribe webhook address was made */
+                            unsubscribe_hook?: boolean;
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.delete_audience": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        ok: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.sync_audience": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Requested */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        ok: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.rotate_unsubscribe_url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Address */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        url: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.webhooks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Endpoints */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        webhooks: {
+                            /** Format: uuid */
+                            api_key_id?: string | null;
+                            consecutive_failures?: number;
+                            /** Format: date-time */
+                            created_at?: string;
+                            description?: string | null;
+                            disabled_reason?: string | null;
+                            events: string[];
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            last_failure_at?: string | null;
+                            /** Format: date-time */
+                            last_success_at?: string | null;
+                            /** Format: date-time */
+                            secret_rotating_until?: string | null;
+                            /** @enum {string} */
+                            source: "staff" | "api";
+                            /** @enum {string} */
+                            status: "active" | "disabled";
+                            url: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.create_webhook": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    description?: string | null;
+                    events: string[];
+                    url: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Endpoint and secret */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** WebhookEndpoint */
+                        endpoint: {
+                            /** Format: uuid */
+                            api_key_id?: string | null;
+                            consecutive_failures?: number;
+                            /** Format: date-time */
+                            created_at?: string;
+                            description?: string | null;
+                            disabled_reason?: string | null;
+                            events: string[];
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            last_failure_at?: string | null;
+                            /** Format: date-time */
+                            last_success_at?: string | null;
+                            /** Format: date-time */
+                            secret_rotating_until?: string | null;
+                            /** @enum {string} */
+                            source: "staff" | "api";
+                            /** @enum {string} */
+                            status: "active" | "disabled";
+                            url: string;
+                        };
+                        /** @description The signing secret, shown once */
+                        secret: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.delete_webhook": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        ok: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.update_webhook": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    description?: string | null;
+                    events?: string[];
+                    /** @enum {string} */
+                    status?: "active" | "disabled";
+                    url?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Endpoint */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** WebhookEndpoint */
+                        endpoint: {
+                            /** Format: uuid */
+                            api_key_id?: string | null;
+                            consecutive_failures?: number;
+                            /** Format: date-time */
+                            created_at?: string;
+                            description?: string | null;
+                            disabled_reason?: string | null;
+                            events: string[];
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            last_failure_at?: string | null;
+                            /** Format: date-time */
+                            last_success_at?: string | null;
+                            /** Format: date-time */
+                            secret_rotating_until?: string | null;
+                            /** @enum {string} */
+                            source: "staff" | "api";
+                            /** @enum {string} */
+                            status: "active" | "disabled";
+                            url: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.deliveries": {
+        parameters: {
+            query?: {
+                status?: "pending" | "succeeded" | "failed";
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deliveries */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        deliveries: {
+                            attempts: number;
+                            /** @description Detail only */
+                            attempts_log?: {
+                                attempt: number;
+                                duration_ms?: number | null;
+                                error?: string | null;
+                                outcome: string;
+                                response_excerpt?: string | null;
+                                /** Format: date-time */
+                                started_at: string;
+                                status_code?: number | null;
+                            }[];
+                            /** Format: date-time */
+                            created_at?: string;
+                            /** Format: date-time */
+                            delivered_at?: string | null;
+                            /** Format: uuid */
+                            endpoint_id: string;
+                            /** Format: uuid */
+                            event_id: string;
+                            event_type: string;
+                            /** Format: uuid */
+                            id: string;
+                            last_error?: string | null;
+                            last_status_code?: number | null;
+                            /** Format: date-time */
+                            next_attempt_at?: string | null;
+                            /** @description Detail only */
+                            payload?: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: uuid */
+                            replay_of_id?: string | null;
+                            /** @enum {string} */
+                            status: "pending" | "succeeded" | "failed";
+                        }[];
+                        total: number;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.rotate_webhook_secret": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Endpoint and secret */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** WebhookEndpoint */
+                        endpoint: {
+                            /** Format: uuid */
+                            api_key_id?: string | null;
+                            consecutive_failures?: number;
+                            /** Format: date-time */
+                            created_at?: string;
+                            description?: string | null;
+                            disabled_reason?: string | null;
+                            events: string[];
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            last_failure_at?: string | null;
+                            /** Format: date-time */
+                            last_success_at?: string | null;
+                            /** Format: date-time */
+                            secret_rotating_until?: string | null;
+                            /** @enum {string} */
+                            source: "staff" | "api";
+                            /** @enum {string} */
+                            status: "active" | "disabled";
+                            url: string;
+                        };
+                        /** @description The signing secret, shown once */
+                        secret: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.test_webhook": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Delivery */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** WebhookDelivery */
+                        delivery: {
+                            attempts: number;
+                            /** @description Detail only */
+                            attempts_log?: {
+                                attempt: number;
+                                duration_ms?: number | null;
+                                error?: string | null;
+                                outcome: string;
+                                response_excerpt?: string | null;
+                                /** Format: date-time */
+                                started_at: string;
+                                status_code?: number | null;
+                            }[];
+                            /** Format: date-time */
+                            created_at?: string;
+                            /** Format: date-time */
+                            delivered_at?: string | null;
+                            /** Format: uuid */
+                            endpoint_id: string;
+                            /** Format: uuid */
+                            event_id: string;
+                            event_type: string;
+                            /** Format: uuid */
+                            id: string;
+                            last_error?: string | null;
+                            last_status_code?: number | null;
+                            /** Format: date-time */
+                            next_attempt_at?: string | null;
+                            /** @description Detail only */
+                            payload?: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: uuid */
+                            replay_of_id?: string | null;
+                            /** @enum {string} */
+                            status: "pending" | "succeeded" | "failed";
                         };
                     };
                 };
@@ -128014,6 +130347,70 @@ export interface operations {
                 content: {
                     "application/json": {
                         [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MarketingConsentController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Consent */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        granted: boolean;
+                        /** Format: date-time */
+                        granted_at?: string | null;
+                        /** @description Whether the box has an email list */
+                        list_connected: boolean;
+                        text_version?: string | null;
+                        /** Format: date-time */
+                        withdrawn_at?: string | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MarketingConsentController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    granted: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Consent */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        granted: boolean;
+                        /** Format: date-time */
+                        granted_at?: string | null;
+                        /** @description Whether the box has an email list */
+                        list_connected: boolean;
+                        text_version?: string | null;
+                        /** Format: date-time */
+                        withdrawn_at?: string | null;
                     };
                 };
             };
