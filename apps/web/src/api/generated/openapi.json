@@ -17819,6 +17819,11 @@
             "description": "Always false: a person decided",
             "type": "boolean"
           },
+          "contact": {
+            "description": "Palee's moderation address, named for redress",
+            "nullable": true,
+            "type": "string"
+          },
           "decided_at": {
             "format": "date-time",
             "type": "string"
@@ -17851,7 +17856,7 @@
           "redress": {
             "items": {
               "enum": [
-                "ask_palee_again",
+                "contact_palee",
                 "court"
               ],
               "type": "string"
@@ -17873,6 +17878,7 @@
         "required": [
           "after_report",
           "automated",
+          "contact",
           "decided_at",
           "ground",
           "legal_basis",
@@ -53527,6 +53533,11 @@
                 "description": "Always false: a person decided",
                 "type": "boolean"
               },
+              "contact": {
+                "description": "Palee's moderation address, named for redress",
+                "nullable": true,
+                "type": "string"
+              },
               "decided_at": {
                 "format": "date-time",
                 "type": "string"
@@ -53559,7 +53570,7 @@
               "redress": {
                 "items": {
                   "enum": [
-                    "ask_palee_again",
+                    "contact_palee",
                     "court"
                   ],
                   "type": "string"
@@ -53581,6 +53592,7 @@
             "required": [
               "after_report",
               "automated",
+              "contact",
               "decided_at",
               "ground",
               "legal_basis",
@@ -53723,6 +53735,11 @@
                     "description": "Always false: a person decided",
                     "type": "boolean"
                   },
+                  "contact": {
+                    "description": "Palee's moderation address, named for redress",
+                    "nullable": true,
+                    "type": "string"
+                  },
                   "decided_at": {
                     "format": "date-time",
                     "type": "string"
@@ -53755,7 +53772,7 @@
                   "redress": {
                     "items": {
                       "enum": [
-                        "ask_palee_again",
+                        "contact_palee",
                         "court"
                       ],
                       "type": "string"
@@ -53777,6 +53794,7 @@
                 "required": [
                   "after_report",
                   "automated",
+                  "contact",
                   "decided_at",
                   "ground",
                   "legal_basis",
@@ -70346,7 +70364,8 @@
             "enum": [
               "keep",
               "hide",
-              "remove"
+              "remove",
+              "restore"
             ],
             "type": "string"
           },
@@ -70356,6 +70375,16 @@
           "review_id": {
             "format": "uuid",
             "nullable": true,
+            "type": "string"
+          },
+          "review_status": {
+            "description": "The review now; only a hidden one can be restored",
+            "enum": [
+              "visible",
+              "hidden",
+              "removed",
+              "deleted"
+            ],
             "type": "string"
           },
           "statement": {
@@ -70372,6 +70401,7 @@
           "outcome",
           "reports_count",
           "review_id",
+          "review_status",
           "statement"
         ],
         "title": "PlatformReviewDecision",
@@ -70630,7 +70660,8 @@
                   "enum": [
                     "keep",
                     "hide",
-                    "remove"
+                    "remove",
+                    "restore"
                   ],
                   "type": "string"
                 },
@@ -70640,6 +70671,16 @@
                 "review_id": {
                   "format": "uuid",
                   "nullable": true,
+                  "type": "string"
+                },
+                "review_status": {
+                  "description": "The review now; only a hidden one can be restored",
+                  "enum": [
+                    "visible",
+                    "hidden",
+                    "removed",
+                    "deleted"
+                  ],
                   "type": "string"
                 },
                 "statement": {
@@ -70656,6 +70697,7 @@
                 "outcome",
                 "reports_count",
                 "review_id",
+                "review_status",
                 "statement"
               ],
               "title": "PlatformReviewDecision",
@@ -70820,6 +70862,21 @@
           "items"
         ],
         "title": "PlatformReviewReportsResponse",
+        "type": "object"
+      },
+      "PlatformReviewRestoreRequest": {
+        "properties": {
+          "statement": {
+            "description": "What the author reads",
+            "maxLength": 1000,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "statement"
+        ],
+        "title": "PlatformReviewRestoreRequest",
         "type": "object"
       },
       "PostAttachmentPreview": {
@@ -74415,6 +74472,11 @@
             },
             "type": "array"
           },
+          "report_contact": {
+            "description": "Palee's address for reporting content on the site (ADR-397, DSA Art. 16)",
+            "nullable": true,
+            "type": "string"
+          },
           "reviews": {
             "properties": {
               "google": {
@@ -74720,6 +74782,7 @@
           "forms",
           "language",
           "languages",
+          "report_contact",
           "reviews",
           "sections",
           "slug",
@@ -298498,6 +298561,11 @@
                               "description": "Always false: a person decided",
                               "type": "boolean"
                             },
+                            "contact": {
+                              "description": "Palee's moderation address, named for redress",
+                              "nullable": true,
+                              "type": "string"
+                            },
                             "decided_at": {
                               "format": "date-time",
                               "type": "string"
@@ -298530,7 +298598,7 @@
                             "redress": {
                               "items": {
                                 "enum": [
-                                  "ask_palee_again",
+                                  "contact_palee",
                                   "court"
                                 ],
                                 "type": "string"
@@ -298552,6 +298620,7 @@
                           "required": [
                             "after_report",
                             "automated",
+                            "contact",
                             "decided_at",
                             "ground",
                             "legal_basis",
@@ -366607,7 +366676,8 @@
                             "enum": [
                               "keep",
                               "hide",
-                              "remove"
+                              "remove",
+                              "restore"
                             ],
                             "type": "string"
                           },
@@ -366617,6 +366687,16 @@
                           "review_id": {
                             "format": "uuid",
                             "nullable": true,
+                            "type": "string"
+                          },
+                          "review_status": {
+                            "description": "The review now; only a hidden one can be restored",
+                            "enum": [
+                              "visible",
+                              "hidden",
+                              "removed",
+                              "deleted"
+                            ],
                             "type": "string"
                           },
                           "statement": {
@@ -366633,6 +366713,7 @@
                           "outcome",
                           "reports_count",
                           "review_id",
+                          "review_status",
                           "statement"
                         ],
                         "title": "PlatformReviewDecision",
@@ -366945,6 +367026,119 @@
           }
         ],
         "summary": "Keep, hide or remove a reported review, for every open report on it (vendors)",
+        "tags": [
+          "Platform review reports"
+        ]
+      }
+    },
+    "/api/platform/review-reports/{review_id}/restore": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformReviewReportController.restore",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "review_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "statement": {
+                    "description": "What the author reads",
+                    "maxLength": 1000,
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "statement"
+                ],
+                "title": "PlatformReviewRestoreRequest",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "ground": {
+                      "type": "string"
+                    },
+                    "outcome": {
+                      "type": "string"
+                    },
+                    "resolved": {
+                      "description": "Open reports this decision closed",
+                      "type": "integer"
+                    },
+                    "review_id": {
+                      "format": "uuid",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "ground",
+                    "outcome",
+                    "resolved",
+                    "review_id"
+                  ],
+                  "title": "PlatformReviewDecisionResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Restored"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No such review"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not hidden"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Invalid"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Show a hidden review again, with a statement for its author (vendors)",
         "tags": [
           "Platform review reports"
         ]
@@ -373919,6 +374113,11 @@
                       },
                       "type": "array"
                     },
+                    "report_contact": {
+                      "description": "Palee's address for reporting content on the site (ADR-397, DSA Art. 16)",
+                      "nullable": true,
+                      "type": "string"
+                    },
                     "reviews": {
                       "properties": {
                         "google": {
@@ -374224,6 +374423,7 @@
                     "forms",
                     "language",
                     "languages",
+                    "report_contact",
                     "reviews",
                     "sections",
                     "slug",

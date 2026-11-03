@@ -142,7 +142,12 @@ defmodule PaleeWeb.Schemas.BoxReviews do
         decided_at: @time,
         redress: %Schema{
           type: :array,
-          items: %Schema{type: :string, enum: ~w(ask_palee_again court)}
+          items: %Schema{type: :string, enum: ~w(contact_palee court)}
+        },
+        contact: %Schema{
+          type: :string,
+          nullable: true,
+          description: "Palee's moderation address, named for redress"
         }
       },
       required: [

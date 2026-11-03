@@ -16326,7 +16326,8 @@
       "capiHint": "שולח את הבקשות ל-Meta גם מהשרת, רק בהסכמת המבקר.",
       "capiTokenSaved": "אסימון גישה (שמור; כתוב חדש כדי להחליף)",
       "capiToken": "אסימון גישה"
-    }
+    },
+    "reportContact": "דיווח על תוכן: {email}"
   },
   "BoxReviews": {
     "title": "ביקורות",
@@ -16392,6 +16393,47 @@
       "replyTitle": "התגובה שלך",
       "sendReply": "פרסום התגובה",
       "replyRequired": "כתוב את התגובה שלך."
+    },
+    "report": {
+      "menu": "דיווח",
+      "menuAsBox": "דיווח בשם המכון",
+      "reviewMenu": "עוד על הביקורת",
+      "title": "דיווח על ביקורת",
+      "hint": "רק צוות Palee רואה את זה. הביקורת נשארת עד שהצוות יחליט.",
+      "hintBox": "רק צוות Palee רואה את זה ומחליט. המכון לעולם לא יכול להסתיר ביקורת בעצמו.",
+      "reasonLabel": "סיבה",
+      "reasons": {
+        "offensive": "פוגעני או מעליב",
+        "personal_data": "מידע אישי של מישהו",
+        "not_genuine": "לא חוויה אמיתית",
+        "spam": "פרסומת או לא קשור",
+        "illegal": "תוכן לא חוקי",
+        "other": "משהו אחר"
+      },
+      "personalDataHint": "טלפון, כתובת, בריאות…",
+      "note": "מה הבעיה? (לא חובה)",
+      "noteRequiredLabel": "מה הבעיה?",
+      "notePlaceholder": "למשל, מזכירה מאמן בשמו ומעליבה אותו.",
+      "noteRequired": "כתוב כמה מילים כדי שנבין מה קרה.",
+      "reasonRequired": "בחר סיבה.",
+      "send": "שלח דיווח",
+      "sending": "שולח…",
+      "doneTitle": "תודה",
+      "doneText": "צוות Palee יבדוק ויעדכן אותך בהחלטה. עד אז הביקורת נשארת.",
+      "ok": "אישור",
+      "reported": "דיווחת · ממתין לצוות Palee"
+    },
+    "moderation": {
+      "hidden": "הוסתרה על ידי צוות Palee · {date}",
+      "removed": "הוסרה על ידי צוות Palee · {date}",
+      "ground": "סיבה: {reason} ({basis}).",
+      "basisTerms": "תנאי השימוש של Palee",
+      "basisLaw": "החוק",
+      "human": "אדם החליט, אחרי דיווח.",
+      "humanNoReport": "אדם החליט.",
+      "redress": "לא מסכים? כתוב ל-{email} או פנה לבית המשפט.",
+      "redressNoEmail": "לא מסכים? אפשר לפנות לבית המשפט.",
+      "removedText": "הטקסט הוסר."
     }
   },
   "SmsUnsubscribe": {
@@ -16404,5 +16446,73 @@
     "done": "לא תקבלו עוד הודעות SMS עם הצעות מ-{box}.",
     "invalid": "הקישור הזה אינו תקף.",
     "error": "משהו השתבש. נסו שוב."
+  },
+  "PlatformReviewReports": {
+    "back": "מסוף הפלטפורמה",
+    "title": "דיווחים על ביקורות",
+    "subtitle": "ביקורות של חברים שחברים או המכון עצמו דיווחו עליהן. רק אתם מחליטים; עד אז הביקורת נשארת.",
+    "tabsLabel": "דיווחים על ביקורות",
+    "tabs": {
+      "open": "פתוחים",
+      "decided": "הוחלטו"
+    },
+    "empty": "אין דיווחים פתוחים.",
+    "emptyDecided": "אין החלטות עדיין.",
+    "forbidden": "רק צוות Palee רואה את הדף הזה.",
+    "count": "{count, plural, one {דיווח אחד} two {שני דיווחים} other {# דיווחים}}",
+    "firstAt": "ראשון: {date}",
+    "boxReported": "המכון דיווח",
+    "reported": "כפי שדווחה",
+    "changed": "השתנתה אחרי הדיווח. עכשיו:",
+    "deleted": "הכותב מחק אותה.",
+    "role": {
+      "member": "חבר",
+      "box": "מכון"
+    },
+    "reasons": {
+      "offensive": "פוגעני או מעליב",
+      "personal_data": "מידע אישי של מישהו",
+      "not_genuine": "לא חוויה אמיתית",
+      "spam": "פרסומת או לא קשור",
+      "illegal": "תוכן לא חוקי",
+      "other": "משהו אחר"
+    },
+    "noViolation": "אין הפרה",
+    "outcome": {
+      "keep": "נשארת",
+      "hide": "הסתרה",
+      "remove": "הסרה",
+      "restore": "שחזור"
+    },
+    "ground": "סיבה (הכותב רואה אותה)",
+    "groundPlaceholder": "בחר סיבה",
+    "basis": {
+      "terms": "תנאי השימוש של Palee",
+      "law": "החוק"
+    },
+    "statement": "מה נכתוב לכותב",
+    "statementHint": "הכותב מקבל את הטקסט הזה. המדווחים יודעים רק את ההחלטה.",
+    "statementRequired": "כתוב מה הכותב יקרא.",
+    "groundRequired": "בחר סיבה.",
+    "confirm": {
+      "hide": "הסתר ביקורת",
+      "remove": "הסר ביקורת"
+    },
+    "cancel": "ביטול",
+    "done": "הוחלט. {count, plural, one {נסגר דיווח אחד} two {נסגרו שני דיווחים} other {נסגרו # דיווחים}}.",
+    "restored": "הביקורת מוצגת שוב. הכותב עודכן.",
+    "alreadyDecided": "ההחלטה השתנתה בינתיים. טען מחדש את הדף.",
+    "by": "{name} · {date}",
+    "status": {
+      "visible": "גלויה",
+      "hidden": "מוסתרת",
+      "removed": "הוסרה",
+      "deleted": "נמחקה"
+    },
+    "restore": "שחזור",
+    "restoreTitle": "שחזר ביקורת",
+    "restoreHint": "הביקורת תוצג שוב לכולם. הכותב קורא את הטקסט הזה.",
+    "anonymous": "חבר",
+    "noText": "ללא טקסט"
   }
 }

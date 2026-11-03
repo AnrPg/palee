@@ -16326,7 +16326,8 @@
       "capiHint": "Sendet Anfragen auch vom Server an Meta, nur mit Zustimmung des Besuchers.",
       "capiTokenSaved": "Zugriffstoken (gespeichert; schreib ein neues, um es zu ersetzen)",
       "capiToken": "Zugriffstoken"
-    }
+    },
+    "reportContact": "Inhalte melden: {email}"
   },
   "BoxReviews": {
     "title": "Bewertungen",
@@ -16392,6 +16393,47 @@
       "replyTitle": "Deine Antwort",
       "sendReply": "Antwort veröffentlichen",
       "replyRequired": "Schreib deine Antwort."
+    },
+    "report": {
+      "menu": "Melden",
+      "menuAsBox": "Als Box melden",
+      "reviewMenu": "Mehr zu dieser Bewertung",
+      "title": "Bewertung melden",
+      "hint": "Nur das Palee-Team sieht die Meldung. Die Bewertung bleibt sichtbar, bis es entscheidet.",
+      "hintBox": "Nur das Palee-Team sieht die Meldung und entscheidet. Die Box kann eine Bewertung nie selbst ausblenden.",
+      "reasonLabel": "Grund",
+      "reasons": {
+        "offensive": "Beleidigend oder ausfallend",
+        "personal_data": "Persönliche Daten einer Person",
+        "not_genuine": "Keine echte Erfahrung",
+        "spam": "Werbung oder themenfremd",
+        "illegal": "Rechtswidriger Inhalt",
+        "other": "Etwas anderes"
+      },
+      "personalDataHint": "Telefon, Adresse, Gesundheit…",
+      "note": "Was ist los? (optional)",
+      "noteRequiredLabel": "Was ist los?",
+      "notePlaceholder": "Z. B. nennt sie einen Coach und beleidigt ihn.",
+      "noteRequired": "Schreib ein paar Worte, damit wir verstehen, worum es geht.",
+      "reasonRequired": "Wähle einen Grund.",
+      "send": "Meldung senden",
+      "sending": "Wird gesendet…",
+      "doneTitle": "Danke",
+      "doneText": "Das Palee-Team prüft sie und teilt dir die Entscheidung mit. Bis dahin bleibt die Bewertung sichtbar.",
+      "ok": "OK",
+      "reported": "Von dir gemeldet · wartet auf das Palee-Team"
+    },
+    "moderation": {
+      "hidden": "Vom Palee-Team ausgeblendet · {date}",
+      "removed": "Vom Palee-Team entfernt · {date}",
+      "ground": "Grund: {reason} ({basis}).",
+      "basisTerms": "Nutzungsbedingungen von Palee",
+      "basisLaw": "Gesetz",
+      "human": "Ein Mensch hat entschieden, nach einer Meldung.",
+      "humanNoReport": "Ein Mensch hat entschieden.",
+      "redress": "Nicht einverstanden? Schreib an {email} oder wende dich an die Gerichte.",
+      "redressNoEmail": "Nicht einverstanden? Du kannst dich an die Gerichte wenden.",
+      "removedText": "Der Text wurde entfernt."
     }
   },
   "SmsUnsubscribe": {
@@ -16404,5 +16446,73 @@
     "done": "Sie erhalten keine SMS mit Angeboten von {box} mehr.",
     "invalid": "Dieser Link ist nicht gültig.",
     "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
+  },
+  "PlatformReviewReports": {
+    "back": "Plattformkonsole",
+    "title": "Gemeldete Bewertungen",
+    "subtitle": "Bewertungen, die Mitglieder oder die Box selbst gemeldet haben. Nur ihr entscheidet; bis dahin bleibt die Bewertung sichtbar.",
+    "tabsLabel": "Gemeldete Bewertungen",
+    "tabs": {
+      "open": "Offen",
+      "decided": "Entschieden"
+    },
+    "empty": "Keine offenen Meldungen.",
+    "emptyDecided": "Noch keine Entscheidungen.",
+    "forbidden": "Nur das Palee-Team sieht diese Seite.",
+    "count": "{count, plural, one {# Meldung} other {# Meldungen}}",
+    "firstAt": "erste: {date}",
+    "boxReported": "Von der Box gemeldet",
+    "reported": "Wie gemeldet",
+    "changed": "Nach der Meldung geändert. Jetzt:",
+    "deleted": "Die Person hat sie gelöscht.",
+    "role": {
+      "member": "Mitglied",
+      "box": "Box"
+    },
+    "reasons": {
+      "offensive": "Beleidigend oder ausfallend",
+      "personal_data": "Persönliche Daten einer Person",
+      "not_genuine": "Keine echte Erfahrung",
+      "spam": "Werbung oder themenfremd",
+      "illegal": "Rechtswidriger Inhalt",
+      "other": "Etwas anderes"
+    },
+    "noViolation": "Kein Verstoß",
+    "outcome": {
+      "keep": "Bleibt",
+      "hide": "Ausblenden",
+      "remove": "Entfernen",
+      "restore": "Wiederherstellen"
+    },
+    "ground": "Grund (für die Person sichtbar)",
+    "groundPlaceholder": "Grund wählen",
+    "basis": {
+      "terms": "Nutzungsbedingungen von Palee",
+      "law": "Gesetz"
+    },
+    "statement": "Was wir der Person schreiben",
+    "statementHint": "Die Person wird mit diesem Text benachrichtigt. Meldende erfahren nur die Entscheidung.",
+    "statementRequired": "Schreib, was die Person lesen wird.",
+    "groundRequired": "Wähle einen Grund.",
+    "confirm": {
+      "hide": "Bewertung ausblenden",
+      "remove": "Bewertung entfernen"
+    },
+    "cancel": "Abbrechen",
+    "done": "Entschieden. {count, plural, one {# Meldung geschlossen} other {# Meldungen geschlossen}}.",
+    "restored": "Die Bewertung ist wieder sichtbar. Die Person wurde benachrichtigt.",
+    "alreadyDecided": "Die Entscheidung hat sich inzwischen geändert. Lade die Seite neu.",
+    "by": "{name} · {date}",
+    "status": {
+      "visible": "Sichtbar",
+      "hidden": "Ausgeblendet",
+      "removed": "Entfernt",
+      "deleted": "Gelöscht"
+    },
+    "restore": "Wiederherstellen",
+    "restoreTitle": "Bewertung wiederherstellen",
+    "restoreHint": "Die Bewertung ist wieder für alle sichtbar. Die Person liest diesen Text.",
+    "anonymous": "Mitglied",
+    "noText": "Kein Text"
   }
 }

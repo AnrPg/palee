@@ -86,6 +86,11 @@ export function SiteSections({
             {t("cookies")}
           </button>
         ) : null}
+        {site.report_contact ? (
+          <a href={`mailto:${site.report_contact}`} data-testid="site-report-contact">
+            {t("reportContact", { email: site.report_contact })}
+          </a>
+        ) : null}
         <span style={{ color: "var(--dim)" }}>{t("poweredBy")}</span>
       </footer>
     </div>

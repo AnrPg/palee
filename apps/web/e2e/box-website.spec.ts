@@ -73,6 +73,7 @@ const site = {
   faq: [{ question: "Χρειάζομαι εμπειρία;", answer: "Όχι, ξεκινάμε από την αρχή.", question_en: "Do I need experience?", answer_en: "No, we start from scratch." }],
   forms: { trial: true, contact: true, kinds: ["trial", "contact"] },
   reviews: { palee: { average: 4.5, count: 2, latest: memberReviews }, google, google_reviews_url: google.maps_uri },
+  report_contact: "moderation@palee.app",
   events: [],
   timetable: [],
   wod: [],
@@ -157,6 +158,10 @@ test.describe("the box's public website", () => {
     await expect(page.getByText("I'm interested", { exact: true })).toHaveCount(0);
 
     await expect(page.getByTestId("site-language-switch").getByRole("link", { name: "el" })).toHaveAttribute("aria-current", "page");
+
+    // The footer names Palee's moderation address for reports on content (ADR-397).
+    await expect(page.getByTestId("site-report-contact")).toHaveAttribute("href", "mailto:moderation@palee.app");
+    await expect(page.getByTestId("site-report-contact")).toContainText("moderation@palee.app");
   });
 
   test("the trial request sheet sends the form with an event_id and the privacy yes", async ({ page }) => {
