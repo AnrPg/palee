@@ -163,7 +163,8 @@ defmodule Palee.Channels.Connections do
     # ADR-390: no invented cap; the box types its own before a channel goes on.
     budget = value.(:monthly_budget_cents)
 
-    # ADR-390: quiet hours stay off until the box opens them.
+    # ANR 2026-11-03 (amends ADR-390): quiet hours start on, 21:00–09:00 on
+    # the box's clock; the box changes or closes them under «Προχωρημένα».
     quiet =
       cond do
         Map.has_key?(params, :quiet_start) or Map.has_key?(params, :quiet_end) ->
@@ -173,7 +174,7 @@ defmodule Palee.Channels.Connections do
           {:ok, {before.quiet_start_minute, before.quiet_end_minute}}
 
         true ->
-          {:ok, {nil, nil}}
+          {:ok, QuietHours.initial()}
       end
 
     own_needs_secret? = mode == "own" and provider not in [nil, "sandbox"]

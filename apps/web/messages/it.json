@@ -15098,7 +15098,7 @@
     "budget": "Limite di spesa mensile",
     "budgetHint": "Oltre il limite nessun SMS parte; le notifiche nell'app continuano normalmente.",
     "quiet": "Ore di silenzio",
-    "quietHint": "Le offerte scritte in queste ore aspettano la loro fine. Gli avvisi (ad es. una lezione annullata) partono sempre.",
+    "quietHint": "Le offerte aspettano la fine di queste ore, secondo l'orario di ciascun destinatario. Gli avvisi (es. una lezione annullata) partono sempre.",
     "quietFrom": "Silenzio dalle",
     "quietTo": "Silenzio fino alle",
     "statusActive": "Connesso",

@@ -15098,7 +15098,7 @@
     "budget": "Plafond de coût mensuel",
     "budgetHint": "Au-delà du plafond, aucun SMS ne part ; les notifications de l'application continuent.",
     "quiet": "Heures calmes",
-    "quietHint": "Les offres écrites pendant ces heures attendent leur fin. Les informations (par ex. un cours annulé) partent toujours.",
+    "quietHint": "Les offres attendent la fin de ces heures, selon l'heure de chaque destinataire. Les informations (ex. un cours annulé) partent toujours.",
     "quietFrom": "Calme à partir de",
     "quietTo": "Calme jusqu'à",
     "statusActive": "Connecté",

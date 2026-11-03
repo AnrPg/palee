@@ -15098,7 +15098,7 @@
     "budget": "Monthly cost limit",
     "budgetHint": "Past the limit no SMS leave; app notifications go on as usual.",
     "quiet": "Quiet hours",
-    "quietHint": "Offers written during these hours wait until they end. Updates (e.g. a class cancelled) always go.",
+    "quietHint": "Offers wait until these hours end, on each recipient's own clock. Updates (e.g. a class cancelled) always go.",
     "quietFrom": "Quiet from",
     "quietTo": "Quiet until",
     "statusActive": "Connected",

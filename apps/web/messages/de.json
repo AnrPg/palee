@@ -15098,7 +15098,7 @@
     "budget": "Monatliches Kostenlimit",
     "budgetHint": "Über dem Limit gehen keine SMS raus; App-Benachrichtigungen laufen normal weiter.",
     "quiet": "Ruhezeiten",
-    "quietHint": "Angebote, die in dieser Zeit geschrieben werden, warten bis zu ihrem Ende. Mitteilungen (z. B. ein abgesagter Kurs) gehen immer raus.",
+    "quietHint": "Angebote warten bis zum Ende dieser Zeit, nach der Uhrzeit der jeweiligen Empfänger. Updates (z. B. eine abgesagte Stunde) gehen immer sofort raus.",
     "quietFrom": "Ruhe ab",
     "quietTo": "Ruhe bis",
     "statusActive": "Verbunden",

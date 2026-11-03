@@ -17,7 +17,8 @@ defmodule Palee.Channels.Sending do
   box's webhook (`handle_webhook/4`).
 
   `env` carries what comes from other contexts: `now`, `time_zone` (the
-  box's), `box_name`.
+  box's), `box_name`, and optionally `recipient_time_zone` (a function from
+  a user id to that person's zone or nil) for quiet hours.
   """
 
   alias Palee.Channels.{ChannelStore, Connections, Contacts, Margins, Unsubscribe}
@@ -91,7 +92,7 @@ defmodule Palee.Channels.Sending do
           do:
             QuietHours.release_at(
               env.now,
-              env.time_zone,
+              quiet_zone(contact, env),
               connection.quiet_start_minute,
               connection.quiet_end_minute
             ),
@@ -694,4 +695,12 @@ defmodule Palee.Channels.Sending do
       error -> error
     end
   end
+
+  # Quiet hours are 21:00–09:00 on the recipient's own clock (ANR
+  # 2026-11-03); a lead or a person with no known zone uses the box's.
+  defp quiet_zone(%{user_id: user_id}, %{recipient_time_zone: zone_of} = env)
+       when is_binary(user_id) and is_function(zone_of, 1),
+       do: zone_of.(user_id) || env.time_zone
+
+  defp quiet_zone(_contact, env), do: env.time_zone
 end

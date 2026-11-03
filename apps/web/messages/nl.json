@@ -15098,7 +15098,7 @@
     "budget": "Maandelijkse kostenlimiet",
     "budgetHint": "Boven de limiet gaan er geen sms'jes uit; app-meldingen gaan gewoon door.",
     "quiet": "Stille uren",
-    "quietHint": "Aanbiedingen die in deze uren worden geschreven, wachten tot ze voorbij zijn. Berichten (bijv. een geannuleerde les) gaan altijd.",
+    "quietHint": "Aanbiedingen wachten tot deze uren voorbij zijn, volgens de klok van elke ontvanger. Updates (bijv. een geannuleerde les) gaan altijd meteen.",
     "quietFrom": "Stil vanaf",
     "quietTo": "Stil tot",
     "statusActive": "Gekoppeld",

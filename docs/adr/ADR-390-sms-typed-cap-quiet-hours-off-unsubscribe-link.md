@@ -80,3 +80,10 @@ inbound number.
 - Web: `SmsConnectionSettings` (`BudgetField`, `QuietHoursRow` under
   «Προχωρημένα»), `sms.ts` (`budgetCents`, `budgetInput`, `quietHoursReady`),
   `app/u/[token]`, `SmsUnsubscribePage`.
+
+## Amendment (2026-11-03, ANR)
+Quiet hours start **on** for a new connection, 21:00–09:00 (`QuietHours.initial/0`), on each
+recipient's own clock: the zone their device last reported (ADR-179), else the box's for leads and
+people with no known zone (`SendThroughChannel.recipient_time_zone/1` passed in `env`).
+The box changes or closes them under «Προχωρημένα». They still hold only marketing messages; service
+messages always go at once.

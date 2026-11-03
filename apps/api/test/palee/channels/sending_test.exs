@@ -153,10 +153,12 @@ defmodule Palee.Channels.SendingTest do
     assert [%{kind: "attempt", status: "sent"}] = sent.events
   end
 
-  test "quiet hours are off until the box opens them; then only marketing waits", ctx do
-    # ADR-390: no invented 21:00–09:00.
+  test "quiet hours start at 21:00–09:00, the box can close them, and only marketing waits",
+       ctx do
+    # ANR 2026-11-03: open from the start.
     connection = connect(ctx)
-    assert {connection.quiet_start_minute, connection.quiet_end_minute} == {nil, nil}
+    assert {connection.quiet_start_minute, connection.quiet_end_minute} == {21 * 60, 9 * 60}
+    connect(ctx, %{quiet_start: nil, quiet_end: nil})
     contact(ctx, [{"sms", "service"}, {"sms", "marketing"}])
 
     marketing =
@@ -188,6 +190,47 @@ defmodule Palee.Channels.SendingTest do
     assert urgent.next_attempt_at == @late
     assert {:ok, %{sent: 3}} = Channels.deliver(ctx.context, :due, @late)
     assert {:ok, %{sent: 1}} = Channels.deliver(ctx.context, :due, ~U[2026-11-11 07:00:01Z])
+  end
+
+  test "quiet hours follow the recipient's own clock, else the box's", ctx do
+    # ANR 2026-11-03: 21:00–09:00 relative to the person's time zone.
+    connect(ctx)
+    contact(ctx, [{"sms", "marketing"}])
+
+    offer = fn key ->
+      request(ctx, %{
+        template_key: "win_back",
+        variables: %{"text" => "Έλα!"},
+        idempotency_key: key
+      })
+    end
+
+    member_id = ctx.member.id
+
+    # 20:30 UTC is 22:30 in Athens (the box) but 20:30 in London: it goes now.
+    london = Map.put(ctx.env, :recipient_time_zone, fn ^member_id -> "Europe/London" end)
+    assert {:ok, now} = Channels.send(ctx.context, offer.("london"), %{london | now: @late})
+    assert now.hold_reason == nil
+
+    # In Tokyo it is 05:30: it waits for 09:00 Tokyo time.
+    tokyo = Map.put(ctx.env, :recipient_time_zone, fn _id -> "Asia/Tokyo" end)
+    assert {:ok, held} = Channels.send(ctx.context, offer.("tokyo"), %{tokyo | now: @late})
+    assert held.hold_reason == "quiet_hours"
+    assert held.next_attempt_at == ~U[2026-11-11 00:00:00.000000Z]
+
+    # Unknown zone: the box's clock (22:30 Athens) holds it until 09:00 Athens.
+    unknown = Map.put(ctx.env, :recipient_time_zone, fn _id -> nil end)
+    assert {:ok, boxed} = Channels.send(ctx.context, offer.("unknown"), %{unknown | now: @late})
+    assert boxed.next_attempt_at == ~U[2026-11-11 07:00:00.000000Z]
+  end
+
+  test "a person's zone is used only when the device reported a real one", ctx do
+    alias Palee.Application.Channels.SendThroughChannel
+    assert SendThroughChannel.recipient_time_zone(nil) == nil
+    {:ok, _user} = Palee.Identity.update_time_zone(ctx.member.id, "Europe/Berlin")
+    assert SendThroughChannel.recipient_time_zone(ctx.member.id) == "Europe/Berlin"
+    {:ok, _user} = Palee.Identity.update_time_zone(ctx.member.id, "Etc/UTC")
+    assert SendThroughChannel.recipient_time_zone(ctx.member.id) == nil
   end
 
   test "the box types its own cap: SMS cannot go on without one, and nothing is sent", ctx do

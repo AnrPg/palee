@@ -28,7 +28,9 @@ defmodule Palee.Application.Channels.SendThroughChannel do
 
   alias Palee.Channels
   alias Palee.Channels.Domain.{ChannelPolicy, Templates}
+  alias Palee.Identity
   alias Palee.Organizations
+  alias Palee.TimeZones.ZonedTime
   alias Palee.Workers.DeliverChannelMessagesJob
 
   @doc "See the module doc."
@@ -124,11 +126,24 @@ defmodule Palee.Application.Channels.SendThroughChannel do
     %{
       now: now,
       time_zone: Organizations.organization_timezone(organization_id),
+      # Quiet hours follow the recipient's own clock (ANR 2026-11-03).
+      recipient_time_zone: &recipient_time_zone/1,
       box_name: (organization && organization.name) || "Palee",
       # A box in demo mode sends no SMS (product owner, 2026-11-02).
       demo: match?(%{activation: "demo"}, organization)
     }
   end
+
+  @doc """
+  The zone a person's device last reported (ADR-179), or nil when unknown
+  or a bare UTC alias, so the box's clock is used instead.
+  """
+  def recipient_time_zone(user_id) when is_binary(user_id) do
+    zone = user_id |> Identity.find_by_id() |> then(&(&1 && &1.time_zone))
+    if ZonedTime.valid?(zone) and not ZonedTime.utc?(zone), do: zone
+  end
+
+  def recipient_time_zone(_user_id), do: nil
 
   @doc "Template keys Palee writes, with their purpose and placeholders."
   def template_keys,

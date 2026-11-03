@@ -2,11 +2,14 @@ defmodule Palee.Channels.Domain.QuietHours do
   @moduledoc """
   Quiet hours on the box's clock (ADR-349 §2, ADR-176/179). Between
   `start` and `end` (minutes after local midnight; the window may cross
-  midnight) a marketing message waits until the window ends. They are off
-  until the box opens them and types its own times (ADR-390: no invented
-  default), and service messages (a class cancelled, a booking reminder)
-  always go at once. Times are stored in UTC.
+  midnight) a marketing message waits until the window ends. A new
+  connection starts with 21:00–09:00 (ANR 2026-11-03, amending ADR-390);
+  the box changes or closes them. Service messages (a class cancelled, a
+  booking reminder) always go at once.
   """
+
+  @doc "The window a new connection starts with: 21:00–09:00 (ANR 2026-11-03)."
+  def initial, do: {21 * 60, 9 * 60}
 
   @doc "Whether quiet hours may hold a message of `purpose`: only marketing waits."
   def applies?("marketing"), do: true
