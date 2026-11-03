@@ -2,7 +2,7 @@ defmodule PaleeWeb.WellnessController do
   @moduledoc "Ημερολόγιο › Ευεξία of the current user: water, sleep, meals, Λιγούρα (ADR-159)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{
     ChangeCraving,

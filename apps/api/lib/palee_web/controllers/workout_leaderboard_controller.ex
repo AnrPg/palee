@@ -6,7 +6,7 @@ defmodule PaleeWeb.WorkoutLeaderboardController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{GetWorkoutLeaderboard, LeaderboardProfile}
   alias PaleeWeb.Schemas.TrainingFloor, as: S

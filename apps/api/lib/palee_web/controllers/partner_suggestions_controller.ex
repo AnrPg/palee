@@ -6,7 +6,7 @@ defmodule PaleeWeb.PartnerSuggestionsController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias OpenApiSpex.Parameter
   alias Palee.Application.PartnerSuggestions

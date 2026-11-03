@@ -7,7 +7,7 @@ defmodule PaleeWeb.AdminHealthCertificatesController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias OpenApiSpex.Schema
   alias Palee.Application.Documents.HealthCertificatesAdmin

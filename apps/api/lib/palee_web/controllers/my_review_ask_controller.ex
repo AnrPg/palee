@@ -2,7 +2,7 @@ defmodule PaleeWeb.MyReviewAskController do
   @moduledoc "A member's Google review ask (ADR-355): shown at a good moment, never gated or rewarded."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.ReviewAsks.MemberReviewAsk
   alias PaleeWeb.Schemas.BoxSite, as: S

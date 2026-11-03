@@ -7,7 +7,7 @@ defmodule PaleeWeb.GarminIntegrationController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   require Logger
 

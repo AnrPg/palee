@@ -5,7 +5,7 @@ defmodule PaleeWeb.BusinessAccountController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Guardian.Plug, as: GuardianPlug
   alias OpenApiSpex.{Parameter, Schema}

@@ -2,7 +2,7 @@ defmodule PaleeWeb.AdminPublicProfileController do
   @moduledoc "Staff edit the gym's public profile and upload its photos (ADR-142, ADR-148)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{
     BoxPublicProfile,

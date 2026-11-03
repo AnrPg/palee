@@ -2,7 +2,7 @@ defmodule PaleeWeb.BoxSearchController do
   @moduledoc "ADR-221: find a published box or independent coach by name."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.BoxSearch
   alias PaleeWeb.Schemas.Social, as: S

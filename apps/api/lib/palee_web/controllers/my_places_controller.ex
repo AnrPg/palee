@@ -2,7 +2,7 @@ defmodule PaleeWeb.MyPlacesController do
   @moduledoc "Locations the user can book across their gyms, for the Πρόγραμμα location picker."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.ListBookablePlaces
   alias OpenApiSpex.Schema

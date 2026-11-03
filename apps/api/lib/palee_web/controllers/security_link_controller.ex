@@ -1,7 +1,7 @@
 defmodule PaleeWeb.SecurityLinkController do
   @moduledoc "ADR-208: the links of security notices that need no session."
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias OpenApiSpex.{RequestBody, Schema}
   alias Palee.Application.SignOutEverywhereLink

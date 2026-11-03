@@ -7,7 +7,7 @@ defmodule PaleeWeb.PlatformPushSettingsController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Notifications
   alias OpenApiSpex.{MediaType, RequestBody, Schema}

@@ -6,7 +6,7 @@ defmodule PaleeWeb.AdminShopReportController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{ReconcileShopRevenue, ShopReports}
   alias PaleeWeb.Schemas.ShopReports, as: S

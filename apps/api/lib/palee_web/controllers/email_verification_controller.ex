@@ -5,7 +5,7 @@ defmodule PaleeWeb.EmailVerificationController do
   for the signed-in person.
   """
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Guardian.Plug, as: GuardianPlug
   alias OpenApiSpex.{RequestBody, Schema}

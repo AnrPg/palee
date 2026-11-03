@@ -2,7 +2,7 @@ defmodule PaleeWeb.AdminCardSurchargeController do
   @moduledoc "Οικονομικά › Πληρωμές › the card surcharge passed on to the person paying (ADR-340)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.Payments.CardSurcharges
   alias PaleeWeb.Schemas.CardSurcharges, as: S

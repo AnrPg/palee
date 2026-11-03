@@ -6,7 +6,7 @@ defmodule PaleeWeb.MyRolesController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias OpenApiSpex.{MediaType, RequestBody, Schema}
 

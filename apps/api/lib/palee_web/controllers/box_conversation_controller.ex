@@ -2,7 +2,7 @@ defmodule PaleeWeb.BoxConversationController do
   @moduledoc "Talking to a box from its page (ADR-144, board 6 Q6)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.BoxConversation
   alias PaleeWeb.Schemas.Trials, as: S

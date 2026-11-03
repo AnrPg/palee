@@ -2,7 +2,7 @@ defmodule PaleeWeb.CommunityGroupController do
   @moduledoc "Member groups in your gym's club (ADR-143, board 7 Q2)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.CommunityGroups
   alias PaleeWeb.Schemas.CommunityGroups, as: S

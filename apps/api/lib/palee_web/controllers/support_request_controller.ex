@@ -6,7 +6,7 @@ defmodule PaleeWeb.SupportRequestController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.SupportRequests
   alias PaleeWeb.Schemas.Buddies, as: S

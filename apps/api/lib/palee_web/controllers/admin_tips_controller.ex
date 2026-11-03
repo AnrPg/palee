@@ -2,7 +2,7 @@ defmodule PaleeWeb.AdminTipsController do
   @moduledoc "Finance › tips per staff member for a period (ADR-272)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias OpenApiSpex.{Parameter, Schema}
   alias Palee.Application.Payments.TipsSummary

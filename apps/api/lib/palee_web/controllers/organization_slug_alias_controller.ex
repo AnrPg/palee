@@ -8,7 +8,7 @@ defmodule PaleeWeb.OrganizationSlugAliasController do
   to probe whether an organization exists.
   """
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.ResolveOrganizationSlugAlias
   alias OpenApiSpex.{Parameter, Schema}

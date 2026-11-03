@@ -5,7 +5,7 @@ defmodule PaleeWeb.AccountTrainingController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{GetAccountHistory, GetAccountProgress, GetAccountVault}
   alias PaleeWeb.Schemas.CrossProvider

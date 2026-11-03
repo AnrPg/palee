@@ -5,7 +5,7 @@ defmodule PaleeWeb.AnatomyAtlasController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Guardian.Plug, as: GuardianPlug
   alias Palee.Application.{GetMyAtlas, ListAtlasNodeExercises}

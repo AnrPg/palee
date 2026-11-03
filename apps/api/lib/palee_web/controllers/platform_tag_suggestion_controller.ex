@@ -2,7 +2,7 @@ defmodule PaleeWeb.PlatformTagSuggestionController do
   @moduledoc "Platform staff review tags gym owners could not find in the lists (board 3b Q5)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.SuggestBoxTag
   alias PaleeWeb.Schemas.PublicProfile

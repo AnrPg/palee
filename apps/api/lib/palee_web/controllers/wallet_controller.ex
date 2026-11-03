@@ -4,7 +4,7 @@ defmodule PaleeWeb.WalletController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Guardian.Plug, as: GuardianPlug
   alias Palee.Application.{ConnectedDevices, WalletPasses}

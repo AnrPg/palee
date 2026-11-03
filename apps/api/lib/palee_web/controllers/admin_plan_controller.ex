@@ -2,7 +2,7 @@ defmodule PaleeWeb.AdminPlanController do
   @moduledoc "ADR-170: the gym's or coach's platform plan, seats and notice (owners and admins)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.OrganizationPlan
   alias PaleeWeb.PlatformPlanJSON

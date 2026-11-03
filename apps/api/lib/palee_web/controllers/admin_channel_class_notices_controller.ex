@@ -5,7 +5,7 @@ defmodule PaleeWeb.AdminChannelClassNoticesController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.Channels.ClassNotices
   alias PaleeWeb.Schemas.Channels, as: C

@@ -2,7 +2,7 @@ defmodule PaleeWeb.BoxVocabularyController do
   @moduledoc "The canonical gym tag lists (board 3b): keys only, clients translate them."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.BoxPublicProfile
   alias PaleeWeb.Schemas.PublicProfile

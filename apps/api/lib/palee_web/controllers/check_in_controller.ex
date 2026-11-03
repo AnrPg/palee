@@ -2,7 +2,7 @@ defmodule PaleeWeb.CheckInController do
   @moduledoc "Πώς νιώθω check-ins of the current user (ADR-140 §2)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{DeleteMyCheckIn, ListMyCheckIns, SubmitCheckIn}
   alias PaleeWeb.Schemas.FeedbackWellbeing

@@ -7,7 +7,7 @@ defmodule PaleeWeb.AdminCheckInController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Guardian.Plug, as: GuardianPlug
   alias Palee.Application.{DeskCheckIn, DoorDisplay, UpdateCheckInRules}

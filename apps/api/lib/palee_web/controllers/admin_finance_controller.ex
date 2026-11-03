@@ -1,6 +1,6 @@
 defmodule PaleeWeb.AdminFinanceController do
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{
     FinanceValueOverrides,

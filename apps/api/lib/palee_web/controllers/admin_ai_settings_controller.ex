@@ -7,7 +7,7 @@ defmodule PaleeWeb.AdminAiSettingsController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.GymAiSettings
   alias PaleeWeb.Schemas.Scaling, as: ScalingSchemas

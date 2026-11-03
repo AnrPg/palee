@@ -13,7 +13,7 @@ defmodule PaleeWeb.EmailChangeController do
   in again with the new address.
   """
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Guardian.Plug, as: GuardianPlug
   alias OpenApiSpex.Schema
