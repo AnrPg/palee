@@ -715,6 +715,14 @@ Staff screens only. Never part of a fiscal document: a pay statement is an inter
 | Rank ladder | Κλίμακα βαθμών | `rank_ladders` | A box's ordered ranks for one discipline (a workout type), e.g. «Ζώνες BJJ», «Επίπεδα ενόργανης». | Class types. |
 | Promotion | Προαγωγή | `rank_awards` | A coach gives a person the next rank or a stripe; always the coach's decision. Withdrawn with a reason, never deleted. | |
 | Diploma | Δίπλωμα | `/rank-awards/:id/certificate` | The PDF of a promotion with its number. | Health certificate («Πιστοποιητικό υγείας», ADR-252). |
+| Watch question | Το χρονόμετρο και στο ρολόι; | `POST /executions/:id/watch-offer` | Asked only when a WOD is opened for execution and the phone sees a connected watch; a box class WOD only after check-in. Box members are asked on their first 5 such WODs, then it starts on the watch by itself; free athletes are asked every time. Never a notification (ANR's D8 rules, ADR-375). | Push notifications. |
+| Compare with | Σύγκριση με | `palee:pacer-compare` (this device) | Under «Προχωρημένα» of the timer: «Την προηγούμενη φορά» (default) or «Απόκρυψη». | Leaderboard. |
+| Foods (in a meal) | Τρόφιμα | meal `foods` | What was eaten, as names from a barcode scan or the person's own foods, each with an optional hand portion. Never calories. (ADR-376) | Hand portions («Μερίδες»). |
+| Counts mostly as | Μετράει κυρίως ως | `portion_hint` | The suggested hand portion of a food: 1 παλάμη πρωτεΐνη, 1 χούφτα υδατάνθρακες, 1 γροθιά λαχανικά, 1 αντίχειρας λιπαρά. | Grams. |
+| Store code | Κωδικός του καταστήματος | `reason: in_store_code` | A barcode the shop printed (prefix 02, 20–29), not a product: the person writes what it is. | Product barcode. |
+| Ranks (settings) | Βαθμοί | Ρυθμίσεις › Προχωρημένα › Βαθμοί | Where staff keep the box's ladders. Say «Κλίμακα βαθμών» in full where «Κλίμακα» (Standards, §4.23) could also appear. | Standards («Κλίμακα», §4.23). |
+| Withdraw (a rank) | Ανάκληση | `POST /staff/rank-awards/:id/revoke` | Takes back a promotion with a reason; the award stays in the history as withdrawn. Never «διαγραφή». | Delete. |
+| Ready (for the next rank) | Πληροί τις προϋποθέσεις | `progress.ready` | The counted requirements are met; the coach still decides. | Promotion. |
 
 ## 5. Name clashes found, and proposals
 
