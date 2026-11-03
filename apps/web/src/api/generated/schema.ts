@@ -24133,7 +24133,7 @@ export interface components {
         BarcodeLookup: {
             /**
              * FoodAttribution
-             * @description Shown with every product from a public source: Open Food Facts (ODbL 1.0), USDA FoodData Central (CC0) or a licensed product list (its own licence)
+             * @description Shown with every product from a public source: Open Food Facts (ODbL 1.0), USDA FoodData Central (CC0), a licensed product list (its own licence) or Palee members (ODbL 1.0)
              */
             attribution?: {
                 images_licence?: string | null;
@@ -24170,6 +24170,11 @@ export interface components {
                 portion_hint: "protein" | "carbs" | "veg" | "fat" | null;
                 quantity?: string | null;
                 serving_size?: string | null;
+                /**
+                 * Format: date-time
+                 * @description Own foods only: when the person shared the product with everyone (ADR-421 addendum)
+                 */
+                shared_at?: string | null;
             } | null;
             /** @description Whether «Φωτογραφία ετικέτας» can prefill the manual entry (ADR-421) */
             label_reading?: boolean;
@@ -24179,8 +24184,11 @@ export interface components {
              * @enum {string|null}
              */
             reason?: "not_found" | "failed" | "in_store_code" | null;
-            /** @enum {string|null} */
-            source?: "open_food_facts" | "usda_fdc" | "catalogue" | "custom" | null;
+            /**
+             * @description `palee_members`: a product members shared (ADR-421 addendum)
+             * @enum {string|null}
+             */
+            source?: "open_food_facts" | "usda_fdc" | "catalogue" | "palee_members" | "custom" | null;
             /**
              * @description `pending`: still asking, scan again in a few seconds; `manual`: write it down yourself
              * @enum {string}
@@ -33445,6 +33453,8 @@ export interface components {
             /** @enum {string|null} */
             portion_hint?: "protein" | "carbs" | "veg" | "fat" | null;
             serving_label?: string | null;
+            /** @description «Μοιράσου το» (ADR-421 addendum): share the product (barcode, name, brand, portion, nutrition per 100 g; nothing about the person) with all Palee members and Open Food Facts. Only for a product barcode; never by default */
+            share?: boolean;
         };
         /** CustomFoodRequest */
         CustomFoodRequest: {
@@ -33458,6 +33468,8 @@ export interface components {
             /** @enum {string|null} */
             portion_hint?: "protein" | "carbs" | "veg" | "fat" | null;
             serving_label?: string | null;
+            /** @description «Μοιράσου το» (ADR-421 addendum): share the product (barcode, name, brand, portion, nutrition per 100 g; nothing about the person) with all Palee members and Open Food Facts. Only for a product barcode; never by default */
+            share?: boolean;
         };
         /** CustomFoodsResponse */
         CustomFoodsResponse: {
@@ -33488,6 +33500,11 @@ export interface components {
                 portion_hint: "protein" | "carbs" | "veg" | "fat" | null;
                 quantity?: string | null;
                 serving_size?: string | null;
+                /**
+                 * Format: date-time
+                 * @description Own foods only: when the person shared the product with everyone (ADR-421 addendum)
+                 */
+                shared_at?: string | null;
             }[];
             macros_visible: boolean;
         };
@@ -35363,10 +35380,15 @@ export interface components {
             portion_hint: "protein" | "carbs" | "veg" | "fat" | null;
             quantity?: string | null;
             serving_size?: string | null;
+            /**
+             * Format: date-time
+             * @description Own foods only: when the person shared the product with everyone (ADR-421 addendum)
+             */
+            shared_at?: string | null;
         };
         /**
          * FoodAttribution
-         * @description Shown with every product from a public source: Open Food Facts (ODbL 1.0), USDA FoodData Central (CC0) or a licensed product list (its own licence)
+         * @description Shown with every product from a public source: Open Food Facts (ODbL 1.0), USDA FoodData Central (CC0), a licensed product list (its own licence) or Palee members (ODbL 1.0)
          */
         FoodAttribution: {
             images_licence?: string | null;
@@ -35440,6 +35462,11 @@ export interface components {
                 portion_hint: "protein" | "carbs" | "veg" | "fat" | null;
                 quantity?: string | null;
                 serving_size?: string | null;
+                /**
+                 * Format: date-time
+                 * @description Own foods only: when the person shared the product with everyone (ADR-421 addendum)
+                 */
+                shared_at?: string | null;
             };
         };
         /** FormReview */
@@ -72877,6 +72904,11 @@ export interface operations {
                             portion_hint: "protein" | "carbs" | "veg" | "fat" | null;
                             quantity?: string | null;
                             serving_size?: string | null;
+                            /**
+                             * Format: date-time
+                             * @description Own foods only: when the person shared the product with everyone (ADR-421 addendum)
+                             */
+                            shared_at?: string | null;
                         }[];
                         macros_visible: boolean;
                     };
@@ -72904,6 +72936,8 @@ export interface operations {
                     /** @enum {string|null} */
                     portion_hint?: "protein" | "carbs" | "veg" | "fat" | null;
                     serving_label?: string | null;
+                    /** @description «Μοιράσου το» (ADR-421 addendum): share the product (barcode, name, brand, portion, nutrition per 100 g; nothing about the person) with all Palee members and Open Food Facts. Only for a product barcode; never by default */
+                    share?: boolean;
                 };
             };
         };
@@ -72943,6 +72977,11 @@ export interface operations {
                             portion_hint: "protein" | "carbs" | "veg" | "fat" | null;
                             quantity?: string | null;
                             serving_size?: string | null;
+                            /**
+                             * Format: date-time
+                             * @description Own foods only: when the person shared the product with everyone (ADR-421 addendum)
+                             */
+                            shared_at?: string | null;
                         };
                     };
                 };
@@ -72982,7 +73021,7 @@ export interface operations {
                     "application/json": {
                         /**
                          * FoodAttribution
-                         * @description Shown with every product from a public source: Open Food Facts (ODbL 1.0), USDA FoodData Central (CC0) or a licensed product list (its own licence)
+                         * @description Shown with every product from a public source: Open Food Facts (ODbL 1.0), USDA FoodData Central (CC0), a licensed product list (its own licence) or Palee members (ODbL 1.0)
                          */
                         attribution?: {
                             images_licence?: string | null;
@@ -73019,6 +73058,11 @@ export interface operations {
                             portion_hint: "protein" | "carbs" | "veg" | "fat" | null;
                             quantity?: string | null;
                             serving_size?: string | null;
+                            /**
+                             * Format: date-time
+                             * @description Own foods only: when the person shared the product with everyone (ADR-421 addendum)
+                             */
+                            shared_at?: string | null;
                         } | null;
                         /** @description Whether «Φωτογραφία ετικέτας» can prefill the manual entry (ADR-421) */
                         label_reading?: boolean;
@@ -73028,8 +73072,11 @@ export interface operations {
                          * @enum {string|null}
                          */
                         reason?: "not_found" | "failed" | "in_store_code" | null;
-                        /** @enum {string|null} */
-                        source?: "open_food_facts" | "usda_fdc" | "catalogue" | "custom" | null;
+                        /**
+                         * @description `palee_members`: a product members shared (ADR-421 addendum)
+                         * @enum {string|null}
+                         */
+                        source?: "open_food_facts" | "usda_fdc" | "catalogue" | "palee_members" | "custom" | null;
                         /**
                          * @description `pending`: still asking, scan again in a few seconds; `manual`: write it down yourself
                          * @enum {string}
@@ -73183,6 +73230,8 @@ export interface operations {
                     /** @enum {string|null} */
                     portion_hint?: "protein" | "carbs" | "veg" | "fat" | null;
                     serving_label?: string | null;
+                    /** @description «Μοιράσου το» (ADR-421 addendum): share the product (barcode, name, brand, portion, nutrition per 100 g; nothing about the person) with all Palee members and Open Food Facts. Only for a product barcode; never by default */
+                    share?: boolean;
                 };
             };
         };
@@ -73222,6 +73271,11 @@ export interface operations {
                             portion_hint: "protein" | "carbs" | "veg" | "fat" | null;
                             quantity?: string | null;
                             serving_size?: string | null;
+                            /**
+                             * Format: date-time
+                             * @description Own foods only: when the person shared the product with everyone (ADR-421 addendum)
+                             */
+                            shared_at?: string | null;
                         };
                     };
                 };

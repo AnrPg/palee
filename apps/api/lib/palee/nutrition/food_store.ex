@@ -23,6 +23,13 @@ defmodule Palee.Nutrition.FoodStore do
   def list_misses(country, limit), do: adapter().list_misses(country, limit)
 
   @impl true
+  def share_product(share, cache), do: adapter().share_product(share, cache)
+  @impl true
+  def claim_shares(now, limit), do: adapter().claim_shares(now, limit)
+  @impl true
+  def finish_share(barcode, changes, now), do: adapter().finish_share(barcode, changes, now)
+
+  @impl true
   def list_custom_foods(user_id), do: adapter().list_custom_foods(user_id)
   @impl true
   def get_custom_food(id, user_id), do: adapter().get_custom_food(id, user_id)

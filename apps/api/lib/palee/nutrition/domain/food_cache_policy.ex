@@ -13,6 +13,10 @@ defmodule Palee.Nutrition.Domain.FoodCachePolicy do
 
   Attribution travels with every product shown (ODbL §4.3): the source,
   its licence and a link (ADR-421: per source, each row from one source).
+
+  A product members shared (`palee_members`, ADR-421 addendum) is refreshed
+  like any other: when a public source has it by then, that source's row
+  replaces it; when none has it, the members' row stays.
   """
 
   @found_ttl_days 30
@@ -48,6 +52,19 @@ defmodule Palee.Nutrition.Domain.FoodCachePolicy do
   def decide(%{status: "pending"}, _now), do: :wait
 
   @doc "The row's changes after a lookup outcome at `now` (`attempts` already counts this one)."
+  def after_lookup(outcome, row, now)
+
+  def after_lookup({:error, _reason}, %{source: "palee_members", name: name}, now)
+      when is_binary(name),
+      do: %{
+        status: "found",
+        fetched_at: now,
+        next_attempt_at: nil,
+        claimed_at: nil,
+        attempts: 0,
+        last_error: nil
+      }
+
   def after_lookup({:ok, attrs}, _row, now),
     do:
       Map.merge(attrs, %{
@@ -124,6 +141,18 @@ defmodule Palee.Nutrition.Domain.FoodCachePolicy do
       licence_url: "https://creativecommons.org/publicdomain/zero/1.0/",
       images_licence: nil,
       url: "https://fdc.nal.usda.gov/"
+    }
+  end
+
+  # ADR-421 addendum: shared by members under the same licence Open Food
+  # Facts uses, since the same data is contributed there.
+  def attribution("palee_members", _barcode, _stored) do
+    %{
+      source: "Palee members",
+      licence: "ODbL-1.0",
+      licence_url: "https://opendatacommons.org/licenses/odbl/1-0/",
+      images_licence: nil,
+      url: nil
     }
   end
 

@@ -166,4 +166,10 @@ config :palee, :usda_food_data_central,
   api_key: "test-usda-key",
   req_options: [plug: {Req.Test, Palee.UsdaFoodDataCentral}]
 
+config :palee, :open_food_facts_contributions,
+  user_id: "palee-test",
+  password: "test-password",
+  uuid_salt: "test-salt",
+  req_options: [plug: {Req.Test, Palee.OpenFoodFactsWrite}]
+
 config :palee, :food_label_reader, Palee.FakeFoodLabelReader

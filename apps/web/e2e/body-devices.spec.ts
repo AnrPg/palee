@@ -261,9 +261,84 @@ test.describe("body and devices", () => {
     await expect(page.getByLabel("Brand")).toHaveValue("Sandbox Dairy");
     await expect(page.getByRole("button", { name: "1 thumb of fat" })).toHaveAttribute("aria-pressed", "true");
     await expect(page.getByTestId("own-food-nutrients")).toHaveCount(0);
+    // ADR-421 addendum: sharing is an explicit choice, never ticked for the person.
+    await expect(page.getByLabel("Share it with everyone on Palee and on Open Food Facts")).not.toBeChecked();
     await page.getByRole("button", { name: "Save food" }).click();
     await expect.poll(() => saved).toEqual({ name: "Feta PDO", barcode: "5201234500006", brand: "Sandbox Dairy", serving_label: "30 g", portion_hint: "fat" });
     await expect(page.getByText(/kcal|calorie/i)).toHaveCount(0);
+  });
+
+  test("«Μοιράσου το» shares a barcoded own food only when ticked; a shared product shows «από μέλη»", async ({ page }) => {
+    await asMember(page);
+    await page.route("**/api/me/wellness?**", (route) =>
+      route.fulfill(
+        json({
+          consented: true,
+          preferences: { glass_ml: 250, water_goal_ml: 2000, sleep_goal_minutes: 450, hidden_items: [], item_order: ["meals"], water_reminder: false },
+          entries: [],
+          days: [],
+          plans: [],
+          cravings: [],
+          photos: {},
+          photo_capabilities: { content_types: ["image/jpeg", "image/png", "image/webp"], max_bytes: 10_000_000 },
+          week: { water_days_logged: 0, water_days_on_goal: 0, nights_logged: 0, nights_on_goal: 0, meal_days_logged: 0, cravings: 0 },
+        }),
+      ),
+    );
+    await page.route("**/api/me/foods/barcode/5201234500006", (route) =>
+      route.fulfill(json({ barcode: "5201234500006", status: "manual", reason: "not_found", macros_visible: false, label_reading: false, food: null })),
+    );
+    await page.route("**/api/me/foods/barcode/2001234000000", (route) =>
+      route.fulfill(json({ barcode: "2001234000000", status: "manual", reason: "in_store_code", macros_visible: false, label_reading: false, food: null })),
+    );
+    await page.route("**/api/me/foods/barcode/5201234500013", (route) =>
+      route.fulfill(
+        json({
+          barcode: "5201234500013",
+          status: "found",
+          source: "palee_members",
+          macros_visible: false,
+          attribution: { source: "Palee members", licence: "ODbL-1.0", licence_url: "https://opendatacommons.org/licenses/odbl/1-0/", images_licence: null, url: null },
+          food: { id: null, name: "Rusks", brand: "Bakery", barcode: "5201234500013", portion_hint: "carbs", nutrients: null },
+        }),
+      ),
+    );
+    let saved: Record<string, unknown> | null = null;
+    await page.route("**/api/me/foods", (route) => {
+      if (route.request().method() !== "POST") return route.fulfill(json({ foods: [], macros_visible: false }));
+      saved = bodyOf(route.request());
+      return route.fulfill(
+        json({ food: { id: "food-2", name: "Rusks", portion_hint: null, nutrients: null, shared_at: "2026-11-03T10:00:00Z" } }, 201),
+      );
+    });
+
+    await page.goto("/journal/wellbeing");
+    await page.getByRole("button", { name: "+ Snack" }).click();
+
+    // A shop's own code is no product: nothing to share.
+    await page.getByRole("button", { name: "Scan barcode" }).click();
+    await page.getByLabel("Can't read it? Type it").fill("2001234000000");
+    await page.getByRole("button", { name: "Look up" }).click();
+    await expect(page.getByTestId("own-food")).toBeVisible();
+    await expect(page.getByTestId("own-food-share")).toHaveCount(0);
+    await page.getByTestId("own-food").getByRole("button", { name: "Cancel" }).click();
+
+    await page.getByRole("button", { name: "Scan barcode" }).click();
+    await page.getByLabel("Can't read it? Type it").fill("5201234500006");
+    await page.getByRole("button", { name: "Look up" }).click();
+    const share = page.getByLabel("Share it with everyone on Palee and on Open Food Facts");
+    await expect(share).not.toBeChecked();
+    await expect(page.getByText("Only the barcode, name, brand, portion and nutrition per 100 g are shared.", { exact: false })).toBeVisible();
+    await page.getByLabel("What it is").fill("Rusks");
+    await share.check();
+    await page.getByRole("button", { name: "Save food" }).click();
+    await expect.poll(() => saved).toEqual({ name: "Rusks", barcode: "5201234500006", share: true });
+
+    await page.getByRole("button", { name: "Scan barcode" }).click();
+    await page.getByLabel("Can't read it? Type it").fill("5201234500013");
+    await page.getByRole("button", { name: "Look up" }).click();
+    await expect(page.getByTestId("from-members")).toHaveText("from members");
+    await expect(page.getByText("Source: Palee members · ODbL-1.0")).toBeVisible();
   });
 
   test("the owner starts a ladder from a template in Settings › Advanced (picker, option Β)", async ({ page }) => {

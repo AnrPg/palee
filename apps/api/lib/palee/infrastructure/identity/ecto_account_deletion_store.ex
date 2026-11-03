@@ -186,6 +186,12 @@ defmodule Palee.Infrastructure.Identity.EctoAccountDeletionStore do
     # through its SECURITY DEFINER function).
     Repo.query!("SELECT palee_forget_box_review_reports($1)", [Ecto.UUID.dump!(user.id)])
 
+    # ADR-421 addendum: a product the person shared stays shared (it holds
+    # nothing about them), but who shared it goes.
+    Repo.query!("UPDATE food_product_shares SET user_id = NULL WHERE user_id = $1", [
+      Ecto.UUID.dump!(user.id)
+    ])
+
     # ADR-395: a kept (anonymised) profile keeps no body weight or birth year.
     Repo.query!("DELETE FROM fitness_profile_settings WHERE user_id = $1", [
       Ecto.UUID.dump!(user.id)

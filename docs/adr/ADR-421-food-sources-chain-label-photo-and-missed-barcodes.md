@@ -79,8 +79,9 @@ sources cannot, without sharing anyone's data.
 - Running sources in parallel: faster, but would ask every source for every
   barcode (OFF's limit is 15 reads/min/IP); the order also decides which
   source a row comes from.
-- Writing label reads into the shared cache: they are personal data and
-  would mix with ODbL rows; kept private.
+- Writing label reads into the shared cache by default: they are personal
+  data and would mix with ODbL rows; kept private unless the member
+  explicitly shares (addendum below).
 - The gym's own AI key (ADR-174): meals are the person's, not the gym's;
   the platform key is used as for alt text (ADR-157).
 
@@ -92,9 +93,9 @@ sources cannot, without sharing anyone's data.
   noted); the adapter note is corrected.
 - New env var `USDA_FDC_API_KEY`. Migration
   `20270625100000_food_sources_and_barcode_misses`.
-- Open questions: a reuse licence for the posokanei product list; an
-  explicit choice to share a label-read food with all members (and OFF);
-  whether a member-level AI switch is wanted for label reading.
+- Open questions: a reuse licence for the posokanei product list; whether
+  a member-level AI switch is wanted for label reading. (Sharing a
+  label-read food with everyone: decided, addendum below.)
 
 ## Implementation Notes
 - `Places.home_country/1` (new `HomeAreaStore.country/1`) gives the miss
@@ -104,3 +105,67 @@ sources cannot, without sharing anyone's data.
 - Tests: Req.Test stubs per adapter (`Palee.OpenFoodFacts`,
   `Palee.UsdaFoodDataCentral`), the chain's order, timeouts, budget and
   skipping; `Palee.FakeFoodLabelReader` for the endpoint.
+
+## Addendum (2026-11-03): «Μοιράσου το», sharing an own food with everyone
+Product owner (2026-11-03): one explicit opt-in in «Δικό μου τρόφιμο» to
+share the product with all Palee members and with Open Food Facts. Own foods
+are still private by default; they reach others **only when the member
+explicitly shares**.
+
+- **The choice**: one checkbox, never pre-ticked, «Μοιράσου το με όλους στο
+  Palee και στο Open Food Facts», with one line on what is shared. Shown only
+  for a product barcode (not without one, not a shop's own code); the API
+  answers `share_needs_barcode` (422) otherwise. `share: true` on
+  `POST /api/me/foods` or `PATCH /api/me/foods/:id`; the food's
+  `shared_at` records it. Unticked foods behave exactly as before.
+- **What is shared**: barcode, name, brand, portion («Μερίδα»), the suggested
+  hand portion and the six nutrients per 100 g the member saved. Never the
+  member (id, name), a meal, the note, or a photo.
+- **Palee's public cache**: a `food_products` row with source
+  `palee_members` (attribution «Palee members», ODbL 1.0, the licence of the
+  same data at OFF), so the next scan by anyone finds it. Written atomically
+  only where no source has the product (no row, `not_found`, or a lookup
+  that found nothing yet): a product from OFF, USDA or a list, a stale one
+  being refreshed and an earlier share are never overwritten; **the first
+  share wins**. The 30-day refresh still asks the chain: a public source
+  that has it by then replaces the members' row; a miss keeps it.
+  The web shows «από μέλη» next to the source line.
+- **Audit and outbox** (`food_product_shares`, one row per barcode): what was
+  shared, `shared_at`, and `user_id` (who shared, for abuse handling only;
+  never shown or sent; set to null when the account is deleted, and nulled
+  by the foreign key if the user row goes). No RLS, like `food_products`:
+  written and read only by the platform (request path and worker), never in
+  a tenant session.
+- **Open Food Facts** (`Nutrition.Ports.FoodContributor`,
+  `OpenFoodFactsContributor`): the official write API
+  `POST /cgi/product_jqm2.pl` (form fields `code`, `user_id`, `password`,
+  `lang`, `product_name_<lang>`, `brands`, `serving_size`,
+  `nutrition_data_per=100g`, `nutriment_<x>` + `_unit=g`, `comment`,
+  `app_name`, `app_version`, `app_uuid`) with Palee's own OFF account
+  (`OFF_USER_ID`, `OFF_PASSWORD`, a "global app account" as OFF allows;
+  OAuth is not offered yet) and the same User-Agent as reads. `app_uuid` is
+  an HMAC pseudonym per member (OFF asks for it so its moderators can stop
+  one contributor without banning the app); it cannot be turned back into
+  the member. Before writing, the product is read once; if OFF has it the
+  share ends `exists` and nothing is written there either.
+  `LookUpFoodsJob` (every 5 min) sends at most 10 due shares a run, which
+  keeps the existence reads far under 15/min/IP (OFF publishes no write
+  limit). Network errors, 429 and 5xx back off 1/5/30/60 min up to 6
+  attempts; other 4xx and `status: 0` are final (`failed`). Without the
+  account the worker sends nothing and shares wait as `queued` (the
+  member's consent stands; they go once the account is set), while Palee's
+  cache already has them.
+- **No photos to OFF**: OFF does not require one (its docs: photos are one
+  way to add data, not a requirement), Palee never keeps the label photos
+  (ADR-421 above), and sending them would mean storing them and licensing
+  the member's pictures under CC BY-SA. Data only.
+- **ODbL**: the members' rows are contributed to OFF under ODbL/DbCL; the
+  cache remains one source per row (`palee_members` is a filter).
+- Privacy policy: new item «Τρόφιμα που μοιράζεσαι» (`dataFoodShares`).
+- Migration `20270703200000_food_product_shares` (`custom_foods.shared_at`,
+  `food_product_shares`). Env: `OFF_USER_ID`, `OFF_PASSWORD` (production),
+  optional `OFF_APP_UUID_SALT`, `OFF_WRITE_BASE_URL` (staging
+  `https://world.openfoodfacts.net`, basic auth `off:off` added).
+- Sources (read 2026-11-03):
+  <https://openfoodfacts.github.io/openfoodfacts-server/api/>,
+  <https://openfoodfacts.github.io/documentation/docs/Product-Opener/v2/products/post-cgi-product_jqm2.pl/>.

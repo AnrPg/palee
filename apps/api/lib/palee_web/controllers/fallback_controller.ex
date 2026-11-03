@@ -3725,6 +3725,8 @@ defmodule PaleeWeb.FallbackController do
     label_unreadable:
       {:unprocessable_entity, "The label couldn't be read; try a sharper photo or type it"},
     label_reading_unavailable: {:service_unavailable, "Reading labels isn't available right now"},
+    share_needs_barcode:
+      {:unprocessable_entity, "Only a product with its own barcode can be shared"},
     unknown_rank: {:unprocessable_entity, "Choose one of this ladder's ranks"},
     rank_not_above_current:
       {:unprocessable_entity, "A promotion goes up the ladder or adds stripes"},

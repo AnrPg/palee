@@ -31,7 +31,8 @@ portions, never weights or calories.
   macros and `hide_macros` is off.
 - **Own foods** («Δικά μου τρόφιμα», `custom_foods`, personal): the manual
   fallback (name, optional barcode, serving label, optional grams, portion);
-  never contributed to Open Food Facts.
+  not contributed to Open Food Facts, only when the member explicitly shares
+  the product («Μοιράσου το», ADR-421 addendum 2026-11-03).
 - **Meals** gain an optional `foods` list (up to 10 `{name, barcode?,
   custom_food_id?, portion?}`), a name snapshot.
 - **Licences**: Open Food Facts data is ODbL 1.0, images CC BY-SA. Every

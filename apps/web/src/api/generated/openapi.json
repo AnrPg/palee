@@ -12706,7 +12706,7 @@
       "BarcodeLookup": {
         "properties": {
           "attribution": {
-            "description": "Shown with every product from a public source: Open Food Facts (ODbL 1.0), USDA FoodData Central (CC0) or a licensed product list (its own licence)",
+            "description": "Shown with every product from a public source: Open Food Facts (ODbL 1.0), USDA FoodData Central (CC0), a licensed product list (its own licence) or Palee members (ODbL 1.0)",
             "nullable": true,
             "properties": {
               "images_licence": {
@@ -12810,6 +12810,12 @@
                   "serving_size": {
                     "nullable": true,
                     "type": "string"
+                  },
+                  "shared_at": {
+                    "description": "Own foods only: when the person shared the product with everyone (ADR-421 addendum)",
+                    "format": "date-time",
+                    "nullable": true,
+                    "type": "string"
                   }
                 },
                 "required": [
@@ -12841,10 +12847,12 @@
             "type": "string"
           },
           "source": {
+            "description": "`palee_members`: a product members shared (ADR-421 addendum)",
             "enum": [
               "open_food_facts",
               "usda_fdc",
               "catalogue",
+              "palee_members",
               "custom"
             ],
             "nullable": true,
@@ -42960,6 +42968,10 @@
             "maxLength": 60,
             "nullable": true,
             "type": "string"
+          },
+          "share": {
+            "description": "«Μοιράσου το» (ADR-421 addendum): share the product (barcode, name, brand, portion, nutrition per 100 g; nothing about the person) with all Palee members and Open Food Facts. Only for a product barcode; never by default",
+            "type": "boolean"
           }
         },
         "required": [
@@ -43012,6 +43024,10 @@
             "maxLength": 60,
             "nullable": true,
             "type": "string"
+          },
+          "share": {
+            "description": "«Μοιράσου το» (ADR-421 addendum): share the product (barcode, name, brand, portion, nutrition per 100 g; nothing about the person) with all Palee members and Open Food Facts. Only for a product barcode; never by default",
+            "type": "boolean"
           }
         },
         "title": "CustomFoodRequest",
@@ -43088,6 +43104,12 @@
                   "type": "string"
                 },
                 "serving_size": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "shared_at": {
+                  "description": "Own foods only: when the person shared the product with everyone (ADR-421 addendum)",
+                  "format": "date-time",
                   "nullable": true,
                   "type": "string"
                 }
@@ -49234,6 +49256,12 @@
           "serving_size": {
             "nullable": true,
             "type": "string"
+          },
+          "shared_at": {
+            "description": "Own foods only: when the person shared the product with everyone (ADR-421 addendum)",
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
           }
         },
         "required": [
@@ -49245,7 +49273,7 @@
         "type": "object"
       },
       "FoodAttribution": {
-        "description": "Shown with every product from a public source: Open Food Facts (ODbL 1.0), USDA FoodData Central (CC0) or a licensed product list (its own licence)",
+        "description": "Shown with every product from a public source: Open Food Facts (ODbL 1.0), USDA FoodData Central (CC0), a licensed product list (its own licence) or Palee members (ODbL 1.0)",
         "nullable": true,
         "properties": {
           "images_licence": {
@@ -49443,6 +49471,12 @@
                 "type": "string"
               },
               "serving_size": {
+                "nullable": true,
+                "type": "string"
+              },
+              "shared_at": {
+                "description": "Own foods only: when the person shared the product with everyone (ADR-421 addendum)",
+                "format": "date-time",
                 "nullable": true,
                 "type": "string"
               }
@@ -162006,6 +162040,12 @@
                           "serving_size": {
                             "nullable": true,
                             "type": "string"
+                          },
+                          "shared_at": {
+                            "description": "Own foods only: when the person shared the product with everyone (ADR-421 addendum)",
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
                           }
                         },
                         "required": [
@@ -162095,6 +162135,10 @@
                     "maxLength": 60,
                     "nullable": true,
                     "type": "string"
+                  },
+                  "share": {
+                    "description": "«Μοιράσου το» (ADR-421 addendum): share the product (barcode, name, brand, portion, nutrition per 100 g; nothing about the person) with all Palee members and Open Food Facts. Only for a product barcode; never by default",
+                    "type": "boolean"
                   }
                 },
                 "required": [
@@ -162183,6 +162227,12 @@
                         "serving_size": {
                           "nullable": true,
                           "type": "string"
+                        },
+                        "shared_at": {
+                          "description": "Own foods only: when the person shared the product with everyone (ADR-421 addendum)",
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
                         }
                       },
                       "required": [
@@ -162258,7 +162308,7 @@
                 "schema": {
                   "properties": {
                     "attribution": {
-                      "description": "Shown with every product from a public source: Open Food Facts (ODbL 1.0), USDA FoodData Central (CC0) or a licensed product list (its own licence)",
+                      "description": "Shown with every product from a public source: Open Food Facts (ODbL 1.0), USDA FoodData Central (CC0), a licensed product list (its own licence) or Palee members (ODbL 1.0)",
                       "nullable": true,
                       "properties": {
                         "images_licence": {
@@ -162362,6 +162412,12 @@
                             "serving_size": {
                               "nullable": true,
                               "type": "string"
+                            },
+                            "shared_at": {
+                              "description": "Own foods only: when the person shared the product with everyone (ADR-421 addendum)",
+                              "format": "date-time",
+                              "nullable": true,
+                              "type": "string"
                             }
                           },
                           "required": [
@@ -162393,10 +162449,12 @@
                       "type": "string"
                     },
                     "source": {
+                      "description": "`palee_members`: a product members shared (ADR-421 addendum)",
                       "enum": [
                         "open_food_facts",
                         "usda_fdc",
                         "catalogue",
+                        "palee_members",
                         "custom"
                       ],
                       "nullable": true,
@@ -162696,6 +162754,10 @@
                     "maxLength": 60,
                     "nullable": true,
                     "type": "string"
+                  },
+                  "share": {
+                    "description": "«Μοιράσου το» (ADR-421 addendum): share the product (barcode, name, brand, portion, nutrition per 100 g; nothing about the person) with all Palee members and Open Food Facts. Only for a product barcode; never by default",
+                    "type": "boolean"
                   }
                 },
                 "title": "CustomFoodRequest",
@@ -162779,6 +162841,12 @@
                           "type": "string"
                         },
                         "serving_size": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "shared_at": {
+                          "description": "Own foods only: when the person shared the product with everyone (ADR-421 addendum)",
+                          "format": "date-time",
                           "nullable": true,
                           "type": "string"
                         }
