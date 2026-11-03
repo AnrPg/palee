@@ -45,7 +45,8 @@ function withList<T extends object, K extends keyof T>(body: T | null | undefine
 
 export const pacerKey = (executionId: string) => ["body-devices", "pacer", executionId] as const;
 export const WATCHES_KEY = ["body-devices", "watches"] as const;
-export const rankLaddersKey = (slug: string) => ["body-devices", "rank-ladders", slug] as const;
+export const rankLaddersKey = (slug: string, locale?: string) =>
+  (locale ? ["body-devices", "rank-ladders", slug, locale] : ["body-devices", "rank-ladders", slug]) as readonly string[];
 export const myRanksKey = (slug: string) => ["body-devices", "my-ranks", slug] as const;
 export const clientRanksKey = (slug: string, userId: string) => ["body-devices", "client-ranks", slug, userId] as const;
 
@@ -98,8 +99,14 @@ export function createCustomFood(token: string, food: CustomFoodInput) {
 }
 
 // ADR-377: belts and levels.
-export function fetchRankLadders(token: string, slug: string) {
-  return apiRequest<RankLadders>(`${org(slug)}/admin/rank-ladders`, { token }).then((body) => withList(body, "ladders"));
+export type RankTemplate = RankLadders["templates"][number];
+
+/** The box's ladders and the template catalogue in `locale` (ADR-400); a malformed list reads as empty. */
+export function fetchRankLadders(token: string, slug: string, locale?: string) {
+  const query = locale ? `?locale=${encodeURIComponent(locale)}` : "";
+  return apiRequest<RankLadders>(`${org(slug)}/admin/rank-ladders${query}`, { token }).then((body) =>
+    withList(withList(body, "ladders"), "templates"),
+  );
 }
 
 export function createRankLadder(token: string, slug: string, body: RankLadderInput) {

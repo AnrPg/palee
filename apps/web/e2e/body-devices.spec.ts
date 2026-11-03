@@ -200,12 +200,22 @@ test.describe("body and devices", () => {
   test("the owner starts a ladder from a template in Settings › Advanced", async ({ page }) => {
     await asOwner(page);
     const ladders: unknown[] = [];
-    await page.route("**/api/org/box1/admin/rank-ladders", (route) => {
+    // ADR-400: the catalogue comes from the server in the page's language (`?locale=`).
+    await page.route(/\/api\/org\/box1\/admin\/rank-ladders(\?.*)?$/, (route) => {
       if (route.request().method() === "POST") {
         ladders.push(ladder);
         return route.fulfill(json({ ladder }, 201));
       }
-      return route.fulfill(json({ ladders, templates: [{ key: "bjj_adult", discipline: "bjj_grappling" }] }));
+      return route.fulfill(
+        json({
+          ladders,
+          templates: [
+            { key: "bjj_adult", name: "BJJ belts", discipline: "bjj_grappling", style: "belt", source: "federation", ranks: [] },
+            { key: "judo_kyu", name: "Judo belts", discipline: "judo", style: "belt", source: "federation", ranks: [] },
+            "not a template",
+          ],
+        }),
+      );
     });
 
     await page.goto("/admin/settings");
@@ -214,7 +224,7 @@ test.describe("body and devices", () => {
     await expect(page.getByTestId("advanced-group-ranks")).toBeVisible();
     const created = page.waitForRequest((request) => request.url().endsWith("/admin/rank-ladders") && request.method() === "POST");
     await page.getByRole("button", { name: "BJJ belts" }).click();
-    expect(bodyOf(await created)).toMatchObject({ template: "bjj_adult", name: "BJJ belts" });
+    expect(bodyOf(await created)).toMatchObject({ template: "bjj_adult", name: "BJJ belts", locale: "en" });
     await expect(page.getByLabel("Ladder name")).toHaveValue("BJJ");
   });
 
