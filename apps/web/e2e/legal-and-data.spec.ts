@@ -76,7 +76,7 @@ test.describe("privacy policy and terms", () => {
     // ADR-397 (DSA Art. 14) and ADR-370/371: the v3.2 sections and the moderation address.
     await expect(page.getByRole("heading", { name: "Reviews and content reports" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Training programmes" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "For boxes and coaches" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Using Palee as a business" })).toBeVisible();
     await expect(page.getByText("Only the Palee team decides.", { exact: false })).toBeVisible();
     await expect(page.getByText("moderation@palee.app", { exact: false }).first()).toBeVisible();
     await expect(page.getByText("14 days from the purchase to withdraw", { exact: false })).toBeVisible();
