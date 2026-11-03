@@ -3279,7 +3279,7 @@
     "pkgMemberPreview": "What clients see",
     "pkgUntitled": "Untitled subscription package",
     "pkgWizardProgress": "Steps",
-    "pkgAdvancedSettings": "Advanced settings",
+    "pkgAdvancedSettings": "Advanced",
     "pkgAdvancedDone": "Done",
     "pkgResumeDraft": "You have an unfinished subscription package: {name}",
     "pkgResumeContinue": "Continue",
