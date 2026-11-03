@@ -658,6 +658,9 @@ defmodule PaleeWeb.Router do
     get("/box-reviews", MyBoxReviewsController, :index)
     put("/box-review", MyBoxReviewsController, :save)
     delete("/box-review", MyBoxReviewsController, :delete)
+    # ADR-377: my belts and levels at this box.
+    get("/ranks", MyRanksController, :index)
+    get("/ranks/awards/:id/certificate", MyRanksController, :certificate)
     # ADR-246/247: paying invoices online and saved cards.
     get("/invoices/:id/payment-terms", MyPaymentsController, :terms)
     post("/invoices/:id/pay", MyPaymentsController, :pay)
@@ -1019,6 +1022,11 @@ defmodule PaleeWeb.Router do
     get("/clients/:user_id/coach-notes", CoachNotesController, :index)
     # ADR-229: a client's weekly goal, set by their coach or full-scope staff.
     get("/clients/:user_id/training-goal", TrainingGoalController, :client_show)
+    # ADR-377: a client's belts and levels; promotions and diplomas.
+    get("/clients/:user_id/ranks", StaffRanksController, :client)
+    post("/clients/:user_id/ranks", StaffRanksController, :award)
+    post("/rank-awards/:id/revoke", StaffRanksController, :revoke)
+    get("/rank-awards/:id/certificate", StaffRanksController, :certificate)
     put("/clients/:user_id/training-goal", TrainingGoalController, :client_update)
     get("/clients/:user_id/journal", JournalController, :client_journal)
     # ADR-158: shared body snapshots (audited in the client's access log).
@@ -1268,6 +1276,11 @@ defmodule PaleeWeb.Router do
     get("/search", AdminSearchController, :index)
     get("/analytics/summary", AdminAnalyticsController, :summary)
     get("/athletes", AdminUserController, :index_athletes)
+    # ADR-377: belts and levels per discipline.
+    get("/rank-ladders", AdminRankLaddersController, :index)
+    post("/rank-ladders", AdminRankLaddersController, :create)
+    put("/rank-ladders/:id", AdminRankLaddersController, :update)
+    delete("/rank-ladders/:id", AdminRankLaddersController, :delete)
     get("/scale-levels", AdminScaleLevelController, :index)
     put("/scale-levels", AdminScaleLevelController, :update)
     get("/class-types", AdminClassTypeController, :index)
@@ -2645,6 +2658,16 @@ defmodule PaleeWeb.Router do
     delete("/devices/phone/:provider", PhoneHealthController, :disconnect)
     post("/device-imports/:id/confirm", DevicesController, :confirm)
     get("/daily-stats", DevicesController, :daily_stats)
+    # ADR-375: paired watches (Apple Watch, Wear OS).
+    get("/devices/watches", WatchController, :index)
+    put("/devices/watches/:platform", WatchController, :pair)
+    delete("/devices/watches/:platform", WatchController, :unpair)
+    # ADR-376: barcode lookups and the person's own foods.
+    get("/foods/barcode/:barcode", FoodsController, :barcode)
+    get("/foods", FoodsController, :index)
+    post("/foods", FoodsController, :create)
+    patch("/foods/:id", FoodsController, :update)
+    delete("/foods/:id", FoodsController, :delete)
   end
 
   # ADR-154: Γύρω μου, «Η περιοχή μου» and the gazetteer; members only.
@@ -2704,6 +2727,12 @@ defmodule PaleeWeb.Router do
     get("/:id", ExecutionController, :show)
     patch("/:id/progress", ExecutionController, :update_progress)
     patch("/:id/complete", ExecutionController, :complete)
+    # ADR-374: race your past self; ADR-375: the watch's plan and heart rate.
+    get("/:id/pacer", ExecutionPacerController, :show)
+    post("/:id/splits", ExecutionPacerController, :splits)
+    get("/:id/watch-plan", WatchController, :plan)
+    post("/:id/heart-rate", WatchController, :heart_rate)
+    get("/:id/heart-rate", WatchController, :heart_rate_summary)
   end
 
   # ADR-123: batched client interaction analytics get their own bucket so a

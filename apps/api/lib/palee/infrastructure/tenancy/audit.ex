@@ -88,6 +88,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     demo_records
     box_site_settings box_site_domains box_site_submissions box_site_consents
     review_ask_settings review_asks review_ask_opt_outs box_reviews google_place_snapshots
+    rank_ladders ranks rank_awards
   )
 
   @transitional_tenant_tables []
@@ -150,6 +151,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     training_goals
     personal_data_exports
     palee_leaderboard_consents
+    execution_splits watch_links execution_heart_rate_batches custom_foods
   )
 
   def report do

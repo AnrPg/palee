@@ -1,0 +1,216 @@
+defmodule PaleeWeb.ExecutionPacerControllerTest do
+  @moduledoc """
+  ADR-374 (race your past self) and ADR-375 (the watch) on real executions,
+  under the RLS-enforcing runtime role (ConnCase).
+  """
+
+  use PaleeWeb.ConnCase, async: false
+
+  alias Palee.Application.MyBody
+  alias Palee.Identity.UserContext
+  alias Palee.{Identity, Organizations, Workouts}
+
+  setup %{conn: conn} do
+    admin = create_user!(:member, "pacer_admin")
+    {:ok, admin} = Identity.update_role(admin, :admin)
+    {:ok, _} = Organizations.ensure_legacy_membership_for_migration(admin, :owner)
+    member = create_user!(:member, "pacer_member")
+    other = create_user!(:member, "pacer_other")
+
+    {:ok, context} =
+      Organizations.resolve_tenant_context(admin, Organizations.legacy_organization_slug())
+
+    {:ok, workout} =
+      Workouts.create_workout(context, admin, %{
+        title: "Pacer Workout",
+        type: "crossfit",
+        sections: [
+          %{
+            name: "Main Set",
+            order: 1,
+            scoreable: false,
+            exercises: [
+              %{name: "Thruster", order: 1, prescription_value: 21, prescription_unit: "reps"}
+            ]
+          }
+        ]
+      })
+
+    %{conn: conn, member: member, other: other, workout: workout}
+  end
+
+  test "the second attempt races the first, split by mark", ctx do
+    first = start!(ctx.conn, ctx.member, ctx.workout)
+
+    assert %{"stored" => 2, "total" => 2} =
+             ctx.conn
+             |> as(ctx.member)
+             |> json_post("/api/executions/#{first}/splits", %{
+               marks: [
+                 %{segment_index: 0, round: 1, elapsed_ms: 60_000},
+                 %{segment_index: 0, elapsed_ms: 150_000}
+               ]
+             })
+             |> json_response(200)
+
+    # A resend after being offline is stored once.
+    assert %{"stored" => 0, "total" => 2} =
+             ctx.conn
+             |> as(ctx.member)
+             |> json_post("/api/executions/#{first}/splits", %{
+               marks: [%{segment_index: 0, round: 1, elapsed_ms: 60_000}]
+             })
+             |> json_response(200)
+
+    # Nothing to race on a first attempt.
+    assert %{"pacer" => %{"previous" => nil, "checkpoints" => []}} =
+             ctx.conn
+             |> as(ctx.member)
+             |> get("/api/executions/#{first}/pacer")
+             |> json_response(200)
+
+    complete!(ctx.conn, ctx.member, first)
+    second = start!(ctx.conn, ctx.member, ctx.workout)
+
+    ctx.conn
+    |> as(ctx.member)
+    |> json_post("/api/executions/#{second}/splits", %{
+      marks: [%{segment_index: 0, round: 1, elapsed_ms: 55_000}]
+    })
+    |> json_response(200)
+
+    assert %{"pacer" => pacer} =
+             ctx.conn
+             |> as(ctx.member)
+             |> get("/api/executions/#{second}/pacer")
+             |> json_response(200)
+
+    assert pacer["previous"]["execution_id"] == first
+    assert pacer["previous"]["same_workout"]
+    assert pacer["precision"] == "rounds"
+
+    assert [
+             %{"round" => 1, "ghost_at_ms" => 60_000, "at_ms" => 55_000, "delta_ms" => -5_000},
+             %{"round" => 0, "ghost_at_ms" => 150_000, "at_ms" => nil, "delta_ms" => nil}
+           ] = pacer["checkpoints"]
+
+    # The watch gets the same pace line with its plan.
+    assert %{"plan" => plan} =
+             ctx.conn
+             |> as(ctx.member)
+             |> get("/api/executions/#{second}/watch-plan?platform=apple_watch")
+             |> json_response(200)
+
+    assert plan["contract_version"] == 1
+    assert plan["title"] == "Pacer Workout"
+    assert [%{"at_ms" => 60_000}, %{"at_ms" => 150_000}] = plan["pace"]
+    assert [%{"movements" => [%{"name" => "Thruster"}]} | _] = plan["segments"]
+  end
+
+  test "marks that don't fit, and other people's executions, are refused", ctx do
+    execution = start!(ctx.conn, ctx.member, ctx.workout)
+
+    assert %{"code" => "invalid_split_marks"} =
+             ctx.conn
+             |> as(ctx.member)
+             |> json_post("/api/executions/#{execution}/splits", %{
+               marks: [%{segment_index: 99, elapsed_ms: 1}]
+             })
+             |> json_response(422)
+
+    for path <- ["/pacer", "/watch-plan", "/heart-rate"] do
+      assert ctx.conn
+             |> as(ctx.other)
+             |> get("/api/executions/#{execution}#{path}")
+             |> json_response(404)
+    end
+
+    assert ctx.conn
+           |> as(ctx.other)
+           |> json_post("/api/executions/#{execution}/splits", %{
+             marks: [%{segment_index: 0, elapsed_ms: 1}]
+           })
+           |> json_response(404)
+  end
+
+  test "heart rate needs the health-data consent, is stored once and summarised", ctx do
+    execution = start!(ctx.conn, ctx.member, ctx.workout)
+
+    body = %{
+      platform: "apple_watch",
+      batches: [
+        %{sequence: 0, started_offset_ms: 0, interval_ms: 5000, bpm: [120, 130, 140]},
+        %{sequence: 1, started_offset_ms: 15_000, interval_ms: 5000, bpm: [150]}
+      ]
+    }
+
+    assert %{"code" => "health_data_consent_required"} =
+             ctx.conn
+             |> as(ctx.member)
+             |> json_post("/api/executions/#{execution}/heart-rate", body)
+             |> json_response(403)
+
+    {:ok, _} = MyBody.grant(UserContext.new(ctx.member), "health_data")
+
+    assert %{"stored" => 2, "total" => 2} =
+             ctx.conn
+             |> as(ctx.member)
+             |> json_post("/api/executions/#{execution}/heart-rate", body)
+             |> json_response(200)
+
+    assert %{"stored" => 0, "total" => 2} =
+             ctx.conn
+             |> as(ctx.member)
+             |> json_post("/api/executions/#{execution}/heart-rate", body)
+             |> json_response(200)
+
+    assert %{
+             "heart_rate" => %{
+               "samples" => 4,
+               "average_bpm" => 135,
+               "max_bpm" => 150,
+               "zones" => []
+             }
+           } =
+             ctx.conn
+             |> as(ctx.member)
+             |> get("/api/executions/#{execution}/heart-rate")
+             |> json_response(200)
+  end
+
+  defp start!(conn, user, workout) do
+    conn
+    |> as(user)
+    |> json_post("/api/executions", %{master_workout_id: workout.id, source: "self_selected"})
+    |> json_response(201)
+    |> get_in(["execution", "id"])
+  end
+
+  defp complete!(conn, user, id) do
+    conn
+    |> as(user)
+    |> patch("/api/executions/#{id}/complete", %{section_scores: []})
+    |> json_response(200)
+  end
+
+  defp as(conn, user), do: conn |> recycle() |> put_bearer_token(user)
+
+  defp json_post(conn, path, body) do
+    conn
+    |> put_req_header("content-type", "application/json")
+    |> dispatch(@endpoint, :post, path, Jason.encode!(body))
+  end
+
+  defp create_user!(role, nickname) do
+    {:ok, user} =
+      Identity.register(%{
+        nickname: nickname,
+        password: "S3cur3P@ss!42",
+        role: role,
+        email: "u#{System.unique_integer([:positive])}@placeholder.invalid"
+      })
+
+    {:ok, _membership} = Organizations.ensure_legacy_membership_for_migration(user)
+    user
+  end
+end

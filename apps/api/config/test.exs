@@ -149,3 +149,7 @@ config :palee, :status_http, req_options: [plug: {Req.Test, Palee.StatusHttp}]
 
 # ADR-366: no model calls for status page translations outside production.
 config :palee, :status_translator, Palee.Infrastructure.Status.SandboxTranslator
+# ADR-376: barcode lookups never leave the test run; the Open Food Facts
+# adapter's own tests use a Req.Test plug.
+config :palee, :food_database, Palee.Infrastructure.Nutrition.SandboxFoodDatabase
+config :palee, :open_food_facts, req_options: [plug: {Req.Test, Palee.OpenFoodFacts}]
