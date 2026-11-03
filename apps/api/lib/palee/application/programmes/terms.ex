@@ -1,8 +1,8 @@
 defmodule Palee.Application.Programmes.Terms do
   @moduledoc """
   The texts a buyer agrees to when buying a programme (ADR-371): the
-  request to start (when the start date is today or a withdrawal right
-  exists) and the seller's refund rule. Versioned and hashed into the
+  request to start (where a withdrawal right exists and the start date
+  falls inside its 14 days) and the seller's refund rule. Versioned and hashed into the
   purchase's withdrawal record. The wording is a draft for legal review.
   """
 
@@ -58,11 +58,14 @@ defmodule Palee.Application.Programmes.Terms do
 
   @doc """
   The record kept on the purchase: `{:ok, map}` or
-  `{:error, :programme_start_consent_required}` when the law applies and the
-  buyer did not ask to start.
+  `{:error, :programme_start_consent_required}` when the law applies, the
+  start date falls inside the withdrawal period and the buyer did not ask
+  to start. A start date after the period (`starts_on` at least
+  `days/0` after `today`) needs no request: nothing is provided before the
+  right ends (mockup W8 s5 A, ANR 2026-11-02).
   """
   def record(true = _applies, params, %DateTime{} = now) do
-    if params[:start_now] == true do
+    if params[:start_now] == true or not starts_within_period?(params) do
       language = language(params[:language])
 
       {:ok,
@@ -70,7 +73,7 @@ defmodule Palee.Application.Programmes.Terms do
          "applies" => true,
          "version" => @version,
          "text_hash" => hash(start_now_text(language)),
-         "start_now_requested_at" => DateTime.to_iso8601(now),
+         "start_now_requested_at" => if(params[:start_now] == true, do: DateTime.to_iso8601(now)),
          "deadline" => now |> DateTime.add(@days * 86_400, :second) |> DateTime.to_iso8601()
        }}
     else
@@ -79,6 +82,12 @@ defmodule Palee.Application.Programmes.Terms do
   end
 
   def record(false, _params, _now), do: {:ok, %{"applies" => false}}
+
+  @doc "Whether a start on `starts_on` falls inside the withdrawal period that opens `today`."
+  def starts_within_period?(%{starts_on: %Date{} = starts_on, today: %Date{} = today}),
+    do: Date.diff(starts_on, today) < @days
+
+  def starts_within_period?(_params), do: true
 
   defp hash(text), do: :sha256 |> :crypto.hash(text) |> Base.encode16(case: :lower)
 end

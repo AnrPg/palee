@@ -57,7 +57,12 @@ defmodule Palee.Application.Programmes.Buying do
          {:ok, withdrawal} <-
            Terms.record(
              Terms.withdrawal_applies?(context),
-             %{start_now: params[:start_now], language: language},
+             %{
+               start_now: params[:start_now],
+               language: language,
+               starts_on: starts_on,
+               today: today
+             },
              now
            ),
          {:ok, purchase} <-

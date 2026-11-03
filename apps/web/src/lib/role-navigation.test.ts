@@ -128,7 +128,8 @@ describe("sectionGroupFor", () => {
   it("shows the Coaching tabs on the three coaching pages", () => {
     const staffItems = staffNavItems({ role: "admin", capabilities: ADMIN });
     const group = sectionGroupFor("/org/gym/admin/workouts/123", { surface: "admin", staffItems, features: [] });
-    expect(group?.tabs.map((tab) => tab.id)).toEqual(["gymClasses", "personalTraining", "wodsVault"]);
+    expect(group?.tabs.map((tab) => tab.id)).toEqual(["gymClasses", "personalTraining", "wodsVault", "trainingProgrammes"]);
+    expect(sectionGroupFor("/org/gym/admin/programmes/123", { surface: "admin", staffItems, features: [] })?.id).toBe("coaching");
     expect(sectionGroupFor("/org/gym/admin/finance", { surface: "admin", staffItems, features: [] })).toBeNull();
   });
 

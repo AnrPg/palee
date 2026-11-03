@@ -271,4 +271,33 @@ defmodule Palee.Programmes.DomainTest do
                ])
     end
   end
+
+  describe "Terms.record/3 (request to start)" do
+    alias Palee.Application.Programmes.Terms
+
+    @now ~U[2026-11-03 10:00:00Z]
+    @today ~D[2026-11-03]
+
+    test "a start inside the 14 days needs the buyer's request" do
+      params = %{language: "el", starts_on: Date.add(@today, 13), today: @today}
+
+      assert {:error, :programme_start_consent_required} = Terms.record(true, params, @now)
+
+      assert {:ok, %{"applies" => true, "start_now_requested_at" => at}} =
+               Terms.record(true, Map.put(params, :start_now, true), @now)
+
+      assert is_binary(at)
+    end
+
+    test "a start after the 14 days needs no request and keeps the right" do
+      params = %{language: "el", starts_on: Date.add(@today, 14), today: @today}
+
+      assert {:ok, %{"applies" => true, "start_now_requested_at" => nil, "deadline" => _}} =
+               Terms.record(true, params, @now)
+    end
+
+    test "without a right of withdrawal nothing is asked" do
+      assert {:ok, %{"applies" => false}} = Terms.record(false, %{}, @now)
+    end
+  end
 end
