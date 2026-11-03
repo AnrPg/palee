@@ -113,7 +113,8 @@ config :palee, :channel_email_transport, Palee.Infrastructure.Channels.SandboxEm
 # ADR-366: no model calls for status page translations outside production.
 config :palee, :status_translator, Palee.Infrastructure.Status.SandboxTranslator
 # ADR-376: dev looks barcodes up in the sandbox catalogue; set
-# FOOD_DATABASE=open_food_facts to ask the real one.
-if System.get_env("FOOD_DATABASE") != "open_food_facts" do
+# FOOD_DATABASE=open_food_facts (or chain) to ask the real chain of sources
+# (ADR-421; USDA only with USDA_FDC_API_KEY).
+if System.get_env("FOOD_DATABASE") not in ["open_food_facts", "chain"] do
   config :palee, :food_database, Palee.Infrastructure.Nutrition.SandboxFoodDatabase
 end

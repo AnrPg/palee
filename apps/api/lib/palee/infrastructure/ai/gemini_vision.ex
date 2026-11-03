@@ -11,7 +11,15 @@ defmodule Palee.Infrastructure.Ai.GeminiVision do
   @endpoint "https://generativelanguage.googleapis.com/v1beta/models"
   @default_model "gemini-2.5-flash-lite"
 
-  @doc "`{:ok, text}` of the model's answer."
+  @doc "Whether a Gemini key is set (ADR-421 hides «Φωτογραφία ετικέτας» without one)."
+  def configured? do
+    case :palee |> Application.get_env(:gemini, []) |> Keyword.get(:api_key) do
+      key when is_binary(key) and key != "" -> true
+      _missing -> false
+    end
+  end
+
+  @doc "`{:ok, text}` of the model's answer about one image, or a list of them (ADR-421)."
   def generate(image, instructions, prompt, generation_config, metering, agent) do
     config = Application.get_env(:palee, :gemini, [])
 
@@ -52,10 +60,10 @@ defmodule Palee.Infrastructure.Ai.GeminiVision do
       contents: [
         %{
           role: "user",
-          parts: [
-            %{inlineData: %{mimeType: image.content_type, data: Base.encode64(image.bytes)}},
-            %{text: prompt}
-          ]
+          parts:
+            Enum.map(List.wrap(image), fn image ->
+              %{inlineData: %{mimeType: image.content_type, data: Base.encode64(image.bytes)}}
+            end) ++ [%{text: prompt}]
         }
       ],
       generationConfig: Map.merge(%{thinkingConfig: %{thinkingBudget: 0}}, generation_config)

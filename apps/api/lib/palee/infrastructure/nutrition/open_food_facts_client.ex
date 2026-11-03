@@ -3,8 +3,9 @@ defmodule Palee.Infrastructure.Nutrition.OpenFoodFactsClient do
   Open Food Facts (https://world.openfoodfacts.org), the food database port
   (ADR-376). Data under the Open Database License 1.0, images under
   CC BY-SA. Read API v2, no key; Open Food Facts asks every app to send a
-  User-Agent naming it and a contact, and to stay under 100 product reads
-  a minute (the outbox and the 30-day cache keep Palee far below).
+  User-Agent naming it and a contact, and limits product reads to 15 a
+  minute per IP (official API docs, read 2026-11-03); the 30-day cache, the
+  outbox and one ask per barcode per cache period keep Palee below it.
 
   Config (`:open_food_facts`): `base_url`, `user_agent`, `receive_timeout`,
   `req_options` (tests pass a `Req.Test` plug).
@@ -40,7 +41,7 @@ defmodule Palee.Infrastructure.Nutrition.OpenFoodFactsClient do
       %{"status" => 1, "product" => product} when is_map(product) ->
         case FoodProduct.from_open_food_facts(product, language) do
           nil -> {:error, :not_found}
-          attrs -> {:ok, attrs}
+          attrs -> {:ok, Map.put(attrs, :source, "open_food_facts")}
         end
 
       %{"status" => 0} ->

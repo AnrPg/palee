@@ -53,8 +53,14 @@ defmodule Palee.Infrastructure.Nutrition.SandboxFoodDatabase do
 
   def lookup(barcode, language) do
     case Map.fetch(@products, barcode) do
-      {:ok, product} -> {:ok, FoodProduct.from_open_food_facts(product, language)}
-      :error -> {:error, :not_found}
+      {:ok, product} ->
+        {:ok,
+         product
+         |> FoodProduct.from_open_food_facts(language)
+         |> Map.put(:source, "open_food_facts")}
+
+      :error ->
+        {:error, :not_found}
     end
   end
 end

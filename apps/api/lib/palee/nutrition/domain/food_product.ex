@@ -1,6 +1,9 @@
 defmodule Palee.Nutrition.Domain.FoodProduct do
   @moduledoc """
-  What Palee keeps of an Open Food Facts product (ADR-376): its name (in
+  What Palee keeps of a product from a public source (ADR-376, ADR-421):
+  Open Food Facts, USDA FoodData Central or a licensed product list.
+
+  Of an Open Food Facts product: its name (in
   the person's language when the product has it), brand, quantity, serving
   size, front image, categories and, per 100 g, protein, carbohydrates,
   fat, fibre, sugars and salt. Energy is never kept: Palee shows no
@@ -14,6 +17,86 @@ defmodule Palee.Nutrition.Domain.FoodProduct do
   @name_languages ~w(el en)
 
   def nutrient_keys, do: @nutrients
+
+  # USDA FoodData Central nutrient numbers (per 100 g in Branded Foods);
+  # sodium (307, mg) becomes salt in grams (× 2.5 / 1000).
+  @usda_numbers %{
+    "203" => "proteins",
+    "205" => "carbohydrates",
+    "204" => "fat",
+    "291" => "fiber",
+    "269" => "sugars"
+  }
+  @usda_sodium "307"
+
+  @doc """
+  The cache attributes of a USDA FoodData Central Branded Foods item, or nil
+  without a description. Names stay as USDA wrote them (English).
+  """
+  def from_usda(item) when is_map(item) do
+    case trim(Map.get(item, "description"), 200) do
+      name when is_binary(name) and name != "" ->
+        %{
+          name: name,
+          brand: trim(Map.get(item, "brandName") || Map.get(item, "brandOwner"), 200),
+          quantity: trim(Map.get(item, "packageWeight"), 60),
+          serving_size: usda_serving(item),
+          image_url: nil,
+          categories: item |> Map.get("brandedFoodCategory") |> List.wrap() |> Enum.take(1),
+          nutrients: usda_nutrients(Map.get(item, "foodNutrients") || [])
+        }
+
+      _missing ->
+        nil
+    end
+  end
+
+  def from_usda(_item), do: nil
+
+  defp usda_serving(item) do
+    case {Map.get(item, "servingSize"), Map.get(item, "servingSizeUnit")} do
+      {size, unit} when is_number(size) and is_binary(unit) ->
+        trim("#{format_number(size)} #{String.downcase(unit)}", 60)
+
+      _other ->
+        trim(Map.get(item, "householdServingFullText"), 60)
+    end
+  end
+
+  defp format_number(value) when is_float(value) do
+    if value == Float.round(value), do: value |> trunc() |> Integer.to_string(), else: "#{value}"
+  end
+
+  defp format_number(value), do: to_string(value)
+
+  defp usda_nutrients(list) when is_list(list) do
+    Enum.reduce(list, %{}, fn entry, acc ->
+      number = entry |> Map.get("nutrientNumber") |> to_string()
+      value = number(Map.get(entry, "value"))
+
+      cond do
+        is_nil(value) -> acc
+        number == @usda_sodium -> Map.put(acc, "salt", Float.round(value * 2.5 / 1000, 2))
+        key = Map.get(@usda_numbers, number) -> Map.put(acc, key, value)
+        true -> acc
+      end
+    end)
+  end
+
+  defp usda_nutrients(_list), do: %{}
+
+  @doc "The cache attributes of a licensed product list's row (name, brand, size; no nutrition)."
+  def from_catalogue(%{name: name} = row) when is_binary(name) do
+    %{
+      name: trim(name, 200),
+      brand: trim(Map.get(row, :brand), 200),
+      quantity: trim(Map.get(row, :quantity), 60),
+      serving_size: nil,
+      image_url: nil,
+      categories: [],
+      nutrients: %{}
+    }
+  end
 
   @doc "The cache attributes of an OFF product payload (`product` object), or nil without a name."
   def from_open_food_facts(product, language \\ "el") when is_map(product) do

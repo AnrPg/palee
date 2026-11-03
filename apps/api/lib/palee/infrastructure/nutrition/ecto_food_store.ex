@@ -5,12 +5,13 @@ defmodule Palee.Infrastructure.Nutrition.EctoFoodStore do
 
   import Ecto.Query
 
-  alias Palee.Nutrition.{CachedFood, CustomFood}
+  alias Palee.Nutrition.{BarcodeMiss, CachedFood, CustomFood}
   alias Palee.Nutrition.Domain.FoodCachePolicy
   alias Palee.Repo
 
-  @cache_fields ~w(status name brand quantity serving_size image_url categories nutrients
-                   portion_hint attempts next_attempt_at claimed_at fetched_at last_error)a
+  @cache_fields ~w(status source name brand quantity serving_size image_url categories nutrients
+                   portion_hint attribution attempts next_attempt_at claimed_at fetched_at
+                   last_error)a
 
   @impl true
   def get_cached(barcode), do: Repo.get(CachedFood, barcode)
@@ -78,6 +79,35 @@ defmodule Palee.Infrastructure.Nutrition.EctoFoodStore do
         |> Ecto.Changeset.put_change(:updated_at, now)
         |> Repo.update()
     end
+  end
+
+  @impl true
+  def record_miss(barcode, country, date) do
+    Repo.insert_all(
+      BarcodeMiss,
+      [%{barcode: barcode, country: country, scans: 1, first_seen_on: date, last_seen_on: date}],
+      on_conflict:
+        from(m in BarcodeMiss,
+          update: [
+            inc: [scans: 1],
+            set: [last_seen_on: fragment("GREATEST(?, EXCLUDED.last_seen_on)", m.last_seen_on)]
+          ]
+        ),
+      conflict_target: [:barcode, :country]
+    )
+
+    :ok
+  end
+
+  @impl true
+  def list_misses(country, limit) do
+    BarcodeMiss
+    |> then(fn query ->
+      if is_binary(country), do: where(query, [m], m.country == ^country), else: query
+    end)
+    |> order_by([m], desc: m.scans, desc: m.last_seen_on, asc: m.barcode)
+    |> limit(^limit)
+    |> Repo.all()
   end
 
   @impl true

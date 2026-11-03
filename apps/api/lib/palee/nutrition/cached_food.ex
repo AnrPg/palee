@@ -1,5 +1,5 @@
 defmodule Palee.Nutrition.CachedFood do
-  @moduledoc "A barcode in the Open Food Facts cache and lookup outbox (ADR-376)."
+  @moduledoc "A barcode in the food cache and lookup outbox (ADR-376), from one source (ADR-421)."
 
   use Ecto.Schema
 
@@ -18,6 +18,7 @@ defmodule Palee.Nutrition.CachedFood do
     field(:categories, {:array, :string}, default: [])
     field(:nutrients, :map, default: %{})
     field(:portion_hint, :string)
+    field(:attribution, :map)
     field(:attempts, :integer, default: 0)
     field(:next_attempt_at, :utc_datetime_usec)
     field(:claimed_at, :utc_datetime_usec)

@@ -23,7 +23,9 @@ defmodule PaleeWeb.FoodsController do
   }
 
   operation(:barcode,
-    summary: "Look a scanned barcode up: own foods, then Open Food Facts; else the manual entry",
+    summary:
+      "Look a scanned barcode up: own foods, the cache, then Open Food Facts, USDA and " <>
+        "licensed lists; else the manual entry",
     parameters: [
       %Parameter{
         name: :barcode,
@@ -49,6 +51,43 @@ defmodule PaleeWeb.FoodsController do
            Foods.barcode(conn.assigns.user_context, barcode, Map.get(params, :language) || "el"),
          do: json(conn, result)
   end
+
+  operation(:read_label,
+    summary: "Read a food label from photos into the «Δικό μου τρόφιμο» form (nothing is saved)",
+    description:
+      "One or two photos (`front`, `nutrition`), JPEG, PNG or WebP up to 4 MB each. The " <>
+        "photos are read during the request and never stored. 503 when label reading is off.",
+    request_body: S.label_read_body(),
+    responses: [
+      ok: {"Prefill", "application/json", S.label_read_response()},
+      unprocessable_entity: {"Unreadable or not a photo", "application/json", S.error()},
+      service_unavailable: {"Label reading is off", "application/json", S.error()}
+    ]
+  )
+
+  def read_label(conn, _params) do
+    body = conn.body_params
+    photos = Enum.map(~w(front nutrition), &photo(field(body, &1)))
+    locale = field(body, "locale") || conn.assigns.user_context.account.preferred_locale
+
+    with {:ok, result} <- Foods.read_label(conn.assigns.user_context, photos, locale),
+         do: json(conn, result)
+  end
+
+  defp field(%{} = body, key) when is_binary(key),
+    do: Map.get(body, key) || Map.get(body, String.to_existing_atom(key))
+
+  defp field(_body, _key), do: nil
+
+  # The upload's temp file is removed by Plug when the request ends.
+  defp photo(%Plug.Upload{path: path, content_type: type}) do
+    case File.read(path) do
+      {:ok, bytes} -> %{bytes: bytes, content_type: type}
+      {:error, _reason} -> :unreadable
+    end
+  end
+
+  defp photo(_missing), do: nil
 
   operation(:index,
     summary: "The person's own foods",

@@ -1,7 +1,7 @@
 defmodule PaleeWeb.Schemas.Foods do
   @moduledoc "OpenAPI schemas of barcode foods and the person's own foods (ADR-376)."
 
-  alias OpenApiSpex.Schema
+  alias OpenApiSpex.{MediaType, RequestBody, Schema}
   alias PaleeWeb.Schemas.Community
 
   @maybe_string %Schema{type: :string, nullable: true}
@@ -53,15 +53,17 @@ defmodule PaleeWeb.Schemas.Foods do
       title: "FoodAttribution",
       type: :object,
       nullable: true,
-      description: "Shown with every Open Food Facts product (ODbL 1.0)",
+      description:
+        "Shown with every product from a public source: Open Food Facts (ODbL 1.0), " <>
+          "USDA FoodData Central (CC0) or a licensed product list (its own licence)",
       properties: %{
         source: %Schema{type: :string},
         licence: %Schema{type: :string},
-        licence_url: %Schema{type: :string},
-        images_licence: %Schema{type: :string},
-        url: %Schema{type: :string}
+        licence_url: @maybe_string,
+        images_licence: @maybe_string,
+        url: @maybe_string
       },
-      required: [:images_licence, :licence, :licence_url, :source, :url]
+      required: [:licence, :source]
     }
   end
 
@@ -77,7 +79,11 @@ defmodule PaleeWeb.Schemas.Foods do
           description:
             "`pending`: still asking, scan again in a few seconds; `manual`: write it down yourself"
         },
-        source: %Schema{type: :string, enum: ~w(open_food_facts custom), nullable: true},
+        source: %Schema{
+          type: :string,
+          enum: ~w(open_food_facts usda_fdc catalogue custom),
+          nullable: true
+        },
         reason: %Schema{
           type: :string,
           nullable: true,
@@ -86,9 +92,81 @@ defmodule PaleeWeb.Schemas.Foods do
         },
         food: %Schema{allOf: [food()], nullable: true},
         macros_visible: %Schema{type: :boolean},
+        label_reading: %Schema{
+          type: :boolean,
+          description: "Whether «Φωτογραφία ετικέτας» can prefill the manual entry (ADR-421)"
+        },
         attribution: attribution()
       },
       required: [:barcode, :macros_visible, :status]
+    }
+  end
+
+  def label_read_body do
+    %RequestBody{
+      required: true,
+      content: %{
+        "multipart/form-data" => %MediaType{
+          schema: %Schema{
+            type: :object,
+            properties: %{
+              front: %Schema{type: :string, format: :binary, description: "The front of the pack"},
+              nutrition: %Schema{
+                type: :string,
+                format: :binary,
+                description: "The nutrition table"
+              },
+              locale: %Schema{type: :string, maxLength: 10}
+            }
+          }
+        }
+      }
+    }
+  end
+
+  def label_read_response do
+    %Schema{
+      title: "FoodLabelReading",
+      type: :object,
+      properties: %{
+        food: %Schema{
+          type: :object,
+          properties: %{
+            name: @maybe_string,
+            brand: @maybe_string,
+            serving_label: @maybe_string,
+            portion_hint: @portion,
+            nutrients: nutrients()
+          },
+          required: [:name, :brand, :serving_label, :portion_hint, :nutrients]
+        },
+        macros_visible: %Schema{type: :boolean}
+      },
+      required: [:food, :macros_visible]
+    }
+  end
+
+  def barcode_misses_response do
+    %Schema{
+      title: "BarcodeMisses",
+      type: :object,
+      properties: %{
+        misses: %Schema{
+          type: :array,
+          items: %Schema{
+            type: :object,
+            properties: %{
+              barcode: %Schema{type: :string},
+              country: %Schema{type: :string, description: "ISO 3166 alpha-2; empty when unknown"},
+              scans: %Schema{type: :integer},
+              first_seen_on: %Schema{type: :string, format: :date},
+              last_seen_on: %Schema{type: :string, format: :date}
+            },
+            required: [:barcode, :country, :scans, :first_seen_on, :last_seen_on]
+          }
+        }
+      },
+      required: [:misses]
     }
   end
 
