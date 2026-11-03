@@ -258,7 +258,7 @@ test.describe("body and devices", () => {
     await expect(page.getByLabel("What it is")).toHaveValue("Feta PDO");
     expect(labelRequest).not.toBeNull();
     expect(labelRequest!.headers()["content-type"]).toContain("multipart/form-data");
-    await expect(page.getByLabel("Brand")).toHaveValue("Sandbox Dairy");
+    await expect(page.getByRole("textbox", { name: "Brand" })).toHaveValue("Sandbox Dairy");
     await expect(page.getByRole("button", { name: "1 thumb of fat" })).toHaveAttribute("aria-pressed", "true");
     await expect(page.getByTestId("own-food-nutrients")).toHaveCount(0);
     // ADR-421 addendum: sharing is an explicit choice, never ticked for the person.
@@ -445,7 +445,7 @@ test.describe("body and devices", () => {
     // Option Α: one tap ticks a skill on the profile.
     const checklist = ranks.getByTestId("skill-checklist");
     await expect(checklist).toContainText("1 of 2 skills");
-    await checklist.getByRole("button", { name: "Triangle" }).click();
+    await checklist.getByRole("button", { name: "Triangle", exact: true }).click();
     await expect.poll(() => ticked).toEqual({ rank_id: "r-blue", skill_id: "s-triangle", checked: true });
 
     // Option Γ: the promotion comes pre-filled with what is ticked.
@@ -466,7 +466,7 @@ test.describe("body and devices", () => {
     const line = page.getByTestId("my-ranks-open");
     await expect(line).toContainText("White · towards Blue: 1 of 2 skills");
     await line.click();
-    await expect(page).toHaveURL(/\/box\/ranks$/);
+    await expect(page).toHaveURL(/\/me\/ranks$/);
     const card = page.getByTestId("next-rank-card");
     await expect(card).toContainText("Still to learn");
     await expect(card).toContainText("Triangle");

@@ -273,7 +273,11 @@ test.describe("training floor (v3.1 W5)", () => {
 
   test("the first booking offers the calendar once; «Not now» is an answer (mockup e4 A)", async ({ page }) => {
     await stubApi(page);
-    const start = new Date();
+    // The class is today at 19:00; the page's clock stays at 10:00 so it is never «Over» late in the day.
+    const morning = new Date();
+    morning.setHours(10, 0, 0, 0);
+    await page.clock.setFixedTime(morning);
+    const start = new Date(morning);
     start.setHours(19, 0, 0, 0);
     const crossfit = { id: "ct-1", name: "CrossFit", kind: "class", level: "all_levels", audiences: [] };
     await page.route("**/api/me/places**", (route) => route.fulfill(json({ places: [] })));
