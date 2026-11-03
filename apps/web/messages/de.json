@@ -16435,7 +16435,6 @@
     "display_progress_only": "Nur Fortschritt",
     "display_none": "Nichts",
     "hint": "Bei „Nur Fortschritt“ oder „Nichts“ steht auf der Karte „Von deinem Coach festgelegt“.",
-    "theirsIsStricter": "{name} hat „{choice}“ gewählt, das ist strenger und bleibt deshalb.",
-    "saved": "Gespeichert."
+    "theirsIsStricter": "{name} hat „{choice}“ gewählt, das ist strenger und bleibt deshalb."
   }
 }

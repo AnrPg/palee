@@ -119,7 +119,6 @@ export function ClientFitnessDisplayPanel({
         ) : null}
       </div>
 
-      {form.justSaved ? <StatusText tone="success">{t("saved")}</StatusText> : null}
       {form.bar}
     </div>,
   );

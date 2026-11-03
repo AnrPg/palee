@@ -39,3 +39,13 @@ export function personalFacts(view: ClientFitnessDisplay | undefined): { weightK
   if (weightKg === null && birthYear === null) return null;
   return { weightKg, birthYear };
 }
+
+/**
+ * The panel is for the client's coach only: a client's profile, a viewer
+ * with the coach role who may read client training. The API still answers
+ * 403 not_your_client without an active coaching relationship, and the panel
+ * then shows nothing (weight and birth year are personal).
+ */
+export function showsClientFitnessDisplay({ isClient, actorCoaches, canViewClientTraining }: { isClient: boolean; actorCoaches: boolean; canViewClientTraining: boolean }): boolean {
+  return isClient && actorCoaches && canViewClientTraining;
+}

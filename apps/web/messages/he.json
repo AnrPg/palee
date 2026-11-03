@@ -16435,7 +16435,6 @@
     "display_progress_only": "רק התקדמות",
     "display_none": "כלום",
     "hint": "עם «רק התקדמות» או «כלום», בכרטיס כתוב «נקבע על ידי המאמן שלך».",
-    "theirsIsStricter": "{name} בחר/ה «{choice}», שהוא מחמיר יותר, ולכן זה נשאר.",
-    "saved": "נשמר."
+    "theirsIsStricter": "{name} בחר/ה «{choice}», שהוא מחמיר יותר, ולכן זה נשאר."
   }
 }

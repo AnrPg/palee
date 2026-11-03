@@ -27191,6 +27191,72 @@
         "title": "CleaningSchedule",
         "type": "object"
       },
+      "ClientFitnessDisplay": {
+        "properties": {
+          "override": {
+            "enum": [
+              "progress_only",
+              "none",
+              null
+            ],
+            "nullable": true,
+            "type": "string"
+          },
+          "settings": {
+            "description": "The client's own settings (null when they set none)",
+            "nullable": true,
+            "properties": {
+              "birth_year": {
+                "nullable": true,
+                "type": "integer"
+              },
+              "body_weight_kg": {
+                "nullable": true,
+                "type": "number"
+              },
+              "display": {
+                "enum": [
+                  "all",
+                  "progress_only",
+                  "none"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "birth_year",
+              "body_weight_kg",
+              "display"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "override",
+          "settings"
+        ],
+        "title": "ClientFitnessDisplay",
+        "type": "object"
+      },
+      "ClientFitnessDisplayRequest": {
+        "properties": {
+          "display": {
+            "description": "null gives the choice back to the client",
+            "enum": [
+              "progress_only",
+              "none",
+              null
+            ],
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "display"
+        ],
+        "title": "ClientFitnessDisplayRequest",
+        "type": "object"
+      },
       "ClientTrainingDepth": {
         "description": "Only from entries the client shares with this gym's coaches",
         "properties": {
@@ -46018,12 +46084,28 @@
         "type": "object"
       },
       "FitnessDomain": {
+        "description": "With display all: score, confidence, stale, reasons (and change with a period). With progress_only: tested and direction only.",
         "properties": {
+          "change": {
+            "nullable": true,
+            "type": "integer"
+          },
           "confidence": {
             "enum": [
               "low",
               "medium",
               "high",
+              null
+            ],
+            "nullable": true,
+            "type": "string"
+          },
+          "direction": {
+            "description": "progress_only: the change without its number",
+            "enum": [
+              "up",
+              "down",
+              "same",
               null
             ],
             "nullable": true,
@@ -46039,12 +46121,24 @@
             ],
             "type": "string"
           },
+          "previous_score": {
+            "nullable": true,
+            "type": "integer"
+          },
           "reasons": {
             "items": {
               "description": "One benchmark PR and the points it gave",
               "properties": {
+                "age_band": {
+                  "nullable": true,
+                  "type": "string"
+                },
                 "age_days": {
                   "type": "integer"
+                },
+                "age_percent": {
+                  "nullable": true,
+                  "type": "number"
                 },
                 "anchors": {
                   "items": {
@@ -46064,12 +46158,24 @@
                   },
                   "type": "array"
                 },
+                "basis": {
+                  "description": "ADR-395: body_weight reads the lift as a multiple of body weight",
+                  "enum": [
+                    "absolute",
+                    "body_weight"
+                  ],
+                  "type": "string"
+                },
                 "beaten_on": {
                   "format": "date",
                   "type": "string"
                 },
                 "benchmark": {
                   "type": "string"
+                },
+                "body_weight_kg": {
+                  "nullable": true,
+                  "type": "number"
                 },
                 "domain": {
                   "enum": [
@@ -46085,12 +46191,44 @@
                   "description": "1RM estimated from a multi-rep set",
                   "type": "boolean"
                 },
+                "load": {
+                  "description": "The lift's load in kg",
+                  "nullable": true,
+                  "type": "number"
+                },
                 "name": {
                   "description": "The PR as the person named it",
                   "type": "string"
                 },
+                "next": {
+                  "description": "What the next level takes, in the PR's own unit",
+                  "nullable": true,
+                  "properties": {
+                    "points": {
+                      "type": "integer"
+                    },
+                    "value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "points",
+                    "value"
+                  ],
+                  "type": "object"
+                },
                 "points": {
                   "type": "number"
+                },
+                "ratio": {
+                  "description": "Lift ÷ body weight",
+                  "nullable": true,
+                  "type": "number"
+                },
+                "reps": {
+                  "description": "The lift's reps",
+                  "nullable": true,
+                  "type": "integer"
                 },
                 "stale": {
                   "type": "boolean"
@@ -46110,6 +46248,7 @@
               },
               "required": [
                 "age_days",
+                "basis",
                 "anchors",
                 "beaten_on",
                 "benchmark",
@@ -46132,14 +46271,14 @@
           },
           "stale": {
             "type": "boolean"
+          },
+          "tested": {
+            "description": "progress_only: has a score",
+            "type": "boolean"
           }
         },
         "required": [
-          "confidence",
-          "domain",
-          "reasons",
-          "score",
-          "stale"
+          "domain"
         ],
         "title": "FitnessDomain",
         "type": "object"
@@ -46194,6 +46333,30 @@
           "benchmarks_known": {
             "type": "integer"
           },
+          "display": {
+            "properties": {
+              "mode": {
+                "enum": [
+                  "all",
+                  "progress_only",
+                  "none"
+                ],
+                "type": "string"
+              },
+              "set_by": {
+                "enum": [
+                  "self",
+                  "coach"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "mode",
+              "set_by"
+            ],
+            "type": "object"
+          },
           "division": {
             "enum": [
               "women",
@@ -46205,12 +46368,28 @@
           },
           "domains": {
             "items": {
+              "description": "With display all: score, confidence, stale, reasons (and change with a period). With progress_only: tested and direction only.",
               "properties": {
+                "change": {
+                  "nullable": true,
+                  "type": "integer"
+                },
                 "confidence": {
                   "enum": [
                     "low",
                     "medium",
                     "high",
+                    null
+                  ],
+                  "nullable": true,
+                  "type": "string"
+                },
+                "direction": {
+                  "description": "progress_only: the change without its number",
+                  "enum": [
+                    "up",
+                    "down",
+                    "same",
                     null
                   ],
                   "nullable": true,
@@ -46226,12 +46405,24 @@
                   ],
                   "type": "string"
                 },
+                "previous_score": {
+                  "nullable": true,
+                  "type": "integer"
+                },
                 "reasons": {
                   "items": {
                     "description": "One benchmark PR and the points it gave",
                     "properties": {
+                      "age_band": {
+                        "nullable": true,
+                        "type": "string"
+                      },
                       "age_days": {
                         "type": "integer"
+                      },
+                      "age_percent": {
+                        "nullable": true,
+                        "type": "number"
                       },
                       "anchors": {
                         "items": {
@@ -46251,12 +46442,24 @@
                         },
                         "type": "array"
                       },
+                      "basis": {
+                        "description": "ADR-395: body_weight reads the lift as a multiple of body weight",
+                        "enum": [
+                          "absolute",
+                          "body_weight"
+                        ],
+                        "type": "string"
+                      },
                       "beaten_on": {
                         "format": "date",
                         "type": "string"
                       },
                       "benchmark": {
                         "type": "string"
+                      },
+                      "body_weight_kg": {
+                        "nullable": true,
+                        "type": "number"
                       },
                       "domain": {
                         "enum": [
@@ -46272,12 +46475,44 @@
                         "description": "1RM estimated from a multi-rep set",
                         "type": "boolean"
                       },
+                      "load": {
+                        "description": "The lift's load in kg",
+                        "nullable": true,
+                        "type": "number"
+                      },
                       "name": {
                         "description": "The PR as the person named it",
                         "type": "string"
                       },
+                      "next": {
+                        "description": "What the next level takes, in the PR's own unit",
+                        "nullable": true,
+                        "properties": {
+                          "points": {
+                            "type": "integer"
+                          },
+                          "value": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "points",
+                          "value"
+                        ],
+                        "type": "object"
+                      },
                       "points": {
                         "type": "number"
+                      },
+                      "ratio": {
+                        "description": "Lift ÷ body weight",
+                        "nullable": true,
+                        "type": "number"
+                      },
+                      "reps": {
+                        "description": "The lift's reps",
+                        "nullable": true,
+                        "type": "integer"
                       },
                       "stale": {
                         "type": "boolean"
@@ -46297,6 +46532,7 @@
                     },
                     "required": [
                       "age_days",
+                      "basis",
                       "anchors",
                       "beaten_on",
                       "benchmark",
@@ -46319,14 +46555,14 @@
                 },
                 "stale": {
                   "type": "boolean"
+                },
+                "tested": {
+                  "description": "progress_only: has a score",
+                  "type": "boolean"
                 }
               },
               "required": [
-                "confidence",
-                "domain",
-                "reasons",
-                "score",
-                "stale"
+                "domain"
               ],
               "title": "FitnessDomain",
               "type": "object"
@@ -46369,12 +46605,43 @@
           "injury_caution": {
             "type": "boolean"
           },
+          "inputs": {
+            "properties": {
+              "age_band": {
+                "nullable": true,
+                "type": "string"
+              },
+              "age_percent": {
+                "nullable": true,
+                "type": "number"
+              },
+              "age_ready": {
+                "description": "Whether a birth year counts yet",
+                "type": "boolean"
+              },
+              "body_weight_kg": {
+                "nullable": true,
+                "type": "number"
+              }
+            },
+            "required": [
+              "age_ready",
+              "age_band",
+              "age_percent",
+              "body_weight_kg"
+            ],
+            "type": "object"
+          },
           "neutral_standards": {
             "type": "boolean"
           },
           "overall": {
             "nullable": true,
             "properties": {
+              "change": {
+                "nullable": true,
+                "type": "integer"
+              },
               "domains_scored": {
                 "type": "integer"
               },
@@ -46391,10 +46658,46 @@
               "score"
             ],
             "type": "object"
+          },
+          "period_from": {
+            "format": "date",
+            "nullable": true,
+            "type": "string"
+          },
+          "settings": {
+            "properties": {
+              "birth_year": {
+                "nullable": true,
+                "type": "integer"
+              },
+              "body_weight_kg": {
+                "nullable": true,
+                "type": "number"
+              },
+              "display": {
+                "enum": [
+                  "all",
+                  "progress_only",
+                  "none"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "birth_year",
+              "body_weight_kg",
+              "display"
+            ],
+            "title": "FitnessSettings",
+            "type": "object"
           }
         },
         "required": [
           "algorithm",
+          "display",
+          "inputs",
+          "period_from",
+          "settings",
           "benchmarks_known",
           "division",
           "domains",
@@ -46409,8 +46712,16 @@
       "FitnessReason": {
         "description": "One benchmark PR and the points it gave",
         "properties": {
+          "age_band": {
+            "nullable": true,
+            "type": "string"
+          },
           "age_days": {
             "type": "integer"
+          },
+          "age_percent": {
+            "nullable": true,
+            "type": "number"
           },
           "anchors": {
             "items": {
@@ -46430,12 +46741,24 @@
             },
             "type": "array"
           },
+          "basis": {
+            "description": "ADR-395: body_weight reads the lift as a multiple of body weight",
+            "enum": [
+              "absolute",
+              "body_weight"
+            ],
+            "type": "string"
+          },
           "beaten_on": {
             "format": "date",
             "type": "string"
           },
           "benchmark": {
             "type": "string"
+          },
+          "body_weight_kg": {
+            "nullable": true,
+            "type": "number"
           },
           "domain": {
             "enum": [
@@ -46451,12 +46774,44 @@
             "description": "1RM estimated from a multi-rep set",
             "type": "boolean"
           },
+          "load": {
+            "description": "The lift's load in kg",
+            "nullable": true,
+            "type": "number"
+          },
           "name": {
             "description": "The PR as the person named it",
             "type": "string"
           },
+          "next": {
+            "description": "What the next level takes, in the PR's own unit",
+            "nullable": true,
+            "properties": {
+              "points": {
+                "type": "integer"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "points",
+              "value"
+            ],
+            "type": "object"
+          },
           "points": {
             "type": "number"
+          },
+          "ratio": {
+            "description": "Lift ÷ body weight",
+            "nullable": true,
+            "type": "number"
+          },
+          "reps": {
+            "description": "The lift's reps",
+            "nullable": true,
+            "type": "integer"
           },
           "stale": {
             "type": "boolean"
@@ -46476,6 +46831,7 @@
         },
         "required": [
           "age_days",
+          "basis",
           "anchors",
           "beaten_on",
           "benchmark",
@@ -46488,6 +46844,58 @@
           "value"
         ],
         "title": "FitnessReason",
+        "type": "object"
+      },
+      "FitnessSettings": {
+        "properties": {
+          "birth_year": {
+            "nullable": true,
+            "type": "integer"
+          },
+          "body_weight_kg": {
+            "nullable": true,
+            "type": "number"
+          },
+          "display": {
+            "enum": [
+              "all",
+              "progress_only",
+              "none"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "birth_year",
+          "body_weight_kg",
+          "display"
+        ],
+        "title": "FitnessSettings",
+        "type": "object"
+      },
+      "FitnessSettingsRequest": {
+        "properties": {
+          "birth_year": {
+            "minimum": 1900,
+            "nullable": true,
+            "type": "integer"
+          },
+          "body_weight_kg": {
+            "maximum": 300,
+            "minimum": 25,
+            "nullable": true,
+            "type": "number"
+          },
+          "display": {
+            "enum": [
+              "all",
+              "progress_only",
+              "none"
+            ],
+            "type": "string"
+          }
+        },
+        "title": "FitnessSettingsRequest",
         "type": "object"
       },
       "FloorPlan": {
@@ -145491,6 +145899,22 @@
               ],
               "type": "string"
             }
+          },
+          {
+            "description": "ADR-395: Πρόοδος's period; adds each domain's change since its start",
+            "in": "query",
+            "name": "period",
+            "required": false,
+            "schema": {
+              "enum": [
+                "4w",
+                "12w",
+                "6m",
+                "1y",
+                "all"
+              ],
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -145517,6 +145941,30 @@
                     "benchmarks_known": {
                       "type": "integer"
                     },
+                    "display": {
+                      "properties": {
+                        "mode": {
+                          "enum": [
+                            "all",
+                            "progress_only",
+                            "none"
+                          ],
+                          "type": "string"
+                        },
+                        "set_by": {
+                          "enum": [
+                            "self",
+                            "coach"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "mode",
+                        "set_by"
+                      ],
+                      "type": "object"
+                    },
                     "division": {
                       "enum": [
                         "women",
@@ -145528,12 +145976,28 @@
                     },
                     "domains": {
                       "items": {
+                        "description": "With display all: score, confidence, stale, reasons (and change with a period). With progress_only: tested and direction only.",
                         "properties": {
+                          "change": {
+                            "nullable": true,
+                            "type": "integer"
+                          },
                           "confidence": {
                             "enum": [
                               "low",
                               "medium",
                               "high",
+                              null
+                            ],
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "direction": {
+                            "description": "progress_only: the change without its number",
+                            "enum": [
+                              "up",
+                              "down",
+                              "same",
                               null
                             ],
                             "nullable": true,
@@ -145549,12 +146013,24 @@
                             ],
                             "type": "string"
                           },
+                          "previous_score": {
+                            "nullable": true,
+                            "type": "integer"
+                          },
                           "reasons": {
                             "items": {
                               "description": "One benchmark PR and the points it gave",
                               "properties": {
+                                "age_band": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
                                 "age_days": {
                                   "type": "integer"
+                                },
+                                "age_percent": {
+                                  "nullable": true,
+                                  "type": "number"
                                 },
                                 "anchors": {
                                   "items": {
@@ -145574,12 +146050,24 @@
                                   },
                                   "type": "array"
                                 },
+                                "basis": {
+                                  "description": "ADR-395: body_weight reads the lift as a multiple of body weight",
+                                  "enum": [
+                                    "absolute",
+                                    "body_weight"
+                                  ],
+                                  "type": "string"
+                                },
                                 "beaten_on": {
                                   "format": "date",
                                   "type": "string"
                                 },
                                 "benchmark": {
                                   "type": "string"
+                                },
+                                "body_weight_kg": {
+                                  "nullable": true,
+                                  "type": "number"
                                 },
                                 "domain": {
                                   "enum": [
@@ -145595,12 +146083,44 @@
                                   "description": "1RM estimated from a multi-rep set",
                                   "type": "boolean"
                                 },
+                                "load": {
+                                  "description": "The lift's load in kg",
+                                  "nullable": true,
+                                  "type": "number"
+                                },
                                 "name": {
                                   "description": "The PR as the person named it",
                                   "type": "string"
                                 },
+                                "next": {
+                                  "description": "What the next level takes, in the PR's own unit",
+                                  "nullable": true,
+                                  "properties": {
+                                    "points": {
+                                      "type": "integer"
+                                    },
+                                    "value": {
+                                      "type": "number"
+                                    }
+                                  },
+                                  "required": [
+                                    "points",
+                                    "value"
+                                  ],
+                                  "type": "object"
+                                },
                                 "points": {
                                   "type": "number"
+                                },
+                                "ratio": {
+                                  "description": "Lift ÷ body weight",
+                                  "nullable": true,
+                                  "type": "number"
+                                },
+                                "reps": {
+                                  "description": "The lift's reps",
+                                  "nullable": true,
+                                  "type": "integer"
                                 },
                                 "stale": {
                                   "type": "boolean"
@@ -145620,6 +146140,7 @@
                               },
                               "required": [
                                 "age_days",
+                                "basis",
                                 "anchors",
                                 "beaten_on",
                                 "benchmark",
@@ -145642,14 +146163,14 @@
                           },
                           "stale": {
                             "type": "boolean"
+                          },
+                          "tested": {
+                            "description": "progress_only: has a score",
+                            "type": "boolean"
                           }
                         },
                         "required": [
-                          "confidence",
-                          "domain",
-                          "reasons",
-                          "score",
-                          "stale"
+                          "domain"
                         ],
                         "title": "FitnessDomain",
                         "type": "object"
@@ -145692,12 +146213,43 @@
                     "injury_caution": {
                       "type": "boolean"
                     },
+                    "inputs": {
+                      "properties": {
+                        "age_band": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "age_percent": {
+                          "nullable": true,
+                          "type": "number"
+                        },
+                        "age_ready": {
+                          "description": "Whether a birth year counts yet",
+                          "type": "boolean"
+                        },
+                        "body_weight_kg": {
+                          "nullable": true,
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "age_ready",
+                        "age_band",
+                        "age_percent",
+                        "body_weight_kg"
+                      ],
+                      "type": "object"
+                    },
                     "neutral_standards": {
                       "type": "boolean"
                     },
                     "overall": {
                       "nullable": true,
                       "properties": {
+                        "change": {
+                          "nullable": true,
+                          "type": "integer"
+                        },
                         "domains_scored": {
                           "type": "integer"
                         },
@@ -145714,10 +146266,46 @@
                         "score"
                       ],
                       "type": "object"
+                    },
+                    "period_from": {
+                      "format": "date",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "settings": {
+                      "properties": {
+                        "birth_year": {
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "body_weight_kg": {
+                          "nullable": true,
+                          "type": "number"
+                        },
+                        "display": {
+                          "enum": [
+                            "all",
+                            "progress_only",
+                            "none"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "birth_year",
+                        "body_weight_kg",
+                        "display"
+                      ],
+                      "title": "FitnessSettings",
+                      "type": "object"
                     }
                   },
                   "required": [
                     "algorithm",
+                    "display",
+                    "inputs",
+                    "period_from",
+                    "settings",
                     "benchmarks_known",
                     "division",
                     "domains",
@@ -145751,6 +146339,151 @@
           }
         ],
         "summary": "Your fitness score per domain, its reasoning and what to work on",
+        "tags": [
+          "Progress"
+        ]
+      }
+    },
+    "/api/me/fitness-profile/settings": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.FitnessProfileController.settings",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "birth_year": {
+                      "nullable": true,
+                      "type": "integer"
+                    },
+                    "body_weight_kg": {
+                      "nullable": true,
+                      "type": "number"
+                    },
+                    "display": {
+                      "enum": [
+                        "all",
+                        "progress_only",
+                        "none"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "birth_year",
+                    "body_weight_kg",
+                    "display"
+                  ],
+                  "title": "FitnessSettings",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Settings"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Your settings for the fitness card: body weight, birth year, what it shows",
+        "tags": [
+          "Progress"
+        ]
+      },
+      "put": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.FitnessProfileController.update_settings",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "birth_year": {
+                    "minimum": 1900,
+                    "nullable": true,
+                    "type": "integer"
+                  },
+                  "body_weight_kg": {
+                    "maximum": 300,
+                    "minimum": 25,
+                    "nullable": true,
+                    "type": "number"
+                  },
+                  "display": {
+                    "enum": [
+                      "all",
+                      "progress_only",
+                      "none"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "title": "FitnessSettingsRequest",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "birth_year": {
+                      "nullable": true,
+                      "type": "integer"
+                    },
+                    "body_weight_kg": {
+                      "nullable": true,
+                      "type": "number"
+                    },
+                    "display": {
+                      "enum": [
+                        "all",
+                        "progress_only",
+                        "none"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "birth_year",
+                    "body_weight_kg",
+                    "display"
+                  ],
+                  "title": "FitnessSettings",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Settings"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "A value out of range"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Change your settings for the fitness card (only the fields sent change)",
         "tags": [
           "Progress"
         ]
@@ -318354,6 +319087,227 @@
         "summary": "Write a private note about one of your clients, optionally about one thing of theirs",
         "tags": [
           "Coach notes"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/staff/clients/{user_id}/fitness-display": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.ClientFitnessDisplayController.show",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "override": {
+                      "enum": [
+                        "progress_only",
+                        "none",
+                        null
+                      ],
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "settings": {
+                      "description": "The client's own settings (null when they set none)",
+                      "nullable": true,
+                      "properties": {
+                        "birth_year": {
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "body_weight_kg": {
+                          "nullable": true,
+                          "type": "number"
+                        },
+                        "display": {
+                          "enum": [
+                            "all",
+                            "progress_only",
+                            "none"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "birth_year",
+                        "body_weight_kg",
+                        "display"
+                      ],
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "override",
+                    "settings"
+                  ],
+                  "title": "ClientFitnessDisplay",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Settings"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not one of your clients"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "A client's fitness card settings (only for their coach)",
+        "tags": [
+          "Progress"
+        ]
+      },
+      "put": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.ClientFitnessDisplayController.update",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "display": {
+                    "description": "null gives the choice back to the client",
+                    "enum": [
+                      "progress_only",
+                      "none",
+                      null
+                    ],
+                    "nullable": true,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "display"
+                ],
+                "title": "ClientFitnessDisplayRequest",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "override": {
+                      "enum": [
+                        "progress_only",
+                        "none",
+                        null
+                      ],
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "settings": {
+                      "description": "The client's own settings (null when they set none)",
+                      "nullable": true,
+                      "properties": {
+                        "birth_year": {
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "body_weight_kg": {
+                          "nullable": true,
+                          "type": "number"
+                        },
+                        "display": {
+                          "enum": [
+                            "all",
+                            "progress_only",
+                            "none"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "birth_year",
+                        "body_weight_kg",
+                        "display"
+                      ],
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "override",
+                    "settings"
+                  ],
+                  "title": "ClientFitnessDisplay",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Settings"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not one of your clients"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unknown choice"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Choose what a client's fitness card shows (progress only, nothing, or theirs)",
+        "tags": [
+          "Progress"
         ]
       }
     },

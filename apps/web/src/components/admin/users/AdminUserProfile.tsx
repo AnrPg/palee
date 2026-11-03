@@ -69,6 +69,7 @@ import { CoachBodyPanel } from "@/components/body/CoachBodyPanel";
 import { CoachWellnessPanel } from "@/components/buddy/CoachWellnessPanel";
 import { CoachTrainingDepthPanel } from "@/components/member-app/progress/CoachTrainingDepthPanel";
 import { ClientFitnessDisplayPanel } from "@/components/admin/users/ClientFitnessDisplayPanel";
+import { showsClientFitnessDisplay } from "@/components/admin/users/client-fitness-display";
 import {
   activeProfileTab,
   SECTION_TAB,
@@ -728,7 +729,7 @@ export function AdminUserProfile({ userId }: { userId: string }) {
   // ADR-165: coverage, qualities and load from the entries the client shares.
   if (isClient && actorCoaches && can(actor, "view_client_training")) tabSections.add("training_depth");
   // ADR-395: only the client's coach (the API checks the coaching relationship).
-  if (isClient && actorCoaches && can(actor, "view_client_training")) tabSections.add("fitness_display");
+  if (showsClientFitnessDisplay({ isClient, actorCoaches, canViewClientTraining: can(actor, "view_client_training") })) tabSections.add("fitness_display");
   const tabs = visibleProfileTabs(tabSections);
   const tab = activeProfileTab(tabs, searchParams.get("tab"), hashSection);
   const inTab = (section: string) => SECTION_TAB[section] === tab && tabSections.has(section);

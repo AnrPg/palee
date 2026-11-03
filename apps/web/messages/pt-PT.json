@@ -16435,7 +16435,6 @@
     "display_progress_only": "Só progresso",
     "display_none": "Nada",
     "hint": "Com «Só progresso» ou «Nada», o cartão diz «Definido pelo teu coach».",
-    "theirsIsStricter": "{name} escolheu «{choice}», que é mais restrito, por isso fica assim.",
-    "saved": "Guardado."
+    "theirsIsStricter": "{name} escolheu «{choice}», que é mais restrito, por isso fica assim."
   }
 }

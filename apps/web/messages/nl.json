@@ -16435,7 +16435,6 @@
     "display_progress_only": "Alleen voortgang",
     "display_none": "Niets",
     "hint": "Bij ‘Alleen voortgang’ of ‘Niets’ staat op de kaart ‘Ingesteld door je coach’.",
-    "theirsIsStricter": "{name} koos ‘{choice}’, dat is strenger, dus dat blijft.",
-    "saved": "Opgeslagen."
+    "theirsIsStricter": "{name} koos ‘{choice}’, dat is strenger, dus dat blijft."
   }
 }
