@@ -15207,6 +15207,7 @@
     "sourcePerson": "Par le client dans l'application",
     "sourceStaff": "Dit au staff",
     "sourceStop": "A répondu STOP",
+    "sourceLink": "A touché «Désinscription» dans le SMS",
     "yes": "Oui",
     "saidAtDesk": "L'a dit à l'accueil",
     "saidStop": "Veut arrêter",

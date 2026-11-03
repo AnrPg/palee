@@ -171,6 +171,14 @@ describe("Client card SMS (W3 screen 2 C)", () => {
 
     await waitFor(() => expect(recordStaffConsent).toHaveBeenCalledWith("access", "c1", "service", true));
   });
+
+  it("says when offers were stopped from the SMS link (ADR-390)", async () => {
+    vi.mocked(channels.lookupChannelContact).mockResolvedValue({
+      contact: contact([{ channel: "sms", purpose: "marketing", granted: false, source: "unsubscribe_link", withdrawn_at: "2026-11-03T10:00:00Z" }]),
+    });
+    wrap(<ClientSmsPanel userId="u1" />);
+    expect(await screen.findByText(/Tapped «Stop» in the SMS/)).toBeInTheDocument();
+  });
 });
 
 describe("Ask once after a booking (W3 screen 2 B)", () => {

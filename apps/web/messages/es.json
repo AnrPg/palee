@@ -15207,6 +15207,7 @@
     "sourcePerson": "Por el cliente en la app",
     "sourceStaff": "Se lo dijo al staff",
     "sourceStop": "Respondió STOP",
+    "sourceLink": "Tocó «Baja» en el SMS",
     "yes": "Sí",
     "saidAtDesk": "Lo dijo en recepción",
     "saidStop": "Quiere parar",

@@ -15207,6 +15207,7 @@
     "sourcePerson": "Pelo cliente na app",
     "sourceStaff": "Disse ao staff",
     "sourceStop": "Respondeu STOP",
+    "sourceLink": "Tocou em «Cancelar» no SMS",
     "yes": "Sim",
     "saidAtDesk": "Disse na receção",
     "saidStop": "Quer parar",

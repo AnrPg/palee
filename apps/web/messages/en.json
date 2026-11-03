@@ -15207,6 +15207,7 @@
     "sourcePerson": "By the client in the app",
     "sourceStaff": "Told the staff",
     "sourceStop": "Replied STOP",
+    "sourceLink": "Tapped «Stop» in the SMS",
     "yes": "Yes",
     "saidAtDesk": "Said it at the desk",
     "saidStop": "Asked to stop",

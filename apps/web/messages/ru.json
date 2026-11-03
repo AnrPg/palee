@@ -15207,6 +15207,7 @@
     "sourcePerson": "Клиент в приложении",
     "sourceStaff": "Сказал staff",
     "sourceStop": "Ответил STOP",
+    "sourceLink": "Нажал «Отписаться» в SMS",
     "yes": "Да",
     "saidAtDesk": "Сказал на ресепшене",
     "saidStop": "Просит остановить",
