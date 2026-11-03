@@ -30,7 +30,13 @@ defmodule Palee.ReviewAsks.Ports.ReviewAskStore do
   @callback count_reports_since(context(), reporter_id :: id(), DateTime.t()) :: non_neg_integer()
   @callback insert_report(context(), map()) :: {:ok, map()} | {:error, :already_reported | term()}
   @callback latest_decision(context(), review_id :: id()) :: map() | nil
-  @callback decide_review(context(), review_id :: id(), review_changes :: map(), map(), String.t()) ::
+  @callback decide_review(
+              context(),
+              review_id :: id(),
+              review_changes :: map(),
+              map(),
+              String.t()
+            ) ::
               {:ok, %{review: map(), decision: map(), reports: [map()]}}
               | {:error, :box_review_not_found | :review_report_decided | term()}
   @callback platform_open_reports(context(), limit :: pos_integer()) :: [map()]

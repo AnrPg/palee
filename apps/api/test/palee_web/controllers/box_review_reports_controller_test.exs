@@ -33,7 +33,12 @@ defmodule PaleeWeb.BoxReviewReportsControllerTest do
         name: "Report Box #{System.unique_integer([:positive])}"
       })
 
-    for {user, role} <- [{owner, :owner}, {author, :member}, {reporter, :member}, {other, :member}] do
+    for {user, role} <- [
+          {owner, :owner},
+          {author, :member},
+          {reporter, :member},
+          {other, :member}
+        ] do
       {:ok, _membership} =
         Organizations.add_membership(%{
           organization_id: organization.id,
@@ -82,7 +87,8 @@ defmodule PaleeWeb.BoxReviewReportsControllerTest do
     assert %{"code" => "cannot_report_own_review"} =
              ctx |> report(ctx.author, %{reason: "offensive"}) |> json_response(422)
 
-    assert %{"errors" => _} = ctx |> report(ctx.reporter, %{reason: "boring"}) |> json_response(422)
+    assert %{"errors" => _} =
+             ctx |> report(ctx.reporter, %{reason: "boring"}) |> json_response(422)
 
     assert %{"errors" => %{"note" => _}} =
              ctx |> report(ctx.reporter, %{reason: "other"}) |> json_response(422)
@@ -187,7 +193,9 @@ defmodule PaleeWeb.BoxReviewReportsControllerTest do
              ctx |> report(ctx.other, %{reason: "spam"}) |> json_response(404)
 
     # Everyone concerned hears it.
-    assert [%{payload: %{"outcome" => "hide"}}] = notices(ctx.reporter, "box_review_report_decided")
+    assert [%{payload: %{"outcome" => "hide"}}] =
+             notices(ctx.reporter, "box_review_report_decided")
+
     assert [_] = notices(ctx.owner, "box_review_report_decided")
     assert [%{payload: %{"ground" => "offensive"}}] = notices(ctx.author, "box_review_moderated")
 
@@ -221,7 +229,9 @@ defmodule PaleeWeb.BoxReviewReportsControllerTest do
              |> post("/api/platform/review-reports/#{ctx.review_id}/decision", %{outcome: "keep"})
              |> json_response(200)
 
-    assert [%{payload: %{"outcome" => "keep"}}] = notices(ctx.reporter, "box_review_report_decided")
+    assert [%{payload: %{"outcome" => "keep"}}] =
+             notices(ctx.reporter, "box_review_report_decided")
+
     assert [] = notices(ctx.author, "box_review_moderated")
 
     assert %{"count" => 1} =
@@ -263,6 +273,7 @@ defmodule PaleeWeb.BoxReviewReportsControllerTest do
     end
 
     assert count.() == 1
+
     Palee.DataCase.with_runtime_role(fn ->
       Repo.query!("SELECT palee_forget_box_review_reports($1)", [Ecto.UUID.dump!(ctx.other.id)])
     end)

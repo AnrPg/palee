@@ -14,7 +14,8 @@ defmodule PaleeWeb.AdminBoxReviewsController do
   tags(["Box reviews"])
   security([%{"bearerAuth" => []}])
 
-  plug OpenApiSpex.Plug.CastAndValidate, [json_render_error_v2: true] when action in [:reply, :report]
+  plug OpenApiSpex.Plug.CastAndValidate,
+       [json_render_error_v2: true] when action in [:reply, :report]
 
   operation(:index,
     summary: "The box's reviews (newest first) with the average and the Google listing",
@@ -54,7 +55,8 @@ defmodule PaleeWeb.AdminBoxReviewsController do
   end
 
   operation(:report,
-    summary: "Report a review as the box to the Palee team; the box can never hide a review itself",
+    summary:
+      "Report a review as the box to the Palee team; the box can never hide a review itself",
     parameters: [
       %Parameter{
         name: :id,
@@ -67,7 +69,8 @@ defmodule PaleeWeb.AdminBoxReviewsController do
     responses: [
       ok: {"Reported", "application/json", S.report_response()},
       not_found: {"No such review", "application/json", %Schema{type: :object}},
-      unprocessable_entity: {"Invalid or my own review", "application/json", %Schema{type: :object}},
+      unprocessable_entity:
+        {"Invalid or my own review", "application/json", %Schema{type: :object}},
       too_many_requests: {"Too many reports today", "application/json", %Schema{type: :object}}
     ]
   )

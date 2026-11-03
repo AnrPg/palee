@@ -92,7 +92,16 @@ defmodule PaleeWeb.Schemas.BoxReviews do
             description: "Reviews I reported that the Palee team has not decided yet (ADR-397)"
           }
         }),
-      required: [:average, :can_review, :count, :google, :has_more, :mine, :reported_ids, :reviews]
+      required: [
+        :average,
+        :can_review,
+        :count,
+        :google,
+        :has_more,
+        :mine,
+        :reported_ids,
+        :reviews
+      ]
     }
   end
 
@@ -131,7 +140,10 @@ defmodule PaleeWeb.Schemas.BoxReviews do
         after_report: %Schema{type: :boolean, description: "Decided after a report"},
         automated: %Schema{type: :boolean, description: "Always false: a person decided"},
         decided_at: @time,
-        redress: %Schema{type: :array, items: %Schema{type: :string, enum: ~w(ask_palee_again court)}}
+        redress: %Schema{
+          type: :array,
+          items: %Schema{type: :string, enum: ~w(ask_palee_again court)}
+        }
       },
       required: [
         :after_report,

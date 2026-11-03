@@ -35,7 +35,9 @@ defmodule Palee.ReviewAsks.Domain.ReviewReportPolicyTest do
     review = %{user_id: "a", moderation: nil}
     assert Policy.may_report(review, "a") == {:error, :cannot_report_own_review}
     assert Policy.may_report(review, "b") == :ok
-    assert Policy.may_report(%{review | moderation: "hidden"}, "b") == {:error, :box_review_not_found}
+
+    assert Policy.may_report(%{review | moderation: "hidden"}, "b") ==
+             {:error, :box_review_not_found}
   end
 
   test "ten reports a day per person and box" do

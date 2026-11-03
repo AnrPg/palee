@@ -109,7 +109,8 @@ defmodule Palee.ReviewAsks do
 
   @doc "The box replies to a review (or edits its reply); it can never delete one."
   def reply_review(context, id, params, staff_id, now) do
-    with %{} = review <- ReviewAskStore.get_review_by_id(context, id) || {:error, :box_review_not_found},
+    with %{} = review <-
+           ReviewAskStore.get_review_by_id(context, id) || {:error, :box_review_not_found},
          :ok <- ReviewReportPolicy.editable(review),
          {:ok, body} <- BoxReviewPolicy.reply(params) do
       ReviewAskStore.reply_review(context, id, %{

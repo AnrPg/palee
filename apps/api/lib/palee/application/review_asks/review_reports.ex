@@ -62,7 +62,9 @@ defmodule Palee.Application.ReviewAsks.ReviewReports do
 
   defp open_items(platform) do
     reports = ReviewAsks.platform_open_reports(platform, @queue_limit)
-    names = Organizations.platform_organization_names(platform, Enum.map(reports, & &1.organization_id))
+
+    names =
+      Organizations.platform_organization_names(platform, Enum.map(reports, & &1.organization_id))
 
     reports
     |> Enum.group_by(& &1.review_id)
@@ -81,14 +83,17 @@ defmodule Palee.Application.ReviewAsks.ReviewReports do
       organization: %{id: organization_id, name: Map.get(names, organization_id)},
       author_name: author_name(first.review_author_id),
       reported: %{rating: latest.review_rating, body: latest.review_body},
-      current: current && %{rating: current.rating, body: current.body, edited_at: current.edited_at},
+      current:
+        current && %{rating: current.rating, body: current.body, edited_at: current.edited_at},
       reports_count: length(group),
       box_reported: Enum.any?(group, &(&1.reporter_role == "box")),
       reasons: group |> Enum.frequencies_by(& &1.reason) |> Enum.map(&reason_count/1),
       notes:
         group
         |> Enum.filter(& &1.note)
-        |> Enum.map(&%{reason: &1.reason, role: &1.reporter_role, note: &1.note, at: &1.inserted_at}),
+        |> Enum.map(
+          &%{reason: &1.reason, role: &1.reporter_role, note: &1.note, at: &1.inserted_at}
+        ),
       first_reported_at: first.inserted_at
     }
   end
@@ -99,7 +104,10 @@ defmodule Palee.Application.ReviewAsks.ReviewReports do
     decisions = ReviewAsks.platform_decisions(platform, @decided_limit)
 
     names =
-      Organizations.platform_organization_names(platform, Enum.map(decisions, & &1.organization_id))
+      Organizations.platform_organization_names(
+        platform,
+        Enum.map(decisions, & &1.organization_id)
+      )
 
     deciders =
       decisions
@@ -112,7 +120,10 @@ defmodule Palee.Application.ReviewAsks.ReviewReports do
       %{
         id: decision.id,
         review_id: decision.review_id,
-        organization: %{id: decision.organization_id, name: Map.get(names, decision.organization_id)},
+        organization: %{
+          id: decision.organization_id,
+          name: Map.get(names, decision.organization_id)
+        },
         outcome: decision.outcome,
         ground: decision.ground,
         statement: decision.statement,

@@ -177,7 +177,10 @@ defmodule Palee.Repo.Migrations.BoxReviewReports do
   end
 
   def down do
-    execute("DELETE FROM notifications WHERE type IN ('box_review_moderated', 'box_review_report_decided')")
+    execute(
+      "DELETE FROM notifications WHERE type IN ('box_review_moderated', 'box_review_report_decided')"
+    )
+
     rewrite_notification_types(&(&1 -- @types))
     execute("DROP FUNCTION IF EXISTS palee_forget_box_review_reports(uuid)")
 

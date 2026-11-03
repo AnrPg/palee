@@ -14,7 +14,8 @@ defmodule PaleeWeb.MyBoxReviewsController do
   tags(["Box reviews"])
   security([%{"bearerAuth" => []}])
 
-  plug OpenApiSpex.Plug.CastAndValidate, [json_render_error_v2: true] when action in [:save, :report]
+  plug OpenApiSpex.Plug.CastAndValidate,
+       [json_render_error_v2: true] when action in [:save, :report]
 
   operation(:index,
     summary: "The box's reviews (newest first), the average, mine and whether I may write one",
@@ -69,7 +70,8 @@ defmodule PaleeWeb.MyBoxReviewsController do
     responses: [
       ok: {"Reported", "application/json", S.report_response()},
       not_found: {"No such review", "application/json", %Schema{type: :object}},
-      unprocessable_entity: {"Invalid or my own review", "application/json", %Schema{type: :object}},
+      unprocessable_entity:
+        {"Invalid or my own review", "application/json", %Schema{type: :object}},
       too_many_requests: {"Too many reports today", "application/json", %Schema{type: :object}}
     ]
   )
