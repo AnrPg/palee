@@ -15,9 +15,9 @@ defmodule Palee.Infrastructure.BoxSite.KubernetesSiteIngressTest do
       namespace: "tenant-m4",
       token: "sa-token",
       ca_path: "/nonexistent/ca.crt",
-      issuer_kind: "Issuer",
-      issuer_name: "palee-sites",
-      ingress_class: nil,
+      issuer_kind: "ClusterIssuer",
+      issuer_name: "letsencrypt-production",
+      ingress_class: "nginx",
       api_service: "palee-api",
       api_port: 4000,
       web_service: "palee-web",
@@ -35,11 +35,32 @@ defmodule Palee.Infrastructure.BoxSite.KubernetesSiteIngressTest do
     assert name == KubernetesSiteIngress.ingress_name(@host)
     refute name == KubernetesSiteIngress.ingress_name("mybox.gr")
     assert KubernetesSiteIngress.secret_name(@host) == name <> "-tls"
+    # Case never makes a second Ingress for the same host.
+    assert KubernetesSiteIngress.ingress_name("WWW.MyBox.gr") == name
+  end
+
+  test "by default: class nginx, the letsencrypt-production ClusterIssuer, lower-case hosts" do
+    manifest = KubernetesSiteIngress.manifest("WWW.MyBox.gr", [])
+
+    assert manifest["spec"]["ingressClassName"] == "nginx"
+
+    assert manifest["metadata"]["annotations"] == %{
+             "palee.app/site-host" => @host,
+             "cert-manager.io/cluster-issuer" => "letsencrypt-production"
+           }
+
+    assert [%{"hosts" => [@host], "secretName" => secret}] = manifest["spec"]["tls"]
+    assert secret == KubernetesSiteIngress.secret_name(@host)
+    assert [%{"host" => @host}] = manifest["spec"]["rules"]
   end
 
   test "the manifest routes /api to the API and the rest to the web, with the issuer" do
     manifest =
-      KubernetesSiteIngress.manifest(@host, issuer_kind: "Issuer", issuer_name: "palee-sites")
+      KubernetesSiteIngress.manifest(@host,
+        issuer_kind: "Issuer",
+        issuer_name: "palee-sites",
+        ingress_class: ""
+      )
 
     assert manifest["metadata"]["annotations"] == %{
              "palee.app/site-host" => @host,
@@ -100,6 +121,30 @@ defmodule Palee.Infrastructure.BoxSite.KubernetesSiteIngressTest do
 
     Req.Test.stub(__MODULE__, &Req.Test.transport_error(&1, :econnrefused))
     assert KubernetesSiteIngress.apply_site(@host) == {:error, {:transient, :unreachable}}
+  end
+
+  test "the tenant policy refusing the host is final (host_not_allowed)" do
+    Req.Test.stub(__MODULE__, fn conn ->
+      conn
+      |> Plug.Conn.put_resp_content_type("application/json")
+      |> Plug.Conn.send_resp(
+        400,
+        Jason.encode!(%{
+          "kind" => "Status",
+          "status" => "Failure",
+          "message" =>
+            "admission webhook \"validate.kyverno.svc-fail\" denied the request: " <>
+              "Policy tenant-ingress failed: host not allowed",
+          "code" => 400
+        })
+      )
+    end)
+
+    assert KubernetesSiteIngress.apply_site(@host) == {:error, :host_not_allowed}
+
+    # Any other 400 stays an ordinary failure.
+    Req.Test.stub(__MODULE__, &Plug.Conn.send_resp(&1, 400, "bad request"))
+    assert KubernetesSiteIngress.apply_site(@host) == {:error, {:transient, {:http, 400}}}
   end
 
   test "without a token nothing is called" do

@@ -53,5 +53,7 @@ defmodule Palee.BoxSite.Ports.BoxSiteStore do
   @callback primary_host(id()) :: String.t() | nil
   @callback domains_for_ops(String.t()) :: [map()]
   @callback due_organizations(DateTime.t()) :: [id()]
-  @callback ingress_hosts() :: [%{organization_id: id(), host: String.t()}]
+  @callback ingress_hosts() :: [
+              %{organization_id: id(), id: id(), host: String.t(), certificate_status: String.t()}
+            ]
 end

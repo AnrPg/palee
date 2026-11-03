@@ -140,7 +140,12 @@ defmodule PaleeWeb.Schemas.BoxSite do
       title: "SiteDnsRecord",
       type: :object,
       properties: %{
-        type: %Schema{type: :string, enum: ~w(TXT CNAME A)},
+        type: %Schema{
+          type: :string,
+          enum: ~w(TXT CNAME ALIAS),
+          description:
+            "ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)"
+        },
         name: %Schema{type: :string},
         value: %Schema{type: :string}
       },

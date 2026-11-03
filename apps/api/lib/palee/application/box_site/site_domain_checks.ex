@@ -25,9 +25,12 @@ defmodule Palee.Application.BoxSite.SiteDomainChecks do
     end
   end
 
-  # TLS is probed only once DNS proves the host is the box's and points here.
-  defp probe?(%{status: "pending_dns"}, %{txt_ok: txt, routing_ok: routing}), do: txt and routing
-  defp probe?(_domain, %{routing_ok: routing}), do: routing
+  # TLS is probed only once DNS proves the host is the box's and points here
+  # (`:unknown` is not proof).
+  defp probe?(%{status: "pending_dns"}, %{txt_ok: txt, routing_ok: routing}),
+    do: txt == true and routing == true
+
+  defp probe?(_domain, %{routing_ok: routing}), do: routing == true
 
   @doc "Checks the box's due hosts."
   def run_due(context, now) do

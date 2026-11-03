@@ -31,7 +31,7 @@ import { localizeError } from "@/i18n/presentation";
 import { useUiTranslations } from "@/i18n/ui";
 import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
 
-import { DnsRecords, DomainStatusLine } from "./DomainParts";
+import { DnsRecords, DomainStatusLine, isSystemHost } from "./DomainParts";
 import { CONVERSIONS_API_LABEL, DOMAIN_PLACEHOLDER, moveSection, sectionOn, TAG_FIELDS, toggleSection } from "./website-settings-model";
 import { BackLink } from "@/components/ui/BackLink";
 
@@ -324,6 +324,7 @@ function DomainsCard({ token, domains }: { token: string; domains: SiteDomain[] 
   const ui = useUiTranslations();
   const queryClient = useQueryClient();
   const [host, setHost] = useState("");
+  const [systemHost, setSystemHost] = useState(false);
   const [instructionsFor, setInstructionsFor] = useState<SiteDomain | null>(null);
   const refresh = () => queryClient.invalidateQueries({ queryKey: SITE_KEY });
   const add = useMutation({
@@ -333,7 +334,14 @@ function DomainsCard({ token, domains }: { token: string; domains: SiteDomain[] 
       void refresh();
     },
   });
-  const addError = add.error instanceof ApiError && add.error.status === 422 ? t("domains.invalidHost") : add.error ? localizeError(add.error, ui) : null;
+  // ADR-398: a system domain is refused before it is sent, never left for the cluster to refuse.
+  const addError = systemHost
+    ? t("domains.platformHost")
+    : add.error instanceof ApiError && add.error.status === 422
+      ? t(add.error.payload?.code === "platform_hostname" ? "domains.platformHost" : "domains.invalidHost")
+      : add.error
+        ? localizeError(add.error, ui)
+        : null;
 
   return (
     <section className="flex flex-col gap-4 rounded-3xl p-5" style={{ background: "var(--panel)", border: "1px solid var(--border)" }} data-testid="website-domains">
@@ -349,7 +357,13 @@ function DomainsCard({ token, domains }: { token: string; domains: SiteDomain[] 
           className="flex flex-col gap-1.5"
           onSubmit={(event) => {
             event.preventDefault();
-            if (host.trim()) add.mutate();
+            if (!host.trim()) return;
+            if (isSystemHost(host)) {
+              add.reset();
+              setSystemHost(true);
+              return;
+            }
+            add.mutate();
           }}
         >
           <label htmlFor="website-domain-host" className="text-sm font-semibold" style={{ color: "var(--text)" }}>
@@ -359,7 +373,10 @@ function DomainsCard({ token, domains }: { token: string; domains: SiteDomain[] 
             <input
               id="website-domain-host"
               value={host}
-              onChange={(event) => setHost(event.target.value)}
+              onChange={(event) => {
+                setHost(event.target.value);
+                setSystemHost(false);
+              }}
               placeholder={DOMAIN_PLACEHOLDER}
               inputMode="url"
               autoCapitalize="none"

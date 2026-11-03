@@ -8,8 +8,11 @@ defmodule Palee.Application.BoxSite.SiteIngresses do
       and reads the certificate of a host that has an Ingress;
     * `run/2` works the box's outbox of cluster calls with retries
       (row claims, so overlapping runs are safe);
-    * `sweep/0` (hourly) removes Ingresses of hosts no box has any more
-      (a box that left, a lost op) and recreates missing ones.
+    * `sweep/0` (nightly) removes Ingresses of hosts no box has any more
+      (a box that left, a lost op) and recreates missing ones (never one
+      the cluster refused as `host_not_allowed`), and rereads active
+      certificates; the 5-minute checks read only certificates still being
+      issued.
 
   With no adapter configured (`config :palee, :box_site_ingress, nil`) all
   of this is off and ops use the list of ADR-352 §6.
@@ -28,17 +31,20 @@ defmodule Palee.Application.BoxSite.SiteIngresses do
   domain as it now is.
   """
   def follow(context, before_status, domain, now) do
-    case {BoxSite.site_ingress(), BoxSite.ingress_transition(before_status, domain.status)} do
-      {nil, _transition} ->
-        {:ok, domain}
+    # A host the cluster refused for good has no Ingress to make or delete;
+    # the card keeps saying so until the owner removes the domain.
+    if is_nil(BoxSite.site_ingress()) or BoxSite.host_not_allowed?(domain) do
+      {:ok, domain}
+    else
+      case BoxSite.ingress_transition(before_status, domain.status) do
+        nil ->
+          if BoxSite.ingress_needs_apply?(domain),
+            do: queue(context, :apply, domain, now),
+            else: refresh_certificate(context, domain, now)
 
-      {_adapter, nil} ->
-        if BoxSite.ingress_needs_apply?(domain),
-          do: queue(context, :apply, domain, now),
-          else: refresh_certificate(context, domain, now)
-
-      {_adapter, action} ->
-        queue(context, action, domain, now)
+        action ->
+          queue(context, action, domain, now)
+      end
     end
   end
 
@@ -112,14 +118,17 @@ defmodule Palee.Application.BoxSite.SiteIngresses do
   end
 
   @doc """
-  Hourly: Ingresses whose host no box has any more are deleted, and hosts
-  that should have one but do not get it again. The cluster is read before
-  the database, so a host verified meanwhile is never taken for an orphan.
+  Nightly: Ingresses whose host no box has any more are deleted, hosts that
+  should have one but do not get it again, and active certificates are
+  reread (a renewal that failed for good shows on the card). The cluster is
+  read before the database, so a host verified meanwhile is never taken for
+  an orphan.
   """
   def sweep do
     with adapter when not is_nil(adapter) <- BoxSite.site_ingress(),
          {:ok, managed} <- safe(fn -> adapter.managed_hosts() end) do
-      wanted = MapSet.new(BoxSite.ingress_hosts(), & &1.host)
+      hosts = BoxSite.ingress_hosts()
+      wanted = MapSet.new(hosts, & &1.host)
       managed = MapSet.new(managed)
 
       removed =
@@ -132,10 +141,37 @@ defmodule Palee.Application.BoxSite.SiteIngresses do
         |> MapSet.difference(managed)
         |> Enum.count(&(safe(fn -> adapter.apply_site(&1) end) == :ok))
 
-      {:ok, %{removed: removed, restored: restored}}
+      certificates =
+        hosts
+        |> Enum.filter(&(&1.certificate_status == "active" and MapSet.member?(managed, &1.host)))
+        |> Enum.count(&reread_certificate(adapter, &1))
+
+      {:ok, %{removed: removed, restored: restored, certificates: certificates}}
     else
-      nil -> {:ok, %{removed: 0, restored: 0}}
+      nil -> {:ok, %{removed: 0, restored: 0, certificates: 0}}
       {:error, _reason} = error -> error
+    end
+  end
+
+  # True when the certificate is no longer active (the change is saved).
+  defp reread_certificate(adapter, %{organization_id: organization_id, id: id, host: host}) do
+    case safe(fn -> adapter.certificate(host) end) do
+      {:ok, :active} ->
+        false
+
+      {:ok, _other} = result ->
+        context = %{organization_id: organization_id}
+
+        BoxSite.update_domain(
+          context,
+          id,
+          BoxSite.certificate_changes(result, BoxSite.clock().now())
+        )
+
+        true
+
+      _error ->
+        false
     end
   end
 

@@ -1264,10 +1264,11 @@
                         "type": "string"
                       },
                       "type": {
+                        "description": "ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)",
                         "enum": [
                           "TXT",
                           "CNAME",
-                          "A"
+                          "ALIAS"
                         ],
                         "type": "string"
                       },
@@ -93729,10 +93730,11 @@
             "type": "string"
           },
           "type": {
+            "description": "ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)",
             "enum": [
               "TXT",
               "CNAME",
-              "A"
+              "ALIAS"
             ],
             "type": "string"
           },
@@ -93791,10 +93793,11 @@
                   "type": "string"
                 },
                 "type": {
+                  "description": "ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)",
                   "enum": [
                     "TXT",
                     "CNAME",
-                    "A"
+                    "ALIAS"
                   ],
                   "type": "string"
                 },
@@ -93955,10 +93958,11 @@
                       "type": "string"
                     },
                     "type": {
+                      "description": "ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)",
                       "enum": [
                         "TXT",
                         "CNAME",
-                        "A"
+                        "ALIAS"
                       ],
                       "type": "string"
                     },
@@ -94127,10 +94131,11 @@
                         "type": "string"
                       },
                       "type": {
+                        "description": "ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)",
                         "enum": [
                           "TXT",
                           "CNAME",
-                          "A"
+                          "ALIAS"
                         ],
                         "type": "string"
                       },
@@ -280176,10 +280181,11 @@
                                   "type": "string"
                                 },
                                 "type": {
+                                  "description": "ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)",
                                   "enum": [
                                     "TXT",
                                     "CNAME",
-                                    "A"
+                                    "ALIAS"
                                   ],
                                   "type": "string"
                                 },
@@ -280804,10 +280810,11 @@
                                   "type": "string"
                                 },
                                 "type": {
+                                  "description": "ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)",
                                   "enum": [
                                     "TXT",
                                     "CNAME",
-                                    "A"
+                                    "ALIAS"
                                   ],
                                   "type": "string"
                                 },
@@ -280981,10 +280988,11 @@
                                 "type": "string"
                               },
                               "type": {
+                                "description": "ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)",
                                 "enum": [
                                   "TXT",
                                   "CNAME",
-                                  "A"
+                                  "ALIAS"
                                 ],
                                 "type": "string"
                               },
@@ -281216,10 +281224,11 @@
                                 "type": "string"
                               },
                               "type": {
+                                "description": "ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)",
                                 "enum": [
                                   "TXT",
                                   "CNAME",
-                                  "A"
+                                  "ALIAS"
                                 ],
                                 "type": "string"
                               },
@@ -281481,10 +281490,11 @@
                                 "type": "string"
                               },
                               "type": {
+                                "description": "ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)",
                                 "enum": [
                                   "TXT",
                                   "CNAME",
-                                  "A"
+                                  "ALIAS"
                                 ],
                                 "type": "string"
                               },

@@ -20527,8 +20527,11 @@ export interface components {
                 checked_at: string | null;
                 dns_records: {
                     name: string;
-                    /** @enum {string} */
-                    type: "TXT" | "CNAME" | "A";
+                    /**
+                     * @description ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)
+                     * @enum {string}
+                     */
+                    type: "TXT" | "CNAME" | "ALIAS";
                     value: string;
                 }[];
                 host: string;
@@ -48439,8 +48442,11 @@ export interface components {
         /** SiteDnsRecord */
         SiteDnsRecord: {
             name: string;
-            /** @enum {string} */
-            type: "TXT" | "CNAME" | "A";
+            /**
+             * @description ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)
+             * @enum {string}
+             */
+            type: "TXT" | "CNAME" | "ALIAS";
             value: string;
         };
         /** SiteDomain */
@@ -48458,8 +48464,11 @@ export interface components {
             checked_at: string | null;
             dns_records: {
                 name: string;
-                /** @enum {string} */
-                type: "TXT" | "CNAME" | "A";
+                /**
+                 * @description ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)
+                 * @enum {string}
+                 */
+                type: "TXT" | "CNAME" | "ALIAS";
                 value: string;
             }[];
             host: string;
@@ -48505,8 +48514,11 @@ export interface components {
                 checked_at: string | null;
                 dns_records: {
                     name: string;
-                    /** @enum {string} */
-                    type: "TXT" | "CNAME" | "A";
+                    /**
+                     * @description ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)
+                     * @enum {string}
+                     */
+                    type: "TXT" | "CNAME" | "ALIAS";
                     value: string;
                 }[];
                 host: string;
@@ -48552,8 +48564,11 @@ export interface components {
                 checked_at: string | null;
                 dns_records: {
                     name: string;
-                    /** @enum {string} */
-                    type: "TXT" | "CNAME" | "A";
+                    /**
+                     * @description ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)
+                     * @enum {string}
+                     */
+                    type: "TXT" | "CNAME" | "ALIAS";
                     value: string;
                 }[];
                 host: string;
@@ -115706,8 +115721,11 @@ export interface operations {
                             checked_at: string | null;
                             dns_records: {
                                 name: string;
-                                /** @enum {string} */
-                                type: "TXT" | "CNAME" | "A";
+                                /**
+                                 * @description ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)
+                                 * @enum {string}
+                                 */
+                                type: "TXT" | "CNAME" | "ALIAS";
                                 value: string;
                             }[];
                             host: string;
@@ -115876,8 +115894,11 @@ export interface operations {
                             checked_at: string | null;
                             dns_records: {
                                 name: string;
-                                /** @enum {string} */
-                                type: "TXT" | "CNAME" | "A";
+                                /**
+                                 * @description ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)
+                                 * @enum {string}
+                                 */
+                                type: "TXT" | "CNAME" | "ALIAS";
                                 value: string;
                             }[];
                             host: string;
@@ -115935,8 +115956,11 @@ export interface operations {
                             checked_at: string | null;
                             dns_records: {
                                 name: string;
-                                /** @enum {string} */
-                                type: "TXT" | "CNAME" | "A";
+                                /**
+                                 * @description ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)
+                                 * @enum {string}
+                                 */
+                                type: "TXT" | "CNAME" | "ALIAS";
                                 value: string;
                             }[];
                             host: string;
@@ -116039,8 +116063,11 @@ export interface operations {
                             checked_at: string | null;
                             dns_records: {
                                 name: string;
-                                /** @enum {string} */
-                                type: "TXT" | "CNAME" | "A";
+                                /**
+                                 * @description ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)
+                                 * @enum {string}
+                                 */
+                                type: "TXT" | "CNAME" | "ALIAS";
                                 value: string;
                             }[];
                             host: string;
@@ -116152,8 +116179,11 @@ export interface operations {
                             checked_at: string | null;
                             dns_records: {
                                 name: string;
-                                /** @enum {string} */
-                                type: "TXT" | "CNAME" | "A";
+                                /**
+                                 * @description ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)
+                                 * @enum {string}
+                                 */
+                                type: "TXT" | "CNAME" | "ALIAS";
                                 value: string;
                             }[];
                             host: string;

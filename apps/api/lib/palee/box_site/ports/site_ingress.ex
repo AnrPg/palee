@@ -6,12 +6,13 @@ defmodule Palee.BoxSite.Ports.SiteIngress do
   (`config :palee, :box_site_ingress`; `nil` turns automation off and the
   manual list of ADR-352 §6 stays the way).
 
-  Errors are `{:transient, reason}` (retry soon) or `{:refused, reason}`
+  Errors are `{:transient, reason}` (retry soon), `{:refused, reason}`
   (the cluster said no: RBAC, a missing kind; retried, but someone has to
-  act).
+  act) or `:host_not_allowed` (the cluster's policy will never route this
+  host: another tenant's or a system domain; final, never retried).
   """
 
-  @type error :: {:error, {:transient | :refused, term()}}
+  @type error :: {:error, {:transient | :refused, term()} | :host_not_allowed}
   @type certificate :: :issuing | :active | {:failed, atom()}
 
   @callback apply_site(host :: String.t()) :: :ok | error()

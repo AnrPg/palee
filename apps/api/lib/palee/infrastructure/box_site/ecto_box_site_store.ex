@@ -502,9 +502,19 @@ defmodule Palee.Infrastructure.BoxSite.EctoBoxSiteStore do
   @impl true
   def ingress_hosts do
     %{rows: rows} =
-      Repo.query!("SELECT organization_id, host FROM palee_site_ingress_hosts()", [])
+      Repo.query!(
+        "SELECT organization_id, id, host, certificate_status FROM palee_site_ingress_hosts()",
+        []
+      )
 
-    Enum.map(rows, fn [id, host] -> %{organization_id: Ecto.UUID.load!(id), host: host} end)
+    Enum.map(rows, fn [organization_id, id, host, certificate_status] ->
+      %{
+        organization_id: Ecto.UUID.load!(organization_id),
+        id: Ecto.UUID.load!(id),
+        host: host,
+        certificate_status: certificate_status
+      }
+    end)
   end
 
   @impl true

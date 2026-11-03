@@ -41,7 +41,8 @@ anyone re-uploading changes, plus a timetable, FAQ and forms.
    - The owner adds a host. Palee shows two DNS records: a TXT
      `_palee-challenge.<host>` = `palee-site-verification=<token>` (proves
      control) and a CNAME to `BOX_SITE_CNAME_TARGET` (default `sites.palee.app`)
-     or, for an apex, A records to `BOX_SITE_A_RECORDS`.
+     or, for an apex, CNAME flattening / ALIAS / ANAME to it (ADR-398 follow-up
+     2026-11-03: no fixed A records).
    - States: `pending_dns` → `pending_tls` → `active`; an active host whose
      DNS stops pointing at us becomes `broken` (the site keeps working at
      `/b/<slug>`); `pending_dns` older than 14 days becomes `expired`.

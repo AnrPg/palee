@@ -629,6 +629,7 @@ and the box members who may be leaving. A lead is never called a «μέλος» 
 | Events (section) | Events | site section `events` | The box's events open to everyone, on the website. | Box events tab (members). |
 | WOD of the day | WOD της ημέρας | `public_wod`, site section `wod` | Today's published WOD on the website. Off until the owner turns it on. | Member WOD card. |
 | English website | Αγγλική ιστοσελίδα | `/b/<slug>/en`, `about_en`, FAQ `question_en`/`answer_en` | The website in English, with the owner's optional English texts; the EL/EN switch remembers the choice. | App language. |
+| Domain not available | Μη διαθέσιμο domain | `certificate_error` `host_not_allowed` | The cluster refused the box's domain (another hosting customer's, or a system domain). Shown on the domain card as «Αυτό το domain δεν είναι διαθέσιμο…» with «γράψε μας στην υποστήριξη»; never retried until the owner removes it. (ADR-398) | Πιστοποιητικό που δεν εκδόθηκε (retried). |
 | Send the instructions | Στείλε τις οδηγίες | `POST /admin/site/domains/:id/instructions` | Emails the DNS records and a status link to whoever runs the box's domain. | |
 
 ### 4.23 Training and floor (ADR-356..359, ADR-394, ADR-395)
