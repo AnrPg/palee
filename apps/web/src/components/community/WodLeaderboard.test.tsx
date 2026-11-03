@@ -8,6 +8,7 @@ import type { WorkoutLeaderboard } from "@/api/training-floor";
 import { WodLeaderboard } from "./WodLeaderboard";
 
 const fetchWorkoutLeaderboard = vi.fn();
+const putPaleeConsent = vi.fn();
 
 vi.mock("next-intl", () => ({
   useLocale: () => "en",
@@ -23,6 +24,7 @@ vi.mock("@/lib/membership-role", () => ({
 vi.mock("@/api/training-floor", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/api/training-floor")>()),
   fetchWorkoutLeaderboard: (...args: unknown[]) => fetchWorkoutLeaderboard(...args),
+  putPaleeConsent: (...args: unknown[]) => putPaleeConsent(...args),
 }));
 
 const row = (overrides: Partial<WorkoutLeaderboard["rows"][number]>) => ({
@@ -66,7 +68,10 @@ function renderBoard() {
 }
 
 describe("WodLeaderboard (ADR-356, mockup d2 A)", () => {
-  beforeEach(() => fetchWorkoutLeaderboard.mockReset());
+  beforeEach(() => {
+    fetchWorkoutLeaderboard.mockReset();
+    putPaleeConsent.mockReset();
+  });
 
   it("keeps the card's own list for someone who did not opt in", async () => {
     fetchWorkoutLeaderboard.mockResolvedValue(board({ opted_in: false, rows: [], me: null }));
@@ -116,5 +121,87 @@ describe("WodLeaderboard (ADR-356, mockup d2 A)", () => {
     renderBoard();
     expect(await screen.findByText("lbNoScore")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "lbProfileLink" })).toHaveAttribute("href", "/me/sharing#leaderboard");
+  });
+
+  describe("«Όλο το Palee» (ADR-394, option A)", () => {
+    const benchmark = { key: "fran", group: "metcon", unit: "mins_secs", lower_is_better: true };
+
+    function paleeBoard() {
+      const me = row({ user_id: "me", me: true, nickname: "Maria", rank: 1018, percentile: 82, top_percent: 18, value: "4:10", box_name: "Box Kypseli" });
+      return board({
+        benchmark,
+        palee_consent: "share",
+        filters: { date: "2026-11-02", window: "all", scope: "palee", buddies: false },
+        rows: [
+          row({ user_id: null, nickname: "Kostas", value: "2:21", box_name: "CrossFit Θεσσαλονίκη" }),
+          row({ user_id: null, nickname: "Anna", rank: 2, value: "2:34", box_name: "Box Heraklion" }),
+        ],
+        me,
+        total: 5640,
+      } as Partial<WorkoutLeaderboard>);
+    }
+
+    it("a benchmark WOD starts the chips with «Το box μου» and «Όλο το Palee»", async () => {
+      fetchWorkoutLeaderboard.mockResolvedValue(board({ benchmark, palee_consent: null } as Partial<WorkoutLeaderboard>));
+      renderBoard();
+      const chips = await screen.findByRole("group", { name: "lbChipsAria" });
+      expect(Array.from(chips.querySelectorAll("button")).map((button) => button.textContent)).toEqual([
+        "lbChipMyBox",
+        "lbChipPalee",
+        "division_women",
+        "35–39",
+        "RX",
+      ]);
+      expect(screen.getByRole("button", { name: "lbChipMyBox" })).toHaveAttribute("aria-pressed", "true");
+    });
+
+    it("the first tap asks once, and the answer opens the Palee-wide board", async () => {
+      fetchWorkoutLeaderboard.mockResolvedValue(board({ benchmark, palee_consent: null } as Partial<WorkoutLeaderboard>));
+      putPaleeConsent.mockResolvedValue({ choice: "see_only" });
+      renderBoard();
+      fireEvent.click(await screen.findByRole("button", { name: "lbChipPalee" }));
+      expect(await screen.findByTestId("palee-consent-sheet")).toBeInTheDocument();
+      expect(screen.getByText("lbPaleeAskTitle")).toBeInTheDocument();
+      expect(fetchWorkoutLeaderboard).not.toHaveBeenCalledWith("tok", "box", "w1", expect.objectContaining({ scope: "palee" }));
+
+      fireEvent.click(screen.getByRole("button", { name: "lbPaleeAskSeeOnly" }));
+      await waitFor(() => expect(putPaleeConsent).toHaveBeenCalledWith("tok", "see_only"));
+      await waitFor(() =>
+        expect(fetchWorkoutLeaderboard).toHaveBeenLastCalledWith(
+          "tok",
+          "box",
+          "w1",
+          expect.objectContaining({ scope: "palee", window: "all" }),
+        ),
+      );
+      await waitFor(() => expect(screen.queryByTestId("palee-consent-sheet")).toBeNull());
+    });
+
+    it("someone who already answered goes straight to the board", async () => {
+      fetchWorkoutLeaderboard.mockResolvedValue(board({ benchmark, palee_consent: "share" } as Partial<WorkoutLeaderboard>));
+      renderBoard();
+      fireEvent.click(await screen.findByRole("button", { name: "lbChipPalee" }));
+      await waitFor(() =>
+        expect(fetchWorkoutLeaderboard).toHaveBeenLastCalledWith("tok", "box", "w1", expect.objectContaining({ scope: "palee" })),
+      );
+      expect(screen.queryByTestId("palee-consent-sheet")).toBeNull();
+      expect(putPaleeConsent).not.toHaveBeenCalled();
+    });
+
+    it("rows show the box under the name; my row, far down, says where I stand on Palee", async () => {
+      fetchWorkoutLeaderboard.mockResolvedValue(paleeBoard());
+      renderBoard();
+      fireEvent.click(await screen.findByRole("button", { name: "lbChipPalee" }));
+      expect(await screen.findByText("lbBetterThanPalee:82,5640")).toBeInTheDocument();
+      expect(screen.getByText("CrossFit Θεσσαλονίκη")).toBeInTheDocument();
+      expect(screen.getByText("Box Heraklion")).toBeInTheDocument();
+      expect(screen.getByText("…")).toBeInTheDocument();
+      const own = screen.getByTestId("wod-leaderboard-me");
+      expect(own).toHaveTextContent("1018");
+      expect(own).toHaveTextContent("lbTopPercent:18");
+      // Buddies are people of one's own box: not offered on the Palee-wide board.
+      fireEvent.click(screen.getByTestId("wod-leaderboard-advanced").querySelector("button")!);
+      expect(screen.queryByText("lbBuddies")).toBeNull();
+    });
   });
 });
