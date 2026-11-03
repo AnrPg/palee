@@ -13,6 +13,7 @@ defmodule PaleeWeb.ProgrammesControllerTest do
 
   alias Palee.{AnalyticsHelpers, Organizations, Payments, Repo}
   alias Palee.Application.{PublishBoxPublicProfile, UpdateBoxPublicProfile}
+  alias Palee.Application.Programmes.Sweep
   alias Palee.Infrastructure.Tenancy.RepoContext
 
   setup %{conn: conn} do
@@ -356,6 +357,80 @@ defmodule PaleeWeb.ProgrammesControllerTest do
       |> json_response(200)
 
     assert full["purchase"]["status"] == "refunded"
+  end
+
+  test "the hourly sweep completes ended purchases and closes abandoned checkouts", ctx do
+    programme = create_published(ctx)
+    connect_sandbox(ctx)
+    {purchase_id, _paid} = buy(ctx, programme, "prog-sweep-1")
+    now = DateTime.utc_now()
+
+    # Still running: nothing changes.
+    assert %{completed: 0, cancelled: 0} = Sweep.sweep(ctx.context, now)
+
+    yesterday = Date.add(Organizations.local_today(ctx.organization.id, now), -1)
+    set_purchase(ctx, purchase_id, ends_on: yesterday, starts_on: Date.add(yesterday, -13))
+
+    assert %{completed: 1} = Sweep.sweep(ctx.context, now)
+    assert purchase_status(ctx, purchase_id) == "completed"
+    # A second run changes nothing.
+    assert %{completed: 0} = Sweep.sweep(ctx.context, now)
+
+    # A checkout opened two days ago and never paid.
+    second = create_published(ctx, %{title: "Engine again"})
+
+    pending =
+      ctx.as.(ctx.buyer)
+      |> post(ctx.me <> "/programmes/#{second["id"]}/buy", %{
+        idempotency_key: "prog-sweep-2",
+        start_now: true
+      })
+      |> json_response(200)
+      |> Map.fetch!("purchase_id")
+
+    set_purchase(ctx, pending, inserted_at: DateTime.add(now, -2, :day))
+
+    # The payment page is still open: a late payment must still find it.
+    assert %{cancelled: 0} = Sweep.sweep(ctx.context, now)
+    assert purchase_status(ctx, pending) == "pending_payment"
+
+    intent_id =
+      RepoContext.run(ctx.context, fn ->
+        Repo.one(
+          from p in "programme_purchases",
+            where: p.id == type(^pending, :binary_id),
+            select: type(p.payment_intent_id, :binary_id)
+        )
+      end)
+
+    RepoContext.run(ctx.context, fn ->
+      Repo.update_all(
+        from(i in "payment_intents", where: i.id == type(^intent_id, :binary_id)),
+        set: [status: "expired"]
+      )
+    end)
+
+    assert %{cancelled: 1} = Sweep.sweep(ctx.context, now)
+    assert purchase_status(ctx, pending) == "cancelled"
+  end
+
+  defp set_purchase(ctx, id, changes) do
+    RepoContext.run(ctx.context, fn ->
+      Repo.update_all(
+        from(p in "programme_purchases", where: p.id == type(^id, :binary_id)),
+        set: changes
+      )
+    end)
+  end
+
+  defp purchase_status(ctx, id) do
+    RepoContext.run(ctx.context, fn ->
+      Repo.one(
+        from p in "programme_purchases",
+          where: p.id == type(^id, :binary_id),
+          select: p.status
+      )
+    end)
   end
 
   test "a buyer cannot reach staff routes and another box never sees the programme", ctx do

@@ -68,6 +68,8 @@ config :palee, Oban,
        {"*/10 * * * *", Palee.Workers.WellnessNudgesJob},
        {"*/15 * * * *", Palee.Workers.DeviceMaintenanceJob},
        {"10 1 * * *", Palee.Workers.SeasonSweepJob},
+       # ADR-371: programme purchases complete after their last day; abandoned checkouts close.
+       {"29 * * * *", Palee.Workers.ProgrammeSweepJob},
        {"40 2 * * *", Palee.Workers.NightlyInsightsJob},
        {"27 * * * *", Palee.Workers.ScalingSuggestionScanJob},
        {"47 * * * *", Palee.Workers.WorldGazetteerJob},
