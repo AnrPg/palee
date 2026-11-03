@@ -3,7 +3,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useId, useState, type ReactNode } from "react";
+import { useId, useState, useSyncExternalStore, type ReactNode } from "react";
 
 import { termsLanguage } from "@/api/my-payments";
 import { buyProgramme, fetchProgrammeTerms, fetchPublicProgramme, type ProgrammeTerms, type PublicProgramme } from "@/api/programmes";
@@ -21,6 +21,9 @@ import { newIdempotencyKey } from "@/lib/training-log";
 import { DAYS_PER_WEEK, needsStartRequest } from "./programme-grid";
 import { programmeMoney, ratingLabel, useProgrammeError, useProgrammeLabels } from "./programme-ui";
 
+const noSubscription = () => () => {};
+const sellableHere = () => canBuyHere({ kind: "programme" }, nativePlatform());
+
 /**
  * A programme's page (mockup W8 s4 A): one page that scrolls — what it is,
  * then the first week with the open preview days and the locked ones, then
@@ -32,8 +35,8 @@ export function PublicProgrammePage({ slug, id }: { slug: string; id: string }) 
   const locale = useLocale();
   const labels = useProgrammeLabels();
   const [buying, setBuying] = useState(false);
-  const [sellable, setSellable] = useState(false);
-  useEffect(() => setSellable(canBuyHere({ kind: "programme" }, nativePlatform())), []);
+  // ADR-256: no buy button inside the store apps; the server render shows none either.
+  const sellable = useSyncExternalStore(noSubscription, sellableHere, () => false);
 
   const page = useQuery({ queryKey: ["public", "programme", slug, id], queryFn: () => fetchPublicProgramme(slug, id) });
 

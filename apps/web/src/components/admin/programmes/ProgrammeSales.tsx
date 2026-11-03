@@ -18,7 +18,6 @@ import {
   type ProgrammeReview,
   type StaffProgramme,
 } from "@/api/programmes";
-import { useSession } from "@/components/session-provider";
 import { Pill, inputClass, inputStyle, primaryButtonClass, primaryButtonStyle, secondaryButtonClass, secondaryButtonStyle } from "@/components/staff/staff-ui";
 import { Dialog } from "@/components/ui/Dialog";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";

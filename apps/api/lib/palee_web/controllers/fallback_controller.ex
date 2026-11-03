@@ -469,8 +469,7 @@ defmodule PaleeWeb.FallbackController do
     review_too_early: {:conflict, "You can review a programme once it has started"},
     review_not_allowed: {:conflict, "Only buyers can review a programme"},
     invalid_review: {:unprocessable_entity, "Give 1 to 5 stars and at most 1000 characters"},
-    invalid_hide_reason:
-      {:unprocessable_entity, "Choose abuse, personal data, off topic or spam"}
+    invalid_hide_reason: {:unprocessable_entity, "Choose abuse, personal data, off topic or spam"}
   }
 
   def call(conn, {:error, reason}) when is_map_key(@programme_errors, reason) do
