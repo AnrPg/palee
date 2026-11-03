@@ -22,7 +22,7 @@ defmodule PaleeWeb.PasswordRecoveryController do
   one-time link; or the person uses a recovery code.
   """
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Guardian.Plug, as: GuardianPlug
   alias OpenApiSpex.Schema

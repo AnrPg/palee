@@ -2,7 +2,7 @@ defmodule PaleeWeb.BookingCalendarController do
   @moduledoc "ADR-359 (CP-E4): one booking as an .ics invite, same UID as the calendar feed."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.BookingCalendarInvite
   alias PaleeWeb.Schemas.TrainingFloor, as: S

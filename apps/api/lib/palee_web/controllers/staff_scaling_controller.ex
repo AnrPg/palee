@@ -6,7 +6,7 @@ defmodule PaleeWeb.StaffScalingController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.ScalingSuggestions
   alias PaleeWeb.Schemas.Scaling, as: ScalingSchemas

@@ -1,6 +1,6 @@
 defmodule PaleeWeb.CalendarFeedController do
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Guardian.Plug, as: GuardianPlug
   alias Palee.Application.{GetCalendarExportLinks, GetCalendarFeed}

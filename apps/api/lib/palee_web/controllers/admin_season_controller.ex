@@ -2,7 +2,7 @@ defmodule PaleeWeb.AdminSeasonController do
   @moduledoc "Staff build and sell seasons and answer requests for places (ADR-167)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.Seasons
   alias PaleeWeb.Schemas.Seasons, as: S

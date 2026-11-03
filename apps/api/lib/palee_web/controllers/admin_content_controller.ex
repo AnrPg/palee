@@ -2,7 +2,7 @@ defmodule PaleeWeb.AdminContentController do
   @moduledoc "Admin management of on-demand video items (ADR-098)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Guardian.Plug, as: GuardianPlug
   alias Palee.Content

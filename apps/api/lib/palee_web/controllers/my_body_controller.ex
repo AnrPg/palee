@@ -6,7 +6,7 @@ defmodule PaleeWeb.MyBodyController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{BodyPhotos, BodyShare, BodySnapshots, MyBody}
   alias PaleeWeb.Schemas.Body, as: S

@@ -2,7 +2,7 @@ defmodule PaleeWeb.WorkoutSnapshotController do
   @moduledoc "ADR-357 (CP-D3): a WOD as it was when it was assigned or performed."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.WorkoutSnapshots
   alias PaleeWeb.Schemas.TrainingFloor, as: S

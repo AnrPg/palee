@@ -2,7 +2,7 @@ defmodule PaleeWeb.CoachingRelationshipsController do
   @moduledoc "Who coaches whom (ADR-100)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.ManageCoachingRelationships
   alias OpenApiSpex.{MediaType, Parameter, RequestBody, Schema}

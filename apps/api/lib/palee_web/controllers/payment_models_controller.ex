@@ -2,7 +2,7 @@ defmodule PaleeWeb.PaymentModelsController do
   @moduledoc "Shared-membership beneficiaries and corporate clients (ADR-098)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Guardian.Plug, as: GuardianPlug
 

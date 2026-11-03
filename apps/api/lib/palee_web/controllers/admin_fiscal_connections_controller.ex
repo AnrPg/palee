@@ -7,7 +7,7 @@ defmodule PaleeWeb.AdminFiscalConnectionsController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias OpenApiSpex.Schema
   alias Palee.Application.Fiscal.FiscalConnections

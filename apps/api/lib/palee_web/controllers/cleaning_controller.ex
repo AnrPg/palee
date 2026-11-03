@@ -6,7 +6,7 @@ defmodule PaleeWeb.CleaningController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.CleaningLog
   alias Palee.Identity

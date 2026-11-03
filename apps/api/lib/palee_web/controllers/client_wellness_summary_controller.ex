@@ -6,7 +6,7 @@ defmodule PaleeWeb.ClientWellnessSummaryController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.WellnessSummarySharing
   alias PaleeWeb.Schemas.Buddies, as: S

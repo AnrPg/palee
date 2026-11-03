@@ -2,7 +2,7 @@ defmodule PaleeWeb.PlacesController do
   @moduledoc "The neighbourhood gazetteer, worldwide place search and «Η περιοχή μου» (ADR-154, ADR-188)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.AroundArea
   alias PaleeWeb.Schemas.Around, as: S

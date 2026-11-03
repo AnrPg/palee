@@ -2,7 +2,7 @@ defmodule PaleeWeb.AdminFacilityController do
   @moduledoc "Admin endpoints of the Facility context: locations and the check-in desk (ADR-097)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Guardian.Plug, as: GuardianPlug
   alias Palee.Application.CheckInOpenGym

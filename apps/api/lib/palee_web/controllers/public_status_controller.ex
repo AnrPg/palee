@@ -6,7 +6,7 @@ defmodule PaleeWeb.PublicStatusController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.PublicServiceStatus
   alias PaleeWeb.Schemas.ServiceStatus, as: S

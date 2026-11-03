@@ -1,6 +1,6 @@
 defmodule PaleeWeb.MyInjuryWarningController do
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{AcknowledgeMyInjuryWarnings, GetMyWorkoutInjuryWarnings}
   alias PaleeWeb.Schemas.InjuryWarnings

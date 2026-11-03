@@ -1,6 +1,6 @@
 defmodule PaleeWeb.WorkoutController do
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{GetMaterializedWorkout, GetPublishedWorkout}
   alias PaleeWeb.Schemas.Workout, as: WorkoutSchema

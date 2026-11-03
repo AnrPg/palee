@@ -2,7 +2,7 @@ defmodule PaleeWeb.PtSquadController do
   @moduledoc "PT squads in your gym's club (ADR-168)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.PtSquads
   alias PaleeWeb.Schemas.PtSquads, as: S

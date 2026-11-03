@@ -2,7 +2,7 @@ defmodule PaleeWeb.PeopleController do
   @moduledoc "Another person's profile, the posts you may read and its media grid (ADR-142, ADR-231)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{PeopleSearch, SocialProfile}
   alias PaleeWeb.Schemas.Social, as: S

@@ -2,7 +2,7 @@ defmodule PaleeWeb.InventoryController do
   @moduledoc "The gym's inventory: machines and consumables (ADR-104)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{CompleteMediaUpload, ManageInventory, PlaceMachine, RequestMediaUpload}
   alias Palee.{Identity, Inventory, Organizations}

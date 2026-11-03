@@ -2,7 +2,7 @@ defmodule PaleeWeb.AdminBoxReviewsController do
   @moduledoc "Staff read the box's reviews and reply; no review can be deleted (ADR-386)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.ReviewAsks.BoxReviews
   alias PaleeWeb.Schemas.BoxReviews, as: S

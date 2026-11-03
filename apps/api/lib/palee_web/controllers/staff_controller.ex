@@ -2,7 +2,7 @@ defmodule PaleeWeb.StaffController do
   @moduledoc "The gym's staff by their role in this gym (ADR-098)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.ListGymStaff
   alias OpenApiSpex.Schema

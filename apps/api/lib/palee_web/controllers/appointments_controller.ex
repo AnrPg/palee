@@ -2,7 +2,7 @@ defmodule PaleeWeb.AppointmentsController do
   @moduledoc "Appointments (ADR-098): client booking and staff slot management."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Guardian.Plug, as: GuardianPlug
 

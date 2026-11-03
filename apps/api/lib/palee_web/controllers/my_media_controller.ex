@@ -6,7 +6,7 @@ defmodule PaleeWeb.MyMediaController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{CompleteMediaUpload, MyMedia, RequestMediaUpload}
   alias PaleeWeb.Schemas.{Community, Media}

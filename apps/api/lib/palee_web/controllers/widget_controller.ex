@@ -6,7 +6,7 @@ defmodule PaleeWeb.WidgetController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{WidgetAccess, WidgetSnapshots}
   alias PaleeWeb.Schemas.Widgets, as: S

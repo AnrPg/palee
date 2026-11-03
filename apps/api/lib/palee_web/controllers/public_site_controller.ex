@@ -6,7 +6,7 @@ defmodule PaleeWeb.PublicSiteController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.BoxSite.{PublicSite, SiteAdmin}
   alias PaleeWeb.Schemas.BoxSite, as: S

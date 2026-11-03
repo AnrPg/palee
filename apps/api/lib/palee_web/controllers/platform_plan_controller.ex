@@ -6,7 +6,7 @@ defmodule PaleeWeb.PlatformPlanController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.PlatformPlanCatalog
   alias PaleeWeb.PlatformPlanJSON

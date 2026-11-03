@@ -2,7 +2,7 @@ defmodule PaleeWeb.GoalFeedbackController do
   @moduledoc "«Τι ένιωσες» on the member's own executions and training-log entries (ADR-163)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{GetGoalFeedback, SaveGoalFeedback}
   alias PaleeWeb.Schemas.WorkoutGoals

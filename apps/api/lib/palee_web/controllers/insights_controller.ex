@@ -6,7 +6,7 @@ defmodule PaleeWeb.InsightsController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.GetMyInsights
   alias PaleeWeb.Schemas.Insights

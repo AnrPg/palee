@@ -2,7 +2,7 @@ defmodule PaleeWeb.RoleAccessController do
   @moduledoc "What the gym unlocks for roles such as front desk (ADR-099)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Organizations
   alias OpenApiSpex.{MediaType, Parameter, RequestBody, Schema}

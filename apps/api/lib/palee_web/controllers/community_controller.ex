@@ -2,7 +2,7 @@ defmodule PaleeWeb.CommunityController do
   @moduledoc "Clubs and channels (ADR-138): the member's clubs and their choices about them."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{CommunityPreferences, GetWodTodayCard, ListMyClubs}
   alias PaleeWeb.Schemas.Community, as: S

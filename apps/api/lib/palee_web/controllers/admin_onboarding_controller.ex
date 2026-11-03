@@ -1,6 +1,6 @@
 defmodule PaleeWeb.AdminOnboardingController do
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.AdminOnboarding
   alias OpenApiSpex.{MediaType, RequestBody, Schema}

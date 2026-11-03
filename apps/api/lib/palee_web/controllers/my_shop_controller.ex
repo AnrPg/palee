@@ -8,7 +8,7 @@ defmodule PaleeWeb.MyShopController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.PublicBox
   alias Palee.Application.Shop.{Checkout, Fulfilment, MemberShop, ProductMedia}

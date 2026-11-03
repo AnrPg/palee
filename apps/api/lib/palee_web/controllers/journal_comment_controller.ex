@@ -6,7 +6,7 @@ defmodule PaleeWeb.JournalCommentController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.JournalComments
   alias PaleeWeb.Schemas.JournalComments, as: Schemas

@@ -6,7 +6,7 @@ defmodule PaleeWeb.MyProvidersController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{MyProviders, MyToday}
   alias PaleeWeb.Schemas.CrossProvider
