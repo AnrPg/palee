@@ -98,7 +98,7 @@ describe("service status (ADR-364/366)", () => {
     expect(stripIncident([], member, { upcoming: [fiscalSoon], now })).toBeNull();
     expect(stripIncident([], owner, { upcoming: [fiscalSoon], now })?.id).toBe("fiscal");
     // An active incident or maintenance still comes first.
-    const email = { id: "e", kind: "incident", impact: "minor", components: ["email"], status: "investigating", scheduled_for: null };
+    const email = { id: "e", kind: "incident", impact: "minor", components: ["email"], status: "investigating", scheduled_for: null as string | null };
     expect(stripIncident([email], member, { upcoming: [in3h], now })?.id).toBe("e");
     // A day later the far one is due.
     expect(stripIncident([], member, { upcoming: [in25h], now: new Date("2026-11-03T11:00:00Z") })?.id).toBe("far");

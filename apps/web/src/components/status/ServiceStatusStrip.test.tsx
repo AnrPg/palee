@@ -114,7 +114,7 @@ describe("ServiceStatusStrip (ADR-366)", () => {
           components: ["app"] as StatusOverview["active"][number]["components"],
           scheduled_for,
           scheduled_until: "2026-11-04T06:00:00Z",
-          started_at: null,
+          started_at: scheduled_for,
           resolved_at: null,
           updates: [],
         },
