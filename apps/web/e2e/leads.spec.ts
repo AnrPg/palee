@@ -113,6 +113,9 @@ async function asOwner(page: Page, writes: Write[], extra?: (path: string, metho
 }
 
 test.describe("leads (staff)", () => {
+  // The three-column board; phones get one stage at a time (LeadsBoard).
+  test.use({ viewport: { width: 1280, height: 800 } });
+
   test("the kanban shows the open stages with counts, and a card opens its panel where «Contacted» is logged", async ({ page }) => {
     const writes: Write[] = [];
     let contacted = false;

@@ -9,6 +9,9 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 const nextConfig: NextConfig = {
   output: "standalone",
   distDir: process.env.NEXT_DIST_DIR ?? ".next",
+  // Under Playwright the dev indicator (bottom-left) sits over buttons on a
+  // phone-sized page and swallows taps; build errors still show.
+  ...(process.env.PALEE_E2E === "1" ? { devIndicators: false as const } : {}),
   turbopack: {
     root: process.cwd(),
   },
