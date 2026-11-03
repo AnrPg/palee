@@ -70,13 +70,14 @@ defmodule Palee.Application.PaleeBenchmarkLeaderboard do
   defp comparable(_result, nil, _benchmark), do: []
 
   defp comparable(result, section, benchmark) do
+    result = Map.put(result, :user_id, result.person_ref)
+
     with true <-
            Execution.score_lower_is_better?(section.score_type) == benchmark.lower_is_better,
          [%{score: %{} = score}] <- Execution.rank_workout_results([result], section),
          value when is_number(value) <- Execution.score_sort_value(score, section.score_type) do
       [
         result
-        |> Map.put(:user_id, result.person_ref)
         |> Map.put(:shown, score)
         |> Map.put(:section_scores, [%{"section_key" => @benchmark_section, "value" => value}])
       ]
