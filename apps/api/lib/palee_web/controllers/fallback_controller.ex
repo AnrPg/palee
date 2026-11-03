@@ -3621,6 +3621,44 @@ defmodule PaleeWeb.FallbackController do
       {:service_unavailable, "Push to the app isn't available on this server yet"}
   }
 
+  # ADR-374..377 (v3.2, body and devices).
+  @body_device_errors %{
+    invalid_split_marks:
+      {:unprocessable_entity, "Send up to 500 marks that fit this workout's timer"},
+    unknown_watch_platform: {:unprocessable_entity, "Choose apple_watch or wear_os"},
+    watch_upgrade_required: {:upgrade_required, "Update Palee on the watch to keep using it"},
+    watch_not_paired: {:not_found, "That watch isn't paired"},
+    watch_offer_not_asked: {:conflict, "The watch wasn't offered for this workout"},
+    invalid_watch_offer_answer: {:unprocessable_entity, "Answer yes or no"},
+    invalid_watch_settings:
+      {:unprocessable_entity, "Settings are on/off, and the maximum heart rate 120–230"},
+    invalid_heart_rate_batch:
+      {:unprocessable_entity, "Send up to 30 numbered batches of up to 720 readings"},
+    invalid_barcode:
+      {:unprocessable_entity, "That isn't a product barcode; try again or type it"},
+    invalid_nutrients: {:unprocessable_entity, "Grams per 100 g, from 0 to 100"},
+    unknown_rank: {:unprocessable_entity, "Choose one of this ladder's ranks"},
+    rank_not_above_current:
+      {:unprocessable_entity, "A promotion goes up the ladder or adds stripes"},
+    too_many_stripes: {:unprocessable_entity, "This rank has fewer stripes"},
+    award_in_future: {:unprocessable_entity, "The date can't be in the future"},
+    unknown_skills: {:unprocessable_entity, "Tick only the skills this rank lists"},
+    invalid_rank_award: {:unprocessable_entity, "Check the date, stripes and skills"},
+    award_already_revoked: {:conflict, "This award was already withdrawn"},
+    rank_in_use: {:conflict, "Someone holds a rank you removed; keep it or rename it"}
+  }
+
+  def call(conn, {:error, reason}) when is_map_key(@body_device_errors, reason) do
+    {status, message} = Map.fetch!(@body_device_errors, reason)
+    conn |> put_status(status) |> json(%{code: to_string(reason), error: message})
+  end
+
+  def call(conn, {:error, {:invalid_ranks, message}}) when is_binary(message) do
+    conn
+    |> put_status(:unprocessable_entity)
+    |> json(%{code: "invalid_ranks", error: message})
+  end
+
   def call(conn, {:error, reason}) when is_map_key(@phase_b_errors, reason) do
     {status, message} = Map.fetch!(@phase_b_errors, reason)
     package_contract_error(conn, status, to_string(reason), message, %{})

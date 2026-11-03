@@ -637,6 +637,9 @@ defmodule Palee.Infrastructure.Scheduling.EctoSchedulingStore do
       booking_id: booking.id,
       status: booking.status,
       master_workout_id: slot.master_workout_id,
+      # ADR-375 amendment: the watch is offered on a class WOD only after
+      # check-in to this class.
+      scheduled_class_id: slot.id,
       # Server-derived tenancy for the execution created from this booking
       # (F-03) - the client must not get to name the organization.
       organization_id: booking.organization_id
@@ -683,6 +686,7 @@ defmodule Palee.Infrastructure.Scheduling.EctoSchedulingStore do
         scheduled_class_id: slot.id,
         class_name: slot.name,
         class_type_name: class_type.name,
+        class_type_id: slot.class_type_id,
         scheduled_at: slot.scheduled_at,
         duration_minutes: slot.duration_minutes,
         master_workout_id: slot.master_workout_id,

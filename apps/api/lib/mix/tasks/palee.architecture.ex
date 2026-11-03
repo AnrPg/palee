@@ -147,6 +147,10 @@ defmodule Mix.Tasks.Palee.Architecture do
     review_asks/review_ask_store
 
     box_data/export_store
+    execution/split_store
+    devices/watch_store
+    nutrition/food_store
+    ranks/rank_store
   )
 
   defp tenant_scope_violations do

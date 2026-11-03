@@ -1,0 +1,376 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
+
+import { createCustomFood, lookUpBarcode, type BarcodeLookup, type Food, type FoodPortion } from "@/api/body-devices";
+import { useSession } from "@/components/session-provider";
+import { ErrorNotice } from "@/components/ui/ErrorNotice";
+import { addMealFood, FOOD_PORTIONS, normalizeBarcode, type MealFood } from "@/lib/body-devices";
+
+type BarcodeDetectorLike = { detect(source: CanvasImageSource): Promise<{ rawValue: string }[]> };
+type BarcodeDetectorConstructor = new (options: { formats: string[] }) => BarcodeDetectorLike;
+
+function barcodeDetector(): BarcodeDetectorConstructor | null {
+  if (typeof window === "undefined") return null;
+  const candidate = (window as unknown as { BarcodeDetector?: BarcodeDetectorConstructor }).BarcodeDetector;
+  return typeof candidate === "function" ? candidate : null;
+}
+
+const chip = (on: boolean) => ({
+  background: on ? "var(--primary)" : "var(--panel-muted)",
+  color: on ? "var(--primary-contrast)" : "var(--text)",
+  border: "1px solid var(--border)",
+});
+
+/**
+ * «Σάρωση barcode» inside a meal (ADR-376, mockups d9scan A and d9manual A):
+ * a small button next to the photo; the product becomes a line of the meal
+ * with a suggested hand portion. Never calories; grams per 100 g only when a
+ * coach's plan sets macros and they are not hidden (the server decides).
+ * When nothing is found, the same card turns into «Δικό μου τρόφιμο».
+ */
+export function MealFoods({ foods, onChange }: { foods: MealFood[]; onChange: (foods: MealFood[]) => void }) {
+  const t = useTranslations("BodyDevices");
+  const [scanning, setScanning] = useState(false);
+
+  return (
+    <div className="flex flex-col gap-2" data-testid="meal-foods">
+      {foods.length > 0 ? (
+        <ul className="flex flex-wrap gap-2">
+          {foods.map((food, index) => (
+            <li
+              key={`${food.barcode ?? food.custom_food_id ?? food.name}-${index}`}
+              className="flex items-center gap-2 rounded-full px-3 py-1 text-sm"
+              style={{ background: "var(--panel-muted)", color: "var(--text)" }}
+            >
+              <span>{food.portion ? t("foods.withPortion", { name: food.name, portion: t(`foods.portion.${food.portion}`) }) : food.name}</span>
+              <button
+                type="button"
+                aria-label={t("foods.remove", { name: food.name })}
+                onClick={() => onChange(foods.filter((_, at) => at !== index))}
+                style={{ color: "var(--dim)" }}
+              >
+                ×
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+      {scanning ? (
+        <BarcodeCard
+          onAdd={(food) => {
+            onChange(addMealFood(foods, food));
+            setScanning(false);
+          }}
+          onCancel={() => setScanning(false)}
+        />
+      ) : foods.length < 10 ? (
+        <button
+          type="button"
+          onClick={() => setScanning(true)}
+          className="flex min-h-11 items-center self-start rounded-2xl px-4 text-sm font-semibold"
+          style={{ border: "1px solid var(--border)", color: "var(--text)" }}
+        >
+          {t("foods.scan")}
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
+function BarcodeCard({ onAdd, onCancel }: { onAdd: (food: MealFood) => void; onCancel: () => void }) {
+  const t = useTranslations("BodyDevices");
+  const { tokens } = useSession();
+  const token = tokens?.access_token ?? "";
+  const [typed, setTyped] = useState("");
+  const [typedError, setTypedError] = useState(false);
+  const [result, setResult] = useState<BarcodeLookup | null>(null);
+  const lookup = useMutation({
+    mutationFn: (barcode: string) => lookUpBarcode(token, barcode),
+    onSuccess: setResult,
+  });
+
+  function look(raw: string) {
+    const barcode = normalizeBarcode(raw);
+    if (!barcode) {
+      setTypedError(true);
+      return;
+    }
+    setTypedError(false);
+    lookup.mutate(barcode);
+  }
+
+  if (result?.status === "found" && result.food) {
+    return <FoundFood lookup={result} food={result.food} onAdd={onAdd} onCancel={onCancel} />;
+  }
+  if (result?.status === "manual") {
+    return <OwnFoodForm barcode={result.reason === "in_store_code" ? null : result.barcode} storeCode={result.reason === "in_store_code"} onAdd={onAdd} onCancel={onCancel} />;
+  }
+
+  return (
+    <section className="flex flex-col gap-3 rounded-2xl px-4 py-3" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
+      <Camera onCode={look} />
+      <label className="flex flex-col gap-1 text-sm font-semibold" style={{ color: "var(--text)" }}>
+        {t("foods.typeIt")}
+        <input
+          inputMode="numeric"
+          autoComplete="off"
+          value={typed}
+          aria-invalid={typedError}
+          aria-describedby="barcode-error"
+          onChange={(event) => setTyped(event.target.value)}
+          className="min-h-11 rounded-2xl px-4"
+          style={{ background: "var(--panel-muted)", border: `1px solid ${typedError ? "var(--danger)" : "var(--border)"}`, color: "var(--text)" }}
+        />
+        {typedError ? (
+          <span id="barcode-error" className="text-xs font-normal" style={{ color: "var(--danger)" }}>{t("foods.invalidBarcode")}</span>
+        ) : null}
+      </label>
+      {result?.status === "pending" ? <p className="text-xs" style={{ color: "var(--dim)" }}>{t("foods.pending")}</p> : null}
+      {lookup.isError ? <ErrorNotice>{t("errorGeneric")}</ErrorNotice> : null}
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          disabled={lookup.isPending || typed.trim() === ""}
+          onClick={() => look(typed)}
+          className="min-h-11 rounded-2xl px-4 text-sm font-semibold"
+          style={{ border: "1px solid var(--border)", color: "var(--text)" }}
+        >
+          {t("foods.find")}
+        </button>
+        <button type="button" onClick={onCancel} className="text-sm font-semibold" style={{ color: "var(--dim)" }}>
+          {t("cancel")}
+        </button>
+      </div>
+    </section>
+  );
+}
+
+/** The phone's camera when the browser can read barcodes; nothing otherwise (typing still works). */
+function Camera({ onCode }: { onCode: (code: string) => void }) {
+  const t = useTranslations("BodyDevices");
+  const video = useRef<HTMLVideoElement>(null);
+  const [available] = useState(() => barcodeDetector() !== null);
+  const found = useRef(onCode);
+  useEffect(() => {
+    found.current = onCode;
+  }, [onCode]);
+
+  useEffect(() => {
+    const Detector = barcodeDetector();
+    if (!Detector || !navigator.mediaDevices?.getUserMedia) return;
+    let stream: MediaStream | null = null;
+    let timer: number | null = null;
+    let stopped = false;
+    const detector = new Detector({ formats: ["ean_13", "ean_8", "upc_a", "upc_e"] });
+    void navigator.mediaDevices
+      .getUserMedia({ video: { facingMode: "environment" } })
+      .then((media) => {
+        if (stopped) {
+          media.getTracks().forEach((track) => track.stop());
+          return;
+        }
+        stream = media;
+        if (video.current) {
+          video.current.srcObject = media;
+          void video.current.play();
+        }
+        timer = window.setInterval(async () => {
+          if (!video.current || video.current.readyState < 2) return;
+          const codes = await detector.detect(video.current).catch(() => []);
+          if (codes[0]?.rawValue) found.current(codes[0].rawValue);
+        }, 400);
+      })
+      .catch(() => undefined);
+    return () => {
+      stopped = true;
+      if (timer !== null) window.clearInterval(timer);
+      stream?.getTracks().forEach((track) => track.stop());
+    };
+  }, []);
+
+  if (!available) return null;
+  return (
+    <div className="flex flex-col gap-1">
+      <video ref={video} muted playsInline className="aspect-video w-full rounded-xl object-cover" style={{ background: "var(--panel-muted)" }} />
+      <span className="text-xs" style={{ color: "var(--dim)" }}>{t("foods.aim")}</span>
+    </div>
+  );
+}
+
+function FoundFood({ lookup, food, onAdd, onCancel }: { lookup: BarcodeLookup; food: Food; onAdd: (food: MealFood) => void; onCancel: () => void }) {
+  const t = useTranslations("BodyDevices");
+  const [portion, setPortion] = useState<FoodPortion | null>(food.portion_hint ?? null);
+  const nutrients = lookup.macros_visible ? food.nutrients : null;
+  return (
+    <section
+      data-testid="barcode-found"
+      className="flex flex-col gap-3 rounded-2xl px-4 py-3"
+      style={{ background: "var(--panel)", border: "1px solid var(--border)" }}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <span className="text-sm font-bold" style={{ color: "var(--text)" }}>{food.name}</span>
+        {food.brand ? <span className="shrink-0 text-xs" style={{ color: "var(--text-soft)" }}>{food.brand}</span> : null}
+      </div>
+      <PortionChips label={t("foods.countsAs")} value={portion} onChange={setPortion} />
+      {nutrients ? (
+        <p className="text-xs" style={{ color: "var(--text-soft)" }}>
+          {t("foods.per100g", {
+            protein: nutrients.proteins ?? 0,
+            carbs: nutrients.carbohydrates ?? 0,
+            fat: nutrients.fat ?? 0,
+          })}
+        </p>
+      ) : null}
+      {lookup.attribution ? (
+        <a href={lookup.attribution.url} target="_blank" rel="noreferrer" className="text-xs" style={{ color: "var(--dim)" }}>
+          {t("foods.source", { source: lookup.attribution.source, licence: lookup.attribution.licence })}
+        </a>
+      ) : null}
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={() =>
+            onAdd({
+              name: food.name,
+              ...(food.barcode ? { barcode: food.barcode } : {}),
+              ...(food.id ? { custom_food_id: food.id } : {}),
+              ...(portion ? { portion } : {}),
+            })
+          }
+          className="min-h-11 rounded-2xl px-4 text-sm font-semibold"
+          style={{ border: "1px solid var(--border)", color: "var(--text)" }}
+        >
+          {t("foods.add")}
+        </button>
+        <button type="button" onClick={onCancel} className="text-sm font-semibold" style={{ color: "var(--dim)" }}>
+          {t("cancel")}
+        </button>
+      </div>
+    </section>
+  );
+}
+
+function PortionChips({ label, value, onChange }: { label: string; value: FoodPortion | null; onChange: (value: FoodPortion | null) => void }) {
+  const t = useTranslations("BodyDevices");
+  return (
+    <div className="flex flex-col gap-1">
+      <span className="text-xs" style={{ color: "var(--text-soft)" }}>{label}</span>
+      <div className="flex flex-wrap gap-2" role="group" aria-label={label}>
+        {FOOD_PORTIONS.map((key) => (
+          <button
+            key={key}
+            type="button"
+            aria-pressed={value === key}
+            onClick={() => onChange(value === key ? null : key)}
+            className="min-h-9 rounded-full px-3 text-sm font-semibold"
+            style={chip(value === key)}
+          >
+            {t(`foods.portion.${key}`)}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function OwnFoodForm({
+  barcode,
+  storeCode,
+  onAdd,
+  onCancel,
+}: {
+  barcode: string | null;
+  storeCode: boolean;
+  onAdd: (food: MealFood) => void;
+  onCancel: () => void;
+}) {
+  const t = useTranslations("BodyDevices");
+  const { tokens } = useSession();
+  const [name, setName] = useState("");
+  const [nameError, setNameError] = useState(false);
+  const [portion, setPortion] = useState<FoodPortion | null>(null);
+  const [advanced, setAdvanced] = useState(false);
+  const [brand, setBrand] = useState("");
+  const [serving, setServing] = useState("");
+  const save = useMutation({
+    mutationFn: () =>
+      createCustomFood(tokens!.access_token, {
+        name: name.trim(),
+        ...(barcode ? { barcode } : {}),
+        ...(brand.trim() ? { brand: brand.trim() } : {}),
+        ...(serving.trim() ? { serving_label: serving.trim() } : {}),
+        ...(portion ? { portion_hint: portion } : {}),
+      }),
+    onSuccess: (food) => onAdd({ name: food.name, ...(food.id ? { custom_food_id: food.id } : {}), ...(portion ? { portion } : {}) }),
+  });
+  const field = { background: "var(--panel-muted)", border: "1px solid var(--border)", color: "var(--text)" };
+
+  return (
+    <section
+      data-testid="own-food"
+      className="flex flex-col gap-3 rounded-2xl px-4 py-3"
+      style={{ background: "var(--panel)", border: "1px solid var(--border)" }}
+    >
+      <div>
+        <p className="text-sm font-bold" style={{ color: "var(--text)" }}>{storeCode ? t("foods.storeCodeTitle") : t("foods.notFoundTitle")}</p>
+        <p className="text-xs" style={{ color: "var(--text-soft)" }}>{storeCode ? t("foods.storeCodeHint") : t("foods.notFoundHint")}</p>
+      </div>
+      <label className="flex flex-col gap-1 text-sm font-semibold" style={{ color: "var(--text)" }}>
+        {t("foods.name")}
+        <input
+          value={name}
+          maxLength={120}
+          aria-invalid={nameError}
+          onChange={(event) => {
+            setName(event.target.value);
+            setNameError(false);
+          }}
+          className="min-h-11 rounded-2xl px-4"
+          style={{ ...field, border: `1px solid ${nameError ? "var(--danger)" : "var(--border)"}` }}
+        />
+        {nameError ? <span className="text-xs font-normal" style={{ color: "var(--danger)" }}>{t("foods.nameRequired")}</span> : null}
+      </label>
+      <PortionChips label={t("foods.countsAs")} value={portion} onChange={setPortion} />
+      <button type="button" aria-expanded={advanced} onClick={() => setAdvanced(!advanced)} className="self-start text-sm font-semibold" style={{ color: "var(--dim)" }}>
+        {t("advanced")}
+      </button>
+      {advanced ? (
+        <div className="flex flex-col gap-3">
+          <label className="flex flex-col gap-1 text-sm font-semibold" style={{ color: "var(--text)" }}>
+            {t("foods.brand")}
+            <input value={brand} maxLength={120} onChange={(event) => setBrand(event.target.value)} className="min-h-11 rounded-2xl px-4" style={field} />
+          </label>
+          <label className="flex flex-col gap-1 text-sm font-semibold" style={{ color: "var(--text)" }}>
+            {t("foods.serving")}
+            <input value={serving} maxLength={60} onChange={(event) => setServing(event.target.value)} className="min-h-11 rounded-2xl px-4" style={field} />
+          </label>
+        </div>
+      ) : null}
+      <p className="text-xs" style={{ color: "var(--dim)" }}>{t("foods.staysYours")}</p>
+      {save.isError ? <ErrorNotice>{t("errorGeneric")}</ErrorNotice> : null}
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          disabled={save.isPending}
+          onClick={() => {
+            if (!name.trim()) {
+              setNameError(true);
+              return;
+            }
+            save.mutate();
+          }}
+          className="min-h-11 rounded-2xl px-4 text-sm font-semibold"
+          style={{ border: "1px solid var(--border)", color: "var(--text)" }}
+        >
+          {t("foods.saveOwn")}
+        </button>
+        <button type="button" onClick={onCancel} className="text-sm font-semibold" style={{ color: "var(--dim)" }}>
+          {t("cancel")}
+        </button>
+      </div>
+    </section>
+  );
+}

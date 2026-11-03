@@ -713,6 +713,31 @@ Programmes a box or a coach sells (CP-D4). The prospect assistant of the same wo
 | Start date | Ημερομηνία έναρξης | `starts_on` | The day the buyer's day 0 falls on (today up to 60 days ahead). | Season start. |
 | Refund rule | Κανόνας επιστροφής χρημάτων | `refund_policy` | The seller's rule on top of the law: «Πλήρης επιστροφή μέχρι την έναρξη» (`before_start`), «Μόνο στην προθεσμία υπαναχώρησης» (`withdrawal_only`), «Για τις ημέρες που δεν ήρθαν» (`pro_rata`). | Withdrawal («Υπαναχώρηση», the 14 days the law gives). |
 | Programme review | Κριτική προγράμματος | `programme_reviews` | A buyer's 1–5 stars and text about a programme; the seller may hide it («Απόκρυψη») with a reason, never edit or delete it. Same word as a box review («Κριτική», §4.22), always with «προγράμματος» where both can appear. | Box review (`box_reviews`, §4.22); review questionnaire (ADR feedback, «Ερωτηματολόγιο»). |
+### 4.27 Body and devices (ADR-374..377, v3.2)
+
+| English | Ελληνικά | Code | What it is | Not to be confused with |
+|---|---|---|---|---|
+| Past self | Ο προηγούμενος εαυτός σου | `execution_splits`, `/executions/:id/pacer` | The person's previous attempt at the same WOD or benchmark, running beside the timer as a pace line and compared in the results. Only ever with themself (vision §4.4). (ADR-374) | Leaderboard (others, opt-in, clubs). |
+| Split | Ενδιάμεσος χρόνος | `execution_splits` | When a round or a segment of the WOD ended, in active time from the start. | Section time (the whole section). |
+| Ahead / Behind | Μπροστά / Πίσω | `delta_ms` | Seconds ahead of (negative) or behind the previous attempt at the same split. | |
+| Watch | Ρολόι | `watch_links` | An Apple Watch or Wear OS watch paired through the phone app, showing the timer, round, movements, heart rate and pace. In Εγώ › Συνδεδεμένες συσκευές. (ADR-375) | Garmin (a connected device that syncs finished workouts, ADR-161). |
+| Heart rate | Καρδιακοί παλμοί | `execution_heart_rate_batches` | Beats per minute a watch recorded during a workout; health data, private, only with the health-data consent. | Resting heart rate (Πρόοδος, from devices). |
+| Scan barcode | Σάρωση barcode | `/me/foods/barcode/:barcode` | Inside a meal: reads a product's barcode and names the food with a suggested hand portion. Never calories. (ADR-376) | Check-in QR. |
+| My food | Δικό μου τρόφιμο | `custom_foods` | A food the person wrote down themselves (the manual entry after a scan that found nothing). Theirs only. | A coach's nutrition plan. |
+| Rank | Βαθμός | `ranks` | A step on a box's ladder: a belt (martial arts) or a level (gymnastics). (ADR-377) | Scale level (Rx/Scaled); XP level («Επίπεδο XP»). |
+| Belt | Ζώνη | `ranks.color` | A rank shown as a coloured belt, optionally with stripes. | |
+| Stripe | Ρίγα | `rank_awards.stripes` | A mark of progress inside a belt (up to the rank's maximum). | |
+| Rank ladder | Κλίμακα βαθμών | `rank_ladders` | A box's ordered ranks for one discipline (a workout type), e.g. «Ζώνες BJJ», «Επίπεδα ενόργανης». | Class types. |
+| Promotion | Προαγωγή | `rank_awards` | A coach gives a person the next rank or a stripe; always the coach's decision. Withdrawn with a reason, never deleted. | |
+| Diploma | Δίπλωμα | `/rank-awards/:id/certificate` | The PDF of a promotion with its number. | Health certificate («Πιστοποιητικό υγείας», ADR-252). |
+| Watch question | Το χρονόμετρο και στο ρολόι; | `POST /executions/:id/watch-offer` | Asked only when a WOD is opened for execution and the phone sees a connected watch; a box class WOD only after check-in. Box members are asked on their first 5 such WODs, then it starts on the watch by itself; free athletes are asked every time. Never a notification (ANR's D8 rules, ADR-375). | Push notifications. |
+| Compare with | Σύγκριση με | `palee:pacer-compare` (this device) | Under «Προχωρημένα» of the timer: «Την προηγούμενη φορά» (default) or «Απόκρυψη». | Leaderboard. |
+| Foods (in a meal) | Τρόφιμα | meal `foods` | What was eaten, as names from a barcode scan or the person's own foods, each with an optional hand portion. Never calories. (ADR-376) | Hand portions («Μερίδες»). |
+| Counts mostly as | Μετράει κυρίως ως | `portion_hint` | The suggested hand portion of a food: 1 παλάμη πρωτεΐνη, 1 χούφτα υδατάνθρακες, 1 γροθιά λαχανικά, 1 αντίχειρας λιπαρά. | Grams. |
+| Store code | Κωδικός του καταστήματος | `reason: in_store_code` | A barcode the shop printed (prefix 02, 20–29), not a product: the person writes what it is. | Product barcode. |
+| Ranks (settings) | Βαθμοί | Ρυθμίσεις › Προχωρημένα › Βαθμοί | Where staff keep the box's ladders. Say «Κλίμακα βαθμών» in full where «Κλίμακα» (Standards, §4.23) could also appear. | Standards («Κλίμακα», §4.23). |
+| Withdraw (a rank) | Ανάκληση | `POST /staff/rank-awards/:id/revoke` | Takes back a promotion with a reason; the award stays in the history as withdrawn. Never «διαγραφή». | Delete. |
+| Ready (for the next rank) | Πληροί τις προϋποθέσεις | `progress.ready` | The counted requirements are met; the coach still decides. | Promotion. |
 
 ## 5. Name clashes found, and proposals
 

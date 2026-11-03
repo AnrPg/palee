@@ -61,6 +61,7 @@ import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { OnlinePaymentsSettings } from "@/components/admin/payments/OnlinePaymentsSettings";
 import { PayItemsCatalog } from "@/components/admin/coach-pay/PayItemsCatalog";
 import { CardSurchargeSettings } from "@/components/admin/payments/CardSurchargeSettings";
+import { RankLaddersSettings } from "@/components/body-devices/RankLaddersSettings";
 import { useSettingLevels, type SettingLevels } from "@/components/settings/AdvancedSettings";
 import { AdvancedSettingsCard } from "@/components/settings/AdvancedSettingsCard";
 
@@ -1201,6 +1202,7 @@ export function AdminSettingsHub() {
   const smsT = useTranslations("Sms");
   const coachPayT = useTranslations("CoachPay");
   const adv = useTranslations("AdvancedSettings");
+  const bodyDevices = useTranslations("BodyDevices");
   const { tokens, currentUser } = useSession();
   const token = tokens?.access_token;
   const { membership, selectedOrganizationSlug } = useSelectedMembershipRole();
@@ -1450,6 +1452,17 @@ export function AdminSettingsHub() {
                   keywords: [adv("keywords.onSite"), i18n("admOnSiteDescription")],
                   content: <BoxScreensSettingsLink />,
                 },
+                // ADR-377: belts and levels (CP-E2), only for boxes that teach them.
+                ...(can(membership, "manage_settings") && selectedOrganizationSlug
+                  ? [
+                      {
+                        id: "ranks",
+                        title: bodyDevices("ranks.groupTitle"),
+                        keywords: [bodyDevices("ranks.keywords")],
+                        content: <RankLaddersSettings token={token} slug={selectedOrganizationSlug} />,
+                      },
+                    ]
+                  : []),
                 ...(can(membership, "grant_staff_roles")
                   ? [
                       {

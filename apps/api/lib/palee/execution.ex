@@ -251,4 +251,20 @@ defmodule Palee.Execution do
   defdelegate workout_identity(attrs), to: WorkoutIdentity, as: :key
   defdelegate identity_benchmark(key), to: WorkoutIdentity, as: :key_benchmark
   defdelegate benchmark_name(slug), to: WorkoutIdentity
+
+  # ADR-374: race your past self.
+  alias Palee.Execution.Domain.{Pacer, SplitMarks}
+
+  defdelegate cast_split_marks(marks, segments), to: SplitMarks, as: :cast
+  defdelegate split_section_ordinals(segments), to: SplitMarks, as: :section_ordinals
+
+  defdelegate split_marks_from_progress(previous, updated, segments),
+    to: SplitMarks,
+    as: :from_progress
+
+  defdelegate pick_previous_attempt(candidates, current), to: Pacer, as: :pick_previous
+  defdelegate pace_checkpoints(splits), to: Pacer, as: :checkpoints
+  defdelegate pace_section_times(section_elapsed_ms, ordinals), to: Pacer, as: :section_times
+  defdelegate pace_section_names(segments), to: Pacer, as: :section_names
+  defdelegate compare_pace(ghost, current, names), to: Pacer, as: :compare
 end
