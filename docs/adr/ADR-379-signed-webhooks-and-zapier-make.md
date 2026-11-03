@@ -106,5 +106,5 @@ queue service, the pattern used elsewhere (ADR-212 email outbox).
   webhook off hears nothing.
 - `Integrations.deliver/3` now also returns the endpoints it turned off; the application layer
   (`ConnectionNotices`) sends the notices, so the context stays free of Notifications and Email.
-- Migration `20270604000000_open_platform_follow_ups` adds the notification type.
+- Migration `20270603100000_open_platform_follow_ups` adds the notification type.
 - The Zapier and Make app submission is left for later.
