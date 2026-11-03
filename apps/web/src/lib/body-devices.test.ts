@@ -11,6 +11,8 @@ import {
   headlineDelta,
   latestDelta,
   normalizeBarcode,
+  nutrientsFrom,
+  parseNutrient,
   paceLane,
   paceRows,
   promotionChoices,
@@ -80,6 +82,22 @@ describe("past self (ADR-374)", () => {
   it("uses sections when the previous attempt had no rounds", () => {
     const rows = paceRows(pacer({ precision: "sections", sections: [{ section_ordinal: 0, section_name: "21-15-9", ghost_ms: 264_000, current_ms: 250_000, delta_ms: -14_000 }] }));
     expect(rows).toEqual([{ key: "s0", kind: "section", name: "21-15-9", deltaMs: -14_000 }]);
+  });
+});
+
+describe("the nutrition table of an own food (ADR-421)", () => {
+  it("reads grams per 100 g, a comma as the decimal mark, blank as nothing", () => {
+    expect(parseNutrient(" 12,5 ")).toBe(12.5);
+    expect(parseNutrient("0")).toBe(0);
+    expect(parseNutrient("")).toBeNull();
+    expect(parseNutrient("101")).toBe("invalid");
+    expect(parseNutrient("-1")).toBe("invalid");
+    expect(parseNutrient("abc")).toBe("invalid");
+  });
+
+  it("collects what to send and which fields are wrong", () => {
+    expect(nutrientsFrom({ proteins: "17", fat: "21,5", salt: "" })).toEqual({ nutrients: { proteins: 17, fat: 21.5 }, invalid: [] });
+    expect(nutrientsFrom({ sugars: "300" })).toEqual({ nutrients: {}, invalid: ["sugars"] });
   });
 });
 

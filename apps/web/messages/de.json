@@ -16854,7 +16854,26 @@
       "brand": "Marke",
       "serving": "Portion",
       "staysYours": "Es bleibt deins; es wird nirgendwohin gesendet.",
-      "saveOwn": "Lebensmittel speichern"
+      "saveOwn": "Lebensmittel speichern",
+      "labelPhoto": "Foto des Etiketts",
+      "labelFront": "Vorderseite",
+      "labelTable": "Nährwerttabelle",
+      "labelRead": "Etikett lesen",
+      "labelReading": "Wird gelesen…",
+      "labelHint": "KI liest die Fotos, um das Formular auszufüllen; sie werden nicht gespeichert. Prüfe, was eingetragen wurde.",
+      "labelNeedPhoto": "Füge mindestens ein Foto hinzu.",
+      "labelUnreadable": "Das ließ sich nicht lesen. Versuche ein schärferes Foto oder tippe es ein.",
+      "labelUnavailable": "Etiketten lesen ist gerade nicht verfügbar. Tippe es ein.",
+      "per100gTitle": "Pro 100 g",
+      "nutrientInvalid": "Von 0 bis 100 g.",
+      "nutrient": {
+        "proteins": "Eiweiß (g)",
+        "carbohydrates": "Kohlenhydrate (g)",
+        "fat": "Fett (g)",
+        "fiber": "Ballaststoffe (g)",
+        "sugars": "Zucker (g)",
+        "salt": "Salz (g)"
+      }
     },
     "ranks": {
       "groupTitle": "Grade",
@@ -17368,5 +17387,19 @@
     "display_none": "Nichts",
     "hint": "Bei „Nur Fortschritt“ oder „Nichts“ steht auf der Karte „Von deinem Coach festgelegt“.",
     "theirsIsStricter": "{name} hat „{choice}“ gewählt, das ist strenger und bleibt deshalb."
+  },
+  "PlatformFoodMisses": {
+    "title": "Nicht gefundene Barcodes",
+    "subtitle": "Barcodes, die Mitglieder gescannt haben und keine Lebensmittelquelle kannte, nach Land, die häufigsten zuerst. Es wird keine Person erfasst.",
+    "back": "Unternehmen",
+    "forbidden": "Nur das Plattform-Team sieht diese Liste.",
+    "loadError": "Die Liste konnte nicht geladen werden.",
+    "loading": "Wird geladen…",
+    "empty": "Keine fehlenden Barcodes.",
+    "country": "Land",
+    "countryAll": "Alle Länder",
+    "noCountry": "Ohne Land",
+    "scans": "{count, plural, one {# Scan} other {# Scans}}",
+    "seen": "{first} – {last}"
   }
 }

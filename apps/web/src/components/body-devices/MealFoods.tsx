@@ -4,10 +4,28 @@ import { useEffect, useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 
-import { createCustomFood, lookUpBarcode, type BarcodeLookup, type Food, type FoodPortion } from "@/api/body-devices";
+import { ApiError } from "@/api/client";
+import {
+  createCustomFood,
+  lookUpBarcode,
+  readFoodLabel,
+  type BarcodeLookup,
+  type Food,
+  type FoodLabelPrefill,
+  type FoodPortion,
+} from "@/api/body-devices";
 import { useSession } from "@/components/session-provider";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
-import { addMealFood, FOOD_PORTIONS, normalizeBarcode, type MealFood } from "@/lib/body-devices";
+import { reencodeImage } from "@/lib/box-photo-upload";
+import {
+  addMealFood,
+  FOOD_NUTRIENTS,
+  FOOD_PORTIONS,
+  normalizeBarcode,
+  nutrientsFrom,
+  type FoodNutrientKey,
+  type MealFood,
+} from "@/lib/body-devices";
 
 type BarcodeDetectorLike = { detect(source: CanvasImageSource): Promise<{ rawValue: string }[]> };
 type BarcodeDetectorConstructor = new (options: { formats: string[] }) => BarcodeDetectorLike;
@@ -29,7 +47,8 @@ const chip = (on: boolean) => ({
  * a small button next to the photo; the product becomes a line of the meal
  * with a suggested hand portion. Never calories; grams per 100 g only when a
  * coach's plan sets macros and they are not hidden (the server decides).
- * When nothing is found, the same card turns into «Δικό μου τρόφιμο».
+ * When nothing is found, the same card turns into «Δικό μου τρόφιμο», which
+ * «Φωτογραφία ετικέτας» can prefill from photos of the pack (ADR-421).
  */
 export function MealFoods({ foods, onChange }: { foods: MealFood[]; onChange: (foods: MealFood[]) => void }) {
   const t = useTranslations("BodyDevices");
@@ -106,7 +125,16 @@ function BarcodeCard({ onAdd, onCancel }: { onAdd: (food: MealFood) => void; onC
     return <FoundFood lookup={result} food={result.food} onAdd={onAdd} onCancel={onCancel} />;
   }
   if (result?.status === "manual") {
-    return <OwnFoodForm barcode={result.reason === "in_store_code" ? null : result.barcode} storeCode={result.reason === "in_store_code"} onAdd={onAdd} onCancel={onCancel} />;
+    return (
+      <OwnFoodForm
+        barcode={result.reason === "in_store_code" ? null : result.barcode}
+        storeCode={result.reason === "in_store_code"}
+        macrosVisible={result.macros_visible === true}
+        labelReading={result.label_reading === true}
+        onAdd={onAdd}
+        onCancel={onCancel}
+      />
+    );
   }
 
   return (
@@ -224,10 +252,22 @@ function FoundFood({ lookup, food, onAdd, onCancel }: { lookup: BarcodeLookup; f
           })}
         </p>
       ) : null}
-      {lookup.attribution ? (
-        <a href={lookup.attribution.url} target="_blank" rel="noreferrer" className="text-xs" style={{ color: "var(--dim)" }}>
-          {t("foods.source", { source: lookup.attribution.source, licence: lookup.attribution.licence })}
-        </a>
+      {lookup.attribution?.source ? (
+        lookup.attribution.url || lookup.attribution.licence_url ? (
+          <a
+            href={lookup.attribution.url ?? lookup.attribution.licence_url ?? undefined}
+            target="_blank"
+            rel="noreferrer"
+            className="text-xs"
+            style={{ color: "var(--dim)" }}
+          >
+            {t("foods.source", { source: lookup.attribution.source, licence: lookup.attribution.licence })}
+          </a>
+        ) : (
+          <span className="text-xs" style={{ color: "var(--dim)" }}>
+            {t("foods.source", { source: lookup.attribution.source, licence: lookup.attribution.licence })}
+          </span>
+        )
       ) : null}
       <div className="flex items-center gap-3">
         <button
@@ -276,14 +316,20 @@ function PortionChips({ label, value, onChange }: { label: string; value: FoodPo
   );
 }
 
+type NutrientFields = Partial<Record<FoodNutrientKey, string>>;
+
 function OwnFoodForm({
   barcode,
   storeCode,
+  macrosVisible,
+  labelReading,
   onAdd,
   onCancel,
 }: {
   barcode: string | null;
   storeCode: boolean;
+  macrosVisible: boolean;
+  labelReading: boolean;
   onAdd: (food: MealFood) => void;
   onCancel: () => void;
 }) {
@@ -295,18 +341,42 @@ function OwnFoodForm({
   const [advanced, setAdvanced] = useState(false);
   const [brand, setBrand] = useState("");
   const [serving, setServing] = useState("");
+  const [nutrients, setNutrients] = useState<NutrientFields>({});
+  const [nutrientErrors, setNutrientErrors] = useState<FoodNutrientKey[]>([]);
   const save = useMutation({
-    mutationFn: () =>
+    mutationFn: (grams: Partial<Record<FoodNutrientKey, number>>) =>
       createCustomFood(tokens!.access_token, {
         name: name.trim(),
         ...(barcode ? { barcode } : {}),
         ...(brand.trim() ? { brand: brand.trim() } : {}),
         ...(serving.trim() ? { serving_label: serving.trim() } : {}),
         ...(portion ? { portion_hint: portion } : {}),
+        ...(Object.keys(grams).length > 0 ? { nutrients: grams } : {}),
       }),
     onSuccess: (food) => onAdd({ name: food.name, ...(food.id ? { custom_food_id: food.id } : {}), ...(portion ? { portion } : {}) }),
   });
   const field = { background: "var(--panel-muted)", border: "1px solid var(--border)", color: "var(--text)" };
+
+  function prefill(food: FoodLabelPrefill) {
+    if (food.name) {
+      setName(food.name);
+      setNameError(false);
+    }
+    if (food.brand) setBrand(food.brand);
+    if (food.serving_label) setServing(food.serving_label);
+    if (food.portion_hint) setPortion(food.portion_hint);
+    const read = food.nutrients ?? {};
+    const filled: NutrientFields = {};
+    for (const key of FOOD_NUTRIENTS) {
+      const value = read[key];
+      if (typeof value === "number") filled[key] = String(value);
+    }
+    if (macrosVisible) {
+      setNutrients(filled);
+      setNutrientErrors([]);
+    }
+    if (food.brand || food.serving_label || (macrosVisible && Object.keys(filled).length > 0)) setAdvanced(true);
+  }
 
   return (
     <section
@@ -318,6 +388,7 @@ function OwnFoodForm({
         <p className="text-sm font-bold" style={{ color: "var(--text)" }}>{storeCode ? t("foods.storeCodeTitle") : t("foods.notFoundTitle")}</p>
         <p className="text-xs" style={{ color: "var(--text-soft)" }}>{storeCode ? t("foods.storeCodeHint") : t("foods.notFoundHint")}</p>
       </div>
+      {labelReading ? <LabelPhoto onRead={prefill} /> : null}
       <label className="flex flex-col gap-1 text-sm font-semibold" style={{ color: "var(--text)" }}>
         {t("foods.name")}
         <input
@@ -347,6 +418,34 @@ function OwnFoodForm({
             {t("foods.serving")}
             <input value={serving} maxLength={60} onChange={(event) => setServing(event.target.value)} className="min-h-11 rounded-2xl px-4" style={field} />
           </label>
+          {macrosVisible ? (
+            <fieldset className="flex flex-col gap-2" data-testid="own-food-nutrients">
+              <legend className="text-xs" style={{ color: "var(--text-soft)" }}>{t("foods.per100gTitle")}</legend>
+              <div className="grid grid-cols-2 gap-2">
+                {FOOD_NUTRIENTS.map((key) => {
+                  const invalid = nutrientErrors.includes(key);
+                  return (
+                    <label key={key} className="flex flex-col gap-1 text-xs font-semibold" style={{ color: "var(--text)" }}>
+                      {t(`foods.nutrient.${key}`)}
+                      <input
+                        inputMode="decimal"
+                        autoComplete="off"
+                        value={nutrients[key] ?? ""}
+                        aria-invalid={invalid}
+                        onChange={(event) => {
+                          setNutrients({ ...nutrients, [key]: event.target.value });
+                          setNutrientErrors(nutrientErrors.filter((entry) => entry !== key));
+                        }}
+                        className="min-h-11 rounded-2xl px-3 text-sm"
+                        style={{ ...field, border: `1px solid ${invalid ? "var(--danger)" : "var(--border)"}` }}
+                      />
+                      {invalid ? <span className="font-normal" style={{ color: "var(--danger)" }}>{t("foods.nutrientInvalid")}</span> : null}
+                    </label>
+                  );
+                })}
+              </div>
+            </fieldset>
+          ) : null}
         </div>
       ) : null}
       <p className="text-xs" style={{ color: "var(--dim)" }}>{t("foods.staysYours")}</p>
@@ -356,11 +455,14 @@ function OwnFoodForm({
           type="button"
           disabled={save.isPending}
           onClick={() => {
-            if (!name.trim()) {
-              setNameError(true);
-              return;
+            const grams = macrosVisible ? nutrientsFrom(nutrients) : { nutrients: {}, invalid: [] };
+            if (!name.trim()) setNameError(true);
+            if (grams.invalid.length > 0) {
+              setNutrientErrors(grams.invalid);
+              setAdvanced(true);
             }
-            save.mutate();
+            if (!name.trim() || grams.invalid.length > 0) return;
+            save.mutate(grams.nutrients);
           }}
           className="min-h-11 rounded-2xl px-4 text-sm font-semibold"
           style={{ border: "1px solid var(--border)", color: "var(--text)" }}
@@ -372,5 +474,97 @@ function OwnFoodForm({
         </button>
       </div>
     </section>
+  );
+}
+
+/**
+ * «Φωτογραφία ετικέτας» (ADR-421): the front and the nutrition table, re-encoded
+ * in the browser (no EXIF) and read by the server, which keeps neither photo.
+ * The person checks the prefilled form before saving.
+ */
+function LabelPhoto({ onRead }: { onRead: (food: FoodLabelPrefill) => void }) {
+  const t = useTranslations("BodyDevices");
+  const { tokens } = useSession();
+  const [open, setOpen] = useState(false);
+  const [front, setFront] = useState<File | null>(null);
+  const [table, setTable] = useState<File | null>(null);
+  const [missing, setMissing] = useState(false);
+  const read = useMutation({
+    mutationFn: async () => {
+      const [frontBlob, tableBlob] = await Promise.all([front ? reencodeImage(front) : null, table ? reencodeImage(table) : null]);
+      return readFoodLabel(tokens!.access_token, { front: frontBlob, nutrition: tableBlob });
+    },
+    onSuccess: (reading) => {
+      onRead(reading.food);
+      setOpen(false);
+    },
+  });
+  const error = read.error;
+  const message =
+    error instanceof ApiError && error.status === 503 ? t("foods.labelUnavailable") : error ? t("foods.labelUnreadable") : null;
+
+  if (!open) {
+    return (
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="flex min-h-11 items-center self-start rounded-2xl px-4 text-sm font-semibold"
+        style={{ border: "1px solid var(--border)", color: "var(--text)" }}
+      >
+        {t("foods.labelPhoto")}
+      </button>
+    );
+  }
+
+  const picker = (label: string, file: File | null, onPick: (file: File | null) => void) => (
+    <label className="flex flex-col gap-1 text-sm font-semibold" style={{ color: "var(--text)" }}>
+      {label}
+      <input
+        type="file"
+        accept="image/*"
+        capture="environment"
+        onChange={(event) => {
+          onPick(event.target.files?.[0] ?? null);
+          setMissing(false);
+          read.reset();
+        }}
+        className="text-xs font-normal"
+        style={{ color: "var(--text-soft)" }}
+      />
+      {file ? <span className="text-xs font-normal" style={{ color: "var(--dim)" }}>{file.name}</span> : null}
+    </label>
+  );
+
+  return (
+    <div className="flex flex-col gap-2 rounded-2xl px-3 py-3" data-testid="label-photo" style={{ background: "var(--panel-muted)" }}>
+      {picker(t("foods.labelFront"), front, setFront)}
+      {picker(t("foods.labelTable"), table, setTable)}
+      <p className="text-xs" style={{ color: "var(--dim)" }}>{t("foods.labelHint")}</p>
+      {missing ? (
+        <span className="text-xs" style={{ color: "var(--danger)" }}>{t("foods.labelNeedPhoto")}</span>
+      ) : message ? (
+        <span className="text-xs" style={{ color: "var(--danger)" }}>{message}</span>
+      ) : null}
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          disabled={read.isPending}
+          onClick={() => {
+            if (!front && !table) {
+              setMissing(true);
+              return;
+            }
+            read.mutate();
+          }}
+          className="min-h-11 rounded-2xl px-4 text-sm font-semibold"
+          style={{ border: "1px solid var(--border)", color: "var(--text)" }}
+        >
+          {read.isPending ? t("foods.labelReading") : t("foods.labelRead")}
+        </button>
+        <button type="button" onClick={() => setOpen(false)} className="text-sm font-semibold" style={{ color: "var(--dim)" }}>
+          {t("cancel")}
+        </button>
+      </div>
+    </div>
   );
 }

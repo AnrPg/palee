@@ -16854,7 +16854,26 @@
       "brand": "Marca",
       "serving": "Porzione",
       "staysYours": "Resta tuo; non viene inviato da nessuna parte.",
-      "saveOwn": "Salva alimento"
+      "saveOwn": "Salva alimento",
+      "labelPhoto": "Foto dell’etichetta",
+      "labelFront": "Fronte della confezione",
+      "labelTable": "Tabella nutrizionale",
+      "labelRead": "Leggi l’etichetta",
+      "labelReading": "Lettura…",
+      "labelHint": "Un’IA legge le foto per compilare il modulo; non vengono conservate. Controlla cosa ha scritto.",
+      "labelNeedPhoto": "Aggiungi almeno una foto.",
+      "labelUnreadable": "Non è stato possibile leggerla. Prova con una foto più nitida o scrivilo.",
+      "labelUnavailable": "La lettura delle etichette non è disponibile ora. Scrivilo tu.",
+      "per100gTitle": "Valori per 100 g",
+      "nutrientInvalid": "Da 0 a 100 g.",
+      "nutrient": {
+        "proteins": "Proteine (g)",
+        "carbohydrates": "Carboidrati (g)",
+        "fat": "Grassi (g)",
+        "fiber": "Fibre (g)",
+        "sugars": "Zuccheri (g)",
+        "salt": "Sale (g)"
+      }
     },
     "ranks": {
       "groupTitle": "Gradi",
@@ -17368,5 +17387,19 @@
     "display_none": "Niente",
     "hint": "Con «Solo progressi» o «Niente», la sua scheda dice «Deciso dal tuo coach».",
     "theirsIsStricter": "{name} ha scelto «{choice}», che è più restrittivo, quindi resta così."
+  },
+  "PlatformFoodMisses": {
+    "title": "Codici a barre non trovati",
+    "subtitle": "Codici scansionati dai membri che nessuna fonte alimentare conosceva, per paese, i più scansionati prima. Nessuna persona viene registrata.",
+    "back": "Attività",
+    "forbidden": "Solo il team della piattaforma vede questo elenco.",
+    "loadError": "Impossibile caricare l’elenco.",
+    "loading": "Caricamento…",
+    "empty": "Nessun codice a barre mancante.",
+    "country": "Paese",
+    "countryAll": "Tutti i paesi",
+    "noCountry": "Senza paese",
+    "scans": "{count, plural, one {# scansione} other {# scansioni}}",
+    "seen": "{first} – {last}"
   }
 }

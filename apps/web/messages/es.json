@@ -16854,7 +16854,26 @@
       "brand": "Marca",
       "serving": "Ración",
       "staysYours": "Sigue siendo tuyo; no se envía a ningún sitio.",
-      "saveOwn": "Guardar alimento"
+      "saveOwn": "Guardar alimento",
+      "labelPhoto": "Foto de la etiqueta",
+      "labelFront": "Parte delantera",
+      "labelTable": "Tabla nutricional",
+      "labelRead": "Leer la etiqueta",
+      "labelReading": "Leyendo…",
+      "labelHint": "Una IA lee las fotos para rellenar el formulario; no se guardan. Revisa lo que escribió.",
+      "labelNeedPhoto": "Añade al menos una foto.",
+      "labelUnreadable": "No se pudo leer. Prueba con una foto más nítida o escríbelo.",
+      "labelUnavailable": "La lectura de etiquetas no está disponible ahora. Escríbelo.",
+      "per100gTitle": "Por 100 g",
+      "nutrientInvalid": "De 0 a 100 g.",
+      "nutrient": {
+        "proteins": "Proteínas (g)",
+        "carbohydrates": "Hidratos de carbono (g)",
+        "fat": "Grasas (g)",
+        "fiber": "Fibra (g)",
+        "sugars": "Azúcares (g)",
+        "salt": "Sal (g)"
+      }
     },
     "ranks": {
       "groupTitle": "Grados",
@@ -17368,5 +17387,19 @@
     "display_none": "Nada",
     "hint": "Con «Solo progreso» o «Nada», su tarjeta dice «Lo ha decidido tu coach».",
     "theirsIsStricter": "{name} eligió «{choice}», que es más estricto, así que se mantiene."
+  },
+  "PlatformFoodMisses": {
+    "title": "Códigos de barras no encontrados",
+    "subtitle": "Códigos que escanearon los miembros y que ninguna fuente de alimentos tenía, por país, los más escaneados primero. No se registra a ninguna persona.",
+    "back": "Negocios",
+    "forbidden": "Solo el equipo de la plataforma ve esta lista.",
+    "loadError": "No se pudo cargar la lista.",
+    "loading": "Cargando…",
+    "empty": "No falta ningún código de barras.",
+    "country": "País",
+    "countryAll": "Todos los países",
+    "noCountry": "Sin país",
+    "scans": "{count, plural, one {# escaneo} other {# escaneos}}",
+    "seen": "{first} – {last}"
   }
 }

@@ -16854,7 +16854,26 @@
       "brand": "Merk",
       "serving": "Portie",
       "staysYours": "Het blijft van jou; het wordt nergens heen gestuurd.",
-      "saveOwn": "Voedingsmiddel opslaan"
+      "saveOwn": "Voedingsmiddel opslaan",
+      "labelPhoto": "Foto van het etiket",
+      "labelFront": "Voorkant van de verpakking",
+      "labelTable": "Voedingswaardetabel",
+      "labelRead": "Etiket lezen",
+      "labelReading": "Bezig met lezen…",
+      "labelHint": "AI leest de foto’s om het formulier in te vullen; ze worden niet bewaard. Controleer wat er staat.",
+      "labelNeedPhoto": "Voeg minstens één foto toe.",
+      "labelUnreadable": "Dat lukte niet. Probeer een scherpere foto of typ het.",
+      "labelUnavailable": "Etiketten lezen is nu niet beschikbaar. Typ het zelf.",
+      "per100gTitle": "Per 100 gram",
+      "nutrientInvalid": "Van 0 tot 100 g.",
+      "nutrient": {
+        "proteins": "Eiwit (g)",
+        "carbohydrates": "Koolhydraten (g)",
+        "fat": "Vet (g)",
+        "fiber": "Vezels (g)",
+        "sugars": "Suikers (g)",
+        "salt": "Zout (g)"
+      }
     },
     "ranks": {
       "groupTitle": "Graden",
@@ -17368,5 +17387,19 @@
     "display_none": "Niets",
     "hint": "Bij ‘Alleen voortgang’ of ‘Niets’ staat op de kaart ‘Ingesteld door je coach’.",
     "theirsIsStricter": "{name} koos ‘{choice}’, dat is strenger, dus dat blijft."
+  },
+  "PlatformFoodMisses": {
+    "title": "Niet gevonden barcodes",
+    "subtitle": "Barcodes die leden scanden en die geen voedingsbron kende, per land, de meest gescande eerst. Er wordt geen persoon vastgelegd.",
+    "back": "Bedrijven",
+    "forbidden": "Alleen het platformteam ziet deze lijst.",
+    "loadError": "De lijst kon niet worden geladen.",
+    "loading": "Laden…",
+    "empty": "Geen ontbrekende barcodes.",
+    "country": "Land",
+    "countryAll": "Alle landen",
+    "noCountry": "Zonder land",
+    "scans": "{count, plural, one {# scan} other {# scans}}",
+    "seen": "{first} – {last}"
   }
 }

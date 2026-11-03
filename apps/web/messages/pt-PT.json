@@ -16854,7 +16854,26 @@
       "brand": "Marca",
       "serving": "Porção",
       "staysYours": "Continua a ser teu; não é enviado para lado nenhum.",
-      "saveOwn": "Guardar alimento"
+      "saveOwn": "Guardar alimento",
+      "labelPhoto": "Foto do rótulo",
+      "labelFront": "Frente da embalagem",
+      "labelTable": "Tabela nutricional",
+      "labelRead": "Ler o rótulo",
+      "labelReading": "A ler…",
+      "labelHint": "Uma IA lê as fotos para preencher o formulário; não são guardadas. Verifica o que escreveu.",
+      "labelNeedPhoto": "Adiciona pelo menos uma foto.",
+      "labelUnreadable": "Não foi possível ler. Tenta uma foto mais nítida ou escreve-o.",
+      "labelUnavailable": "A leitura de rótulos não está disponível agora. Escreve-o tu.",
+      "per100gTitle": "Por 100 g",
+      "nutrientInvalid": "De 0 a 100 g.",
+      "nutrient": {
+        "proteins": "Proteína (g)",
+        "carbohydrates": "Hidratos de carbono (g)",
+        "fat": "Lípidos (g)",
+        "fiber": "Fibra (g)",
+        "sugars": "Açúcares (g)",
+        "salt": "Sal (g)"
+      }
     },
     "ranks": {
       "groupTitle": "Graus",
@@ -17368,5 +17387,19 @@
     "display_none": "Nada",
     "hint": "Com «Só progresso» ou «Nada», o cartão diz «Definido pelo teu coach».",
     "theirsIsStricter": "{name} escolheu «{choice}», que é mais restrito, por isso fica assim."
+  },
+  "PlatformFoodMisses": {
+    "title": "Códigos de barras não encontrados",
+    "subtitle": "Códigos que os membros digitalizaram e que nenhuma fonte de alimentos tinha, por país, os mais digitalizados primeiro. Nenhuma pessoa é registada.",
+    "back": "Empresas",
+    "forbidden": "Só a equipa da plataforma vê esta lista.",
+    "loadError": "Não foi possível carregar a lista.",
+    "loading": "A carregar…",
+    "empty": "Não falta nenhum código de barras.",
+    "country": "País",
+    "countryAll": "Todos os países",
+    "noCountry": "Sem país",
+    "scans": "{count, plural, one {# leitura} other {# leituras}}",
+    "seen": "{first} – {last}"
   }
 }

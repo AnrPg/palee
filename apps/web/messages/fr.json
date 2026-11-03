@@ -16854,7 +16854,26 @@
       "brand": "Marque",
       "serving": "Portion",
       "staysYours": "Il reste à toi ; il n’est envoyé nulle part.",
-      "saveOwn": "Enregistrer l’aliment"
+      "saveOwn": "Enregistrer l’aliment",
+      "labelPhoto": "Photo de l’étiquette",
+      "labelFront": "Face avant",
+      "labelTable": "Tableau nutritionnel",
+      "labelRead": "Lire l’étiquette",
+      "labelReading": "Lecture…",
+      "labelHint": "Une IA lit les photos pour remplir le formulaire ; elles ne sont pas conservées. Vérifie ce qu’elle a écrit.",
+      "labelNeedPhoto": "Ajoute au moins une photo.",
+      "labelUnreadable": "Impossible de la lire. Essaie une photo plus nette ou saisis-la.",
+      "labelUnavailable": "La lecture d’étiquettes n’est pas disponible pour le moment. Saisis-la.",
+      "per100gTitle": "Pour 100 g",
+      "nutrientInvalid": "De 0 à 100 g.",
+      "nutrient": {
+        "proteins": "Protéines (g)",
+        "carbohydrates": "Glucides (g)",
+        "fat": "Lipides (g)",
+        "fiber": "Fibres (g)",
+        "sugars": "Sucres (g)",
+        "salt": "Sel (g)"
+      }
     },
     "ranks": {
       "groupTitle": "Grades",
@@ -17368,5 +17387,19 @@
     "display_none": "Rien",
     "hint": "Avec « Progrès seulement » ou « Rien », sa carte indique « Défini par ton coach ».",
     "theirsIsStricter": "{name} a choisi « {choice} », plus restrictif, donc c'est ce qui s'applique."
+  },
+  "PlatformFoodMisses": {
+    "title": "Codes-barres introuvables",
+    "subtitle": "Codes-barres scannés par des membres qu’aucune source alimentaire ne connaissait, par pays, les plus scannés d’abord. Aucune personne n’est enregistrée.",
+    "back": "Entreprises",
+    "forbidden": "Seule l’équipe de la plateforme voit cette liste.",
+    "loadError": "La liste n’a pas pu être chargée.",
+    "loading": "Chargement…",
+    "empty": "Aucun code-barres manquant.",
+    "country": "Pays",
+    "countryAll": "Tous les pays",
+    "noCountry": "Sans pays",
+    "scans": "{count, plural, one {# scan} other {# scans}}",
+    "seen": "{first} – {last}"
   }
 }
