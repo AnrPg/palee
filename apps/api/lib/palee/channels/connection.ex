@@ -3,7 +3,9 @@ defmodule Palee.Channels.Connection do
   A box's messaging provider (ADR-348 §2): its own account (`own`, the
   secret encrypted at rest and never returned) or the Palee-managed one
   (`palee`, credentials in the platform config), the senders, the channels
-  switched on, the monthly budget cap and quiet hours (ADR-349).
+  switched on, the monthly budget cap and quiet hours (ADR-349). Neither
+  has a default (ADR-390): the box types its own cap when it turns a
+  channel on, and quiet hours stay off until it opens them.
   """
 
   use Ecto.Schema
@@ -31,7 +33,7 @@ defmodule Palee.Channels.Connection do
     field :channels, {:array, :string}, default: []
     field :channel_order, {:array, :string}, default: ["sms", "viber", "whatsapp"]
     field :default_country, :string, default: "GR"
-    field :monthly_budget_cents, :integer, default: 2000
+    field :monthly_budget_cents, :integer
     field :currency, :string, default: "EUR"
     field :quiet_start_minute, :integer
     field :quiet_end_minute, :integer

@@ -29,7 +29,11 @@ defmodule PaleeWeb.Schemas.Channels do
         channels: %Schema{type: :array, items: @channel},
         channel_order: %Schema{type: :array, items: @channel},
         default_country: %Schema{type: :string},
-        monthly_budget_cents: %Schema{type: :integer},
+        monthly_budget_cents: %Schema{
+          type: :integer,
+          nullable: true,
+          description: "The cap the box typed; null until it does, and then nothing is sent (ADR-390)"
+        },
         currency: %Schema{type: :string},
         quiet_start: %Schema{type: :string, nullable: true, example: "21:00"},
         quiet_end: %Schema{type: :string, nullable: true, example: "09:00"},
@@ -161,7 +165,14 @@ defmodule PaleeWeb.Schemas.Channels do
         channels: %Schema{type: :array, items: @channel, maxItems: 3},
         channel_order: %Schema{type: :array, items: @channel, maxItems: 3},
         default_country: %Schema{type: :string, minLength: 2, maxLength: 2},
-        monthly_budget_cents: %Schema{type: :integer, minimum: 0, maximum: 1_000_000},
+        monthly_budget_cents: %Schema{
+          type: :integer,
+          minimum: 0,
+          maximum: 1_000_000,
+          nullable: true,
+          description:
+            "The box's own monthly cap in cents; required once a channel is on (no default, ADR-390)"
+        },
         quiet_start: %Schema{type: :string, nullable: true, pattern: "^[0-2][0-9]:[0-5][0-9]$"},
         quiet_end: %Schema{type: :string, nullable: true, pattern: "^[0-2][0-9]:[0-5][0-9]$"},
         rotate_webhook: %Schema{type: :boolean}
@@ -492,7 +503,7 @@ defmodule PaleeWeb.Schemas.Channels do
           nullable: true,
           description:
             "The box's own reason no SMS can go (`channels_demo_mode`, " <>
-              "`channels_not_connected`, `channel_budget_exceeded`…)"
+              "`channels_not_connected`, `channel_budget_missing`, `channel_budget_exceeded`…)"
         }
       },
       required: [
@@ -785,6 +796,22 @@ defmodule PaleeWeb.Schemas.Channels do
         :provider_cost_cents,
         :to
       ]
+    }
+  end
+
+  # ADR-390: the short link of a marketing SMS (public, no sign-in).
+  def unsubscribe do
+    %Schema{
+      title: "SmsUnsubscribe",
+      type: :object,
+      description:
+        "The box behind a marketing SMS's link and whether offers by SMS are off for the person",
+      properties: %{
+        box_name: %Schema{type: :string},
+        locale: %Schema{type: :string, enum: @locales},
+        withdrawn: %Schema{type: :boolean}
+      },
+      required: [:box_name, :locale, :withdrawn]
     }
   end
 end

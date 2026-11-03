@@ -84,9 +84,21 @@ defmodule Palee.Channels.Domain.Templates do
       {"marketing", ~w(box text), %{"el" => "{{box}}: {{text}}", "en" => "{{box}}: {{text}}"}}
   }
 
+  # ADR-390: a short link instead of «reply STOP» (a named sender cannot
+  # receive replies). One word per language, then the link.
   @opt_out %{
-    "el" => " Για διακοπή απάντησε STOP.",
-    "en" => " Reply STOP to opt out."
+    "el" => "Διακοπή",
+    "en" => "Stop",
+    "de" => "Abmelden",
+    "fr" => "Désinscription",
+    "it" => "Disiscriviti",
+    "es" => "Baja",
+    "nl" => "Afmelden",
+    "pt-PT" => "Cancelar",
+    "bg" => "Отписване",
+    "ru" => "Отписаться",
+    "ar" => "إلغاء الاشتراك",
+    "he" => "הסרה"
   }
 
   def keys, do: @templates |> Map.keys() |> Enum.sort()
@@ -162,6 +174,6 @@ defmodule Palee.Channels.Domain.Templates do
     |> Enum.uniq()
   end
 
-  @doc "The opt-out sentence added to marketing texts."
-  def opt_out(locale), do: Map.get(@opt_out, locale, @opt_out["en"])
+  @doc "The opt-out added to marketing SMS: « Διακοπή: <link>» in the message's language."
+  def opt_out(locale, url), do: " " <> Map.get(@opt_out, locale, @opt_out["en"]) <> ": " <> url
 end

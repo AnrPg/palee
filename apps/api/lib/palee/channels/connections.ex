@@ -118,8 +118,9 @@ defmodule Palee.Channels.Connections do
   Saves the connection. `params` (atom keys; missing keys keep what is
   saved): `provider`, `account_mode`, `account_id`, `secret` (kept when
   not sent), `base_url`, `sms_sender`, `viber_sender`, `whatsapp_sender`,
-  `channels`, `channel_order`, `default_country`, `monthly_budget_cents`,
-  `quiet_start` and `quiet_end` (`"HH:MM"`, both nil for none),
+  `channels`, `channel_order`, `default_country`, `monthly_budget_cents`
+  (required once any channel is on; no default, ADR-390), `quiet_start`
+  and `quiet_end` (`"HH:MM"`, both nil for none, the default),
   `rotate_webhook` (true draws a new webhook URL).
 
   `{:ok, connection}` (the stored one) or `{:error, {:invalid_fields, errors}}`.
@@ -159,18 +160,21 @@ defmodule Palee.Channels.Connections do
     channels = value.(:channels) || []
     order = value.(:channel_order) || ["sms", "viber", "whatsapp"]
     country = value.(:default_country) || "GR"
-    budget = value.(:monthly_budget_cents) || 2000
+    # ADR-390: no invented cap; the box types its own before a channel goes on.
+    budget = value.(:monthly_budget_cents)
 
+    # ADR-390: quiet hours stay off until the box opens them.
     quiet =
-      if Map.has_key?(params, :quiet_start) or Map.has_key?(params, :quiet_end),
-        do: QuietHours.parse(params[:quiet_start], params[:quiet_end]),
-        else:
-          {:ok,
-           if(before,
-             do: {before.quiet_start_minute, before.quiet_end_minute},
-             else:
-               {QuietHours.defaults().quiet_start_minute, QuietHours.defaults().quiet_end_minute}
-           )}
+      cond do
+        Map.has_key?(params, :quiet_start) or Map.has_key?(params, :quiet_end) ->
+          QuietHours.parse(params[:quiet_start], params[:quiet_end])
+
+        before ->
+          {:ok, {before.quiet_start_minute, before.quiet_end_minute}}
+
+        true ->
+          {:ok, {nil, nil}}
+      end
 
     own_needs_secret? = mode == "own" and provider not in [nil, "sandbox"]
 
@@ -189,7 +193,12 @@ defmodule Palee.Channels.Connections do
       |> add(not channel_list?(order, nil), :channel_order, "invalid")
       |> add(country not in PhoneNumber.countries(), :default_country, "invalid")
       |> add(
-        not (is_integer(budget) and budget >= 0 and budget <= @max_budget_cents),
+        is_list(channels) and channels != [] and is_nil(budget),
+        :monthly_budget_cents,
+        "required"
+      )
+      |> add(
+        not (is_nil(budget) or (is_integer(budget) and budget >= 0 and budget <= @max_budget_cents)),
         :monthly_budget_cents,
         "invalid"
       )

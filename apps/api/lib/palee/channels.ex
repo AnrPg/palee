@@ -43,6 +43,10 @@ defmodule Palee.Channels do
   defdelegate set_consent(context, contact_id, params, actor_id, now), to: Contacts
   defdelegate delete_contact(context, id), to: Contacts, as: :delete
 
+  # ADR-390: the short link at the end of a marketing SMS.
+  defdelegate find_unsubscribe(token), to: Palee.Channels.Unsubscribe, as: :find
+  defdelegate unsubscribe(token, now), to: Palee.Channels.Unsubscribe, as: :withdraw
+
   @doc "ADR-211: forgets a person's number, consents and messages in each box (account deletion)."
   def forget_user(organization_ids, user_id) do
     Enum.each(organization_ids, fn organization_id ->

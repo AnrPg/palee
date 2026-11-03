@@ -379,6 +379,14 @@ defmodule PaleeWeb.Router do
     get("/", PlatformPlanController, :index_public)
   end
 
+  # ADR-390: the short unsubscribe link of a marketing SMS (no sign-in).
+  scope "/api/public/channels/unsubscribe", PaleeWeb do
+    pipe_through([:api, :email_unsubscribe])
+
+    get("/:token", PublicSmsUnsubscribeController, :show)
+    post("/:token", PublicSmsUnsubscribeController, :create)
+  end
+
   # ADR-364 (CP-G4): the public status page data and email subscriptions.
   scope "/api/public/status", PaleeWeb do
     pipe_through([:api, :public_box_rate_limited])

@@ -87,6 +87,17 @@ defmodule Palee.Infrastructure.Channels.EctoChannelStore do
   @impl true
   def get_platform_settings, do: PlatformSetting |> Repo.one() |> to_map()
 
+  # ADR-390: SECURITY DEFINER lookup of a contact's box (nothing else is read).
+  @impl true
+  def contact_organization(contact_id) do
+    case Repo.query!("SELECT palee_channel_contact_organization($1)", [
+           Ecto.UUID.dump!(contact_id)
+         ]) do
+      %{rows: [[id]]} when is_binary(id) -> Ecto.UUID.load!(id)
+      _none -> nil
+    end
+  end
+
   @impl true
   def save_platform_settings(attrs) do
     (Repo.one(PlatformSetting) || %PlatformSetting{})
