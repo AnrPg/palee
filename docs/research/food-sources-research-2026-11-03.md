@@ -66,7 +66,9 @@ nutrition gap for the member, and the miss log tells us which products matter.
   personal data (vision §4.5) and would otherwise be pulled into the
   share-alike obligation. They stay in `custom_foods`, private to the member.
 * Contributing back (OFF asks for it) needs the member's explicit choice to
-  share; no such choice exists, so nothing is sent (ADR-376 unchanged).
+  share. Since the ADR-421 addendum (2026-11-03) that choice exists
+  («Μοιράσου το»): only when the member explicitly shares is the product
+  (data only, no photos) sent, through OFF's write API with Palee's account.
 
 ## USDA FoodData Central (Branded Foods)
 
@@ -163,5 +165,6 @@ nutrition gap for the member, and the miss log tells us which products matter.
    list that could feed the Greek source for free.
 2. Should a member be able to share a label-read food with every Palee member
    (and with Open Food Facts)? Needs a new explicit choice in the form and a
-   privacy note; until then label reads stay private.
+   privacy note; until then label reads stay private. **Answered**
+   2026-11-03: yes, by an explicit, never pre-ticked choice (ADR-421 addendum).
 3. Sign up for a USDA FoodData Central key (free) for production?
