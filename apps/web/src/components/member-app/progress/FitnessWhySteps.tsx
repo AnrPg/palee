@@ -20,6 +20,7 @@ export function FitnessWhySteps({ reading }: { reading: FitnessReason }) {
   const number = (value: number, digits = 1) => new Intl.NumberFormat(locale, { maximumFractionDigits: digits }).format(value);
   const ratio = (value: number) =>
     new Intl.NumberFormat(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
+  const kg = t("fitnessKg");
   const lift = reading.unit === "kg" && typeof reading.load === "number" && typeof reading.reps === "number";
   const onBodyWeight = reading.basis === "body_weight" && typeof reading.ratio === "number" && typeof reading.body_weight_kg === "number";
   const date = formatDateKey(locale, reading.beaten_on) ?? reading.beaten_on;
@@ -39,7 +40,7 @@ export function FitnessWhySteps({ reading }: { reading: FitnessReason }) {
       {lift && reading.estimated ? (
         <Step title={t("fitnessStepOneRm")} testId="fitness-step-one-rm">
           <span className="font-mono tabular-nums" style={{ color: "var(--text)" }}>
-            {number(reading.load!)} × (1 + {reading.reps} ÷ 30) ≈ {number(reading.value)} kg
+            {`${number(reading.load!)} ${kg} × (1 + ${reading.reps} ÷ 30) ≈ ${number(reading.value)} ${kg}`}
           </span>
           <span className="block">{t("fitnessStepOneRmNote", { reps: reading.reps! })}</span>
         </Step>
@@ -48,7 +49,7 @@ export function FitnessWhySteps({ reading }: { reading: FitnessReason }) {
       {onBodyWeight ? (
         <Step title={t("fitnessStepRatio")} testId="fitness-step-ratio">
           <span className="font-mono tabular-nums" style={{ color: "var(--text)" }}>
-            {number(reading.value)} kg ÷ {number(reading.body_weight_kg!)} kg = {ratio(reading.ratio!)} ×
+            {`${number(reading.value)} ${kg} ÷ ${number(reading.body_weight_kg!)} ${kg} = ${ratio(reading.ratio!)} ×`}
           </span>
           <span className="block">{t("fitnessStepRatioNote")}</span>
         </Step>

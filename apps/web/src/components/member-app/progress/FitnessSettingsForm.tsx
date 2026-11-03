@@ -81,7 +81,7 @@ export function FitnessSettingsForm({ profile }: { profile: FitnessProfile }) {
       fields.body_weight_kg = t("fitnessBodyWeightError", { min: MIN_WEIGHT, max: MAX_WEIGHT });
     }
     if (ageReady && birthYear !== null && !(Number.isInteger(birthYear) && birthYear >= MIN_YEAR && birthYear <= thisYear)) {
-      fields.birth_year = t("fitnessBirthYearError", { min: MIN_YEAR, max: thisYear });
+      fields.birth_year = t("fitnessBirthYearError", { min: String(MIN_YEAR), max: String(thisYear) });
     }
     if (Object.keys(fields).length > 0) {
       setErrors({ fields, message: null });
@@ -116,7 +116,7 @@ export function FitnessSettingsForm({ profile }: { profile: FitnessProfile }) {
             }}
             {...invalidFieldProps(weightError, `${ids}-weight-error`)}
           />
-          <span className="text-sm" style={{ color: "var(--muted)" }}>kg</span>
+          <span className="text-sm" style={{ color: "var(--muted)" }}>{t("fitnessKg")}</span>
         </div>
         <FieldError id={`${ids}-weight-error`}>{weightError}</FieldError>
         {!weightError ? <p className="text-xs" style={{ color: "var(--dim)" }}>{t("fitnessBodyWeightHint")}</p> : null}
