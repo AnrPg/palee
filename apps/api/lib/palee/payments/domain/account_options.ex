@@ -9,7 +9,8 @@ defmodule Palee.Payments.Domain.AccountOptions do
       `packages` (buy or renew a membership package), `autopay` (renewals
       and bills charged to the card the member chose), `drop_in` (a single
       visit or trial paid when booking), `shop` (e-shop orders),
-      `personal_training` (personal-training packages);
+      `personal_training` (personal-training packages), `programmes`
+      (training programmes the business sells, ADR-371);
     * `notify_member` – a member hears about every declined charge, with a
       link to pay with another card;
     * `notify_staff` – staff with billing rights hear when the last retry
@@ -19,7 +20,7 @@ defmodule Palee.Payments.Domain.AccountOptions do
   days in the finance settings (`subscription_grace_days`): one place each.
   """
 
-  @purposes ~w(packages autopay drop_in shop personal_training)
+  @purposes ~w(packages autopay drop_in shop personal_training programmes)
   @flags ~w(notify_member notify_staff)
 
   def purposes, do: @purposes

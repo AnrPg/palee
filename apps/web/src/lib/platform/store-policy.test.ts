@@ -42,4 +42,11 @@ describe("store policy", () => {
       expect(canBuyHere({ kind: "palee_plan" }, platform)).toBe(false);
     }
   });
+
+  it("sells training programmes on the web only (ADR-371)", () => {
+    expect(canBuyHere({ kind: "programme" }, null)).toBe(true);
+    for (const platform of ["ios", "android"] as const) {
+      expect(canBuyHere({ kind: "programme" }, platform)).toBe(false);
+    }
+  });
 });

@@ -731,10 +731,22 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutStore do
   # and a season workout nobody is left on goes with it.
   @impl true
   def remove_season_athlete(season_offering_id, athlete_id, from_date) do
+    from(assignment in scoped_to_tenant(AssignedWorkout),
+      where: assignment.season_offering_id == ^season_offering_id,
+      select: assignment.id
+    )
+    |> Repo.all()
+    |> remove_athlete_from_assignments(athlete_id, from_date)
+  end
+
+  @impl true
+  def remove_athlete_from_assignments([], _athlete_id, _from_date), do: {:ok, 0}
+
+  def remove_athlete_from_assignments(ids, athlete_id, from_date) do
     Repo.transaction(fn ->
       assignment_ids =
         from(assignment in scoped_to_tenant(AssignedWorkout),
-          where: assignment.season_offering_id == ^season_offering_id,
+          where: assignment.id in ^ids,
           select: assignment.id
         )
         |> Repo.all()

@@ -16,7 +16,7 @@ export type CheckoutOrigin = "box" | "schedule" | "public" | "payments";
 export type PendingCheckout = {
   paymentId: string;
   slug: string;
-  kind: "package" | "visit" | "invoice";
+  kind: "package" | "visit" | "invoice" | "programme";
   itemName: string;
   origin: CheckoutOrigin;
   /** The member chose to pay what falls due with the saved card. */

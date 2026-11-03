@@ -217,6 +217,10 @@ defmodule Palee.PersonalData.Domain.Catalog do
       tenant("payments", "payment_methods", @me),
       tenant("payments", "shop_orders", @me),
       tenant("payments", "perk_claims", @me),
+      # ADR-371: programmes bought, the WODs they scheduled and their reviews.
+      tenant("payments", "programme_purchases", @me),
+      tenant("training", "programme_deliveries", @me),
+      tenant("training", "programme_reviews", @me),
       tenant("payments", "wallet_passes", @me, drop: ~w(serial)),
       # ADR-341: a coach's own pay rules and statements (the sources of
       # commission lines are other people's payments: left out).

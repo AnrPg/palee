@@ -70,6 +70,7 @@ const COACHING_PATHS = [
   "/admin/class-schedule",
   "/admin/coaching-assignments",
   "/admin/workouts",
+  "/admin/programmes",
   "/admin/schedule",
   "/admin/check-in",
   "/admin/appointments",
@@ -212,6 +213,8 @@ export function sectionGroupFor(
           { id: "gymClasses", href: "/admin/class-schedule", labelKey: "gymClasses", match: ["/admin/class-schedule", "/admin/schedule", "/admin/check-in", "/admin/appointments"], scoped: true },
           { id: "personalTraining", href: "/admin/coaching-assignments", labelKey: "personalTraining", match: ["/admin/coaching-assignments"], scoped: true },
           { id: "wodsVault", href: "/admin/workouts", labelKey: "wodsVault", match: ["/admin/workouts"], scoped: true },
+          // ADR-370 (mockup W8 s1): Προγραμματισμός › Προγράμματα προπόνησης.
+          { id: "trainingProgrammes", href: "/admin/programmes", labelKey: "trainingProgrammes", match: ["/admin/programmes"], scoped: true },
         ],
       });
     }

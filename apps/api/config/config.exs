@@ -70,6 +70,8 @@ config :palee, Oban,
        {"*/10 * * * *", Palee.Workers.WellnessNudgesJob},
        {"*/15 * * * *", Palee.Workers.DeviceMaintenanceJob},
        {"10 1 * * *", Palee.Workers.SeasonSweepJob},
+       # ADR-371: programme purchases complete after their last day; abandoned checkouts close.
+       {"29 * * * *", Palee.Workers.ProgrammeSweepJob},
        {"40 2 * * *", Palee.Workers.NightlyInsightsJob},
        {"27 * * * *", Palee.Workers.ScalingSuggestionScanJob},
        {"47 * * * *", Palee.Workers.WorldGazetteerJob},
@@ -387,6 +389,11 @@ config :palee,
 
 config :palee, :trial_store, Palee.Infrastructure.Trials.EctoTrialStore
 config :palee, :season_store, Palee.Infrastructure.Seasons.EctoSeasonStore
+
+# ADR-370/371: programmes a box or a coach sells (CP-D4).
+config :palee, :programme_store, Palee.Infrastructure.Programmes.EctoProgrammeStore
+config :palee, :programme_catalogue, Palee.Infrastructure.Programmes.EctoProgrammeCatalogue
+
 # ADR-174: AI scaling suggestions (the advisor runs on the gym's own key).
 config :palee, :scaling_store, Palee.Infrastructure.Scaling.EctoScalingStore
 config :palee, :scaling_advisor, Palee.Infrastructure.Ai.AnthropicScalingAdvisor

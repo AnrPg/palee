@@ -10262,6 +10262,173 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/programme-purchases/{id}/refund": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Refund a buyer through the business's provider
+         * @description Up to what is left of the price. A full refund ends the purchase and removes its future WODs.
+         */
+        post: operations["PaleeWeb.AdminProgrammeController.refund"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/programme-reviews/{id}/moderate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Hide a review with a reason, or show it again
+         * @description Reviews are never edited or deleted by the business.
+         */
+        post: operations["PaleeWeb.AdminProgrammeController.moderate_review"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/programmes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The business's programmes with sales and ratings */
+        get: operations["PaleeWeb.AdminProgrammeController.index"];
+        put?: never;
+        /** Start a programme (a draft) */
+        post: operations["PaleeWeb.AdminProgrammeController.create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/programmes/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One programme with its versions, sales and ratings */
+        get: operations["PaleeWeb.AdminProgrammeController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Change a programme or its draft days
+         * @description Title, price, listing and the refund rule apply to later buyers only. The days reach buyers only when published as a new version.
+         */
+        patch: operations["PaleeWeb.AdminProgrammeController.update"];
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/programmes/{id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Stop selling a programme (buyers keep it) */
+        post: operations["PaleeWeb.AdminProgrammeController.archive"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/programmes/{id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Publish the draft days as the next version and put the programme on sale
+         * @description Each WOD is frozen as a hidden copy, so later edits never change what buyers paid for. Buyers keep the version they bought.
+         */
+        post: operations["PaleeWeb.AdminProgrammeController.publish"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/programmes/{id}/purchases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Who bought a programme, newest first */
+        get: operations["PaleeWeb.AdminProgrammeController.purchases"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/programmes/{id}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Sell an archived programme again */
+        post: operations["PaleeWeb.AdminProgrammeController.restore"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/programmes/{id}/reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Every review of a programme, hidden ones included */
+        get: operations["PaleeWeb.AdminProgrammeController.reviews"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/public-profile": {
         parameters: {
             query?: never;
@@ -14094,6 +14261,111 @@ export interface paths {
          * @description Gives back the price less the part already used, and ends the package.
          */
         post: operations["PaleeWeb.MyPaymentsController.withdraw"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/programme-purchases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The programmes you bought here, with what giving one up returns */
+        get: operations["PaleeWeb.MyProgrammeController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/programme-purchases/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One programme you bought, with its dated WODs */
+        get: operations["PaleeWeb.MyProgrammeController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/programme-purchases/{id}/review": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Review a programme you bought (once it started); again to change it */
+        post: operations["PaleeWeb.MyProgrammeController.review"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/programme-purchases/{id}/withdraw": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Give a programme up and get back what the rules give */
+        post: operations["PaleeWeb.MyProgrammeController.withdraw"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/programmes/{id}/buy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Buy a programme: opens the business's provider checkout
+         * @description Nothing is delivered before the provider confirms the money; then the programme's WODs are scheduled from the start date.
+         */
+        post: operations["PaleeWeb.MyProgrammeController.buy"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/programmes/{id}/purchase-terms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** What buying a programme costs and the texts the buyer agrees to */
+        get: operations["PaleeWeb.MyProgrammeController.terms"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -18270,6 +18542,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/public/boxes/{slug}/programmes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The programmes a box sells */
+        get: operations["PaleeWeb.PublicProgrammeController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/boxes/{slug}/programmes/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One programme: preview days, weeks and published reviews */
+        get: operations["PaleeWeb.PublicProgrammeController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/public/channels/unsubscribe/{token}": {
         parameters: {
             query?: never;
@@ -18331,6 +18637,23 @@ export interface paths {
         };
         /** Active public platform plans (pricing, coach onboarding) */
         get: operations["PaleeWeb.PlatformPlanController.index_public"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/programmes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Programmes of every business that lists them in the catalogue */
+        get: operations["PaleeWeb.PublicProgrammeController.catalogue"];
         put?: never;
         post?: never;
         delete?: never;
@@ -24021,6 +24344,69 @@ export interface components {
                 /** @enum {string} */
                 status: "pending" | "ready" | "failed" | "expired";
                 table_count: number | null;
+            }[];
+        };
+        /** BoxProgrammeList */
+        BoxProgrammeList: {
+            /** @description The box's public card */
+            box: {
+                [key: string]: unknown;
+            };
+            programmes: {
+                currency: string;
+                description?: string | null;
+                equipment?: string[];
+                goal: string;
+                /** Format: uuid */
+                id: string;
+                latest_reviews?: {
+                    author?: {
+                        /** Format: uuid */
+                        id?: string;
+                        nickname?: string | null;
+                    } | null;
+                    body?: string | null;
+                    hidden_reason?: string | null;
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: date-time */
+                    inserted_at?: string;
+                    rating: number;
+                    /** @enum {string} */
+                    status: "published" | "hidden";
+                    /** Format: date-time */
+                    updated_at?: string;
+                    version_number: number;
+                }[];
+                level: string;
+                listing?: string;
+                preview?: {
+                    day: number;
+                    summary?: string | null;
+                    title?: string | null;
+                    week: number;
+                    weekday: number;
+                }[];
+                preview_days?: number;
+                price_cents: number;
+                /** Format: date-time */
+                published_at?: string | null;
+                refund_policy?: string;
+                /** ProgrammeRating */
+                reviews?: {
+                    average: number | null;
+                    count: number;
+                };
+                sessions?: number | null;
+                sessions_per_week?: number | null;
+                summary?: string | null;
+                title: string;
+                version_number?: number | null;
+                week_outline?: {
+                    sessions: number;
+                    week: number;
+                }[];
+                weeks?: number | null;
             }[];
         };
         /** BoxPublicProfile */
@@ -34594,6 +34980,56 @@ export interface components {
             /** Format: uuid */
             space_id: string;
         };
+        /** MarketplaceProgramme */
+        MarketplaceProgramme: {
+            currency: string;
+            equipment?: string[];
+            goal?: string;
+            /** Format: uuid */
+            id: string;
+            level?: string;
+            /** Format: uuid */
+            organization_id?: string;
+            organization_name: string;
+            organization_slug: string;
+            price_cents: number;
+            /** Format: date-time */
+            published_at?: string | null;
+            rating_average?: number | null;
+            rating_count?: number;
+            sessions_per_week?: number | null;
+            summary?: string | null;
+            title: string;
+            version_number?: number;
+            weeks: number;
+        };
+        /** MarketplaceProgrammeList */
+        MarketplaceProgrammeList: {
+            limit: number;
+            offset: number;
+            programmes: {
+                currency: string;
+                equipment?: string[];
+                goal?: string;
+                /** Format: uuid */
+                id: string;
+                level?: string;
+                /** Format: uuid */
+                organization_id?: string;
+                organization_name: string;
+                organization_slug: string;
+                price_cents: number;
+                /** Format: date-time */
+                published_at?: string | null;
+                rating_average?: number | null;
+                rating_count?: number;
+                sessions_per_week?: number | null;
+                summary?: string | null;
+                title: string;
+                version_number?: number;
+                weeks: number;
+            }[];
+        };
         /** Media */
         Media: {
             alt_text?: string | null;
@@ -40023,6 +40459,623 @@ export interface components {
             /** @description Your uploads (POST /api/me/media/uploads), in order: up to ten photos or one video. They may still be processing. */
             media_ids?: string[];
         };
+        /** ProgrammeBuyInput */
+        ProgrammeBuyInput: {
+            idempotency_key: string;
+            /** @enum {string} */
+            language?: "el" | "en";
+            /** @description The express request to start, required where withdrawal applies */
+            start_now?: boolean;
+            /**
+             * Format: date
+             * @description Today up to 60 days ahead
+             */
+            starts_on?: string;
+        };
+        /** ProgrammeBuyResponse */
+        ProgrammeBuyResponse: {
+            /** @description The checkout: open its checkout_url on the provider's page */
+            payment: {
+                [key: string]: unknown;
+            };
+            /** Format: uuid */
+            purchase_id: string;
+        };
+        /** ProgrammeDayInput */
+        ProgrammeDayInput: {
+            /** @description Day 0 is the start date */
+            day: number;
+            /** Format: uuid */
+            workout_id: string;
+        };
+        /** ProgrammeError */
+        ProgrammeError: {
+            code: string;
+            error: string;
+        };
+        /** ProgrammeInput */
+        ProgrammeInput: {
+            /** @enum {string} */
+            currency?: "EUR" | "GBP" | "USD" | "CHF";
+            description?: string | null;
+            draft_days?: {
+                /** @description Day 0 is the start date */
+                day: number;
+                /** Format: uuid */
+                workout_id: string;
+            }[];
+            draft_weeks?: number;
+            equipment?: string[];
+            /** @enum {string} */
+            goal?: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
+            /** @enum {string} */
+            level?: "all" | "beginner" | "intermediate" | "advanced";
+            /**
+             * @description box: the box's own page; marketplace: also the cross-business catalogue
+             * @enum {string}
+             */
+            listing?: "box" | "marketplace";
+            preview_days?: number;
+            price_cents?: number;
+            /** @enum {string} */
+            refund_policy?: "before_start" | "withdrawal_only" | "pro_rata";
+            sessions_per_week?: number | null;
+            summary?: string | null;
+            title?: string;
+        };
+        /** ProgrammePreviewDay */
+        ProgrammePreviewDay: {
+            day: number;
+            summary?: string | null;
+            title?: string | null;
+            week: number;
+            weekday: number;
+        };
+        /** ProgrammePublishInput */
+        ProgrammePublishInput: {
+            changelog?: string | null;
+        };
+        /** ProgrammePurchase */
+        ProgrammePurchase: {
+            /** Format: date-time */
+            activated_at?: string | null;
+            buyer?: {
+                /** Format: uuid */
+                id: string;
+                nickname?: string | null;
+            } | null;
+            currency: string;
+            days?: {
+                /** Format: date */
+                date: string;
+                day: number;
+                summary?: string | null;
+                title?: string | null;
+                /** Format: uuid */
+                workout_id: string;
+            }[];
+            end_reason?: string | null;
+            /** Format: date-time */
+            ended_at?: string | null;
+            /** Format: date */
+            ends_on: string;
+            /** Format: uuid */
+            id: string;
+            /** Format: date-time */
+            inserted_at?: string;
+            /** Format: uuid */
+            payment_intent_id?: string | null;
+            price_cents: number;
+            /** Format: uuid */
+            programme_id: string;
+            /**
+             * ProgrammeRefundQuote
+             * @description What giving it up now returns, and under which rule
+             */
+            refund?: {
+                amount_cents: number;
+                /** @enum {string} */
+                rule: "withdrawal" | "before_start" | "pro_rata";
+            } | null;
+            /** @enum {string} */
+            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+            refunded_cents: number;
+            review?: {
+                author?: {
+                    /** Format: uuid */
+                    id?: string;
+                    nickname?: string | null;
+                } | null;
+                body?: string | null;
+                hidden_reason?: string | null;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                inserted_at?: string;
+                rating: number;
+                /** @enum {string} */
+                status: "published" | "hidden";
+                /** Format: date-time */
+                updated_at?: string;
+                version_number: number;
+            } | null;
+            /** Format: date */
+            starts_on: string;
+            /** @enum {string} */
+            status: "pending_payment" | "active" | "completed" | "withdrawn" | "refunded" | "cancelled";
+            title?: string | null;
+            /** Format: uuid */
+            user_id?: string | null;
+            /** Format: uuid */
+            version_id: string;
+            version_number?: number;
+            weeks?: number;
+            withdrawal_deadline?: string | null;
+        };
+        /** ProgrammePurchaseDay */
+        ProgrammePurchaseDay: {
+            /** Format: date */
+            date: string;
+            day: number;
+            summary?: string | null;
+            title?: string | null;
+            /** Format: uuid */
+            workout_id: string;
+        };
+        /** ProgrammePurchaseList */
+        ProgrammePurchaseList: {
+            purchases: {
+                /** Format: date-time */
+                activated_at?: string | null;
+                buyer?: {
+                    /** Format: uuid */
+                    id: string;
+                    nickname?: string | null;
+                } | null;
+                currency: string;
+                days?: {
+                    /** Format: date */
+                    date: string;
+                    day: number;
+                    summary?: string | null;
+                    title?: string | null;
+                    /** Format: uuid */
+                    workout_id: string;
+                }[];
+                end_reason?: string | null;
+                /** Format: date-time */
+                ended_at?: string | null;
+                /** Format: date */
+                ends_on: string;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                inserted_at?: string;
+                /** Format: uuid */
+                payment_intent_id?: string | null;
+                price_cents: number;
+                /** Format: uuid */
+                programme_id: string;
+                /**
+                 * ProgrammeRefundQuote
+                 * @description What giving it up now returns, and under which rule
+                 */
+                refund?: {
+                    amount_cents: number;
+                    /** @enum {string} */
+                    rule: "withdrawal" | "before_start" | "pro_rata";
+                } | null;
+                /** @enum {string} */
+                refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                refunded_cents: number;
+                review?: {
+                    author?: {
+                        /** Format: uuid */
+                        id?: string;
+                        nickname?: string | null;
+                    } | null;
+                    body?: string | null;
+                    hidden_reason?: string | null;
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: date-time */
+                    inserted_at?: string;
+                    rating: number;
+                    /** @enum {string} */
+                    status: "published" | "hidden";
+                    /** Format: date-time */
+                    updated_at?: string;
+                    version_number: number;
+                } | null;
+                /** Format: date */
+                starts_on: string;
+                /** @enum {string} */
+                status: "pending_payment" | "active" | "completed" | "withdrawn" | "refunded" | "cancelled";
+                title?: string | null;
+                /** Format: uuid */
+                user_id?: string | null;
+                /** Format: uuid */
+                version_id: string;
+                version_number?: number;
+                weeks?: number;
+                withdrawal_deadline?: string | null;
+            }[];
+        };
+        /** ProgrammePurchaseResponse */
+        ProgrammePurchaseResponse: {
+            /** ProgrammePurchase */
+            purchase: {
+                /** Format: date-time */
+                activated_at?: string | null;
+                buyer?: {
+                    /** Format: uuid */
+                    id: string;
+                    nickname?: string | null;
+                } | null;
+                currency: string;
+                days?: {
+                    /** Format: date */
+                    date: string;
+                    day: number;
+                    summary?: string | null;
+                    title?: string | null;
+                    /** Format: uuid */
+                    workout_id: string;
+                }[];
+                end_reason?: string | null;
+                /** Format: date-time */
+                ended_at?: string | null;
+                /** Format: date */
+                ends_on: string;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                inserted_at?: string;
+                /** Format: uuid */
+                payment_intent_id?: string | null;
+                price_cents: number;
+                /** Format: uuid */
+                programme_id: string;
+                /**
+                 * ProgrammeRefundQuote
+                 * @description What giving it up now returns, and under which rule
+                 */
+                refund?: {
+                    amount_cents: number;
+                    /** @enum {string} */
+                    rule: "withdrawal" | "before_start" | "pro_rata";
+                } | null;
+                /** @enum {string} */
+                refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                refunded_cents: number;
+                review?: {
+                    author?: {
+                        /** Format: uuid */
+                        id?: string;
+                        nickname?: string | null;
+                    } | null;
+                    body?: string | null;
+                    hidden_reason?: string | null;
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: date-time */
+                    inserted_at?: string;
+                    rating: number;
+                    /** @enum {string} */
+                    status: "published" | "hidden";
+                    /** Format: date-time */
+                    updated_at?: string;
+                    version_number: number;
+                } | null;
+                /** Format: date */
+                starts_on: string;
+                /** @enum {string} */
+                status: "pending_payment" | "active" | "completed" | "withdrawn" | "refunded" | "cancelled";
+                title?: string | null;
+                /** Format: uuid */
+                user_id?: string | null;
+                /** Format: uuid */
+                version_id: string;
+                version_number?: number;
+                weeks?: number;
+                withdrawal_deadline?: string | null;
+            };
+        };
+        /** ProgrammeRating */
+        ProgrammeRating: {
+            average: number | null;
+            count: number;
+        };
+        /** ProgrammeRefundInput */
+        ProgrammeRefundInput: {
+            amount_cents: number;
+            idempotency_key: string;
+            reason?: string;
+        };
+        /**
+         * ProgrammeRefundQuote
+         * @description What giving it up now returns, and under which rule
+         */
+        ProgrammeRefundQuote: {
+            amount_cents: number;
+            /** @enum {string} */
+            rule: "withdrawal" | "before_start" | "pro_rata";
+        } | null;
+        /** ProgrammeRefundResponse */
+        ProgrammeRefundResponse: {
+            /** ProgrammePurchase */
+            purchase: {
+                /** Format: date-time */
+                activated_at?: string | null;
+                buyer?: {
+                    /** Format: uuid */
+                    id: string;
+                    nickname?: string | null;
+                } | null;
+                currency: string;
+                days?: {
+                    /** Format: date */
+                    date: string;
+                    day: number;
+                    summary?: string | null;
+                    title?: string | null;
+                    /** Format: uuid */
+                    workout_id: string;
+                }[];
+                end_reason?: string | null;
+                /** Format: date-time */
+                ended_at?: string | null;
+                /** Format: date */
+                ends_on: string;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                inserted_at?: string;
+                /** Format: uuid */
+                payment_intent_id?: string | null;
+                price_cents: number;
+                /** Format: uuid */
+                programme_id: string;
+                /**
+                 * ProgrammeRefundQuote
+                 * @description What giving it up now returns, and under which rule
+                 */
+                refund?: {
+                    amount_cents: number;
+                    /** @enum {string} */
+                    rule: "withdrawal" | "before_start" | "pro_rata";
+                } | null;
+                /** @enum {string} */
+                refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                refunded_cents: number;
+                review?: {
+                    author?: {
+                        /** Format: uuid */
+                        id?: string;
+                        nickname?: string | null;
+                    } | null;
+                    body?: string | null;
+                    hidden_reason?: string | null;
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: date-time */
+                    inserted_at?: string;
+                    rating: number;
+                    /** @enum {string} */
+                    status: "published" | "hidden";
+                    /** Format: date-time */
+                    updated_at?: string;
+                    version_number: number;
+                } | null;
+                /** Format: date */
+                starts_on: string;
+                /** @enum {string} */
+                status: "pending_payment" | "active" | "completed" | "withdrawn" | "refunded" | "cancelled";
+                title?: string | null;
+                /** Format: uuid */
+                user_id?: string | null;
+                /** Format: uuid */
+                version_id: string;
+                version_number?: number;
+                weeks?: number;
+                withdrawal_deadline?: string | null;
+            };
+            refund: {
+                [key: string]: unknown;
+            };
+            rule?: string | null;
+        };
+        /** ProgrammeReview */
+        ProgrammeReview: {
+            author?: {
+                /** Format: uuid */
+                id?: string;
+                nickname?: string | null;
+            } | null;
+            body?: string | null;
+            hidden_reason?: string | null;
+            /** Format: uuid */
+            id: string;
+            /** Format: date-time */
+            inserted_at?: string;
+            rating: number;
+            /** @enum {string} */
+            status: "published" | "hidden";
+            /** Format: date-time */
+            updated_at?: string;
+            version_number: number;
+        };
+        /** ProgrammeReviewInput */
+        ProgrammeReviewInput: {
+            body?: string | null;
+            rating: number;
+        };
+        /** ProgrammeReviewList */
+        ProgrammeReviewList: {
+            reviews: {
+                author?: {
+                    /** Format: uuid */
+                    id?: string;
+                    nickname?: string | null;
+                } | null;
+                body?: string | null;
+                hidden_reason?: string | null;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                inserted_at?: string;
+                rating: number;
+                /** @enum {string} */
+                status: "published" | "hidden";
+                /** Format: date-time */
+                updated_at?: string;
+                version_number: number;
+            }[];
+        };
+        /** ProgrammeReviewModeration */
+        ProgrammeReviewModeration: {
+            /**
+             * @description Null shows the review again
+             * @enum {string|null}
+             */
+            hidden_reason?: "abuse" | "personal_data" | "off_topic" | "spam" | null;
+        };
+        /** ProgrammeReviewResponse */
+        ProgrammeReviewResponse: {
+            /** ProgrammeReview */
+            review: {
+                author?: {
+                    /** Format: uuid */
+                    id?: string;
+                    nickname?: string | null;
+                } | null;
+                body?: string | null;
+                hidden_reason?: string | null;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                inserted_at?: string;
+                rating: number;
+                /** @enum {string} */
+                status: "published" | "hidden";
+                /** Format: date-time */
+                updated_at?: string;
+                version_number: number;
+            };
+        };
+        /** ProgrammeTerms */
+        ProgrammeTerms: {
+            available: boolean;
+            /** Format: date */
+            earliest_start: string;
+            /** Format: date */
+            latest_start: string;
+            /**
+             * Format: uuid
+             * @description The buyer's active purchase of it, if any
+             */
+            owned?: string | null;
+            /** PublicProgramme */
+            programme: {
+                currency: string;
+                description?: string | null;
+                equipment?: string[];
+                goal: string;
+                /** Format: uuid */
+                id: string;
+                latest_reviews?: {
+                    author?: {
+                        /** Format: uuid */
+                        id?: string;
+                        nickname?: string | null;
+                    } | null;
+                    body?: string | null;
+                    hidden_reason?: string | null;
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: date-time */
+                    inserted_at?: string;
+                    rating: number;
+                    /** @enum {string} */
+                    status: "published" | "hidden";
+                    /** Format: date-time */
+                    updated_at?: string;
+                    version_number: number;
+                }[];
+                level: string;
+                listing?: string;
+                preview?: {
+                    day: number;
+                    summary?: string | null;
+                    title?: string | null;
+                    week: number;
+                    weekday: number;
+                }[];
+                preview_days?: number;
+                price_cents: number;
+                /** Format: date-time */
+                published_at?: string | null;
+                refund_policy?: string;
+                /** ProgrammeRating */
+                reviews?: {
+                    average: number | null;
+                    count: number;
+                };
+                sessions?: number | null;
+                sessions_per_week?: number | null;
+                summary?: string | null;
+                title: string;
+                version_number?: number | null;
+                week_outline?: {
+                    sessions: number;
+                    week: number;
+                }[];
+                weeks?: number | null;
+            };
+            provider?: string | null;
+            refund_rule: string;
+            refund_text: string;
+            start_now_text?: string | null;
+            terms_version: string;
+            withdrawal_days?: number | null;
+        };
+        /** ProgrammeVersion */
+        ProgrammeVersion: {
+            changelog?: string | null;
+            days: {
+                day: number;
+                /** Format: uuid */
+                source_workout_id?: string;
+                summary?: string | null;
+                title?: string | null;
+                /**
+                 * Format: uuid
+                 * @description The frozen copy
+                 */
+                workout_id: string;
+            }[];
+            /** Format: uuid */
+            id: string;
+            number: number;
+            /** Format: date-time */
+            published_at: string;
+            /** Format: uuid */
+            published_by_id?: string | null;
+            weeks: number;
+        };
+        /** ProgrammeVersionDay */
+        ProgrammeVersionDay: {
+            day: number;
+            /** Format: uuid */
+            source_workout_id?: string;
+            summary?: string | null;
+            title?: string | null;
+            /**
+             * Format: uuid
+             * @description The frozen copy
+             */
+            workout_id: string;
+        };
         /** ProgressStats */
         ProgressStats: {
             consistency: {
@@ -40996,6 +42049,127 @@ export interface components {
                     status: "requested" | "booked" | "declined" | "cancelled" | "expired" | "attended" | "no_show" | "converted";
                 } | null;
             } | null;
+        };
+        /** PublicProgramme */
+        PublicProgramme: {
+            currency: string;
+            description?: string | null;
+            equipment?: string[];
+            goal: string;
+            /** Format: uuid */
+            id: string;
+            latest_reviews?: {
+                author?: {
+                    /** Format: uuid */
+                    id?: string;
+                    nickname?: string | null;
+                } | null;
+                body?: string | null;
+                hidden_reason?: string | null;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                inserted_at?: string;
+                rating: number;
+                /** @enum {string} */
+                status: "published" | "hidden";
+                /** Format: date-time */
+                updated_at?: string;
+                version_number: number;
+            }[];
+            level: string;
+            listing?: string;
+            preview?: {
+                day: number;
+                summary?: string | null;
+                title?: string | null;
+                week: number;
+                weekday: number;
+            }[];
+            preview_days?: number;
+            price_cents: number;
+            /** Format: date-time */
+            published_at?: string | null;
+            refund_policy?: string;
+            /** ProgrammeRating */
+            reviews?: {
+                average: number | null;
+                count: number;
+            };
+            sessions?: number | null;
+            sessions_per_week?: number | null;
+            summary?: string | null;
+            title: string;
+            version_number?: number | null;
+            week_outline?: {
+                sessions: number;
+                week: number;
+            }[];
+            weeks?: number | null;
+        };
+        /** PublicProgrammeResponse */
+        PublicProgrammeResponse: {
+            /** @description The box's public card */
+            box: {
+                [key: string]: unknown;
+            };
+            /** PublicProgramme */
+            programme: {
+                currency: string;
+                description?: string | null;
+                equipment?: string[];
+                goal: string;
+                /** Format: uuid */
+                id: string;
+                latest_reviews?: {
+                    author?: {
+                        /** Format: uuid */
+                        id?: string;
+                        nickname?: string | null;
+                    } | null;
+                    body?: string | null;
+                    hidden_reason?: string | null;
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: date-time */
+                    inserted_at?: string;
+                    rating: number;
+                    /** @enum {string} */
+                    status: "published" | "hidden";
+                    /** Format: date-time */
+                    updated_at?: string;
+                    version_number: number;
+                }[];
+                level: string;
+                listing?: string;
+                preview?: {
+                    day: number;
+                    summary?: string | null;
+                    title?: string | null;
+                    week: number;
+                    weekday: number;
+                }[];
+                preview_days?: number;
+                price_cents: number;
+                /** Format: date-time */
+                published_at?: string | null;
+                refund_policy?: string;
+                /** ProgrammeRating */
+                reviews?: {
+                    average: number | null;
+                    count: number;
+                };
+                sessions?: number | null;
+                sessions_per_week?: number | null;
+                summary?: string | null;
+                title: string;
+                version_number?: number | null;
+                week_outline?: {
+                    sessions: number;
+                    week: number;
+                }[];
+                weeks?: number | null;
+            };
         };
         /** PublicSiteResponse */
         PublicSiteResponse: {
@@ -46347,6 +47521,317 @@ export interface components {
         /** StaffPerkResponse */
         StaffPerkResponse: {
             perk: components["schemas"]["StaffPerk"];
+        };
+        /** StaffProgramme */
+        StaffProgramme: {
+            /** Format: date-time */
+            archived_at?: string | null;
+            /** Format: uuid */
+            author_id?: string | null;
+            /** @enum {string} */
+            currency: "EUR" | "GBP" | "USD" | "CHF";
+            /** Format: uuid */
+            current_version_id?: string | null;
+            description?: string | null;
+            draft_days: {
+                /** @description Day 0 is the start date */
+                day: number;
+                /** Format: uuid */
+                workout_id: string;
+            }[];
+            draft_weeks: number;
+            equipment?: string[];
+            /** @enum {string} */
+            goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            level: "all" | "beginner" | "intermediate" | "advanced";
+            /**
+             * @description box: the box's own page; marketplace: also the cross-business catalogue
+             * @enum {string}
+             */
+            listing: "box" | "marketplace";
+            online_payments?: boolean;
+            preview_days: number;
+            price_cents: number;
+            /** Format: date-time */
+            published_at?: string | null;
+            /** @enum {string} */
+            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+            /** ProgrammeRating */
+            reviews?: {
+                average: number | null;
+                count: number;
+            };
+            sales?: {
+                active: number;
+                buyers: number;
+                currency?: string | null;
+                gross_cents?: number | null;
+                refunded_cents?: number | null;
+            };
+            sessions_per_week?: number | null;
+            /** @enum {string} */
+            status: "draft" | "published" | "archived";
+            summary?: string | null;
+            title: string;
+            /** ProgrammeVersion */
+            version?: {
+                changelog?: string | null;
+                days: {
+                    day: number;
+                    /** Format: uuid */
+                    source_workout_id?: string;
+                    summary?: string | null;
+                    title?: string | null;
+                    /**
+                     * Format: uuid
+                     * @description The frozen copy
+                     */
+                    workout_id: string;
+                }[];
+                /** Format: uuid */
+                id: string;
+                number: number;
+                /** Format: date-time */
+                published_at: string;
+                /** Format: uuid */
+                published_by_id?: string | null;
+                weeks: number;
+            };
+            versions?: {
+                changelog?: string | null;
+                days: {
+                    day: number;
+                    /** Format: uuid */
+                    source_workout_id?: string;
+                    summary?: string | null;
+                    title?: string | null;
+                    /**
+                     * Format: uuid
+                     * @description The frozen copy
+                     */
+                    workout_id: string;
+                }[];
+                /** Format: uuid */
+                id: string;
+                number: number;
+                /** Format: date-time */
+                published_at: string;
+                /** Format: uuid */
+                published_by_id?: string | null;
+                weeks: number;
+            }[];
+        };
+        /** StaffProgrammeList */
+        StaffProgrammeList: {
+            programmes: {
+                /** Format: date-time */
+                archived_at?: string | null;
+                /** Format: uuid */
+                author_id?: string | null;
+                /** @enum {string} */
+                currency: "EUR" | "GBP" | "USD" | "CHF";
+                /** Format: uuid */
+                current_version_id?: string | null;
+                description?: string | null;
+                draft_days: {
+                    /** @description Day 0 is the start date */
+                    day: number;
+                    /** Format: uuid */
+                    workout_id: string;
+                }[];
+                draft_weeks: number;
+                equipment?: string[];
+                /** @enum {string} */
+                goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                level: "all" | "beginner" | "intermediate" | "advanced";
+                /**
+                 * @description box: the box's own page; marketplace: also the cross-business catalogue
+                 * @enum {string}
+                 */
+                listing: "box" | "marketplace";
+                online_payments?: boolean;
+                preview_days: number;
+                price_cents: number;
+                /** Format: date-time */
+                published_at?: string | null;
+                /** @enum {string} */
+                refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                /** ProgrammeRating */
+                reviews?: {
+                    average: number | null;
+                    count: number;
+                };
+                sales?: {
+                    active: number;
+                    buyers: number;
+                    currency?: string | null;
+                    gross_cents?: number | null;
+                    refunded_cents?: number | null;
+                };
+                sessions_per_week?: number | null;
+                /** @enum {string} */
+                status: "draft" | "published" | "archived";
+                summary?: string | null;
+                title: string;
+                /** ProgrammeVersion */
+                version?: {
+                    changelog?: string | null;
+                    days: {
+                        day: number;
+                        /** Format: uuid */
+                        source_workout_id?: string;
+                        summary?: string | null;
+                        title?: string | null;
+                        /**
+                         * Format: uuid
+                         * @description The frozen copy
+                         */
+                        workout_id: string;
+                    }[];
+                    /** Format: uuid */
+                    id: string;
+                    number: number;
+                    /** Format: date-time */
+                    published_at: string;
+                    /** Format: uuid */
+                    published_by_id?: string | null;
+                    weeks: number;
+                };
+                versions?: {
+                    changelog?: string | null;
+                    days: {
+                        day: number;
+                        /** Format: uuid */
+                        source_workout_id?: string;
+                        summary?: string | null;
+                        title?: string | null;
+                        /**
+                         * Format: uuid
+                         * @description The frozen copy
+                         */
+                        workout_id: string;
+                    }[];
+                    /** Format: uuid */
+                    id: string;
+                    number: number;
+                    /** Format: date-time */
+                    published_at: string;
+                    /** Format: uuid */
+                    published_by_id?: string | null;
+                    weeks: number;
+                }[];
+            }[];
+        };
+        /** StaffProgrammeResponse */
+        StaffProgrammeResponse: {
+            /** StaffProgramme */
+            programme: {
+                /** Format: date-time */
+                archived_at?: string | null;
+                /** Format: uuid */
+                author_id?: string | null;
+                /** @enum {string} */
+                currency: "EUR" | "GBP" | "USD" | "CHF";
+                /** Format: uuid */
+                current_version_id?: string | null;
+                description?: string | null;
+                draft_days: {
+                    /** @description Day 0 is the start date */
+                    day: number;
+                    /** Format: uuid */
+                    workout_id: string;
+                }[];
+                draft_weeks: number;
+                equipment?: string[];
+                /** @enum {string} */
+                goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                level: "all" | "beginner" | "intermediate" | "advanced";
+                /**
+                 * @description box: the box's own page; marketplace: also the cross-business catalogue
+                 * @enum {string}
+                 */
+                listing: "box" | "marketplace";
+                online_payments?: boolean;
+                preview_days: number;
+                price_cents: number;
+                /** Format: date-time */
+                published_at?: string | null;
+                /** @enum {string} */
+                refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                /** ProgrammeRating */
+                reviews?: {
+                    average: number | null;
+                    count: number;
+                };
+                sales?: {
+                    active: number;
+                    buyers: number;
+                    currency?: string | null;
+                    gross_cents?: number | null;
+                    refunded_cents?: number | null;
+                };
+                sessions_per_week?: number | null;
+                /** @enum {string} */
+                status: "draft" | "published" | "archived";
+                summary?: string | null;
+                title: string;
+                /** ProgrammeVersion */
+                version?: {
+                    changelog?: string | null;
+                    days: {
+                        day: number;
+                        /** Format: uuid */
+                        source_workout_id?: string;
+                        summary?: string | null;
+                        title?: string | null;
+                        /**
+                         * Format: uuid
+                         * @description The frozen copy
+                         */
+                        workout_id: string;
+                    }[];
+                    /** Format: uuid */
+                    id: string;
+                    number: number;
+                    /** Format: date-time */
+                    published_at: string;
+                    /** Format: uuid */
+                    published_by_id?: string | null;
+                    weeks: number;
+                };
+                versions?: {
+                    changelog?: string | null;
+                    days: {
+                        day: number;
+                        /** Format: uuid */
+                        source_workout_id?: string;
+                        summary?: string | null;
+                        title?: string | null;
+                        /**
+                         * Format: uuid
+                         * @description The frozen copy
+                         */
+                        workout_id: string;
+                    }[];
+                    /** Format: uuid */
+                    id: string;
+                    number: number;
+                    /** Format: date-time */
+                    published_at: string;
+                    /** Format: uuid */
+                    published_by_id?: string | null;
+                    weeks: number;
+                }[];
+            };
         };
         /** StaffSeason */
         StaffSeason: {
@@ -100713,6 +102198,1612 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminProgrammeController.refund": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    amount_cents: number;
+                    idempotency_key: string;
+                    reason?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Refund */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** ProgrammePurchase */
+                        purchase: {
+                            /** Format: date-time */
+                            activated_at?: string | null;
+                            buyer?: {
+                                /** Format: uuid */
+                                id: string;
+                                nickname?: string | null;
+                            } | null;
+                            currency: string;
+                            days?: {
+                                /** Format: date */
+                                date: string;
+                                day: number;
+                                summary?: string | null;
+                                title?: string | null;
+                                /** Format: uuid */
+                                workout_id: string;
+                            }[];
+                            end_reason?: string | null;
+                            /** Format: date-time */
+                            ended_at?: string | null;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            inserted_at?: string;
+                            /** Format: uuid */
+                            payment_intent_id?: string | null;
+                            price_cents: number;
+                            /** Format: uuid */
+                            programme_id: string;
+                            /**
+                             * ProgrammeRefundQuote
+                             * @description What giving it up now returns, and under which rule
+                             */
+                            refund?: {
+                                amount_cents: number;
+                                /** @enum {string} */
+                                rule: "withdrawal" | "before_start" | "pro_rata";
+                            } | null;
+                            /** @enum {string} */
+                            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                            refunded_cents: number;
+                            review?: {
+                                author?: {
+                                    /** Format: uuid */
+                                    id?: string;
+                                    nickname?: string | null;
+                                } | null;
+                                body?: string | null;
+                                hidden_reason?: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: date-time */
+                                inserted_at?: string;
+                                rating: number;
+                                /** @enum {string} */
+                                status: "published" | "hidden";
+                                /** Format: date-time */
+                                updated_at?: string;
+                                version_number: number;
+                            } | null;
+                            /** Format: date */
+                            starts_on: string;
+                            /** @enum {string} */
+                            status: "pending_payment" | "active" | "completed" | "withdrawn" | "refunded" | "cancelled";
+                            title?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                            /** Format: uuid */
+                            version_id: string;
+                            version_number?: number;
+                            weeks?: number;
+                            withdrawal_deadline?: string | null;
+                        };
+                        refund: {
+                            [key: string]: unknown;
+                        };
+                        rule?: string | null;
+                    };
+                };
+            };
+            /** @description No such programme, purchase or review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description The programme can't take this step now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid programme */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminProgrammeController.moderate_review": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description Null shows the review again
+                     * @enum {string|null}
+                     */
+                    hidden_reason?: "abuse" | "personal_data" | "off_topic" | "spam" | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Review */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** ProgrammeReview */
+                        review: {
+                            author?: {
+                                /** Format: uuid */
+                                id?: string;
+                                nickname?: string | null;
+                            } | null;
+                            body?: string | null;
+                            hidden_reason?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            inserted_at?: string;
+                            rating: number;
+                            /** @enum {string} */
+                            status: "published" | "hidden";
+                            /** Format: date-time */
+                            updated_at?: string;
+                            version_number: number;
+                        };
+                    };
+                };
+            };
+            /** @description No such programme, purchase or review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description The programme can't take this step now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid programme */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminProgrammeController.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Programmes */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        programmes: {
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            /** Format: uuid */
+                            author_id?: string | null;
+                            /** @enum {string} */
+                            currency: "EUR" | "GBP" | "USD" | "CHF";
+                            /** Format: uuid */
+                            current_version_id?: string | null;
+                            description?: string | null;
+                            draft_days: {
+                                /** @description Day 0 is the start date */
+                                day: number;
+                                /** Format: uuid */
+                                workout_id: string;
+                            }[];
+                            draft_weeks: number;
+                            equipment?: string[];
+                            /** @enum {string} */
+                            goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            level: "all" | "beginner" | "intermediate" | "advanced";
+                            /**
+                             * @description box: the box's own page; marketplace: also the cross-business catalogue
+                             * @enum {string}
+                             */
+                            listing: "box" | "marketplace";
+                            online_payments?: boolean;
+                            preview_days: number;
+                            price_cents: number;
+                            /** Format: date-time */
+                            published_at?: string | null;
+                            /** @enum {string} */
+                            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                            /** ProgrammeRating */
+                            reviews?: {
+                                average: number | null;
+                                count: number;
+                            };
+                            sales?: {
+                                active: number;
+                                buyers: number;
+                                currency?: string | null;
+                                gross_cents?: number | null;
+                                refunded_cents?: number | null;
+                            };
+                            sessions_per_week?: number | null;
+                            /** @enum {string} */
+                            status: "draft" | "published" | "archived";
+                            summary?: string | null;
+                            title: string;
+                            /** ProgrammeVersion */
+                            version?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            };
+                            versions?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            }[];
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminProgrammeController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    currency?: "EUR" | "GBP" | "USD" | "CHF";
+                    description?: string | null;
+                    draft_days?: {
+                        /** @description Day 0 is the start date */
+                        day: number;
+                        /** Format: uuid */
+                        workout_id: string;
+                    }[];
+                    draft_weeks?: number;
+                    equipment?: string[];
+                    /** @enum {string} */
+                    goal?: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
+                    /** @enum {string} */
+                    level?: "all" | "beginner" | "intermediate" | "advanced";
+                    /**
+                     * @description box: the box's own page; marketplace: also the cross-business catalogue
+                     * @enum {string}
+                     */
+                    listing?: "box" | "marketplace";
+                    preview_days?: number;
+                    price_cents?: number;
+                    /** @enum {string} */
+                    refund_policy?: "before_start" | "withdrawal_only" | "pro_rata";
+                    sessions_per_week?: number | null;
+                    summary?: string | null;
+                    title: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Programme */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** StaffProgramme */
+                        programme: {
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            /** Format: uuid */
+                            author_id?: string | null;
+                            /** @enum {string} */
+                            currency: "EUR" | "GBP" | "USD" | "CHF";
+                            /** Format: uuid */
+                            current_version_id?: string | null;
+                            description?: string | null;
+                            draft_days: {
+                                /** @description Day 0 is the start date */
+                                day: number;
+                                /** Format: uuid */
+                                workout_id: string;
+                            }[];
+                            draft_weeks: number;
+                            equipment?: string[];
+                            /** @enum {string} */
+                            goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            level: "all" | "beginner" | "intermediate" | "advanced";
+                            /**
+                             * @description box: the box's own page; marketplace: also the cross-business catalogue
+                             * @enum {string}
+                             */
+                            listing: "box" | "marketplace";
+                            online_payments?: boolean;
+                            preview_days: number;
+                            price_cents: number;
+                            /** Format: date-time */
+                            published_at?: string | null;
+                            /** @enum {string} */
+                            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                            /** ProgrammeRating */
+                            reviews?: {
+                                average: number | null;
+                                count: number;
+                            };
+                            sales?: {
+                                active: number;
+                                buyers: number;
+                                currency?: string | null;
+                                gross_cents?: number | null;
+                                refunded_cents?: number | null;
+                            };
+                            sessions_per_week?: number | null;
+                            /** @enum {string} */
+                            status: "draft" | "published" | "archived";
+                            summary?: string | null;
+                            title: string;
+                            /** ProgrammeVersion */
+                            version?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            };
+                            versions?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            }[];
+                        };
+                    };
+                };
+            };
+            /** @description No such programme, purchase or review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description The programme can't take this step now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid programme */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminProgrammeController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Programme */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** StaffProgramme */
+                        programme: {
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            /** Format: uuid */
+                            author_id?: string | null;
+                            /** @enum {string} */
+                            currency: "EUR" | "GBP" | "USD" | "CHF";
+                            /** Format: uuid */
+                            current_version_id?: string | null;
+                            description?: string | null;
+                            draft_days: {
+                                /** @description Day 0 is the start date */
+                                day: number;
+                                /** Format: uuid */
+                                workout_id: string;
+                            }[];
+                            draft_weeks: number;
+                            equipment?: string[];
+                            /** @enum {string} */
+                            goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            level: "all" | "beginner" | "intermediate" | "advanced";
+                            /**
+                             * @description box: the box's own page; marketplace: also the cross-business catalogue
+                             * @enum {string}
+                             */
+                            listing: "box" | "marketplace";
+                            online_payments?: boolean;
+                            preview_days: number;
+                            price_cents: number;
+                            /** Format: date-time */
+                            published_at?: string | null;
+                            /** @enum {string} */
+                            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                            /** ProgrammeRating */
+                            reviews?: {
+                                average: number | null;
+                                count: number;
+                            };
+                            sales?: {
+                                active: number;
+                                buyers: number;
+                                currency?: string | null;
+                                gross_cents?: number | null;
+                                refunded_cents?: number | null;
+                            };
+                            sessions_per_week?: number | null;
+                            /** @enum {string} */
+                            status: "draft" | "published" | "archived";
+                            summary?: string | null;
+                            title: string;
+                            /** ProgrammeVersion */
+                            version?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            };
+                            versions?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            }[];
+                        };
+                    };
+                };
+            };
+            /** @description No such programme, purchase or review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description The programme can't take this step now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid programme */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminProgrammeController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    currency?: "EUR" | "GBP" | "USD" | "CHF";
+                    description?: string | null;
+                    draft_days?: {
+                        /** @description Day 0 is the start date */
+                        day: number;
+                        /** Format: uuid */
+                        workout_id: string;
+                    }[];
+                    draft_weeks?: number;
+                    equipment?: string[];
+                    /** @enum {string} */
+                    goal?: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
+                    /** @enum {string} */
+                    level?: "all" | "beginner" | "intermediate" | "advanced";
+                    /**
+                     * @description box: the box's own page; marketplace: also the cross-business catalogue
+                     * @enum {string}
+                     */
+                    listing?: "box" | "marketplace";
+                    preview_days?: number;
+                    price_cents?: number;
+                    /** @enum {string} */
+                    refund_policy?: "before_start" | "withdrawal_only" | "pro_rata";
+                    sessions_per_week?: number | null;
+                    summary?: string | null;
+                    title?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Programme */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** StaffProgramme */
+                        programme: {
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            /** Format: uuid */
+                            author_id?: string | null;
+                            /** @enum {string} */
+                            currency: "EUR" | "GBP" | "USD" | "CHF";
+                            /** Format: uuid */
+                            current_version_id?: string | null;
+                            description?: string | null;
+                            draft_days: {
+                                /** @description Day 0 is the start date */
+                                day: number;
+                                /** Format: uuid */
+                                workout_id: string;
+                            }[];
+                            draft_weeks: number;
+                            equipment?: string[];
+                            /** @enum {string} */
+                            goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            level: "all" | "beginner" | "intermediate" | "advanced";
+                            /**
+                             * @description box: the box's own page; marketplace: also the cross-business catalogue
+                             * @enum {string}
+                             */
+                            listing: "box" | "marketplace";
+                            online_payments?: boolean;
+                            preview_days: number;
+                            price_cents: number;
+                            /** Format: date-time */
+                            published_at?: string | null;
+                            /** @enum {string} */
+                            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                            /** ProgrammeRating */
+                            reviews?: {
+                                average: number | null;
+                                count: number;
+                            };
+                            sales?: {
+                                active: number;
+                                buyers: number;
+                                currency?: string | null;
+                                gross_cents?: number | null;
+                                refunded_cents?: number | null;
+                            };
+                            sessions_per_week?: number | null;
+                            /** @enum {string} */
+                            status: "draft" | "published" | "archived";
+                            summary?: string | null;
+                            title: string;
+                            /** ProgrammeVersion */
+                            version?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            };
+                            versions?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            }[];
+                        };
+                    };
+                };
+            };
+            /** @description No such programme, purchase or review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description The programme can't take this step now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid programme */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminProgrammeController.archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Programme */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** StaffProgramme */
+                        programme: {
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            /** Format: uuid */
+                            author_id?: string | null;
+                            /** @enum {string} */
+                            currency: "EUR" | "GBP" | "USD" | "CHF";
+                            /** Format: uuid */
+                            current_version_id?: string | null;
+                            description?: string | null;
+                            draft_days: {
+                                /** @description Day 0 is the start date */
+                                day: number;
+                                /** Format: uuid */
+                                workout_id: string;
+                            }[];
+                            draft_weeks: number;
+                            equipment?: string[];
+                            /** @enum {string} */
+                            goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            level: "all" | "beginner" | "intermediate" | "advanced";
+                            /**
+                             * @description box: the box's own page; marketplace: also the cross-business catalogue
+                             * @enum {string}
+                             */
+                            listing: "box" | "marketplace";
+                            online_payments?: boolean;
+                            preview_days: number;
+                            price_cents: number;
+                            /** Format: date-time */
+                            published_at?: string | null;
+                            /** @enum {string} */
+                            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                            /** ProgrammeRating */
+                            reviews?: {
+                                average: number | null;
+                                count: number;
+                            };
+                            sales?: {
+                                active: number;
+                                buyers: number;
+                                currency?: string | null;
+                                gross_cents?: number | null;
+                                refunded_cents?: number | null;
+                            };
+                            sessions_per_week?: number | null;
+                            /** @enum {string} */
+                            status: "draft" | "published" | "archived";
+                            summary?: string | null;
+                            title: string;
+                            /** ProgrammeVersion */
+                            version?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            };
+                            versions?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            }[];
+                        };
+                    };
+                };
+            };
+            /** @description No such programme, purchase or review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description The programme can't take this step now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid programme */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminProgrammeController.publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    changelog?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Programme */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** StaffProgramme */
+                        programme: {
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            /** Format: uuid */
+                            author_id?: string | null;
+                            /** @enum {string} */
+                            currency: "EUR" | "GBP" | "USD" | "CHF";
+                            /** Format: uuid */
+                            current_version_id?: string | null;
+                            description?: string | null;
+                            draft_days: {
+                                /** @description Day 0 is the start date */
+                                day: number;
+                                /** Format: uuid */
+                                workout_id: string;
+                            }[];
+                            draft_weeks: number;
+                            equipment?: string[];
+                            /** @enum {string} */
+                            goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            level: "all" | "beginner" | "intermediate" | "advanced";
+                            /**
+                             * @description box: the box's own page; marketplace: also the cross-business catalogue
+                             * @enum {string}
+                             */
+                            listing: "box" | "marketplace";
+                            online_payments?: boolean;
+                            preview_days: number;
+                            price_cents: number;
+                            /** Format: date-time */
+                            published_at?: string | null;
+                            /** @enum {string} */
+                            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                            /** ProgrammeRating */
+                            reviews?: {
+                                average: number | null;
+                                count: number;
+                            };
+                            sales?: {
+                                active: number;
+                                buyers: number;
+                                currency?: string | null;
+                                gross_cents?: number | null;
+                                refunded_cents?: number | null;
+                            };
+                            sessions_per_week?: number | null;
+                            /** @enum {string} */
+                            status: "draft" | "published" | "archived";
+                            summary?: string | null;
+                            title: string;
+                            /** ProgrammeVersion */
+                            version?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            };
+                            versions?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            }[];
+                        };
+                    };
+                };
+            };
+            /** @description No such programme, purchase or review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description The programme can't take this step now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid programme */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminProgrammeController.purchases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Purchases */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        purchases: {
+                            /** Format: date-time */
+                            activated_at?: string | null;
+                            buyer?: {
+                                /** Format: uuid */
+                                id: string;
+                                nickname?: string | null;
+                            } | null;
+                            currency: string;
+                            days?: {
+                                /** Format: date */
+                                date: string;
+                                day: number;
+                                summary?: string | null;
+                                title?: string | null;
+                                /** Format: uuid */
+                                workout_id: string;
+                            }[];
+                            end_reason?: string | null;
+                            /** Format: date-time */
+                            ended_at?: string | null;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            inserted_at?: string;
+                            /** Format: uuid */
+                            payment_intent_id?: string | null;
+                            price_cents: number;
+                            /** Format: uuid */
+                            programme_id: string;
+                            /**
+                             * ProgrammeRefundQuote
+                             * @description What giving it up now returns, and under which rule
+                             */
+                            refund?: {
+                                amount_cents: number;
+                                /** @enum {string} */
+                                rule: "withdrawal" | "before_start" | "pro_rata";
+                            } | null;
+                            /** @enum {string} */
+                            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                            refunded_cents: number;
+                            review?: {
+                                author?: {
+                                    /** Format: uuid */
+                                    id?: string;
+                                    nickname?: string | null;
+                                } | null;
+                                body?: string | null;
+                                hidden_reason?: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: date-time */
+                                inserted_at?: string;
+                                rating: number;
+                                /** @enum {string} */
+                                status: "published" | "hidden";
+                                /** Format: date-time */
+                                updated_at?: string;
+                                version_number: number;
+                            } | null;
+                            /** Format: date */
+                            starts_on: string;
+                            /** @enum {string} */
+                            status: "pending_payment" | "active" | "completed" | "withdrawn" | "refunded" | "cancelled";
+                            title?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                            /** Format: uuid */
+                            version_id: string;
+                            version_number?: number;
+                            weeks?: number;
+                            withdrawal_deadline?: string | null;
+                        }[];
+                    };
+                };
+            };
+            /** @description No such programme, purchase or review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description The programme can't take this step now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid programme */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminProgrammeController.restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Programme */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** StaffProgramme */
+                        programme: {
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            /** Format: uuid */
+                            author_id?: string | null;
+                            /** @enum {string} */
+                            currency: "EUR" | "GBP" | "USD" | "CHF";
+                            /** Format: uuid */
+                            current_version_id?: string | null;
+                            description?: string | null;
+                            draft_days: {
+                                /** @description Day 0 is the start date */
+                                day: number;
+                                /** Format: uuid */
+                                workout_id: string;
+                            }[];
+                            draft_weeks: number;
+                            equipment?: string[];
+                            /** @enum {string} */
+                            goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            level: "all" | "beginner" | "intermediate" | "advanced";
+                            /**
+                             * @description box: the box's own page; marketplace: also the cross-business catalogue
+                             * @enum {string}
+                             */
+                            listing: "box" | "marketplace";
+                            online_payments?: boolean;
+                            preview_days: number;
+                            price_cents: number;
+                            /** Format: date-time */
+                            published_at?: string | null;
+                            /** @enum {string} */
+                            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                            /** ProgrammeRating */
+                            reviews?: {
+                                average: number | null;
+                                count: number;
+                            };
+                            sales?: {
+                                active: number;
+                                buyers: number;
+                                currency?: string | null;
+                                gross_cents?: number | null;
+                                refunded_cents?: number | null;
+                            };
+                            sessions_per_week?: number | null;
+                            /** @enum {string} */
+                            status: "draft" | "published" | "archived";
+                            summary?: string | null;
+                            title: string;
+                            /** ProgrammeVersion */
+                            version?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            };
+                            versions?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            }[];
+                        };
+                    };
+                };
+            };
+            /** @description No such programme, purchase or review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description The programme can't take this step now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid programme */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminProgrammeController.reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reviews */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        reviews: {
+                            author?: {
+                                /** Format: uuid */
+                                id?: string;
+                                nickname?: string | null;
+                            } | null;
+                            body?: string | null;
+                            hidden_reason?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            inserted_at?: string;
+                            rating: number;
+                            /** @enum {string} */
+                            status: "published" | "hidden";
+                            /** Format: date-time */
+                            updated_at?: string;
+                            version_number: number;
+                        }[];
+                    };
+                };
+            };
+            /** @description No such programme, purchase or review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description The programme can't take this step now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid programme */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminPublicProfileController.show": {
         parameters: {
             query?: never;
@@ -122574,6 +125665,679 @@ export interface operations {
                             [key: string]: unknown;
                         };
                         refunded_cents: number;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyProgrammeController.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Purchases */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        purchases: {
+                            /** Format: date-time */
+                            activated_at?: string | null;
+                            buyer?: {
+                                /** Format: uuid */
+                                id: string;
+                                nickname?: string | null;
+                            } | null;
+                            currency: string;
+                            days?: {
+                                /** Format: date */
+                                date: string;
+                                day: number;
+                                summary?: string | null;
+                                title?: string | null;
+                                /** Format: uuid */
+                                workout_id: string;
+                            }[];
+                            end_reason?: string | null;
+                            /** Format: date-time */
+                            ended_at?: string | null;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            inserted_at?: string;
+                            /** Format: uuid */
+                            payment_intent_id?: string | null;
+                            price_cents: number;
+                            /** Format: uuid */
+                            programme_id: string;
+                            /**
+                             * ProgrammeRefundQuote
+                             * @description What giving it up now returns, and under which rule
+                             */
+                            refund?: {
+                                amount_cents: number;
+                                /** @enum {string} */
+                                rule: "withdrawal" | "before_start" | "pro_rata";
+                            } | null;
+                            /** @enum {string} */
+                            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                            refunded_cents: number;
+                            review?: {
+                                author?: {
+                                    /** Format: uuid */
+                                    id?: string;
+                                    nickname?: string | null;
+                                } | null;
+                                body?: string | null;
+                                hidden_reason?: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: date-time */
+                                inserted_at?: string;
+                                rating: number;
+                                /** @enum {string} */
+                                status: "published" | "hidden";
+                                /** Format: date-time */
+                                updated_at?: string;
+                                version_number: number;
+                            } | null;
+                            /** Format: date */
+                            starts_on: string;
+                            /** @enum {string} */
+                            status: "pending_payment" | "active" | "completed" | "withdrawn" | "refunded" | "cancelled";
+                            title?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                            /** Format: uuid */
+                            version_id: string;
+                            version_number?: number;
+                            weeks?: number;
+                            withdrawal_deadline?: string | null;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyProgrammeController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Purchase */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** ProgrammePurchase */
+                        purchase: {
+                            /** Format: date-time */
+                            activated_at?: string | null;
+                            buyer?: {
+                                /** Format: uuid */
+                                id: string;
+                                nickname?: string | null;
+                            } | null;
+                            currency: string;
+                            days?: {
+                                /** Format: date */
+                                date: string;
+                                day: number;
+                                summary?: string | null;
+                                title?: string | null;
+                                /** Format: uuid */
+                                workout_id: string;
+                            }[];
+                            end_reason?: string | null;
+                            /** Format: date-time */
+                            ended_at?: string | null;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            inserted_at?: string;
+                            /** Format: uuid */
+                            payment_intent_id?: string | null;
+                            price_cents: number;
+                            /** Format: uuid */
+                            programme_id: string;
+                            /**
+                             * ProgrammeRefundQuote
+                             * @description What giving it up now returns, and under which rule
+                             */
+                            refund?: {
+                                amount_cents: number;
+                                /** @enum {string} */
+                                rule: "withdrawal" | "before_start" | "pro_rata";
+                            } | null;
+                            /** @enum {string} */
+                            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                            refunded_cents: number;
+                            review?: {
+                                author?: {
+                                    /** Format: uuid */
+                                    id?: string;
+                                    nickname?: string | null;
+                                } | null;
+                                body?: string | null;
+                                hidden_reason?: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: date-time */
+                                inserted_at?: string;
+                                rating: number;
+                                /** @enum {string} */
+                                status: "published" | "hidden";
+                                /** Format: date-time */
+                                updated_at?: string;
+                                version_number: number;
+                            } | null;
+                            /** Format: date */
+                            starts_on: string;
+                            /** @enum {string} */
+                            status: "pending_payment" | "active" | "completed" | "withdrawn" | "refunded" | "cancelled";
+                            title?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                            /** Format: uuid */
+                            version_id: string;
+                            version_number?: number;
+                            weeks?: number;
+                            withdrawal_deadline?: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description No such programme or purchase */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Not possible now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid request */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyProgrammeController.review": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    body?: string | null;
+                    rating: number;
+                };
+            };
+        };
+        responses: {
+            /** @description Review */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** ProgrammeReview */
+                        review: {
+                            author?: {
+                                /** Format: uuid */
+                                id?: string;
+                                nickname?: string | null;
+                            } | null;
+                            body?: string | null;
+                            hidden_reason?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            inserted_at?: string;
+                            rating: number;
+                            /** @enum {string} */
+                            status: "published" | "hidden";
+                            /** Format: date-time */
+                            updated_at?: string;
+                            version_number: number;
+                        };
+                    };
+                };
+            };
+            /** @description No such programme or purchase */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Not possible now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid request */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyProgrammeController.withdraw": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Refund */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** ProgrammePurchase */
+                        purchase: {
+                            /** Format: date-time */
+                            activated_at?: string | null;
+                            buyer?: {
+                                /** Format: uuid */
+                                id: string;
+                                nickname?: string | null;
+                            } | null;
+                            currency: string;
+                            days?: {
+                                /** Format: date */
+                                date: string;
+                                day: number;
+                                summary?: string | null;
+                                title?: string | null;
+                                /** Format: uuid */
+                                workout_id: string;
+                            }[];
+                            end_reason?: string | null;
+                            /** Format: date-time */
+                            ended_at?: string | null;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            inserted_at?: string;
+                            /** Format: uuid */
+                            payment_intent_id?: string | null;
+                            price_cents: number;
+                            /** Format: uuid */
+                            programme_id: string;
+                            /**
+                             * ProgrammeRefundQuote
+                             * @description What giving it up now returns, and under which rule
+                             */
+                            refund?: {
+                                amount_cents: number;
+                                /** @enum {string} */
+                                rule: "withdrawal" | "before_start" | "pro_rata";
+                            } | null;
+                            /** @enum {string} */
+                            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                            refunded_cents: number;
+                            review?: {
+                                author?: {
+                                    /** Format: uuid */
+                                    id?: string;
+                                    nickname?: string | null;
+                                } | null;
+                                body?: string | null;
+                                hidden_reason?: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: date-time */
+                                inserted_at?: string;
+                                rating: number;
+                                /** @enum {string} */
+                                status: "published" | "hidden";
+                                /** Format: date-time */
+                                updated_at?: string;
+                                version_number: number;
+                            } | null;
+                            /** Format: date */
+                            starts_on: string;
+                            /** @enum {string} */
+                            status: "pending_payment" | "active" | "completed" | "withdrawn" | "refunded" | "cancelled";
+                            title?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                            /** Format: uuid */
+                            version_id: string;
+                            version_number?: number;
+                            weeks?: number;
+                            withdrawal_deadline?: string | null;
+                        };
+                        refund: {
+                            [key: string]: unknown;
+                        };
+                        rule?: string | null;
+                    };
+                };
+            };
+            /** @description No such programme or purchase */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Not possible now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid request */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyProgrammeController.buy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    idempotency_key: string;
+                    /** @enum {string} */
+                    language?: "el" | "en";
+                    /** @description The express request to start, required where withdrawal applies */
+                    start_now?: boolean;
+                    /**
+                     * Format: date
+                     * @description Today up to 60 days ahead
+                     */
+                    starts_on?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Checkout */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description The checkout: open its checkout_url on the provider's page */
+                        payment: {
+                            [key: string]: unknown;
+                        };
+                        /** Format: uuid */
+                        purchase_id: string;
+                    };
+                };
+            };
+            /** @description No such programme or purchase */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Not possible now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid request */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyProgrammeController.terms": {
+        parameters: {
+            query?: {
+                language?: "el" | "en";
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Terms */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        available: boolean;
+                        /** Format: date */
+                        earliest_start: string;
+                        /** Format: date */
+                        latest_start: string;
+                        /**
+                         * Format: uuid
+                         * @description The buyer's active purchase of it, if any
+                         */
+                        owned?: string | null;
+                        /** PublicProgramme */
+                        programme: {
+                            currency: string;
+                            description?: string | null;
+                            equipment?: string[];
+                            goal: string;
+                            /** Format: uuid */
+                            id: string;
+                            latest_reviews?: {
+                                author?: {
+                                    /** Format: uuid */
+                                    id?: string;
+                                    nickname?: string | null;
+                                } | null;
+                                body?: string | null;
+                                hidden_reason?: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: date-time */
+                                inserted_at?: string;
+                                rating: number;
+                                /** @enum {string} */
+                                status: "published" | "hidden";
+                                /** Format: date-time */
+                                updated_at?: string;
+                                version_number: number;
+                            }[];
+                            level: string;
+                            listing?: string;
+                            preview?: {
+                                day: number;
+                                summary?: string | null;
+                                title?: string | null;
+                                week: number;
+                                weekday: number;
+                            }[];
+                            preview_days?: number;
+                            price_cents: number;
+                            /** Format: date-time */
+                            published_at?: string | null;
+                            refund_policy?: string;
+                            /** ProgrammeRating */
+                            reviews?: {
+                                average: number | null;
+                                count: number;
+                            };
+                            sessions?: number | null;
+                            sessions_per_week?: number | null;
+                            summary?: string | null;
+                            title: string;
+                            version_number?: number | null;
+                            week_outline?: {
+                                sessions: number;
+                                week: number;
+                            }[];
+                            weeks?: number | null;
+                        };
+                        provider?: string | null;
+                        refund_rule: string;
+                        refund_text: string;
+                        start_now_text?: string | null;
+                        terms_version: string;
+                        withdrawal_days?: number | null;
+                    };
+                };
+            };
+            /** @description No such programme or purchase */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Not possible now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid request */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
                     };
                 };
             };
@@ -145472,6 +149236,198 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.PublicProgrammeController.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Programmes */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description The box's public card */
+                        box: {
+                            [key: string]: unknown;
+                        };
+                        programmes: {
+                            currency: string;
+                            description?: string | null;
+                            equipment?: string[];
+                            goal: string;
+                            /** Format: uuid */
+                            id: string;
+                            latest_reviews?: {
+                                author?: {
+                                    /** Format: uuid */
+                                    id?: string;
+                                    nickname?: string | null;
+                                } | null;
+                                body?: string | null;
+                                hidden_reason?: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: date-time */
+                                inserted_at?: string;
+                                rating: number;
+                                /** @enum {string} */
+                                status: "published" | "hidden";
+                                /** Format: date-time */
+                                updated_at?: string;
+                                version_number: number;
+                            }[];
+                            level: string;
+                            listing?: string;
+                            preview?: {
+                                day: number;
+                                summary?: string | null;
+                                title?: string | null;
+                                week: number;
+                                weekday: number;
+                            }[];
+                            preview_days?: number;
+                            price_cents: number;
+                            /** Format: date-time */
+                            published_at?: string | null;
+                            refund_policy?: string;
+                            /** ProgrammeRating */
+                            reviews?: {
+                                average: number | null;
+                                count: number;
+                            };
+                            sessions?: number | null;
+                            sessions_per_week?: number | null;
+                            summary?: string | null;
+                            title: string;
+                            version_number?: number | null;
+                            week_outline?: {
+                                sessions: number;
+                                week: number;
+                            }[];
+                            weeks?: number | null;
+                        }[];
+                    };
+                };
+            };
+            /** @description No such box or programme */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicProgrammeController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Programme */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description The box's public card */
+                        box: {
+                            [key: string]: unknown;
+                        };
+                        /** PublicProgramme */
+                        programme: {
+                            currency: string;
+                            description?: string | null;
+                            equipment?: string[];
+                            goal: string;
+                            /** Format: uuid */
+                            id: string;
+                            latest_reviews?: {
+                                author?: {
+                                    /** Format: uuid */
+                                    id?: string;
+                                    nickname?: string | null;
+                                } | null;
+                                body?: string | null;
+                                hidden_reason?: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: date-time */
+                                inserted_at?: string;
+                                rating: number;
+                                /** @enum {string} */
+                                status: "published" | "hidden";
+                                /** Format: date-time */
+                                updated_at?: string;
+                                version_number: number;
+                            }[];
+                            level: string;
+                            listing?: string;
+                            preview?: {
+                                day: number;
+                                summary?: string | null;
+                                title?: string | null;
+                                week: number;
+                                weekday: number;
+                            }[];
+                            preview_days?: number;
+                            price_cents: number;
+                            /** Format: date-time */
+                            published_at?: string | null;
+                            refund_policy?: string;
+                            /** ProgrammeRating */
+                            reviews?: {
+                                average: number | null;
+                                count: number;
+                            };
+                            sessions?: number | null;
+                            sessions_per_week?: number | null;
+                            summary?: string | null;
+                            title: string;
+                            version_number?: number | null;
+                            week_outline?: {
+                                sessions: number;
+                                week: number;
+                            }[];
+                            weeks?: number | null;
+                        };
+                    };
+                };
+            };
+            /** @description No such box or programme */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.PublicSmsUnsubscribeController.show": {
         parameters: {
             query?: never;
@@ -145746,6 +149702,57 @@ export interface operations {
                             price_status: "placeholder" | "confirmed";
                             public: boolean;
                             trial_days: number;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicProgrammeController.catalogue": {
+        parameters: {
+            query?: {
+                query?: string;
+                goal?: string;
+                level?: string;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Programmes */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        limit: number;
+                        offset: number;
+                        programmes: {
+                            currency: string;
+                            equipment?: string[];
+                            goal?: string;
+                            /** Format: uuid */
+                            id: string;
+                            level?: string;
+                            /** Format: uuid */
+                            organization_id?: string;
+                            organization_name: string;
+                            organization_slug: string;
+                            price_cents: number;
+                            /** Format: date-time */
+                            published_at?: string | null;
+                            rating_average?: number | null;
+                            rating_count?: number;
+                            sessions_per_week?: number | null;
+                            summary?: string | null;
+                            title: string;
+                            version_number?: number;
+                            weeks: number;
                         }[];
                     };
                 };

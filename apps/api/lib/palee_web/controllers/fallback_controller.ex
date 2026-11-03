@@ -446,6 +446,40 @@ defmodule PaleeWeb.FallbackController do
       {:conflict, "This provider cannot be connected with one button yet; use its API keys"}
   }
 
+  # ADR-370/371: programmes.
+  @programme_errors %{
+    invalid_programme_days:
+      {:unprocessable_entity,
+       "Each day needs a day number within the weeks and a WOD; at most 4 WODs a day"},
+    programme_price_required: {:unprocessable_entity, "A programme on sale needs a price"},
+    programme_already_published: {:conflict, "This programme is already published"},
+    invalid_programme_transition: {:conflict, "The programme can't take this step now"},
+    programme_archived: {:conflict, "Restore the programme before changing it"},
+    programme_not_for_sale: {:conflict, "This programme is not on sale"},
+    programme_already_owned: {:conflict, "You already have this programme"},
+    programme_purchase_not_found: {:not_found, "No such programme purchase"},
+    invalid_start_date:
+      {:unprocessable_entity, "Choose a start date from today up to 60 days ahead"},
+    programme_start_consent_required:
+      {:unprocessable_entity, "Ask for the programme to start, to buy it now"},
+    invalid_purchase_transition: {:conflict, "This purchase can't take this step now"},
+    programme_refund_not_available: {:conflict, "Nothing can be refunded for this purchase now"},
+    refund_exceeds_remaining:
+      {:unprocessable_entity, "The refund is more than what is left of the price"},
+    review_too_early: {:conflict, "You can review a programme once it has started"},
+    review_not_allowed: {:conflict, "Only buyers can review a programme"},
+    invalid_review: {:unprocessable_entity, "Give 1 to 5 stars and at most 1000 characters"},
+    invalid_hide_reason: {:unprocessable_entity, "Choose abuse, personal data, off topic or spam"}
+  }
+
+  def call(conn, {:error, reason}) when is_map_key(@programme_errors, reason) do
+    {status, message} = Map.fetch!(@programme_errors, reason)
+
+    conn
+    |> put_status(status)
+    |> json(%{code: to_string(reason), error: message})
+  end
+
   def call(conn, {:error, reason}) when is_map_key(@payment_errors, reason) do
     {status, message} = Map.fetch!(@payment_errors, reason)
 

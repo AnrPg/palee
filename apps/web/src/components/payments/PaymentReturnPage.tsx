@@ -161,7 +161,9 @@ function Succeeded({ payment, pending, slug }: { payment: OnlinePayment; pending
       ? [pending?.classLabel, t("visitBookedBody")].filter(Boolean).join(" · ")
       : kind === "invoice"
         ? payment.description
-        : t("packageStarts", { name });
+        : kind === "programme"
+          ? t("programmeStarts", { name })
+          : t("packageStarts", { name });
 
   return (
     <>

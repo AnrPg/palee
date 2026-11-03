@@ -128,6 +128,7 @@ defmodule Mix.Tasks.Palee.Architecture do
     fiscal/till_signature_store
     payments/payment_store
     channels/channel_store
+    programmes/programme_store
     finance/package_request_store
     leads/lead_store
     automations/automation_store
