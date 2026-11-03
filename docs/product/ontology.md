@@ -698,6 +698,20 @@ Staff screens only. Never part of a fiscal document: a pay statement is an inter
 | Gross / Net | Μικτά / Καθαρά | `amount_basis: gross \| net` | Whether an amount is before or after the person's taxes and contributions, as staff say; Palee computes neither. Gross is the default; net lines are marked «Καθαρά» and the two are always shown as separate subtotals («Μικτά X · Καθαρά Y»). (ADR-382) | Total (never one sum of both without labels). |
 | Pay statement (PDF) | Εκκαθαριστικό | `GET …/coach-pay/periods/:id/statements/:user_id/pdf`, `GET …/coach-pay/mine/:period_id/pdf` | One person's approved statement as PDF, headed «Εσωτερική κατάσταση αμοιβής» (Internal pay statement): an internal record, not an official payroll document (ADR-382). | Payslip issued by payroll; receipt. |
 
+### 4.29 Review reports (ADR-397)
+
+A member, or the box, reports a box review to the Palee team; only the Palee team decides. Member and platform-console terms.
+
+| English | Ελληνικά | Code | What it is | Not to be confused with |
+|---|---|---|---|---|
+| Review report | Αναφορά κριτικής | `box_review_reports` | A member's or the box's «Αναφορά» on a review of the box, with a reason and an optional note. The review stays up until the Palee team decides. One open per person and review. | Club report (ADR-143, box staff decide); Partners report (ADR-280). |
+| Report reason | Λόγος αναφοράς | `reason`: `offensive`, `personal_data`, `not_genuine`, `spam`, `illegal`, `other` | «Προσβλητικό ή υβριστικό», «Προσωπικά στοιχεία κάποιου», «Δεν είναι πραγματική εμπειρία», «Διαφήμιση ή άσχετο», «Παράνομο περιεχόμενο», «Κάτι άλλο». A note is required for the last two. | Ground of the decision (same codes plus `no_violation`). |
+| Review reports (console) | Αναφορές κριτικών | `/api/platform/review-reports` | The Palee team's queue in the platform console: one row per reported review across every box, oldest first; «Αποφασισμένες» for the decisions. | «Αναφορές Συναθλητών» (Partners). |
+| Keep | Μένει | `outcome: keep` | The review breaks no rule and stays. | |
+| Hide | Απόκρυψη | `outcome: hide`, `box_reviews.moderation: hidden` | Only the author still sees it, with the reasons; out of the average and the website. Reversible. | The box hiding a review (not possible). |
+| Remove | Αφαίρεση | `outcome: remove`, `box_reviews.moderation: removed` | The text and the box's reply are erased; the author sees «Αφαιρέθηκε από την ομάδα Palee» with the reasons. | The author's «Διαγραφή» of their own review. |
+| Statement of reasons | Αιτιολόγηση | `box_review_decisions`, `mine.moderation` | What the author reads when the Palee team hid or removed their review: what changed, why (Palee's terms or the law), that a person decided, how to ask again. | The box's reply («Απάντηση από …»). |
+
 ## 5. Name clashes found, and proposals
 
 Each needs ANR's choice before the UI changes. The recommended option is first.
