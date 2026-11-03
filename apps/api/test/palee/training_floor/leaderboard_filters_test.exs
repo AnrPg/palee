@@ -62,7 +62,9 @@ defmodule Palee.Gamification.Domain.LeaderboardFiltersTest do
       assert LeaderboardFilters.keep_palee?(filters, %{})
       assert LeaderboardFilters.keep_palee?(%{filters | division: "women"}, row)
       refute LeaderboardFilters.keep_palee?(%{filters | division: "men"}, row)
+
       refute LeaderboardFilters.keep_palee?(%{filters | division: "women"}, %{row | division: nil})
+
       assert LeaderboardFilters.keep_palee?(%{filters | age_group: "35_39"}, row)
       refute LeaderboardFilters.keep_palee?(%{filters | age_group: "40_44"}, row)
       assert LeaderboardFilters.keep_palee?(%{filters | scale: "rx"}, row)
