@@ -100,6 +100,22 @@ defmodule Palee.EmailTest do
     assert {:ok, _} = Email.enqueue(:sample_notice, "other@box.test", @assigns, opts)
   end
 
+  test "the throttle and the stored message share the caller's clock, not the wall clock" do
+    # A clock hours behind the real one: the first message must not look
+    # sent "in the future" to the second enqueue's look-back.
+    earlier = DateTime.add(DateTime.utc_now(), -6 * 3600, :second)
+    opts = [category: :security]
+
+    assert {:ok, first} =
+             Email.enqueue(:sample_notice, "jo@box.test", @assigns, [{:now, earlier} | opts])
+
+    assert first.inserted_at == earlier
+    later = DateTime.add(earlier, 86_400, :second)
+
+    assert {:ok, _} =
+             Email.enqueue(:sample_notice, "jo@box.test", @assigns, [{:now, later} | opts])
+  end
+
   test "over the daily budget non-security mail is deferred, security mail refused past the cap" do
     put_budget(daily_budget: 0, hard_cap: 0)
 

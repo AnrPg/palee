@@ -55,7 +55,7 @@ defmodule Palee.Email.Message do
   def statuses, do: @statuses
 
   @fields ~w(kind to_address login_id user_id organization_id locale category subject
-             encrypted_body status message_id idempotency_key scheduled_at)a
+             encrypted_body status message_id idempotency_key scheduled_at inserted_at)a
 
   @doc false
   def create_changeset(attrs) do

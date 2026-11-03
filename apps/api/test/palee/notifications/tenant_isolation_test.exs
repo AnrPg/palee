@@ -96,6 +96,42 @@ defmodule Palee.Notifications.TenantIsolationTest do
     refute origins["org-a body"] == origins["org-b body"]
   end
 
+  test "a repeated dedupe_key is skipped without a unique violation", %{
+    member: member,
+    context_a: context_a
+  } do
+    params = %{
+      user_id: member.id,
+      organization_id: context_a.organization_id,
+      type: :coaching_message,
+      payload: %{"body" => "once"},
+      dedupe_key: "dedupe-test:#{Ecto.UUID.generate()}"
+    }
+
+    NotificationStore.with_user_context(context_a, fn ->
+      # Run inside one transaction: a raised unique violation would abort it
+      # and make every later statement fail.
+      Palee.Repo.transaction(fn ->
+        assert {:ok, %{id: id}} = NotificationStore.create_notification(params)
+        assert is_binary(id)
+        assert {:ok, :duplicate} = NotificationStore.create_notification(params)
+        assert {:ok, :duplicate} = NotificationStore.create_notification(params)
+        assert [_] = NotificationStore.list_for_user(member.id)
+      end)
+    end)
+  end
+
+  test "notifications without a dedupe_key are never deduplicated", %{
+    member: member,
+    context_a: context_a
+  } do
+    {:ok, first} = create_notification(context_a, member, "same body")
+    {:ok, second} = create_notification(context_a, member, "same body")
+
+    refute first.id == second.id
+    assert length(user_notifications(context_a, member)) == 2
+  end
+
   defp user_notifications(context, member) do
     NotificationStore.with_user_context(context, fn ->
       NotificationStore.list_for_user(member.id)

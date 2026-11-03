@@ -73,10 +73,13 @@ export function MemberStatusCell({
   userId,
   status,
   override,
+  dueSince = null,
 }: {
   userId: string;
   status: string;
   override: ValueOverride | null;
+  /** The oldest unpaid charge's due date, already formatted: an unpaid or overdue status says since when. */
+  dueSince?: string | null;
 }) {
   const t = useTranslations("MemberStanding");
   const i18n = useUiTranslations();
@@ -106,9 +109,17 @@ export function MemberStatusCell({
     );
   };
 
+  const owes = (status === "unpaid" || status === "overdue") && Boolean(dueSince);
   const pill = (
-    <span className="rounded-full px-3 py-1 text-xs font-semibold" data-member-status={status} style={toneStyle(statusTone(status))}>
-      {label(status)}
+    <span className="inline-flex flex-col items-start gap-0.5">
+      <span className="rounded-full px-3 py-1 text-xs font-semibold" data-member-status={status} style={toneStyle(statusTone(status))}>
+        {label(status)}
+      </span>
+      {owes ? (
+        <span className="px-1 text-[11px]" data-member-status-since style={{ color: "var(--muted)" }}>
+          {t("dueSince", { date: dueSince! })}
+        </span>
+      ) : null}
     </span>
   );
 

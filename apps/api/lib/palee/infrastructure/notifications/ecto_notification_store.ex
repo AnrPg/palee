@@ -8,11 +8,25 @@ defmodule Palee.Infrastructure.Notifications.EctoNotificationStore do
   alias Palee.Infrastructure.Tenancy.RepoContext
   alias Palee.Repo
 
+  # A duplicate `dedupe_key` (e.g. the same reminder job running on several
+  # API pods at once) must not raise a unique violation: Postgres logs it as an
+  # ERROR and it aborts any surrounding transaction. `DO UPDATE ... WHERE false`
+  # skips the row without touching it and, unlike `DO NOTHING`, makes Ecto
+  # report the skip (as a stale error on `:dedupe_key`), so callers still get
+  # `{:ok, :duplicate}`.
+  @dedupe_conflict_target {:unsafe_fragment, "(user_id, dedupe_key) WHERE dedupe_key IS NOT NULL"}
+
   @impl true
   def create_notification(params) do
     %Notification{}
     |> Notification.changeset(params)
-    |> Repo.insert()
+    |> Repo.insert(
+      on_conflict:
+        from(n in Notification, update: [set: [dedupe_key: n.dedupe_key]], where: false),
+      conflict_target: @dedupe_conflict_target,
+      stale_error_field: :dedupe_key,
+      stale_error_message: "has already been taken"
+    )
     |> case do
       {:ok, %Notification{} = notification} ->
         {:ok, normalize_notification(notification)}
@@ -145,7 +159,10 @@ defmodule Palee.Infrastructure.Notifications.EctoNotificationStore do
 
   defp maybe_apply_cursor(query, nil), do: query
 
-  defp maybe_apply_cursor(query, %{inserted_at: inserted_at, id: id}) do
+  # The cursor carries a UTC DateTime; `inserted_at` is a naive (UTC) column.
+  defp maybe_apply_cursor(query, %{inserted_at: %DateTime{} = at, id: id}) do
+    inserted_at = at |> InboxCursor.to_utc() |> DateTime.to_naive()
+
     where(
       query,
       [notification],
@@ -189,7 +206,8 @@ defmodule Palee.Infrastructure.Notifications.EctoNotificationStore do
       type: to_string(notification.type),
       payload: notification.payload || %{},
       read_at: notification.read_at,
-      inserted_at: notification.inserted_at
+      # Stored naive (UTC); sent with its offset so clients never read it as local time.
+      inserted_at: InboxCursor.to_utc(notification.inserted_at)
     }
   end
 

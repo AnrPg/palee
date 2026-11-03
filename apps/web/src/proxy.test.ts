@@ -46,6 +46,14 @@ describe("configuredMediaOrigins", () => {
     expect(other.headers.get("Referrer-Policy")).toBe("strict-origin-when-cross-origin");
   });
 
+  test("keeps the query when it rewrites /org/<slug>/… (deep links like ?tab=queues&queue=expiring)", async () => {
+    const response = await proxy(new NextRequest("http://localhost/org/box/admin/finance?tab=queues&queue=expiring"));
+    const rewritten = new URL(response.headers.get("x-middleware-rewrite") ?? "");
+    expect(rewritten.pathname).toBe("/admin/finance");
+    expect(rewritten.searchParams.get("tab")).toBe("queues");
+    expect(rewritten.searchParams.get("queue")).toBe("expiring");
+  });
+
   test("rewrites tenant-prefixed RSC and prefetch requests too", () => {
     expect(config.matcher[0]).not.toHaveProperty("missing");
   });

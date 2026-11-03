@@ -31,6 +31,8 @@ import { PageHeader, pageHeaderActionClass } from "@/components/PageHeader";
 import { BranchFilterControl, BranchFilterNote, useBranchFilter } from "@/components/admin/BranchFilter";
 import { SegmentPicker } from "@/components/filters/SegmentPicker";
 import { GuideButton } from "@/components/guides/GuideButton";
+import { financeQueueHref } from "@/components/admin/finance/finance-queues";
+import { earliestDateKey, formatDateKey } from "@/lib/local-date";
 
 type Tab = "members" | "packages" | "seasons" | "promotions" | "referrals" | "documents" | "queues" | "accounting" | "corporate" | "pay";
 
@@ -40,6 +42,7 @@ export function FinanceOperations() {
   const accountingT = useTranslations("FinanceAccounting");
   const branchT = useTranslations("BranchScope");
   const seasonsT = useTranslations("Seasons");
+  const standingT = useTranslations("MemberStanding");
   const documentsT = useTranslations("FiscalDocuments");
   const payT = useTranslations("CoachPay");
   const seesCoachPay = useSeesCoachPay();
@@ -106,16 +109,18 @@ export function FinanceOperations() {
 
   const totals = (summaryQuery.data?.totals ?? {}) as FinanceRecord;
   const queues = (queuesQuery.data?.queues ?? {}) as Record<string, FinanceRecord[]>;
+  // «Ληξιπρόθεσμο» always says since when: the oldest overdue invoice's due date.
+  const oldestOverdue = formatDateKey(uiLocale, earliestDateKey((queues.overdue_invoices ?? []).map((row) => row.due_date)));
   const attentionItems = [
     {
       label: i18n("overdueInvoices747a2d8"),
       count: (queues.overdue_invoices ?? []).length,
-      href: adminHref("/admin/finance?tab=queues", organizationSlug),
+      href: adminHref(financeQueueHref("debts"), organizationSlug),
     },
     {
       label: i18n("pendingPaymentsb4ebfb2"),
       count: (queues.pending_payments ?? []).length,
-      href: adminHref("/admin/finance?tab=queues", organizationSlug),
+      href: adminHref(financeQueueHref("debts"), organizationSlug),
     },
     {
       label: i18n("referralRewards22d6a91"),
@@ -179,6 +184,7 @@ export function FinanceOperations() {
             {Number(totals.overdue_invoice_balance_cents ?? 0) > 0 ? (
               <span className="px-2 text-xs font-semibold sm:ms-auto sm:whitespace-nowrap" style={{ color: "var(--muted)" }}>
                 {i18n("overdueBalanced6ec7a8")} {money(uiLocale, totals.overdue_invoice_balance_cents)}
+                {oldestOverdue ? <span data-testid="oldest-overdue"> · {standingT("dueSince", { date: oldestOverdue })}</span> : null}
               </span>
             ) : null}
           </section>

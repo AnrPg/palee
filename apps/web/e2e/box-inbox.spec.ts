@@ -101,3 +101,31 @@ test("the box's inbox shows who waits, flags a newcomer and brings a coach in", 
   await page.getByTestId("box-coach-option").click();
   await expect.poll(() => brought).toEqual([{ user_id: "coach-1" }]);
 });
+
+// Beta box 2026-11-02: the owner wrote to a member from the member's page and
+// could not find the conversation. A link to a thread the list does not hold
+// yet opens it, and every staff message sits on the box's side.
+test("a link opens a box thread the list does not hold yet, staff messages on the box's side", async ({ page }) => {
+  await stub(page);
+  const fresh = boxThread("t-fresh", "person-3", "Nikos", user.id, false);
+  await page.route("**/me/threads/t-fresh", (route) => route.fulfill(json({ thread: fresh })));
+  await page.route("**/me/threads/t-fresh/messages**", (route) =>
+    route.fulfill(
+      json({
+        messages: [
+          { id: "f-1", thread_id: "t-fresh", sender_id: "person-3", body: "Is the 18:00 class on?", message_type: "chat", topic: null, inserted_at: "2026-10-30T08:00:00Z" },
+          { id: "f-2", thread_id: "t-fresh", sender_id: "owner-9", body: "Yes, see you", message_type: "box_message", topic: null, inserted_at: "2026-10-30T08:05:00Z" },
+          { id: "f-3", thread_id: "t-fresh", sender_id: user.id, body: "Bring a towel", message_type: "box_message", topic: null, inserted_at: "2026-10-30T08:06:00Z" },
+        ],
+      }),
+    ),
+  );
+  await page.goto("/messages?filter=clubs&thread=t-fresh");
+
+  const thread = page.getByTestId("inbox-thread");
+  await expect(thread.getByText("Is the 18:00 class on?")).toBeVisible();
+  const side = (text: string) => thread.locator("[data-side]", { hasText: text });
+  await expect(side("Is the 18:00 class on?")).toHaveAttribute("data-side", "other");
+  await expect(side("Yes, see you")).toHaveAttribute("data-side", "own");
+  await expect(side("Bring a towel")).toHaveAttribute("data-side", "own");
+});

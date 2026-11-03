@@ -71,4 +71,48 @@ test.describe("staff home attention counts", () => {
     await expect(page.getByRole("link", { name: "1 overdue invoice" })).toBeVisible();
     await expect(page.getByText("pending payment")).toHaveCount(0);
   });
+
+  // Beta box 2026-11-02: tapping «1 συνδρομή λήγει…» seemed to do nothing (it
+  // opened the finance page on «Μέλη box») and the overdue alert had no date.
+  test("each alert names its date and opens the list it counted, already picked", async ({ page, context, baseURL }) => {
+    await context.addCookies([{ name: "palee_locale", value: "en", url: baseURL! }]);
+    await stubApi(page, "en", { expiring: 1, overdue: 1, pending: 0 });
+    await page.route("**/admin/finance/queues**", (route) =>
+      route.fulfill(
+        json({
+          queues: {
+            overdue_invoices: [{ id: "inv-1", due_date: "2026-10-28" }],
+            open_charges: [{ id: "m-1", user_id: "u-1", user_label: "tolaras", balance_due_cents: 5000, oldest_due_on: "2026-10-28", state: "overdue" }],
+            expiring_memberships: [{ id: "s-1", user_id: "u-1", user_label: "tolaras", expires_on: "2026-11-28" }],
+            pending_payments: [],
+            pending_referral_rewards: [],
+          },
+        }),
+      ),
+    );
+    await page.route("**/admin/finance/summary**", (route) =>
+      route.fulfill(json({ totals: { expiring_memberships: 1, overdue_invoice_balance_cents: 5000 } })),
+    );
+    await page.route("**/admin/finance/package-catalog", (route) => route.fulfill(json({ types: [], modules: [] })));
+    await page.route("**/admin/finance/members**", (route) => route.fulfill(json({ members: [], meta: {} })));
+    await page.goto("/org/kypseli/admin");
+
+    const expiring = page.getByRole("link", { name: /1 membership expires within 30 days/ });
+    await expect(expiring).toContainText("Expires Nov 28, 2026");
+    await expect(expiring).toHaveAttribute("href", "/org/kypseli/admin/finance?tab=queues&queue=expiring");
+    const overdue = page.getByRole("link", { name: /1 overdue invoice/ });
+    await expect(overdue).toContainText("since Oct 28, 2026");
+    await expect(overdue).toHaveAttribute("href", "/org/kypseli/admin/finance?tab=queues&queue=debts");
+
+    await expiring.click();
+    await expect(page).toHaveURL(/\/org\/kypseli\/admin\/finance\?tab=queues&queue=expiring$/);
+    await expect(page.locator('[data-queue="expiring"]')).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByText("Expires Nov 28, 2026")).toBeVisible();
+    await expect(page.getByTestId("oldest-overdue")).toContainText("since Oct 28, 2026");
+
+    // The page's own attention chip switches the list in place.
+    await page.getByRole("link", { name: /Overdue invoices: 1/ }).click();
+    await expect(page.locator('[data-queue="debts"]')).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByText("since Oct 28, 2026").last()).toBeVisible();
+  });
 });
