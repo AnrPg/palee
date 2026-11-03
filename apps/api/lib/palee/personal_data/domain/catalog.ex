@@ -119,6 +119,7 @@ defmodule Palee.PersonalData.Domain.Catalog do
       account("training", "execution_heart_rate_batches", @me),
       # ADR-377: belts and levels the box awarded.
       tenant("training", "rank_awards", @me),
+      tenant("training", "rank_skill_checks", @me),
       account("training", "injury_reports", @me),
       tenant("training", "nutrition_plans", @me),
       # ADR-356: the leaderboard opt-in with its division and birth year.

@@ -4734,7 +4734,7 @@
     "semanticWorkoutMma": "MMA",
     "semanticWorkoutBjjGrappling": "BJJ & grappling",
     "semanticWorkoutWrestling": "Worstelen",
-    "semanticWorkoutMartialArts": "Vechtkunsten (karate, taekwondo, judo)",
+    "semanticWorkoutMartialArts": "Vechtkunsten (aikido, capoeira, overige)",
     "semanticWorkoutSelfDefense": "Zelfverdediging",
     "semanticWorkoutDance": "Dans",
     "semanticWorkoutDanceFitness": "Dansfitness (Zumba)",
@@ -4898,7 +4898,22 @@
     "pkgFieldBookingDailyLimitSuffix": "{count, plural, one {les per dag} other {lessen per dag}}",
     "pkgFieldBookingOpenBookingsLimit": "Openstaande boekingen",
     "pkgFieldBookingOpenBookingsLimitHint": "Hoeveel komende lessen een lid tegelijk geboekt mag hebben.",
-    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {komende les} other {komende lessen}}"
+    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {komende les} other {komende lessen}}",
+    "semanticWorkoutArtisticGymnastics": "Toestelturnen",
+    "semanticWorkoutRhythmicGymnastics": "Ritmische gymnastiek",
+    "semanticWorkoutTrampolineTumbling": "Trampoline & tumbling",
+    "semanticWorkoutAcrobatics": "Acrobatiek",
+    "semanticWorkoutParkour": "Parkour & freerunning",
+    "semanticWorkoutJudo": "Judo",
+    "semanticWorkoutKarate": "Karate",
+    "semanticWorkoutTaekwondo": "Taekwondo",
+    "semanticWorkoutKungFu": "Kungfu & wushu",
+    "semanticWorkoutKravMaga": "Krav maga",
+    "semanticWorkoutBallet": "Ballet",
+    "semanticWorkoutContemporaryDance": "Hedendaagse dans",
+    "semanticWorkoutLatinDance": "Latin dans (salsa, bachata)",
+    "semanticWorkoutStreetDance": "Streetdance (hiphop, heels, reggaeton)",
+    "semanticWorkoutSkateboarding": "Skateboarden"
   },
   "PrSharing": {
     "gymLabel": "Waar heb je dit PR neergezet?",
@@ -6240,7 +6255,8 @@
       "dance": "Dans",
       "aquatic": "Water",
       "outdoor": "Buiten",
-      "recovery": "Herstel & revalidatie"
+      "recovery": "Herstel & revalidatie",
+      "gymnastics": "Gymnastiek & acrobatiek"
     },
     "discipline": {
       "strength": "Krachttraining",
@@ -6277,7 +6293,7 @@
       "mma": "MMA",
       "bjj_grappling": "BJJ & grappling",
       "wrestling": "Worstelen",
-      "martial_arts": "Vechtkunsten (karate, taekwondo, judo)",
+      "martial_arts": "Vechtkunsten (aikido, capoeira, overige)",
       "self_defense": "Zelfverdediging",
       "dance": "Dans",
       "dance_fitness": "Dansfitness (Zumba)",
@@ -6288,7 +6304,22 @@
       "climbing_bouldering": "Klimmen & boulderen",
       "physio_rehab": "Fysiotherapie & revalidatie",
       "sports_massage": "Sportmassage",
-      "recovery": "Herstelsessies"
+      "recovery": "Herstelsessies",
+      "artistic_gymnastics": "Toestelturnen",
+      "rhythmic_gymnastics": "Ritmische gymnastiek",
+      "trampoline_tumbling": "Trampoline & tumbling",
+      "acrobatics": "Acrobatiek",
+      "parkour": "Parkour & freerunning",
+      "judo": "Judo",
+      "karate": "Karate",
+      "taekwondo": "Taekwondo",
+      "kung_fu": "Kungfu & wushu",
+      "krav_maga": "Krav maga",
+      "ballet": "Ballet",
+      "contemporary_dance": "Hedendaagse dans",
+      "latin_dance": "Latin dans (salsa, bachata)",
+      "street_dance": "Streetdance (hiphop, heels, reggaeton)",
+      "skateboarding": "Skateboarden"
     },
     "audience": {
       "beginners": "Beginners",
@@ -16862,11 +16893,6 @@
       "panelTitle": "Graad",
       "settingsHint": "Eén ladder per discipline: banden met strepen of niveaus. Over een promotie beslist altijd de coach.",
       "newLadder": "Nieuwe ladder",
-      "template": {
-        "bjj_adult": "BJJ-banden",
-        "karate_kyu": "Karatebanden",
-        "gymnastics_levels": "Turnniveaus"
-      },
       "fromScratch": "Vanaf nul: kies een discipline",
       "create": "Maken",
       "newLadderName": "Nieuwe ladder",

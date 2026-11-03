@@ -4734,7 +4734,7 @@
     "semanticWorkoutMma": "MMA",
     "semanticWorkoutBjjGrappling": "BJJ וגראפלינג",
     "semanticWorkoutWrestling": "היאבקות",
-    "semanticWorkoutMartialArts": "אומנויות לחימה (קראטה, טאקוונדו, ג'ודו)",
+    "semanticWorkoutMartialArts": "אומנויות לחימה (אייקידו, קפואירה, אחרות)",
     "semanticWorkoutSelfDefense": "הגנה עצמית",
     "semanticWorkoutDance": "ריקוד",
     "semanticWorkoutDanceFitness": "פיטנס ריקודי (זומבה)",
@@ -4898,7 +4898,22 @@
     "pkgFieldBookingDailyLimitSuffix": "{count, plural, one {שיעור ביום} two {שיעורים ביום} other {שיעורים ביום}}",
     "pkgFieldBookingOpenBookingsLimit": "הזמנות פתוחות",
     "pkgFieldBookingOpenBookingsLimitHint": "כמה שיעורים קרובים חבר יכול להחזיק מוזמנים בבת אחת.",
-    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {שיעור קרוב} two {שיעורים קרובים} other {שיעורים קרובים}}"
+    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {שיעור קרוב} two {שיעורים קרובים} other {שיעורים קרובים}}",
+    "semanticWorkoutArtisticGymnastics": "התעמלות מכשירים",
+    "semanticWorkoutRhythmicGymnastics": "התעמלות אומנותית",
+    "semanticWorkoutTrampolineTumbling": "טרמפולינה וטאמבלינג",
+    "semanticWorkoutAcrobatics": "אקרובטיקה",
+    "semanticWorkoutParkour": "פארקור ופרירנינג",
+    "semanticWorkoutJudo": "ג'ודו",
+    "semanticWorkoutKarate": "קראטה",
+    "semanticWorkoutTaekwondo": "טאקוונדו",
+    "semanticWorkoutKungFu": "קונג פו ווושו",
+    "semanticWorkoutKravMaga": "קרב מגע",
+    "semanticWorkoutBallet": "בלט",
+    "semanticWorkoutContemporaryDance": "מחול עכשווי",
+    "semanticWorkoutLatinDance": "ריקודים לטיניים (סלסה, בצ'אטה)",
+    "semanticWorkoutStreetDance": "ריקודי רחוב (היפ הופ, היילס, רגאטון)",
+    "semanticWorkoutSkateboarding": "סקייטבורד"
   },
   "PrSharing": {
     "gymLabel": "איפה קבעת את השיא הזה?",
@@ -6240,7 +6255,8 @@
       "dance": "ריקוד",
       "aquatic": "מים",
       "outdoor": "בחוץ",
-      "recovery": "התאוששות ושיקום"
+      "recovery": "התאוששות ושיקום",
+      "gymnastics": "התעמלות ואקרובטיקה"
     },
     "discipline": {
       "strength": "אימוני כוח",
@@ -6277,7 +6293,7 @@
       "mma": "MMA",
       "bjj_grappling": "BJJ וגראפלינג",
       "wrestling": "היאבקות",
-      "martial_arts": "אומנויות לחימה (קראטה, טאקוונדו, ג'ודו)",
+      "martial_arts": "אומנויות לחימה (אייקידו, קפואירה, אחרות)",
       "self_defense": "הגנה עצמית",
       "dance": "ריקוד",
       "dance_fitness": "פיטנס ריקודי (זומבה)",
@@ -6288,7 +6304,22 @@
       "climbing_bouldering": "טיפוס ובולדרינג",
       "physio_rehab": "פיזיותרפיה ושיקום",
       "sports_massage": "עיסוי ספורטאים",
-      "recovery": "מפגשי התאוששות"
+      "recovery": "מפגשי התאוששות",
+      "artistic_gymnastics": "התעמלות מכשירים",
+      "rhythmic_gymnastics": "התעמלות אומנותית",
+      "trampoline_tumbling": "טרמפולינה וטאמבלינג",
+      "acrobatics": "אקרובטיקה",
+      "parkour": "פארקור ופרירנינג",
+      "judo": "ג'ודו",
+      "karate": "קראטה",
+      "taekwondo": "טאקוונדו",
+      "kung_fu": "קונג פו ווושו",
+      "krav_maga": "קרב מגע",
+      "ballet": "בלט",
+      "contemporary_dance": "מחול עכשווי",
+      "latin_dance": "ריקודים לטיניים (סלסה, בצ'אטה)",
+      "street_dance": "ריקודי רחוב (היפ הופ, היילס, רגאטון)",
+      "skateboarding": "סקייטבורד"
     },
     "audience": {
       "beginners": "מתחילים",
@@ -16862,11 +16893,6 @@
       "panelTitle": "דרגה",
       "settingsHint": "סולם אחד לכל ענף: חגורות עם פסים או רמות. על קידום מחליט תמיד המאמן.",
       "newLadder": "סולם חדש",
-      "template": {
-        "bjj_adult": "חגורות BJJ",
-        "karate_kyu": "חגורות קראטה",
-        "gymnastics_levels": "רמות התעמלות"
-      },
       "fromScratch": "מאפס: בחרו ענף",
       "create": "יצירה",
       "newLadderName": "סולם חדש",

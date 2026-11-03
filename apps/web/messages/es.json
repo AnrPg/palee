@@ -4734,7 +4734,7 @@
     "semanticWorkoutMma": "MMA",
     "semanticWorkoutBjjGrappling": "BJJ y grappling",
     "semanticWorkoutWrestling": "Lucha",
-    "semanticWorkoutMartialArts": "Artes marciales (kárate, taekwondo, judo)",
+    "semanticWorkoutMartialArts": "Artes marciales (aikido, capoeira, otras)",
     "semanticWorkoutSelfDefense": "Defensa personal",
     "semanticWorkoutDance": "Baile",
     "semanticWorkoutDanceFitness": "Baile fitness (Zumba)",
@@ -4898,7 +4898,22 @@
     "pkgFieldBookingDailyLimitSuffix": "{count, plural, one {clase al día} other {clases al día}}",
     "pkgFieldBookingOpenBookingsLimit": "Reservas abiertas",
     "pkgFieldBookingOpenBookingsLimitHint": "Cuántas clases próximas puede tener reservadas un miembro a la vez.",
-    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {clase próxima} other {clases próximas}}"
+    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {clase próxima} other {clases próximas}}",
+    "semanticWorkoutArtisticGymnastics": "Gimnasia artística",
+    "semanticWorkoutRhythmicGymnastics": "Gimnasia rítmica",
+    "semanticWorkoutTrampolineTumbling": "Trampolín y tumbling",
+    "semanticWorkoutAcrobatics": "Acrobacia",
+    "semanticWorkoutParkour": "Parkour y freerunning",
+    "semanticWorkoutJudo": "Judo",
+    "semanticWorkoutKarate": "Kárate",
+    "semanticWorkoutTaekwondo": "Taekwondo",
+    "semanticWorkoutKungFu": "Kung fu y wushu",
+    "semanticWorkoutKravMaga": "Krav maga",
+    "semanticWorkoutBallet": "Ballet",
+    "semanticWorkoutContemporaryDance": "Danza contemporánea",
+    "semanticWorkoutLatinDance": "Bailes latinos (salsa, bachata)",
+    "semanticWorkoutStreetDance": "Danza urbana (hip-hop, heels, reguetón)",
+    "semanticWorkoutSkateboarding": "Skate"
   },
   "PrSharing": {
     "gymLabel": "¿Dónde conseguiste este PR?",
@@ -6240,7 +6255,8 @@
       "dance": "Baile",
       "aquatic": "Agua",
       "outdoor": "Al aire libre",
-      "recovery": "Recuperación y rehabilitación"
+      "recovery": "Recuperación y rehabilitación",
+      "gymnastics": "Gimnasia y acrobacia"
     },
     "discipline": {
       "strength": "Entrenamiento de fuerza",
@@ -6277,7 +6293,7 @@
       "mma": "MMA",
       "bjj_grappling": "BJJ y grappling",
       "wrestling": "Lucha",
-      "martial_arts": "Artes marciales (kárate, taekwondo, judo)",
+      "martial_arts": "Artes marciales (aikido, capoeira, otras)",
       "self_defense": "Defensa personal",
       "dance": "Baile",
       "dance_fitness": "Baile fitness (Zumba)",
@@ -6288,7 +6304,22 @@
       "climbing_bouldering": "Escalada y búlder",
       "physio_rehab": "Fisioterapia y rehabilitación",
       "sports_massage": "Masaje deportivo",
-      "recovery": "Sesiones de recuperación"
+      "recovery": "Sesiones de recuperación",
+      "artistic_gymnastics": "Gimnasia artística",
+      "rhythmic_gymnastics": "Gimnasia rítmica",
+      "trampoline_tumbling": "Trampolín y tumbling",
+      "acrobatics": "Acrobacia",
+      "parkour": "Parkour y freerunning",
+      "judo": "Judo",
+      "karate": "Kárate",
+      "taekwondo": "Taekwondo",
+      "kung_fu": "Kung fu y wushu",
+      "krav_maga": "Krav maga",
+      "ballet": "Ballet",
+      "contemporary_dance": "Danza contemporánea",
+      "latin_dance": "Bailes latinos (salsa, bachata)",
+      "street_dance": "Danza urbana (hip-hop, heels, reguetón)",
+      "skateboarding": "Skate"
     },
     "audience": {
       "beginners": "Principiantes",
@@ -16862,11 +16893,6 @@
       "panelTitle": "Grado",
       "settingsHint": "Una escala por disciplina: cinturones con franjas o niveles. La promoción siempre la decide el coach.",
       "newLadder": "Nueva escala",
-      "template": {
-        "bjj_adult": "Cinturones de BJJ",
-        "karate_kyu": "Cinturones de kárate",
-        "gymnastics_levels": "Niveles de gimnasia"
-      },
       "fromScratch": "Desde cero: elige una disciplina",
       "create": "Crear",
       "newLadderName": "Nueva escala",

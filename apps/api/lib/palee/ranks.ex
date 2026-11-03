@@ -18,17 +18,21 @@ defmodule Palee.Ranks do
   defdelegate disciplines(), to: LadderPolicy
   defdelegate discipline_family(discipline), to: LadderPolicy, as: :family
   defdelegate templates(), to: LadderPolicy
+  defdelegate template(key), to: LadderPolicy
+  defdelegate localize_template(template, translate), to: LadderPolicy
   defdelegate cast_ranks(ranks, scale_levels), to: LadderPolicy
 
   # Promotions.
   defdelegate current_award(awards), to: PromotionPolicy, as: :current
   defdelegate next_rank(ranks, current_rank), to: PromotionPolicy
   defdelegate progress(next, since, attended, today), to: PromotionPolicy
+  defdelegate progress(next, since, attended, today, checked), to: PromotionPolicy
   defdelegate count_attended(history, class_type_ids, since), to: PromotionPolicy
 
   defdelegate validate_award(rank, stripes, skills, current_rank, current_stripes, on, today),
     to: PromotionPolicy
 
+  defdelegate listed_skill?(rank, skill), to: PromotionPolicy
   defdelegate certificate_number(award_id, date), to: PromotionPolicy
   defdelegate certificate_pdf(view, fonts), to: CertificatePdf, as: :render
 
@@ -42,6 +46,9 @@ defmodule Palee.Ranks do
   defdelegate get_award(id), to: RankStore
   defdelegate insert_award(attrs), to: RankStore
   defdelegate revoke_award(award, attrs), to: RankStore
+  defdelegate list_skill_checks(user_id), to: RankStore
+  defdelegate put_skill_check(attrs), to: RankStore
+  defdelegate delete_skill_check(user_id, rank_id, skill), to: RankStore
 
   # Tenant data lifecycle (ADR-117).
   def tenant_data_policy, do: TenantDataPolicy.policy()

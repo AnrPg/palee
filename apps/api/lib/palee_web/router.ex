@@ -1112,6 +1112,8 @@ defmodule PaleeWeb.Router do
     # ADR-377: a client's belts and levels; promotions and diplomas.
     get("/clients/:user_id/ranks", StaffRanksController, :client)
     post("/clients/:user_id/ranks", StaffRanksController, :award)
+    # ADR-400: tick one skill at a time, between promotions.
+    put("/clients/:user_id/ranks/skills", StaffRanksController, :check_skill)
     post("/rank-awards/:id/revoke", StaffRanksController, :revoke)
     get("/rank-awards/:id/certificate", StaffRanksController, :certificate)
     put("/clients/:user_id/training-goal", TrainingGoalController, :client_update)

@@ -5,7 +5,7 @@ defmodule Palee.Infrastructure.Ranks.EctoRankStore do
 
   import Ecto.Query
 
-  alias Palee.Ranks.{Rank, RankAward, RankLadder}
+  alias Palee.Ranks.{Rank, RankAward, RankLadder, RankSkillCheck}
   alias Palee.Repo
 
   @rank_fields [:position, :name, :color, :max_stripes, :requirements, :scale_level_slug]
@@ -130,4 +130,32 @@ defmodule Palee.Infrastructure.Ranks.EctoRankStore do
   @impl true
   def revoke_award(%RankAward{} = award, attrs),
     do: award |> RankAward.revoke_changeset(attrs) |> Repo.update()
+
+  @impl true
+  def list_skill_checks(user_id) do
+    RankSkillCheck
+    |> where([c], c.user_id == ^user_id)
+    |> order_by([c], asc: c.checked_on, asc: c.inserted_at)
+    |> Repo.all()
+  end
+
+  @impl true
+  def put_skill_check(attrs) do
+    attrs
+    |> RankSkillCheck.changeset()
+    |> Repo.insert(
+      on_conflict: {:replace, [:checked_on, :checked_by_id, :note, :updated_at]},
+      conflict_target: [:organization_id, :user_id, :rank_id, :skill],
+      returning: true
+    )
+  end
+
+  @impl true
+  def delete_skill_check(user_id, rank_id, skill) do
+    RankSkillCheck
+    |> where([c], c.user_id == ^user_id and c.rank_id == ^rank_id and c.skill == ^skill)
+    |> Repo.delete_all()
+
+    :ok
+  end
 end

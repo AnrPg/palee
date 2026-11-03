@@ -63,6 +63,30 @@ defmodule PaleeWeb.StaffRanksController do
     end
   end
 
+  operation(:check_skill,
+    summary: "Tick or untick one skill of a rank for a client, between promotions (ADR-400)",
+    parameters: [@user_id],
+    request_body: S.body(S.skill_check_request()),
+    responses: [
+      ok: {"Standing", "application/json", S.standings_response()},
+      forbidden: {"Not your client", "application/json", S.error()},
+      unprocessable_entity: {"Not a skill of that rank", "application/json", S.error()}
+    ]
+  )
+
+  def check_skill(conn, %{user_id: user_id}) do
+    staff = GuardianPlug.current_resource(conn)
+
+    with {:ok, result} <-
+           RankPromotions.check_skill(
+             conn.assigns.tenant_context,
+             staff.id,
+             user_id,
+             conn.body_params
+           ),
+         do: json(conn, result)
+  end
+
   operation(:revoke,
     summary: "Withdraw an award with a reason; it stays in the history",
     parameters: [@id],

@@ -61,6 +61,26 @@ defmodule Palee.Ranks.Domain.RanksDomainTest do
         assert {:ok, _ranks} = LadderPolicy.cast_ranks(template.ranks, [])
       end
     end
+
+    test "a template reads in one language, numbered names with their number" do
+      template = %{
+        key: "x",
+        name: "Levels",
+        discipline: "judo",
+        style: "level",
+        ranks: [%{name: {"Level %{n}", 2}, requirements: %{skills: ["Roll"]}}]
+      }
+
+      translate = fn message, bindings ->
+        "el:" <> String.replace(message, "%{n}", to_string(Map.get(bindings, :n, "")))
+      end
+
+      assert %{
+               name: "el:Levels",
+               family: "combat",
+               ranks: [%{name: "el:Level 2", requirements: %{skills: ["el:Roll"]}}]
+             } = LadderPolicy.localize_template(template, translate)
+    end
   end
 
   describe "PromotionPolicy" do
@@ -114,7 +134,21 @@ defmodule Palee.Ranks.Domain.RanksDomainTest do
       assert progress.classes == %{done: 3, needed: 3}
       assert progress.days == %{done: 152, needed: 100}
       assert progress.skills == ["Armbar"]
+      assert progress.skills_checked == []
+      refute progress.all_skills_checked
       assert progress.ready
+
+      # ADR-400: skills ticked one by one count only for that rank and its list.
+      checks = [
+        %{rank_id: "r1", skill: "Armbar", checked_on: ~D[2026-09-01], note: nil},
+        %{rank_id: "r1", skill: "Renamed away", checked_on: ~D[2026-09-01], note: nil},
+        %{rank_id: "r0", skill: "Armbar", checked_on: ~D[2026-09-01], note: nil}
+      ]
+
+      ticked = PromotionPolicy.progress(List.last(ranks), ~D[2026-06-01], 3, @today, checks)
+      assert [%{skill: "Armbar", checked_on: ~D[2026-09-01]}] = ticked.skills_checked
+      assert ticked.all_skills_checked
+      assert PromotionPolicy.progress(hd(ranks), nil, 0, @today).all_skills_checked
       refute PromotionPolicy.progress(List.last(ranks), ~D[2026-10-01], 3, @today).ready
       assert PromotionPolicy.progress(nil, nil, 0, @today) == nil
     end
