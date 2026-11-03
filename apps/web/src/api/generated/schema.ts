@@ -17091,6 +17091,41 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/staff/ranks/ready": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** People who meet what their ladder counts for the next rank (the coach decides) */
+        get: operations["PaleeWeb.StaffRanksController.ready"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/staff/ranks/skills/batch": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The ladders' skills and, for each person of a class, what they work towards and have ticked */
+        get: operations["PaleeWeb.StaffRanksController.class_skills"];
+        /** Tick or untick one skill for several people at once (a class) */
+        put: operations["PaleeWeb.StaffRanksController.batch_skills"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/staff/reply-queue": {
         parameters: {
             query?: never;
@@ -44564,6 +44599,12 @@ export interface components {
             requirements: {
                 min_classes?: number;
                 min_days?: number;
+                /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                skill_ids?: (string | null)[];
+                /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                skill_notes?: (string | null)[];
+                /** @description A video link (https) for each skill, in the order of `skills` */
+                skill_videos?: (string | null)[];
                 skills?: string[];
             };
             scale_level_slug?: string | null;
@@ -44633,6 +44674,60 @@ export interface components {
         RankAwardRevokeRequest: {
             reason: string;
         };
+        /** RankClassSkillsResponse */
+        RankClassSkillsResponse: {
+            ladders: {
+                class_type_ids: string[];
+                /** @description A workout type (ADR-275) */
+                discipline: string;
+                family?: string | null;
+                /** Format: uuid */
+                id: string;
+                name: string;
+                ranks: {
+                    /**
+                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                     * @enum {string|null}
+                     */
+                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                    /** Format: uuid */
+                    id: string;
+                    max_stripes: number;
+                    name: string;
+                    position: number;
+                    /** RankRequirements */
+                    requirements: {
+                        min_classes?: number;
+                        min_days?: number;
+                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                        skill_ids?: (string | null)[];
+                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                        skill_notes?: (string | null)[];
+                        /** @description A video link (https) for each skill, in the order of `skills` */
+                        skill_videos?: (string | null)[];
+                        skills?: string[];
+                    };
+                    scale_level_slug?: string | null;
+                }[];
+                /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                ready_criteria: ("days" | "classes" | "skills")[];
+                /** @enum {string} */
+                style: "belt" | "level";
+            }[];
+            people: {
+                checked: {
+                    /** Format: uuid */
+                    rank_id: string;
+                    /** Format: uuid */
+                    skill_id: string;
+                }[];
+                next_rank_ids: string[];
+                /** @description The coach may tick for them */
+                reachable: boolean;
+                /** Format: uuid */
+                user_id: string;
+            }[];
+        };
         /** RankInput */
         RankInput: {
             /**
@@ -44651,6 +44746,12 @@ export interface components {
             requirements?: {
                 min_classes?: number;
                 min_days?: number;
+                /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                skill_ids?: (string | null)[];
+                /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                skill_notes?: (string | null)[];
+                /** @description A video link (https) for each skill, in the order of `skills` */
+                skill_videos?: (string | null)[];
                 skills?: string[];
             };
             scale_level_slug?: string | null;
@@ -44679,10 +44780,18 @@ export interface components {
                 requirements: {
                     min_classes?: number;
                     min_days?: number;
+                    /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                    skill_ids?: (string | null)[];
+                    /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                    skill_notes?: (string | null)[];
+                    /** @description A video link (https) for each skill, in the order of `skills` */
+                    skill_videos?: (string | null)[];
                     skills?: string[];
                 };
                 scale_level_slug?: string | null;
             }[];
+            /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+            ready_criteria: ("days" | "classes" | "skills")[];
             /** @enum {string} */
             style: "belt" | "level";
         };
@@ -44714,10 +44823,18 @@ export interface components {
                 requirements?: {
                     min_classes?: number;
                     min_days?: number;
+                    /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                    skill_ids?: (string | null)[];
+                    /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                    skill_notes?: (string | null)[];
+                    /** @description A video link (https) for each skill, in the order of `skills` */
+                    skill_videos?: (string | null)[];
                     skills?: string[];
                 };
                 scale_level_slug?: string | null;
             }[];
+            /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+            ready_criteria?: ("days" | "classes" | "skills")[];
             /** @enum {string} */
             style?: "belt" | "level";
             /** @description Start from a template («Πρότυπα»); fields sent override it */
@@ -44749,16 +44866,26 @@ export interface components {
                     requirements: {
                         min_classes?: number;
                         min_days?: number;
+                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                        skill_ids?: (string | null)[];
+                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                        skill_notes?: (string | null)[];
+                        /** @description A video link (https) for each skill, in the order of `skills` */
+                        skill_videos?: (string | null)[];
                         skills?: string[];
                     };
                     scale_level_slug?: string | null;
                 }[];
+                /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                ready_criteria: ("days" | "classes" | "skills")[];
                 /** @enum {string} */
                 style: "belt" | "level";
             };
         };
         /** RankLaddersResponse */
         RankLaddersResponse: {
+            /** @description The training kinds of the box's profile; the picker shows them first */
+            box_disciplines: string[];
             colors: string[];
             ladders: {
                 class_type_ids: string[];
@@ -44783,10 +44910,18 @@ export interface components {
                     requirements: {
                         min_classes?: number;
                         min_days?: number;
+                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                        skill_ids?: (string | null)[];
+                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                        skill_notes?: (string | null)[];
+                        /** @description A video link (https) for each skill, in the order of `skills` */
+                        skill_videos?: (string | null)[];
                         skills?: string[];
                     };
                     scale_level_slug?: string | null;
                 }[];
+                /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                ready_criteria: ("days" | "classes" | "skills")[];
                 /** @enum {string} */
                 style: "belt" | "level";
             }[];
@@ -44807,9 +44942,17 @@ export interface components {
                     requirements: {
                         min_classes?: number;
                         min_days?: number;
+                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                        skill_ids?: (string | null)[];
+                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                        skill_notes?: (string | null)[];
+                        /** @description A video link (https) for each skill, in the order of `skills` */
+                        skill_videos?: (string | null)[];
                         skills?: string[];
                     };
                 }[];
+                /** @description What a ladder copied from it counts by default */
+                ready: ("days" | "classes" | "skills")[];
                 /**
                  * @description A federation's or school's system, or Palee's own levels
                  * @enum {string}
@@ -44821,11 +44964,144 @@ export interface components {
                 system: string;
             }[];
         };
+        /**
+         * RankReadyResponse
+         * @description People who meet what their ladder counts for the next rank; the coach decides
+         */
+        RankReadyResponse: {
+            people: {
+                current: {
+                    /** Rank */
+                    rank: {
+                        /**
+                         * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                         * @enum {string|null}
+                         */
+                        color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                        /** Format: uuid */
+                        id: string;
+                        max_stripes: number;
+                        name: string;
+                        position: number;
+                        /** RankRequirements */
+                        requirements: {
+                            min_classes?: number;
+                            min_days?: number;
+                            /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                            skill_ids?: (string | null)[];
+                            /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                            skill_notes?: (string | null)[];
+                            /** @description A video link (https) for each skill, in the order of `skills` */
+                            skill_videos?: (string | null)[];
+                            skills?: string[];
+                        };
+                        scale_level_slug?: string | null;
+                    };
+                    stripes: number;
+                };
+                ladder: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                    style: string;
+                };
+                /** Rank */
+                next: {
+                    /**
+                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                     * @enum {string|null}
+                     */
+                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                    /** Format: uuid */
+                    id: string;
+                    max_stripes: number;
+                    name: string;
+                    position: number;
+                    /** RankRequirements */
+                    requirements: {
+                        min_classes?: number;
+                        min_days?: number;
+                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                        skill_ids?: (string | null)[];
+                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                        skill_notes?: (string | null)[];
+                        /** @description A video link (https) for each skill, in the order of `skills` */
+                        skill_videos?: (string | null)[];
+                        skills?: string[];
+                    };
+                    scale_level_slug?: string | null;
+                };
+                nickname?: string | null;
+                /** @description Towards the next rank; `ready` only says the counted requirements are met */
+                progress: {
+                    /** @description Every listed skill is ticked (true when the rank lists none) */
+                    all_skills_checked?: boolean;
+                    classes: {
+                        done: number | null;
+                        needed: number | null;
+                    };
+                    /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                    criteria?: ("days" | "classes" | "skills")[];
+                    days: {
+                        done: number | null;
+                        needed: number | null;
+                    };
+                    /** Format: uuid */
+                    rank_id: string;
+                    ready: boolean;
+                    skill_ids?: (string | null)[];
+                    skills: string[];
+                    /** @description ADR-400: the next rank's skills the coach ticked so far */
+                    skills_checked?: {
+                        /** Format: date */
+                        checked_on: string;
+                        note?: string | null;
+                        /** @description The skill's current text */
+                        skill: string;
+                        skill_id?: string | null;
+                    }[];
+                } | null;
+                /** Format: uuid */
+                user_id: string;
+            }[];
+        };
         /** RankRequirements */
         RankRequirements: {
             min_classes?: number;
             min_days?: number;
+            /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+            skill_ids?: (string | null)[];
+            /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+            skill_notes?: (string | null)[];
+            /** @description A video link (https) for each skill, in the order of `skills` */
+            skill_videos?: (string | null)[];
             skills?: string[];
+        };
+        /**
+         * RankSkillBatchRequest
+         * @description One skill for several people at once (a class): only those who work towards its rank change
+         */
+        RankSkillBatchRequest: {
+            /** @description false unticks; true when left out */
+            checked?: boolean;
+            /** Format: date */
+            checked_on?: string;
+            /** Format: uuid */
+            rank_id: string;
+            skill?: string;
+            /** Format: uuid */
+            skill_id?: string;
+            user_ids: string[];
+        };
+        /** RankSkillBatchResponse */
+        RankSkillBatchResponse: {
+            skipped: {
+                /** @enum {string} */
+                reason: "not_your_client" | "other_rank";
+                /** Format: uuid */
+                user_id: string;
+            }[];
+            updated: string[];
         };
         /**
          * RankSkillCheckRequest
@@ -44839,7 +45115,13 @@ export interface components {
             note?: string | null;
             /** Format: uuid */
             rank_id: string;
-            skill: string;
+            /** @description The skill's text, when no `skill_id` is sent */
+            skill?: string;
+            /**
+             * Format: uuid
+             * @description The skill's stable id
+             */
+            skill_id?: string;
         };
         /** RankStanding */
         RankStanding: {
@@ -44864,6 +45146,12 @@ export interface components {
                     requirements: {
                         min_classes?: number;
                         min_days?: number;
+                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                        skill_ids?: (string | null)[];
+                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                        skill_notes?: (string | null)[];
+                        /** @description A video link (https) for each skill, in the order of `skills` */
+                        skill_videos?: (string | null)[];
                         skills?: string[];
                     };
                     scale_level_slug?: string | null;
@@ -44916,10 +45204,18 @@ export interface components {
                     requirements: {
                         min_classes?: number;
                         min_days?: number;
+                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                        skill_ids?: (string | null)[];
+                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                        skill_notes?: (string | null)[];
+                        /** @description A video link (https) for each skill, in the order of `skills` */
+                        skill_videos?: (string | null)[];
                         skills?: string[];
                     };
                     scale_level_slug?: string | null;
                 }[];
+                /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                ready_criteria: ("days" | "classes" | "skills")[];
                 /** @enum {string} */
                 style: "belt" | "level";
             };
@@ -44938,6 +45234,12 @@ export interface components {
                 requirements: {
                     min_classes?: number;
                     min_days?: number;
+                    /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                    skill_ids?: (string | null)[];
+                    /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                    skill_notes?: (string | null)[];
+                    /** @description A video link (https) for each skill, in the order of `skills` */
+                    skill_videos?: (string | null)[];
                     skills?: string[];
                 };
                 scale_level_slug?: string | null;
@@ -44950,6 +45252,8 @@ export interface components {
                     done: number | null;
                     needed: number | null;
                 };
+                /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                criteria?: ("days" | "classes" | "skills")[];
                 days: {
                     done: number | null;
                     needed: number | null;
@@ -44957,13 +45261,16 @@ export interface components {
                 /** Format: uuid */
                 rank_id: string;
                 ready: boolean;
+                skill_ids?: (string | null)[];
                 skills: string[];
                 /** @description ADR-400: the next rank's skills the coach ticked so far */
                 skills_checked?: {
                     /** Format: date */
                     checked_on: string;
                     note?: string | null;
+                    /** @description The skill's current text */
                     skill: string;
+                    skill_id?: string | null;
                 }[];
             } | null;
         };
@@ -44991,6 +45298,12 @@ export interface components {
                         requirements: {
                             min_classes?: number;
                             min_days?: number;
+                            /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                            skill_ids?: (string | null)[];
+                            /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                            skill_notes?: (string | null)[];
+                            /** @description A video link (https) for each skill, in the order of `skills` */
+                            skill_videos?: (string | null)[];
                             skills?: string[];
                         };
                         scale_level_slug?: string | null;
@@ -45043,10 +45356,18 @@ export interface components {
                         requirements: {
                             min_classes?: number;
                             min_days?: number;
+                            /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                            skill_ids?: (string | null)[];
+                            /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                            skill_notes?: (string | null)[];
+                            /** @description A video link (https) for each skill, in the order of `skills` */
+                            skill_videos?: (string | null)[];
                             skills?: string[];
                         };
                         scale_level_slug?: string | null;
                     }[];
+                    /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                    ready_criteria: ("days" | "classes" | "skills")[];
                     /** @enum {string} */
                     style: "belt" | "level";
                 };
@@ -45065,6 +45386,12 @@ export interface components {
                     requirements: {
                         min_classes?: number;
                         min_days?: number;
+                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                        skill_ids?: (string | null)[];
+                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                        skill_notes?: (string | null)[];
+                        /** @description A video link (https) for each skill, in the order of `skills` */
+                        skill_videos?: (string | null)[];
                         skills?: string[];
                     };
                     scale_level_slug?: string | null;
@@ -45077,6 +45404,8 @@ export interface components {
                         done: number | null;
                         needed: number | null;
                     };
+                    /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                    criteria?: ("days" | "classes" | "skills")[];
                     days: {
                         done: number | null;
                         needed: number | null;
@@ -45084,13 +45413,16 @@ export interface components {
                     /** Format: uuid */
                     rank_id: string;
                     ready: boolean;
+                    skill_ids?: (string | null)[];
                     skills: string[];
                     /** @description ADR-400: the next rank's skills the coach ticked so far */
                     skills_checked?: {
                         /** Format: date */
                         checked_on: string;
                         note?: string | null;
+                        /** @description The skill's current text */
                         skill: string;
+                        skill_id?: string | null;
                     }[];
                 } | null;
             }[];
@@ -45118,9 +45450,17 @@ export interface components {
                 requirements: {
                     min_classes?: number;
                     min_days?: number;
+                    /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                    skill_ids?: (string | null)[];
+                    /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                    skill_notes?: (string | null)[];
+                    /** @description A video link (https) for each skill, in the order of `skills` */
+                    skill_videos?: (string | null)[];
                     skills?: string[];
                 };
             }[];
+            /** @description What a ladder copied from it counts by default */
+            ready: ("days" | "classes" | "skills")[];
             /**
              * @description A federation's or school's system, or Palee's own levels
              * @enum {string}
@@ -110551,6 +110891,8 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description The training kinds of the box's profile; the picker shows them first */
+                        box_disciplines: string[];
                         colors: string[];
                         ladders: {
                             class_type_ids: string[];
@@ -110575,10 +110917,18 @@ export interface operations {
                                 requirements: {
                                     min_classes?: number;
                                     min_days?: number;
+                                    /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                    skill_ids?: (string | null)[];
+                                    /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                    skill_notes?: (string | null)[];
+                                    /** @description A video link (https) for each skill, in the order of `skills` */
+                                    skill_videos?: (string | null)[];
                                     skills?: string[];
                                 };
                                 scale_level_slug?: string | null;
                             }[];
+                            /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                            ready_criteria: ("days" | "classes" | "skills")[];
                             /** @enum {string} */
                             style: "belt" | "level";
                         }[];
@@ -110599,9 +110949,17 @@ export interface operations {
                                 requirements: {
                                     min_classes?: number;
                                     min_days?: number;
+                                    /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                    skill_ids?: (string | null)[];
+                                    /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                    skill_notes?: (string | null)[];
+                                    /** @description A video link (https) for each skill, in the order of `skills` */
+                                    skill_videos?: (string | null)[];
                                     skills?: string[];
                                 };
                             }[];
+                            /** @description What a ladder copied from it counts by default */
+                            ready: ("days" | "classes" | "skills")[];
                             /**
                              * @description A federation's or school's system, or Palee's own levels
                              * @enum {string}
@@ -110653,10 +111011,18 @@ export interface operations {
                         requirements?: {
                             min_classes?: number;
                             min_days?: number;
+                            /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                            skill_ids?: (string | null)[];
+                            /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                            skill_notes?: (string | null)[];
+                            /** @description A video link (https) for each skill, in the order of `skills` */
+                            skill_videos?: (string | null)[];
                             skills?: string[];
                         };
                         scale_level_slug?: string | null;
                     }[];
+                    /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                    ready_criteria?: ("days" | "classes" | "skills")[];
                     /** @enum {string} */
                     style?: "belt" | "level";
                     /** @description Start from a template («Πρότυπα»); fields sent override it */
@@ -110696,10 +111062,18 @@ export interface operations {
                                 requirements: {
                                     min_classes?: number;
                                     min_days?: number;
+                                    /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                    skill_ids?: (string | null)[];
+                                    /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                    skill_notes?: (string | null)[];
+                                    /** @description A video link (https) for each skill, in the order of `skills` */
+                                    skill_videos?: (string | null)[];
                                     skills?: string[];
                                 };
                                 scale_level_slug?: string | null;
                             }[];
+                            /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                            ready_criteria: ("days" | "classes" | "skills")[];
                             /** @enum {string} */
                             style: "belt" | "level";
                         };
@@ -110757,10 +111131,18 @@ export interface operations {
                         requirements?: {
                             min_classes?: number;
                             min_days?: number;
+                            /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                            skill_ids?: (string | null)[];
+                            /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                            skill_notes?: (string | null)[];
+                            /** @description A video link (https) for each skill, in the order of `skills` */
+                            skill_videos?: (string | null)[];
                             skills?: string[];
                         };
                         scale_level_slug?: string | null;
                     }[];
+                    /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                    ready_criteria?: ("days" | "classes" | "skills")[];
                     /** @enum {string} */
                     style?: "belt" | "level";
                     /** @description Start from a template («Πρότυπα»); fields sent override it */
@@ -110800,10 +111182,18 @@ export interface operations {
                                 requirements: {
                                     min_classes?: number;
                                     min_days?: number;
+                                    /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                    skill_ids?: (string | null)[];
+                                    /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                    skill_notes?: (string | null)[];
+                                    /** @description A video link (https) for each skill, in the order of `skills` */
+                                    skill_videos?: (string | null)[];
                                     skills?: string[];
                                 };
                                 scale_level_slug?: string | null;
                             }[];
+                            /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                            ready_criteria: ("days" | "classes" | "skills")[];
                             /** @enum {string} */
                             style: "belt" | "level";
                         };
@@ -133069,6 +133459,12 @@ export interface operations {
                                     requirements: {
                                         min_classes?: number;
                                         min_days?: number;
+                                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                        skill_ids?: (string | null)[];
+                                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                        skill_notes?: (string | null)[];
+                                        /** @description A video link (https) for each skill, in the order of `skills` */
+                                        skill_videos?: (string | null)[];
                                         skills?: string[];
                                     };
                                     scale_level_slug?: string | null;
@@ -133121,10 +133517,18 @@ export interface operations {
                                     requirements: {
                                         min_classes?: number;
                                         min_days?: number;
+                                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                        skill_ids?: (string | null)[];
+                                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                        skill_notes?: (string | null)[];
+                                        /** @description A video link (https) for each skill, in the order of `skills` */
+                                        skill_videos?: (string | null)[];
                                         skills?: string[];
                                     };
                                     scale_level_slug?: string | null;
                                 }[];
+                                /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                                ready_criteria: ("days" | "classes" | "skills")[];
                                 /** @enum {string} */
                                 style: "belt" | "level";
                             };
@@ -133143,6 +133547,12 @@ export interface operations {
                                 requirements: {
                                     min_classes?: number;
                                     min_days?: number;
+                                    /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                    skill_ids?: (string | null)[];
+                                    /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                    skill_notes?: (string | null)[];
+                                    /** @description A video link (https) for each skill, in the order of `skills` */
+                                    skill_videos?: (string | null)[];
                                     skills?: string[];
                                 };
                                 scale_level_slug?: string | null;
@@ -133155,6 +133565,8 @@ export interface operations {
                                     done: number | null;
                                     needed: number | null;
                                 };
+                                /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                                criteria?: ("days" | "classes" | "skills")[];
                                 days: {
                                     done: number | null;
                                     needed: number | null;
@@ -133162,13 +133574,16 @@ export interface operations {
                                 /** Format: uuid */
                                 rank_id: string;
                                 ready: boolean;
+                                skill_ids?: (string | null)[];
                                 skills: string[];
                                 /** @description ADR-400: the next rank's skills the coach ticked so far */
                                 skills_checked?: {
                                     /** Format: date */
                                     checked_on: string;
                                     note?: string | null;
+                                    /** @description The skill's current text */
                                     skill: string;
+                                    skill_id?: string | null;
                                 }[];
                             } | null;
                         }[];
@@ -139108,6 +139523,12 @@ export interface operations {
                                     requirements: {
                                         min_classes?: number;
                                         min_days?: number;
+                                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                        skill_ids?: (string | null)[];
+                                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                        skill_notes?: (string | null)[];
+                                        /** @description A video link (https) for each skill, in the order of `skills` */
+                                        skill_videos?: (string | null)[];
                                         skills?: string[];
                                     };
                                     scale_level_slug?: string | null;
@@ -139160,10 +139581,18 @@ export interface operations {
                                     requirements: {
                                         min_classes?: number;
                                         min_days?: number;
+                                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                        skill_ids?: (string | null)[];
+                                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                        skill_notes?: (string | null)[];
+                                        /** @description A video link (https) for each skill, in the order of `skills` */
+                                        skill_videos?: (string | null)[];
                                         skills?: string[];
                                     };
                                     scale_level_slug?: string | null;
                                 }[];
+                                /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                                ready_criteria: ("days" | "classes" | "skills")[];
                                 /** @enum {string} */
                                 style: "belt" | "level";
                             };
@@ -139182,6 +139611,12 @@ export interface operations {
                                 requirements: {
                                     min_classes?: number;
                                     min_days?: number;
+                                    /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                    skill_ids?: (string | null)[];
+                                    /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                    skill_notes?: (string | null)[];
+                                    /** @description A video link (https) for each skill, in the order of `skills` */
+                                    skill_videos?: (string | null)[];
                                     skills?: string[];
                                 };
                                 scale_level_slug?: string | null;
@@ -139194,6 +139629,8 @@ export interface operations {
                                     done: number | null;
                                     needed: number | null;
                                 };
+                                /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                                criteria?: ("days" | "classes" | "skills")[];
                                 days: {
                                     done: number | null;
                                     needed: number | null;
@@ -139201,13 +139638,16 @@ export interface operations {
                                 /** Format: uuid */
                                 rank_id: string;
                                 ready: boolean;
+                                skill_ids?: (string | null)[];
                                 skills: string[];
                                 /** @description ADR-400: the next rank's skills the coach ticked so far */
                                 skills_checked?: {
                                     /** Format: date */
                                     checked_on: string;
                                     note?: string | null;
+                                    /** @description The skill's current text */
                                     skill: string;
+                                    skill_id?: string | null;
                                 }[];
                             } | null;
                         }[];
@@ -139330,7 +139770,13 @@ export interface operations {
                     note?: string | null;
                     /** Format: uuid */
                     rank_id: string;
-                    skill: string;
+                    /** @description The skill's text, when no `skill_id` is sent */
+                    skill?: string;
+                    /**
+                     * Format: uuid
+                     * @description The skill's stable id
+                     */
+                    skill_id?: string;
                 };
             };
         };
@@ -139364,6 +139810,12 @@ export interface operations {
                                     requirements: {
                                         min_classes?: number;
                                         min_days?: number;
+                                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                        skill_ids?: (string | null)[];
+                                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                        skill_notes?: (string | null)[];
+                                        /** @description A video link (https) for each skill, in the order of `skills` */
+                                        skill_videos?: (string | null)[];
                                         skills?: string[];
                                     };
                                     scale_level_slug?: string | null;
@@ -139416,10 +139868,18 @@ export interface operations {
                                     requirements: {
                                         min_classes?: number;
                                         min_days?: number;
+                                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                        skill_ids?: (string | null)[];
+                                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                        skill_notes?: (string | null)[];
+                                        /** @description A video link (https) for each skill, in the order of `skills` */
+                                        skill_videos?: (string | null)[];
                                         skills?: string[];
                                     };
                                     scale_level_slug?: string | null;
                                 }[];
+                                /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                                ready_criteria: ("days" | "classes" | "skills")[];
                                 /** @enum {string} */
                                 style: "belt" | "level";
                             };
@@ -139438,6 +139898,12 @@ export interface operations {
                                 requirements: {
                                     min_classes?: number;
                                     min_days?: number;
+                                    /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                    skill_ids?: (string | null)[];
+                                    /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                    skill_notes?: (string | null)[];
+                                    /** @description A video link (https) for each skill, in the order of `skills` */
+                                    skill_videos?: (string | null)[];
                                     skills?: string[];
                                 };
                                 scale_level_slug?: string | null;
@@ -139450,6 +139916,8 @@ export interface operations {
                                     done: number | null;
                                     needed: number | null;
                                 };
+                                /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                                criteria?: ("days" | "classes" | "skills")[];
                                 days: {
                                     done: number | null;
                                     needed: number | null;
@@ -139457,13 +139925,16 @@ export interface operations {
                                 /** Format: uuid */
                                 rank_id: string;
                                 ready: boolean;
+                                skill_ids?: (string | null)[];
                                 skills: string[];
                                 /** @description ADR-400: the next rank's skills the coach ticked so far */
                                 skills_checked?: {
                                     /** Format: date */
                                     checked_on: string;
                                     note?: string | null;
+                                    /** @description The skill's current text */
                                     skill: string;
+                                    skill_id?: string | null;
                                 }[];
                             } | null;
                         }[];
@@ -141649,6 +142120,284 @@ export interface operations {
             };
             /** @description Already withdrawn */
             409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.StaffRanksController.ready": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ready */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        people: {
+                            current: {
+                                /** Rank */
+                                rank: {
+                                    /**
+                                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                     * @enum {string|null}
+                                     */
+                                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                    /** Format: uuid */
+                                    id: string;
+                                    max_stripes: number;
+                                    name: string;
+                                    position: number;
+                                    /** RankRequirements */
+                                    requirements: {
+                                        min_classes?: number;
+                                        min_days?: number;
+                                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                        skill_ids?: (string | null)[];
+                                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                        skill_notes?: (string | null)[];
+                                        /** @description A video link (https) for each skill, in the order of `skills` */
+                                        skill_videos?: (string | null)[];
+                                        skills?: string[];
+                                    };
+                                    scale_level_slug?: string | null;
+                                };
+                                stripes: number;
+                            };
+                            ladder: {
+                                /** Format: uuid */
+                                id: string;
+                                name: string;
+                                style: string;
+                            };
+                            /** Rank */
+                            next: {
+                                /**
+                                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                 * @enum {string|null}
+                                 */
+                                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                /** Format: uuid */
+                                id: string;
+                                max_stripes: number;
+                                name: string;
+                                position: number;
+                                /** RankRequirements */
+                                requirements: {
+                                    min_classes?: number;
+                                    min_days?: number;
+                                    /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                    skill_ids?: (string | null)[];
+                                    /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                    skill_notes?: (string | null)[];
+                                    /** @description A video link (https) for each skill, in the order of `skills` */
+                                    skill_videos?: (string | null)[];
+                                    skills?: string[];
+                                };
+                                scale_level_slug?: string | null;
+                            };
+                            nickname?: string | null;
+                            /** @description Towards the next rank; `ready` only says the counted requirements are met */
+                            progress: {
+                                /** @description Every listed skill is ticked (true when the rank lists none) */
+                                all_skills_checked?: boolean;
+                                classes: {
+                                    done: number | null;
+                                    needed: number | null;
+                                };
+                                /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                                criteria?: ("days" | "classes" | "skills")[];
+                                days: {
+                                    done: number | null;
+                                    needed: number | null;
+                                };
+                                /** Format: uuid */
+                                rank_id: string;
+                                ready: boolean;
+                                skill_ids?: (string | null)[];
+                                skills: string[];
+                                /** @description ADR-400: the next rank's skills the coach ticked so far */
+                                skills_checked?: {
+                                    /** Format: date */
+                                    checked_on: string;
+                                    note?: string | null;
+                                    /** @description The skill's current text */
+                                    skill: string;
+                                    skill_id?: string | null;
+                                }[];
+                            } | null;
+                            /** Format: uuid */
+                            user_id: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description No coaching */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.StaffRanksController.class_skills": {
+        parameters: {
+            query: {
+                /** @description Comma-separated user ids (up to 100) */
+                user_ids: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Class skills */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        ladders: {
+                            class_type_ids: string[];
+                            /** @description A workout type (ADR-275) */
+                            discipline: string;
+                            family?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            name: string;
+                            ranks: {
+                                /**
+                                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                 * @enum {string|null}
+                                 */
+                                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                /** Format: uuid */
+                                id: string;
+                                max_stripes: number;
+                                name: string;
+                                position: number;
+                                /** RankRequirements */
+                                requirements: {
+                                    min_classes?: number;
+                                    min_days?: number;
+                                    /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                    skill_ids?: (string | null)[];
+                                    /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                    skill_notes?: (string | null)[];
+                                    /** @description A video link (https) for each skill, in the order of `skills` */
+                                    skill_videos?: (string | null)[];
+                                    skills?: string[];
+                                };
+                                scale_level_slug?: string | null;
+                            }[];
+                            /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                            ready_criteria: ("days" | "classes" | "skills")[];
+                            /** @enum {string} */
+                            style: "belt" | "level";
+                        }[];
+                        people: {
+                            checked: {
+                                /** Format: uuid */
+                                rank_id: string;
+                                /** Format: uuid */
+                                skill_id: string;
+                            }[];
+                            next_rank_ids: string[];
+                            /** @description The coach may tick for them */
+                            reachable: boolean;
+                            /** Format: uuid */
+                            user_id: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description No coaching */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.StaffRanksController.batch_skills": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description false unticks; true when left out */
+                    checked?: boolean;
+                    /** Format: date */
+                    checked_on?: string;
+                    /** Format: uuid */
+                    rank_id: string;
+                    skill?: string;
+                    /** Format: uuid */
+                    skill_id?: string;
+                    user_ids: string[];
+                };
+            };
+        };
+        responses: {
+            /** @description Who changed and who was skipped */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        skipped: {
+                            /** @enum {string} */
+                            reason: "not_your_client" | "other_rank";
+                            /** Format: uuid */
+                            user_id: string;
+                        }[];
+                        updated: string[];
+                    };
+                };
+            };
+            /** @description No coaching */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Not a skill of that rank */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };

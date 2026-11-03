@@ -16,7 +16,10 @@ import {
   paceLane,
   paceRows,
   promotionChoices,
+  rankCriteria,
   rankProgress,
+  rankSkills,
+  skillTicks,
 } from "./body-devices";
 
 const checkpoint = (round: number, ghost: number, at: number | null, delta: number | null) => ({
@@ -122,7 +125,7 @@ describe("barcodes and meal foods (ADR-376)", () => {
 describe("belts and levels (ADR-377)", () => {
   const rank = (id: string, name: string, maxStripes = 4) => ({ id, position: 0, name, color: "blue" as const, max_stripes: maxStripes, requirements: {}, scale_level_slug: null });
   const standing = (overrides: Partial<RankStanding> = {}): RankStanding => ({
-    ladder: { id: "l", name: "BJJ", discipline: "bjj_grappling", style: "belt", class_type_ids: [], ranks: [rank("w", "White"), rank("b", "Blue")] },
+    ladder: { id: "l", name: "BJJ", discipline: "bjj_grappling", style: "belt", class_type_ids: [], ready_criteria: ["classes", "days"], ranks: [rank("w", "White"), rank("b", "Blue")] },
     current: { award_id: "a", rank: rank("w", "White"), stripes: 2, awarded_on: "2025-03-01" },
     next: rank("b", "Blue"),
     progress: { rank_id: "b", classes: { done: 40, needed: 80 }, days: { done: 730, needed: 730 }, skills: [], ready: false },
@@ -138,6 +141,31 @@ describe("belts and levels (ADR-377)", () => {
   it("averages the counted requirements", () => {
     expect(rankProgress(standing())).toBe(0.75);
     expect(rankProgress(standing({ progress: null }))).toBeNull();
+  });
+
+  it("counts only what the ladder counts, skills by their stable id", () => {
+    const blue = { ...rank("b", "Blue"), requirements: { skills: ["Armbar", "Triangle"], skill_ids: ["s1", "s2"], skill_notes: [null, "Both sides"] } };
+    const skillsOnly = standing({
+      next: blue,
+      progress: {
+        rank_id: "b",
+        classes: { done: 0, needed: 80 },
+        days: { done: 0, needed: 730 },
+        skills: ["Armbar", "Triangle"],
+        // Ticked as an older text: the id still matches.
+        skills_checked: [{ skill: "Armbar (old)", skill_id: "s1", checked_on: "2026-10-01", note: null }],
+        criteria: ["skills"],
+        ready: false,
+      },
+    });
+    expect(rankCriteria(skillsOnly)).toEqual(["skills"]);
+    expect(rankProgress(skillsOnly)).toBe(0.5);
+    expect(skillTicks(skillsOnly).map((tick) => [tick.name, tick.checked, tick.note])).toEqual([
+      ["Armbar", true, null],
+      ["Triangle", false, "Both sides"],
+    ]);
+    expect(rankCriteria(standing({ ladder: { ...standing().ladder, ready_criteria: "x" as never } }))).toEqual(["days", "classes"]);
+    expect(rankSkills({ requirements: { skills: "nope" as never } })).toEqual([]);
   });
 
   it("offers a stripe or the next rank, never a lower one", () => {

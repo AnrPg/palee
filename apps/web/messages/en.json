@@ -4911,8 +4911,8 @@
     "semanticWorkoutKravMaga": "Krav Maga",
     "semanticWorkoutBallet": "Ballet",
     "semanticWorkoutContemporaryDance": "Contemporary & modern dance",
-    "semanticWorkoutLatinDance": "Latin dance (salsa, bachata)",
-    "semanticWorkoutStreetDance": "Street dance (hip-hop, heels, reggaeton)",
+    "semanticWorkoutLatinDance": "Latin dance (salsa, bachata, reggaeton)",
+    "semanticWorkoutStreetDance": "Street dance (hip-hop, heels)",
     "semanticWorkoutSkateboarding": "Skateboarding"
   },
   "PrSharing": {
@@ -6317,8 +6317,8 @@
       "krav_maga": "Krav Maga",
       "ballet": "Ballet",
       "contemporary_dance": "Contemporary & modern dance",
-      "latin_dance": "Latin dance (salsa, bachata)",
-      "street_dance": "Street dance (hip-hop, heels, reggaeton)",
+      "latin_dance": "Latin dance (salsa, bachata, reggaeton)",
+      "street_dance": "Street dance (hip-hop, heels)",
       "skateboarding": "Skateboarding"
     },
     "audience": {
@@ -16959,7 +16959,6 @@
       "scaleLevel": "Suggested scale level",
       "noScaleLevel": "No suggestion",
       "skills": "Skills",
-      "skillsPlaceholder": "Skills, separated by commas",
       "deleteLadder": "Delete ladder",
       "deleteLadderConfirm": "Delete the ladder “{name}”?",
       "deleteLadderAction": "Delete",
@@ -16987,7 +16986,94 @@
       "withdrawReasonRequired": "Write the reason.",
       "towards": "For {rank}:",
       "history": "History",
-      "historyStripe": "{rank} +{stripes}"
+      "historyStripe": "{rank} +{stripes}",
+      "picker": {
+        "count": "{count, plural, one {# template} other {# templates}}",
+        "step1": "Step 1 of 2 · What do you teach?",
+        "step2": "Step 2 of 2 · Which system?",
+        "forYourBox": "For your box",
+        "otherKinds": "All other kinds",
+        "scratch": "From scratch",
+        "back": "Back to the kinds",
+        "continue": "Continue",
+        "sourcePalee": "Palee levels",
+        "sourceFederation": "Official system",
+        "ranksCount": "{count, plural, one {# rank} other {# ranks}}",
+        "levelsCount": "{count, plural, one {# level} other {# levels}}",
+        "skillsCount": "{count, plural, one {# skill} other {# skills}}"
+      },
+      "criteria": {
+        "title": "Counts for “Meets the requirements”",
+        "days": "Days",
+        "classes": "Classes attended",
+        "skills": "Skills",
+        "required": "Choose at least one."
+      },
+      "addSkill": "Add skill",
+      "unnamedRank": "New rank",
+      "section": {
+        "days": "{count, plural, one {# day} other {# days}}",
+        "classes": "{count, plural, one {# class attended} other {# classes attended}}",
+        "stripes": "{count, plural, one {up to # stripe} other {up to # stripes}}",
+        "none": "No requirements"
+      },
+      "skillRow": {
+        "handle": "Move: {name} (arrow keys)",
+        "unnamed": "New skill",
+        "name": "Skill",
+        "more": "More for {name}",
+        "remove": "Remove: {name}",
+        "done": "Done",
+        "up": "Move up",
+        "down": "Move down",
+        "note": "Note for the member",
+        "noteHint": "Up to 500 characters. They see it under the skill.",
+        "video": "Video link",
+        "videoInvalid": "Use an https link."
+      },
+      "skillsDone": "{done} of {total, plural, one {# skill} other {# skills}}",
+      "tick": {
+        "more": "Date and note: {name}",
+        "failed": "The skill wasn't saved.",
+        "untick": "Untick",
+        "save": "Tick",
+        "noFuture": "Choose today or an earlier day."
+      },
+      "class": {
+        "open": "Skill",
+        "title": "One skill for the class",
+        "skill": "Skill",
+        "pick": "Choose a skill",
+        "people": "People in the class",
+        "notYours": "Not your client",
+        "otherRank": "Working towards another rank"
+      },
+      "readyList": {
+        "title": "Meets the requirements",
+        "someone": "Member",
+        "line": "{ladder} · for {rank}"
+      },
+      "my": {
+        "title": "My progress",
+        "towards": "towards {rank}",
+        "towardsSkills": "towards {rank}: {done} of {total, plural, one {# skill} other {# skills}}",
+        "path": "All ranks",
+        "now": "now",
+        "next": "next",
+        "note": "Note",
+        "video": "Video",
+        "openVideo": "Open the video",
+        "diplomas": "Diplomas",
+        "nextRank": "Next rank",
+        "days": "{done} of {needed, plural, one {# day} other {# days}}",
+        "classes": "{done} of {needed, plural, one {# class attended} other {# classes attended}}",
+        "left": "Still to learn",
+        "have": "You have:"
+      },
+      "notice": {
+        "title": "New skills",
+        "body": "{rank}: {count, plural, one {# new skill} other {# new skills}}"
+      }
     }
   },
   "PlatformReviewReports": {

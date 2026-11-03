@@ -80882,6 +80882,35 @@
                 "minimum": 0,
                 "type": "integer"
               },
+              "skill_ids": {
+                "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                "items": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "maxItems": 20,
+                "type": "array"
+              },
+              "skill_notes": {
+                "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                "items": {
+                  "maxLength": 500,
+                  "nullable": true,
+                  "type": "string"
+                },
+                "maxItems": 20,
+                "type": "array"
+              },
+              "skill_videos": {
+                "description": "A video link (https) for each skill, in the order of `skills`",
+                "items": {
+                  "maxLength": 500,
+                  "nullable": true,
+                  "type": "string"
+                },
+                "maxItems": 20,
+                "type": "array"
+              },
               "skills": {
                 "items": {
                   "maxLength": 120,
@@ -81124,6 +81153,230 @@
         "title": "RankAwardRevokeRequest",
         "type": "object"
       },
+      "RankClassSkillsResponse": {
+        "properties": {
+          "ladders": {
+            "items": {
+              "properties": {
+                "class_type_ids": {
+                  "items": {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "discipline": {
+                  "description": "A workout type (ADR-275)",
+                  "type": "string"
+                },
+                "family": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ranks": {
+                  "items": {
+                    "properties": {
+                      "color": {
+                        "description": "Belt palette key; the screen maps it to the theme's --belt-* token",
+                        "enum": [
+                          "white",
+                          "grey",
+                          "yellow",
+                          "orange",
+                          "green",
+                          "blue",
+                          "purple",
+                          "brown",
+                          "red",
+                          "black",
+                          "pink"
+                        ],
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "id": {
+                        "format": "uuid",
+                        "type": "string"
+                      },
+                      "max_stripes": {
+                        "type": "integer"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "position": {
+                        "type": "integer"
+                      },
+                      "requirements": {
+                        "properties": {
+                          "min_classes": {
+                            "maximum": 2000,
+                            "minimum": 0,
+                            "type": "integer"
+                          },
+                          "min_days": {
+                            "maximum": 3650,
+                            "minimum": 0,
+                            "type": "integer"
+                          },
+                          "skill_ids": {
+                            "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                            "items": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "maxItems": 20,
+                            "type": "array"
+                          },
+                          "skill_notes": {
+                            "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                            "items": {
+                              "maxLength": 500,
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "maxItems": 20,
+                            "type": "array"
+                          },
+                          "skill_videos": {
+                            "description": "A video link (https) for each skill, in the order of `skills`",
+                            "items": {
+                              "maxLength": 500,
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "maxItems": 20,
+                            "type": "array"
+                          },
+                          "skills": {
+                            "items": {
+                              "maxLength": 120,
+                              "type": "string"
+                            },
+                            "maxItems": 20,
+                            "type": "array"
+                          }
+                        },
+                        "title": "RankRequirements",
+                        "type": "object"
+                      },
+                      "scale_level_slug": {
+                        "nullable": true,
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "max_stripes",
+                      "name",
+                      "position",
+                      "requirements"
+                    ],
+                    "title": "Rank",
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "ready_criteria": {
+                  "description": "What counts for «Πληροί τις προϋποθέσεις» on this ladder",
+                  "items": {
+                    "enum": [
+                      "days",
+                      "classes",
+                      "skills"
+                    ],
+                    "type": "string"
+                  },
+                  "maxItems": 3,
+                  "minItems": 1,
+                  "type": "array"
+                },
+                "style": {
+                  "enum": [
+                    "belt",
+                    "level"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "class_type_ids",
+                "discipline",
+                "id",
+                "name",
+                "ranks",
+                "ready_criteria",
+                "style"
+              ],
+              "title": "RankLadder",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "people": {
+            "items": {
+              "properties": {
+                "checked": {
+                  "items": {
+                    "properties": {
+                      "rank_id": {
+                        "format": "uuid",
+                        "type": "string"
+                      },
+                      "skill_id": {
+                        "format": "uuid",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "rank_id",
+                      "skill_id"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "next_rank_ids": {
+                  "items": {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "reachable": {
+                  "description": "The coach may tick for them",
+                  "type": "boolean"
+                },
+                "user_id": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "checked",
+                "next_rank_ids",
+                "reachable",
+                "user_id"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "ladders",
+          "people"
+        ],
+        "title": "RankClassSkillsResponse",
+        "type": "object"
+      },
       "RankInput": {
         "properties": {
           "color": {
@@ -81170,6 +81423,35 @@
                 "maximum": 3650,
                 "minimum": 0,
                 "type": "integer"
+              },
+              "skill_ids": {
+                "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                "items": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "maxItems": 20,
+                "type": "array"
+              },
+              "skill_notes": {
+                "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                "items": {
+                  "maxLength": 500,
+                  "nullable": true,
+                  "type": "string"
+                },
+                "maxItems": 20,
+                "type": "array"
+              },
+              "skill_videos": {
+                "description": "A video link (https) for each skill, in the order of `skills`",
+                "items": {
+                  "maxLength": 500,
+                  "nullable": true,
+                  "type": "string"
+                },
+                "maxItems": 20,
+                "type": "array"
               },
               "skills": {
                 "items": {
@@ -81264,6 +81546,35 @@
                       "minimum": 0,
                       "type": "integer"
                     },
+                    "skill_ids": {
+                      "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                      "items": {
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "maxItems": 20,
+                      "type": "array"
+                    },
+                    "skill_notes": {
+                      "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                      "items": {
+                        "maxLength": 500,
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "maxItems": 20,
+                      "type": "array"
+                    },
+                    "skill_videos": {
+                      "description": "A video link (https) for each skill, in the order of `skills`",
+                      "items": {
+                        "maxLength": 500,
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "maxItems": 20,
+                      "type": "array"
+                    },
                     "skills": {
                       "items": {
                         "maxLength": 120,
@@ -81293,6 +81604,20 @@
             },
             "type": "array"
           },
+          "ready_criteria": {
+            "description": "What counts for «Πληροί τις προϋποθέσεις» on this ladder",
+            "items": {
+              "enum": [
+                "days",
+                "classes",
+                "skills"
+              ],
+              "type": "string"
+            },
+            "maxItems": 3,
+            "minItems": 1,
+            "type": "array"
+          },
           "style": {
             "enum": [
               "belt",
@@ -81307,6 +81632,7 @@
           "id",
           "name",
           "ranks",
+          "ready_criteria",
           "style"
         ],
         "title": "RankLadder",
@@ -81399,6 +81725,35 @@
                       "minimum": 0,
                       "type": "integer"
                     },
+                    "skill_ids": {
+                      "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                      "items": {
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "maxItems": 20,
+                      "type": "array"
+                    },
+                    "skill_notes": {
+                      "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                      "items": {
+                        "maxLength": 500,
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "maxItems": 20,
+                      "type": "array"
+                    },
+                    "skill_videos": {
+                      "description": "A video link (https) for each skill, in the order of `skills`",
+                      "items": {
+                        "maxLength": 500,
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "maxItems": 20,
+                      "type": "array"
+                    },
                     "skills": {
                       "items": {
                         "maxLength": 120,
@@ -81423,6 +81778,20 @@
               "type": "object"
             },
             "maxItems": 30,
+            "minItems": 1,
+            "type": "array"
+          },
+          "ready_criteria": {
+            "description": "What counts for «Πληροί τις προϋποθέσεις» on this ladder",
+            "items": {
+              "enum": [
+                "days",
+                "classes",
+                "skills"
+              ],
+              "type": "string"
+            },
+            "maxItems": 3,
             "minItems": 1,
             "type": "array"
           },
@@ -81513,6 +81882,35 @@
                           "minimum": 0,
                           "type": "integer"
                         },
+                        "skill_ids": {
+                          "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                          "items": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "maxItems": 20,
+                          "type": "array"
+                        },
+                        "skill_notes": {
+                          "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                          "items": {
+                            "maxLength": 500,
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "maxItems": 20,
+                          "type": "array"
+                        },
+                        "skill_videos": {
+                          "description": "A video link (https) for each skill, in the order of `skills`",
+                          "items": {
+                            "maxLength": 500,
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "maxItems": 20,
+                          "type": "array"
+                        },
                         "skills": {
                           "items": {
                             "maxLength": 120,
@@ -81542,6 +81940,20 @@
                 },
                 "type": "array"
               },
+              "ready_criteria": {
+                "description": "What counts for «Πληροί τις προϋποθέσεις» on this ladder",
+                "items": {
+                  "enum": [
+                    "days",
+                    "classes",
+                    "skills"
+                  ],
+                  "type": "string"
+                },
+                "maxItems": 3,
+                "minItems": 1,
+                "type": "array"
+              },
               "style": {
                 "enum": [
                   "belt",
@@ -81556,6 +81968,7 @@
               "id",
               "name",
               "ranks",
+              "ready_criteria",
               "style"
             ],
             "title": "RankLadder",
@@ -81570,6 +81983,13 @@
       },
       "RankLaddersResponse": {
         "properties": {
+          "box_disciplines": {
+            "description": "The training kinds of the box's profile; the picker shows them first",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
           "colors": {
             "items": {
               "type": "string"
@@ -81647,6 +82067,35 @@
                             "minimum": 0,
                             "type": "integer"
                           },
+                          "skill_ids": {
+                            "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                            "items": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "maxItems": 20,
+                            "type": "array"
+                          },
+                          "skill_notes": {
+                            "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                            "items": {
+                              "maxLength": 500,
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "maxItems": 20,
+                            "type": "array"
+                          },
+                          "skill_videos": {
+                            "description": "A video link (https) for each skill, in the order of `skills`",
+                            "items": {
+                              "maxLength": 500,
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "maxItems": 20,
+                            "type": "array"
+                          },
                           "skills": {
                             "items": {
                               "maxLength": 120,
@@ -81676,6 +82125,20 @@
                   },
                   "type": "array"
                 },
+                "ready_criteria": {
+                  "description": "What counts for «Πληροί τις προϋποθέσεις» on this ladder",
+                  "items": {
+                    "enum": [
+                      "days",
+                      "classes",
+                      "skills"
+                    ],
+                    "type": "string"
+                  },
+                  "maxItems": 3,
+                  "minItems": 1,
+                  "type": "array"
+                },
                 "style": {
                   "enum": [
                     "belt",
@@ -81690,6 +82153,7 @@
                 "id",
                 "name",
                 "ranks",
+                "ready_criteria",
                 "style"
               ],
               "title": "RankLadder",
@@ -81753,6 +82217,35 @@
                             "minimum": 0,
                             "type": "integer"
                           },
+                          "skill_ids": {
+                            "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                            "items": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "maxItems": 20,
+                            "type": "array"
+                          },
+                          "skill_notes": {
+                            "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                            "items": {
+                              "maxLength": 500,
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "maxItems": 20,
+                            "type": "array"
+                          },
+                          "skill_videos": {
+                            "description": "A video link (https) for each skill, in the order of `skills`",
+                            "items": {
+                              "maxLength": 500,
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "maxItems": 20,
+                            "type": "array"
+                          },
                           "skills": {
                             "items": {
                               "maxLength": 120,
@@ -81773,6 +82266,20 @@
                     ],
                     "type": "object"
                   },
+                  "type": "array"
+                },
+                "ready": {
+                  "description": "What a ladder copied from it counts by default",
+                  "items": {
+                    "enum": [
+                      "days",
+                      "classes",
+                      "skills"
+                    ],
+                    "type": "string"
+                  },
+                  "maxItems": 3,
+                  "minItems": 1,
                   "type": "array"
                 },
                 "source": {
@@ -81802,7 +82309,8 @@
                 "style",
                 "source",
                 "system",
-                "ranks"
+                "ranks",
+                "ready"
               ],
               "title": "RankTemplate",
               "type": "object"
@@ -81811,11 +82319,394 @@
           }
         },
         "required": [
+          "box_disciplines",
           "colors",
           "ladders",
           "templates"
         ],
         "title": "RankLaddersResponse",
+        "type": "object"
+      },
+      "RankReadyResponse": {
+        "description": "People who meet what their ladder counts for the next rank; the coach decides",
+        "properties": {
+          "people": {
+            "items": {
+              "properties": {
+                "current": {
+                  "properties": {
+                    "rank": {
+                      "properties": {
+                        "color": {
+                          "description": "Belt palette key; the screen maps it to the theme's --belt-* token",
+                          "enum": [
+                            "white",
+                            "grey",
+                            "yellow",
+                            "orange",
+                            "green",
+                            "blue",
+                            "purple",
+                            "brown",
+                            "red",
+                            "black",
+                            "pink"
+                          ],
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "max_stripes": {
+                          "type": "integer"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "position": {
+                          "type": "integer"
+                        },
+                        "requirements": {
+                          "properties": {
+                            "min_classes": {
+                              "maximum": 2000,
+                              "minimum": 0,
+                              "type": "integer"
+                            },
+                            "min_days": {
+                              "maximum": 3650,
+                              "minimum": 0,
+                              "type": "integer"
+                            },
+                            "skill_ids": {
+                              "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                              "items": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "maxItems": 20,
+                              "type": "array"
+                            },
+                            "skill_notes": {
+                              "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                              "items": {
+                                "maxLength": 500,
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "maxItems": 20,
+                              "type": "array"
+                            },
+                            "skill_videos": {
+                              "description": "A video link (https) for each skill, in the order of `skills`",
+                              "items": {
+                                "maxLength": 500,
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "maxItems": 20,
+                              "type": "array"
+                            },
+                            "skills": {
+                              "items": {
+                                "maxLength": 120,
+                                "type": "string"
+                              },
+                              "maxItems": 20,
+                              "type": "array"
+                            }
+                          },
+                          "title": "RankRequirements",
+                          "type": "object"
+                        },
+                        "scale_level_slug": {
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "max_stripes",
+                        "name",
+                        "position",
+                        "requirements"
+                      ],
+                      "title": "Rank",
+                      "type": "object"
+                    },
+                    "stripes": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "rank",
+                    "stripes"
+                  ],
+                  "type": "object"
+                },
+                "ladder": {
+                  "properties": {
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "style": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "style"
+                  ],
+                  "type": "object"
+                },
+                "next": {
+                  "properties": {
+                    "color": {
+                      "description": "Belt palette key; the screen maps it to the theme's --belt-* token",
+                      "enum": [
+                        "white",
+                        "grey",
+                        "yellow",
+                        "orange",
+                        "green",
+                        "blue",
+                        "purple",
+                        "brown",
+                        "red",
+                        "black",
+                        "pink"
+                      ],
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "max_stripes": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "position": {
+                      "type": "integer"
+                    },
+                    "requirements": {
+                      "properties": {
+                        "min_classes": {
+                          "maximum": 2000,
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "min_days": {
+                          "maximum": 3650,
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "skill_ids": {
+                          "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                          "items": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "maxItems": 20,
+                          "type": "array"
+                        },
+                        "skill_notes": {
+                          "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                          "items": {
+                            "maxLength": 500,
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "maxItems": 20,
+                          "type": "array"
+                        },
+                        "skill_videos": {
+                          "description": "A video link (https) for each skill, in the order of `skills`",
+                          "items": {
+                            "maxLength": 500,
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "maxItems": 20,
+                          "type": "array"
+                        },
+                        "skills": {
+                          "items": {
+                            "maxLength": 120,
+                            "type": "string"
+                          },
+                          "maxItems": 20,
+                          "type": "array"
+                        }
+                      },
+                      "title": "RankRequirements",
+                      "type": "object"
+                    },
+                    "scale_level_slug": {
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "max_stripes",
+                    "name",
+                    "position",
+                    "requirements"
+                  ],
+                  "title": "Rank",
+                  "type": "object"
+                },
+                "nickname": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "progress": {
+                  "description": "Towards the next rank; `ready` only says the counted requirements are met",
+                  "nullable": true,
+                  "properties": {
+                    "all_skills_checked": {
+                      "description": "Every listed skill is ticked (true when the rank lists none)",
+                      "type": "boolean"
+                    },
+                    "classes": {
+                      "properties": {
+                        "done": {
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "needed": {
+                          "nullable": true,
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "done",
+                        "needed"
+                      ],
+                      "type": "object"
+                    },
+                    "criteria": {
+                      "description": "What counts for «Πληροί τις προϋποθέσεις» on this ladder",
+                      "items": {
+                        "enum": [
+                          "days",
+                          "classes",
+                          "skills"
+                        ],
+                        "type": "string"
+                      },
+                      "maxItems": 3,
+                      "minItems": 1,
+                      "type": "array"
+                    },
+                    "days": {
+                      "properties": {
+                        "done": {
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "needed": {
+                          "nullable": true,
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "done",
+                        "needed"
+                      ],
+                      "type": "object"
+                    },
+                    "rank_id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "ready": {
+                      "type": "boolean"
+                    },
+                    "skill_ids": {
+                      "items": {
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "skills": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "skills_checked": {
+                      "description": "ADR-400: the next rank's skills the coach ticked so far",
+                      "items": {
+                        "properties": {
+                          "checked_on": {
+                            "format": "date",
+                            "type": "string"
+                          },
+                          "note": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "skill": {
+                            "description": "The skill's current text",
+                            "type": "string"
+                          },
+                          "skill_id": {
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "skill",
+                          "checked_on"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "classes",
+                    "days",
+                    "rank_id",
+                    "ready",
+                    "skills"
+                  ],
+                  "type": "object"
+                },
+                "user_id": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "current",
+                "ladder",
+                "next",
+                "progress",
+                "user_id"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "people"
+        ],
+        "title": "RankReadyResponse",
         "type": "object"
       },
       "RankRequirements": {
@@ -81830,6 +82721,35 @@
             "minimum": 0,
             "type": "integer"
           },
+          "skill_ids": {
+            "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+            "items": {
+              "nullable": true,
+              "type": "string"
+            },
+            "maxItems": 20,
+            "type": "array"
+          },
+          "skill_notes": {
+            "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+            "items": {
+              "maxLength": 500,
+              "nullable": true,
+              "type": "string"
+            },
+            "maxItems": 20,
+            "type": "array"
+          },
+          "skill_videos": {
+            "description": "A video link (https) for each skill, in the order of `skills`",
+            "items": {
+              "maxLength": 500,
+              "nullable": true,
+              "type": "string"
+            },
+            "maxItems": 20,
+            "type": "array"
+          },
           "skills": {
             "items": {
               "maxLength": 120,
@@ -81840,6 +82760,87 @@
           }
         },
         "title": "RankRequirements",
+        "type": "object"
+      },
+      "RankSkillBatchRequest": {
+        "description": "One skill for several people at once (a class): only those who work towards its rank change",
+        "properties": {
+          "checked": {
+            "description": "false unticks; true when left out",
+            "type": "boolean"
+          },
+          "checked_on": {
+            "format": "date",
+            "type": "string"
+          },
+          "rank_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "skill": {
+            "maxLength": 120,
+            "minLength": 1,
+            "type": "string"
+          },
+          "skill_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "user_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 100,
+            "minItems": 1,
+            "type": "array"
+          }
+        },
+        "required": [
+          "rank_id",
+          "user_ids"
+        ],
+        "title": "RankSkillBatchRequest",
+        "type": "object"
+      },
+      "RankSkillBatchResponse": {
+        "properties": {
+          "skipped": {
+            "items": {
+              "properties": {
+                "reason": {
+                  "enum": [
+                    "not_your_client",
+                    "other_rank"
+                  ],
+                  "type": "string"
+                },
+                "user_id": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "user_id",
+                "reason"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "updated": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "updated",
+          "skipped"
+        ],
+        "title": "RankSkillBatchResponse",
         "type": "object"
       },
       "RankSkillCheckRequest": {
@@ -81863,14 +82864,19 @@
             "type": "string"
           },
           "skill": {
+            "description": "The skill's text, when no `skill_id` is sent",
             "maxLength": 120,
             "minLength": 1,
+            "type": "string"
+          },
+          "skill_id": {
+            "description": "The skill's stable id",
+            "format": "uuid",
             "type": "string"
           }
         },
         "required": [
-          "rank_id",
-          "skill"
+          "rank_id"
         ],
         "title": "RankSkillCheckRequest",
         "type": "object"
@@ -81932,6 +82938,35 @@
                         "maximum": 3650,
                         "minimum": 0,
                         "type": "integer"
+                      },
+                      "skill_ids": {
+                        "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                        "items": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "maxItems": 20,
+                        "type": "array"
+                      },
+                      "skill_notes": {
+                        "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                        "items": {
+                          "maxLength": 500,
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "maxItems": 20,
+                        "type": "array"
+                      },
+                      "skill_videos": {
+                        "description": "A video link (https) for each skill, in the order of `skills`",
+                        "items": {
+                          "maxLength": 500,
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "maxItems": 20,
+                        "type": "array"
                       },
                       "skills": {
                         "items": {
@@ -82122,6 +83157,35 @@
                           "minimum": 0,
                           "type": "integer"
                         },
+                        "skill_ids": {
+                          "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                          "items": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "maxItems": 20,
+                          "type": "array"
+                        },
+                        "skill_notes": {
+                          "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                          "items": {
+                            "maxLength": 500,
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "maxItems": 20,
+                          "type": "array"
+                        },
+                        "skill_videos": {
+                          "description": "A video link (https) for each skill, in the order of `skills`",
+                          "items": {
+                            "maxLength": 500,
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "maxItems": 20,
+                          "type": "array"
+                        },
                         "skills": {
                           "items": {
                             "maxLength": 120,
@@ -82151,6 +83215,20 @@
                 },
                 "type": "array"
               },
+              "ready_criteria": {
+                "description": "What counts for «Πληροί τις προϋποθέσεις» on this ladder",
+                "items": {
+                  "enum": [
+                    "days",
+                    "classes",
+                    "skills"
+                  ],
+                  "type": "string"
+                },
+                "maxItems": 3,
+                "minItems": 1,
+                "type": "array"
+              },
               "style": {
                 "enum": [
                   "belt",
@@ -82165,6 +83243,7 @@
               "id",
               "name",
               "ranks",
+              "ready_criteria",
               "style"
             ],
             "title": "RankLadder",
@@ -82216,6 +83295,35 @@
                         "maximum": 3650,
                         "minimum": 0,
                         "type": "integer"
+                      },
+                      "skill_ids": {
+                        "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                        "items": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "maxItems": 20,
+                        "type": "array"
+                      },
+                      "skill_notes": {
+                        "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                        "items": {
+                          "maxLength": 500,
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "maxItems": 20,
+                        "type": "array"
+                      },
+                      "skill_videos": {
+                        "description": "A video link (https) for each skill, in the order of `skills`",
+                        "items": {
+                          "maxLength": 500,
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "maxItems": 20,
+                        "type": "array"
                       },
                       "skills": {
                         "items": {
@@ -82272,6 +83380,20 @@
                 ],
                 "type": "object"
               },
+              "criteria": {
+                "description": "What counts for «Πληροί τις προϋποθέσεις» on this ladder",
+                "items": {
+                  "enum": [
+                    "days",
+                    "classes",
+                    "skills"
+                  ],
+                  "type": "string"
+                },
+                "maxItems": 3,
+                "minItems": 1,
+                "type": "array"
+              },
               "days": {
                 "properties": {
                   "done": {
@@ -82296,6 +83418,13 @@
               "ready": {
                 "type": "boolean"
               },
+              "skill_ids": {
+                "items": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "type": "array"
+              },
               "skills": {
                 "items": {
                   "type": "string"
@@ -82315,6 +83444,11 @@
                       "type": "string"
                     },
                     "skill": {
+                      "description": "The skill's current text",
+                      "type": "string"
+                    },
+                    "skill_id": {
+                      "nullable": true,
                       "type": "string"
                     }
                   },
@@ -82407,6 +83541,35 @@
                               "maximum": 3650,
                               "minimum": 0,
                               "type": "integer"
+                            },
+                            "skill_ids": {
+                              "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                              "items": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "maxItems": 20,
+                              "type": "array"
+                            },
+                            "skill_notes": {
+                              "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                              "items": {
+                                "maxLength": 500,
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "maxItems": 20,
+                              "type": "array"
+                            },
+                            "skill_videos": {
+                              "description": "A video link (https) for each skill, in the order of `skills`",
+                              "items": {
+                                "maxLength": 500,
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "maxItems": 20,
+                              "type": "array"
                             },
                             "skills": {
                               "items": {
@@ -82597,6 +83760,35 @@
                                 "minimum": 0,
                                 "type": "integer"
                               },
+                              "skill_ids": {
+                                "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                                "items": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "maxItems": 20,
+                                "type": "array"
+                              },
+                              "skill_notes": {
+                                "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                                "items": {
+                                  "maxLength": 500,
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "maxItems": 20,
+                                "type": "array"
+                              },
+                              "skill_videos": {
+                                "description": "A video link (https) for each skill, in the order of `skills`",
+                                "items": {
+                                  "maxLength": 500,
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "maxItems": 20,
+                                "type": "array"
+                              },
                               "skills": {
                                 "items": {
                                   "maxLength": 120,
@@ -82626,6 +83818,20 @@
                       },
                       "type": "array"
                     },
+                    "ready_criteria": {
+                      "description": "What counts for «Πληροί τις προϋποθέσεις» on this ladder",
+                      "items": {
+                        "enum": [
+                          "days",
+                          "classes",
+                          "skills"
+                        ],
+                        "type": "string"
+                      },
+                      "maxItems": 3,
+                      "minItems": 1,
+                      "type": "array"
+                    },
                     "style": {
                       "enum": [
                         "belt",
@@ -82640,6 +83846,7 @@
                     "id",
                     "name",
                     "ranks",
+                    "ready_criteria",
                     "style"
                   ],
                   "title": "RankLadder",
@@ -82691,6 +83898,35 @@
                               "maximum": 3650,
                               "minimum": 0,
                               "type": "integer"
+                            },
+                            "skill_ids": {
+                              "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                              "items": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "maxItems": 20,
+                              "type": "array"
+                            },
+                            "skill_notes": {
+                              "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                              "items": {
+                                "maxLength": 500,
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "maxItems": 20,
+                              "type": "array"
+                            },
+                            "skill_videos": {
+                              "description": "A video link (https) for each skill, in the order of `skills`",
+                              "items": {
+                                "maxLength": 500,
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "maxItems": 20,
+                              "type": "array"
                             },
                             "skills": {
                               "items": {
@@ -82747,6 +83983,20 @@
                       ],
                       "type": "object"
                     },
+                    "criteria": {
+                      "description": "What counts for «Πληροί τις προϋποθέσεις» on this ladder",
+                      "items": {
+                        "enum": [
+                          "days",
+                          "classes",
+                          "skills"
+                        ],
+                        "type": "string"
+                      },
+                      "maxItems": 3,
+                      "minItems": 1,
+                      "type": "array"
+                    },
                     "days": {
                       "properties": {
                         "done": {
@@ -82771,6 +84021,13 @@
                     "ready": {
                       "type": "boolean"
                     },
+                    "skill_ids": {
+                      "items": {
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
                     "skills": {
                       "items": {
                         "type": "string"
@@ -82790,6 +84047,11 @@
                             "type": "string"
                           },
                           "skill": {
+                            "description": "The skill's current text",
+                            "type": "string"
+                          },
+                          "skill_id": {
+                            "nullable": true,
                             "type": "string"
                           }
                         },
@@ -82890,6 +84152,35 @@
                       "minimum": 0,
                       "type": "integer"
                     },
+                    "skill_ids": {
+                      "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                      "items": {
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "maxItems": 20,
+                      "type": "array"
+                    },
+                    "skill_notes": {
+                      "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                      "items": {
+                        "maxLength": 500,
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "maxItems": 20,
+                      "type": "array"
+                    },
+                    "skill_videos": {
+                      "description": "A video link (https) for each skill, in the order of `skills`",
+                      "items": {
+                        "maxLength": 500,
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "maxItems": 20,
+                      "type": "array"
+                    },
                     "skills": {
                       "items": {
                         "maxLength": 120,
@@ -82910,6 +84201,20 @@
               ],
               "type": "object"
             },
+            "type": "array"
+          },
+          "ready": {
+            "description": "What a ladder copied from it counts by default",
+            "items": {
+              "enum": [
+                "days",
+                "classes",
+                "skills"
+              ],
+              "type": "string"
+            },
+            "maxItems": 3,
+            "minItems": 1,
             "type": "array"
           },
           "source": {
@@ -82939,7 +84244,8 @@
           "style",
           "source",
           "system",
-          "ranks"
+          "ranks",
+          "ready"
         ],
         "title": "RankTemplate",
         "type": "object"
@@ -265862,6 +267168,13 @@
               "application/json": {
                 "schema": {
                   "properties": {
+                    "box_disciplines": {
+                      "description": "The training kinds of the box's profile; the picker shows them first",
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
                     "colors": {
                       "items": {
                         "type": "string"
@@ -265939,6 +267252,35 @@
                                       "minimum": 0,
                                       "type": "integer"
                                     },
+                                    "skill_ids": {
+                                      "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                                      "items": {
+                                        "nullable": true,
+                                        "type": "string"
+                                      },
+                                      "maxItems": 20,
+                                      "type": "array"
+                                    },
+                                    "skill_notes": {
+                                      "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                                      "items": {
+                                        "maxLength": 500,
+                                        "nullable": true,
+                                        "type": "string"
+                                      },
+                                      "maxItems": 20,
+                                      "type": "array"
+                                    },
+                                    "skill_videos": {
+                                      "description": "A video link (https) for each skill, in the order of `skills`",
+                                      "items": {
+                                        "maxLength": 500,
+                                        "nullable": true,
+                                        "type": "string"
+                                      },
+                                      "maxItems": 20,
+                                      "type": "array"
+                                    },
                                     "skills": {
                                       "items": {
                                         "maxLength": 120,
@@ -265968,6 +267310,20 @@
                             },
                             "type": "array"
                           },
+                          "ready_criteria": {
+                            "description": "What counts for «Πληροί τις προϋποθέσεις» on this ladder",
+                            "items": {
+                              "enum": [
+                                "days",
+                                "classes",
+                                "skills"
+                              ],
+                              "type": "string"
+                            },
+                            "maxItems": 3,
+                            "minItems": 1,
+                            "type": "array"
+                          },
                           "style": {
                             "enum": [
                               "belt",
@@ -265982,6 +267338,7 @@
                           "id",
                           "name",
                           "ranks",
+                          "ready_criteria",
                           "style"
                         ],
                         "title": "RankLadder",
@@ -266045,6 +267402,35 @@
                                       "minimum": 0,
                                       "type": "integer"
                                     },
+                                    "skill_ids": {
+                                      "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                                      "items": {
+                                        "nullable": true,
+                                        "type": "string"
+                                      },
+                                      "maxItems": 20,
+                                      "type": "array"
+                                    },
+                                    "skill_notes": {
+                                      "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                                      "items": {
+                                        "maxLength": 500,
+                                        "nullable": true,
+                                        "type": "string"
+                                      },
+                                      "maxItems": 20,
+                                      "type": "array"
+                                    },
+                                    "skill_videos": {
+                                      "description": "A video link (https) for each skill, in the order of `skills`",
+                                      "items": {
+                                        "maxLength": 500,
+                                        "nullable": true,
+                                        "type": "string"
+                                      },
+                                      "maxItems": 20,
+                                      "type": "array"
+                                    },
                                     "skills": {
                                       "items": {
                                         "maxLength": 120,
@@ -266065,6 +267451,20 @@
                               ],
                               "type": "object"
                             },
+                            "type": "array"
+                          },
+                          "ready": {
+                            "description": "What a ladder copied from it counts by default",
+                            "items": {
+                              "enum": [
+                                "days",
+                                "classes",
+                                "skills"
+                              ],
+                              "type": "string"
+                            },
+                            "maxItems": 3,
+                            "minItems": 1,
                             "type": "array"
                           },
                           "source": {
@@ -266094,7 +267494,8 @@
                           "style",
                           "source",
                           "system",
-                          "ranks"
+                          "ranks",
+                          "ready"
                         ],
                         "title": "RankTemplate",
                         "type": "object"
@@ -266103,6 +267504,7 @@
                     }
                   },
                   "required": [
+                    "box_disciplines",
                     "colors",
                     "ladders",
                     "templates"
@@ -266219,6 +267621,35 @@
                               "minimum": 0,
                               "type": "integer"
                             },
+                            "skill_ids": {
+                              "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                              "items": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "maxItems": 20,
+                              "type": "array"
+                            },
+                            "skill_notes": {
+                              "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                              "items": {
+                                "maxLength": 500,
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "maxItems": 20,
+                              "type": "array"
+                            },
+                            "skill_videos": {
+                              "description": "A video link (https) for each skill, in the order of `skills`",
+                              "items": {
+                                "maxLength": 500,
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "maxItems": 20,
+                              "type": "array"
+                            },
                             "skills": {
                               "items": {
                                 "maxLength": 120,
@@ -266243,6 +267674,20 @@
                       "type": "object"
                     },
                     "maxItems": 30,
+                    "minItems": 1,
+                    "type": "array"
+                  },
+                  "ready_criteria": {
+                    "description": "What counts for «Πληροί τις προϋποθέσεις» on this ladder",
+                    "items": {
+                      "enum": [
+                        "days",
+                        "classes",
+                        "skills"
+                      ],
+                      "type": "string"
+                    },
+                    "maxItems": 3,
                     "minItems": 1,
                     "type": "array"
                   },
@@ -266341,6 +267786,35 @@
                                     "minimum": 0,
                                     "type": "integer"
                                   },
+                                  "skill_ids": {
+                                    "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                                    "items": {
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "maxItems": 20,
+                                    "type": "array"
+                                  },
+                                  "skill_notes": {
+                                    "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                                    "items": {
+                                      "maxLength": 500,
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "maxItems": 20,
+                                    "type": "array"
+                                  },
+                                  "skill_videos": {
+                                    "description": "A video link (https) for each skill, in the order of `skills`",
+                                    "items": {
+                                      "maxLength": 500,
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "maxItems": 20,
+                                    "type": "array"
+                                  },
                                   "skills": {
                                     "items": {
                                       "maxLength": 120,
@@ -266370,6 +267844,20 @@
                           },
                           "type": "array"
                         },
+                        "ready_criteria": {
+                          "description": "What counts for «Πληροί τις προϋποθέσεις» on this ladder",
+                          "items": {
+                            "enum": [
+                              "days",
+                              "classes",
+                              "skills"
+                            ],
+                            "type": "string"
+                          },
+                          "maxItems": 3,
+                          "minItems": 1,
+                          "type": "array"
+                        },
                         "style": {
                           "enum": [
                             "belt",
@@ -266384,6 +267872,7 @@
                         "id",
                         "name",
                         "ranks",
+                        "ready_criteria",
                         "style"
                       ],
                       "title": "RankLadder",
@@ -266568,6 +268057,35 @@
                               "minimum": 0,
                               "type": "integer"
                             },
+                            "skill_ids": {
+                              "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                              "items": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "maxItems": 20,
+                              "type": "array"
+                            },
+                            "skill_notes": {
+                              "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                              "items": {
+                                "maxLength": 500,
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "maxItems": 20,
+                              "type": "array"
+                            },
+                            "skill_videos": {
+                              "description": "A video link (https) for each skill, in the order of `skills`",
+                              "items": {
+                                "maxLength": 500,
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "maxItems": 20,
+                              "type": "array"
+                            },
                             "skills": {
                               "items": {
                                 "maxLength": 120,
@@ -266592,6 +268110,20 @@
                       "type": "object"
                     },
                     "maxItems": 30,
+                    "minItems": 1,
+                    "type": "array"
+                  },
+                  "ready_criteria": {
+                    "description": "What counts for «Πληροί τις προϋποθέσεις» on this ladder",
+                    "items": {
+                      "enum": [
+                        "days",
+                        "classes",
+                        "skills"
+                      ],
+                      "type": "string"
+                    },
+                    "maxItems": 3,
                     "minItems": 1,
                     "type": "array"
                   },
@@ -266690,6 +268222,35 @@
                                     "minimum": 0,
                                     "type": "integer"
                                   },
+                                  "skill_ids": {
+                                    "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                                    "items": {
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "maxItems": 20,
+                                    "type": "array"
+                                  },
+                                  "skill_notes": {
+                                    "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                                    "items": {
+                                      "maxLength": 500,
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "maxItems": 20,
+                                    "type": "array"
+                                  },
+                                  "skill_videos": {
+                                    "description": "A video link (https) for each skill, in the order of `skills`",
+                                    "items": {
+                                      "maxLength": 500,
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "maxItems": 20,
+                                    "type": "array"
+                                  },
                                   "skills": {
                                     "items": {
                                       "maxLength": 120,
@@ -266719,6 +268280,20 @@
                           },
                           "type": "array"
                         },
+                        "ready_criteria": {
+                          "description": "What counts for «Πληροί τις προϋποθέσεις» on this ladder",
+                          "items": {
+                            "enum": [
+                              "days",
+                              "classes",
+                              "skills"
+                            ],
+                            "type": "string"
+                          },
+                          "maxItems": 3,
+                          "minItems": 1,
+                          "type": "array"
+                        },
                         "style": {
                           "enum": [
                             "belt",
@@ -266733,6 +268308,7 @@
                         "id",
                         "name",
                         "ranks",
+                        "ready_criteria",
                         "style"
                       ],
                       "title": "RankLadder",
@@ -330375,6 +331951,35 @@
                                         "minimum": 0,
                                         "type": "integer"
                                       },
+                                      "skill_ids": {
+                                        "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                                        "items": {
+                                          "nullable": true,
+                                          "type": "string"
+                                        },
+                                        "maxItems": 20,
+                                        "type": "array"
+                                      },
+                                      "skill_notes": {
+                                        "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                                        "items": {
+                                          "maxLength": 500,
+                                          "nullable": true,
+                                          "type": "string"
+                                        },
+                                        "maxItems": 20,
+                                        "type": "array"
+                                      },
+                                      "skill_videos": {
+                                        "description": "A video link (https) for each skill, in the order of `skills`",
+                                        "items": {
+                                          "maxLength": 500,
+                                          "nullable": true,
+                                          "type": "string"
+                                        },
+                                        "maxItems": 20,
+                                        "type": "array"
+                                      },
                                       "skills": {
                                         "items": {
                                           "maxLength": 120,
@@ -330564,6 +332169,35 @@
                                           "minimum": 0,
                                           "type": "integer"
                                         },
+                                        "skill_ids": {
+                                          "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                                          "items": {
+                                            "nullable": true,
+                                            "type": "string"
+                                          },
+                                          "maxItems": 20,
+                                          "type": "array"
+                                        },
+                                        "skill_notes": {
+                                          "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                                          "items": {
+                                            "maxLength": 500,
+                                            "nullable": true,
+                                            "type": "string"
+                                          },
+                                          "maxItems": 20,
+                                          "type": "array"
+                                        },
+                                        "skill_videos": {
+                                          "description": "A video link (https) for each skill, in the order of `skills`",
+                                          "items": {
+                                            "maxLength": 500,
+                                            "nullable": true,
+                                            "type": "string"
+                                          },
+                                          "maxItems": 20,
+                                          "type": "array"
+                                        },
                                         "skills": {
                                           "items": {
                                             "maxLength": 120,
@@ -330593,6 +332227,20 @@
                                 },
                                 "type": "array"
                               },
+                              "ready_criteria": {
+                                "description": "What counts for «Πληροί τις προϋποθέσεις» on this ladder",
+                                "items": {
+                                  "enum": [
+                                    "days",
+                                    "classes",
+                                    "skills"
+                                  ],
+                                  "type": "string"
+                                },
+                                "maxItems": 3,
+                                "minItems": 1,
+                                "type": "array"
+                              },
                               "style": {
                                 "enum": [
                                   "belt",
@@ -330607,6 +332255,7 @@
                               "id",
                               "name",
                               "ranks",
+                              "ready_criteria",
                               "style"
                             ],
                             "title": "RankLadder",
@@ -330658,6 +332307,35 @@
                                         "maximum": 3650,
                                         "minimum": 0,
                                         "type": "integer"
+                                      },
+                                      "skill_ids": {
+                                        "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                                        "items": {
+                                          "nullable": true,
+                                          "type": "string"
+                                        },
+                                        "maxItems": 20,
+                                        "type": "array"
+                                      },
+                                      "skill_notes": {
+                                        "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                                        "items": {
+                                          "maxLength": 500,
+                                          "nullable": true,
+                                          "type": "string"
+                                        },
+                                        "maxItems": 20,
+                                        "type": "array"
+                                      },
+                                      "skill_videos": {
+                                        "description": "A video link (https) for each skill, in the order of `skills`",
+                                        "items": {
+                                          "maxLength": 500,
+                                          "nullable": true,
+                                          "type": "string"
+                                        },
+                                        "maxItems": 20,
+                                        "type": "array"
                                       },
                                       "skills": {
                                         "items": {
@@ -330714,6 +332392,20 @@
                                 ],
                                 "type": "object"
                               },
+                              "criteria": {
+                                "description": "What counts for «Πληροί τις προϋποθέσεις» on this ladder",
+                                "items": {
+                                  "enum": [
+                                    "days",
+                                    "classes",
+                                    "skills"
+                                  ],
+                                  "type": "string"
+                                },
+                                "maxItems": 3,
+                                "minItems": 1,
+                                "type": "array"
+                              },
                               "days": {
                                 "properties": {
                                   "done": {
@@ -330738,6 +332430,13 @@
                               "ready": {
                                 "type": "boolean"
                               },
+                              "skill_ids": {
+                                "items": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "type": "array"
+                              },
                               "skills": {
                                 "items": {
                                   "type": "string"
@@ -330757,6 +332456,11 @@
                                       "type": "string"
                                     },
                                     "skill": {
+                                      "description": "The skill's current text",
+                                      "type": "string"
+                                    },
+                                    "skill_id": {
+                                      "nullable": true,
                                       "type": "string"
                                     }
                                   },
@@ -346183,6 +347887,35 @@
                                         "minimum": 0,
                                         "type": "integer"
                                       },
+                                      "skill_ids": {
+                                        "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                                        "items": {
+                                          "nullable": true,
+                                          "type": "string"
+                                        },
+                                        "maxItems": 20,
+                                        "type": "array"
+                                      },
+                                      "skill_notes": {
+                                        "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                                        "items": {
+                                          "maxLength": 500,
+                                          "nullable": true,
+                                          "type": "string"
+                                        },
+                                        "maxItems": 20,
+                                        "type": "array"
+                                      },
+                                      "skill_videos": {
+                                        "description": "A video link (https) for each skill, in the order of `skills`",
+                                        "items": {
+                                          "maxLength": 500,
+                                          "nullable": true,
+                                          "type": "string"
+                                        },
+                                        "maxItems": 20,
+                                        "type": "array"
+                                      },
                                       "skills": {
                                         "items": {
                                           "maxLength": 120,
@@ -346372,6 +348105,35 @@
                                           "minimum": 0,
                                           "type": "integer"
                                         },
+                                        "skill_ids": {
+                                          "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                                          "items": {
+                                            "nullable": true,
+                                            "type": "string"
+                                          },
+                                          "maxItems": 20,
+                                          "type": "array"
+                                        },
+                                        "skill_notes": {
+                                          "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                                          "items": {
+                                            "maxLength": 500,
+                                            "nullable": true,
+                                            "type": "string"
+                                          },
+                                          "maxItems": 20,
+                                          "type": "array"
+                                        },
+                                        "skill_videos": {
+                                          "description": "A video link (https) for each skill, in the order of `skills`",
+                                          "items": {
+                                            "maxLength": 500,
+                                            "nullable": true,
+                                            "type": "string"
+                                          },
+                                          "maxItems": 20,
+                                          "type": "array"
+                                        },
                                         "skills": {
                                           "items": {
                                             "maxLength": 120,
@@ -346401,6 +348163,20 @@
                                 },
                                 "type": "array"
                               },
+                              "ready_criteria": {
+                                "description": "What counts for «Πληροί τις προϋποθέσεις» on this ladder",
+                                "items": {
+                                  "enum": [
+                                    "days",
+                                    "classes",
+                                    "skills"
+                                  ],
+                                  "type": "string"
+                                },
+                                "maxItems": 3,
+                                "minItems": 1,
+                                "type": "array"
+                              },
                               "style": {
                                 "enum": [
                                   "belt",
@@ -346415,6 +348191,7 @@
                               "id",
                               "name",
                               "ranks",
+                              "ready_criteria",
                               "style"
                             ],
                             "title": "RankLadder",
@@ -346466,6 +348243,35 @@
                                         "maximum": 3650,
                                         "minimum": 0,
                                         "type": "integer"
+                                      },
+                                      "skill_ids": {
+                                        "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                                        "items": {
+                                          "nullable": true,
+                                          "type": "string"
+                                        },
+                                        "maxItems": 20,
+                                        "type": "array"
+                                      },
+                                      "skill_notes": {
+                                        "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                                        "items": {
+                                          "maxLength": 500,
+                                          "nullable": true,
+                                          "type": "string"
+                                        },
+                                        "maxItems": 20,
+                                        "type": "array"
+                                      },
+                                      "skill_videos": {
+                                        "description": "A video link (https) for each skill, in the order of `skills`",
+                                        "items": {
+                                          "maxLength": 500,
+                                          "nullable": true,
+                                          "type": "string"
+                                        },
+                                        "maxItems": 20,
+                                        "type": "array"
                                       },
                                       "skills": {
                                         "items": {
@@ -346522,6 +348328,20 @@
                                 ],
                                 "type": "object"
                               },
+                              "criteria": {
+                                "description": "What counts for «Πληροί τις προϋποθέσεις» on this ladder",
+                                "items": {
+                                  "enum": [
+                                    "days",
+                                    "classes",
+                                    "skills"
+                                  ],
+                                  "type": "string"
+                                },
+                                "maxItems": 3,
+                                "minItems": 1,
+                                "type": "array"
+                              },
                               "days": {
                                 "properties": {
                                   "done": {
@@ -346546,6 +348366,13 @@
                               "ready": {
                                 "type": "boolean"
                               },
+                              "skill_ids": {
+                                "items": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "type": "array"
+                              },
                               "skills": {
                                 "items": {
                                   "type": "string"
@@ -346565,6 +348392,11 @@
                                       "type": "string"
                                     },
                                     "skill": {
+                                      "description": "The skill's current text",
+                                      "type": "string"
+                                    },
+                                    "skill_id": {
+                                      "nullable": true,
                                       "type": "string"
                                     }
                                   },
@@ -346862,14 +348694,19 @@
                     "type": "string"
                   },
                   "skill": {
+                    "description": "The skill's text, when no `skill_id` is sent",
                     "maxLength": 120,
                     "minLength": 1,
+                    "type": "string"
+                  },
+                  "skill_id": {
+                    "description": "The skill's stable id",
+                    "format": "uuid",
                     "type": "string"
                   }
                 },
                 "required": [
-                  "rank_id",
-                  "skill"
+                  "rank_id"
                 ],
                 "title": "RankSkillCheckRequest",
                 "type": "object"
@@ -346942,6 +348779,35 @@
                                         "maximum": 3650,
                                         "minimum": 0,
                                         "type": "integer"
+                                      },
+                                      "skill_ids": {
+                                        "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                                        "items": {
+                                          "nullable": true,
+                                          "type": "string"
+                                        },
+                                        "maxItems": 20,
+                                        "type": "array"
+                                      },
+                                      "skill_notes": {
+                                        "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                                        "items": {
+                                          "maxLength": 500,
+                                          "nullable": true,
+                                          "type": "string"
+                                        },
+                                        "maxItems": 20,
+                                        "type": "array"
+                                      },
+                                      "skill_videos": {
+                                        "description": "A video link (https) for each skill, in the order of `skills`",
+                                        "items": {
+                                          "maxLength": 500,
+                                          "nullable": true,
+                                          "type": "string"
+                                        },
+                                        "maxItems": 20,
+                                        "type": "array"
                                       },
                                       "skills": {
                                         "items": {
@@ -347132,6 +348998,35 @@
                                           "minimum": 0,
                                           "type": "integer"
                                         },
+                                        "skill_ids": {
+                                          "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                                          "items": {
+                                            "nullable": true,
+                                            "type": "string"
+                                          },
+                                          "maxItems": 20,
+                                          "type": "array"
+                                        },
+                                        "skill_notes": {
+                                          "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                                          "items": {
+                                            "maxLength": 500,
+                                            "nullable": true,
+                                            "type": "string"
+                                          },
+                                          "maxItems": 20,
+                                          "type": "array"
+                                        },
+                                        "skill_videos": {
+                                          "description": "A video link (https) for each skill, in the order of `skills`",
+                                          "items": {
+                                            "maxLength": 500,
+                                            "nullable": true,
+                                            "type": "string"
+                                          },
+                                          "maxItems": 20,
+                                          "type": "array"
+                                        },
                                         "skills": {
                                           "items": {
                                             "maxLength": 120,
@@ -347161,6 +349056,20 @@
                                 },
                                 "type": "array"
                               },
+                              "ready_criteria": {
+                                "description": "What counts for «Πληροί τις προϋποθέσεις» on this ladder",
+                                "items": {
+                                  "enum": [
+                                    "days",
+                                    "classes",
+                                    "skills"
+                                  ],
+                                  "type": "string"
+                                },
+                                "maxItems": 3,
+                                "minItems": 1,
+                                "type": "array"
+                              },
                               "style": {
                                 "enum": [
                                   "belt",
@@ -347175,6 +349084,7 @@
                               "id",
                               "name",
                               "ranks",
+                              "ready_criteria",
                               "style"
                             ],
                             "title": "RankLadder",
@@ -347226,6 +349136,35 @@
                                         "maximum": 3650,
                                         "minimum": 0,
                                         "type": "integer"
+                                      },
+                                      "skill_ids": {
+                                        "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                                        "items": {
+                                          "nullable": true,
+                                          "type": "string"
+                                        },
+                                        "maxItems": 20,
+                                        "type": "array"
+                                      },
+                                      "skill_notes": {
+                                        "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                                        "items": {
+                                          "maxLength": 500,
+                                          "nullable": true,
+                                          "type": "string"
+                                        },
+                                        "maxItems": 20,
+                                        "type": "array"
+                                      },
+                                      "skill_videos": {
+                                        "description": "A video link (https) for each skill, in the order of `skills`",
+                                        "items": {
+                                          "maxLength": 500,
+                                          "nullable": true,
+                                          "type": "string"
+                                        },
+                                        "maxItems": 20,
+                                        "type": "array"
                                       },
                                       "skills": {
                                         "items": {
@@ -347282,6 +349221,20 @@
                                 ],
                                 "type": "object"
                               },
+                              "criteria": {
+                                "description": "What counts for «Πληροί τις προϋποθέσεις» on this ladder",
+                                "items": {
+                                  "enum": [
+                                    "days",
+                                    "classes",
+                                    "skills"
+                                  ],
+                                  "type": "string"
+                                },
+                                "maxItems": 3,
+                                "minItems": 1,
+                                "type": "array"
+                              },
                               "days": {
                                 "properties": {
                                   "done": {
@@ -347306,6 +349259,13 @@
                               "ready": {
                                 "type": "boolean"
                               },
+                              "skill_ids": {
+                                "items": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "type": "array"
+                              },
                               "skills": {
                                 "items": {
                                   "type": "string"
@@ -347325,6 +349285,11 @@
                                       "type": "string"
                                     },
                                     "skill": {
+                                      "description": "The skill's current text",
+                                      "type": "string"
+                                    },
+                                    "skill_id": {
+                                      "nullable": true,
                                       "type": "string"
                                     }
                                   },
@@ -353263,6 +355228,828 @@
           }
         ],
         "summary": "Withdraw an award with a reason; it stays in the history",
+        "tags": [
+          "Ranks"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/staff/ranks/ready": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.StaffRanksController.ready",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "People who meet what their ladder counts for the next rank; the coach decides",
+                  "properties": {
+                    "people": {
+                      "items": {
+                        "properties": {
+                          "current": {
+                            "properties": {
+                              "rank": {
+                                "properties": {
+                                  "color": {
+                                    "description": "Belt palette key; the screen maps it to the theme's --belt-* token",
+                                    "enum": [
+                                      "white",
+                                      "grey",
+                                      "yellow",
+                                      "orange",
+                                      "green",
+                                      "blue",
+                                      "purple",
+                                      "brown",
+                                      "red",
+                                      "black",
+                                      "pink"
+                                    ],
+                                    "nullable": true,
+                                    "type": "string"
+                                  },
+                                  "id": {
+                                    "format": "uuid",
+                                    "type": "string"
+                                  },
+                                  "max_stripes": {
+                                    "type": "integer"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "position": {
+                                    "type": "integer"
+                                  },
+                                  "requirements": {
+                                    "properties": {
+                                      "min_classes": {
+                                        "maximum": 2000,
+                                        "minimum": 0,
+                                        "type": "integer"
+                                      },
+                                      "min_days": {
+                                        "maximum": 3650,
+                                        "minimum": 0,
+                                        "type": "integer"
+                                      },
+                                      "skill_ids": {
+                                        "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                                        "items": {
+                                          "nullable": true,
+                                          "type": "string"
+                                        },
+                                        "maxItems": 20,
+                                        "type": "array"
+                                      },
+                                      "skill_notes": {
+                                        "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                                        "items": {
+                                          "maxLength": 500,
+                                          "nullable": true,
+                                          "type": "string"
+                                        },
+                                        "maxItems": 20,
+                                        "type": "array"
+                                      },
+                                      "skill_videos": {
+                                        "description": "A video link (https) for each skill, in the order of `skills`",
+                                        "items": {
+                                          "maxLength": 500,
+                                          "nullable": true,
+                                          "type": "string"
+                                        },
+                                        "maxItems": 20,
+                                        "type": "array"
+                                      },
+                                      "skills": {
+                                        "items": {
+                                          "maxLength": 120,
+                                          "type": "string"
+                                        },
+                                        "maxItems": 20,
+                                        "type": "array"
+                                      }
+                                    },
+                                    "title": "RankRequirements",
+                                    "type": "object"
+                                  },
+                                  "scale_level_slug": {
+                                    "nullable": true,
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "max_stripes",
+                                  "name",
+                                  "position",
+                                  "requirements"
+                                ],
+                                "title": "Rank",
+                                "type": "object"
+                              },
+                              "stripes": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "rank",
+                              "stripes"
+                            ],
+                            "type": "object"
+                          },
+                          "ladder": {
+                            "properties": {
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "style": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "style"
+                            ],
+                            "type": "object"
+                          },
+                          "next": {
+                            "properties": {
+                              "color": {
+                                "description": "Belt palette key; the screen maps it to the theme's --belt-* token",
+                                "enum": [
+                                  "white",
+                                  "grey",
+                                  "yellow",
+                                  "orange",
+                                  "green",
+                                  "blue",
+                                  "purple",
+                                  "brown",
+                                  "red",
+                                  "black",
+                                  "pink"
+                                ],
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "max_stripes": {
+                                "type": "integer"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "position": {
+                                "type": "integer"
+                              },
+                              "requirements": {
+                                "properties": {
+                                  "min_classes": {
+                                    "maximum": 2000,
+                                    "minimum": 0,
+                                    "type": "integer"
+                                  },
+                                  "min_days": {
+                                    "maximum": 3650,
+                                    "minimum": 0,
+                                    "type": "integer"
+                                  },
+                                  "skill_ids": {
+                                    "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                                    "items": {
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "maxItems": 20,
+                                    "type": "array"
+                                  },
+                                  "skill_notes": {
+                                    "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                                    "items": {
+                                      "maxLength": 500,
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "maxItems": 20,
+                                    "type": "array"
+                                  },
+                                  "skill_videos": {
+                                    "description": "A video link (https) for each skill, in the order of `skills`",
+                                    "items": {
+                                      "maxLength": 500,
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "maxItems": 20,
+                                    "type": "array"
+                                  },
+                                  "skills": {
+                                    "items": {
+                                      "maxLength": 120,
+                                      "type": "string"
+                                    },
+                                    "maxItems": 20,
+                                    "type": "array"
+                                  }
+                                },
+                                "title": "RankRequirements",
+                                "type": "object"
+                              },
+                              "scale_level_slug": {
+                                "nullable": true,
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "max_stripes",
+                              "name",
+                              "position",
+                              "requirements"
+                            ],
+                            "title": "Rank",
+                            "type": "object"
+                          },
+                          "nickname": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "progress": {
+                            "description": "Towards the next rank; `ready` only says the counted requirements are met",
+                            "nullable": true,
+                            "properties": {
+                              "all_skills_checked": {
+                                "description": "Every listed skill is ticked (true when the rank lists none)",
+                                "type": "boolean"
+                              },
+                              "classes": {
+                                "properties": {
+                                  "done": {
+                                    "nullable": true,
+                                    "type": "integer"
+                                  },
+                                  "needed": {
+                                    "nullable": true,
+                                    "type": "integer"
+                                  }
+                                },
+                                "required": [
+                                  "done",
+                                  "needed"
+                                ],
+                                "type": "object"
+                              },
+                              "criteria": {
+                                "description": "What counts for «Πληροί τις προϋποθέσεις» on this ladder",
+                                "items": {
+                                  "enum": [
+                                    "days",
+                                    "classes",
+                                    "skills"
+                                  ],
+                                  "type": "string"
+                                },
+                                "maxItems": 3,
+                                "minItems": 1,
+                                "type": "array"
+                              },
+                              "days": {
+                                "properties": {
+                                  "done": {
+                                    "nullable": true,
+                                    "type": "integer"
+                                  },
+                                  "needed": {
+                                    "nullable": true,
+                                    "type": "integer"
+                                  }
+                                },
+                                "required": [
+                                  "done",
+                                  "needed"
+                                ],
+                                "type": "object"
+                              },
+                              "rank_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "ready": {
+                                "type": "boolean"
+                              },
+                              "skill_ids": {
+                                "items": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "type": "array"
+                              },
+                              "skills": {
+                                "items": {
+                                  "type": "string"
+                                },
+                                "type": "array"
+                              },
+                              "skills_checked": {
+                                "description": "ADR-400: the next rank's skills the coach ticked so far",
+                                "items": {
+                                  "properties": {
+                                    "checked_on": {
+                                      "format": "date",
+                                      "type": "string"
+                                    },
+                                    "note": {
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "skill": {
+                                      "description": "The skill's current text",
+                                      "type": "string"
+                                    },
+                                    "skill_id": {
+                                      "nullable": true,
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "skill",
+                                    "checked_on"
+                                  ],
+                                  "type": "object"
+                                },
+                                "type": "array"
+                              }
+                            },
+                            "required": [
+                              "classes",
+                              "days",
+                              "rank_id",
+                              "ready",
+                              "skills"
+                            ],
+                            "type": "object"
+                          },
+                          "user_id": {
+                            "format": "uuid",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "current",
+                          "ladder",
+                          "next",
+                          "progress",
+                          "user_id"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "people"
+                  ],
+                  "title": "RankReadyResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Ready"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No coaching"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "People who meet what their ladder counts for the next rank (the coach decides)",
+        "tags": [
+          "Ranks"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/staff/ranks/skills/batch": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.StaffRanksController.class_skills",
+        "parameters": [
+          {
+            "description": "Comma-separated user ids (up to 100)",
+            "in": "query",
+            "name": "user_ids",
+            "required": true,
+            "schema": {
+              "minLength": 1,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "ladders": {
+                      "items": {
+                        "properties": {
+                          "class_type_ids": {
+                            "items": {
+                              "format": "uuid",
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "discipline": {
+                            "description": "A workout type (ADR-275)",
+                            "type": "string"
+                          },
+                          "family": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "ranks": {
+                            "items": {
+                              "properties": {
+                                "color": {
+                                  "description": "Belt palette key; the screen maps it to the theme's --belt-* token",
+                                  "enum": [
+                                    "white",
+                                    "grey",
+                                    "yellow",
+                                    "orange",
+                                    "green",
+                                    "blue",
+                                    "purple",
+                                    "brown",
+                                    "red",
+                                    "black",
+                                    "pink"
+                                  ],
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "id": {
+                                  "format": "uuid",
+                                  "type": "string"
+                                },
+                                "max_stripes": {
+                                  "type": "integer"
+                                },
+                                "name": {
+                                  "type": "string"
+                                },
+                                "position": {
+                                  "type": "integer"
+                                },
+                                "requirements": {
+                                  "properties": {
+                                    "min_classes": {
+                                      "maximum": 2000,
+                                      "minimum": 0,
+                                      "type": "integer"
+                                    },
+                                    "min_days": {
+                                      "maximum": 3650,
+                                      "minimum": 0,
+                                      "type": "integer"
+                                    },
+                                    "skill_ids": {
+                                      "description": "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+                                      "items": {
+                                        "nullable": true,
+                                        "type": "string"
+                                      },
+                                      "maxItems": 20,
+                                      "type": "array"
+                                    },
+                                    "skill_notes": {
+                                      "description": "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+                                      "items": {
+                                        "maxLength": 500,
+                                        "nullable": true,
+                                        "type": "string"
+                                      },
+                                      "maxItems": 20,
+                                      "type": "array"
+                                    },
+                                    "skill_videos": {
+                                      "description": "A video link (https) for each skill, in the order of `skills`",
+                                      "items": {
+                                        "maxLength": 500,
+                                        "nullable": true,
+                                        "type": "string"
+                                      },
+                                      "maxItems": 20,
+                                      "type": "array"
+                                    },
+                                    "skills": {
+                                      "items": {
+                                        "maxLength": 120,
+                                        "type": "string"
+                                      },
+                                      "maxItems": 20,
+                                      "type": "array"
+                                    }
+                                  },
+                                  "title": "RankRequirements",
+                                  "type": "object"
+                                },
+                                "scale_level_slug": {
+                                  "nullable": true,
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "max_stripes",
+                                "name",
+                                "position",
+                                "requirements"
+                              ],
+                              "title": "Rank",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "ready_criteria": {
+                            "description": "What counts for «Πληροί τις προϋποθέσεις» on this ladder",
+                            "items": {
+                              "enum": [
+                                "days",
+                                "classes",
+                                "skills"
+                              ],
+                              "type": "string"
+                            },
+                            "maxItems": 3,
+                            "minItems": 1,
+                            "type": "array"
+                          },
+                          "style": {
+                            "enum": [
+                              "belt",
+                              "level"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "class_type_ids",
+                          "discipline",
+                          "id",
+                          "name",
+                          "ranks",
+                          "ready_criteria",
+                          "style"
+                        ],
+                        "title": "RankLadder",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "people": {
+                      "items": {
+                        "properties": {
+                          "checked": {
+                            "items": {
+                              "properties": {
+                                "rank_id": {
+                                  "format": "uuid",
+                                  "type": "string"
+                                },
+                                "skill_id": {
+                                  "format": "uuid",
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "rank_id",
+                                "skill_id"
+                              ],
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "next_rank_ids": {
+                            "items": {
+                              "format": "uuid",
+                              "type": "string"
+                            },
+                            "type": "array"
+                          },
+                          "reachable": {
+                            "description": "The coach may tick for them",
+                            "type": "boolean"
+                          },
+                          "user_id": {
+                            "format": "uuid",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "checked",
+                          "next_rank_ids",
+                          "reachable",
+                          "user_id"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "ladders",
+                    "people"
+                  ],
+                  "title": "RankClassSkillsResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Class skills"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No coaching"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The ladders' skills and, for each person of a class, what they work towards and have ticked",
+        "tags": [
+          "Ranks"
+        ]
+      },
+      "put": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.StaffRanksController.batch_skills",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "One skill for several people at once (a class): only those who work towards its rank change",
+                "properties": {
+                  "checked": {
+                    "description": "false unticks; true when left out",
+                    "type": "boolean"
+                  },
+                  "checked_on": {
+                    "format": "date",
+                    "type": "string"
+                  },
+                  "rank_id": {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "skill": {
+                    "maxLength": 120,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "skill_id": {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "user_ids": {
+                    "items": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "maxItems": 100,
+                    "minItems": 1,
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "rank_id",
+                  "user_ids"
+                ],
+                "title": "RankSkillBatchRequest",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "skipped": {
+                      "items": {
+                        "properties": {
+                          "reason": {
+                            "enum": [
+                              "not_your_client",
+                              "other_rank"
+                            ],
+                            "type": "string"
+                          },
+                          "user_id": {
+                            "format": "uuid",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "user_id",
+                          "reason"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "updated": {
+                      "items": {
+                        "format": "uuid",
+                        "type": "string"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "updated",
+                    "skipped"
+                  ],
+                  "title": "RankSkillBatchResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Who changed and who was skipped"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No coaching"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not a skill of that rank"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Tick or untick one skill for several people at once (a class)",
         "tags": [
           "Ranks"
         ]

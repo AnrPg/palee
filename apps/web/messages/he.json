@@ -4911,8 +4911,8 @@
     "semanticWorkoutKravMaga": "קרב מגע",
     "semanticWorkoutBallet": "בלט",
     "semanticWorkoutContemporaryDance": "מחול עכשווי",
-    "semanticWorkoutLatinDance": "ריקודים לטיניים (סלסה, בצ'אטה)",
-    "semanticWorkoutStreetDance": "ריקודי רחוב (היפ הופ, היילס, רגאטון)",
+    "semanticWorkoutLatinDance": "ריקודים לטיניים (סלסה, בצ'אטה, רגאטון)",
+    "semanticWorkoutStreetDance": "ריקודי רחוב (היפ הופ, היילס)",
     "semanticWorkoutSkateboarding": "סקייטבורד"
   },
   "PrSharing": {
@@ -6317,8 +6317,8 @@
       "krav_maga": "קרב מגע",
       "ballet": "בלט",
       "contemporary_dance": "מחול עכשווי",
-      "latin_dance": "ריקודים לטיניים (סלסה, בצ'אטה)",
-      "street_dance": "ריקודי רחוב (היפ הופ, היילס, רגאטון)",
+      "latin_dance": "ריקודים לטיניים (סלסה, בצ'אטה, רגאטון)",
+      "street_dance": "ריקודי רחוב (היפ הופ, היילס)",
       "skateboarding": "סקייטבורד"
     },
     "audience": {
@@ -16959,7 +16959,6 @@
       "scaleLevel": "רמת התאמה מוצעת",
       "noScaleLevel": "ללא הצעה",
       "skills": "מיומנויות",
-      "skillsPlaceholder": "מיומנויות, מופרדות בפסיקים",
       "deleteLadder": "מחיקת הסולם",
       "deleteLadderConfirm": "למחוק את הסולם „{name}”?",
       "deleteLadderAction": "מחיקה",
@@ -16987,7 +16986,94 @@
       "withdrawReasonRequired": "כתבו את הסיבה.",
       "towards": "לקראת {rank}:",
       "history": "היסטוריה",
-      "historyStripe": "{rank} +{stripes}"
+      "historyStripe": "{rank} +{stripes}",
+      "picker": {
+        "count": "{count, plural, one {תבנית אחת} other {# תבניות}}",
+        "step1": "שלב 1 מתוך 2 · מה את/ה מלמד/ת?",
+        "step2": "שלב 2 מתוך 2 · איזו שיטה?",
+        "forYourBox": "ל-box שלך",
+        "otherKinds": "כל הסוגים האחרים",
+        "scratch": "מאפס",
+        "back": "חזרה לסוגים",
+        "continue": "המשך",
+        "sourcePalee": "רמות Palee",
+        "sourceFederation": "שיטה רשמית",
+        "ranksCount": "{count, plural, one {דרגה אחת} other {# דרגות}}",
+        "levelsCount": "{count, plural, one {רמה אחת} other {# רמות}}",
+        "skillsCount": "{count, plural, one {מיומנות אחת} other {# מיומנויות}}"
+      },
+      "criteria": {
+        "title": "נספר עבור «עומד/ת בדרישות»",
+        "days": "ימים",
+        "classes": "אימונים שהשתתפו בהם",
+        "skills": "מיומנויות",
+        "required": "יש לבחור לפחות אחד."
+      },
+      "addSkill": "הוספת מיומנות",
+      "unnamedRank": "דרגה חדשה",
+      "section": {
+        "days": "{count, plural, one {יום אחד} other {# ימים}}",
+        "classes": "{count, plural, one {אימון אחד} other {# אימונים}}",
+        "stripes": "{count, plural, one {עד פס אחד} other {עד # פסים}}",
+        "none": "ללא דרישות"
+      },
+      "skillRow": {
+        "handle": "הזזה: {name} (מקשי החצים)",
+        "unnamed": "מיומנות חדשה",
+        "name": "מיומנות",
+        "more": "עוד על {name}",
+        "remove": "הסרה: {name}",
+        "done": "סיום",
+        "up": "למעלה",
+        "down": "למטה",
+        "note": "הערה לחבר/ה",
+        "noteHint": "עד 500 תווים. מופיעה מתחת למיומנות.",
+        "video": "קישור לסרטון",
+        "videoInvalid": "יש להשתמש בקישור https."
+      },
+      "skillsDone": "{done} מתוך {total, plural, one {מיומנות אחת} other {# מיומנויות}}",
+      "tick": {
+        "more": "תאריך והערה: {name}",
+        "failed": "המיומנות לא נשמרה.",
+        "untick": "ביטול סימון",
+        "save": "סימון",
+        "noFuture": "יש לבחור היום או יום קודם."
+      },
+      "class": {
+        "open": "מיומנות",
+        "title": "מיומנות אחת לקבוצה",
+        "skill": "מיומנות",
+        "pick": "בחירת מיומנות",
+        "people": "אנשים בקבוצה",
+        "notYours": "לא לקוח/ה שלך",
+        "otherRank": "בדרך לדרגה אחרת"
+      },
+      "readyList": {
+        "title": "עומד/ת בדרישות",
+        "someone": "חבר/ה",
+        "line": "{ladder} · לקראת {rank}"
+      },
+      "my": {
+        "title": "ההתקדמות שלי",
+        "towards": "לקראת {rank}",
+        "towardsSkills": "לקראת {rank}: {done} מתוך {total, plural, one {מיומנות אחת} other {# מיומנויות}}",
+        "path": "כל הדרגות",
+        "now": "עכשיו",
+        "next": "הבאה",
+        "note": "הערה",
+        "video": "סרטון",
+        "openVideo": "פתיחת הסרטון",
+        "diplomas": "תעודות",
+        "nextRank": "הדרגה הבאה",
+        "days": "{done} מתוך {needed, plural, one {יום אחד} other {# ימים}}",
+        "classes": "{done} מתוך {needed, plural, one {אימון אחד} other {# אימונים}}",
+        "left": "נשאר ללמוד",
+        "have": "כבר יודע/ת:"
+      },
+      "notice": {
+        "title": "מיומנויות חדשות",
+        "body": "{rank}: {count, plural, one {מיומנות חדשה אחת} other {# מיומנויות חדשות}}"
+      }
     }
   },
   "PlatformReviewReports": {

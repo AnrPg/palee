@@ -4911,8 +4911,8 @@
     "semanticWorkoutKravMaga": "Krav maga",
     "semanticWorkoutBallet": "Ballet",
     "semanticWorkoutContemporaryDance": "Danza contemporánea",
-    "semanticWorkoutLatinDance": "Bailes latinos (salsa, bachata)",
-    "semanticWorkoutStreetDance": "Danza urbana (hip-hop, heels, reguetón)",
+    "semanticWorkoutLatinDance": "Bailes latinos (salsa, bachata, reguetón)",
+    "semanticWorkoutStreetDance": "Danza urbana (hip-hop, heels)",
     "semanticWorkoutSkateboarding": "Skate"
   },
   "PrSharing": {
@@ -6317,8 +6317,8 @@
       "krav_maga": "Krav maga",
       "ballet": "Ballet",
       "contemporary_dance": "Danza contemporánea",
-      "latin_dance": "Bailes latinos (salsa, bachata)",
-      "street_dance": "Danza urbana (hip-hop, heels, reguetón)",
+      "latin_dance": "Bailes latinos (salsa, bachata, reguetón)",
+      "street_dance": "Danza urbana (hip-hop, heels)",
       "skateboarding": "Skate"
     },
     "audience": {
@@ -16959,7 +16959,6 @@
       "scaleLevel": "Nivel de escalado sugerido",
       "noScaleLevel": "Sin sugerencia",
       "skills": "Habilidades",
-      "skillsPlaceholder": "Habilidades, separadas por comas",
       "deleteLadder": "Eliminar escala",
       "deleteLadderConfirm": "¿Eliminar la escala «{name}»?",
       "deleteLadderAction": "Eliminar",
@@ -16987,7 +16986,94 @@
       "withdrawReasonRequired": "Escribe el motivo.",
       "towards": "Para {rank}:",
       "history": "Historial",
-      "historyStripe": "{rank} +{stripes}"
+      "historyStripe": "{rank} +{stripes}",
+      "picker": {
+        "count": "{count, plural, one {# plantilla} other {# plantillas}}",
+        "step1": "Paso 1 de 2 · ¿Qué enseñas?",
+        "step2": "Paso 2 de 2 · ¿Qué sistema?",
+        "forYourBox": "Para tu box",
+        "otherKinds": "Todas las demás disciplinas",
+        "scratch": "Desde cero",
+        "back": "Volver a las disciplinas",
+        "continue": "Continuar",
+        "sourcePalee": "Niveles Palee",
+        "sourceFederation": "Sistema oficial",
+        "ranksCount": "{count, plural, one {# grado} other {# grados}}",
+        "levelsCount": "{count, plural, one {# nivel} other {# niveles}}",
+        "skillsCount": "{count, plural, one {# habilidad} other {# habilidades}}"
+      },
+      "criteria": {
+        "title": "Cuenta para «Cumple los requisitos»",
+        "days": "Días",
+        "classes": "Entrenamientos asistidos",
+        "skills": "Habilidades",
+        "required": "Elige al menos uno."
+      },
+      "addSkill": "Añadir habilidad",
+      "unnamedRank": "Nuevo grado",
+      "section": {
+        "days": "{count, plural, one {# día} other {# días}}",
+        "classes": "{count, plural, one {# entrenamiento asistido} other {# entrenamientos asistidos}}",
+        "stripes": "{count, plural, one {hasta # franja} other {hasta # franjas}}",
+        "none": "Sin requisitos"
+      },
+      "skillRow": {
+        "handle": "Mover: {name} (flechas)",
+        "unnamed": "Nueva habilidad",
+        "name": "Habilidad",
+        "more": "Más sobre {name}",
+        "remove": "Quitar: {name}",
+        "done": "Listo",
+        "up": "Subir",
+        "down": "Bajar",
+        "note": "Nota para el miembro",
+        "noteHint": "Hasta 500 caracteres. La ve debajo de la habilidad.",
+        "video": "Enlace de vídeo",
+        "videoInvalid": "Usa un enlace https."
+      },
+      "skillsDone": "{done} de {total, plural, one {# habilidad} other {# habilidades}}",
+      "tick": {
+        "more": "Fecha y nota: {name}",
+        "failed": "La habilidad no se guardó.",
+        "untick": "Desmarcar",
+        "save": "Marcar",
+        "noFuture": "Elige hoy o un día anterior."
+      },
+      "class": {
+        "open": "Habilidad",
+        "title": "Una habilidad para el grupo",
+        "skill": "Habilidad",
+        "pick": "Elige una habilidad",
+        "people": "Personas del grupo",
+        "notYours": "No es tu cliente",
+        "otherRank": "Va hacia otro grado"
+      },
+      "readyList": {
+        "title": "Cumple los requisitos",
+        "someone": "Miembro",
+        "line": "{ladder} · para {rank}"
+      },
+      "my": {
+        "title": "Mi progreso",
+        "towards": "hacia {rank}",
+        "towardsSkills": "hacia {rank}: {done} de {total, plural, one {# habilidad} other {# habilidades}}",
+        "path": "Todos los grados",
+        "now": "ahora",
+        "next": "siguiente",
+        "note": "Nota",
+        "video": "Vídeo",
+        "openVideo": "Abrir el vídeo",
+        "diplomas": "Diplomas",
+        "nextRank": "Siguiente grado",
+        "days": "{done} de {needed, plural, one {# día} other {# días}}",
+        "classes": "{done} de {needed, plural, one {# entrenamiento asistido} other {# entrenamientos asistidos}}",
+        "left": "Te queda por aprender",
+        "have": "Ya sabes:"
+      },
+      "notice": {
+        "title": "Nuevas habilidades",
+        "body": "{rank}: {count, plural, one {# nueva habilidad} other {# nuevas habilidades}}"
+      }
     }
   },
   "PlatformReviewReports": {
