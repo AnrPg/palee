@@ -60,7 +60,9 @@ export function ReviewItem({ review, boxName }: { review: BoxReview; boxName: st
 
 /**
  * The Google rating apart from Palee's reviews (ADR-387): its own average,
- * up to five reviews with each author's attribution, and «Από το Google».
+ * the number of reviews and «Από το Google», with a link to the listing.
+ * No review texts until a lawyer has checked Google's terms (ADR-387
+ * amendment, 2026-11-03).
  */
 export function GoogleReviews({ google }: { google: GoogleListing }) {
   const t = useTranslations("BoxReviews");
@@ -85,26 +87,6 @@ export function GoogleReviews({ google }: { google: GoogleListing }) {
           </a>
         ) : null}
       </div>
-      {google.reviews.length > 0 ? (
-        <ul className="flex flex-col gap-2">
-          {google.reviews.map((review, index) => (
-            <li key={`${review.author_name ?? "g"}-${index}`} className="flex flex-col gap-1 rounded-2xl p-3" style={{ border: "1px solid var(--border)" }}>
-              <span className="flex flex-wrap items-center gap-2 text-sm">
-                {review.rating ? <Stars value={review.rating} size={13} label={t("starsLabel", { stars: review.rating })} /> : null}
-                {review.author_uri ? (
-                  <a href={review.author_uri} target="_blank" rel="noreferrer" className="font-bold" style={{ color: "var(--text)" }}>
-                    {review.author_name}
-                  </a>
-                ) : (
-                  <b style={{ color: "var(--text)" }}>{review.author_name}</b>
-                )}
-                {review.relative_time ? <span className="text-xs" style={{ color: "var(--dim)" }}>{review.relative_time}</span> : null}
-              </span>
-              {review.text ? <p className="line-clamp-4 text-sm" style={{ color: "var(--text-soft)" }}>{review.text}</p> : null}
-            </li>
-          ))}
-        </ul>
-      ) : null}
     </section>
   );
 }

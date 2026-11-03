@@ -15093,9 +15093,8 @@
     "saveSender": "Salva mittente",
     "budget": "Limite di spesa mensile",
     "budgetHint": "Oltre il limite nessun SMS parte; le notifiche nell'app continuano normalmente.",
-    "budgetPerMonth": "{amount} / mese",
     "quiet": "Ore di silenzio",
-    "quietHint": "Quello che viene scritto in queste ore aspetta il mattino. Un avviso urgente parte subito.",
+    "quietHint": "Le offerte scritte in queste ore aspettano la loro fine. Gli avvisi (ad es. una lezione annullata) partono sempre.",
     "quietFrom": "Silenzio dalle",
     "quietTo": "Silenzio fino alle",
     "statusActive": "Connesso",
@@ -15112,7 +15111,7 @@
     "capNear": "Vicino al limite: al limite gli SMS si fermano, l'app continua.",
     "capReached": "Limite raggiunto: gli SMS si fermano fino al mese prossimo o a un limite più alto; l'app continua.",
     "advanced": "Avanzate",
-    "advancedHint": "Il tuo account Brevo, il tuo fornitore email",
+    "advancedHint": "Ore di silenzio, il tuo account Brevo, il tuo provider email",
     "accountTitle": "Account che invia gli SMS",
     "accountPaleeHint": "Account Palee (predefinito): Palee paga Brevo e conteggia quanto spende il tuo box.",
     "accountOwnHint": "Il tuo account Brevo: Brevo fattura direttamente il tuo box. La chiave non viene mai più mostrata.",
@@ -15255,8 +15254,17 @@
       "channel_budget_exceeded": "Il limite SMS del mese è raggiunto.",
       "channel_contact_missing": "Non c'è ancora un cellulare per questa persona.",
       "channel_consent_missing": "Questa persona non ha accettato gli SMS.",
-      "channel_opted_out": "Questa persona ha risposto STOP."
-    }
+      "channel_opted_out": "Questa persona ha risposto STOP.",
+      "channel_budget_missing": "Non c'è un limite mensile per gli SMS. Scrivilo in Impostazioni › Collegamenti."
+    },
+    "budgetUnit": "{currency} al mese",
+    "budgetRequired": "Scrivi il limite mensile. Senza limite non parte nessun SMS.",
+    "budgetInvalid": "Scrivi un importo da 0 a 10.000, ad es. 20 o 12,50.",
+    "budgetSave": "Salva limite",
+    "turnOn": "Attiva gli SMS",
+    "capFirst": "Prima di attivare gli SMS, scrivi quanto spende al massimo il box in un mese. Oltre, non parte nessun SMS.",
+    "quietChoose": "Ora",
+    "quietSave": "Salva orari"
   },
   "TrainingFloor": {
     "calendarOfferTitle": "Aggiungere le tue prenotazioni al calendario?",
@@ -15434,7 +15442,8 @@
     },
     "footerChecks": "I controlli automatici vengono eseguiti ogni minuto",
     "inEnglish": "English",
-    "stripDetails": "Dettagli"
+    "stripDetails": "Dettagli",
+    "stripStarts": "Inizia {when}."
   },
   "PlatformStatus": {
     "title": "Stato del servizio",
@@ -16322,5 +16331,16 @@
       "sendReply": "Pubblica risposta",
       "replyRequired": "Scrivi la tua risposta."
     }
+  },
+  "SmsUnsubscribe": {
+    "metaTitle": "Interrompi le offerte via SMS",
+    "title": "Offerte via SMS",
+    "loading": "Caricamento…",
+    "question": "Interrompere gli SMS con offerte da {box}?",
+    "updatesKeepComing": "Gli avvisi su prenotazioni e lezioni (ad es. una lezione annullata) continueranno ad arrivare.",
+    "confirm": "Interrompi",
+    "done": "Non riceverai più SMS con offerte da {box}.",
+    "invalid": "Questo link non è valido.",
+    "error": "Qualcosa è andato storto. Riprova."
   }
 }

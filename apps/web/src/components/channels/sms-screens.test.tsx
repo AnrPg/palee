@@ -13,6 +13,7 @@ import { AfterBookingSmsAsk } from "./AfterBookingSmsAsk";
 import { ClassNoticeDialog } from "./ClassNoticeDialog";
 import { ClientSmsPanel } from "./ClientSmsPanel";
 import { EventSmsCard } from "./EventSmsCard";
+import { SmsConnectionSettings } from "./SmsConnectionSettings";
 import { BoxSmsCard } from "./MySmsSettings";
 
 vi.mock("@/components/session-provider", () => ({
@@ -27,7 +28,15 @@ vi.mock("@/api/channels", async (importOriginal) => ({
   saveChannelContact: vi.fn(),
   fetchMyChannels: vi.fn(),
   saveMyChannels: vi.fn(),
+  fetchChannelSettings: vi.fn(),
+  saveChannelSettings: vi.fn(),
+  checkChannelSettings: vi.fn(),
+  fetchChannelTemplates: vi.fn(),
 }));
+vi.mock("@/lib/membership-role", () => ({
+  useSelectedMembershipRole: () => ({ membership: { organization: { name: "Box Kypseli", activation: "active" }, settings: null } }),
+}));
+vi.mock("@/components/channels/OwnEmailSettings", () => ({ OwnEmailSettings: () => null }));
 const guides = vi.hoisted(() => ({ putGuideProgress: vi.fn(), fetchGuideProgress: vi.fn() }));
 vi.mock("@/api/guides", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/api/guides")>()),
@@ -224,5 +233,76 @@ describe("Box › Notifications card (W3 screen 2)", () => {
     const { container } = wrap(<BoxSmsCard membership={membership} providerKind="gym" />);
     await waitFor(() => expect(channels.fetchMyChannels).toHaveBeenCalled());
     expect(container.textContent).toBe("");
+  });
+});
+
+describe("SMS settings: the box types its own cap (ADR-390)", () => {
+  const usage = { from: "", to: "", spent_cents: 0, messages: 0, by_channel: {}, currency: "EUR", palee_charge_cents: 0 };
+  const providers = [{ provider: "sandbox", channels: ["sms" as const], account_modes: ["own", "palee"] }];
+  const connection = {
+    provider: "sandbox",
+    account_mode: "palee" as const,
+    channels: ["sms" as const],
+    channel_order: ["sms" as const],
+    default_country: "GR",
+    has_secret: false,
+    monthly_budget_cents: 1500,
+    quiet_start: null,
+    quiet_end: null,
+    status: "active" as const,
+    currency: "EUR",
+  };
+
+  beforeEach(() => {
+    vi.mocked(channels.fetchChannelTemplates).mockResolvedValue({ templates: [] } as unknown as Awaited<ReturnType<typeof channels.fetchChannelTemplates>>);
+  });
+
+  it("asks for the cap before SMS go on, with no amount suggested, and says why under the field", async () => {
+    vi.mocked(channels.fetchChannelSettings).mockResolvedValue({ connection: null, providers, usage });
+    vi.mocked(channels.saveChannelSettings).mockResolvedValue({ connection, check: { ok: true, details: {} } } as unknown as Awaited<ReturnType<typeof channels.saveChannelSettings>>);
+    wrap(<SmsConnectionSettings token="t" />);
+
+    fireEvent.click(await screen.findByRole("switch", { name: "Text messages (SMS)" }));
+    const field = await screen.findByLabelText("Monthly cost limit");
+    expect((field as HTMLInputElement).value).toBe("");
+    expect(channels.saveChannelSettings).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole("button", { name: "Turn on SMS" }));
+    expect(await screen.findByText("Type the monthly limit. Without a limit no SMS leave.")).toBeTruthy();
+    expect(field.getAttribute("aria-invalid")).toBe("true");
+    expect(channels.saveChannelSettings).not.toHaveBeenCalled();
+
+    fireEvent.change(field, { target: { value: "15" } });
+    fireEvent.click(screen.getByRole("button", { name: "Turn on SMS" }));
+    await waitFor(() => expect(channels.saveChannelSettings).toHaveBeenCalled());
+    expect(vi.mocked(channels.saveChannelSettings).mock.calls[0][1]).toMatchObject({ channels: ["sms"], monthly_budget_cents: 1500, account_mode: "palee" });
+  });
+
+  it("keeps quiet hours off under «Advanced» until the box picks both times", async () => {
+    vi.mocked(channels.fetchChannelSettings).mockResolvedValue({ connection, providers, usage });
+    vi.mocked(channels.saveChannelSettings).mockResolvedValue({ connection: { ...connection, quiet_start: "22:00", quiet_end: "08:00" }, check: { ok: true, details: {} } } as unknown as Awaited<ReturnType<typeof channels.saveChannelSettings>>);
+    wrap(<SmsConnectionSettings token="t" />);
+
+    expect(await screen.findByLabelText("Monthly cost limit")).toBeTruthy();
+    expect(screen.queryByTestId("sms-quiet-hours")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: /Advanced/ }));
+    const quiet = await screen.findByTestId("sms-quiet-hours");
+    const toggle = quiet.querySelector("[role=switch]") as HTMLElement;
+    expect(toggle.getAttribute("aria-checked")).toBe("false");
+
+    fireEvent.click(toggle);
+    const from = screen.getByLabelText("Quiet from");
+    // No time is suggested: the box picks both.
+    expect(from.textContent).toContain("Time");
+    expect(screen.queryByRole("button", { name: "Save hours" })).toBeNull();
+    fireEvent.click(from);
+    fireEvent.click(await screen.findByRole("option", { name: "22:00" }));
+    expect(screen.getByRole("button", { name: "Save hours" }).hasAttribute("disabled")).toBe(true);
+    fireEvent.click(screen.getByLabelText("Quiet until"));
+    fireEvent.click(await screen.findByRole("option", { name: "08:00" }));
+    expect(channels.saveChannelSettings).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button", { name: "Save hours" }));
+    await waitFor(() => expect(channels.saveChannelSettings).toHaveBeenCalled());
+    expect(vi.mocked(channels.saveChannelSettings).mock.calls[0][1]).toMatchObject({ quiet_start: "22:00", quiet_end: "08:00" });
   });
 });

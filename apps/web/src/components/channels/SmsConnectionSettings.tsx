@@ -26,14 +26,15 @@ import { SPARK_ACTIVE_STYLE } from "@/lib/spark";
 
 import { OwnEmailSettings } from "./OwnEmailSettings";
 import {
-  DEFAULT_QUIET_END,
-  DEFAULT_QUIET_START,
   QUIET_HOURS,
-  budgetChoices,
+  budgetCents,
+  budgetInput,
   budgetState,
+  currencySymbol,
   formatCents,
   inputStyle,
   providerFor,
+  quietHoursReady,
   senderError,
   SENDER_EXAMPLE,
   smsErrorCode,
@@ -66,10 +67,12 @@ function fieldErrors(error: unknown): Record<string, string> {
 /**
  * Ρυθμίσεις › Συνδέσεις › Μηνύματα SMS (W3 screen 1, option A; ADR-348/349).
  * One card with the switch: once on, SMS leave from Palee's Brevo account
- * with the box's name, a monthly cost limit and quiet hours. «Δοκιμή
- * σύνδεσης» and this month's cost sit beside it. The box's own Brevo key
- * and its own email provider (SMTP) wait under «Προχωρημένα», each with a
- * step-by-step guide. A box in demo mode is told plainly that no SMS leave.
+ * with the box's name and the monthly cost limit the box types itself
+ * before they go on (ADR-390: no invented default). «Δοκιμή σύνδεσης» and
+ * this month's cost sit beside it. Quiet hours (off until the box picks its
+ * own times), the box's own Brevo key and its own email provider (SMTP)
+ * wait under «Προχωρημένα». A box in demo mode is told plainly that no SMS
+ * leave.
  */
 export function SmsConnectionSettings({ token }: { token: string }) {
   const t = useTranslations("Sms");
@@ -81,6 +84,7 @@ export function SmsConnectionSettings({ token }: { token: string }) {
   const boxName = membership?.settings?.brand_name?.trim() || membership?.organization.name || "";
 
   const settingsQuery = useQuery({ queryKey: CHANNEL_SETTINGS_KEY, queryFn: () => fetchChannelSettings(token) });
+  const [askingCap, setAskingCap] = useState(false);
 
   const save = useMutation({
     mutationFn: (update: Omit<ChannelSettingsUpdate, "provider"> & { provider?: string }) => {
@@ -107,17 +111,29 @@ export function SmsConnectionSettings({ token }: { token: string }) {
 
   const { connection, usage } = settingsQuery.data;
   const on = smsSwitchedOn(connection);
+  const hasCap = connection?.monthly_budget_cents != null;
+
+  const turnOn = (monthly_budget_cents?: number) => {
+    const suggested = suggestSender(boxName);
+    save.mutate(
+      {
+        channels: ["sms"],
+        ...(monthly_budget_cents != null ? { monthly_budget_cents } : {}),
+        ...(connection ? {} : { account_mode: "palee" as const, ...(suggested && !senderError(suggested) ? { sms_sender: suggested } : {}) }),
+      },
+      { onSuccess: () => setAskingCap(false) },
+    );
+  };
 
   const switchOn = (value: boolean) => {
     if (!value) {
+      setAskingCap(false);
       save.mutate({ channels: [] });
       return;
     }
-    const suggested = suggestSender(boxName);
-    save.mutate({
-      channels: ["sms"],
-      ...(connection ? {} : { account_mode: "palee" as const, ...(suggested && !senderError(suggested) ? { sms_sender: suggested } : {}) }),
-    });
+    // ADR-390: the box types its own cap before the first SMS can go.
+    if (hasCap) turnOn();
+    else setAskingCap(true);
   };
 
   return (
@@ -134,8 +150,19 @@ export function SmsConnectionSettings({ token }: { token: string }) {
             <p className="font-semibold" style={{ color: "var(--text)" }}>{t("title")}</p>
             <p className="mt-1 text-sm" style={{ color: "var(--dim)" }}>{t("intro")}</p>
           </div>
-          <Toggle label={t("title")} checked={on} disabled={save.isPending} onChange={switchOn} />
+          <Toggle label={t("title")} checked={on || askingCap} disabled={save.isPending} onChange={switchOn} />
         </div>
+        {askingCap && !on ? (
+          <BudgetField
+            saved={null}
+            currency={connection?.currency ?? "EUR"}
+            pending={save.isPending}
+            serverError={fieldErrors(save.error).monthly_budget_cents}
+            intro={t("capFirst")}
+            action={t("turnOn")}
+            onSave={turnOn}
+          />
+        ) : null}
         {save.isError && !Object.keys(fieldErrors(save.error)).length ? <ErrorNotice variant="field">{smsError(save.error)}</ErrorNotice> : null}
       </Card>
 
@@ -143,26 +170,14 @@ export function SmsConnectionSettings({ token }: { token: string }) {
         <>
           <Card>
             <SenderRow key={connection.sms_sender ?? ""} saved={connection.sms_sender ?? ""} pending={save.isPending} error={fieldErrors(save.error).sms_sender} onSave={(sms_sender) => save.mutate({ sms_sender: sms_sender || null })} />
-            <SettingRow title={t("budget")} hint={t("budgetHint")}>
-              <Select
-                aria-label={t("budget")}
-                value={String(Math.round(connection.monthly_budget_cents / 100))}
-                disabled={save.isPending}
-                onValueChange={(value: string) => save.mutate({ monthly_budget_cents: Number(value) * 100 })}
-                className="min-w-[8rem]"
-              >
-                {budgetChoices(connection.monthly_budget_cents).map((euros) => (
-                  <option key={euros} value={String(euros)}>
-                    {t("budgetPerMonth", { amount: formatCents(euros * 100, connection.currency ?? "EUR", locale) })}
-                  </option>
-                ))}
-              </Select>
-            </SettingRow>
-            <QuietHoursRow
-              start={connection.quiet_start ?? null}
-              end={connection.quiet_end ?? null}
+            <BudgetField
+              key={connection.monthly_budget_cents ?? "none"}
+              saved={connection.monthly_budget_cents ?? null}
+              currency={connection.currency ?? "EUR"}
               pending={save.isPending}
-              onSave={(quiet_start, quiet_end) => save.mutate({ quiet_start, quiet_end })}
+              serverError={fieldErrors(save.error).monthly_budget_cents}
+              action={t("budgetSave")}
+              onSave={(monthly_budget_cents) => save.mutate({ monthly_budget_cents })}
             />
           </Card>
 
@@ -191,7 +206,7 @@ export function SmsConnectionSettings({ token }: { token: string }) {
               )
             ) : null}
             {check.isError ? <ErrorNotice variant="field">{smsError(check.error)}</ErrorNotice> : null}
-            <MonthSummary messages={usage.messages} spent={usage.spent_cents} cap={connection.monthly_budget_cents} currency={usage.currency} />
+            <MonthSummary messages={usage.messages} spent={usage.spent_cents} cap={connection.monthly_budget_cents ?? null} currency={usage.currency} />
           </Card>
 
           <EventTexts token={token} />
@@ -199,6 +214,15 @@ export function SmsConnectionSettings({ token }: { token: string }) {
       ) : null}
 
       <Advanced>
+        {on && connection ? (
+          <QuietHoursRow
+            key={`${connection.quiet_start ?? ""}-${connection.quiet_end ?? ""}`}
+            start={connection.quiet_start ?? null}
+            end={connection.quiet_end ?? null}
+            pending={save.isPending}
+            onSave={(quiet_start, quiet_end) => save.mutate({ quiet_start, quiet_end })}
+          />
+        ) : null}
         <OwnAccount
           settings={settingsQuery.data}
           pending={save.isPending}
@@ -293,48 +317,161 @@ function SenderRow({ saved, pending, error, onSave }: { saved: string; pending: 
   );
 }
 
+/**
+ * «Ώρες ησυχίας» under «Προχωρημένα» (ADR-390): off until the box opens them
+ * and picks both times itself; only offers wait, updates always go.
+ */
 function QuietHoursRow({ start, end, pending, onSave }: { start: string | null; end: string | null; pending: boolean; onSave: (start: string | null, end: string | null) => void }) {
   const t = useTranslations("Sms");
-  const on = Boolean(start && end);
-  const hours = (current: string | null) => (current && !QUIET_HOURS.includes(current) ? [...QUIET_HOURS, current].sort() : QUIET_HOURS);
+  const saved = quietHoursReady(start, end);
+  const [open, setOpen] = useState(saved);
+  const [from, setFrom] = useState(start ?? "");
+  const [to, setTo] = useState(end ?? "");
+  const hours = (current: string) => (current && !QUIET_HOURS.includes(current) ? [...QUIET_HOURS, current].sort() : QUIET_HOURS);
+  const ready = quietHoursReady(from || null, to || null);
+  const dirty = from !== (start ?? "") || to !== (end ?? "");
+  const toggle = (value: boolean) => {
+    setOpen(value);
+    if (!value) {
+      setFrom("");
+      setTo("");
+      if (saved) onSave(null, null);
+    }
+  };
   return (
-    <SettingRow title={t("quiet")} hint={t("quietHint")}>
-      <div className="flex flex-wrap items-center gap-2">
-        {on ? (
-          <>
-            <Select aria-label={t("quietFrom")} value={start!} disabled={pending} onValueChange={(value: string) => onSave(value, end)} className="min-w-[6rem]">
-              {hours(start).map((hour) => <option key={hour} value={hour}>{hour}</option>)}
-            </Select>
-            <span aria-hidden="true" style={{ color: "var(--dim)" }}>–</span>
-            <Select aria-label={t("quietTo")} value={end!} disabled={pending} onValueChange={(value: string) => onSave(start, value)} className="min-w-[6rem]">
-              {hours(end).map((hour) => <option key={hour} value={hour}>{hour}</option>)}
-            </Select>
-          </>
+    <section className="space-y-2" data-testid="sms-quiet-hours">
+      <SettingRow title={t("quiet")} hint={t("quietHint")}>
+        <Toggle label={t("quiet")} checked={open} disabled={pending} onChange={toggle} />
+      </SettingRow>
+      {open ? (
+        <div className="flex flex-wrap items-center gap-2">
+          <Select aria-label={t("quietFrom")} value={from} placeholder={t("quietChoose")} disabled={pending} onValueChange={(value: string) => setFrom(value)} className="min-w-[7rem]">
+            {hours(from).map((hour) => <option key={hour} value={hour}>{hour}</option>)}
+          </Select>
+          <span aria-hidden="true" style={{ color: "var(--dim)" }}>–</span>
+          <Select aria-label={t("quietTo")} value={to} placeholder={t("quietChoose")} disabled={pending} onValueChange={(value: string) => setTo(value)} className="min-w-[7rem]">
+            {hours(to).map((hour) => <option key={hour} value={hour}>{hour}</option>)}
+          </Select>
+          {dirty ? (
+            <button
+              type="button"
+              className="rounded-full px-4 py-2 text-sm font-semibold"
+              style={{ background: "var(--primary)", color: "var(--primary-contrast)" }}
+              disabled={pending || !ready}
+              onClick={() => onSave(from, to)}
+            >
+              {t("quietSave")}
+            </button>
+          ) : null}
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
+/**
+ * «Μηνιαίο όριο κόστους» typed by the box (ADR-390): required before SMS go
+ * on, no suggested amount. The reason sits under the field (ADR-214).
+ */
+function BudgetField({
+  saved,
+  currency,
+  pending,
+  serverError,
+  intro,
+  action,
+  onSave,
+}: {
+  saved: number | null;
+  currency: string;
+  pending: boolean;
+  serverError?: string;
+  intro?: string;
+  action: string;
+  onSave: (cents: number) => void;
+}) {
+  const t = useTranslations("Sms");
+  const locale = useUiLocale();
+  const initial = budgetInput(saved, locale);
+  const [value, setValue] = useState(initial);
+  // The value last sent: a reason (ours or the API's) shows until the field changes.
+  const [sent, setSent] = useState<string | null>(null);
+  const parsed = budgetCents(value);
+  const reason = sent !== value ? null : "error" in parsed ? parsed.error : serverError ? (serverError === "required" ? "required" : "invalid") : null;
+  const message = reason === "required" ? t("budgetRequired") : reason === "invalid" ? t("budgetInvalid") : null;
+  const dirty = saved == null || value.trim() !== initial;
+  const submit = () => {
+    setSent(value);
+    if ("cents" in parsed) onSave(parsed.cents);
+  };
+  return (
+    <div className="border-b py-3 last:border-b-0" style={{ borderColor: "var(--border)" }} data-testid="sms-budget">
+      <label className="block text-sm font-semibold" style={{ color: "var(--text)" }} htmlFor="sms-budget">{t("budget")}</label>
+      <p className="text-xs leading-5" style={{ color: "var(--dim)" }}>{intro ?? t("budgetHint")}</p>
+      <div className="mt-2 flex flex-wrap items-start gap-2">
+        <div className="min-w-[8rem] flex-1">
+          <div className="flex items-center gap-2">
+            <input
+              id="sms-budget"
+              inputMode="decimal"
+              autoComplete="off"
+              required
+              value={value}
+              aria-invalid={Boolean(message)}
+              aria-describedby={message ? "sms-budget-error" : undefined}
+              onChange={(event) => setValue(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") submit();
+              }}
+              className={`${inputClass} max-w-[9rem]`}
+              style={inputStyle(Boolean(message))}
+            />
+            <span className="text-sm" style={{ color: "var(--text-soft)" }}>{t("budgetUnit", { currency: currencySymbol(currency, locale) })}</span>
+          </div>
+          {message ? (
+            <p id="sms-budget-error" className="mt-1 text-xs" style={{ color: "var(--danger-strong)" }}>{message}</p>
+          ) : null}
+        </div>
+        {dirty ? (
+          <button
+            type="button"
+            className="rounded-full px-4 py-2 text-sm font-semibold"
+            style={{ background: "var(--primary)", color: "var(--primary-contrast)" }}
+            disabled={pending}
+            onClick={submit}
+          >
+            {action}
+          </button>
         ) : null}
-        <Toggle label={t("quiet")} checked={on} disabled={pending} onChange={(value) => (value ? onSave(DEFAULT_QUIET_START, DEFAULT_QUIET_END) : onSave(null, null))} />
       </div>
-    </SettingRow>
+    </div>
   );
 }
 
 /** «Αυτόν τον μήνα»: messages and cost against the limit, with a bar. */
-export function MonthSummary({ messages, spent, cap, currency }: { messages: number; spent: number; cap: number; currency: string }) {
+export function MonthSummary({ messages, spent, cap, currency }: { messages: number; spent: number; cap: number | null; currency: string }) {
   const t = useTranslations("Sms");
   const locale = useUiLocale();
   const state = budgetState(spent, cap);
-  const percent = cap > 0 ? Math.min(100, Math.round((spent / cap) * 100)) : 100;
+  const percent = cap == null ? 0 : cap > 0 ? Math.min(100, Math.round((spent / cap) * 100)) : 100;
   const color = state === "full" ? "var(--danger)" : state === "near" ? "var(--warning)" : "var(--primary)";
   return (
     <div className="space-y-2 border-t pt-3" style={{ borderColor: "var(--border)" }} data-testid="sms-month">
       <p className="text-sm font-semibold" style={{ color: "var(--text)" }}>{t("thisMonth")}</p>
       <div className="flex flex-wrap justify-between gap-2 text-sm" style={{ color: "var(--text-soft)" }}>
         <span>{t("messagesCount", { count: messages })}</span>
-        <span className="font-mono tabular-nums">{t("spentOfCap", { spent: formatCents(spent, currency, locale), cap: formatCents(cap, currency, locale) })}</span>
+        <span className="font-mono tabular-nums">
+          {cap == null ? formatCents(spent, currency, locale) : t("spentOfCap", { spent: formatCents(spent, currency, locale), cap: formatCents(cap, currency, locale) })}
+        </span>
       </div>
       <div className="h-2 overflow-hidden rounded-full" style={{ background: "var(--border)" }} role="meter" aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent} aria-label={t("thisMonth")}>
         <div className="h-full rounded-full" style={{ width: `${percent}%`, background: color }} />
       </div>
-      {state !== "ok" ? <p className="text-xs" style={{ color: "var(--text-soft)" }}>{state === "full" ? t("capReached") : t("capNear")}</p> : null}
+      {cap == null ? (
+        <p className="text-xs" style={{ color: "var(--text-soft)" }}>{t("budgetRequired")}</p>
+      ) : state !== "ok" ? (
+        <p className="text-xs" style={{ color: "var(--text-soft)" }}>{state === "full" ? t("capReached") : t("capNear")}</p>
+      ) : null}
     </div>
   );
 }
@@ -382,7 +519,8 @@ function OwnAccount({ settings, pending, error, onSave }: { settings: ChannelSet
               style={{ background: "var(--primary)", color: "var(--primary-contrast)" }}
               disabled={pending || key.trim() === ""}
               onClick={() => {
-                onSave({ provider, account_mode: "own", secret: key.trim(), ...(connection ? {} : { channels: ["sms"] }) });
+                // ADR-390: the key alone; SMS go on with the switch, once the box typed its cap.
+                onSave({ provider, account_mode: "own", secret: key.trim() });
                 setKey("");
                 setChoosing(false);
               }}

@@ -15093,9 +15093,8 @@
     "saveSender": "שמירת שולח",
     "budget": "תקרת עלות חודשית",
     "budgetHint": "מעבר לתקרה לא נשלחות הודעות SMS; התראות האפליקציה ממשיכות כרגיל.",
-    "budgetPerMonth": "{amount} / חודש",
     "quiet": "שעות שקט",
-    "quietHint": "מה שנכתב בשעות האלה מחכה לבוקר. הודעה דחופה יוצאת מיד.",
+    "quietHint": "הצעות שנכתבות בשעות האלה ממתינות לסיומן. עדכונים (למשל ביטול שיעור) נשלחים תמיד.",
     "quietFrom": "שקט מ-",
     "quietTo": "שקט עד",
     "statusActive": "מחובר",
@@ -15112,7 +15111,7 @@
     "capNear": "קרוב לתקרה: בתקרה הודעות ה-SMS נעצרות, האפליקציה ממשיכה.",
     "capReached": "הגעתם לתקרה: הודעות SMS נעצרות עד החודש הבא או עד הגדלת התקרה; האפליקציה ממשיכה.",
     "advanced": "מתקדם",
-    "advancedHint": "חשבון Brevo משלכם, ספק אימייל משלכם",
+    "advancedHint": "שעות שקט, חשבון Brevo משלכם, ספק אימייל משלכם",
     "accountTitle": "החשבון ששולח את הודעות ה-SMS",
     "accountPaleeHint": "חשבון Palee (ברירת מחדל): Palee משלמת ל-Brevo ומחשבת כמה ה-box שלכם מוציא.",
     "accountOwnHint": "חשבון Brevo משלכם: Brevo מחייבת ישירות את ה-box. המפתח לא יוצג שוב לעולם.",
@@ -15255,8 +15254,17 @@
       "channel_budget_exceeded": "הגעתם לתקרת ה-SMS החודשית.",
       "channel_contact_missing": "עדיין אין מספר נייד לאדם הזה.",
       "channel_consent_missing": "האדם הזה לא הסכים ל-SMS.",
-      "channel_opted_out": "האדם הזה השיב STOP."
-    }
+      "channel_opted_out": "האדם הזה השיב STOP.",
+      "channel_budget_missing": "אין מגבלה חודשית ל-SMS. הקלידו אותה בהגדרות › חיבורים."
+    },
+    "budgetUnit": "{currency} לחודש",
+    "budgetRequired": "הקלידו את המגבלה החודשית. בלי מגבלה לא נשלחים SMS.",
+    "budgetInvalid": "הקלידו סכום בין 0 ל-10,000, למשל 20 או 12.50.",
+    "budgetSave": "שמירת המגבלה",
+    "turnOn": "הפעלת SMS",
+    "capFirst": "לפני הפעלת SMS, הקלידו כמה לכל היותר ה-box מוציא בחודש. מעבר לזה לא נשלחים SMS.",
+    "quietChoose": "שעה",
+    "quietSave": "שמירת השעות"
   },
   "TrainingFloor": {
     "calendarOfferTitle": "להוסיף את ההזמנות שלך ליומן?",
@@ -15434,7 +15442,8 @@
     },
     "footerChecks": "בדיקות אוטומטיות רצות כל דקה",
     "inEnglish": "English",
-    "stripDetails": "פרטים"
+    "stripDetails": "פרטים",
+    "stripStarts": "מתחיל {when}."
   },
   "PlatformStatus": {
     "title": "מצב השירות",
@@ -16322,5 +16331,16 @@
       "sendReply": "פרסום התגובה",
       "replyRequired": "כתוב את התגובה שלך."
     }
+  },
+  "SmsUnsubscribe": {
+    "metaTitle": "הפסקת הצעות ב-SMS",
+    "title": "הצעות ב-SMS",
+    "loading": "טוען…",
+    "question": "להפסיק הודעות SMS עם הצעות מ-{box}?",
+    "updatesKeepComing": "עדכונים על ההזמנות והשיעורים שלכם (למשל ביטול שיעור) ימשיכו להגיע.",
+    "confirm": "הפסקה",
+    "done": "לא תקבלו עוד הודעות SMS עם הצעות מ-{box}.",
+    "invalid": "הקישור הזה אינו תקף.",
+    "error": "משהו השתבש. נסו שוב."
   }
 }

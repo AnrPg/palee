@@ -54,6 +54,8 @@ export const BOTTOM_NAV_HIDDEN_ROUTES: ReadonlyArray<{ id: string; pattern: RegE
   { id: "platform", pattern: /^\/platform(?:\/|$)/ },
   // The public status page (ADR-366) looks the same signed in or not.
   { id: "statusPage", pattern: /^\/status(?:\/|$)/ },
+  // The unsubscribe link of a marketing SMS (ADR-390): one public card.
+  { id: "smsUnsubscribe", pattern: /^\/u\/[^/]+\/?$/ },
 ];
 
 function relativePath(pathname: string) {

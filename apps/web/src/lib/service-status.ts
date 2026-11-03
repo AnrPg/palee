@@ -154,21 +154,58 @@ export function usesComponent(component: string, viewer: StatusViewer): boolean 
   return true;
 }
 
-type StripCandidate = { id: string; kind: string; impact: string; components: string[] };
+type StripCandidate = {
+  id: string;
+  kind: string;
+  impact: string;
+  components: string[];
+  status?: string | null;
+  scheduled_for?: string | null;
+};
+
+/** ADR-366 amendment (ANR, 2026-11-03): planned maintenance enters the strip 24 hours before it starts. */
+export const MAINTENANCE_STRIP_LEAD_MS = 24 * 60 * 60 * 1000;
+
+/**
+ * Whether a planned maintenance still to come is near enough for the strip:
+ * it starts within the next 24 hours. Earlier it shows only on the status page.
+ */
+export function maintenanceDueSoon(item: { kind: string; scheduled_for?: string | null }, now: Date): boolean {
+  if (item.kind !== "maintenance" || !item.scheduled_for) return false;
+  const starts = Date.parse(item.scheduled_for);
+  if (Number.isNaN(starts)) return false;
+  const lead = starts - now.getTime();
+  return lead <= MAINTENANCE_STRIP_LEAD_MS;
+}
 
 /**
  * The incident the strip shows: the first active one (incidents before
- * maintenance) with an impact, naming a component the viewer uses. An
- * incident naming no component concerns everyone.
+ * maintenance) with an impact, naming a component the viewer uses, else a
+ * planned maintenance that starts within 24 hours (`upcoming`, checked
+ * against `now`). An incident naming no component concerns everyone.
  */
-export function stripIncident<T extends StripCandidate>(active: T[], viewer: StatusViewer): T | null {
+export function stripIncident<T extends StripCandidate>(active: T[], viewer: StatusViewer, options: { upcoming?: T[]; now?: Date } = {}): T | null {
   if (!viewer.signedIn) return null;
-  const relevant = active.filter((incident) => {
+  const concerns = (incident: T) => {
     if (!incident || incident.impact === "none") return false;
     const components = Array.isArray(incident.components) ? incident.components : [];
     return components.length === 0 || components.some((component) => usesComponent(component, viewer));
-  });
-  return relevant.find((incident) => incident.kind === "incident") ?? relevant[0] ?? null;
+  };
+  const relevant = active.filter(concerns);
+  const current = relevant.find((incident) => incident.kind === "incident") ?? relevant[0];
+  if (current) return current;
+  const now = options.now ?? new Date();
+  const soon = (Array.isArray(options.upcoming) ? options.upcoming : [])
+    .filter((item) => concerns(item) && maintenanceDueSoon(item, now))
+    .sort((a, b) => Date.parse(a.scheduled_for ?? "") - Date.parse(b.scheduled_for ?? ""));
+  return soon[0] ?? null;
+}
+
+/** Whether the strip's item is a maintenance that has not started yet (the strip then says when it starts). */
+export function startsLater(item: { kind: string; scheduled_for?: string | null; status?: string | null }, now: Date): boolean {
+  if (item.kind !== "maintenance" || item.status === "in_progress" || !item.scheduled_for) return false;
+  const starts = Date.parse(item.scheduled_for);
+  return !Number.isNaN(starts) && starts > now.getTime();
 }
 
 /** The status page is served at the status host's root; everything else keeps its path. */

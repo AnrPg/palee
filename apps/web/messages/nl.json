@@ -15093,9 +15093,8 @@
     "saveSender": "Afzender opslaan",
     "budget": "Maandelijkse kostenlimiet",
     "budgetHint": "Boven de limiet gaan er geen sms'jes uit; app-meldingen gaan gewoon door.",
-    "budgetPerMonth": "{amount} / maand",
     "quiet": "Stille uren",
-    "quietHint": "Wat in die uren wordt geschreven, wacht tot de ochtend. Een dringend bericht gaat meteen.",
+    "quietHint": "Aanbiedingen die in deze uren worden geschreven, wachten tot ze voorbij zijn. Berichten (bijv. een geannuleerde les) gaan altijd.",
     "quietFrom": "Stil vanaf",
     "quietTo": "Stil tot",
     "statusActive": "Gekoppeld",
@@ -15112,7 +15111,7 @@
     "capNear": "Bijna aan de limiet: bij de limiet stoppen de sms'jes, de app gaat door.",
     "capReached": "Limiet bereikt: sms'jes stoppen tot volgende maand of een hogere limiet; de app gaat door.",
     "advanced": "Geavanceerd",
-    "advancedHint": "Je eigen Brevo-account, je eigen e-mailprovider",
+    "advancedHint": "Stille uren, je eigen Brevo-account, je eigen e-mailprovider",
     "accountTitle": "Account dat de sms'jes verstuurt",
     "accountPaleeHint": "Palee-account (standaard): Palee betaalt Brevo en houdt bij wat je box uitgeeft.",
     "accountOwnHint": "Je eigen Brevo-account: Brevo factureert je box rechtstreeks. De sleutel wordt nooit meer getoond.",
@@ -15255,8 +15254,17 @@
       "channel_budget_exceeded": "De maandlimiet voor sms is bereikt.",
       "channel_contact_missing": "Er is nog geen mobiel nummer voor deze persoon.",
       "channel_consent_missing": "Deze persoon heeft geen toestemming voor sms gegeven.",
-      "channel_opted_out": "Deze persoon antwoordde STOP."
-    }
+      "channel_opted_out": "Deze persoon antwoordde STOP.",
+      "channel_budget_missing": "Er is geen maandlimiet voor sms. Vul die in bij Instellingen › Koppelingen."
+    },
+    "budgetUnit": "{currency} per maand",
+    "budgetRequired": "Vul de maandlimiet in. Zonder limiet gaan er geen sms'jes uit.",
+    "budgetInvalid": "Vul een bedrag in van 0 tot 10.000, bijv. 20 of 12,50.",
+    "budgetSave": "Limiet opslaan",
+    "turnOn": "Sms aanzetten",
+    "capFirst": "Vul eerst in hoeveel de box maximaal per maand uitgeeft, voordat sms aangaat. Daarboven gaan er geen sms'jes uit.",
+    "quietChoose": "Tijd",
+    "quietSave": "Tijden opslaan"
   },
   "TrainingFloor": {
     "calendarOfferTitle": "Je boekingen in je agenda zetten?",
@@ -15434,7 +15442,8 @@
     },
     "footerChecks": "Automatische controles draaien elke minuut",
     "inEnglish": "English",
-    "stripDetails": "Details"
+    "stripDetails": "Details",
+    "stripStarts": "Begint {when}."
   },
   "PlatformStatus": {
     "title": "Status van de dienst",
@@ -16322,5 +16331,16 @@
       "sendReply": "Reactie plaatsen",
       "replyRequired": "Schrijf je reactie."
     }
+  },
+  "SmsUnsubscribe": {
+    "metaTitle": "Aanbiedingen per sms stoppen",
+    "title": "Aanbiedingen per sms",
+    "loading": "Laden…",
+    "question": "Sms'jes met aanbiedingen van {box} stoppen?",
+    "updatesKeepComing": "Berichten over je boekingen en lessen (bijv. een geannuleerde les) blijven komen.",
+    "confirm": "Stoppen",
+    "done": "Je krijgt geen sms'jes met aanbiedingen van {box} meer.",
+    "invalid": "Deze link is niet geldig.",
+    "error": "Er ging iets mis. Probeer het opnieuw."
   }
 }

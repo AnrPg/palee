@@ -8,6 +8,8 @@ import {
   overallTone,
   statusHostRewrite,
   statusViewer,
+  maintenanceDueSoon,
+  startsLater,
   stripIncident,
   toneColor,
   uptimeOver,
@@ -73,6 +75,38 @@ describe("service status (ADR-364/366)", () => {
     expect(stripIncident([{ id: "all", kind: "incident", impact: "critical", components: [] }], noBox)?.id).toBe("all");
     const noComponents = { id: "n", kind: "incident", impact: "major" } as unknown as typeof email;
     expect(stripIncident([noComponents], member)?.id).toBe("n");
+  });
+
+  it("planned maintenance enters the strip only in the 24 hours before it starts (ADR-366 amendment)", () => {
+    const now = new Date("2026-11-03T10:00:00Z");
+    const plan = (id: string, scheduled_for: string, components = ["app"]) => ({ id, kind: "maintenance", impact: "minor", status: "scheduled", components, scheduled_for });
+    const in25h = plan("far", "2026-11-04T11:00:00Z");
+    const in24h = plan("edge", "2026-11-04T10:00:00Z");
+    const in3h = plan("soon", "2026-11-03T13:00:00Z");
+    const fiscalSoon = plan("fiscal", "2026-11-03T12:00:00Z", ["fiscal"]);
+
+    expect(maintenanceDueSoon(in25h, now)).toBe(false);
+    expect(maintenanceDueSoon(in24h, now)).toBe(true);
+    expect(maintenanceDueSoon(in3h, now)).toBe(true);
+    expect(maintenanceDueSoon({ kind: "incident", scheduled_for: "2026-11-03T13:00:00Z" }, now)).toBe(false);
+    expect(maintenanceDueSoon({ kind: "maintenance", scheduled_for: null }, now)).toBe(false);
+
+    // Earlier than 24 hours ahead: only the status page shows it.
+    expect(stripIncident([], member, { upcoming: [in25h], now })).toBeNull();
+    // The nearest one that concerns the viewer.
+    expect(stripIncident([], member, { upcoming: [in25h, in24h, in3h], now })?.id).toBe("soon");
+    expect(stripIncident([], member, { upcoming: [fiscalSoon], now })).toBeNull();
+    expect(stripIncident([], owner, { upcoming: [fiscalSoon], now })?.id).toBe("fiscal");
+    // An active incident or maintenance still comes first.
+    const email = { id: "e", kind: "incident", impact: "minor", components: ["email"], status: "investigating", scheduled_for: null };
+    expect(stripIncident([email], member, { upcoming: [in3h], now })?.id).toBe("e");
+    // A day later the far one is due.
+    expect(stripIncident([], member, { upcoming: [in25h], now: new Date("2026-11-03T11:00:00Z") })?.id).toBe("far");
+
+    expect(startsLater(in3h, now)).toBe(true);
+    expect(startsLater({ ...in3h, status: "in_progress" }, now)).toBe(false);
+    expect(startsLater(in3h, new Date("2026-11-03T13:00:01Z"))).toBe(false);
+    expect(startsLater(email, now)).toBe(false);
   });
 
   it("serves the status page at the status host's root only", () => {

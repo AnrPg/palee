@@ -4,7 +4,8 @@ import type { ChannelContact, MyChannels } from "@/api/channels";
 
 import {
   bookingAskDeclined,
-  budgetChoices,
+  budgetCents,
+  budgetInput,
   budgetState,
   consentAnswered,
   consentGranted,
@@ -12,6 +13,7 @@ import {
   formatCents,
   monthOf,
   providerFor,
+  quietHoursReady,
   recentMonths,
   rememberBookingAskDeclined,
   senderError,
@@ -37,9 +39,29 @@ describe("sms rules", () => {
     expect(formatCents(364, "EUR", "en")).toMatch(/3\.64/);
   });
 
-  it("keeps the saved budget among the choices", () => {
-    expect(budgetChoices(2000)).toEqual([5, 10, 20, 30, 50, 100, 200]);
-    expect(budgetChoices(1500)).toContain(15);
+  it("reads the cap the box types, with no default (ADR-390)", () => {
+    expect(budgetCents("")).toEqual({ error: "required" });
+    expect(budgetCents("   ")).toEqual({ error: "required" });
+    expect(budgetCents("20")).toEqual({ cents: 2000 });
+    expect(budgetCents("12,50")).toEqual({ cents: 1250 });
+    expect(budgetCents("12.5")).toEqual({ cents: 1250 });
+    expect(budgetCents("0")).toEqual({ cents: 0 });
+    expect(budgetCents("10000")).toEqual({ cents: 1_000_000 });
+    expect(budgetCents("10000.01")).toEqual({ error: "invalid" });
+    expect(budgetCents("-5")).toEqual({ error: "invalid" });
+    expect(budgetCents("1,234")).toEqual({ error: "invalid" });
+    expect(budgetCents("abc")).toEqual({ error: "invalid" });
+    expect(budgetInput(null, "el")).toBe("");
+    expect(budgetInput(2000, "el")).toBe("20");
+    expect(budgetInput(1250, "el")).toBe("12,50");
+    expect(budgetInput(1250, "en")).toBe("12.50");
+  });
+
+  it("saves quiet hours only with both times picked", () => {
+    expect(quietHoursReady(null, null)).toBe(false);
+    expect(quietHoursReady("22:00", null)).toBe(false);
+    expect(quietHoursReady("22:00", "22:00")).toBe(false);
+    expect(quietHoursReady("22:00", "08:00")).toBe(true);
   });
 
   it("checks the sender name as the API does", () => {
@@ -131,5 +153,6 @@ describe("sms rules", () => {
   it("knows the error codes it explains", () => {
     expect(smsErrorCode("channels_demo_mode")).toBe("channels_demo_mode");
     expect(smsErrorCode("nope")).toBeNull();
+    expect(smsErrorCode("channel_budget_missing")).toBe("channel_budget_missing");
   });
 });

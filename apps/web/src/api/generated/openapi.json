@@ -17942,7 +17942,7 @@
             "type": "integer"
           },
           "google": {
-            "description": "The box's Google rating and up to five reviews, kept apart (ADR-387)",
+            "description": "The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms",
             "nullable": true,
             "properties": {
               "count": {
@@ -17965,53 +17965,6 @@
                 "nullable": true,
                 "type": "number"
               },
-              "reviews": {
-                "items": {
-                  "properties": {
-                    "author_name": {
-                      "nullable": true,
-                      "type": "string"
-                    },
-                    "author_photo_uri": {
-                      "nullable": true,
-                      "type": "string"
-                    },
-                    "author_uri": {
-                      "nullable": true,
-                      "type": "string"
-                    },
-                    "published_at": {
-                      "nullable": true,
-                      "type": "string"
-                    },
-                    "rating": {
-                      "nullable": true,
-                      "type": "integer"
-                    },
-                    "relative_time": {
-                      "nullable": true,
-                      "type": "string"
-                    },
-                    "text": {
-                      "nullable": true,
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "author_name",
-                    "author_photo_uri",
-                    "author_uri",
-                    "published_at",
-                    "rating",
-                    "relative_time",
-                    "text"
-                  ],
-                  "title": "GoogleReview",
-                  "type": "object"
-                },
-                "maxItems": 5,
-                "type": "array"
-              },
               "write_review_url": {
                 "nullable": true,
                 "type": "string"
@@ -18023,7 +17976,6 @@
               "maps_uri",
               "name",
               "rating",
-              "reviews",
               "write_review_url"
             ],
             "title": "GoogleListing",
@@ -48087,7 +48039,7 @@
         "type": "object"
       },
       "GoogleListing": {
-        "description": "The box's Google rating and up to five reviews, kept apart (ADR-387)",
+        "description": "The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms",
         "nullable": true,
         "properties": {
           "count": {
@@ -48110,53 +48062,6 @@
             "nullable": true,
             "type": "number"
           },
-          "reviews": {
-            "items": {
-              "properties": {
-                "author_name": {
-                  "nullable": true,
-                  "type": "string"
-                },
-                "author_photo_uri": {
-                  "nullable": true,
-                  "type": "string"
-                },
-                "author_uri": {
-                  "nullable": true,
-                  "type": "string"
-                },
-                "published_at": {
-                  "nullable": true,
-                  "type": "string"
-                },
-                "rating": {
-                  "nullable": true,
-                  "type": "integer"
-                },
-                "relative_time": {
-                  "nullable": true,
-                  "type": "string"
-                },
-                "text": {
-                  "nullable": true,
-                  "type": "string"
-                }
-              },
-              "required": [
-                "author_name",
-                "author_photo_uri",
-                "author_uri",
-                "published_at",
-                "rating",
-                "relative_time",
-                "text"
-              ],
-              "title": "GoogleReview",
-              "type": "object"
-            },
-            "maxItems": 5,
-            "type": "array"
-          },
           "write_review_url": {
             "nullable": true,
             "type": "string"
@@ -48168,7 +48073,6 @@
           "maps_uri",
           "name",
           "rating",
-          "reviews",
           "write_review_url"
         ],
         "title": "GoogleListing",
@@ -48248,49 +48152,6 @@
           "places"
         ],
         "title": "GooglePlacesSearchResponse",
-        "type": "object"
-      },
-      "GoogleReview": {
-        "properties": {
-          "author_name": {
-            "nullable": true,
-            "type": "string"
-          },
-          "author_photo_uri": {
-            "nullable": true,
-            "type": "string"
-          },
-          "author_uri": {
-            "nullable": true,
-            "type": "string"
-          },
-          "published_at": {
-            "nullable": true,
-            "type": "string"
-          },
-          "rating": {
-            "nullable": true,
-            "type": "integer"
-          },
-          "relative_time": {
-            "nullable": true,
-            "type": "string"
-          },
-          "text": {
-            "nullable": true,
-            "type": "string"
-          }
-        },
-        "required": [
-          "author_name",
-          "author_photo_uri",
-          "author_uri",
-          "published_at",
-          "rating",
-          "relative_time",
-          "text"
-        ],
-        "title": "GoogleReview",
         "type": "object"
       },
       "GuideProgress": {
@@ -53555,7 +53416,7 @@
             "type": "integer"
           },
           "google": {
-            "description": "The box's Google rating and up to five reviews, kept apart (ADR-387)",
+            "description": "The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms",
             "nullable": true,
             "properties": {
               "count": {
@@ -53578,53 +53439,6 @@
                 "nullable": true,
                 "type": "number"
               },
-              "reviews": {
-                "items": {
-                  "properties": {
-                    "author_name": {
-                      "nullable": true,
-                      "type": "string"
-                    },
-                    "author_photo_uri": {
-                      "nullable": true,
-                      "type": "string"
-                    },
-                    "author_uri": {
-                      "nullable": true,
-                      "type": "string"
-                    },
-                    "published_at": {
-                      "nullable": true,
-                      "type": "string"
-                    },
-                    "rating": {
-                      "nullable": true,
-                      "type": "integer"
-                    },
-                    "relative_time": {
-                      "nullable": true,
-                      "type": "string"
-                    },
-                    "text": {
-                      "nullable": true,
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "author_name",
-                    "author_photo_uri",
-                    "author_uri",
-                    "published_at",
-                    "rating",
-                    "relative_time",
-                    "text"
-                  ],
-                  "title": "GoogleReview",
-                  "type": "object"
-                },
-                "maxItems": 5,
-                "type": "array"
-              },
               "write_review_url": {
                 "nullable": true,
                 "type": "string"
@@ -53636,7 +53450,6 @@
               "maps_uri",
               "name",
               "rating",
-              "reviews",
               "write_review_url"
             ],
             "title": "GoogleListing",
@@ -73708,7 +73521,7 @@
           "reviews": {
             "properties": {
               "google": {
-                "description": "The box's Google rating and up to five reviews, kept apart (ADR-387)",
+                "description": "The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms",
                 "nullable": true,
                 "properties": {
                   "count": {
@@ -73731,53 +73544,6 @@
                     "nullable": true,
                     "type": "number"
                   },
-                  "reviews": {
-                    "items": {
-                      "properties": {
-                        "author_name": {
-                          "nullable": true,
-                          "type": "string"
-                        },
-                        "author_photo_uri": {
-                          "nullable": true,
-                          "type": "string"
-                        },
-                        "author_uri": {
-                          "nullable": true,
-                          "type": "string"
-                        },
-                        "published_at": {
-                          "nullable": true,
-                          "type": "string"
-                        },
-                        "rating": {
-                          "nullable": true,
-                          "type": "integer"
-                        },
-                        "relative_time": {
-                          "nullable": true,
-                          "type": "string"
-                        },
-                        "text": {
-                          "nullable": true,
-                          "type": "string"
-                        }
-                      },
-                      "required": [
-                        "author_name",
-                        "author_photo_uri",
-                        "author_uri",
-                        "published_at",
-                        "rating",
-                        "relative_time",
-                        "text"
-                      ],
-                      "title": "GoogleReview",
-                      "type": "object"
-                    },
-                    "maxItems": 5,
-                    "type": "array"
-                  },
                   "write_review_url": {
                     "nullable": true,
                     "type": "string"
@@ -73789,7 +73555,6 @@
                   "maps_uri",
                   "name",
                   "rating",
-                  "reviews",
                   "write_review_url"
                 ],
                 "title": "GoogleListing",
@@ -76197,7 +75962,7 @@
       "ReviewAskSettingsResponse": {
         "properties": {
           "google": {
-            "description": "The box's Google rating and up to five reviews, kept apart (ADR-387)",
+            "description": "The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms",
             "nullable": true,
             "properties": {
               "count": {
@@ -76220,53 +75985,6 @@
                 "nullable": true,
                 "type": "number"
               },
-              "reviews": {
-                "items": {
-                  "properties": {
-                    "author_name": {
-                      "nullable": true,
-                      "type": "string"
-                    },
-                    "author_photo_uri": {
-                      "nullable": true,
-                      "type": "string"
-                    },
-                    "author_uri": {
-                      "nullable": true,
-                      "type": "string"
-                    },
-                    "published_at": {
-                      "nullable": true,
-                      "type": "string"
-                    },
-                    "rating": {
-                      "nullable": true,
-                      "type": "integer"
-                    },
-                    "relative_time": {
-                      "nullable": true,
-                      "type": "string"
-                    },
-                    "text": {
-                      "nullable": true,
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "author_name",
-                    "author_photo_uri",
-                    "author_uri",
-                    "published_at",
-                    "rating",
-                    "relative_time",
-                    "text"
-                  ],
-                  "title": "GoogleReview",
-                  "type": "object"
-                },
-                "maxItems": 5,
-                "type": "array"
-              },
               "write_review_url": {
                 "nullable": true,
                 "type": "string"
@@ -76278,7 +75996,6 @@
               "maps_uri",
               "name",
               "rating",
-              "reviews",
               "write_review_url"
             ],
             "title": "GoogleListing",
@@ -84233,7 +83950,7 @@
       "SiteReviews": {
         "properties": {
           "google": {
-            "description": "The box's Google rating and up to five reviews, kept apart (ADR-387)",
+            "description": "The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms",
             "nullable": true,
             "properties": {
               "count": {
@@ -84256,53 +83973,6 @@
                 "nullable": true,
                 "type": "number"
               },
-              "reviews": {
-                "items": {
-                  "properties": {
-                    "author_name": {
-                      "nullable": true,
-                      "type": "string"
-                    },
-                    "author_photo_uri": {
-                      "nullable": true,
-                      "type": "string"
-                    },
-                    "author_uri": {
-                      "nullable": true,
-                      "type": "string"
-                    },
-                    "published_at": {
-                      "nullable": true,
-                      "type": "string"
-                    },
-                    "rating": {
-                      "nullable": true,
-                      "type": "integer"
-                    },
-                    "relative_time": {
-                      "nullable": true,
-                      "type": "string"
-                    },
-                    "text": {
-                      "nullable": true,
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "author_name",
-                    "author_photo_uri",
-                    "author_uri",
-                    "published_at",
-                    "rating",
-                    "relative_time",
-                    "text"
-                  ],
-                  "title": "GoogleReview",
-                  "type": "object"
-                },
-                "maxItems": 5,
-                "type": "array"
-              },
               "write_review_url": {
                 "nullable": true,
                 "type": "string"
@@ -84314,7 +83984,6 @@
               "maps_uri",
               "name",
               "rating",
-              "reviews",
               "write_review_url"
             ],
             "title": "GoogleListing",
@@ -84963,6 +84632,41 @@
           "type"
         ],
         "title": "SiteWod",
+        "type": "object"
+      },
+      "SmsUnsubscribe": {
+        "description": "The box behind a marketing SMS's link and whether offers by SMS are off for the person",
+        "properties": {
+          "box_name": {
+            "type": "string"
+          },
+          "locale": {
+            "enum": [
+              "el",
+              "en",
+              "de",
+              "fr",
+              "it",
+              "es",
+              "nl",
+              "pt-PT",
+              "bg",
+              "ru",
+              "ar",
+              "he"
+            ],
+            "type": "string"
+          },
+          "withdrawn": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "box_name",
+          "locale",
+          "withdrawn"
+        ],
+        "title": "SmsUnsubscribe",
         "type": "object"
       },
       "SocialPrivacy": {
@@ -168167,7 +167871,7 @@
                       "type": "integer"
                     },
                     "google": {
-                      "description": "The box's Google rating and up to five reviews, kept apart (ADR-387)",
+                      "description": "The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms",
                       "nullable": true,
                       "properties": {
                         "count": {
@@ -168190,53 +167894,6 @@
                           "nullable": true,
                           "type": "number"
                         },
-                        "reviews": {
-                          "items": {
-                            "properties": {
-                              "author_name": {
-                                "nullable": true,
-                                "type": "string"
-                              },
-                              "author_photo_uri": {
-                                "nullable": true,
-                                "type": "string"
-                              },
-                              "author_uri": {
-                                "nullable": true,
-                                "type": "string"
-                              },
-                              "published_at": {
-                                "nullable": true,
-                                "type": "string"
-                              },
-                              "rating": {
-                                "nullable": true,
-                                "type": "integer"
-                              },
-                              "relative_time": {
-                                "nullable": true,
-                                "type": "string"
-                              },
-                              "text": {
-                                "nullable": true,
-                                "type": "string"
-                              }
-                            },
-                            "required": [
-                              "author_name",
-                              "author_photo_uri",
-                              "author_uri",
-                              "published_at",
-                              "rating",
-                              "relative_time",
-                              "text"
-                            ],
-                            "title": "GoogleReview",
-                            "type": "object"
-                          },
-                          "maxItems": 5,
-                          "type": "array"
-                        },
                         "write_review_url": {
                           "nullable": true,
                           "type": "string"
@@ -168248,7 +167905,6 @@
                         "maps_uri",
                         "name",
                         "rating",
-                        "reviews",
                         "write_review_url"
                       ],
                       "title": "GoogleListing",
@@ -171463,7 +171119,7 @@
                       "type": "integer"
                     },
                     "sms_blocked": {
-                      "description": "The box's own reason no SMS can go (`channels_demo_mode`, `channels_not_connected`, `channel_budget_exceeded`…)",
+                      "description": "The box's own reason no SMS can go (`channels_demo_mode`, `channels_not_connected`, `channel_budget_missing`, `channel_budget_exceeded`…)",
                       "nullable": true,
                       "type": "string"
                     },
@@ -171649,7 +171305,7 @@
                       "type": "integer"
                     },
                     "sms_blocked": {
-                      "description": "The box's own reason no SMS can go (`channels_demo_mode`, `channels_not_connected`, `channel_budget_exceeded`…)",
+                      "description": "The box's own reason no SMS can go (`channels_demo_mode`, `channels_not_connected`, `channel_budget_missing`, `channel_budget_exceeded`…)",
                       "nullable": true,
                       "type": "string"
                     },
@@ -174275,6 +173931,8 @@
                           "type": "string"
                         },
                         "monthly_budget_cents": {
+                          "description": "The cap the box typed; null until it does, and then nothing is sent (ADR-390)",
+                          "nullable": true,
                           "type": "integer"
                         },
                         "provider": {
@@ -174541,8 +174199,10 @@
                     "type": "string"
                   },
                   "monthly_budget_cents": {
+                    "description": "The box's own monthly cap in cents; required once a channel is on (no default, ADR-390)",
                     "maximum": 1000000,
                     "minimum": 0,
+                    "nullable": true,
                     "type": "integer"
                   },
                   "provider": {
@@ -174686,6 +174346,8 @@
                           "type": "string"
                         },
                         "monthly_budget_cents": {
+                          "description": "The cap the box typed; null until it does, and then nothing is sent (ADR-390)",
+                          "nullable": true,
                           "type": "integer"
                         },
                         "provider": {
@@ -174861,6 +174523,8 @@
                           "type": "string"
                         },
                         "monthly_budget_cents": {
+                          "description": "The cap the box typed; null until it does, and then nothing is sent (ADR-390)",
+                          "nullable": true,
                           "type": "integer"
                         },
                         "provider": {
@@ -245338,7 +245002,7 @@
                 "schema": {
                   "properties": {
                     "google": {
-                      "description": "The box's Google rating and up to five reviews, kept apart (ADR-387)",
+                      "description": "The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms",
                       "nullable": true,
                       "properties": {
                         "count": {
@@ -245361,53 +245025,6 @@
                           "nullable": true,
                           "type": "number"
                         },
-                        "reviews": {
-                          "items": {
-                            "properties": {
-                              "author_name": {
-                                "nullable": true,
-                                "type": "string"
-                              },
-                              "author_photo_uri": {
-                                "nullable": true,
-                                "type": "string"
-                              },
-                              "author_uri": {
-                                "nullable": true,
-                                "type": "string"
-                              },
-                              "published_at": {
-                                "nullable": true,
-                                "type": "string"
-                              },
-                              "rating": {
-                                "nullable": true,
-                                "type": "integer"
-                              },
-                              "relative_time": {
-                                "nullable": true,
-                                "type": "string"
-                              },
-                              "text": {
-                                "nullable": true,
-                                "type": "string"
-                              }
-                            },
-                            "required": [
-                              "author_name",
-                              "author_photo_uri",
-                              "author_uri",
-                              "published_at",
-                              "rating",
-                              "relative_time",
-                              "text"
-                            ],
-                            "title": "GoogleReview",
-                            "type": "object"
-                          },
-                          "maxItems": 5,
-                          "type": "array"
-                        },
                         "write_review_url": {
                           "nullable": true,
                           "type": "string"
@@ -245419,7 +245036,6 @@
                         "maps_uri",
                         "name",
                         "rating",
-                        "reviews",
                         "write_review_url"
                       ],
                       "title": "GoogleListing",
@@ -245529,7 +245145,7 @@
                 "schema": {
                   "properties": {
                     "google": {
-                      "description": "The box's Google rating and up to five reviews, kept apart (ADR-387)",
+                      "description": "The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms",
                       "nullable": true,
                       "properties": {
                         "count": {
@@ -245552,53 +245168,6 @@
                           "nullable": true,
                           "type": "number"
                         },
-                        "reviews": {
-                          "items": {
-                            "properties": {
-                              "author_name": {
-                                "nullable": true,
-                                "type": "string"
-                              },
-                              "author_photo_uri": {
-                                "nullable": true,
-                                "type": "string"
-                              },
-                              "author_uri": {
-                                "nullable": true,
-                                "type": "string"
-                              },
-                              "published_at": {
-                                "nullable": true,
-                                "type": "string"
-                              },
-                              "rating": {
-                                "nullable": true,
-                                "type": "integer"
-                              },
-                              "relative_time": {
-                                "nullable": true,
-                                "type": "string"
-                              },
-                              "text": {
-                                "nullable": true,
-                                "type": "string"
-                              }
-                            },
-                            "required": [
-                              "author_name",
-                              "author_photo_uri",
-                              "author_uri",
-                              "published_at",
-                              "rating",
-                              "relative_time",
-                              "text"
-                            ],
-                            "title": "GoogleReview",
-                            "type": "object"
-                          },
-                          "maxItems": 5,
-                          "type": "array"
-                        },
                         "write_review_url": {
                           "nullable": true,
                           "type": "string"
@@ -245610,7 +245179,6 @@
                         "maps_uri",
                         "name",
                         "rating",
-                        "reviews",
                         "write_review_url"
                       ],
                       "title": "GoogleListing",
@@ -297322,7 +296890,7 @@
                       "type": "integer"
                     },
                     "google": {
-                      "description": "The box's Google rating and up to five reviews, kept apart (ADR-387)",
+                      "description": "The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms",
                       "nullable": true,
                       "properties": {
                         "count": {
@@ -297345,53 +296913,6 @@
                           "nullable": true,
                           "type": "number"
                         },
-                        "reviews": {
-                          "items": {
-                            "properties": {
-                              "author_name": {
-                                "nullable": true,
-                                "type": "string"
-                              },
-                              "author_photo_uri": {
-                                "nullable": true,
-                                "type": "string"
-                              },
-                              "author_uri": {
-                                "nullable": true,
-                                "type": "string"
-                              },
-                              "published_at": {
-                                "nullable": true,
-                                "type": "string"
-                              },
-                              "rating": {
-                                "nullable": true,
-                                "type": "integer"
-                              },
-                              "relative_time": {
-                                "nullable": true,
-                                "type": "string"
-                              },
-                              "text": {
-                                "nullable": true,
-                                "type": "string"
-                              }
-                            },
-                            "required": [
-                              "author_name",
-                              "author_photo_uri",
-                              "author_uri",
-                              "published_at",
-                              "rating",
-                              "relative_time",
-                              "text"
-                            ],
-                            "title": "GoogleReview",
-                            "type": "object"
-                          },
-                          "maxItems": 5,
-                          "type": "array"
-                        },
                         "write_review_url": {
                           "nullable": true,
                           "type": "string"
@@ -297403,7 +296924,6 @@
                         "maps_uri",
                         "name",
                         "rating",
-                        "reviews",
                         "write_review_url"
                       ],
                       "title": "GoogleListing",
@@ -371000,6 +370520,156 @@
         ]
       }
     },
+    "/api/public/channels/unsubscribe/{token}": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PublicSmsUnsubscribeController.show",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "maxLength": 64,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "The box behind a marketing SMS's link and whether offers by SMS are off for the person",
+                  "properties": {
+                    "box_name": {
+                      "type": "string"
+                    },
+                    "locale": {
+                      "enum": [
+                        "el",
+                        "en",
+                        "de",
+                        "fr",
+                        "it",
+                        "es",
+                        "nl",
+                        "pt-PT",
+                        "bg",
+                        "ru",
+                        "ar",
+                        "he"
+                      ],
+                      "type": "string"
+                    },
+                    "withdrawn": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "box_name",
+                    "locale",
+                    "withdrawn"
+                  ],
+                  "title": "SmsUnsubscribe",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsubscribe link"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unknown link"
+          }
+        },
+        "security": [],
+        "summary": "The box behind a marketing SMS's unsubscribe link (changes nothing)",
+        "tags": [
+          "Channels"
+        ]
+      },
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PublicSmsUnsubscribeController.create",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "maxLength": 64,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "The box behind a marketing SMS's link and whether offers by SMS are off for the person",
+                  "properties": {
+                    "box_name": {
+                      "type": "string"
+                    },
+                    "locale": {
+                      "enum": [
+                        "el",
+                        "en",
+                        "de",
+                        "fr",
+                        "it",
+                        "es",
+                        "nl",
+                        "pt-PT",
+                        "bg",
+                        "ru",
+                        "ar",
+                        "he"
+                      ],
+                      "type": "string"
+                    },
+                    "withdrawn": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "box_name",
+                    "locale",
+                    "withdrawn"
+                  ],
+                  "title": "SmsUnsubscribe",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unsubscribed"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unknown link"
+          }
+        },
+        "security": [],
+        "summary": "Stop offers by SMS from this box (withdraws the marketing SMS consent)",
+        "tags": [
+          "Channels"
+        ]
+      }
+    },
     "/api/public/perk-verifications/{token}": {
       "get": {
         "callbacks": {},
@@ -372029,7 +371699,7 @@
                     "reviews": {
                       "properties": {
                         "google": {
-                          "description": "The box's Google rating and up to five reviews, kept apart (ADR-387)",
+                          "description": "The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms",
                           "nullable": true,
                           "properties": {
                             "count": {
@@ -372052,53 +371722,6 @@
                               "nullable": true,
                               "type": "number"
                             },
-                            "reviews": {
-                              "items": {
-                                "properties": {
-                                  "author_name": {
-                                    "nullable": true,
-                                    "type": "string"
-                                  },
-                                  "author_photo_uri": {
-                                    "nullable": true,
-                                    "type": "string"
-                                  },
-                                  "author_uri": {
-                                    "nullable": true,
-                                    "type": "string"
-                                  },
-                                  "published_at": {
-                                    "nullable": true,
-                                    "type": "string"
-                                  },
-                                  "rating": {
-                                    "nullable": true,
-                                    "type": "integer"
-                                  },
-                                  "relative_time": {
-                                    "nullable": true,
-                                    "type": "string"
-                                  },
-                                  "text": {
-                                    "nullable": true,
-                                    "type": "string"
-                                  }
-                                },
-                                "required": [
-                                  "author_name",
-                                  "author_photo_uri",
-                                  "author_uri",
-                                  "published_at",
-                                  "rating",
-                                  "relative_time",
-                                  "text"
-                                ],
-                                "title": "GoogleReview",
-                                "type": "object"
-                              },
-                              "maxItems": 5,
-                              "type": "array"
-                            },
                             "write_review_url": {
                               "nullable": true,
                               "type": "string"
@@ -372110,7 +371733,6 @@
                             "maps_uri",
                             "name",
                             "rating",
-                            "reviews",
                             "write_review_url"
                           ],
                           "title": "GoogleListing",
