@@ -223,7 +223,10 @@ defmodule Palee.Workouts do
   # ADR-394: the benchmarks a coach can tag a WOD with, and the tag itself.
   defdelegate benchmarks(), to: Palee.Workouts.Domain.WorkoutBenchmarks, as: :all
   defdelegate benchmark(key), to: Palee.Workouts.Domain.WorkoutBenchmarks, as: :get
-  defdelegate normalize_benchmark_key(key), to: Palee.Workouts.Domain.WorkoutBenchmarks, as: :normalize
+
+  defdelegate normalize_benchmark_key(key),
+    to: Palee.Workouts.Domain.WorkoutBenchmarks,
+    as: :normalize
 
   def set_workout_benchmark(context, id, benchmark_key),
     do: WorkoutStore.set_workout_benchmark(context, id, benchmark_key)

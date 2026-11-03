@@ -149,6 +149,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     user_insights guide_progress notification_preferences
     training_goals
     personal_data_exports
+    palee_leaderboard_consents
   )
 
   def report do

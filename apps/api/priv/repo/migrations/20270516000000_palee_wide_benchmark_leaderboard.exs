@@ -163,7 +163,11 @@ defmodule Palee.Repo.Migrations.PaleeWideBenchmarkLeaderboard do
 
   def down do
     execute("DROP FUNCTION IF EXISTS palee_benchmark_workout_sections(text, uuid[])")
-    execute("DROP FUNCTION IF EXISTS palee_benchmark_results(text, timestamp, timestamp, integer)")
+
+    execute(
+      "DROP FUNCTION IF EXISTS palee_benchmark_results(text, timestamp, timestamp, integer)"
+    )
+
     drop table(:palee_leaderboard_consents)
     drop index(:master_workouts, [:benchmark_key], name: :master_workouts_benchmark_key_index)
 

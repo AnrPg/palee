@@ -13,15 +13,21 @@ defmodule Palee.Application.GetWorkoutLeaderboard do
   Principle §4.4: comparison is shown only to people who opted in. A viewer
   who has not gets their own result (no rank, no percentile) and
   `opted_in: false`, so the screen can offer the opt-in instead.
+
+  ADR-394: a WOD the coach tagged as a benchmark says so (`benchmark`) and
+  carries the viewer's Palee-wide answer (`palee_consent`). `scope=palee`
+  ranks it across every box (`PaleeBenchmarkLeaderboard`); it needs a
+  benchmark (`422 invalid_leaderboard_filter`, field `scope`) and an answer
+  (`409 palee_leaderboard_consent_required`).
   """
 
   alias Palee.{Buddies, Execution, Gamification, Identity, Organizations, Workouts}
-  alias Palee.Application.WorkoutDayLeaderboard
+  alias Palee.Application.{PaleeBenchmarkLeaderboard, SetWorkoutBenchmark, WorkoutDayLeaderboard}
 
   @max_rows 200
   @all_since ~U[2000-01-01 00:00:00Z]
 
-  def call(%{organization_id: organization_id, user_id: viewer_id} = context, workout_id, params)
+  def call(%{organization_id: organization_id, user_id: _viewer} = context, workout_id, params)
       when is_binary(organization_id) do
     now = Map.get(params, :now) || DateTime.utc_now()
 
@@ -32,40 +38,90 @@ defmodule Palee.Application.GetWorkoutLeaderboard do
       date = filters.date || now |> DateTime.shift_zone!(zone) |> DateTime.to_date()
       filters = %{filters | date: date}
       {from, to} = window(filters, zone, now)
+      benchmark = SetWorkoutBenchmark.describe(Map.get(workout, :benchmark_key))
 
-      section = WorkoutDayLeaderboard.ranked_section(workout)
-
-      results =
-        context
-        |> WorkoutDayLeaderboard.results(workout.id, from, to)
-        |> Enum.reject(&(&1.journal_visibility == "private"))
-
-      profiles = profiles(context, results)
-      viewer_opted_in = Map.has_key?(profiles, viewer_id)
-
-      rows =
-        if viewer_opted_in do
-          ranked(context, results, profiles, filters, section, viewer_id, now)
-        else
-          []
-        end
-
-      {:ok,
-       %{
-         workout: %{id: workout.id, title: workout.title},
-         section: section && Map.take(section, [:id, :name, :score_type, :unit]),
-         opted_in: viewer_opted_in,
-         profile: Map.get(profiles, viewer_id),
-         filters: Gamification.present_leaderboard_filters(filters),
-         options: options(context),
-         total: length(rows),
-         rows: Enum.take(rows, @max_rows),
-         me: me(rows, results, section, viewer_id, viewer_opted_in)
-       }}
+      if filters.scope == "palee" do
+        palee(context, workout, benchmark, filters, {from, to})
+      else
+        box(context, workout, benchmark, filters, {from, to}, now)
+      end
     end
   end
 
   def call(_context, _workout_id, _params), do: {:error, :organization_context_required}
+
+  defp palee(_context, _workout, nil, _filters, _window),
+    do: {:error, {:invalid_leaderboard_filter, :scope}}
+
+  defp palee(context, workout, benchmark, filters, window) do
+    viewer_id = context.user_id
+
+    with {:ok, board} <- PaleeBenchmarkLeaderboard.call(context, benchmark, filters, window) do
+      profiles = profiles(context, [])
+
+      {:ok,
+       %{
+         workout: %{id: workout.id, title: workout.title},
+         section: section_of(WorkoutDayLeaderboard.ranked_section(workout)),
+         benchmark: benchmark,
+         palee_consent: palee_consent(context, benchmark),
+         opted_in: Map.has_key?(profiles, viewer_id),
+         profile: Map.get(profiles, viewer_id),
+         filters: Gamification.present_leaderboard_filters(filters),
+         options: options(context),
+         total: board.total,
+         rows: board.rows,
+         me: board.me
+       }}
+    end
+  end
+
+  defp box(context, workout, benchmark, filters, {from, to}, now) do
+    viewer_id = context.user_id
+    section = WorkoutDayLeaderboard.ranked_section(workout)
+
+    results =
+      context
+      |> WorkoutDayLeaderboard.results(workout.id, from, to)
+      |> Enum.reject(&(&1.journal_visibility == "private"))
+
+    profiles = profiles(context, results)
+    viewer_opted_in = Map.has_key?(profiles, viewer_id)
+
+    rows =
+      if viewer_opted_in do
+        ranked(context, results, profiles, filters, section, viewer_id, now)
+      else
+        []
+      end
+
+    {:ok,
+     %{
+       workout: %{id: workout.id, title: workout.title},
+       section: section_of(section),
+       benchmark: benchmark,
+       palee_consent: palee_consent(context, benchmark),
+       opted_in: viewer_opted_in,
+       profile: Map.get(profiles, viewer_id),
+       filters: Gamification.present_leaderboard_filters(filters),
+       options: options(context),
+       total: length(rows),
+       rows: Enum.take(rows, @max_rows),
+       me: me(rows, results, section, viewer_id, viewer_opted_in)
+     }}
+  end
+
+  defp section_of(nil), do: nil
+  defp section_of(section), do: Map.take(section, [:id, :name, :score_type, :unit])
+
+  # Only a benchmark WOD asks; the answer is the person's own row.
+  defp palee_consent(_context, nil), do: nil
+
+  defp palee_consent(context, _benchmark) do
+    Gamification.with_tenant_context(context, fn ->
+      Gamification.palee_leaderboard_consent(context.user_id)
+    end)
+  end
 
   # The slice, ranked, with percentiles and the people's names.
   defp ranked(context, results, profiles, filters, section, viewer_id, now) do
@@ -111,6 +167,7 @@ defmodule Palee.Application.GetWorkoutLeaderboard do
         user_id: row.user_id,
         nickname: Map.get(person, :nickname),
         avatar_url: Map.get(person, :avatar_url),
+        box_name: nil,
         scale_level_slug: row.scale_level_slug,
         value: score_value(row.score),
         unit: score_unit(row.score),
@@ -141,6 +198,7 @@ defmodule Palee.Application.GetWorkoutLeaderboard do
             %{
               rank: nil,
               user_id: viewer_id,
+              box_name: nil,
               scale_level_slug: row.scale_level_slug,
               value: score_value(row.score),
               unit: score_unit(row.score),

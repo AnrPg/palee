@@ -2302,6 +2302,10 @@ defmodule PaleeWeb.Router do
     get("/me/progress/depth", TrainingDepthController, :show)
     # ADR-358 (CP-D6): fitness score per domain and what to work on.
     get("/me/fitness-profile", FitnessProfileController, :show)
+    # ADR-394: the answer about the Palee-wide benchmark board.
+    get("/me/palee-leaderboard", PaleeLeaderboardConsentController, :show)
+    put("/me/palee-leaderboard", PaleeLeaderboardConsentController, :update)
+    delete("/me/palee-leaderboard", PaleeLeaderboardConsentController, :delete)
     # ADR-166: the Πρόοδος insights slot.
     get("/me/insights", InsightsController, :show)
     post("/me/insights/restore", InsightsController, :restore)
