@@ -31,7 +31,7 @@ import { useUiTranslations } from "@/i18n/ui";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { inboxHref } from "@/components/chat/inbox/inbox-model";
 
-const FORM_REVIEWS_KEY = ["me", "form-reviews"] as const;
+export const FORM_REVIEWS_KEY = ["me", "form-reviews"] as const;
 
 /** `/box/coach`: form reviews and the nutrition plan, each shown when included. */
 export function CoachingConsole() {
@@ -214,12 +214,24 @@ function FormReviews() {
   );
 }
 
-function FormReviewForm({ onSubmitted }: { onSubmitted: () => void }) {
+/**
+ * The «Βίντεο τεχνικής» request (ADR-098). From the completion screen it
+ * carries the run it is about (`executionId`, ANR mockup d5 A).
+ */
+export function FormReviewForm({
+  onSubmitted,
+  executionId = null,
+  defaultExercise = "",
+}: {
+  onSubmitted: () => void;
+  executionId?: string | null;
+  defaultExercise?: string;
+}) {
   const i18n = useUiTranslations();
   const { tokens } = useSession();
   const id = useId();
   const [videoUrl, setVideoUrl] = useState("");
-  const [exercise, setExercise] = useState("");
+  const [exercise, setExercise] = useState(defaultExercise);
   const [note, setNote] = useState("");
   const [invalidUrl, setInvalidUrl] = useState(false);
   const [sent, setSent] = useState(false);
@@ -229,6 +241,7 @@ function FormReviewForm({ onSubmitted }: { onSubmitted: () => void }) {
         video_url: videoUrl.trim(),
         exercise_name: exercise.trim() || null,
         note: note.trim() || null,
+        ...(executionId ? { execution_id: executionId } : {}),
       }),
     onSuccess: () => {
       setVideoUrl("");

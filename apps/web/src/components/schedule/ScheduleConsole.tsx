@@ -71,7 +71,7 @@ import { ContextualWorkoutCreator } from "@/components/workouts/creation/Context
 import { WodPicker } from "@/components/schedule/WodPicker";
 import { DayWorkoutDialog } from "@/components/schedule/DayWorkoutDialog";
 import { coveringDayWorkout } from "@/components/schedule/day-workouts";
-import type { DayWorkout } from "@/api/day-workouts";
+import { fetchDayAssignmentTags, type DayWorkout } from "@/api/day-workouts";
 import { Dialog } from "@/components/ui/Dialog";
 import { Select } from "@/components/ui/Select";
 import { DateInput, TimeInput, DateTimeInput } from "@/components/ui/DateInput";
@@ -208,6 +208,8 @@ export function ScheduleConsole({
   const [windowCoaches, setWindowCoaches] = useState<ScheduleCoach[]>([]);
   // ADR-230: the WOD of each day in the window (staff), and the day being edited.
   const [dayWorkouts, setDayWorkouts] = useState<DayWorkout[]>([]);
+  // ADR-357: bumped on every load, so the day tags follow the classes.
+  const [scheduleVersion, setScheduleVersion] = useState(0);
   const [dayWodDate, setDayWodDate] = useState<string | null>(null);
   const [entitlement, setEntitlement] = useState<EffectiveEntitlement | null | undefined>(undefined);
   const [notice, setNotice] = useState<string | null>(null);
@@ -266,6 +268,17 @@ export function ScheduleConsole({
   const isMemberSurface = !roleLoading && !isAdmin;
   const calendarWindow = useMemo(() => buildScheduleWindow(startDate, days, gymZone), [days, gymZone, startDate]);
   const title = pageTitle ?? t("title");
+  // ADR-357 (ANR mockup d3 A): «Χωρίς WOD / Μερικά με WOD · 1/3 / Όλα με WOD»
+  // on each day, for whoever programs WODs.
+  const tagsFrom = calendarWindow.visibleDates[0];
+  const tagsTo = calendarWindow.visibleDates[calendarWindow.visibleDates.length - 1];
+  const dayTagsQuery = useQuery({
+    queryKey: ["schedule", "day-tags", tagsFrom, tagsTo, scheduleVersion],
+    queryFn: () => fetchDayAssignmentTags(tokens!.access_token, tagsFrom!, tagsTo!),
+    enabled:
+      isAdmin && (canManageSchedule || can(membership, "manage_workouts")) && Boolean(tokens?.access_token && tagsFrom && tagsTo),
+    placeholderData: (previous) => previous,
+  });
 
   const loadSchedule = useCallback(async () => {
     if (!tokens?.access_token) return null;
@@ -289,6 +302,7 @@ export function ScheduleConsole({
       setLocations(Array.isArray(window.locations) ? window.locations : []);
       setWindowCoaches(Array.isArray(window.coaches) ? window.coaches : []);
       setDayWorkouts(Array.isArray(window.day_workouts) ? window.day_workouts : []);
+      setScheduleVersion((version) => version + 1);
       return nextSlots;
     } catch (loadError) {
       setError(loadError instanceof Error ? localizeError(loadError, i18n) : t("failedToLoadSchedule"));
@@ -866,6 +880,7 @@ export function ScheduleConsole({
             startDate={startDate}
             timeZone={gymZone}
             dayWorkouts={dayWorkouts}
+            dayTags={dayTagsQuery.data}
             classTypes={classTypes}
             onOpenDayWorkout={isAdmin && canManageSchedule ? setDayWodDate : undefined}
           />

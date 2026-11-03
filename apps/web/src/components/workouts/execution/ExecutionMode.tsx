@@ -755,6 +755,7 @@ export function ExecutionMode() {
         pendingCommentIds={unsyncedCommentIds}
         clockAdjustments={clockAdjustmentSummaries()}
         feltExecutionId={executionId}
+        videoExecutionId={executionId}
         isSaving={isSaving}
         feedback={feedback}
         onConfirm={(editedScores, modifications) => void confirmPendingFinish(editedScores, modifications)}

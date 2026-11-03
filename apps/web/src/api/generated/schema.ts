@@ -13463,6 +13463,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/me/executions/{id}/workout-snapshot": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The WOD as my own run performed it, and whether it changed since (ADR-389) */
+        get: operations["PaleeWeb.WorkoutSnapshotController.execution"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/me/finance": {
         parameters: {
             query?: never;
@@ -14566,6 +14583,23 @@ export interface paths {
         put?: never;
         /** Void a training log entry (entries are never deleted) */
         post: operations["PaleeWeb.TrainingLogController.void"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/training-log/entries/{id}/workout-snapshot": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The WOD as my own logged score performed it, and whether it changed since (ADR-389) */
+        get: operations["PaleeWeb.WorkoutSnapshotController.training_log"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -48124,6 +48158,27 @@ export interface components {
                 id: string;
                 title: string;
                 type?: string | null;
+            } | null;
+        };
+        /** WorkoutAsPerformed */
+        WorkoutAsPerformed: {
+            /** @description The WOD now reads differently, or no longer exists */
+            changed: boolean;
+            /** @description Null for results from before snapshots (ADR-357) */
+            snapshot: {
+                /** @description The WOD as it read then (title, type, text, sections, plans, body) */
+                content: {
+                    [key: string]: unknown;
+                };
+                content_hash: string;
+                format_version: number;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                taken_at: string;
+                title?: string | null;
+                /** Format: uuid */
+                workout_id: string;
             } | null;
         };
         /** WorkoutAuthoringSettings */
@@ -119202,6 +119257,58 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.WorkoutSnapshotController.execution": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description As performed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description The WOD now reads differently, or no longer exists */
+                        changed: boolean;
+                        /** @description Null for results from before snapshots (ADR-357) */
+                        snapshot: {
+                            /** @description The WOD as it read then (title, type, text, sections, plans, body) */
+                            content: {
+                                [key: string]: unknown;
+                            };
+                            content_hash: string;
+                            format_version: number;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            taken_at: string;
+                            title?: string | null;
+                            /** Format: uuid */
+                            workout_id: string;
+                        } | null;
+                    };
+                };
+            };
+            /** @description No such run, or not yours */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.MyFinanceController.index": {
         parameters: {
             query?: never;
@@ -123992,6 +124099,58 @@ export interface operations {
                 };
                 content: {
                     "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.WorkoutSnapshotController.training_log": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description As performed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description The WOD now reads differently, or no longer exists */
+                        changed: boolean;
+                        /** @description Null for results from before snapshots (ADR-357) */
+                        snapshot: {
+                            /** @description The WOD as it read then (title, type, text, sections, plans, body) */
+                            content: {
+                                [key: string]: unknown;
+                            };
+                            content_hash: string;
+                            format_version: number;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            taken_at: string;
+                            title?: string | null;
+                            /** Format: uuid */
+                            workout_id: string;
+                        } | null;
+                    };
+                };
+            };
+            /** @description No such score, or not yours */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
                 };
             };
         };

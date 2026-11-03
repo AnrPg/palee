@@ -198,6 +198,7 @@ export function PlanExecutionMode({ executionId }: { executionId: string }) {
         segments={segments}
         comments={comments}
         feltExecutionId={executionId}
+        videoExecutionId={executionId}
         isSaving={saving}
         feedback={feedback}
         onConfirm={confirmFinish}

@@ -7,6 +7,7 @@
 import {useUiTranslations} from "@/i18n/ui";
 import { localizeError } from "@/i18n/presentation";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 
 import { ApiError } from "@/api/client";
@@ -38,6 +39,7 @@ import {
 } from "@/components/wellbeing/InjuryWarnings";
 import { warningLevelFor, warningLevelsByUser } from "@/lib/injury-warnings";
 import { AdminSlotRoster } from "@/components/schedule/AdminSlotRoster";
+import { fetchClassVisitBadges, visitBadgesKey } from "@/api/training-floor";
 import { FeltSummaryCard } from "@/components/wod-goals/FeltSummaryCard";
 import { GuestBookingPanel } from "@/components/schedule/GuestBookingPanel";
 import { ClassVariationDialog } from "@/components/schedule/ClassVariationDialog";
@@ -165,6 +167,15 @@ export function SlotPopup({
     isAdmin && Boolean(slot.workout) && hasBookedMembers,
   );
   const injuryLevels = warningLevelsByUser(slotInjuryWarnings.data?.athletes ?? []);
+  // ADR-359 (ANR mockup e1 B): who is new in this class. A role without the
+  // right (403) simply sees no badges.
+  const visitBadges = useQuery({
+    queryKey: visitBadgesKey(slot.id),
+    queryFn: () => fetchClassVisitBadges(accessToken, slot.id),
+    enabled: isAdmin && hasBookedMembers && Boolean(accessToken),
+    retry: false,
+    staleTime: 60_000,
+  });
   const bookingNames = new Map(
     slot.bookings.map((booking) => [booking.user_id, booking.user_nickname ?? booking.user_id]),
   );
@@ -951,6 +962,7 @@ export function SlotPopup({
                 ) : null
               }
               badgeFor={(booking) => <InjuryWarningBadge level={warningLevelFor(injuryLevels, booking.user_id)} />}
+              visits={visitBadges.data?.people}
             />
           ) : null}
         </div>

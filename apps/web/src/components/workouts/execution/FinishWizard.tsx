@@ -21,6 +21,7 @@ import { buildSegmentStepDefinitions } from "./progress";
 import { TextSectionScoreStep, type TextSectionScoreView } from "./TextSectionScoreStep";
 import type { TextSection, TextSectionResult } from "@/lib/text-sections";
 import { BackButton } from "@/components/ui/BackLink";
+import { TechniqueVideoAction } from "./TechniqueVideoAction";
 
 type SectionScore = {
   section_id: string;
@@ -754,6 +755,7 @@ function ConfirmStep({
   onBack,
   onSave,
   clockAdjustments = [],
+  videoExecutionId = null,
 }: {
   scores: SectionScore[];
   modifications: ExerciseModification[];
@@ -764,6 +766,7 @@ function ConfirmStep({
   feedback: string | null;
   onBack: () => void;
   onSave: () => void;
+  videoExecutionId?: string | null;
 }) {
   const i18n = useUiTranslations();
   const exerciseMap = React.useMemo(() => {
@@ -898,6 +901,11 @@ function ConfirmStep({
         >
           {isSaving ? i18n("saving56a2285") : i18n("saveDone3614269")}
         </button>
+        {videoExecutionId ? (
+          <div className="mt-2 flex flex-col gap-1">
+            <TechniqueVideoAction executionId={videoExecutionId} />
+          </div>
+        ) : null}
       </div>
     </div>
   );
@@ -934,6 +942,7 @@ export function FinishWizard({
   freeText = false,
   textSections = [],
   feltExecutionId = null,
+  videoExecutionId = null,
   isSaving,
   feedback,
   onConfirm,
@@ -950,6 +959,8 @@ export function FinishWizard({
   textSections?: TextSection[];
   /** Offers «Τι ένιωσες;» (WOD goals feedback) on this execution before the confirm step. */
   feltExecutionId?: string | null;
+  /** ANR mockup d5 A: the run a technique video from the completion screen is about. */
+  videoExecutionId?: string | null;
   isSaving: boolean;
   feedback: string | null;
   onConfirm: (editedScores: SectionScore[], finish: FinishComments, textResults: TextSectionResult[]) => void;
@@ -1058,6 +1069,7 @@ export function FinishWizard({
       feedback={feedback}
       onBack={() => setStep(afterComments === "felt" ? "felt" : 2)}
       onSave={handleSave}
+      videoExecutionId={videoExecutionId}
     />
   );
 }

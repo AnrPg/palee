@@ -161,11 +161,20 @@ export async function fetchCoachNotes(token: string, clientUserId: string) {
   return response.notes;
 }
 
-export async function createCoachNote(token: string, clientUserId: string, body: string, subject?: CoachNoteSubject | null) {
+/** ADR-359: `staff` notes are read by every staff role that sees the directory; `private` keeps ADR-101. */
+export type CoachNoteAudience = NonNullable<CoachNote["audience"]>;
+
+export async function createCoachNote(
+  token: string,
+  clientUserId: string,
+  body: string,
+  subject?: CoachNoteSubject | null,
+  audience: CoachNoteAudience = "private",
+) {
   const response = await apiRequest<NoteResponse>(`/staff/clients/${clientUserId}/coach-notes`, {
     method: "POST",
     token,
-    body: { body, ...(subject ? { subject_kind: subject.kind, subject_id: subject.id } : {}) },
+    body: { body, audience, ...(subject ? { subject_kind: subject.kind, subject_id: subject.id } : {}) },
   });
   return response.note;
 }

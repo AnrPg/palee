@@ -32,4 +32,8 @@ defmodule Palee.Workouts.WorkoutSnapshotStore do
   @impl true
   def referenced_by?(context, snapshot_id, user_id),
     do: tenant_call(context, :referenced_by?, [snapshot_id, user_id])
+
+  @impl true
+  def own_snapshot_id(context, holder, holder_id, user_id),
+    do: tenant_call(context, :own_snapshot_id, [holder, holder_id, user_id])
 end

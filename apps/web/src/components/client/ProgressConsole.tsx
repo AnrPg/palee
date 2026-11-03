@@ -31,6 +31,7 @@ import { useRememberedFilter } from "@/components/filters/use-remembered-filter"
 import { InsightsCard } from "@/components/member-app/progress/InsightsCard";
 import { ProgressDepthSections } from "@/components/member-app/progress/ProgressDepthSections";
 import { ProgressOverview } from "@/components/member-app/progress/ProgressOverview";
+import { FitnessProfileCard } from "@/components/member-app/progress/FitnessProfileCard";
 import { useLanding } from "@/components/member-app/progress/use-landing";
 import { weeklyTarget } from "@/components/training-goal/training-goal";
 import { useTrainingGoal } from "@/components/training-goal/use-training-goal";
@@ -95,6 +96,8 @@ export function ProgressConsole() {
             ) : null}
             <PersonalRecordsSection filter={filter} />
             <ProgressOverview />
+            {/* ADR-358 (ANR mockup d6 A): own PRs only, never other people. */}
+            <FitnessProfileCard />
             {progress ? (
               <>
                 <Totals progress={progress} />

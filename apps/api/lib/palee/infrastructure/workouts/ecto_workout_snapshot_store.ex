@@ -110,6 +110,23 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutSnapshotStore do
     execution? or log? or assignment?
   end
 
+  @impl true
+  def own_snapshot_id(context, holder, holder_id, user_id)
+      when holder in [:execution, :training_log] do
+    with {:ok, id} <- Ecto.UUID.cast(holder_id),
+         {:ok, user_id} <- Ecto.UUID.cast(user_id),
+         [snapshot_id] <-
+           holder
+           |> holder_query(context, id)
+           |> where([row], row.user_id == ^user_id)
+           |> select([row], row.workout_snapshot_id)
+           |> Repo.all() do
+      {:ok, snapshot_id}
+    else
+      _missing -> {:error, :not_found}
+    end
+  end
+
   defp holder_query(:assignment, %{organization_id: org}, id),
     do: from(a in AssignedWorkout, where: a.id == ^id and a.organization_id == ^org)
 
