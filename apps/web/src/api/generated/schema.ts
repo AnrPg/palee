@@ -19131,6 +19131,13 @@ export interface components {
             domains: {
                 /** Format: date-time */
                 active_at: string | null;
+                /** @enum {string|null} */
+                certificate_error: "cluster_refused" | "cluster_unreachable" | "challenge_failed" | "rate_limited" | "issuer_not_ready" | "issuance_failed" | null;
+                /**
+                 * @description ADR-398: the host's certificate (none until DNS is proven, then pending, issuing, active or failed)
+                 * @enum {string}
+                 */
+                certificate_status: "none" | "pending" | "issuing" | "active" | "failed";
                 /** Format: date-time */
                 checked_at: string | null;
                 dns_records: {
@@ -44026,6 +44033,13 @@ export interface components {
         SiteDomain: {
             /** Format: date-time */
             active_at: string | null;
+            /** @enum {string|null} */
+            certificate_error: "cluster_refused" | "cluster_unreachable" | "challenge_failed" | "rate_limited" | "issuer_not_ready" | "issuance_failed" | null;
+            /**
+             * @description ADR-398: the host's certificate (none until DNS is proven, then pending, issuing, active or failed)
+             * @enum {string}
+             */
+            certificate_status: "none" | "pending" | "issuing" | "active" | "failed";
             /** Format: date-time */
             checked_at: string | null;
             dns_records: {
@@ -44066,6 +44080,13 @@ export interface components {
             domain: {
                 /** Format: date-time */
                 active_at: string | null;
+                /** @enum {string|null} */
+                certificate_error: "cluster_refused" | "cluster_unreachable" | "challenge_failed" | "rate_limited" | "issuer_not_ready" | "issuance_failed" | null;
+                /**
+                 * @description ADR-398: the host's certificate (none until DNS is proven, then pending, issuing, active or failed)
+                 * @enum {string}
+                 */
+                certificate_status: "none" | "pending" | "issuing" | "active" | "failed";
                 /** Format: date-time */
                 checked_at: string | null;
                 dns_records: {
@@ -44106,6 +44127,13 @@ export interface components {
             domains: {
                 /** Format: date-time */
                 active_at: string | null;
+                /** @enum {string|null} */
+                certificate_error: "cluster_refused" | "cluster_unreachable" | "challenge_failed" | "rate_limited" | "issuer_not_ready" | "issuance_failed" | null;
+                /**
+                 * @description ADR-398: the host's certificate (none until DNS is proven, then pending, issuing, active or failed)
+                 * @enum {string}
+                 */
+                certificate_status: "none" | "pending" | "issuing" | "active" | "failed";
                 /** Format: date-time */
                 checked_at: string | null;
                 dns_records: {
@@ -105695,6 +105723,13 @@ export interface operations {
                         domains: {
                             /** Format: date-time */
                             active_at: string | null;
+                            /** @enum {string|null} */
+                            certificate_error: "cluster_refused" | "cluster_unreachable" | "challenge_failed" | "rate_limited" | "issuer_not_ready" | "issuance_failed" | null;
+                            /**
+                             * @description ADR-398: the host's certificate (none until DNS is proven, then pending, issuing, active or failed)
+                             * @enum {string}
+                             */
+                            certificate_status: "none" | "pending" | "issuing" | "active" | "failed";
                             /** Format: date-time */
                             checked_at: string | null;
                             dns_records: {
@@ -105858,6 +105893,13 @@ export interface operations {
                         domains: {
                             /** Format: date-time */
                             active_at: string | null;
+                            /** @enum {string|null} */
+                            certificate_error: "cluster_refused" | "cluster_unreachable" | "challenge_failed" | "rate_limited" | "issuer_not_ready" | "issuance_failed" | null;
+                            /**
+                             * @description ADR-398: the host's certificate (none until DNS is proven, then pending, issuing, active or failed)
+                             * @enum {string}
+                             */
+                            certificate_status: "none" | "pending" | "issuing" | "active" | "failed";
                             /** Format: date-time */
                             checked_at: string | null;
                             dns_records: {
@@ -105910,6 +105952,13 @@ export interface operations {
                         domain: {
                             /** Format: date-time */
                             active_at: string | null;
+                            /** @enum {string|null} */
+                            certificate_error: "cluster_refused" | "cluster_unreachable" | "challenge_failed" | "rate_limited" | "issuer_not_ready" | "issuance_failed" | null;
+                            /**
+                             * @description ADR-398: the host's certificate (none until DNS is proven, then pending, issuing, active or failed)
+                             * @enum {string}
+                             */
+                            certificate_status: "none" | "pending" | "issuing" | "active" | "failed";
                             /** Format: date-time */
                             checked_at: string | null;
                             dns_records: {
@@ -106007,6 +106056,13 @@ export interface operations {
                         domain: {
                             /** Format: date-time */
                             active_at: string | null;
+                            /** @enum {string|null} */
+                            certificate_error: "cluster_refused" | "cluster_unreachable" | "challenge_failed" | "rate_limited" | "issuer_not_ready" | "issuance_failed" | null;
+                            /**
+                             * @description ADR-398: the host's certificate (none until DNS is proven, then pending, issuing, active or failed)
+                             * @enum {string}
+                             */
+                            certificate_status: "none" | "pending" | "issuing" | "active" | "failed";
                             /** Format: date-time */
                             checked_at: string | null;
                             dns_records: {
@@ -106113,6 +106169,13 @@ export interface operations {
                         domain: {
                             /** Format: date-time */
                             active_at: string | null;
+                            /** @enum {string|null} */
+                            certificate_error: "cluster_refused" | "cluster_unreachable" | "challenge_failed" | "rate_limited" | "issuer_not_ready" | "issuance_failed" | null;
+                            /**
+                             * @description ADR-398: the host's certificate (none until DNS is proven, then pending, issuing, active or failed)
+                             * @enum {string}
+                             */
+                            certificate_status: "none" | "pending" | "issuing" | "active" | "failed";
                             /** Format: date-time */
                             checked_at: string | null;
                             dns_records: {
