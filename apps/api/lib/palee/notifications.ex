@@ -17,6 +17,7 @@ defmodule Palee.Notifications do
   alias Palee.Notifications.NativePush
   alias Palee.Notifications.NativePushTokenStore
   alias Palee.Notifications.PushConfig
+  alias Palee.Notifications.Queries.DeliversNotification
   alias Palee.Notifications.Queries.ListNativePushTokens
   alias Palee.Notifications.Queries.GetUnreadCount
   alias Palee.Notifications.Queries.ListInboxPage
@@ -194,6 +195,13 @@ defmodule Palee.Notifications do
   end
 
   def notification_categories, do: NotificationCategories.category_ids()
+
+  @doc """
+  ADR-392: whether the person wants `category` on `channel`, e.g. the
+  booking email with its calendar invite (`"bookings"`, `"email"`).
+  """
+  def channel_enabled?(user_id, category, channel) when is_binary(user_id),
+    do: DeliversNotification.category(user_id, category, channel)
 
   # ADR-277: the platform console's view of browser alerts. Callers are the
   # vendor pipeline; the device figures answer only to an active vendor.

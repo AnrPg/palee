@@ -20,4 +20,19 @@ defmodule Palee.Notifications.Queries.DeliversNotification do
   end
 
   def call(_user_id, _type, _channel), do: true
+
+  @doc """
+  ADR-392: whether `category` reaches the person on `channel` (the booking
+  email asks by category). When the choices cannot be read, the default
+  (on) applies.
+  """
+  def category(user_id, category, channel) when is_binary(user_id) do
+    choices =
+      case NotificationPreferenceStore.list(%{user_id: user_id}) do
+        choices when is_list(choices) -> choices
+        _error -> []
+      end
+
+    NotificationCategories.channel_on?(choices, category, channel)
+  end
 end
