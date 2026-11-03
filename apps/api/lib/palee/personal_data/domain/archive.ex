@@ -4,7 +4,9 @@ defmodule Palee.PersonalData.Domain.Archive do
   pretty-printed JSON, one file per section of `Catalog.sections/0`
   (`<section>.json`, `%{table => rows}`), plus `manifest.json` with the
   format, the profile, when it was made and how many records each file
-  holds. Pure apart from OTP's in-memory `:zip`; callers pass the time.
+  holds, and the person's own stored files (`files/<name>`, e.g. a diploma
+  signature image). Pure apart from OTP's in-memory `:zip`; callers pass the
+  time.
   """
 
   alias Palee.PersonalData.Domain.Catalog
@@ -23,11 +25,15 @@ defmodule Palee.PersonalData.Domain.Archive do
   when the person has nothing there, so the archive's shape never depends on
   what exists.
   """
-  def build(%{
-        profile_id: profile_id,
-        generated_at: %DateTime{} = generated_at,
-        sections: sections
-      }) do
+  def build(
+        %{
+          profile_id: profile_id,
+          generated_at: %DateTime{} = generated_at,
+          sections: sections
+        } = input
+      ) do
+    attachments = Map.get(input, :files, [])
+
     files =
       Enum.map(Catalog.sections(), fn section ->
         tables = Map.get(sections, section, %{})
@@ -44,26 +50,32 @@ defmodule Palee.PersonalData.Domain.Archive do
       "files" =>
         Enum.map(files, fn {name, section, tables} ->
           %{"file" => name, "section" => section, "record_count" => count(tables)}
-        end)
+        end) ++
+          Enum.map(attachments, fn {name, bytes} ->
+            %{"file" => "files/" <> name, "bytes" => byte_size(bytes)}
+          end)
     }
 
     documents = [
       {"manifest.json", manifest} | Enum.map(files, fn {name, _s, tables} -> {name, tables} end)
     ]
 
-    with {:ok, zip} <- zip(documents) do
+    with {:ok, zip} <- zip(documents, attachments) do
       {:ok, %{zip: zip, record_count: Enum.sum(Enum.map(files, fn {_n, _s, t} -> count(t) end))}}
     end
   end
 
   defp count(tables), do: tables |> Map.values() |> Enum.map(&length/1) |> Enum.sum()
 
-  defp zip(documents) do
+  defp zip(documents, attachments) do
     files =
       Enum.map(documents, fn {name, document} ->
         {String.to_charlist(name),
          document |> Jason.encode_to_iodata!(pretty: true) |> IO.iodata_to_binary()}
-      end)
+      end) ++
+        Enum.map(attachments, fn {name, bytes} ->
+          {String.to_charlist("files/" <> name), bytes}
+        end)
 
     case :zip.create(~c"palee-my-data.zip", files, [:memory]) do
       {:ok, {_name, binary}} -> {:ok, binary}

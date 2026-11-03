@@ -2,6 +2,8 @@ defmodule Palee.Ranks.RankAward do
   @moduledoc """
   A promotion (or a stripe) a coach gave a person (ADR-377), with its
   diploma number. Withdrawn awards stay in the history with the reason.
+  `signature_id` is the awarding coach's diploma signature current when the
+  award was made (a snapshot reference, ADR-377 addendum).
   """
 
   use Ecto.Schema
@@ -26,12 +28,13 @@ defmodule Palee.Ranks.RankAward do
     field(:revoked_at, :utc_datetime_usec)
     field(:revoked_by_id, :binary_id)
     field(:revoke_reason, :string)
+    field(:signature_id, :binary_id)
 
     timestamps(type: :utc_datetime_usec)
   end
 
   @fields ~w(organization_id ladder_id rank_id user_id stripes awarded_on awarded_by_id note
-             skills_checked certificate_number)a
+             skills_checked certificate_number signature_id)a
 
   def changeset(attrs) do
     %__MODULE__{}

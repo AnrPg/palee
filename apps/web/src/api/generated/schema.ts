@@ -2797,6 +2797,42 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/me/diploma-signature": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My diploma signature, whether I can keep one, and the limits */
+        get: operations["PaleeWeb.DiplomaSignatureController.show"];
+        put?: never;
+        /** Set or replace my diploma signature (PNG or JPEG, base64) */
+        post: operations["PaleeWeb.DiplomaSignatureController.create"];
+        /** Remove my diploma signature (diplomas drawn afterwards show an empty line) */
+        delete: operations["PaleeWeb.DiplomaSignatureController.delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/diploma-signature/image": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My own diploma signature image (for the preview; never anyone else's) */
+        get: operations["PaleeWeb.DiplomaSignatureController.image"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me/email-change": {
         parameters: {
             query?: never;
@@ -33943,6 +33979,73 @@ export interface components {
             /** @description Phones only (ADR-172) */
             steps?: boolean;
             weight?: boolean;
+        };
+        /** DiplomaSignature */
+        DiplomaSignature: {
+            byte_size: number;
+            /** @enum {string} */
+            content_type: "image/png" | "image/jpeg";
+            height: number;
+            /** Format: uuid */
+            id: string;
+            /** Format: date-time */
+            updated_at: string;
+            width: number;
+        } | null;
+        /** DiplomaSignatureLimits */
+        DiplomaSignatureLimits: {
+            content_types: string[];
+            max_bytes: number;
+            max_height: number;
+            max_width: number;
+            min_height: number;
+            min_width: number;
+        };
+        /** DiplomaSignatureResponse */
+        DiplomaSignatureResponse: {
+            /** @description Whether the person awards ranks somewhere (owner, admin or coach) */
+            eligible: boolean;
+            /** DiplomaSignatureLimits */
+            limits: {
+                content_types: string[];
+                max_bytes: number;
+                max_height: number;
+                max_width: number;
+                min_height: number;
+                min_width: number;
+            };
+            /** DiplomaSignature */
+            signature: {
+                byte_size: number;
+                /** @enum {string} */
+                content_type: "image/png" | "image/jpeg";
+                height: number;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                updated_at: string;
+                width: number;
+            } | null;
+        };
+        /** DiplomaSignatureUpload */
+        DiplomaSignatureUpload: {
+            /** @description The PNG or JPEG file, base64 (a data: URL prefix is accepted) */
+            image_base64: string;
+        };
+        /** DiplomaSignatureUploadResponse */
+        DiplomaSignatureUploadResponse: {
+            /** DiplomaSignature */
+            signature: {
+                byte_size: number;
+                /** @enum {string} */
+                content_type: "image/png" | "image/jpeg";
+                height: number;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                updated_at: string;
+                width: number;
+            } | null;
         };
         /** Door */
         Door: {
@@ -69222,6 +69325,177 @@ export interface operations {
                 content?: never;
             };
             /** @description No such watch */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.DiplomaSignatureController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Signature */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Whether the person awards ranks somewhere (owner, admin or coach) */
+                        eligible: boolean;
+                        /** DiplomaSignatureLimits */
+                        limits: {
+                            content_types: string[];
+                            max_bytes: number;
+                            max_height: number;
+                            max_width: number;
+                            min_height: number;
+                            min_width: number;
+                        };
+                        /** DiplomaSignature */
+                        signature: {
+                            byte_size: number;
+                            /** @enum {string} */
+                            content_type: "image/png" | "image/jpeg";
+                            height: number;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            updated_at: string;
+                            width: number;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.DiplomaSignatureController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Image */
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description The PNG or JPEG file, base64 (a data: URL prefix is accepted) */
+                    image_base64: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Stored */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** DiplomaSignature */
+                        signature: {
+                            byte_size: number;
+                            /** @enum {string} */
+                            content_type: "image/png" | "image/jpeg";
+                            height: number;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            updated_at: string;
+                            width: number;
+                        } | null;
+                    };
+                };
+            };
+            /** @description Not staff who award ranks */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Unusable image */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Storage unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.DiplomaSignatureController.delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.DiplomaSignatureController.image": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Image */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/png": string;
+                };
+            };
+            /** @description No signature */
             404: {
                 headers: {
                     [name: string]: unknown;

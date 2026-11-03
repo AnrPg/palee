@@ -658,6 +658,7 @@ config :palee, :usda_food_data_central,
 config :palee, :food_label_reader, Palee.Infrastructure.Ai.GeminiFoodLabelReader
 
 config :palee, :rank_store, Palee.Infrastructure.Ranks.EctoRankStore
+config :palee, :diploma_signature_store, Palee.Infrastructure.Ranks.EctoSignatureStore
 
 config :palee,
        :class_timer_store,

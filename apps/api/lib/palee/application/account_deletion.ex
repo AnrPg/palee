@@ -28,6 +28,7 @@ defmodule Palee.Application.AccountDeletion do
   require Logger
 
   alias Palee.Application.{
+    DiplomaSignatures,
     LoginUser,
     PartnerVerificationRetention,
     PasswordVerifier,
@@ -332,6 +333,8 @@ defmodule Palee.Application.AccountDeletion do
     # ADR-280: the Partners check's selfies and rows (anonymising keeps the
     # profile row, so they are removed here rather than by the cascade).
     :ok = PartnerVerificationRetention.purge_person(profile.id)
+    # ADR-377 addendum: the coach's diploma signature, rows and images.
+    :ok = DiplomaSignatures.purge_person(profile.id)
     # ADR-348: the box's SMS number, consents and messages (tenant rows,
     # removed in each box's own session; an anonymised profile keeps none).
     :ok = forget_channel_contacts(profile.id)

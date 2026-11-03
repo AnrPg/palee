@@ -636,6 +636,22 @@ defmodule PaleeWeb.Router do
     post("/account-deletion", AccountDeletionController, :create)
   end
 
+  # ADR-377 addendum: a coach's own signature for diplomas (owner only).
+  scope "/api/me", PaleeWeb do
+    pipe_through([
+      :api,
+      :authenticated,
+      :authenticated_rate_limited,
+      :user_only,
+      :upload_rate_limited
+    ])
+
+    get("/diploma-signature", DiplomaSignatureController, :show)
+    post("/diploma-signature", DiplomaSignatureController, :create)
+    get("/diploma-signature/image", DiplomaSignatureController, :image)
+    delete("/diploma-signature", DiplomaSignatureController, :delete)
+  end
+
   # ADR-267: "Download my data" (GDPR articles 15 and 20).
   scope "/api", PaleeWeb do
     pipe_through([

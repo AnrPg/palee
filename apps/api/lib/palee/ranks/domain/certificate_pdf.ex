@@ -5,12 +5,23 @@ defmodule Palee.Ranks.Domain.CertificatePdf do
   the person, the ladder and rank (with stripes), the date, who awarded it
   and the diploma number. A withdrawn award prints «Ανακλήθηκε».
 
+  Option Γ (ADR-377 addendum): the box logo above its name when there is
+  one, and the awarding coach's signature image above a line with
+  «<name> · Coach» (an empty line when the coach has no signature).
+
   `view`: `%{box, person, ladder, rank, color, stripes, awarded_on,
-  awarded_by, number, revoked}`. Colours are the belt palette's print
-  values; the screen uses the theme's `--belt-*` tokens.
+  awarded_by, number, revoked}` and optionally `logo` and `signature`
+  (`Palee.Pdf.Image` or nil), each scaled to fit its place. Colours are the
+  belt palette's print values; the screen uses the theme's `--belt-*`
+  tokens.
   """
 
   alias Palee.Pdf
+  alias Palee.Pdf.Image
+
+  @logo_box {120, 64}
+  @signature_box {200, 70}
+  @signature_line 220
 
   @print_colors %{
     "white" => {0.95, 0.95, 0.95},
@@ -39,21 +50,22 @@ defmodule Palee.Ranks.Domain.CertificatePdf do
 
     fonts
     |> Pdf.new()
-    |> centered(center, 760, view.box, :bold, 18)
-    |> centered(center, 700, "ΔΙΠΛΩΜΑ", :bold, 30)
-    |> centered(center, 650, "Απονέμεται σε", :regular, 13)
-    |> centered(center, 615, view.person, :bold, 24)
-    |> centered(center, 570, view.ladder, :regular, 14)
-    |> centered(center, 535, rank_line(view), :bold, 20)
+    |> logo(center, Map.get(view, :logo))
+    |> centered(center, 730, view.box, :bold, 18)
+    |> centered(center, 680, "ΔΙΠΛΩΜΑ", :bold, 30)
+    |> centered(center, 635, "Απονέμεται σε", :regular, 13)
+    |> centered(center, 600, view.person, :bold, 24)
+    |> centered(center, 560, view.ladder, :regular, 14)
+    |> centered(center, 525, rank_line(view), :bold, 20)
     |> belt(center, view.color, view.stripes)
     |> centered(
       center,
-      420,
+      410,
       "Ημερομηνία: #{Calendar.strftime(view.awarded_on, "%d/%m/%Y")}",
       :regular,
       12
     )
-    |> centered(center, 400, awarded_by(view.awarded_by), :regular, 12)
+    |> signature(center, view.awarded_by, Map.get(view, :signature))
     |> centered(center, 120, "Αριθμός διπλώματος #{view.number}", :regular, 10)
     |> revoked(center, view.revoked)
   end
@@ -63,8 +75,35 @@ defmodule Palee.Ranks.Domain.CertificatePdf do
 
   defp rank_line(%{rank: rank}), do: rank
 
-  defp awarded_by(nil), do: ""
-  defp awarded_by(name), do: "Απονομή: #{name}"
+  # Centred above the box's name, bottom at 752.
+  defp logo(pdf, _center, nil), do: pdf
+
+  defp logo(pdf, center, %Image{} = image) do
+    {max_width, max_height} = @logo_box
+    {width, height} = Image.fit(image, max_width, max_height)
+    Pdf.image(pdf, image, center - width / 2, 752, width, height)
+  end
+
+  # The coach's line: the signature image (when there is one) standing on
+  # it, and «<name> · Coach» under it. No awarding coach, no line.
+  defp signature(pdf, _center, nil, _image), do: pdf
+
+  defp signature(pdf, center, name, image) do
+    half = elem(@signature_box, 0) / 2 + 10
+
+    pdf
+    |> signature_image(center, image)
+    |> Pdf.line(center - half, @signature_line, center + half, @signature_line, line_width: 0.6)
+    |> centered(center, @signature_line - 16, "#{name} · Coach", :regular, 12)
+  end
+
+  defp signature_image(pdf, _center, nil), do: pdf
+
+  defp signature_image(pdf, center, %Image{} = image) do
+    {max_width, max_height} = @signature_box
+    {width, height} = Image.fit(image, max_width, max_height)
+    Pdf.image(pdf, image, center - width / 2, @signature_line + 2, width, height)
+  end
 
   defp belt(pdf, _center, nil, _stripes), do: pdf
 
@@ -73,8 +112,8 @@ defmodule Palee.Ranks.Domain.CertificatePdf do
     width = 260
 
     pdf
-    |> Pdf.rect(center - width / 2, 470, width, 26, color: fill)
-    |> Pdf.rect(center - width / 2, 470, width, 26, fill: false, stroke: true, line_width: 0.8)
+    |> Pdf.rect(center - width / 2, 460, width, 26, color: fill)
+    |> Pdf.rect(center - width / 2, 460, width, 26, fill: false, stroke: true, line_width: 0.8)
     |> stripes(center + width / 2 - 70, stripes)
   end
 
@@ -82,14 +121,14 @@ defmodule Palee.Ranks.Domain.CertificatePdf do
 
   defp stripes(pdf, x, count) do
     Enum.reduce(1..count, pdf, fn i, acc ->
-      Pdf.rect(acc, x + i * 10, 470, 5, 26, color: {0.95, 0.95, 0.95})
+      Pdf.rect(acc, x + i * 10, 460, 5, 26, color: {0.95, 0.95, 0.95})
     end)
   end
 
   defp revoked(pdf, _center, false), do: pdf
 
   defp revoked(pdf, center, true),
-    do: centered(pdf, center, 300, "Ανακλήθηκε", :bold, 22)
+    do: centered(pdf, center, 330, "Ανακλήθηκε", :bold, 22)
 
   defp centered(pdf, _center, _y, nil, _font, _size), do: pdf
   defp centered(pdf, _center, _y, "", _font, _size), do: pdf

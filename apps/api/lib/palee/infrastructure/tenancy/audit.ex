@@ -160,6 +160,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     palee_leaderboard_consents
     execution_splits watch_links execution_heart_rate_batches custom_foods watch_offers
     fitness_profile_settings
+    diploma_signatures diploma_signature_events
   )
 
   def report do

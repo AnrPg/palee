@@ -206,7 +206,7 @@ defmodule Palee.Ranks.Domain.RanksDomainTest do
           "Μαρία",
           "Μπλε · 2 ρίγες",
           "31/10/2026",
-          "Απονομή: Νίκος",
+          "Νίκος · Coach",
           "R-2026-3F9A1C2B"
         ] do
       assert texts =~ text

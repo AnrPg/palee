@@ -17442,5 +17442,26 @@
     "noCountry": "Sem país",
     "scans": "{count, plural, one {# leitura} other {# leituras}}",
     "seen": "{first} – {last}"
+  },
+  "DiplomaSignature": {
+    "title": "Assinatura para diplomas",
+    "description": "Aparece por cima do teu nome nos diplomas das promoções que atribuis.",
+    "fieldLabel": "Imagem da assinatura",
+    "upload": "Carregar assinatura",
+    "replace": "Substituir",
+    "remove": "Remover",
+    "uploading": "A carregar…",
+    "previewLabel": "A tua assinatura como aparece nos diplomas",
+    "previewAlt": "A tua assinatura",
+    "signedAs": "{name} · Coach",
+    "empty": "Ainda sem assinatura. Os diplomas mostram uma linha vazia por cima do teu nome.",
+    "help": "PNG, JPEG ou WebP, até {size} KB. Fica melhor um PNG com fundo transparente. Só tu a vês aqui; é usada apenas dentro dos diplomas.",
+    "snapshotNote": "Cada diploma guarda a assinatura que tinhas quando a promoção foi atribuída. Se a removeres, a linha fica vazia em todos os diplomas.",
+    "errorType": "Escolhe uma imagem PNG, JPEG ou WebP.",
+    "errorSize": "A imagem tem mais de {size} KB.",
+    "errorSmall": "A imagem é demasiado pequena: pelo menos {width}×{height} píxeis.",
+    "errorDimensions": "A imagem é demasiado grande: no máximo {width}×{height} píxeis.",
+    "errorSave": "A assinatura não foi guardada. Tenta de novo.",
+    "errorRemove": "A assinatura não foi removida. Tenta de novo."
   }
 }
