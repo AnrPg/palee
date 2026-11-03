@@ -84,10 +84,8 @@ export async function proxy(request: NextRequest) {
     request.nextUrl.pathname,
     process.env.STATUS_HOST ?? "status.palee.app",
   );
-  // The status emails' links carry ?confirm= / ?unsubscribe=, so keep the query.
-  const destination = statusPage
-    ? statusPage + request.nextUrl.search
-    : (siteDestination ?? organizationMatch?.[1]);
+  // tenantRewriteUrl keeps the query (the status emails' ?confirm= / ?unsubscribe=).
+  const destination = statusPage ?? siteDestination ?? organizationMatch?.[1];
 
   const response = destination
     ? NextResponse.rewrite(tenantRewriteUrl(request.nextUrl, destination), {

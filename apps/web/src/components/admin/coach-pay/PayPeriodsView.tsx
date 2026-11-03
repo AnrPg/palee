@@ -34,6 +34,7 @@ import { fieldBorder } from "@/lib/form-errors";
 import { groupKeyOf, groupSentence, payFileName, payslipLanguage, isManual, isNet, nextPeriodRange, periodLabel, periodRangeError, primaryAction } from "./coach-pay";
 import { PayLineDialog, ReopenDialog } from "./PayLineDialog";
 import { FormRow, GrossNet, Initials, NetMark, controlClass, controlStyle, saveFile, useGymToday, useMoney, usePercent } from "./pay-ui";
+import { BackButton } from "@/components/ui/BackLink";
 
 const STATUS_TONE: Record<PayPeriodStatus, string> = { draft: "--primary", approved: "--success", exported: "--info" };
 
@@ -205,9 +206,7 @@ export function PayPeriodDetail({ periodId, canEdit, onBack }: { periodId: strin
 
   return (
     <section className="space-y-4" data-testid="pay-period">
-      <button type="button" className="text-sm font-semibold" style={{ color: "var(--primary)" }} onClick={onBack}>
-        ‹ {t("periods")}
-      </button>
+      <BackButton onClick={onBack}>{t("periods")}</BackButton>
       <div className="flex flex-wrap items-center gap-3">
         <h3 className="text-xl font-semibold" style={{ color: "var(--text)" }}>{periodLabel(period.starts_on, period.ends_on, locale)}</h3>
         <StatusPill status={period.status} />

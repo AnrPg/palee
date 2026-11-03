@@ -10,6 +10,7 @@ import { useSession } from "@/components/session-provider";
 import { Dialog } from "@/components/ui/Dialog";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { Toggle } from "@/components/admin/finance/packages/package-ui";
+import { formatClock } from "@/lib/clock";
 
 import { useSmsError } from "./SmsConnectionSettings";
 import { formatCents, inputStyle, noticeKey, smsErrorCode } from "./sms";
@@ -121,7 +122,7 @@ export function ClassNoticeDialog({ slotId, cancelled, onClose }: { slotId: stri
               {t("parts", { count: data.sample.segments })}
               {" · "}
               {data.sample.held_for_quiet_hours
-                ? t("leavesAt", { when: new Date(data.sample.release_at).toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit", hourCycle: "h23" }) })
+                ? t("leavesAt", { when: formatClock(data.sample.release_at, locale) })
                 : t("leavesNow")}
             </p>
           </div>

@@ -28,6 +28,7 @@ vi.mock("@/components/session-provider", () => ({
 vi.mock("@/lib/organization-slug", () => ({
   useOrganizationSlug: () => null,
   adminHref: (href: string) => href,
+  useOrganizationMemberships: () => ({ data: [], isLoading: false }),
 }));
 vi.mock("@/api/finance", async (original) => ({ ...(await original<object>()), ...api }));
 vi.mock("@/components/admin/finance/packages/package-catalog", async (original) => ({

@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
@@ -29,6 +28,7 @@ import { useUiTranslations } from "@/i18n/ui";
 import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
 
 import { SettingsEntry } from "./WebsiteSettings";
+import { BackLink } from "@/components/ui/BackLink";
 
 const SETTINGS_KEY = ["admin", "review-asks", "settings"] as const;
 const SUMMARY_KEY = ["admin", "review-asks", "summary"] as const;
@@ -59,9 +59,9 @@ export function ReviewsSettings() {
     <main className="min-h-screen px-4 py-8 md:px-10 md:py-10" style={{ background: "var(--bg)" }} data-testid="reviews-settings">
       <div className="mx-auto flex max-w-3xl flex-col gap-5">
         <header className="flex flex-col gap-2">
-          <Link href={adminHref("/admin/settings", slug)} className="text-sm font-semibold" style={{ color: "var(--text-soft)" }}>
-            ‹ {t("settings.back")}
-          </Link>
+          <BackLink href={adminHref("/admin/settings", slug)} className="self-start text-sm font-semibold" style={{ color: "var(--text-soft)" }}>
+            {t("settings.back")}
+          </BackLink>
           <h1 className="text-3xl font-semibold tracking-tight" style={{ color: "var(--text)" }}>{t("title")}</h1>
           <p className="text-sm" style={{ color: "var(--muted)" }}>{t("settings.intro")}</p>
         </header>

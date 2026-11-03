@@ -33,6 +33,7 @@ import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
 
 import { DnsRecords, DomainStatusLine } from "./DomainParts";
 import { CONVERSIONS_API_LABEL, DOMAIN_PLACEHOLDER, moveSection, sectionOn, TAG_FIELDS, toggleSection } from "./website-settings-model";
+import { BackLink } from "@/components/ui/BackLink";
 
 const SITE_KEY = ["admin", "site"] as const;
 const SUMMARY_KEY = ["admin", "site", "summary"] as const;
@@ -94,9 +95,9 @@ export function WebsiteSettings() {
     <main className="min-h-screen px-4 py-8 md:px-10 md:py-10" style={{ background: "var(--bg)" }} data-testid="website-settings">
       <div className="mx-auto flex max-w-3xl flex-col gap-5">
         <header className="flex flex-col gap-2">
-          <Link href={adminHref("/admin/settings", slug)} className="text-sm font-semibold" style={{ color: "var(--text-soft)" }}>
-            ‹ {t("settings.back")}
-          </Link>
+          <BackLink href={adminHref("/admin/settings", slug)} className="self-start text-sm font-semibold" style={{ color: "var(--text-soft)" }}>
+            {t("settings.back")}
+          </BackLink>
           <h1 className="text-3xl font-semibold tracking-tight" style={{ color: "var(--text)" }}>{t("settings.title")}</h1>
           <p className="text-sm" style={{ color: "var(--muted)" }}>{t("settings.intro")}</p>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
