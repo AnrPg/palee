@@ -32,8 +32,17 @@ defmodule Palee.Ranks.RankStore do
   @impl true
   def put_skill_check(attrs), do: adapter().put_skill_check(attrs)
   @impl true
-  def delete_skill_check(user_id, rank_id, skill),
-    do: adapter().delete_skill_check(user_id, rank_id, skill)
+  def delete_skill_check(user_id, rank_id, skill_id),
+    do: adapter().delete_skill_check(user_id, rank_id, skill_id)
+
+  @impl true
+  def list_skill_checks_for(user_ids), do: adapter().list_skill_checks_for(user_ids)
+  @impl true
+  def list_unnotified_checks(user_id), do: adapter().list_unnotified_checks(user_id)
+  @impl true
+  def mark_checks_notified(ids, now), do: adapter().mark_checks_notified(ids, now)
+  @impl true
+  def list_awards_for(user_ids), do: adapter().list_awards_for(user_ids)
 
   defp adapter, do: Application.fetch_env!(:palee, :rank_store)
 end

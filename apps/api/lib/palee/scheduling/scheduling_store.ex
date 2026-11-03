@@ -176,6 +176,10 @@ defmodule Palee.Scheduling.SchedulingStore do
     do: tenant_call(context, :list_class_history, [user_id, opts])
 
   @impl true
+  def count_attended_since(context, since_by_user, class_type_ids),
+    do: tenant_call(context, :count_attended_since, [since_by_user, class_type_ids])
+
+  @impl true
   def record_attendance(context, params), do: tenant_call(context, :record_attendance, [params])
   def record_attendance(_params), do: missing_tenant()
 

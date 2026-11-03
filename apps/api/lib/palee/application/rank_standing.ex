@@ -65,7 +65,8 @@ defmodule Palee.Application.RankStanding do
           since,
           Ranks.count_attended(history, ladder.class_type_ids || [], since),
           today,
-          checks
+          checks,
+          ladder.ready_criteria || ["classes", "days"]
         ),
       history: Enum.map(awards, &present_award(&1, by_id))
     }
@@ -79,6 +80,7 @@ defmodule Palee.Application.RankStanding do
       family: Ranks.discipline_family(ladder.discipline),
       style: ladder.style,
       class_type_ids: ladder.class_type_ids || [],
+      ready_criteria: ladder.ready_criteria || ["classes", "days"],
       ranks: ladder.ranks |> Enum.sort_by(& &1.position) |> Enum.map(&present_rank/1)
     }
   end

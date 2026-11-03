@@ -19,6 +19,15 @@ defmodule Palee.Notifications.Domain.PushMessageBuilderTest do
     assert message.url == "/workouts/execution-123/execute"
   end
 
+  test "builds the calm notice of new rank skills (ADR-400 follow-up)" do
+    message =
+      PushMessageBuilder.build("rank_skills_checked", %{"rank_name" => "Blue", "count" => 2})
+
+    assert message.title == "New skills"
+    assert message.body == "Your coach ticked new skills for Blue."
+    assert message.url == "/box/ranks"
+  end
+
   test "builds booking approval copy with schedule route" do
     message =
       PushMessageBuilder.build("booking_approved", %{

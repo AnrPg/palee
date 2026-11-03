@@ -3,7 +3,8 @@ defmodule Palee.Application.RankCertificates do
   «Δίπλωμα» of a rank award as a PDF (ADR-377), for the coach and for the
   person. Option Γ (ADR-377 addendum): the box's uploaded logo at the top
   (only the name without one, or when it is a WebP or a link to another
-  site: nothing is fetched from the network) and the awarding coach's
+  site: nothing is fetched from the network; the web turns a new WebP
+  logo into a PNG before uploading it, since the API has no image library) and the awarding coach's
   signature kept with the award (`signature_id`), above the line with their
   name.
   """
@@ -44,6 +45,7 @@ defmodule Palee.Application.RankCertificates do
           stripes: award.stripes,
           awarded_on: award.awarded_on,
           awarded_by: award.awarded_by_id && coach_name(award.awarded_by_id),
+          awarded_by_role: award.awarded_by_id && role(award.awarded_by_id, organization_id),
           number: award.certificate_number,
           revoked: not is_nil(award.revoked_at),
           logo: logo(organization_id),
@@ -94,6 +96,16 @@ defmodule Palee.Application.RankCertificates do
       %{nickname: name} when is_binary(name) and name != "" -> name
       _missing -> nil
     end
+  end
+
+  # The awarder's role in this box today, as the diploma names it.
+  defp role(user_id, organization_id) do
+    user_id
+    |> Organizations.list_memberships()
+    |> Enum.find_value("Coach", fn %{organization: organization, membership: membership} ->
+      if organization.id == organization_id,
+        do: Ranks.diploma_role(membership.roles, membership.coach_scope)
+    end)
   end
 
   defp display_name(user_id) do

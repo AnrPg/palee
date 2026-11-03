@@ -698,6 +698,49 @@ defmodule Palee.Infrastructure.Scheduling.EctoSchedulingStore do
   end
 
   @impl true
+  def count_attended_since(%{organization_id: organization_id}, since_by_user, class_type_ids) do
+    {user_ids, sinces} =
+      since_by_user
+      |> Enum.map(fn {user_id, since} -> {Ecto.UUID.dump!(user_id), since} end)
+      |> Enum.unzip()
+
+    now = DateTime.utc_now()
+
+    Booking
+    |> join(:inner, [booking], slot in ScheduledClass, on: slot.id == booking.scheduled_class_id)
+    |> join(:inner, [booking, slot], attendance in ClassAttendanceRecord,
+      on: attendance.scheduled_class_id == slot.id and attendance.user_id == booking.user_id
+    )
+    |> join(
+      :inner,
+      [booking],
+      person in fragment(
+        "SELECT * FROM unnest(?::uuid[], ?::date[]) AS person(user_id, since)",
+        ^user_ids,
+        ^sinces
+      ),
+      on: person.user_id == booking.user_id
+    )
+    |> where(
+      [booking, slot, attendance, person],
+      booking.organization_id == ^organization_id and booking.status == :approved and
+        attendance.status == "attended" and slot.scheduled_at <= ^now and
+        (is_nil(person.since) or
+           slot.scheduled_at >= fragment("(?)::timestamp AT TIME ZONE 'UTC'", person.since))
+    )
+    |> filter_class_types(class_type_ids)
+    |> group_by([booking], booking.user_id)
+    |> select([booking], {booking.user_id, count(booking.id)})
+    |> Repo.all()
+    |> Map.new()
+  end
+
+  defp filter_class_types(query, []), do: query
+
+  defp filter_class_types(query, class_type_ids),
+    do: where(query, [_booking, slot], slot.class_type_id in ^class_type_ids)
+
+  @impl true
   def record_attendance(%{organization_id: organization_id}, params) do
     params =
       params

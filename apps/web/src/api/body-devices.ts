@@ -37,6 +37,14 @@ export type RankStandings = Json<Op["PaleeWeb.MyRanksController.index"]["respons
 export type RankStanding = RankStandings["ladders"][number];
 export type RankAward = RankStanding["history"][number];
 export type RankAwardInput = Json<NonNullable<Op["PaleeWeb.StaffRanksController.award"]["requestBody"]>>;
+export type RankProgress = NonNullable<RankStanding["progress"]>;
+export type RankCriterion = RankLadder["ready_criteria"][number];
+export type RankSkillCheckInput = Json<NonNullable<Op["PaleeWeb.StaffRanksController.check_skill"]["requestBody"]>>;
+export type ClassSkills = Json<Op["PaleeWeb.StaffRanksController.class_skills"]["responses"][200]>;
+export type ClassSkillPerson = ClassSkills["people"][number];
+export type RankSkillBatchInput = Json<NonNullable<Op["PaleeWeb.StaffRanksController.batch_skills"]["requestBody"]>>;
+export type RankSkillBatchResult = Json<Op["PaleeWeb.StaffRanksController.batch_skills"]["responses"][200]>;
+export type ReadyForRank = Json<Op["PaleeWeb.StaffRanksController.ready"]["responses"][200]>["people"][number];
 
 const org = (slug: string) => `/org/${encodeURIComponent(slug)}`;
 const id = (value: string) => encodeURIComponent(value);
@@ -52,6 +60,8 @@ export const WATCHES_KEY = ["body-devices", "watches"] as const;
 export const rankLaddersKey = (slug: string, locale?: string) =>
   (locale ? ["body-devices", "rank-ladders", slug, locale] : ["body-devices", "rank-ladders", slug]) as readonly string[];
 export const myRanksKey = (slug: string) => ["body-devices", "my-ranks", slug] as const;
+export const classSkillsKey = (slug: string, userIds: readonly string[]) => ["body-devices", "class-skills", slug, ...userIds] as const;
+export const readyRanksKey = (slug: string) => ["body-devices", "ready-ranks", slug] as const;
 export const clientRanksKey = (slug: string, userId: string) => ["body-devices", "client-ranks", slug, userId] as const;
 
 // ADR-374: race your past self.
@@ -134,7 +144,7 @@ export type RankTemplate = RankLadders["templates"][number];
 export function fetchRankLadders(token: string, slug: string, locale?: string) {
   const query = locale ? `?locale=${encodeURIComponent(locale)}` : "";
   return apiRequest<RankLadders>(`${org(slug)}/admin/rank-ladders${query}`, { token }).then((body) =>
-    withList(withList(body, "ladders"), "templates"),
+    withList(withList(withList(body, "ladders"), "templates"), "box_disciplines"),
   );
 }
 
@@ -172,6 +182,34 @@ export function awardRank(token: string, slug: string, userId: string, body: Ran
     token,
     body,
   }).then((response) => response.award);
+}
+
+/** Ticks (or unticks) one skill for a client; the answer is their standing. */
+export function checkRankSkill(token: string, slug: string, userId: string, body: RankSkillCheckInput) {
+  return apiRequest<RankStandings>(`${org(slug)}/staff/clients/${id(userId)}/ranks/skills`, { method: "PUT", token, body }).then((answer) =>
+    withList(answer, "ladders"),
+  );
+}
+
+/** A class's people: the ladders' skills, what each works towards and has ticked (mockup 3B). */
+export function fetchClassSkills(token: string, slug: string, userIds: readonly string[]) {
+  const query = `?user_ids=${encodeURIComponent(userIds.join(","))}`;
+  return apiRequest<ClassSkills>(`${org(slug)}/staff/ranks/skills/batch${query}`, { token }).then((body) =>
+    withList(withList(body, "ladders"), "people"),
+  );
+}
+
+export function batchRankSkill(token: string, slug: string, body: RankSkillBatchInput) {
+  return apiRequest<RankSkillBatchResult>(`${org(slug)}/staff/ranks/skills/batch`, { method: "PUT", token, body }).then((answer) =>
+    withList(withList(answer, "updated"), "skipped"),
+  );
+}
+
+/** «Πληροί τις προϋποθέσεις»: people who meet what their ladder counts (the coach decides). */
+export function fetchReadyRanks(token: string, slug: string) {
+  return apiRequest<{ people: ReadyForRank[] }>(`${org(slug)}/staff/ranks/ready`, { token }).then(
+    (body) => withList(body, "people").people,
+  );
 }
 
 export function revokeRankAward(token: string, slug: string, awardId: string, reason: string) {

@@ -4911,8 +4911,8 @@
     "semanticWorkoutKravMaga": "كراف ماغا",
     "semanticWorkoutBallet": "الباليه",
     "semanticWorkoutContemporaryDance": "الرقص المعاصر",
-    "semanticWorkoutLatinDance": "الرقص اللاتيني (سالسا، باتشاتا)",
-    "semanticWorkoutStreetDance": "رقص الشارع (هيب هوب، هيلز، ريغيتون)",
+    "semanticWorkoutLatinDance": "الرقص اللاتيني (سالسا، باتشاتا، ريغيتون)",
+    "semanticWorkoutStreetDance": "رقص الشارع (هيب هوب، هيلز)",
     "semanticWorkoutSkateboarding": "التزلج على اللوح"
   },
   "PrSharing": {
@@ -6317,8 +6317,8 @@
       "krav_maga": "كراف ماغا",
       "ballet": "الباليه",
       "contemporary_dance": "الرقص المعاصر",
-      "latin_dance": "الرقص اللاتيني (سالسا، باتشاتا)",
-      "street_dance": "رقص الشارع (هيب هوب، هيلز، ريغيتون)",
+      "latin_dance": "الرقص اللاتيني (سالسا، باتشاتا، ريغيتون)",
+      "street_dance": "رقص الشارع (هيب هوب، هيلز)",
       "skateboarding": "التزلج على اللوح"
     },
     "audience": {
@@ -16959,7 +16959,6 @@
       "scaleLevel": "مستوى التدرّج المقترح",
       "noScaleLevel": "بلا اقتراح",
       "skills": "المهارات",
-      "skillsPlaceholder": "المهارات، مفصولة بفواصل",
       "deleteLadder": "حذف السلّم",
       "deleteLadderConfirm": "هل تريد حذف السلّم «{name}»؟",
       "deleteLadderAction": "حذف",
@@ -16987,7 +16986,94 @@
       "withdrawReasonRequired": "اكتب السبب.",
       "towards": "إلى {rank}:",
       "history": "السجل",
-      "historyStripe": "{rank} +{stripes}"
+      "historyStripe": "{rank} +{stripes}",
+      "picker": {
+        "count": "{count, plural, one {قالب واحد} two {قالبان} few {# قوالب} many {# قالبًا} other {# قالب}}",
+        "step1": "الخطوة 1 من 2 · ماذا تدرّس؟",
+        "step2": "الخطوة 2 من 2 · أي نظام؟",
+        "forYourBox": "لصالتك",
+        "otherKinds": "كل الأنواع الأخرى",
+        "scratch": "من الصفر",
+        "back": "العودة إلى الأنواع",
+        "continue": "متابعة",
+        "sourcePalee": "مستويات Palee",
+        "sourceFederation": "نظام رسمي",
+        "ranksCount": "{count, plural, one {درجة واحدة} two {درجتان} few {# درجات} many {# درجة} other {# درجة}}",
+        "levelsCount": "{count, plural, one {مستوى واحد} two {مستويان} few {# مستويات} many {# مستوى} other {# مستوى}}",
+        "skillsCount": "{count, plural, one {مهارة واحدة} two {مهارتان} few {# مهارات} many {# مهارة} other {# مهارة}}"
+      },
+      "criteria": {
+        "title": "تُحتسب في «يستوفي الشروط»",
+        "days": "الأيام",
+        "classes": "التمارين المحضورة",
+        "skills": "المهارات",
+        "required": "اختر واحدًا على الأقل."
+      },
+      "addSkill": "إضافة مهارة",
+      "unnamedRank": "درجة جديدة",
+      "section": {
+        "days": "{count, plural, one {يوم واحد} two {يومان} few {# أيام} many {# يومًا} other {# يوم}}",
+        "classes": "{count, plural, one {تمرين واحد} two {تمرينان} few {# تمارين} many {# تمرينًا} other {# تمرين}}",
+        "stripes": "{count, plural, one {حتى شريط واحد} two {حتى شريطين} few {حتى # أشرطة} many {حتى # شريطًا} other {حتى # شريط}}",
+        "none": "بلا شروط"
+      },
+      "skillRow": {
+        "handle": "نقل: {name} (مفاتيح الأسهم)",
+        "unnamed": "مهارة جديدة",
+        "name": "مهارة",
+        "more": "المزيد عن {name}",
+        "remove": "إزالة: {name}",
+        "done": "تم",
+        "up": "إلى الأعلى",
+        "down": "إلى الأسفل",
+        "note": "ملاحظة للعضو",
+        "noteHint": "حتى 500 حرف. تظهر تحت المهارة.",
+        "video": "رابط الفيديو",
+        "videoInvalid": "استخدم رابط https."
+      },
+      "skillsDone": "{done} من {total, plural, one {مهارة واحدة} two {مهارتين} few {# مهارات} many {# مهارة} other {# مهارة}}",
+      "tick": {
+        "more": "التاريخ والملاحظة: {name}",
+        "failed": "لم تُحفظ المهارة.",
+        "untick": "إلغاء العلامة",
+        "save": "وضع علامة",
+        "noFuture": "اختر اليوم أو يومًا سابقًا."
+      },
+      "class": {
+        "open": "مهارة",
+        "title": "مهارة واحدة للمجموعة",
+        "skill": "المهارة",
+        "pick": "اختر مهارة",
+        "people": "الأشخاص في المجموعة",
+        "notYours": "ليس من عملائك",
+        "otherRank": "يعمل نحو درجة أخرى"
+      },
+      "readyList": {
+        "title": "يستوفي الشروط",
+        "someone": "عضو",
+        "line": "{ladder} · نحو {rank}"
+      },
+      "my": {
+        "title": "تقدّمي",
+        "towards": "نحو {rank}",
+        "towardsSkills": "نحو {rank}: {done} من {total, plural, one {مهارة واحدة} two {مهارتين} few {# مهارات} many {# مهارة} other {# مهارة}}",
+        "path": "كل الدرجات",
+        "now": "الآن",
+        "next": "التالية",
+        "note": "ملاحظة",
+        "video": "فيديو",
+        "openVideo": "افتح الفيديو",
+        "diplomas": "الشهادات",
+        "nextRank": "الدرجة التالية",
+        "days": "{done} من {needed, plural, one {يوم واحد} two {يومين} few {# أيام} many {# يومًا} other {# يوم}}",
+        "classes": "{done} من {needed, plural, one {تمرين واحد} two {تمرينين} few {# تمارين} many {# تمرينًا} other {# تمرين}}",
+        "left": "ما زال عليك تعلّمه",
+        "have": "تتقن:"
+      },
+      "notice": {
+        "title": "مهارات جديدة",
+        "body": "{rank}: {count, plural, one {مهارة جديدة واحدة} two {مهارتان جديدتان} few {# مهارات جديدة} many {# مهارة جديدة} other {# مهارة جديدة}}"
+      }
     }
   },
   "PlatformReviewReports": {

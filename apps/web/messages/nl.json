@@ -4911,8 +4911,8 @@
     "semanticWorkoutKravMaga": "Krav maga",
     "semanticWorkoutBallet": "Ballet",
     "semanticWorkoutContemporaryDance": "Hedendaagse dans",
-    "semanticWorkoutLatinDance": "Latin dans (salsa, bachata)",
-    "semanticWorkoutStreetDance": "Streetdance (hiphop, heels, reggaeton)",
+    "semanticWorkoutLatinDance": "Latin dans (salsa, bachata, reggaeton)",
+    "semanticWorkoutStreetDance": "Streetdance (hiphop, heels)",
     "semanticWorkoutSkateboarding": "Skateboarden"
   },
   "PrSharing": {
@@ -6317,8 +6317,8 @@
       "krav_maga": "Krav maga",
       "ballet": "Ballet",
       "contemporary_dance": "Hedendaagse dans",
-      "latin_dance": "Latin dans (salsa, bachata)",
-      "street_dance": "Streetdance (hiphop, heels, reggaeton)",
+      "latin_dance": "Latin dans (salsa, bachata, reggaeton)",
+      "street_dance": "Streetdance (hiphop, heels)",
       "skateboarding": "Skateboarden"
     },
     "audience": {
@@ -16959,7 +16959,6 @@
       "scaleLevel": "Voorgesteld schaalniveau",
       "noScaleLevel": "Geen voorstel",
       "skills": "Vaardigheden",
-      "skillsPlaceholder": "Vaardigheden, gescheiden door komma’s",
       "deleteLadder": "Ladder verwijderen",
       "deleteLadderConfirm": "De ladder ‘{name}’ verwijderen?",
       "deleteLadderAction": "Verwijderen",
@@ -16987,7 +16986,94 @@
       "withdrawReasonRequired": "Vul de reden in.",
       "towards": "Voor {rank}:",
       "history": "Geschiedenis",
-      "historyStripe": "{rank} +{stripes}"
+      "historyStripe": "{rank} +{stripes}",
+      "picker": {
+        "count": "{count, plural, one {# sjabloon} other {# sjablonen}}",
+        "step1": "Stap 1 van 2 · Wat geef je?",
+        "step2": "Stap 2 van 2 · Welk systeem?",
+        "forYourBox": "Voor jouw box",
+        "otherKinds": "Alle andere soorten",
+        "scratch": "Vanaf nul",
+        "back": "Terug naar de soorten",
+        "continue": "Verder",
+        "sourcePalee": "Palee-niveaus",
+        "sourceFederation": "Officieel systeem",
+        "ranksCount": "{count, plural, one {# graad} other {# graden}}",
+        "levelsCount": "{count, plural, one {# niveau} other {# niveaus}}",
+        "skillsCount": "{count, plural, one {# vaardigheid} other {# vaardigheden}}"
+      },
+      "criteria": {
+        "title": "Telt voor ‘Voldoet aan de voorwaarden’",
+        "days": "Dagen",
+        "classes": "Bijgewoonde trainingen",
+        "skills": "Vaardigheden",
+        "required": "Kies er minstens één."
+      },
+      "addSkill": "Vaardigheid toevoegen",
+      "unnamedRank": "Nieuwe graad",
+      "section": {
+        "days": "{count, plural, one {# dag} other {# dagen}}",
+        "classes": "{count, plural, one {# bijgewoonde training} other {# bijgewoonde trainingen}}",
+        "stripes": "{count, plural, one {tot # streep} other {tot # strepen}}",
+        "none": "Geen voorwaarden"
+      },
+      "skillRow": {
+        "handle": "Verplaatsen: {name} (pijltjestoetsen)",
+        "unnamed": "Nieuwe vaardigheid",
+        "name": "Vaardigheid",
+        "more": "Meer voor {name}",
+        "remove": "Verwijderen: {name}",
+        "done": "Klaar",
+        "up": "Omhoog",
+        "down": "Omlaag",
+        "note": "Notitie voor het lid",
+        "noteHint": "Maximaal 500 tekens. Staat onder de vaardigheid.",
+        "video": "Videolink",
+        "videoInvalid": "Gebruik een https-link."
+      },
+      "skillsDone": "{done} van {total, plural, one {# vaardigheid} other {# vaardigheden}}",
+      "tick": {
+        "more": "Datum en notitie: {name}",
+        "failed": "De vaardigheid is niet opgeslagen.",
+        "untick": "Vinkje weghalen",
+        "save": "Afvinken",
+        "noFuture": "Kies vandaag of een eerdere dag."
+      },
+      "class": {
+        "open": "Vaardigheid",
+        "title": "Eén vaardigheid voor de groep",
+        "skill": "Vaardigheid",
+        "pick": "Kies een vaardigheid",
+        "people": "Mensen in de groep",
+        "notYours": "Niet jouw klant",
+        "otherRank": "Werkt naar een andere graad"
+      },
+      "readyList": {
+        "title": "Voldoet aan de voorwaarden",
+        "someone": "Lid",
+        "line": "{ladder} · voor {rank}"
+      },
+      "my": {
+        "title": "Mijn voortgang",
+        "towards": "op weg naar {rank}",
+        "towardsSkills": "op weg naar {rank}: {done} van {total, plural, one {# vaardigheid} other {# vaardigheden}}",
+        "path": "Alle graden",
+        "now": "nu",
+        "next": "volgende",
+        "note": "Notitie",
+        "video": "Video",
+        "openVideo": "Video openen",
+        "diplomas": "Diploma’s",
+        "nextRank": "Volgende graad",
+        "days": "{done} van {needed, plural, one {# dag} other {# dagen}}",
+        "classes": "{done} van {needed, plural, one {# bijgewoonde training} other {# bijgewoonde trainingen}}",
+        "left": "Nog te leren",
+        "have": "Je kunt al:"
+      },
+      "notice": {
+        "title": "Nieuwe vaardigheden",
+        "body": "{rank}: {count, plural, one {# nieuwe vaardigheid} other {# nieuwe vaardigheden}}"
+      }
     }
   },
   "PlatformReviewReports": {

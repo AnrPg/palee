@@ -4911,8 +4911,8 @@
     "semanticWorkoutKravMaga": "Krav Maga",
     "semanticWorkoutBallet": "Μπαλέτο",
     "semanticWorkoutContemporaryDance": "Σύγχρονος χορός",
-    "semanticWorkoutLatinDance": "Λάτιν χοροί (σάλσα, μπατσάτα)",
-    "semanticWorkoutStreetDance": "Χοροί δρόμου (hip-hop, heels, reggaeton)",
+    "semanticWorkoutLatinDance": "Λάτιν χοροί (σάλσα, μπατσάτα, reggaeton)",
+    "semanticWorkoutStreetDance": "Χοροί δρόμου (hip-hop, heels)",
     "semanticWorkoutSkateboarding": "Skateboard"
   },
   "PrSharing": {
@@ -6317,8 +6317,8 @@
       "krav_maga": "Krav Maga",
       "ballet": "Μπαλέτο",
       "contemporary_dance": "Σύγχρονος χορός",
-      "latin_dance": "Λάτιν χοροί (σάλσα, μπατσάτα)",
-      "street_dance": "Χοροί δρόμου (hip-hop, heels, reggaeton)",
+      "latin_dance": "Λάτιν χοροί (σάλσα, μπατσάτα, reggaeton)",
+      "street_dance": "Χοροί δρόμου (hip-hop, heels)",
       "skateboarding": "Skateboard"
     },
     "audience": {
@@ -16959,7 +16959,6 @@
       "scaleLevel": "Προτεινόμενο επίπεδο scale",
       "noScaleLevel": "Χωρίς πρόταση",
       "skills": "Δεξιότητες",
-      "skillsPlaceholder": "Δεξιότητες, χωρισμένες με κόμμα",
       "deleteLadder": "Διαγραφή κλίμακας",
       "deleteLadderConfirm": "Να διαγραφεί η κλίμακα «{name}»;",
       "deleteLadderAction": "Διαγραφή",
@@ -16987,7 +16986,94 @@
       "withdrawReasonRequired": "Γράψε τον λόγο.",
       "towards": "Για {rank}:",
       "history": "Ιστορικό",
-      "historyStripe": "{rank} +{stripes}"
+      "historyStripe": "{rank} +{stripes}",
+      "picker": {
+        "count": "{count, plural, one {# πρότυπο} other {# πρότυπα}}",
+        "step1": "Βήμα 1 από 2 · Τι διδάσκεις;",
+        "step2": "Βήμα 2 από 2 · Ποιο σύστημα;",
+        "forYourBox": "Για το box σου",
+        "otherKinds": "Όλα τα άλλα είδη",
+        "scratch": "Από το μηδέν",
+        "back": "Πίσω στα είδη",
+        "continue": "Συνέχεια",
+        "sourcePalee": "Επίπεδα Palee",
+        "sourceFederation": "Επίσημο σύστημα",
+        "ranksCount": "{count, plural, one {# βαθμός} other {# βαθμοί}}",
+        "levelsCount": "{count, plural, one {# επίπεδο} other {# επίπεδα}}",
+        "skillsCount": "{count, plural, one {# δεξιότητα} other {# δεξιότητες}}"
+      },
+      "criteria": {
+        "title": "Μετράνε για το «Πληροί τις προϋποθέσεις»",
+        "days": "Μέρες",
+        "classes": "Προπονήσεις",
+        "skills": "Δεξιότητες",
+        "required": "Διάλεξε τουλάχιστον ένα."
+      },
+      "addSkill": "Προσθήκη δεξιότητας",
+      "unnamedRank": "Νέος βαθμός",
+      "section": {
+        "days": "{count, plural, one {# μέρα} other {# μέρες}}",
+        "classes": "{count, plural, one {# προπόνηση} other {# προπονήσεις}}",
+        "stripes": "{count, plural, one {έως # ρίγα} other {έως # ρίγες}}",
+        "none": "Χωρίς προϋποθέσεις"
+      },
+      "skillRow": {
+        "handle": "Μετακίνηση: {name} (με τα βελάκια)",
+        "unnamed": "Νέα δεξιότητα",
+        "name": "Δεξιότητα",
+        "more": "Περισσότερα για {name}",
+        "remove": "Αφαίρεση: {name}",
+        "done": "Έτοιμο",
+        "up": "Πάνω",
+        "down": "Κάτω",
+        "note": "Σημείωση για το μέλος",
+        "noteHint": "Έως 500 χαρακτήρες. Τη βλέπει κάτω από τη δεξιότητα.",
+        "video": "Σύνδεσμος βίντεο",
+        "videoInvalid": "Βάλε σύνδεσμο https."
+      },
+      "skillsDone": "{done} από {total, plural, one {# δεξιότητα} other {# δεξιότητες}}",
+      "tick": {
+        "more": "Ημερομηνία και σημείωση: {name}",
+        "failed": "Η δεξιότητα δεν αποθηκεύτηκε.",
+        "untick": "Αφαίρεση τσεκ",
+        "save": "Τσεκ",
+        "noFuture": "Διάλεξε σήμερα ή μια παλιότερη μέρα."
+      },
+      "class": {
+        "open": "Δεξιότητα",
+        "title": "Μία δεξιότητα για το τμήμα",
+        "skill": "Δεξιότητα",
+        "pick": "Διάλεξε δεξιότητα",
+        "people": "Άτομα στο τμήμα",
+        "notYours": "Δεν είναι πελάτης σου",
+        "otherRank": "Δουλεύει για άλλο βαθμό"
+      },
+      "readyList": {
+        "title": "Πληροί τις προϋποθέσεις",
+        "someone": "Μέλος",
+        "line": "{ladder} · για {rank}"
+      },
+      "my": {
+        "title": "Η πρόοδός μου",
+        "towards": "προς {rank}",
+        "towardsSkills": "προς {rank}: {done} από {total, plural, one {# δεξιότητα} other {# δεξιότητες}}",
+        "path": "Όλοι οι βαθμοί",
+        "now": "τώρα",
+        "next": "επόμενος",
+        "note": "Σημείωση",
+        "video": "Βίντεο",
+        "openVideo": "Άνοιγμα του βίντεο",
+        "diplomas": "Διπλώματα",
+        "nextRank": "Επόμενος βαθμός",
+        "days": "{done} από {needed, plural, one {# μέρα} other {# μέρες}}",
+        "classes": "{done} από {needed, plural, one {# προπόνηση} other {# προπονήσεις}}",
+        "left": "Σου μένουν",
+        "have": "Έχεις:"
+      },
+      "notice": {
+        "title": "Νέες δεξιότητες",
+        "body": "{rank}: {count, plural, one {# νέα δεξιότητα} other {# νέες δεξιότητες}}"
+      }
     }
   },
   "PlatformReviewReports": {

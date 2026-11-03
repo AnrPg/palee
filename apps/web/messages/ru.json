@@ -4911,8 +4911,8 @@
     "semanticWorkoutKravMaga": "Крав-мага",
     "semanticWorkoutBallet": "Балет",
     "semanticWorkoutContemporaryDance": "Современный танец",
-    "semanticWorkoutLatinDance": "Латиноамериканские танцы (сальса, бачата)",
-    "semanticWorkoutStreetDance": "Уличные танцы (хип-хоп, хилс, реггетон)",
+    "semanticWorkoutLatinDance": "Латиноамериканские танцы (сальса, бачата, реггетон)",
+    "semanticWorkoutStreetDance": "Уличные танцы (хип-хоп, хилс)",
     "semanticWorkoutSkateboarding": "Скейтбординг"
   },
   "PrSharing": {
@@ -6317,8 +6317,8 @@
       "krav_maga": "Крав-мага",
       "ballet": "Балет",
       "contemporary_dance": "Современный танец",
-      "latin_dance": "Латиноамериканские танцы (сальса, бачата)",
-      "street_dance": "Уличные танцы (хип-хоп, хилс, реггетон)",
+      "latin_dance": "Латиноамериканские танцы (сальса, бачата, реггетон)",
+      "street_dance": "Уличные танцы (хип-хоп, хилс)",
       "skateboarding": "Скейтбординг"
     },
     "audience": {
@@ -16959,7 +16959,6 @@
       "scaleLevel": "Рекомендуемый уровень сложности",
       "noScaleLevel": "Без рекомендации",
       "skills": "Навыки",
-      "skillsPlaceholder": "Навыки через запятую",
       "deleteLadder": "Удалить шкалу",
       "deleteLadderConfirm": "Удалить шкалу «{name}»?",
       "deleteLadderAction": "Удалить",
@@ -16987,7 +16986,94 @@
       "withdrawReasonRequired": "Укажи причину.",
       "towards": "До {rank}:",
       "history": "История",
-      "historyStripe": "{rank} +{stripes}"
+      "historyStripe": "{rank} +{stripes}",
+      "picker": {
+        "count": "{count, plural, one {# шаблон} few {# шаблона} many {# шаблонов} other {# шаблона}}",
+        "step1": "Шаг 1 из 2 · Что ты преподаёшь?",
+        "step2": "Шаг 2 из 2 · Какая система?",
+        "forYourBox": "Для твоего бокса",
+        "otherKinds": "Все остальные виды",
+        "scratch": "С нуля",
+        "back": "Назад к видам",
+        "continue": "Дальше",
+        "sourcePalee": "Уровни Palee",
+        "sourceFederation": "Официальная система",
+        "ranksCount": "{count, plural, one {# ступень} few {# ступени} many {# ступеней} other {# ступени}}",
+        "levelsCount": "{count, plural, one {# уровень} few {# уровня} many {# уровней} other {# уровня}}",
+        "skillsCount": "{count, plural, one {# навык} few {# навыка} many {# навыков} other {# навыка}}"
+      },
+      "criteria": {
+        "title": "Учитывается в «Выполняет требования»",
+        "days": "Дни",
+        "classes": "Посещённые тренировки",
+        "skills": "Навыки",
+        "required": "Выбери хотя бы одно."
+      },
+      "addSkill": "Добавить навык",
+      "unnamedRank": "Новая ступень",
+      "section": {
+        "days": "{count, plural, one {# день} few {# дня} many {# дней} other {# дня}}",
+        "classes": "{count, plural, one {# тренировка} few {# тренировки} many {# тренировок} other {# тренировки}}",
+        "stripes": "{count, plural, one {до # полоски} few {до # полосок} many {до # полосок} other {до # полоски}}",
+        "none": "Без требований"
+      },
+      "skillRow": {
+        "handle": "Переместить: {name} (стрелки)",
+        "unnamed": "Новый навык",
+        "name": "Навык",
+        "more": "Ещё для {name}",
+        "remove": "Убрать: {name}",
+        "done": "Готово",
+        "up": "Выше",
+        "down": "Ниже",
+        "note": "Заметка для участника",
+        "noteHint": "До 500 символов. Видна под навыком.",
+        "video": "Ссылка на видео",
+        "videoInvalid": "Нужна ссылка https."
+      },
+      "skillsDone": "{done} из {total, plural, one {# навыка} few {# навыков} many {# навыков} other {# навыка}}",
+      "tick": {
+        "more": "Дата и заметка: {name}",
+        "failed": "Навык не сохранён.",
+        "untick": "Снять отметку",
+        "save": "Отметить",
+        "noFuture": "Выбери сегодня или более ранний день."
+      },
+      "class": {
+        "open": "Навык",
+        "title": "Один навык для группы",
+        "skill": "Навык",
+        "pick": "Выбери навык",
+        "people": "Люди в группе",
+        "notYours": "Не твой клиент",
+        "otherRank": "Идёт к другой ступени"
+      },
+      "readyList": {
+        "title": "Выполняет требования",
+        "someone": "Участник",
+        "line": "{ladder} · к {rank}"
+      },
+      "my": {
+        "title": "Мой прогресс",
+        "towards": "к {rank}",
+        "towardsSkills": "к {rank}: {done} из {total, plural, one {# навыка} few {# навыков} many {# навыков} other {# навыка}}",
+        "path": "Все ступени",
+        "now": "сейчас",
+        "next": "следующая",
+        "note": "Заметка",
+        "video": "Видео",
+        "openVideo": "Открыть видео",
+        "diplomas": "Дипломы",
+        "nextRank": "Следующая ступень",
+        "days": "{done} из {needed, plural, one {# дня} few {# дней} many {# дней} other {# дня}}",
+        "classes": "{done} из {needed, plural, one {# тренировки} few {# тренировок} many {# тренировок} other {# тренировки}}",
+        "left": "Осталось освоить",
+        "have": "Ты умеешь:"
+      },
+      "notice": {
+        "title": "Новые навыки",
+        "body": "{rank}: {count, plural, one {# новый навык} few {# новых навыка} many {# новых навыков} other {# нового навыка}}"
+      }
     }
   },
   "PlatformReviewReports": {

@@ -4911,8 +4911,8 @@
     "semanticWorkoutKravMaga": "Крав мага",
     "semanticWorkoutBallet": "Балет",
     "semanticWorkoutContemporaryDance": "Съвременен танц",
-    "semanticWorkoutLatinDance": "Латино танци (салса, бачата)",
-    "semanticWorkoutStreetDance": "Улични танци (хип-хоп, хийлс, регетон)",
+    "semanticWorkoutLatinDance": "Латино танци (салса, бачата, регетон)",
+    "semanticWorkoutStreetDance": "Улични танци (хип-хоп, хийлс)",
     "semanticWorkoutSkateboarding": "Скейтборд"
   },
   "PrSharing": {
@@ -6317,8 +6317,8 @@
       "krav_maga": "Крав мага",
       "ballet": "Балет",
       "contemporary_dance": "Съвременен танц",
-      "latin_dance": "Латино танци (салса, бачата)",
-      "street_dance": "Улични танци (хип-хоп, хийлс, регетон)",
+      "latin_dance": "Латино танци (салса, бачата, регетон)",
+      "street_dance": "Улични танци (хип-хоп, хийлс)",
       "skateboarding": "Скейтборд"
     },
     "audience": {
@@ -16959,7 +16959,6 @@
       "scaleLevel": "Препоръчано ниво на скалиране",
       "noScaleLevel": "Без препоръка",
       "skills": "Умения",
-      "skillsPlaceholder": "Умения, разделени със запетаи",
       "deleteLadder": "Изтрий скалата",
       "deleteLadderConfirm": "Да се изтрие ли скалата „{name}“?",
       "deleteLadderAction": "Изтрий",
@@ -16987,7 +16986,94 @@
       "withdrawReasonRequired": "Напиши причината.",
       "towards": "За {rank}:",
       "history": "История",
-      "historyStripe": "{rank} +{stripes}"
+      "historyStripe": "{rank} +{stripes}",
+      "picker": {
+        "count": "{count, plural, one {# шаблон} other {# шаблона}}",
+        "step1": "Стъпка 1 от 2 · Какво преподаваш?",
+        "step2": "Стъпка 2 от 2 · Коя система?",
+        "forYourBox": "За твоя бокс",
+        "otherKinds": "Всички други видове",
+        "scratch": "От нулата",
+        "back": "Обратно към видовете",
+        "continue": "Напред",
+        "sourcePalee": "Нива на Palee",
+        "sourceFederation": "Официална система",
+        "ranksCount": "{count, plural, one {# степен} other {# степени}}",
+        "levelsCount": "{count, plural, one {# ниво} other {# нива}}",
+        "skillsCount": "{count, plural, one {# умение} other {# умения}}"
+      },
+      "criteria": {
+        "title": "Брои се за „Изпълнява условията“",
+        "days": "Дни",
+        "classes": "Посетени тренировки",
+        "skills": "Умения",
+        "required": "Избери поне едно."
+      },
+      "addSkill": "Добави умение",
+      "unnamedRank": "Нова степен",
+      "section": {
+        "days": "{count, plural, one {# ден} other {# дни}}",
+        "classes": "{count, plural, one {# посетена тренировка} other {# посетени тренировки}}",
+        "stripes": "{count, plural, one {до # лента} other {до # ленти}}",
+        "none": "Без условия"
+      },
+      "skillRow": {
+        "handle": "Премести: {name} (стрелки)",
+        "unnamed": "Ново умение",
+        "name": "Умение",
+        "more": "Още за {name}",
+        "remove": "Премахни: {name}",
+        "done": "Готово",
+        "up": "Нагоре",
+        "down": "Надолу",
+        "note": "Бележка за члена",
+        "noteHint": "До 500 знака. Вижда я под умението.",
+        "video": "Линк към видео",
+        "videoInvalid": "Използвай https линк."
+      },
+      "skillsDone": "{done} от {total, plural, one {# умение} other {# умения}}",
+      "tick": {
+        "more": "Дата и бележка: {name}",
+        "failed": "Умението не е запазено.",
+        "untick": "Махни отметката",
+        "save": "Отбележи",
+        "noFuture": "Избери днес или по-ранен ден."
+      },
+      "class": {
+        "open": "Умение",
+        "title": "Едно умение за групата",
+        "skill": "Умение",
+        "pick": "Избери умение",
+        "people": "Хора в групата",
+        "notYours": "Не е твой клиент",
+        "otherRank": "Работи за друга степен"
+      },
+      "readyList": {
+        "title": "Изпълнява условията",
+        "someone": "Член",
+        "line": "{ladder} · за {rank}"
+      },
+      "my": {
+        "title": "Моят напредък",
+        "towards": "към {rank}",
+        "towardsSkills": "към {rank}: {done} от {total, plural, one {# умение} other {# умения}}",
+        "path": "Всички степени",
+        "now": "сега",
+        "next": "следваща",
+        "note": "Бележка",
+        "video": "Видео",
+        "openVideo": "Отвори видеото",
+        "diplomas": "Дипломи",
+        "nextRank": "Следваща степен",
+        "days": "{done} от {needed, plural, one {# ден} other {# дни}}",
+        "classes": "{done} от {needed, plural, one {# посетена тренировка} other {# посетени тренировки}}",
+        "left": "Остава да научиш",
+        "have": "Можеш:"
+      },
+      "notice": {
+        "title": "Нови умения",
+        "body": "{rank}: {count, plural, one {# ново умение} other {# нови умения}}"
+      }
     }
   },
   "PlatformReviewReports": {

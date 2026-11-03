@@ -263,95 +263,95 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Gymnastics do
         :federation,
         "British Gymnastics trampoline proficiency awards",
         [
-          rank({"Award %{n}", 1}, nil, 0, [], [
+          rank({"Badge %{n}", 1}, nil, 0, [], [
             "Waits their turn and behaves safely around the trampoline",
             "Mounts and dismounts from the centre",
             "Bounces lying sitting or on hands and knees"
           ]),
-          rank({"Award %{n}", 2}, nil, 0, [], [
+          rank({"Badge %{n}", 2}, nil, 0, [], [
             "Seated bounce with arm movements",
             "Bounces a set number of times and stops",
             "Quarter turn upright",
             "Seat drop without returning to feet",
             "Star position"
           ]),
-          rank({"Award %{n}", 3}, nil, 0, [], [
+          rank({"Badge %{n}", 3}, nil, 0, [], [
             "Straight jumps using the arms",
             "Tuck jump",
             "Astride jump and star jump",
             "Half twist jump"
           ]),
-          rank({"Award %{n}", 4}, nil, 0, [], [
+          rank({"Badge %{n}", 4}, nil, 0, [], [
             "Tuck jump touching below the knees",
             "Straddle jump and split jump",
             "Seat drop returning to feet",
             "Two half twist jumps linked"
           ]),
-          rank({"Award %{n}", 5}, nil, 0, [], [
+          rank({"Badge %{n}", 5}, nil, 0, [], [
             "Five straight jumps then stop for 3 seconds",
             "Piked straddle jump",
             "Front landing and back landing on a mat",
             "Seat drop to feet with half twist",
             "Routine: straddle seat to feet tuck half twist straight"
           ]),
-          rank({"Award %{n}", 6}, nil, 0, [], [
+          rank({"Badge %{n}", 6}, nil, 0, [], [
             "Seat landing half twist to feet",
             "Full twist jump",
             "Front landing to feet",
             "Pike jump",
             "Ten-move routine with seat landings and twists"
           ]),
-          rank({"Award %{n}", 7}, nil, 0, [], [
+          rank({"Badge %{n}", 7}, nil, 0, [], [
             "Swivel hips (seat half twist to seat)",
             "Back landing to feet",
             "Hands and knees forward turnover to back landing",
             "Seat landing to feet then front landing to feet"
           ]),
-          rank({"Award %{n}", 8}, nil, 0, [], [
+          rank({"Badge %{n}", 8}, nil, 0, [], [
             "Seat landing to front landing to feet",
             "Half twist to front landing and to back landing",
             "Front and back landing with half twist to feet",
             "Five back bounces"
           ]),
-          rank({"Award %{n}", 9}, nil, 0, [], [
+          rank({"Badge %{n}", 9}, nil, 0, [], [
             "Piked and straight front and back landings",
             "Front landing to back landing and back to front",
             "Forward three-quarter turnover to back landing",
             "Seat landing full twist to seat (roller)"
           ]),
-          rank({"Award %{n}", 10}, nil, 0, [], [
+          rank({"Badge %{n}", 10}, nil, 0, [], [
             "Front or back somersault tucked",
             "Back landing back pullover to feet",
             "Front landing half turntable",
             "Ten-move routine with one somersault"
           ]),
-          rank({"Award %{n}", 11}, nil, 0, [], [
+          rank({"Badge %{n}", 11}, nil, 0, [], [
             "Front somersault piked",
             "Back somersault tucked and back somersault straight or piked",
             "Three-quarter front somersault straight to back landing",
             "Routine with three somersaults",
             "Floor conditioning: 20 crunches and 20 dorsal raises"
           ]),
-          rank({"Award %{n}", 12}, nil, 0, [], [
+          rank({"Badge %{n}", 12}, nil, 0, [], [
             "Barani with straight legs",
             "Crash dive straight",
             "Back somersault tucked then front somersault piked",
             "Routine with four somersaults including a barani"
           ]),
-          rank({"Award %{n}", 13}, nil, 0, [], [
+          rank({"Badge %{n}", 13}, nil, 0, [], [
             "Barani tucked and piked",
             "Back somersault then barani in the same shape",
             "Crash dive to bounce roll",
             "Routine with six somersaults"
           ]),
-          rank({"Award %{n}", 14}, nil, 0, [], [
+          rank({"Badge %{n}", 14}, nil, 0, [], [
             "Barani straight",
             "Back somersault with half twist",
             "Full twisting front somersault",
             "Crash dive to ball out",
             "Routine with seven somersaults"
           ]),
-          rank({"Award %{n}", 15}, nil, 0, [], [
+          rank({"Badge %{n}", 15}, nil, 0, [], [
             "Crash dive to ball-out barani",
             "Full twisting back somersault straight",
             "Rudi (front with one and a half twists)",

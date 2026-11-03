@@ -449,6 +449,18 @@ defmodule Palee.Notifications do
         url: "/around?filter=#{field(payload, :filter_id)}"
       })
 
+  # ADR-400 follow-up: the coach's new skill ticks, told once per window.
+  def process_event("rank_skills_checked", payload),
+    do:
+      enqueue_simple(:rank_skills_checked, payload, %{
+        organization_id: field(payload, :organization_id),
+        count: field(payload, :count),
+        rank_name: field(payload, :rank_name),
+        ranks: field(payload, :ranks),
+        dedupe_key: field(payload, :dedupe_key),
+        url: "/box/ranks"
+      })
+
   # ADR-158: the opt-in reminder to take a new body measurement.
   def process_event("body_measure_reminder", payload),
     do:

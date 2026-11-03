@@ -7,10 +7,17 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Build do
   exam keeps its English name with a gloss and is never the generic level.
   """
 
-  @doc "A template: `source` is `:federation` (a federation's or school's system) or `:palee` (Palee's own levels)."
+  @doc """
+  A template: `source` is `:federation` (a federation's or school's system)
+  or `:palee` (Palee's own levels). `ready` (what counts for «Πληροί τις
+  προϋποθέσεις») follows what the system itself states: days or classes
+  only where some rank has a minimum, skills where ranks list them; a
+  ladder with none of these counts its skills.
+  """
   def template(key, name, discipline, style, source, system, ranks)
       when source in [:federation, :palee] do
     %{
+      ready: ready(ranks),
       key: key,
       name: name,
       discipline: discipline,
@@ -19,6 +26,17 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Build do
       system: system,
       ranks: ranks
     }
+  end
+
+  defp ready(ranks) do
+    has = fn key -> Enum.any?(ranks, &Map.has_key?(&1.requirements, key)) end
+
+    case Enum.filter([days: :min_days, classes: :min_classes, skills: :skills], fn {_c, key} ->
+           has.(key)
+         end) do
+      [] -> ["skills"]
+      found -> Enum.map(found, fn {criterion, _key} -> Atom.to_string(criterion) end)
+    end
   end
 
   @doc "A rank: `requirements` takes `days:` and `classes:`; skills are what is tested to reach it."

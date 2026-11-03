@@ -3,7 +3,7 @@ defmodule Palee.Ranks.Domain.RanksDomainTest do
 
   use ExUnit.Case, async: true
 
-  alias Palee.Ranks.Domain.{CertificatePdf, LadderPolicy, PromotionPolicy}
+  alias Palee.Ranks.Domain.{CertificatePdf, LadderPolicy, PromotionPolicy, SkillNoticePolicy}
 
   describe "LadderPolicy" do
     test "disciplines are the workout types of ADR-275" do
@@ -53,6 +53,113 @@ defmodule Palee.Ranks.Domain.RanksDomainTest do
           ] do
         assert {:error, {:invalid_ranks, _message}} = LadderPolicy.cast_ranks(ranks, ["rx"])
       end
+    end
+
+    test "skills keep stable ids through renames, new orders and old clients" do
+      a = "00000000-0000-0000-0000-00000000000a"
+      b = "00000000-0000-0000-0000-00000000000b"
+
+      existing = [
+        %{id: "r1", requirements: %{"skills" => ["Armbar", "Triangle"], "skill_ids" => [a, b]}}
+      ]
+
+      counter = :counters.new(1, [])
+
+      new_id = fn ->
+        :counters.add(counter, 1, 1)
+        "new-#{:counters.get(counter, 1)}"
+      end
+
+      # Reordered and renamed by id; a new skill gets a new id.
+      {:ok, [rank]} =
+        LadderPolicy.cast_ranks(
+          [
+            %{
+              name: "Blue",
+              requirements: %{
+                skills: ["Triangle choke", "Armbar", "Kimura"],
+                skill_ids: [b, a, nil]
+              }
+            }
+          ],
+          []
+        )
+
+      assert [%{requirements: %{"skill_ids" => [^b, ^a, "new-1"]}}] =
+               LadderPolicy.assign_skill_ids([Map.put(rank, :id, "r1")], existing, new_id)
+
+      # An old client sends the texts only: a known text keeps its id.
+      {:ok, [old]} =
+        LadderPolicy.cast_ranks(
+          [%{name: "Blue", requirements: %{skills: ["Triangle", "Armbar"]}}],
+          []
+        )
+
+      assert [%{requirements: %{"skill_ids" => [^b, ^a]}}] =
+               LadderPolicy.assign_skill_ids([Map.put(old, :id, "r1")], existing, new_id)
+
+      # An id sent twice is used once.
+      {:ok, [twice]} =
+        LadderPolicy.cast_ranks(
+          [%{name: "Blue", requirements: %{skills: ["X", "Y"], skill_ids: [a, a]}}],
+          []
+        )
+
+      assert [%{requirements: %{"skill_ids" => [^a, second]}}] =
+               LadderPolicy.assign_skill_ids([Map.put(twice, :id, "r1")], existing, new_id)
+
+      refute second == a
+
+      assert {:ok, {^b, "Triangle"}} = LadderPolicy.find_skill(hd(existing), b, nil)
+      assert {:ok, {^a, "Armbar"}} = LadderPolicy.find_skill(hd(existing), nil, "Armbar")
+      assert :error = LadderPolicy.find_skill(hd(existing), nil, "Kimura")
+
+      for bad <- [
+            %{skills: ["X"], skill_ids: ["nope"]},
+            %{skills: ["X"], skill_ids: [a, b]},
+            %{skills: ["X"], skill_notes: [String.duplicate("n", 501)]},
+            %{skills: ["X"], skill_videos: ["http://example.com/v"]}
+          ] do
+        assert {:error, _message} = LadderPolicy.cast_requirements(bad)
+      end
+    end
+
+    test "a skill may carry a note and a video link; none leaves them out" do
+      assert {:ok,
+              %{
+                "skill_notes" => [nil, "Both sides"],
+                "skill_videos" => ["https://v.example/1", nil]
+              }} =
+               LadderPolicy.cast_requirements(%{
+                 skills: ["A", "B"],
+                 skill_notes: ["", " Both sides "],
+                 skill_videos: ["https://v.example/1", nil]
+               })
+
+      assert {:ok, requirements} =
+               LadderPolicy.cast_requirements(%{
+                 skills: ["A"],
+                 skill_notes: [nil],
+                 skill_videos: [""]
+               })
+
+      refute Map.has_key?(requirements, "skill_notes")
+      refute Map.has_key?(requirements, "skill_videos")
+    end
+
+    test "what counts for ready is a non-empty choice of days, classes and skills" do
+      assert {:ok, ["days", "skills"]} = LadderPolicy.cast_ready_criteria(["skills", "days"], [])
+      assert {:ok, ["classes"]} = LadderPolicy.cast_ready_criteria(nil, ["classes"])
+      assert {:error, _} = LadderPolicy.cast_ready_criteria([], [])
+      assert {:error, _} = LadderPolicy.cast_ready_criteria(["belts"], [])
+    end
+
+    test "templates count what their system states" do
+      bjj = LadderPolicy.template("bjj_adult")
+      assert bjj.ready == ["days", "skills"]
+      assert LadderPolicy.template("trampoline_awards").ready == ["skills"]
+      assert LadderPolicy.template("gymnastics_levels").ready == ["skills"]
+      assert LadderPolicy.template("reggaeton_levels").discipline == "latin_dance"
     end
 
     # Every template as a valid ladder in every language: LadderTemplatesTest.
@@ -153,6 +260,43 @@ defmodule Palee.Ranks.Domain.RanksDomainTest do
       assert PromotionPolicy.progress(nil, nil, 0, @today) == nil
     end
 
+    test "ticks follow the skill's id, and ready counts only the ladder's criteria" do
+      next = %{
+        id: "r1",
+        position: 1,
+        requirements: %{
+          "min_days" => 100,
+          "skills" => ["Armbar choke", "Triangle"],
+          "skill_ids" => ["s-a", "s-t"]
+        }
+      }
+
+      # Ticked as «Armbar», renamed since: still ticked, with today's text.
+      checks = [
+        %{rank_id: "r1", skill_id: "s-a", skill: "Armbar", checked_on: @today, note: "ok"}
+      ]
+
+      days_only = PromotionPolicy.progress(next, ~D[2026-01-01], 0, @today, checks, ["days"])
+      assert [%{skill: "Armbar choke", skill_id: "s-a", note: "ok"}] = days_only.skills_checked
+      assert days_only.skill_ids == ["s-a", "s-t"]
+      assert days_only.ready
+      refute days_only.all_skills_checked
+
+      refute PromotionPolicy.progress(next, ~D[2026-01-01], 0, @today, checks, ["skills"]).ready
+
+      refute PromotionPolicy.progress(next, ~D[2026-01-01], 0, @today, checks, ["days", "skills"]).ready
+
+      all =
+        checks ++
+          [%{rank_id: "r1", skill_id: "s-t", skill: "Triangle", checked_on: @today, note: nil}]
+
+      assert PromotionPolicy.progress(next, ~D[2026-01-01], 0, @today, all, ["days", "skills"]).ready
+
+      # Days not reached: a ladder counting them is not ready.
+      refute PromotionPolicy.progress(next, ~D[2026-10-01], 0, @today, all, ["days", "skills"]).ready
+      assert PromotionPolicy.progress(next, ~D[2026-10-01], 0, @today, all, ["skills"]).ready
+    end
+
     test "an award goes up or adds stripes, never down" do
       white = Map.put(rank(0, %{}), :max_stripes, 4)
       blue = Map.put(rank(1, %{"skills" => ["Armbar"]}), :max_stripes, 4)
@@ -221,6 +365,40 @@ defmodule Palee.Ranks.Domain.RanksDomainTest do
            |> Enum.member?("Ανακλήθηκε")
 
     assert "%PDF" <> _rest = CertificatePdf.render(view, fonts)
+
+    # The line names the awarder's role in that box.
+    assert view
+           |> Map.put(:awarded_by_role, "Ιδιοκτήτης")
+           |> CertificatePdf.texts(fonts)
+           |> Enum.map(&elem_text/1)
+           |> Enum.member?("Νίκος · Ιδιοκτήτης")
+  end
+
+  test "the diploma's role names follow the ontology" do
+    assert CertificatePdf.role_label([:coach], :all) == "Head coach"
+    assert CertificatePdf.role_label([:member, :coach], :own) == "Coach"
+    assert CertificatePdf.role_label([:owner, :coach], :own) == "Coach"
+    assert CertificatePdf.role_label([:owner], :own) == "Ιδιοκτήτης"
+    assert CertificatePdf.role_label([:admin], :own) == "Διαχειριστής"
+    assert CertificatePdf.role_label([:front_desk], :own) == "Coach"
+    assert CertificatePdf.role_label(nil, nil) == "Coach"
+  end
+
+  describe "SkillNoticePolicy" do
+    test "groups the ticks into one notice and is silent when every tick was undone" do
+      ranks = %{"blue" => %{name: "Μπλε", position: 1}, "purple" => %{name: "Μωβ", position: 2}}
+      tick = fn rank_id -> %{rank_id: rank_id} end
+
+      assert %{count: 3, rank_id: "blue", rank_name: "Μπλε", ranks: 2} =
+               SkillNoticePolicy.notice([tick.("blue"), tick.("purple"), tick.("blue")], ranks)
+
+      # A tie goes to the lower rank; a rank no longer there is left out.
+      assert %{count: 2, rank_name: "Μπλε", ranks: 2} =
+               SkillNoticePolicy.notice([tick.("purple"), tick.("blue"), tick.("gone")], ranks)
+
+      assert SkillNoticePolicy.notice([], ranks) == nil
+      assert SkillNoticePolicy.notice([tick.("gone")], ranks) == nil
+    end
   end
 
   defp elem_text(%{text: text}), do: text

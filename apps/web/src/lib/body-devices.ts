@@ -1,4 +1,4 @@
-import type { FoodPortion, PaceCheckpoint, Pacer, Rank, RankColor, RankStanding } from "@/api/body-devices";
+import type { FoodPortion, PaceCheckpoint, Pacer, Rank, RankColor, RankCriterion, RankStanding } from "@/api/body-devices";
 
 // v3.2 «Body and devices» (ADR-374..377): pure helpers for the screens.
 
@@ -178,13 +178,74 @@ export function beltColor(color: RankColor | null | undefined): string {
   return color ? `var(${BELT_TOKENS[color]})` : "var(--panel-muted)";
 }
 
-/** 0–1 towards the next rank, from the counted requirements (classes and days). */
+/**
+ * Who keeps the ladders (ADR-400 follow-up): owner and admins (settings, a
+ * solo coach owns their business) and a head coach (coaching over every
+ * client); never a coach of their own clients.
+ */
+export function canKeepRankLadders(membership: { capabilities?: Record<string, unknown> | null } | null | undefined): boolean {
+  const capabilities = membership?.capabilities ?? {};
+  return Boolean(capabilities.manage_settings) || capabilities.manage_coaching === "all";
+}
+
+const CRITERIA: readonly RankCriterion[] = ["days", "classes", "skills"];
+
+/** What the ladder counts for «Πληροί τις προϋποθέσεις»; days and classes for an older answer. */
+export function rankCriteria(standing: RankStanding): RankCriterion[] {
+  const raw = standing.progress?.criteria ?? standing.ladder.ready_criteria;
+  const picked = Array.isArray(raw) ? CRITERIA.filter((criterion) => raw.includes(criterion)) : [];
+  return picked.length > 0 ? picked : ["days", "classes"];
+}
+
+/** One skill of a rank with its stable id, the coach's note and video (ADR-400 follow-up). */
+export type RankSkill = { id: string | null; name: string; note: string | null; video: string | null };
+
+/** The skills of a rank in order; malformed lists read as empty, missing ids as null. */
+export function rankSkills(rank: Pick<Rank, "requirements"> | null | undefined): RankSkill[] {
+  const requirements = rank?.requirements;
+  const names = Array.isArray(requirements?.skills) ? requirements.skills : [];
+  const at = (list: unknown, index: number) => {
+    const value = Array.isArray(list) ? list[index] : null;
+    return typeof value === "string" && value ? value : null;
+  };
+  return names
+    .map((name, index) => ({
+      id: at(requirements?.skill_ids, index),
+      name: typeof name === "string" ? name : "",
+      note: at(requirements?.skill_notes, index),
+      video: at(requirements?.skill_videos, index),
+    }))
+    .filter((skill) => skill.name);
+}
+
+export type SkillTick = RankSkill & { checked: boolean; checkedOn: string | null; tickNote: string | null };
+
+/** The next rank's skills with what is ticked, matched by id (by text for an older answer). */
+export function skillTicks(standing: RankStanding): SkillTick[] {
+  const checked = Array.isArray(standing.progress?.skills_checked) ? standing.progress.skills_checked : [];
+  return rankSkills(standing.next).map((skill) => {
+    const tick = checked.find((entry) => (skill.id && entry.skill_id ? entry.skill_id === skill.id : entry.skill === skill.name));
+    return { ...skill, checked: Boolean(tick), checkedOn: tick?.checked_on ?? null, tickNote: tick?.note ?? null };
+  });
+}
+
+/** 0–1 towards the next rank, from what the ladder counts (days, classes, skills). */
 export function rankProgress(standing: RankStanding): number | null {
   const progress = standing.progress;
   if (!progress) return null;
-  const parts = [progress.classes, progress.days].filter((count) => typeof count.needed === "number" && (count.needed as number) > 0);
-  if (parts.length === 0) return null;
-  const ratios = parts.map((count) => Math.min(1, (count.done ?? 0) / (count.needed as number)));
+  const criteria = rankCriteria(standing);
+  const ratios: number[] = [];
+  for (const [criterion, count] of [
+    ["days", progress.days],
+    ["classes", progress.classes],
+  ] as const) {
+    if (criteria.includes(criterion) && typeof count?.needed === "number" && count.needed > 0) {
+      ratios.push(Math.min(1, (count.done ?? 0) / count.needed));
+    }
+  }
+  const ticks = skillTicks(standing);
+  if (criteria.includes("skills") && ticks.length > 0) ratios.push(ticks.filter((tick) => tick.checked).length / ticks.length);
+  if (ratios.length === 0) return null;
   return ratios.reduce((sum, ratio) => sum + ratio, 0) / ratios.length;
 }
 

@@ -63,6 +63,7 @@ import { OnlinePaymentsSettings } from "@/components/admin/payments/OnlinePaymen
 import { PayItemsCatalog } from "@/components/admin/coach-pay/PayItemsCatalog";
 import { CardSurchargeSettings } from "@/components/admin/payments/CardSurchargeSettings";
 import { RankLaddersSettings } from "@/components/body-devices/RankLaddersSettings";
+import { canKeepRankLadders } from "@/lib/body-devices";
 import { useSettingLevels, type SettingLevels } from "@/components/settings/AdvancedSettings";
 import { AdvancedSettingsCard } from "@/components/settings/AdvancedSettingsCard";
 
@@ -1455,7 +1456,7 @@ export function AdminSettingsHub() {
                   content: <BoxScreensSettingsLink />,
                 },
                 // ADR-377: belts and levels (CP-E2), only for boxes that teach them.
-                ...(can(membership, "manage_settings") && selectedOrganizationSlug
+                ...(canKeepRankLadders(membership) && selectedOrganizationSlug
                   ? [
                       {
                         id: "ranks",

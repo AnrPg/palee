@@ -140,20 +140,55 @@ defmodule Palee.Infrastructure.Ranks.EctoRankStore do
   end
 
   @impl true
+  def list_skill_checks_for([]), do: []
+  def list_skill_checks_for(:all), do: Repo.all(RankSkillCheck)
+
+  def list_skill_checks_for(user_ids) do
+    RankSkillCheck
+    |> where([c], c.user_id in ^user_ids)
+    |> Repo.all()
+  end
+
+  @impl true
+  def list_awards_for([]), do: []
+  def list_awards_for(:all), do: Repo.all(RankAward)
+
+  def list_awards_for(user_ids) do
+    RankAward
+    |> where([a], a.user_id in ^user_ids)
+    |> Repo.all()
+  end
+
+  @impl true
+  def list_unnotified_checks(user_id) do
+    RankSkillCheck
+    |> where([c], c.user_id == ^user_id and is_nil(c.notified_at))
+    |> Repo.all()
+  end
+
+  @impl true
+  def mark_checks_notified([], _now), do: :ok
+
+  def mark_checks_notified(ids, now) do
+    RankSkillCheck |> where([c], c.id in ^ids) |> Repo.update_all(set: [notified_at: now])
+    :ok
+  end
+
+  @impl true
   def put_skill_check(attrs) do
     attrs
     |> RankSkillCheck.changeset()
     |> Repo.insert(
-      on_conflict: {:replace, [:checked_on, :checked_by_id, :note, :updated_at]},
-      conflict_target: [:organization_id, :user_id, :rank_id, :skill],
+      on_conflict: {:replace, [:skill, :checked_on, :checked_by_id, :note, :updated_at]},
+      conflict_target: [:organization_id, :user_id, :rank_id, :skill_id],
       returning: true
     )
   end
 
   @impl true
-  def delete_skill_check(user_id, rank_id, skill) do
+  def delete_skill_check(user_id, rank_id, skill_id) do
     RankSkillCheck
-    |> where([c], c.user_id == ^user_id and c.rank_id == ^rank_id and c.skill == ^skill)
+    |> where([c], c.user_id == ^user_id and c.rank_id == ^rank_id and c.skill_id == ^skill_id)
     |> Repo.delete_all()
 
     :ok

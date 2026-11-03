@@ -24,10 +24,38 @@ defmodule PaleeWeb.Schemas.Ranks do
       properties: %{
         min_classes: %Schema{type: :integer, minimum: 0, maximum: 2000},
         min_days: %Schema{type: :integer, minimum: 0, maximum: 3650},
-        skills: %Schema{type: :array, maxItems: 20, items: %Schema{type: :string, maxLength: 120}}
+        skills: %Schema{type: :array, maxItems: 20, items: %Schema{type: :string, maxLength: 120}},
+        skill_ids: %Schema{
+          type: :array,
+          maxItems: 20,
+          description:
+            "Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill",
+          items: %Schema{type: :string, nullable: true}
+        },
+        skill_notes: %Schema{
+          type: :array,
+          maxItems: 20,
+          description:
+            "The coach's note on each skill (up to 500 characters), in the order of `skills`",
+          items: %Schema{type: :string, nullable: true, maxLength: 500}
+        },
+        skill_videos: %Schema{
+          type: :array,
+          maxItems: 20,
+          description: "A video link (https) for each skill, in the order of `skills`",
+          items: %Schema{type: :string, nullable: true, maxLength: 500}
+        }
       }
     }
   end
+
+  @criteria %Schema{
+    type: :array,
+    minItems: 1,
+    maxItems: 3,
+    description: "What counts for «Πληροί τις προϋποθέσεις» on this ladder",
+    items: %Schema{type: :string, enum: ~w(days classes skills)}
+  }
 
   def rank do
     %Schema{
@@ -57,9 +85,10 @@ defmodule PaleeWeb.Schemas.Ranks do
         family: @maybe_string,
         style: %Schema{type: :string, enum: ~w(belt level)},
         class_type_ids: %Schema{type: :array, items: @uuid},
+        ready_criteria: @criteria,
         ranks: %Schema{type: :array, items: rank()}
       },
-      required: [:class_type_ids, :discipline, :id, :name, :ranks, :style]
+      required: [:class_type_ids, :discipline, :id, :name, :ranks, :ready_criteria, :style]
     }
   end
 
@@ -99,6 +128,7 @@ defmodule PaleeWeb.Schemas.Ranks do
         style: %Schema{type: :string, enum: ~w(belt level)},
         class_type_ids: %Schema{type: :array, maxItems: 20, items: @uuid},
         position: %Schema{type: :integer, minimum: 0},
+        ready_criteria: @criteria,
         ranks: %Schema{type: :array, minItems: 1, maxItems: 30, items: rank_input()}
       }
     }
@@ -134,6 +164,7 @@ defmodule PaleeWeb.Schemas.Ranks do
           type: :string,
           description: "The system it follows, in the requested language"
         },
+        ready: %{@criteria | description: "What a ladder copied from it counts by default"},
         ranks: %Schema{
           type: :array,
           items: %Schema{
@@ -148,7 +179,7 @@ defmodule PaleeWeb.Schemas.Ranks do
           }
         }
       },
-      required: [:key, :name, :discipline, :style, :source, :system, :ranks]
+      required: [:key, :name, :discipline, :style, :source, :system, :ranks, :ready]
     }
   end
 
@@ -168,9 +199,14 @@ defmodule PaleeWeb.Schemas.Ranks do
       properties: %{
         ladders: %Schema{type: :array, items: ladder()},
         templates: %Schema{type: :array, items: template()},
-        colors: %Schema{type: :array, items: %Schema{type: :string}}
+        colors: %Schema{type: :array, items: %Schema{type: :string}},
+        box_disciplines: %Schema{
+          type: :array,
+          description: "The training kinds of the box's profile; the picker shows them first",
+          items: %Schema{type: :string}
+        }
       },
-      required: [:colors, :ladders, :templates]
+      required: [:box_disciplines, :colors, :ladders, :templates]
     }
   end
 
@@ -239,13 +275,16 @@ defmodule PaleeWeb.Schemas.Ranks do
             classes: count,
             days: count,
             skills: %Schema{type: :array, items: %Schema{type: :string}},
+            skill_ids: %Schema{type: :array, items: %Schema{type: :string, nullable: true}},
+            criteria: @criteria,
             skills_checked: %Schema{
               type: :array,
               description: "ADR-400: the next rank's skills the coach ticked so far",
               items: %Schema{
                 type: :object,
                 properties: %{
-                  skill: %Schema{type: :string},
+                  skill: %Schema{type: :string, description: "The skill's current text"},
+                  skill_id: %Schema{type: :string, nullable: true},
                   checked_on: %Schema{type: :string, format: :date},
                   note: @maybe_string
                 },
@@ -302,12 +341,128 @@ defmodule PaleeWeb.Schemas.Ranks do
         "ADR-400: tick (or untick) one skill of a rank for a client, between promotions",
       properties: %{
         rank_id: @uuid,
-        skill: %Schema{type: :string, minLength: 1, maxLength: 120},
+        skill_id: %Schema{type: :string, format: :uuid, description: "The skill's stable id"},
+        skill: %Schema{
+          type: :string,
+          minLength: 1,
+          maxLength: 120,
+          description: "The skill's text, when no `skill_id` is sent"
+        },
         checked: %Schema{type: :boolean, description: "false unticks; true when left out"},
         checked_on: %Schema{type: :string, format: :date},
         note: %Schema{type: :string, maxLength: 280, nullable: true}
       },
-      required: [:rank_id, :skill]
+      required: [:rank_id]
+    }
+  end
+
+  def batch_check_request do
+    %Schema{
+      title: "RankSkillBatchRequest",
+      type: :object,
+      description:
+        "One skill for several people at once (a class): only those who work towards its rank change",
+      properties: %{
+        rank_id: @uuid,
+        skill_id: %Schema{type: :string, format: :uuid},
+        skill: %Schema{type: :string, minLength: 1, maxLength: 120},
+        user_ids: %Schema{type: :array, minItems: 1, maxItems: 100, items: @uuid},
+        checked: %Schema{type: :boolean, description: "false unticks; true when left out"},
+        checked_on: %Schema{type: :string, format: :date}
+      },
+      required: [:rank_id, :user_ids]
+    }
+  end
+
+  def batch_check_response do
+    %Schema{
+      title: "RankSkillBatchResponse",
+      type: :object,
+      properties: %{
+        updated: %Schema{type: :array, items: @uuid},
+        skipped: %Schema{
+          type: :array,
+          items: %Schema{
+            type: :object,
+            properties: %{
+              user_id: @uuid,
+              reason: %Schema{type: :string, enum: ~w(not_your_client other_rank)}
+            },
+            required: [:user_id, :reason]
+          }
+        }
+      },
+      required: [:updated, :skipped]
+    }
+  end
+
+  def class_skills_response do
+    %Schema{
+      title: "RankClassSkillsResponse",
+      type: :object,
+      properties: %{
+        ladders: %Schema{type: :array, items: ladder()},
+        people: %Schema{
+          type: :array,
+          items: %Schema{
+            type: :object,
+            properties: %{
+              user_id: @uuid,
+              reachable: %Schema{type: :boolean, description: "The coach may tick for them"},
+              next_rank_ids: %Schema{type: :array, items: @uuid},
+              checked: %Schema{
+                type: :array,
+                items: %Schema{
+                  type: :object,
+                  properties: %{rank_id: @uuid, skill_id: @uuid},
+                  required: [:rank_id, :skill_id]
+                }
+              }
+            },
+            required: [:checked, :next_rank_ids, :reachable, :user_id]
+          }
+        }
+      },
+      required: [:ladders, :people]
+    }
+  end
+
+  def ready_response do
+    %Schema{
+      title: "RankReadyResponse",
+      type: :object,
+      description:
+        "People who meet what their ladder counts for the next rank; the coach decides",
+      properties: %{
+        people: %Schema{
+          type: :array,
+          items: %Schema{
+            type: :object,
+            properties: %{
+              user_id: @uuid,
+              nickname: @maybe_string,
+              ladder: %Schema{
+                type: :object,
+                properties: %{
+                  id: @uuid,
+                  name: %Schema{type: :string},
+                  style: %Schema{type: :string}
+                },
+                required: [:id, :name, :style]
+              },
+              current: %Schema{
+                type: :object,
+                properties: %{rank: rank(), stripes: %Schema{type: :integer}},
+                required: [:rank, :stripes]
+              },
+              next: rank(),
+              progress: standing().properties.progress
+            },
+            required: [:current, :ladder, :next, :progress, :user_id]
+          }
+        }
+      },
+      required: [:people]
     }
   end
 

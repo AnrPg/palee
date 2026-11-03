@@ -2371,8 +2371,8 @@ msgstr "Brevets de trampoline 1-15"
 msgid "British Gymnastics trampoline proficiency awards"
 msgstr "Brevets de trampoline de British Gymnastics"
 
-msgid "Award %{n}"
-msgstr "Brevet %{n}"
+msgid "Badge %{n}"
+msgstr "Badge %{n}"
 
 msgid "Waits their turn and behaves safely around the trampoline"
 msgstr "Attend son tour et se comporte prudemment autour du trampoline"

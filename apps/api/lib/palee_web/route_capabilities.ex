@@ -24,7 +24,9 @@ defmodule PaleeWeb.RouteCapabilities do
   @controller_defaults %{
     W.AdminWorkoutController => [:manage_workouts],
     # ADR-377: belts and levels; promotions follow the coaching scope (ADR-100).
-    W.AdminRankLaddersController => [:manage_settings, :manage_workouts],
+    # ADR-400 follow-up: ladders are the owner's, admins' and head coaches'
+    # (`RankLadders` refuses a coach with only their own clients).
+    W.AdminRankLaddersController => [:manage_settings, :manage_coaching],
     W.StaffRanksController => [:manage_coaching],
     # ADR-252: templates, versions, requirement, settings and audit.
     W.AdminDocumentsController => [:manage_settings],

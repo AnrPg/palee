@@ -91,6 +91,7 @@ defmodule Palee.Notifications.Notification do
     :referral_reward,
     :referral_review,
     :around_new_matches,
+    :rank_skills_checked,
     :check_in_visitor,
     :body_measure_reminder,
     :buddy_invite,

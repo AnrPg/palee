@@ -2371,8 +2371,8 @@ msgstr "Отличия на батут 1-15"
 msgid "British Gymnastics trampoline proficiency awards"
 msgstr "Значки за умения на батут на British Gymnastics"
 
-msgid "Award %{n}"
-msgstr "Отличие %{n}"
+msgid "Badge %{n}"
+msgstr "Значка %{n}"
 
 msgid "Waits their turn and behaves safely around the trampoline"
 msgstr "Изчаква реда си и спазва безопасността около батута"
