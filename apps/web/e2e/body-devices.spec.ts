@@ -154,7 +154,7 @@ test.describe("body and devices", () => {
     await page.route("**/api/me/wellness?**", (route) =>
       route.fulfill(
         json({
-          consent: true,
+          consented: true,
           preferences: { glass_ml: 250, water_goal_ml: 2000, sleep_goal_minutes: 450, hidden_items: [], item_order: ["meals"], water_reminder: false },
           entries: [],
           days: [],
@@ -206,7 +206,10 @@ test.describe("body and devices", () => {
       return route.fulfill(json({ ladders, templates: [{ key: "bjj_adult", discipline: "bjj_grappling" }] }));
     });
 
-    await page.goto("/admin/settings#ranks");
+    await page.goto("/admin/settings");
+    // ADR-377: belts and levels sit under «Advanced» › Ranks.
+    await page.getByTestId("advanced-settings").getByRole("button", { name: /Advanced/ }).click();
+    await expect(page.getByTestId("advanced-group-ranks")).toBeVisible();
     const created = page.waitForRequest((request) => request.url().endsWith("/admin/rank-ladders") && request.method() === "POST");
     await page.getByRole("button", { name: "BJJ belts" }).click();
     expect(bodyOf(await created)).toMatchObject({ template: "bjj_adult", name: "BJJ belts" });

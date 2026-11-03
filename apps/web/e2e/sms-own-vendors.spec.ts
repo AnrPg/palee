@@ -122,7 +122,7 @@ test("the box connects its own Twilio account with the guide, and a refused toke
   await expect(own.getByText("Fill this in.")).toHaveCount(2);
   await own.getByLabel("Account SID").fill("AC123");
   await expect(own.getByText("The Account SID starts with AC and has 34 characters.")).toBeVisible();
-  expect(writes.some((write) => write.method === "PUT")).toBe(false);
+  expect(writes.some((write) => write.method === "PUT" && !write.path.endsWith("/time-zone"))).toBe(false);
 
   await own.getByLabel("Account SID").fill(SID);
   await own.getByLabel("Auth Token").fill("wrong");

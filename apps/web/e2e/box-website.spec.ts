@@ -372,7 +372,8 @@ test.describe("Settings › Website", () => {
     await expect(cards).toHaveCount(2);
     await expect(cards.nth(0).getByTestId("site-domain-certificate")).toHaveText("The certificate is being issued. This usually takes a few minutes.");
     await expect(cards.nth(1).getByTestId("site-domain-certificate")).toContainText("Let's Encrypt couldn't reach the domain");
-    expect(writes).toEqual([]);
+    // Only the background session refresh and the time-zone sync write; the domain card writes nothing.
+    expect(writes.filter((write) => write.path.startsWith("/api/admin/site"))).toEqual([]);
   });
 });
 
