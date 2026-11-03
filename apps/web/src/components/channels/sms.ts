@@ -65,9 +65,11 @@ export function quietHoursReady(start: string | null, end: string | null): boole
  * with at least one letter (ADR-349); or a number in +E.164. Null is fine
  * (Palee's default sender).
  */
-export function senderError(value: string): "tooLong" | "latinOnly" | "needsLetter" | null {
+export function senderError(value: string, provider?: string | null): "tooLong" | "latinOnly" | "needsLetter" | "twilioService" | null {
   const sender = value.trim();
   if (sender === "") return null;
+  // ADR-396: with Twilio, a Messaging Service SID (MG + 32 hex) picks the sender itself.
+  if (provider === "twilio" && /^MG/.test(sender) && sender.length > 11) return /^MG[0-9a-fA-F]{32}$/.test(sender) ? null : "twilioService";
   if (sender.startsWith("+")) return /^\+[1-9][0-9]{7,14}$/.test(sender) ? null : "latinOnly";
   if (sender.length > 11) return "tooLong";
   if (!/^[A-Za-z0-9 ]+$/.test(sender)) return "latinOnly";

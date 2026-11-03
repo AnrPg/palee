@@ -192,3 +192,16 @@ describe("own SMS vendors (ADR-396)", () => {
     expect(vendorFieldError("yuboto", "account_id", "")).toBeNull();
   });
 });
+
+describe("Twilio Messaging Service as sender (ADR-396)", () => {
+  const service = `MG${"0f".repeat(16)}`;
+
+  it("takes an MG SID only when the provider is Twilio", () => {
+    expect(senderError(service, "twilio")).toBeNull();
+    expect(senderError(service, "vonage")).toBe("tooLong");
+    expect(senderError(service)).toBe("tooLong");
+    expect(senderError(`MG${"zz".repeat(16)}`, "twilio")).toBe("twilioService");
+    expect(senderError("MGym", "twilio")).toBeNull();
+    expect(senderError("CF Athina", "twilio")).toBeNull();
+  });
+});

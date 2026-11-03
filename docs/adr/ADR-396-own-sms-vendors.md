@@ -109,8 +109,8 @@ signing and error mapping onto boxes, and could aim Palee's server anywhere.
 - `GET /api/webhooks/channels/:organization_id/:token` added next to the POST.
 - OpenAPI: `provider` enum widened, `webhook_secret` in the body, `has_webhook_secret` in the
   connection, `sms_sender` up to 40.
-- The web's sender field (outside this section) still accepts only a name or a number; a Twilio
-  Messaging Service SID can be set through the API only.
+- With Twilio the web's sender field also accepts a Messaging Service SID (see Decisions of
+  2026-11-03 below).
 - Vendors' consoles, menus and names change; the guides need review when a vendor redesigns.
 
 ## Implementation Notes
@@ -140,3 +140,15 @@ signing and error mapping onto boxes, and could aim Palee's server anywhere.
 - Not verified against live accounts (no credentials): Vonage's hex case of `sig` (compared
   case-insensitively), whether Yuboto's `smsid` always equals the `Message[].id` of the send
   answer, and the exact console menu names in the guides.
+
+## Decisions (2026-11-03, coordinator for v3.2)
+1. With Twilio as the provider, the sender field («Αποστολέας») also accepts a Messaging Service
+   SID (`MG` + 32 hex): its own hint and its own reason under the field
+   (`senderError(value, provider)`, `sender_twilioService`, `senderHintTwilio`).
+2. Vonage receipts without a saved signature secret are accepted on the secret webhook URL alone,
+   as for Brevo.
+3. No price-per-SMS field for an own vendor: the cap counts Palee's estimate unless the vendor
+   states its price in EUR (declutter).
+4. The Yuboto guide says to copy the OMNI API key exactly as «API Integration» shows it (already
+   encoded); the adapter's encode-once fallback stays for safety.
+5. Live-account checks (console menu names, Vonage `sig` case, Yuboto `smsid`) stay open.

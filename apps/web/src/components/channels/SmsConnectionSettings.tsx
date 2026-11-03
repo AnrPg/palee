@@ -177,7 +177,7 @@ export function SmsConnectionSettings({ token }: { token: string }) {
       {on && connection ? (
         <>
           <Card>
-            <SenderRow key={connection.sms_sender ?? ""} saved={connection.sms_sender ?? ""} pending={save.isPending} error={fieldErrors(save.error).sms_sender} onSave={(sms_sender) => save.mutate({ sms_sender: sms_sender || null })} />
+            <SenderRow key={`${connection.provider}-${connection.sms_sender ?? ""}`} provider={connection.provider} saved={connection.sms_sender ?? ""} pending={save.isPending} error={fieldErrors(save.error).sms_sender} onSave={(sms_sender) => save.mutate({ sms_sender: sms_sender || null })} />
             <BudgetField
               key={connection.monthly_budget_cents ?? "none"}
               saved={connection.monthly_budget_cents ?? null}
@@ -277,22 +277,23 @@ function Advanced({ children }: { children: ReactNode }) {
 
 const inputClass = "w-full rounded-xl px-3 py-2 text-sm";
 
-function SenderRow({ saved, pending, error, onSave }: { saved: string; pending: boolean; error?: string; onSave: (value: string) => void }) {
+function SenderRow({ provider, saved, pending, error, onSave }: { provider: string; saved: string; pending: boolean; error?: string; onSave: (value: string) => void }) {
   const t = useTranslations("Sms");
   const [value, setValue] = useState(saved);
-  const local = senderError(value);
-  const message = local ? t(`sender_${local}`) : error ? t("sender_latinOnly") : null;
+  const twilio = provider === "twilio";
+  const local = senderError(value, provider);
+  const message = local ? t(`sender_${local}`) : error ? t(twilio ? "sender_twilioService" : "sender_latinOnly") : null;
   const dirty = value.trim() !== saved;
   return (
     <div className="border-b py-3" style={{ borderColor: "var(--border)" }}>
       <label className="block text-sm font-semibold" style={{ color: "var(--text)" }} htmlFor="sms-sender">{t("sender")}</label>
-      <p className="text-xs leading-5" style={{ color: "var(--dim)" }}>{t("senderHint")}</p>
+      <p className="text-xs leading-5" style={{ color: "var(--dim)" }}>{twilio ? t("senderHintTwilio") : t("senderHint")}</p>
       <div className="mt-2 flex flex-wrap items-start gap-2">
         <div className="min-w-[10rem] flex-1">
           <input
             id="sms-sender"
             value={value}
-            maxLength={16}
+            maxLength={twilio ? 34 : 16}
             placeholder={SENDER_EXAMPLE}
             aria-invalid={Boolean(message)}
             aria-describedby={message ? "sms-sender-error" : undefined}

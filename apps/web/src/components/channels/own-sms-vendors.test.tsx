@@ -193,4 +193,24 @@ describe("own SMS vendor (ADR-396)", () => {
     await waitFor(() => expect(channels.saveChannelSettings).toHaveBeenCalledTimes(2));
     expect(vi.mocked(channels.saveChannelSettings).mock.calls[1][1]).toEqual({ provider: "brevo", account_mode: "palee" });
   });
+
+  it("with Twilio the sender field takes a Messaging Service SID, with its reason in the form", async () => {
+    const twilio = { ...connection, provider: "twilio", account_mode: "own" as const, account_id: SID, has_secret: true, sms_sender: "CFAthina" };
+    vi.mocked(channels.fetchChannelSettings).mockResolvedValue({ connection: twilio, providers, usage });
+    vi.mocked(channels.saveChannelSettings).mockResolvedValue({ connection: twilio, check: { ok: true, details: {} } } as unknown as SaveResult);
+    wrap(<SmsConnectionSettings token="t" />);
+
+    const sender = await screen.findByLabelText("Sender");
+    expect(screen.getByText(en.Sms.senderHintTwilio)).toBeTruthy();
+    fireEvent.change(sender, { target: { value: `MG${"zz".repeat(16)}` } });
+    expect(screen.getByText(en.Sms.sender_twilioService)).toBeTruthy();
+    expect(sender.getAttribute("aria-invalid")).toBe("true");
+
+    const service = `MG${"0f".repeat(16)}`;
+    fireEvent.change(sender, { target: { value: service } });
+    expect(sender.getAttribute("aria-invalid")).toBe("false");
+    fireEvent.click(screen.getByRole("button", { name: en.Sms.saveSender }));
+    await waitFor(() => expect(channels.saveChannelSettings).toHaveBeenCalled());
+    expect(vi.mocked(channels.saveChannelSettings).mock.calls[0][1]).toMatchObject({ sms_sender: service });
+  });
 });
