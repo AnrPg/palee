@@ -16330,6 +16330,19 @@
         "tls_not_ready": "Das Zertifikat wird ausgestellt.",
         "tls_failed": "Das Zertifikat konnte nicht ausgestellt werden. Prüf die Einträge und versuch es erneut."
       },
+      "certificate": {
+        "pending": "Wir bereiten das Zertifikat vor.",
+        "issuing": "Das Zertifikat wird ausgestellt. Das dauert meist ein paar Minuten.",
+        "active": "Das Zertifikat ist bereit. Die Domain ist gleich erreichbar."
+      },
+      "certificateError": {
+        "cluster_refused": "Wir konnten das Zertifikat nicht einrichten. Wir haben es bemerkt und beheben es.",
+        "cluster_unreachable": "Wir konnten das Zertifikat noch nicht einrichten. Wir versuchen es automatisch erneut.",
+        "challenge_failed": "Das Zertifikat wurde nicht ausgestellt: Let's Encrypt hat die Domain nicht erreicht. Prüfe, ob die Einträge auf Palee zeigen; wir versuchen es automatisch erneut.",
+        "rate_limited": "Zu viele Zertifikatsanfragen für diese Domain. Wir versuchen es in ein paar Stunden automatisch erneut.",
+        "issuer_not_ready": "Das Zertifikat wurde noch nicht ausgestellt. Wir haben es bemerkt und beheben es.",
+        "issuance_failed": "Das Zertifikat wurde noch nicht ausgestellt. Wir versuchen es automatisch erneut."
+      },
       "recordsTitle": "Einzutragende Einträge",
       "recordName": "Name",
       "recordValue": "Wert",

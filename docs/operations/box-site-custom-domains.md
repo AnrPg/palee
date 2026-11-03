@@ -1,9 +1,42 @@
-# Box websites on custom domains: what ops do (ADR-352)
+# Box websites on custom domains: what ops do (ADR-352, ADR-398)
 
-A box adds its own domain under Staff › Settings › «Ιστοσελίδα» (once the
-screens exist; today `POST /api/org/:slug/admin/site/domains`). Palee checks
-DNS and HTTPS by itself; ops only have to give each verified host a route and
-a certificate.
+A box adds its own domain under Staff › Settings › «Ιστοσελίδα». Palee checks
+DNS and HTTPS by itself. Since ADR-398 the API also creates each verified
+host's Ingress and cert-manager issues the certificate
+(`BOX_SITE_INGRESS=kubernetes`); the manual steps below are the fallback
+when that is off.
+
+## Automatic (ADR-398)
+
+- The API pod runs as ServiceAccount `palee-api` with a Role in `tenant-m4`
+  only: ingresses (get, list, create, patch, update, delete) and
+  cert-manager certificates (get, list). Gitops: `palee/palee-api-rbac.yaml`.
+- Each verified host gets Ingress `palee-site-<20 hex of sha256(host)>`
+  (label `palee.app/site=true`, annotation `palee.app/site-host: <host>`,
+  `cert-manager.io/issuer: palee-sites`, TLS secret `<name>-tls`), `/api` to
+  `palee-api:4000` and `/` to `palee-web:3000`.
+- `palee-sites` is a namespaced ACME Issuer (HTTP-01, default ingress class),
+  gitops `palee/palee-sites-issuer.yaml`. To use the cluster's issuer
+  instead: `BOX_SITE_CERT_ISSUER_KIND=ClusterIssuer`,
+  `BOX_SITE_CERT_ISSUER=letsencrypt-production`.
+- Calls go through the outbox `box_site_ingress_ops` (retries 1 min → 6 h,
+  8 tries). An hourly sweep deletes Palee's Ingresses whose host no box has
+  any more and recreates missing ones.
+- The card shows the certificate: «εκδίδεται», «έτοιμο» or a plain reason
+  (`cluster_refused` means RBAC or a missing kind: check the Role and that
+  the Issuer exists).
+- TLS secrets of removed hosts stay (no access to secrets). List them with
+  `kubectl -n tenant-m4 get secret | grep palee-site-` and delete the ones
+  without an Ingress.
+
+Check from the cluster:
+
+```
+kubectl -n tenant-m4 get ingress -l palee.app/site=true
+kubectl -n tenant-m4 get certificate,challenge
+kubectl -n tenant-m4 describe issuer palee-sites
+kubectl -n tenant-m4 auth can-i create ingresses --as=system:serviceaccount:tenant-m4:palee-api
+```
 
 ## States
 
@@ -23,7 +56,7 @@ a certificate.
 3. cert-manager's `letsencrypt-production` ClusterIssuer with HTTP-01 is
    already allowed in `tenant-m4` (handoff 2026-10-26 §0.5).
 
-## For each host in `pending_tls`
+## Manual fallback: for each host in `pending_tls`
 
 List them (vendor account):
 
@@ -89,8 +122,8 @@ https:// {
 `tls-allowed?domain=<host>` answers 200 only for `pending_tls` and `active`
 hosts, so nobody can make Caddy request certificates for other names.
 
-## The web side (after ANR approves the mockups)
+## The web side
 
-The Next.js middleware maps an unknown `Host` to its box with
+The Next.js proxy (`apps/web/src/proxy.ts`) maps an unknown `Host` to its box with
 `GET /api/public/sites/by-host/<host>` (cached) and rewrites to the site
 route; a non-primary host redirects (308) to `primary_host`.

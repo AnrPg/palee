@@ -1050,6 +1050,30 @@
                   "nullable": true,
                   "type": "string"
                 },
+                "certificate_error": {
+                  "enum": [
+                    "cluster_refused",
+                    "cluster_unreachable",
+                    "challenge_failed",
+                    "rate_limited",
+                    "issuer_not_ready",
+                    "issuance_failed",
+                    null
+                  ],
+                  "nullable": true,
+                  "type": "string"
+                },
+                "certificate_status": {
+                  "description": "ADR-398: the host's certificate (none until DNS is proven, then pending, issuing, active or failed)",
+                  "enum": [
+                    "none",
+                    "pending",
+                    "issuing",
+                    "active",
+                    "failed"
+                  ],
+                  "type": "string"
+                },
                 "checked_at": {
                   "format": "date-time",
                   "nullable": true,
@@ -1127,6 +1151,8 @@
               },
               "required": [
                 "active_at",
+                "certificate_error",
+                "certificate_status",
                 "checked_at",
                 "dns_records",
                 "host",
@@ -83290,6 +83316,30 @@
             "nullable": true,
             "type": "string"
           },
+          "certificate_error": {
+            "enum": [
+              "cluster_refused",
+              "cluster_unreachable",
+              "challenge_failed",
+              "rate_limited",
+              "issuer_not_ready",
+              "issuance_failed",
+              null
+            ],
+            "nullable": true,
+            "type": "string"
+          },
+          "certificate_status": {
+            "description": "ADR-398: the host's certificate (none until DNS is proven, then pending, issuing, active or failed)",
+            "enum": [
+              "none",
+              "pending",
+              "issuing",
+              "active",
+              "failed"
+            ],
+            "type": "string"
+          },
           "checked_at": {
             "format": "date-time",
             "nullable": true,
@@ -83367,6 +83417,8 @@
         },
         "required": [
           "active_at",
+          "certificate_error",
+          "certificate_status",
           "checked_at",
           "dns_records",
           "host",
@@ -83426,6 +83478,30 @@
               "active_at": {
                 "format": "date-time",
                 "nullable": true,
+                "type": "string"
+              },
+              "certificate_error": {
+                "enum": [
+                  "cluster_refused",
+                  "cluster_unreachable",
+                  "challenge_failed",
+                  "rate_limited",
+                  "issuer_not_ready",
+                  "issuance_failed",
+                  null
+                ],
+                "nullable": true,
+                "type": "string"
+              },
+              "certificate_status": {
+                "description": "ADR-398: the host's certificate (none until DNS is proven, then pending, issuing, active or failed)",
+                "enum": [
+                  "none",
+                  "pending",
+                  "issuing",
+                  "active",
+                  "failed"
+                ],
                 "type": "string"
               },
               "checked_at": {
@@ -83505,6 +83581,8 @@
             },
             "required": [
               "active_at",
+              "certificate_error",
+              "certificate_status",
               "checked_at",
               "dns_records",
               "host",
@@ -83572,6 +83650,30 @@
                 "active_at": {
                   "format": "date-time",
                   "nullable": true,
+                  "type": "string"
+                },
+                "certificate_error": {
+                  "enum": [
+                    "cluster_refused",
+                    "cluster_unreachable",
+                    "challenge_failed",
+                    "rate_limited",
+                    "issuer_not_ready",
+                    "issuance_failed",
+                    null
+                  ],
+                  "nullable": true,
+                  "type": "string"
+                },
+                "certificate_status": {
+                  "description": "ADR-398: the host's certificate (none until DNS is proven, then pending, issuing, active or failed)",
+                  "enum": [
+                    "none",
+                    "pending",
+                    "issuing",
+                    "active",
+                    "failed"
+                  ],
                   "type": "string"
                 },
                 "checked_at": {
@@ -83651,6 +83753,8 @@
               },
               "required": [
                 "active_at",
+                "certificate_error",
+                "certificate_status",
                 "checked_at",
                 "dns_records",
                 "host",
@@ -254779,6 +254883,30 @@
                             "nullable": true,
                             "type": "string"
                           },
+                          "certificate_error": {
+                            "enum": [
+                              "cluster_refused",
+                              "cluster_unreachable",
+                              "challenge_failed",
+                              "rate_limited",
+                              "issuer_not_ready",
+                              "issuance_failed",
+                              null
+                            ],
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "certificate_status": {
+                            "description": "ADR-398: the host's certificate (none until DNS is proven, then pending, issuing, active or failed)",
+                            "enum": [
+                              "none",
+                              "pending",
+                              "issuing",
+                              "active",
+                              "failed"
+                            ],
+                            "type": "string"
+                          },
                           "checked_at": {
                             "format": "date-time",
                             "nullable": true,
@@ -254856,6 +254984,8 @@
                         },
                         "required": [
                           "active_at",
+                          "certificate_error",
+                          "certificate_status",
                           "checked_at",
                           "dns_records",
                           "host",
@@ -255381,6 +255511,30 @@
                             "nullable": true,
                             "type": "string"
                           },
+                          "certificate_error": {
+                            "enum": [
+                              "cluster_refused",
+                              "cluster_unreachable",
+                              "challenge_failed",
+                              "rate_limited",
+                              "issuer_not_ready",
+                              "issuance_failed",
+                              null
+                            ],
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "certificate_status": {
+                            "description": "ADR-398: the host's certificate (none until DNS is proven, then pending, issuing, active or failed)",
+                            "enum": [
+                              "none",
+                              "pending",
+                              "issuing",
+                              "active",
+                              "failed"
+                            ],
+                            "type": "string"
+                          },
                           "checked_at": {
                             "format": "date-time",
                             "nullable": true,
@@ -255458,6 +255612,8 @@
                         },
                         "required": [
                           "active_at",
+                          "certificate_error",
+                          "certificate_status",
                           "checked_at",
                           "dns_records",
                           "host",
@@ -255530,6 +255686,30 @@
                         "active_at": {
                           "format": "date-time",
                           "nullable": true,
+                          "type": "string"
+                        },
+                        "certificate_error": {
+                          "enum": [
+                            "cluster_refused",
+                            "cluster_unreachable",
+                            "challenge_failed",
+                            "rate_limited",
+                            "issuer_not_ready",
+                            "issuance_failed",
+                            null
+                          ],
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "certificate_status": {
+                          "description": "ADR-398: the host's certificate (none until DNS is proven, then pending, issuing, active or failed)",
+                          "enum": [
+                            "none",
+                            "pending",
+                            "issuing",
+                            "active",
+                            "failed"
+                          ],
                           "type": "string"
                         },
                         "checked_at": {
@@ -255609,6 +255789,8 @@
                       },
                       "required": [
                         "active_at",
+                        "certificate_error",
+                        "certificate_status",
                         "checked_at",
                         "dns_records",
                         "host",
@@ -255741,6 +255923,30 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "certificate_error": {
+                          "enum": [
+                            "cluster_refused",
+                            "cluster_unreachable",
+                            "challenge_failed",
+                            "rate_limited",
+                            "issuer_not_ready",
+                            "issuance_failed",
+                            null
+                          ],
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "certificate_status": {
+                          "description": "ADR-398: the host's certificate (none until DNS is proven, then pending, issuing, active or failed)",
+                          "enum": [
+                            "none",
+                            "pending",
+                            "issuing",
+                            "active",
+                            "failed"
+                          ],
+                          "type": "string"
+                        },
                         "checked_at": {
                           "format": "date-time",
                           "nullable": true,
@@ -255818,6 +256024,8 @@
                       },
                       "required": [
                         "active_at",
+                        "certificate_error",
+                        "certificate_status",
                         "checked_at",
                         "dns_records",
                         "host",
@@ -255980,6 +256188,30 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "certificate_error": {
+                          "enum": [
+                            "cluster_refused",
+                            "cluster_unreachable",
+                            "challenge_failed",
+                            "rate_limited",
+                            "issuer_not_ready",
+                            "issuance_failed",
+                            null
+                          ],
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "certificate_status": {
+                          "description": "ADR-398: the host's certificate (none until DNS is proven, then pending, issuing, active or failed)",
+                          "enum": [
+                            "none",
+                            "pending",
+                            "issuing",
+                            "active",
+                            "failed"
+                          ],
+                          "type": "string"
+                        },
                         "checked_at": {
                           "format": "date-time",
                           "nullable": true,
@@ -256057,6 +256289,8 @@
                       },
                       "required": [
                         "active_at",
+                        "certificate_error",
+                        "certificate_status",
                         "checked_at",
                         "dns_records",
                         "host",

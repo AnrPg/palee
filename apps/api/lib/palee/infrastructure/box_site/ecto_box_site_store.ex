@@ -5,7 +5,7 @@ defmodule Palee.Infrastructure.BoxSite.EctoBoxSiteStore do
 
   import Ecto.Query
 
-  alias Palee.BoxSite.{SiteConsent, SiteDomain, SiteSettings, SiteSubmission}
+  alias Palee.BoxSite.{SiteConsent, SiteDomain, SiteIngressOp, SiteSettings, SiteSubmission}
   alias Palee.Repo
 
   @claim_timeout_seconds 600
@@ -192,6 +192,93 @@ defmodule Palee.Infrastructure.BoxSite.EctoBoxSiteStore do
 
   defp domain_map(%SiteDomain{} = domain),
     do: domain |> Map.from_struct() |> Map.delete(:__meta__)
+
+  # ── Ingress outbox (ADR-398) ────────────────────────────────────────────
+
+  @impl true
+  def queue_ingress_op(%{organization_id: organization_id}, attrs) do
+    Repo.transaction(fn ->
+      # A newer op replaces the one waiting for the same host; one in flight
+      # finishes first (claims skip a host with a fresh op in flight).
+      SiteIngressOp
+      |> where([o], o.organization_id == ^organization_id and o.host == ^attrs.host)
+      |> where([o], o.status in ["pending", "failed"])
+      |> Repo.delete_all()
+
+      %SiteIngressOp{organization_id: organization_id}
+      |> SiteIngressOp.changeset(attrs)
+      |> Repo.insert()
+      |> case do
+        {:ok, op} -> ingress_op_map(op)
+        {:error, changeset} -> Repo.rollback(changeset)
+      end
+    end)
+  end
+
+  @impl true
+  def claim_ingress_ops(%{organization_id: organization_id}, now, limit) do
+    stale = DateTime.add(now, -@claim_timeout_seconds, :second)
+
+    in_flight =
+      from f in SiteIngressOp,
+        where: f.status == "sending" and f.claimed_at >= ^stale,
+        select: f.host
+
+    candidates =
+      SiteIngressOp
+      |> where([o], o.organization_id == ^organization_id)
+      |> where(
+        [o],
+        (o.status == "pending" and o.next_attempt_at <= ^now and o.host not in subquery(in_flight)) or
+          (o.status == "sending" and o.claimed_at < ^stale)
+      )
+      |> order_by([o], asc: o.next_attempt_at)
+      |> limit(^limit)
+      |> lock("FOR UPDATE SKIP LOCKED")
+      |> select([o], o.id)
+
+    {_count, rows} =
+      SiteIngressOp
+      |> where([o], o.id in subquery(candidates))
+      |> select([o], o)
+      |> Repo.update_all(
+        set: [status: "sending", claimed_at: now, updated_at: now],
+        inc: [attempts: 1]
+      )
+
+    Enum.map(rows, &ingress_op_map/1)
+  end
+
+  @impl true
+  def finish_ingress_op(%{organization_id: organization_id}, id, changes) do
+    case Repo.one(
+           from o in SiteIngressOp, where: o.organization_id == ^organization_id and o.id == ^id
+         ) do
+      nil ->
+        {:error, :not_found}
+
+      op ->
+        if changes == :done or superseded?(op) do
+          # Done, or a newer op for the host is waiting: this one goes.
+          Repo.delete!(op)
+        else
+          op |> SiteIngressOp.changeset(changes) |> Repo.update!()
+        end
+
+        :ok
+    end
+  end
+
+  defp superseded?(%SiteIngressOp{} = op) do
+    Repo.exists?(
+      from o in SiteIngressOp,
+        where:
+          o.organization_id == ^op.organization_id and o.host == ^op.host and o.id != ^op.id and
+            o.status in ["pending", "failed"]
+    )
+  end
+
+  defp ingress_op_map(%SiteIngressOp{} = op), do: op |> Map.from_struct() |> Map.delete(:__meta__)
 
   # ── Form outbox ─────────────────────────────────────────────────────────
 
@@ -410,6 +497,14 @@ defmodule Palee.Infrastructure.BoxSite.EctoBoxSiteStore do
     Enum.map(rows, fn [host, slug, status, verified_at, updated_at] ->
       %{host: host, slug: slug, status: status, verified_at: verified_at, updated_at: updated_at}
     end)
+  end
+
+  @impl true
+  def ingress_hosts do
+    %{rows: rows} =
+      Repo.query!("SELECT organization_id, host FROM palee_site_ingress_hosts()", [])
+
+    Enum.map(rows, fn [id, host] -> %{organization_id: Ecto.UUID.load!(id), host: host} end)
   end
 
   @impl true

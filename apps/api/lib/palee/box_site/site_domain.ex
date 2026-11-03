@@ -7,7 +7,8 @@ defmodule Palee.BoxSite.SiteDomain do
   @primary_key {:id, :binary_id, autogenerate: true}
 
   @fields ~w(host primary status verification_token attempts next_check_at checked_at
-             verified_at active_at last_error created_by_id)a
+             verified_at active_at last_error created_by_id certificate_status
+             certificate_error certificate_checked_at)a
 
   schema "box_site_domains" do
     field :organization_id, :binary_id, read_after_writes: true
@@ -22,6 +23,10 @@ defmodule Palee.BoxSite.SiteDomain do
     field :active_at, :utc_datetime_usec
     field :last_error, :string
     field :created_by_id, :binary_id
+    # ADR-398: the certificate of the host's Ingress, as the card shows it.
+    field :certificate_status, :string, default: "none"
+    field :certificate_error, :string
+    field :certificate_checked_at, :utc_datetime_usec
 
     timestamps(type: :utc_datetime_usec)
   end

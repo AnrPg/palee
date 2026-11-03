@@ -22,6 +22,7 @@ defmodule Palee.BoxSite do
     DomainPolicy,
     FormPolicy,
     Hostname,
+    IngressPolicy,
     SiteSections,
     SiteSettingsPolicy,
     TenantDataPolicy
@@ -39,6 +40,12 @@ defmodule Palee.BoxSite do
   def tls_probe, do: Application.fetch_env!(:palee, :box_site_tls_probe)
   @doc "The configured Conversions API (`BoxSite.Ports.ConversionsApi`)."
   def conversions_api, do: Application.fetch_env!(:palee, :box_site_conversions_api)
+
+  @doc """
+  ADR-398: the configured cluster adapter (`BoxSite.Ports.SiteIngress`), or
+  `nil` when Palee does not create Ingresses itself (ops use the list).
+  """
+  def site_ingress, do: Application.get_env(:palee, :box_site_ingress)
 
   defp domain_config, do: Application.get_env(:palee, :box_site, [])
 
@@ -111,6 +118,23 @@ defmodule Palee.BoxSite do
   defdelegate tls_allowed?(status), to: DomainPolicy
   defdelegate serving?(status), to: DomainPolicy
   defdelegate after_check(domain, facts, now), to: DomainPolicy
+
+  # ── Ingresses and certificates (ADR-398) ────────────────────────────────
+
+  defdelegate queue_ingress_op(context, attrs), to: BoxSiteStore
+  defdelegate claim_ingress_ops(context, now, limit), to: BoxSiteStore
+  defdelegate finish_ingress_op(context, id, changes), to: BoxSiteStore
+  defdelegate ingress_hosts(), to: BoxSiteStore
+  defdelegate ingress_wanted?(status), to: IngressPolicy, as: :wanted?
+  defdelegate ingress_transition(before, after_status), to: IngressPolicy, as: :transition
+  defdelegate ingress_needs_apply?(domain), to: IngressPolicy, as: :needs_apply?
+  defdelegate read_certificate?(domain), to: IngressPolicy
+  defdelegate new_ingress_op(action, domain, now), to: IngressPolicy, as: :new_op
+  defdelegate ingress_queued(action), to: IngressPolicy, as: :queued
+  defdelegate after_ingress_op(result, op, now), to: IngressPolicy, as: :after_op
+  defdelegate certificate_changes(result, now), to: IngressPolicy
+  defdelegate certificate_statuses(), to: IngressPolicy
+  defdelegate certificate_errors(), to: IngressPolicy
 
   @doc "Adds a custom host (up to #{DomainPolicy.max_domains()}); the first one is primary."
   def add_domain(context, host, user_id, now) do

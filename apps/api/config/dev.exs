@@ -93,6 +93,7 @@ config :palee, :sms_sender, Palee.Infrastructure.Sms.LogSmsSender
 config :palee, :box_site_lead_intake, Palee.Infrastructure.BoxSite.SandboxLeadIntake
 config :palee, :box_site_dns, Palee.Infrastructure.BoxSite.SandboxDomainDns
 config :palee, :box_site_tls_probe, Palee.Infrastructure.BoxSite.SandboxTlsProbe
+config :palee, :box_site_ingress, Palee.Infrastructure.BoxSite.SandboxSiteIngress
 config :palee, :box_site_conversions_api, Palee.Infrastructure.BoxSite.SandboxConversionsApi
 # ADR-387: no Places API calls in dev.
 config :palee, :google_places, Palee.Infrastructure.ReviewAsks.SandboxPlaces

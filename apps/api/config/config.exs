@@ -30,6 +30,8 @@ config :palee, Oban,
        {"*/15 * * * *", Palee.Workers.RefreshLeaderboardJob},
        # ADR-352/353: custom domain checks and the website form outbox.
        {"*/5 * * * *", Palee.Workers.BoxSiteJob},
+       # ADR-398: remove Ingresses of hosts no box has any more.
+       {"41 * * * *", Palee.Workers.BoxSiteIngressSweepJob},
        # ADR-387: refresh due Google listings (each box once a day).
        {"17 * * * *", Palee.Workers.GooglePlacesJob},
        {"*/15 * * * *", Palee.Workers.RefreshFinanceAggregatesJob},
@@ -480,6 +482,19 @@ config :palee, :box_site_lead_intake, Palee.Infrastructure.Leads.BoxSiteIntake
 config :palee, :box_site_dns, Palee.Infrastructure.BoxSite.InetDomainDns
 config :palee, :box_site_tls_probe, Palee.Infrastructure.BoxSite.HttpTlsProbe
 config :palee, :box_site_conversions_api, Palee.Infrastructure.BoxSite.MetaConversionsApi
+
+# ADR-398: Palee creates custom hosts' Ingresses itself only where an adapter
+# is set (prod: BOX_SITE_INGRESS=kubernetes); otherwise ops use the list.
+config :palee, :box_site_ingress, nil
+
+config :palee, :box_site_kubernetes,
+  issuer_kind: "Issuer",
+  issuer_name: "palee-sites",
+  ingress_class: nil,
+  api_service: "palee-api",
+  api_port: 4000,
+  web_service: "palee-web",
+  web_port: 3000
 
 config :palee, :box_site,
   cname_target: "sites.palee.app",

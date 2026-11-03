@@ -29,6 +29,11 @@ defmodule Palee.BoxSite.Ports.BoxSiteStore do
   @callback delete_domain(context(), id()) :: :ok | {:error, :not_found}
   @callback due_domains(context(), DateTime.t(), pos_integer()) :: [map()]
 
+  # ADR-398: the outbox of cluster calls (one waiting op per host).
+  @callback queue_ingress_op(context(), map()) :: {:ok, map()} | {:error, term()}
+  @callback claim_ingress_ops(context(), DateTime.t(), pos_integer()) :: [map()]
+  @callback finish_ingress_op(context(), id(), :done | map()) :: :ok | {:error, term()}
+
   # Form outbox
   @callback insert_submission(context(), map()) :: {:ok, map()} | {:error, term()}
   @callback claim_submissions(context(), DateTime.t(), pos_integer()) :: [map()]
@@ -48,4 +53,5 @@ defmodule Palee.BoxSite.Ports.BoxSiteStore do
   @callback primary_host(id()) :: String.t() | nil
   @callback domains_for_ops(String.t()) :: [map()]
   @callback due_organizations(DateTime.t()) :: [id()]
+  @callback ingress_hosts() :: [%{organization_id: id(), host: String.t()}]
 end

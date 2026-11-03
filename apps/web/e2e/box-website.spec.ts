@@ -330,6 +330,45 @@ test.describe("Settings › Website", () => {
       about_en: null,
     });
   });
+
+  // ADR-398: Palee creates the Ingress of a verified host; the card shows the certificate's state.
+  test("the domain card says how the automatic certificate is doing", async ({ page }) => {
+    const writes: Write[] = [];
+    const domain = (host: string, extra: object) => ({
+      id: `domain-${host}`,
+      host,
+      primary: host.startsWith("www."),
+      status: "pending_tls",
+      last_error: "tls_not_ready",
+      checked_at: new Date().toISOString(),
+      next_check_at: new Date().toISOString(),
+      verified_at: new Date().toISOString(),
+      active_at: null,
+      certificate_status: "issuing",
+      certificate_error: null,
+      dns_records: [{ type: "CNAME", name: host, value: "sites.palee.app" }],
+      ...extra,
+    });
+    await asOwner(page, writes, (path, method, _body, route) => {
+      if (path === "/api/admin/site" && method === "GET") {
+        return json(route, {
+          settings: siteSettings,
+          domains: [domain("www.kypseli.gr", {}), domain("kypseli.gr", { certificate_status: "failed", certificate_error: "challenge_failed" })],
+        });
+      }
+      if (path === "/api/admin/site/summary") {
+        return json(route, { days: 30, submissions: { total: 0, delivered: 0, failed: 0, waiting: 0 }, consents: { accept_all: 0, custom: 0, reject_all: 0, withdraw: 0 } });
+      }
+      return null;
+    });
+    await page.goto("/admin/settings/website");
+
+    const cards = page.getByTestId("website-domain");
+    await expect(cards).toHaveCount(2);
+    await expect(cards.nth(0).getByTestId("site-domain-certificate")).toHaveText("The certificate is being issued. This usually takes a few minutes.");
+    await expect(cards.nth(1).getByTestId("site-domain-certificate")).toContainText("Let's Encrypt couldn't reach the domain");
+    expect(writes).toEqual([]);
+  });
 });
 
 test.describe("Settings › Reviews", () => {
