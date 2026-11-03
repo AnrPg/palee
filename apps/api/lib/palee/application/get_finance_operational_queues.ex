@@ -1,5 +1,5 @@
 defmodule Palee.Application.GetFinanceOperationalQueues do
-  alias Palee.Application.BranchReport
+  alias Palee.Application.{BranchReport, DebtorContacts}
   alias Palee.{Finance, Identity}
 
   def call(params \\ %{}) do
@@ -15,10 +15,42 @@ defmodule Palee.Application.GetFinanceOperationalQueues do
     report = BranchReport.resolve(context, params)
     queues = Finance.operational_queues(context, BranchReport.scope_params(params, report))
     users = user_map(queues)
+    kept = DebtorContacts.labels(context, Map.keys(users))
 
     {:ok,
-     %{queues: enrich_queues(queues, users), branch_filter: BranchReport.filter_payload(report)}}
+     %{
+       queues: queues |> enrich_queues(users) |> with_kept_contacts(kept),
+       branch_filter: BranchReport.filter_payload(report)
+     }}
   end
+
+  # ADR-450: a profile deleted while it owes the box shows the name the box
+  # kept for the debt, with how to reach the person, not «Deleted account».
+  defp with_kept_contacts(queues, kept) when map_size(kept) == 0, do: queues
+
+  defp with_kept_contacts(queues, kept) do
+    Map.new(queues, fn
+      {key, rows} when is_list(rows) ->
+        {key, Enum.map(rows, &kept_contact(&1, kept))}
+
+      other ->
+        other
+    end)
+  end
+
+  defp kept_contact(%{} = row, kept) do
+    case Map.get(kept, Map.get(row, :user_id) || Map.get(row, :recipient_user_id)) do
+      nil ->
+        row
+
+      contact ->
+        row
+        |> Map.put(:user_label, contact.display_name)
+        |> Map.put(:kept_contact, contact)
+    end
+  end
+
+  defp kept_contact(row, _kept), do: row
 
   defp enrich_queues(queues, users) do
     queues

@@ -14772,7 +14772,8 @@
     "noEnd": "بلا نهاية",
     "renews": "يتجدد",
     "dueSince": "مستحق {date}",
-    "debtsQueue": "الديون"
+    "debtsQueue": "الديون",
+    "keptContact": "تم حذف الحساب · تُحفظ بيانات التواصل حتى يُدفع المبلغ"
   },
   "WorkoutTypes": {
     "family": {

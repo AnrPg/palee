@@ -14772,7 +14772,8 @@
     "noEnd": "Без окончания",
     "renews": "продлевается",
     "dueSince": "срок {date}",
-    "debtsQueue": "Долги"
+    "debtsQueue": "Долги",
+    "keptContact": "Аккаунт удалён · контакт хранится до оплаты"
   },
   "WorkoutTypes": {
     "family": {

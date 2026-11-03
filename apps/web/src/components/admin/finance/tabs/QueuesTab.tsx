@@ -188,6 +188,7 @@ export function QueuesTab({ locationIds }: { locationIds?: string } = {}) {
                     {row.oldest_due_on ? (
                       <span style={{ color: "var(--muted)" }}> · {standingT("dueSince", { date: dateText(uiLocale, row.oldest_due_on) })}</span>
                     ) : null}
+                    <KeptContact contact={row.kept_contact} note={standingT("keptContact")} />
                   </span>
                   <span className="flex flex-wrap items-center justify-end gap-2">
                     {status ? (
@@ -246,5 +247,32 @@ function QueueRow({ children, last }: { children: React.ReactNode; last: boolean
     >
       {children}
     </div>
+  );
+}
+
+/**
+ * ADR-450: a person who deleted their account while owing the box. The box
+ * keeps the name, email and SMS number only until the debt is paid.
+ */
+function KeptContact({ contact, note }: { contact: unknown; note: string }) {
+  if (!contact || typeof contact !== "object") return null;
+  const { email, phone_e164: phone } = contact as { email?: unknown; phone_e164?: unknown };
+  const link = { color: "var(--text-soft)" };
+  return (
+    <span className="mt-0.5 block text-xs" style={{ color: "var(--muted)" }} data-testid="debt-kept-contact">
+      {note}
+      {typeof email === "string" && email ? (
+        <>
+          {" · "}
+          <a href={`mailto:${email}`} style={link}>{email}</a>
+        </>
+      ) : null}
+      {typeof phone === "string" && phone ? (
+        <>
+          {" · "}
+          <a href={`tel:${phone}`} style={link} dir="ltr">{phone}</a>
+        </>
+      ) : null}
+    </span>
   );
 }

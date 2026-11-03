@@ -27,6 +27,10 @@ type Field = "body_weight_kg" | "birth_year" | "display";
 
 const controlClass = "w-full max-w-[9rem] rounded-xl px-3 py-2.5 text-sm outline-none";
 
+type Inputs = { weight: string; year: string; display: FitnessDisplayMode };
+
+const numberText = (value: number | null) => (value === null ? "" : String(value));
+
 /** "72,5" or "72.5" as a number; "" as null; anything else as NaN. */
 function parseNumber(text: string): number | null {
   const trimmed = text.trim().replace(",", ".");
@@ -50,11 +54,30 @@ export function FitnessSettingsForm({ profile }: { profile: FitnessProfile }) {
   const ageReady = profile.inputs.age_ready;
   const coachMode = profile.display.set_by === "coach" ? profile.display.mode : null;
 
-  const [weight, setWeight] = useState(settings.body_weight_kg === null ? "" : String(settings.body_weight_kg));
-  const [year, setYear] = useState(settings.birth_year === null ? "" : String(settings.birth_year));
-  const [display, setDisplay] = useState<FitnessDisplayMode>(settings.display);
+  const canonical: Inputs = {
+    weight: numberText(settings.body_weight_kg),
+    year: numberText(settings.birth_year),
+    display: settings.display,
+  };
+  const [weight, setWeight] = useState(canonical.weight);
+  const [year, setYear] = useState(canonical.year);
+  const [display, setDisplay] = useState<FitnessDisplayMode>(canonical.display);
   const [errors, setErrors] = useState<FormErrors<Field>>(NO_FORM_ERRORS);
   const [saved, setSaved] = useState(false);
+  // The saved settings the inputs last followed, and what the last save sent.
+  const [synced, setSynced] = useState<Inputs>(canonical);
+  const [sent, setSent] = useState<Inputs | null>(null);
+
+  // When the saved settings change (a save came back, the server normalised
+  // "60,5" to 60.5 or rounded a weight), an input still showing the old saved
+  // value or what was sent follows the new one; an edit made since stays.
+  if (synced.weight !== canonical.weight || synced.year !== canonical.year || synced.display !== canonical.display) {
+    const follows = (current: string, key: keyof Inputs) => current === synced[key] || current === sent?.[key];
+    if (follows(weight, "weight")) setWeight(canonical.weight);
+    if (follows(year, "year")) setYear(canonical.year);
+    if (follows(display, "display")) setDisplay(canonical.display);
+    setSynced(canonical);
+  }
 
   const save = useMutation({
     mutationFn: (body: FitnessSettingsRequest) => putFitnessSettings(token, body),
@@ -67,9 +90,10 @@ export function FitnessSettingsForm({ profile }: { profile: FitnessProfile }) {
   });
 
   const thisYear = new Date().getFullYear();
+  // Compared as numbers, so "60,5" against a saved 60.5 is not a change.
   const dirty =
-    weight.trim() !== (settings.body_weight_kg === null ? "" : String(settings.body_weight_kg)) ||
-    (ageReady && year.trim() !== (settings.birth_year === null ? "" : String(settings.birth_year))) ||
+    parseNumber(weight) !== settings.body_weight_kg ||
+    (ageReady && parseNumber(year) !== settings.birth_year) ||
     display !== settings.display;
 
   const submit = (event: FormEvent) => {
@@ -88,6 +112,7 @@ export function FitnessSettingsForm({ profile }: { profile: FitnessProfile }) {
       return;
     }
     setSaved(false);
+    setSent({ weight, year, display });
     const body: FitnessSettingsRequest = { body_weight_kg: bodyWeight, display };
     if (ageReady) body.birth_year = birthYear;
     save.mutate(body);

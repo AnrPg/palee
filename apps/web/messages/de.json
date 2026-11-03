@@ -14772,7 +14772,8 @@
     "noEnd": "Kein Ende",
     "renews": "verlängert sich",
     "dueSince": "fällig seit {date}",
-    "debtsQueue": "Offene Beträge"
+    "debtsQueue": "Offene Beträge",
+    "keptContact": "Konto gelöscht · Kontakt bleibt bis zur Zahlung gespeichert"
   },
   "WorkoutTypes": {
     "family": {

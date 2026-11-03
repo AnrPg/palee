@@ -14772,7 +14772,8 @@
     "noEnd": "ללא סיום",
     "renews": "מתחדש",
     "dueSince": "לתשלום {date}",
-    "debtsQueue": "חובות"
+    "debtsQueue": "חובות",
+    "keptContact": "החשבון נמחק · פרטי הקשר נשמרים עד התשלום"
   },
   "WorkoutTypes": {
     "family": {

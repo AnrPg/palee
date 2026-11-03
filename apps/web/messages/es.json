@@ -14772,7 +14772,8 @@
     "noEnd": "Sin fin",
     "renews": "se renueva",
     "dueSince": "vence {date}",
-    "debtsQueue": "Deudas"
+    "debtsQueue": "Deudas",
+    "keptContact": "Cuenta eliminada · el contacto se guarda hasta que se pague"
   },
   "WorkoutTypes": {
     "family": {

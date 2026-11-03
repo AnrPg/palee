@@ -220,6 +220,10 @@ test.describe("training floor (v3.1 W5)", () => {
     await expect(why).toContainText("70 kg × (1 + 3 ÷ 30) ≈ 77 kg");
     await expect(why).toContainText("77 kg ÷ 60 kg = 1.28 ×");
     await expect(why).toContainText("4 kg more");
+    // The drawn scale is hidden from screen readers; its anchors are a list they read.
+    const anchors = why.getByTestId("fitness-scale-anchors").getByRole("listitem");
+    await expect(anchors).toHaveCount(4);
+    await expect(anchors.nth(2)).toHaveText("1.35 ×: Points: 75 of 100");
     await expect(card.getByTestId("fitness-focus")).toContainText("What to work on");
 
     // The period comes from Progress's own period bar.
@@ -230,9 +234,11 @@ test.describe("training floor (v3.1 W5)", () => {
   test("the card shows only progress when the coach set it, and saves the member's own choice (fitness v2 §4 A)", async ({ page }) => {
     await stubApi(page);
     const saved: unknown[] = [];
+    let settings = { body_weight_kg: null as number | null, birth_year: null, display: "all" };
     await page.route("**/api/me/fitness-profile/settings", async (route) => {
       saved.push(route.request().postDataJSON());
-      await route.fulfill(json({ body_weight_kg: 72, birth_year: null, display: "none" }));
+      settings = { body_weight_kg: 72.5, birth_year: null, display: "none" };
+      await route.fulfill(json(settings));
     });
     await page.route((url) => url.pathname.endsWith("/api/me/fitness-profile"), (route) =>
       route.fulfill(
@@ -245,7 +251,7 @@ test.describe("training floor (v3.1 W5)", () => {
           overall: null,
           focus: [{ kind: "untested_domain", domain: "power" }],
           display: { mode: "progress_only", set_by: "coach" },
-          settings: { body_weight_kg: null, birth_year: null, display: "all" },
+          settings,
           inputs: { body_weight_kg: null, age_band: null, age_percent: null, age_ready: false },
           period_from: localDate(-84),
           domains: [
@@ -265,10 +271,14 @@ test.describe("training floor (v3.1 W5)", () => {
     await card.getByTestId("fitness-profile-advanced").getByRole("button").first().click();
     await expect(card.getByLabel("Year of birth")).toHaveCount(0);
     await expect(card.getByTestId("fitness-coach-limit")).toContainText("Your coach chose “Only progress”");
-    await card.getByLabel("Body weight").fill("72");
+    await card.getByLabel("Body weight").fill("72,5");
     await card.getByRole("radio", { name: "Nothing" }).click();
     await card.getByRole("button", { name: "Save" }).click();
-    await expect.poll(() => saved.at(-1)).toEqual({ body_weight_kg: 72, display: "none" });
+    await expect.poll(() => saved.at(-1)).toEqual({ body_weight_kg: 72.5, display: "none" });
+    // Once saved, the field shows the saved number and nothing is left to save.
+    await expect(card.getByLabel("Body weight")).toHaveValue("72.5");
+    await expect(card.getByRole("status")).toHaveText("Saved");
+    await expect(card.getByRole("button", { name: "Save" })).toBeDisabled();
   });
 
   test("the first booking offers the calendar once; «Not now» is an answer (mockup e4 A)", async ({ page }) => {

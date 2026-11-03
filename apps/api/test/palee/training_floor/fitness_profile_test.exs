@@ -313,5 +313,65 @@ defmodule Palee.Pantheon.Domain.FitnessProfileTest do
       hidden = FitnessProfile.for_display(now, "none")
       assert hidden.domains == [] and hidden.focus == [] and hidden.overall == nil
     end
+
+    test "progress only keeps «Τι να δουλέψεις» without the scores behind it" do
+      profile =
+        FitnessProfile.build(%{
+          prs: [pr("Back squat", "kg", 200), pr("Fran", "mins_secs", 600)],
+          today: @today,
+          division: "men"
+        })
+
+      assert %{kind: "weakest_domain", score: _, others_mean: _, gap: _} =
+               Enum.find(profile.focus, &(&1.kind == "weakest_domain"))
+
+      shown = FitnessProfile.for_display(profile, "progress_only")
+      weakest = Enum.find(shown.focus, &(&1.kind == "weakest_domain"))
+      assert weakest == %{domain: "metcon", kind: "weakest_domain"}
+    end
+
+    test "the next level is chosen from the exact reading, not the rounded points" do
+      # 99.5 kg at 62.2 kg is 1.5997 × body weight: 74.98 points, shown as
+      # 75.0, still short of the 75-point anchor (1.60 ×).
+      profile =
+        FitnessProfile.build(%{
+          prs: [pr("Back squat", "kg", 99.5)],
+          today: @today,
+          division: "women",
+          body_weight_kg: 62.2
+        })
+
+      [squat] = Enum.find(profile.domains, &(&1.domain == "strength")).reasons
+      assert %{points: 75.0, next: %{points: 75, value: 100.0}} = squat
+    end
+
+    test "of several history rows on one day, the last one written counts" do
+      squat = %{
+        id: "pr-1",
+        name: "Back squat",
+        unit: "kg",
+        current_score: Decimal.new("100"),
+        beaten_on: ~D[2026-10-01],
+        supporting_metrics: %{}
+      }
+
+      # Oldest first, as the PR store lists them.
+      history =
+        for score <- ["80", "85", "90"],
+            do: %{
+              pr_record_id: "pr-1",
+              score: Decimal.new(score),
+              beaten_on: ~D[2026-06-01],
+              supporting_metrics: %{}
+            }
+
+      assert [%{current_score: score}] = FitnessProfile.as_of([squat], history, ~D[2026-08-01])
+      assert Decimal.equal?(score, 90)
+
+      # On the PR's own day the PR itself is the latest.
+      same_day = %{squat | beaten_on: ~D[2026-06-01]}
+      assert [%{current_score: score}] = FitnessProfile.as_of([same_day], history, ~D[2026-06-01])
+      assert Decimal.equal?(score, 100)
+    end
   end
 end
