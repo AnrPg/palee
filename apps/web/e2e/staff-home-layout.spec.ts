@@ -48,6 +48,10 @@ async function stubApi(page: Page) {
             manage_appointments: true,
             run_classes: true,
             manage_schedule: true,
+            check_in: true,
+            view_spaces: true,
+            manage_shop: true,
+            take_payments: true,
           },
           organization: { id: "org-1", slug: "kypseli", name: "Box Kypseli" },
           settings: { brand_name: "Box Kypseli", brand_logo_url: null, brand_primary_color: null },
@@ -171,6 +175,21 @@ test.describe("staff home layout", () => {
     const attentionBox = await page.locator("#home-attention").boundingBox();
     const peopleBox = await people.boundingBox();
     expect(attentionBox && peopleBox && peopleBox.y > attentionBox.y + attentionBox.height - 1).toBe(true);
+  });
+
+  test("header shortcuts skip pages the top bar already links to", async ({ page }) => {
+    const shortcuts = page.getByTestId("home-header-shortcut");
+    // Οικονομικά and Κατάστημα are in the top bar, so the header offers check-in and spaces.
+    await expect(shortcuts).toHaveText(["Check-in", "Χώροι"]);
+    await expect(shortcuts.first()).toHaveAttribute("href", "/org/kypseli/admin/check-in");
+  });
+
+  test("every tool shows its label first and a coloured line icon on the right", async ({ page }) => {
+    const tile = page.getByRole("link", { name: "Χώροι" }).last();
+    const label = await tile.getByText("Χώροι").boundingBox();
+    const icon = await tile.getByTestId("hub-tile-icon").boundingBox();
+    expect(icon!.x).toBeGreaterThan(label!.x + label!.width - 1);
+    expect(Math.abs(icon!.y + icon!.height / 2 - (label!.y + label!.height / 2))).toBeLessThan(4);
   });
 
   test("the page never scrolls sideways", async ({ page }) => {

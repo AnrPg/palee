@@ -453,10 +453,13 @@ export function StatPill({ label, value, href, warn = false, loading = false }: 
 export type HubGroup = { label: string; items: Array<{ label: string; href: string; icon: IconName }> };
 
 /** Every page the role can open, as icon tiles grouped by area. */
+// Each tool group gets its own icon colour (ANR, 2026-11-03), from the theme.
+const HUB_TONES = ["var(--primary-strong)", "var(--success)", "var(--warning)", "var(--info)", "var(--heat)"];
+
 export function HubTiles({ groups }: { groups: HubGroup[] }) {
   return (
     <section className="grid gap-6 lg:grid-cols-3">
-      {groups.map((group) => (
+      {groups.map((group, groupIndex) => (
         <div key={group.label} className="rounded-[2rem] p-6" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
           <p className="text-xs font-semibold uppercase tracking-[0.26em]" style={{ color: "var(--primary-strong)" }}>
             {group.label}
@@ -466,13 +469,14 @@ export function HubTiles({ groups }: { groups: HubGroup[] }) {
               <li key={item.href} className="min-w-0">
                 <Link
                   href={item.href}
-                  className="flex h-full items-center gap-2.5 rounded-[1.2rem] px-3 py-3 text-sm font-semibold transition-colors hover:bg-[var(--border)]"
+                  className="flex h-full items-center justify-between gap-2.5 rounded-[1.2rem] px-3 py-3 text-sm font-semibold transition-colors hover:bg-[var(--border)]"
                   style={{ background: "var(--panel-muted)", border: "1px solid var(--border)", color: "var(--text)" }}
                 >
-                  <span className="shrink-0" style={{ color: "var(--primary-strong)" }}>
+                  {/* Label first, the coloured line icon on the right of the same row. */}
+                  <span className="min-w-0 break-words leading-tight">{item.label}</span>
+                  <span data-testid="hub-tile-icon" className="shrink-0" style={{ color: HUB_TONES[groupIndex % HUB_TONES.length] }}>
                     <DashboardIcon name={item.icon} className="h-[18px] w-[18px]" />
                   </span>
-                  <span className="min-w-0 break-words leading-tight">{item.label}</span>
                 </Link>
               </li>
             ))}

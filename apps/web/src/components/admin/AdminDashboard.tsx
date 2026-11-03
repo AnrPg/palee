@@ -32,7 +32,7 @@ import { useSession } from "@/components/session-provider";
 import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
 import { PageHeader, pageHeaderActionClass } from "@/components/PageHeader";
 import { InviteClientsButton } from "@/components/invites/InviteClients";
-import { can, membershipRoles, type MembershipLike } from "@/lib/role-navigation";
+import { can, membershipRoles, staffNavItems, type MembershipLike } from "@/lib/role-navigation";
 import { classesCoachedToday } from "@/components/admin/staff-home";
 import {
   CardLink,
@@ -255,6 +255,18 @@ export function AdminDashboard({
     ...group,
     items: group.items.filter((item) => item.show !== false),
   })).filter((group) => group.items.length > 0);
+  // Header shortcuts (ANR, 2026-11-03): never a page the top bar already
+  // links to (Οικονομικά, Coaching… sit there), so the header offers the next
+  // most used pages instead: check-in, analytics, the shop or else spaces.
+  const topBarHrefs = new Set(membership ? staffNavItems(membership).map((item) => item.href) : []);
+  const headerShortcuts = [
+    { href: "/admin/check-in", label: nav("checkIn"), show: has("check_in") },
+    { href: "/admin/metrics", label: i18n("analyticsMarketinga05588a"), show: fullAnalytics },
+    { href: "/admin/shop", label: nav("shop"), show: has("manage_shop") || has("sell_shop") },
+    { href: "/admin/spaces", label: nav("spaces"), show: has("view_spaces", "manage_spaces", "edit_space_details", "set_space_unavailable") },
+  ]
+    .filter((shortcut) => shortcut.show && !topBarHrefs.has(shortcut.href))
+    .slice(0, 3);
   const canFinanceReports = has("view_finance_reports");
   const canBusinessAnalytics = fullAnalytics;
   const canChallenges = has("manage_challenges");
@@ -558,16 +570,17 @@ export function AdminDashboard({
             actions={
               <>
                 {has("invite_clients") ? <InviteClientsButton /> : null}
-                {canFinancePage ? (
-                  <Link href={adminHref("/admin/finance", organizationSlug)} className={pageHeaderActionClass} style={{ background: "var(--text)", color: "var(--bg)" }}>
-                    {i18n("finance1b48d3f")}
+                {headerShortcuts.map((shortcut) => (
+                  <Link
+                    key={shortcut.href}
+                    href={adminHref(shortcut.href, organizationSlug)}
+                    data-testid="home-header-shortcut"
+                    className={pageHeaderActionClass}
+                    style={{ background: "var(--panel)", border: "1px solid var(--border)", color: "var(--text-soft)" }}
+                  >
+                    {shortcut.label}
                   </Link>
-                ) : null}
-                {canClasses ? (
-                  <Link href={adminHref("/admin/class-schedule", organizationSlug)} className={pageHeaderActionClass} style={{ background: "var(--panel)", border: "1px solid var(--border)", color: "var(--text-soft)" }}>
-                    {i18n("classesed1846a")}
-                  </Link>
-                ) : null}
+                ))}
               </>
             }
           />
