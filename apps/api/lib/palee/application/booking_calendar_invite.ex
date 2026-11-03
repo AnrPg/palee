@@ -36,8 +36,11 @@ defmodule Palee.Application.BookingCalendarInvite do
   the user's locale. Options (ADR-392, the emailed invite): `invite: true`
   sends `METHOD:REQUEST` instead of `PUBLISH` and names the box as
   `ORGANIZER` (`organizer: %{name, email}`) and the person as `ATTENDEE`;
-  `locations` skips reading the branches again. A cancelled seat or class is
-  always `METHOD:CANCEL`. Answers `%{filename, method, ics, event}`.
+  `sequence` (a function of the derived SEQUENCE) lets the emailed invite
+  keep above the ones already sent; `locations` skips reading the branches
+  again. A cancelled seat or class is
+  always `METHOD:CANCEL`. Answers `%{filename, method, ics, event,
+  derived_sequence}` (the SEQUENCE before `sequence` adjusted it).
   """
   def build(context, booking, user, now, opts \\ []) do
     slot = booking.scheduled_class
@@ -58,12 +61,15 @@ defmodule Palee.Application.BookingCalendarInvite do
       if invite?,
         do:
           Map.merge(event, %{
+            sequence: Keyword.get(opts, :sequence, & &1).(event.sequence),
+            derived_sequence: event.sequence,
             organizer: Keyword.get(opts, :organizer),
-            attendee: %{name: Map.get(user, :display_name), email: Map.get(user, :email)}
+            attendee: %{name: Map.get(user, :nickname), email: Map.get(user, :email)}
           }),
         else: event
 
     %{
+      derived_sequence: Map.get(event, :derived_sequence, event.sequence),
       filename: "palee-#{Date.to_iso8601(DateTime.to_date(slot.scheduled_at))}.ics",
       method: method,
       event: event,

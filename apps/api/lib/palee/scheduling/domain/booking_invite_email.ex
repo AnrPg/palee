@@ -59,12 +59,42 @@ defmodule Palee.Scheduling.Domain.BookingInviteEmail do
 
   @doc """
   The outbox idempotency key: one email per booking, kind and state of the
-  invite (its SEQUENCE), so a repeated event never sends twice and a real
-  change always does.
+  seat (`derived`, the SEQUENCE its class's and seat's latest change give),
+  plus the SEQUENCE actually sent (`sequence/2`).
   """
-  @spec idempotency_key(String.t(), kind(), non_neg_integer()) :: String.t()
-  def idempotency_key(booking_id, kind, sequence),
-    do: "#{key_prefix(booking_id)}#{kind}:#{sequence}"
+  @spec idempotency_key(String.t(), kind(), non_neg_integer(), non_neg_integer()) :: String.t()
+  def idempotency_key(booking_id, kind, derived, sequence),
+    do: "#{key_prefix(booking_id)}#{kind}:#{derived}:#{sequence}"
+
+  @doc """
+  Whether this kind of email was already sent for this state of the seat
+  (`sent_keys`: the idempotency keys of the booking's invites), so a repeated
+  event never sends twice while a real change always does.
+  """
+  @spec already_sent?([String.t()], String.t(), kind(), non_neg_integer()) :: boolean()
+  def already_sent?(sent_keys, booking_id, kind, derived) do
+    prefix = "#{key_prefix(booking_id)}#{kind}:#{derived}:"
+    Enum.any?(sent_keys, &String.starts_with?(to_string(&1), prefix))
+  end
+
+  @doc """
+  The SEQUENCE to send: the derived one (ADR-359), but always above every
+  invite of this booking already emailed, so a change within the same second
+  still reads as newer to calendars.
+  """
+  @spec sequence(non_neg_integer(), [String.t()]) :: non_neg_integer()
+  def sequence(derived, sent_keys) do
+    sent_keys
+    |> Enum.flat_map(fn key ->
+      case key |> to_string() |> String.split(":") |> List.last() |> Integer.parse() do
+        {number, ""} -> [number]
+        _other -> []
+      end
+    end)
+    |> Enum.max(fn -> -1 end)
+    |> Kernel.+(1)
+    |> max(derived)
+  end
 
   @doc "The prefix of every invite email of one booking (`Email.list_by_idempotency_prefix/1`)."
   @spec key_prefix(String.t()) :: String.t()

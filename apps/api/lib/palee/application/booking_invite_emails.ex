@@ -30,12 +30,36 @@ defmodule Palee.Application.BookingInviteEmails do
   def handle_event(event, %{organization_id: org, booking_id: booking_id} = payload)
       when event in [:booking_made, :booking_confirmed] and is_binary(org) and
              is_binary(booking_id) do
-    deliver(%{organization_id: org}, booking_id, :booked, payload)
+    context = %{organization_id: org}
+    deliver(context, Scheduling.get_booking(context, booking_id), :booked, payload)
   end
 
-  def handle_event(:booking_cancelled, %{organization_id: org, booking_id: booking_id} = payload)
-      when is_binary(org) and is_binary(booking_id) do
-    deliver(%{organization_id: org}, booking_id, :cancelled, payload)
+  # A withdrawn seat's row is gone (the visit's ledger keeps its history), so
+  # the cancelled seat is rebuilt from the event: its class still exists.
+  def handle_event(
+        :booking_cancelled,
+        %{organization_id: org, booking_id: booking_id, user_id: user_id} = payload
+      )
+      when is_binary(org) and is_binary(booking_id) and is_binary(user_id) do
+    context = %{organization_id: org}
+
+    booking =
+      case Scheduling.get_slot(context, Map.get(payload, :scheduled_class_id)) do
+        %{} = slot ->
+          %{
+            id: booking_id,
+            user_id: user_id,
+            status: :cancelled,
+            guest_name: Map.get(payload, :guest_name),
+            updated_at: Map.get(payload, :at) || DateTime.utc_now(),
+            scheduled_class: slot
+          }
+
+        _missing ->
+          nil
+      end
+
+    deliver(context, booking, :cancelled, payload)
   end
 
   def handle_event(:class_moved, %{organization_id: org, scheduled_class_id: slot_id} = payload)
@@ -46,7 +70,7 @@ defmodule Palee.Application.BookingInviteEmails do
       %{bookings: bookings} when is_list(bookings) ->
         bookings
         |> Enum.filter(&(to_string(&1.status) == "approved"))
-        |> Enum.each(&deliver(context, &1.id, :moved, payload))
+        |> Enum.each(&deliver(context, Scheduling.get_booking(context, &1.id), :moved, payload))
 
       _missing ->
         :ok
@@ -56,32 +80,38 @@ defmodule Palee.Application.BookingInviteEmails do
   def handle_event(_event, _payload), do: :ok
 
   @doc false
-  def deliver(context, booking_id, trigger, payload) do
-    with %{} = booking <- Scheduling.get_booking(context, booking_id),
+  def deliver(context, booking, trigger, payload) do
+    with %{} <- booking,
          %{} = slot <- booking.scheduled_class,
          true <- blank?(Map.get(booking, :guest_name)),
          %{email: email} = user when is_binary(email) <- Identity.find_by_id(booking.user_id),
          true <- Notifications.channel_enabled?(user.id, "bookings", "email"),
-         {:send, kind} <- decide(trigger, booking, slot, payload) do
-      send_invite(context, booking, user, kind, Map.get(payload, :at))
+         sent = sent_keys(booking.id),
+         {:send, kind} <- decide(trigger, booking, slot, payload, sent) do
+      send_invite(context, booking, user, kind, sent, Map.get(payload, :at))
     else
       _nothing_to_send -> :ok
     end
   end
 
-  defp decide(trigger, booking, slot, payload) do
+  defp decide(trigger, booking, slot, payload, sent_keys) do
     BookingInviteEmail.decide(trigger, %{
       status: booking.status,
       previous_status: Map.get(payload, :previous_status),
       class_cancelled?: not is_nil(Map.get(slot, :cancelled_at)),
-      sent_before?: sent_before?(booking.id)
+      sent_before?: sent_keys != []
     })
   end
 
-  defp sent_before?(booking_id),
-    do: booking_id |> BookingInviteEmail.key_prefix() |> Email.list_by_idempotency_prefix() != []
+  # The idempotency keys of the invites of this booking already emailed.
+  defp sent_keys(booking_id) do
+    booking_id
+    |> BookingInviteEmail.key_prefix()
+    |> Email.list_by_idempotency_prefix()
+    |> Enum.map(& &1.idempotency_key)
+  end
 
-  defp send_invite(%{organization_id: org} = context, booking, user, kind, at) do
+  defp send_invite(%{organization_id: org} = context, booking, user, kind, sent, at) do
     now = at || DateTime.utc_now()
     business = organization_name(org)
     organizer = %{name: business, email: mail_from_address()}
@@ -89,11 +119,17 @@ defmodule Palee.Application.BookingInviteEmails do
     invite =
       BookingCalendarInvite.build(context, booking, user, now,
         invite: true,
-        organizer: organizer
+        organizer: organizer,
+        sequence: &BookingInviteEmail.sequence(&1, sent)
       )
 
+    if BookingInviteEmail.already_sent?(sent, booking.id, kind, invite.derived_sequence),
+      do: :ok,
+      else: enqueue(org, booking, user, kind, invite, business)
+  end
+
+  defp enqueue(org, booking, user, kind, invite, business) do
     slot = booking.scheduled_class
-    locale = user.preferred_locale || "en"
 
     assigns = %{
       kind: kind,
@@ -111,13 +147,20 @@ defmodule Palee.Application.BookingInviteEmails do
       data: invite.ics
     }
 
+    key =
+      BookingInviteEmail.idempotency_key(
+        booking.id,
+        kind,
+        invite.derived_sequence,
+        invite.event.sequence
+      )
+
     case Email.enqueue(:booking_invite, user.email, assigns,
-           locale: locale,
+           locale: user.preferred_locale || "en",
            login_id: Map.get(user, :login_id),
            user_id: user.id,
            organization_id: org,
-           idempotency_key:
-             BookingInviteEmail.idempotency_key(booking.id, kind, invite.event.sequence),
+           idempotency_key: key,
            attachments: [attachment]
          ) do
       {:ok, _message} ->

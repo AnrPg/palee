@@ -17,7 +17,8 @@ defmodule Palee.DomainEvents do
     * `:booking_confirmed` - `%{organization_id, scheduled_class_id, booking_id, user_id, at}`: a
       pending request approved by staff or a waiting-list place promoted (ADR-392)
     * `:booking_cancelled` - `%{organization_id, scheduled_class_id, booking_id, user_id, kind, by,
-      previous_status, at}` (`previous_status` since ADR-392)
+      previous_status, guest_name, at}` (`previous_status` and `guest_name` since ADR-392; the
+      withdrawn row itself is gone)
     * `:class_moved` - `%{organization_id, scheduled_class_id, at}`: a class got another start,
       length or branch (ADR-392)
     * `:class_cancelled` - `%{organization_id, scheduled_class_id, at}` (the class is gone)
