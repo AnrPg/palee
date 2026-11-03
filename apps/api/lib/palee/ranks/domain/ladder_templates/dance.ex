@@ -340,7 +340,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
       template(
         "reggaeton_levels",
         "Reggaeton levels",
-        "street_dance",
+        "latin_dance",
         "level",
         :palee,
         "Palee levels (urban Latin)",

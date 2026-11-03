@@ -1928,7 +1928,7 @@ msgid "Referee rules knowledge exam"
 msgstr "Εξέταση γνώσης κανονισμών διαιτησίας"
 
 msgid "Teaches a full class under supervision"
-msgstr "Διδάσκει πλήρες μάθημα υπό επίβλεψη"
+msgstr "Διδάσκει ολόκληρο τμήμα υπό επίβλεψη"
 
 msgid "Master"
 msgstr "Μάστερ"
@@ -2371,8 +2371,8 @@ msgstr "Τραμπολίνο: διπλώματα 1-15"
 msgid "British Gymnastics trampoline proficiency awards"
 msgstr "Διπλώματα επάρκειας τραμπολίνου British Gymnastics"
 
-msgid "Award %{n}"
-msgstr "Δίπλωμα %{n}"
+msgid "Badge %{n}"
+msgstr "Σήμα %{n}"
 
 msgid "Waits their turn and behaves safely around the trampoline"
 msgstr "Περιμένει τη σειρά του και κινείται με ασφάλεια γύρω από το τραμπολίνο"
@@ -4289,7 +4289,7 @@ msgid "Keeps cadence inside 60-110 rpm envelope"
 msgstr "Διατηρεί ρυθμό πεταλιάς εντός 60-110 rpm"
 
 msgid "Completes a full 45-min class"
-msgstr "Ολοκληρώνει ολόκληρο μάθημα 45 λεπτών"
+msgstr "Ολοκληρώνει ολόκληρη προπόνηση 45 λεπτών"
 
 msgid "Intensity Control"
 msgstr "Έλεγχος έντασης"
@@ -4976,7 +4976,7 @@ msgid "Knows RPE scale and when to scale down"
 msgstr "Γνωρίζει την κλίμακα RPE και πότε να μειώσει την ένταση"
 
 msgid "Completes a full 30-min class with modifications"
-msgstr "Ολοκληρώνει πλήρες μάθημα 30 λεπτών με τροποποιήσεις"
+msgstr "Ολοκληρώνει ολόκληρη προπόνηση 30 λεπτών με τροποποιήσεις"
 
 msgid "Equal work:rest intervals (e.g. 40:40) sustained"
 msgstr "Ίσα διαστήματα εργασίας-ξεκούρασης (π.χ. 40:40) με σταθερή απόδοση"
@@ -7480,7 +7480,7 @@ msgid "Year 8"
 msgstr "8ο έτος"
 
 msgid "Full virtuoso class at professional tempo"
-msgstr "Πλήρες μάθημα δεξιοτεχνίας σε επαγγελματικό τέμπο"
+msgstr "Ολόκληρη προπόνηση δεξιοτεχνίας σε επαγγελματικό τέμπο"
 
 msgid "Multiple tours in big poses and fouettés with doubles"
 msgstr "Πολλαπλά tours σε μεγάλες πόζες και fouettés με διπλές"
@@ -7498,7 +7498,7 @@ msgid "Two repertoire variations performed"
 msgstr "Ερμηνεία δύο βαριασιόν ρεπερτορίου"
 
 msgid "Final state examination class"
-msgstr "Τελικό εξεταστικό μάθημα"
+msgstr "Τελική εξεταστική προπόνηση"
 
 msgid "Stage performance in a full ballet"
 msgstr "Παράσταση σε ολοκληρωμένο μπαλέτο"
@@ -7711,7 +7711,7 @@ msgid "Changes moves on the musical phrase (8-count)"
 msgstr "Αλλάζει κίνηση στη μουσική φράση (8 χρόνοι)"
 
 msgid "Completes a full 60-minute class"
-msgstr "Ολοκληρώνει πλήρες μάθημα 60 λεπτών"
+msgstr "Ολοκληρώνει ολόκληρη προπόνηση 60 λεπτών"
 
 msgid "World Rhythms"
 msgstr "Παγκόσμιοι ρυθμοί"
@@ -7738,7 +7738,7 @@ msgid "Hip-hop groove and step touch"
 msgstr "Hip-hop groove και step touch"
 
 msgid "Learns a new song routine in one class"
-msgstr "Μαθαίνει νέα χορογραφία τραγουδιού σε ένα μάθημα"
+msgstr "Μαθαίνει νέα χορογραφία τραγουδιού σε μία προπόνηση"
 
 msgid "High Energy"
 msgstr "Υψηλή ένταση"
@@ -7750,7 +7750,7 @@ msgid "Squat and lunge toning tracks with good form"
 msgstr "Τραγούδια toning με squat και lunge σωστής τεχνικής"
 
 msgid "Full class at high intensity without breaks"
-msgstr "Πλήρες μάθημα σε υψηλή ένταση χωρίς διαλείμματα"
+msgstr "Ολόκληρη προπόνηση σε υψηλή ένταση χωρίς διαλείμματα"
 
 msgid "Clean timing on fast tempo (140+ bpm)"
 msgstr "Καθαρός χρονισμός σε γρήγορο τέμπο (140+ bpm)"

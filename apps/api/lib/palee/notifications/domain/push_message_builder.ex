@@ -629,6 +629,15 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
     }
   end
 
+  # ADR-400 follow-up: calm, grouped; the count is in the bell (ICU plural on the web).
+  def build("rank_skills_checked", payload, localize) do
+    %{
+      title: localize.("New skills", %{}),
+      body: localize.("Your coach ticked new skills for %{rank}.", %{rank: payload["rank_name"]}),
+      url: payload["url"] || "/box/ranks"
+    }
+  end
+
   # ADR-158: neutral wording, no numbers.
   def build("body_measure_reminder", payload, localize) do
     %{

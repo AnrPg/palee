@@ -6,7 +6,7 @@ defmodule PaleeWeb.StaffRanksController do
 
   alias Guardian.Plug, as: GuardianPlug
   alias OpenApiSpex.{Parameter, Schema}
-  alias Palee.Application.RankPromotions
+  alias Palee.Application.{RankPromotions, RankReadyList, RankSkillTicks}
   alias PaleeWeb.Schemas.Ranks, as: S
 
   action_fallback PaleeWeb.FallbackController
@@ -85,6 +85,58 @@ defmodule PaleeWeb.StaffRanksController do
              conn.body_params
            ),
          do: json(conn, result)
+  end
+
+  operation(:class_skills,
+    summary:
+      "The ladders' skills and, for each person of a class, what they work towards and have ticked",
+    parameters: [
+      user_ids: [
+        in: :query,
+        required: true,
+        description: "Comma-separated user ids (up to 100)",
+        schema: %Schema{type: :string, minLength: 1}
+      ]
+    ],
+    responses: [
+      ok: {"Class skills", "application/json", S.class_skills_response()},
+      forbidden: {"No coaching", "application/json", S.error()}
+    ]
+  )
+
+  def class_skills(conn, %{user_ids: user_ids}) do
+    with {:ok, result} <- RankSkillTicks.class_view(conn.assigns.tenant_context, user_ids),
+         do: json(conn, result)
+  end
+
+  operation(:batch_skills,
+    summary: "Tick or untick one skill for several people at once (a class)",
+    request_body: S.body(S.batch_check_request()),
+    responses: [
+      ok: {"Who changed and who was skipped", "application/json", S.batch_check_response()},
+      forbidden: {"No coaching", "application/json", S.error()},
+      unprocessable_entity: {"Not a skill of that rank", "application/json", S.error()}
+    ]
+  )
+
+  def batch_skills(conn, _params) do
+    staff = GuardianPlug.current_resource(conn)
+
+    with {:ok, result} <-
+           RankSkillTicks.batch(conn.assigns.tenant_context, staff.id, conn.body_params),
+         do: json(conn, result)
+  end
+
+  operation(:ready,
+    summary: "People who meet what their ladder counts for the next rank (the coach decides)",
+    responses: [
+      ok: {"Ready", "application/json", S.ready_response()},
+      forbidden: {"No coaching", "application/json", S.error()}
+    ]
+  )
+
+  def ready(conn, _params) do
+    with {:ok, result} <- RankReadyList.call(conn.assigns.tenant_context), do: json(conn, result)
   end
 
   operation(:revoke,

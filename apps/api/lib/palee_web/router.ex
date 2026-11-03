@@ -1130,6 +1130,10 @@ defmodule PaleeWeb.Router do
     post("/clients/:user_id/ranks", StaffRanksController, :award)
     # ADR-400: tick one skill at a time, between promotions.
     put("/clients/:user_id/ranks/skills", StaffRanksController, :check_skill)
+    # ADR-400 follow-up: one skill for a class, and who is ready for the next rank.
+    get("/ranks/skills/batch", StaffRanksController, :class_skills)
+    put("/ranks/skills/batch", StaffRanksController, :batch_skills)
+    get("/ranks/ready", StaffRanksController, :ready)
     post("/rank-awards/:id/revoke", StaffRanksController, :revoke)
     get("/rank-awards/:id/certificate", StaffRanksController, :certificate)
     put("/clients/:user_id/training-goal", TrainingGoalController, :client_update)

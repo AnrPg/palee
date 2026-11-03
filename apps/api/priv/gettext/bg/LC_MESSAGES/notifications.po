@@ -855,3 +855,9 @@ msgstr "Уебхук беше изключен"
 
 msgid "Palee stopped sending events to %{host}. Open the webhook to check it and turn it back on."
 msgstr "Palee спря да изпраща събития към %{host}. Отворете уебхука, за да го проверите и включите отново."
+
+msgid "New skills"
+msgstr "Нови умения"
+
+msgid "Your coach ticked new skills for %{rank}."
+msgstr "Треньорът ти отбеляза нови умения за %{rank}."

@@ -855,3 +855,9 @@ msgstr "Een webhook is uitgeschakeld"
 
 msgid "Palee stopped sending events to %{host}. Open the webhook to check it and turn it back on."
 msgstr "Palee stuurt geen gebeurtenissen meer naar %{host}. Open de webhook om hem te controleren en weer in te schakelen."
+
+msgid "New skills"
+msgstr "Nieuwe vaardigheden"
+
+msgid "Your coach ticked new skills for %{rank}."
+msgstr "Je coach heeft nieuwe vaardigheden afgevinkt voor %{rank}."

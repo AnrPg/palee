@@ -24,8 +24,15 @@ defmodule Palee.Ranks.Ports.RankStore do
 
   @doc "The skills ticked for a person (ADR-400), on every ladder."
   @callback list_skill_checks(user_id :: id()) :: [RankSkillCheck.t()]
-  @doc "Ticks a skill (person, rank, skill); ticking it again updates the date, coach and note."
+  @doc "The ticks of several people (a class, ADR-400 follow-up)."
+  @callback list_skill_checks_for(user_ids :: [id()] | :all) :: [RankSkillCheck.t()]
+  @doc "A person's ticks not yet told in a notification (ADR-400 follow-up)."
+  @callback list_unnotified_checks(user_id :: id()) :: [RankSkillCheck.t()]
+  @callback mark_checks_notified([id()], DateTime.t()) :: :ok
+  @doc "The awards of several people (or everyone in the box), withdrawn ones included."
+  @callback list_awards_for(user_ids :: [id()] | :all) :: [RankAward.t()]
+  @doc "Ticks a skill (person, rank, skill id); ticking it again updates the date, coach and note."
   @callback put_skill_check(map()) :: result(RankSkillCheck.t())
   @doc "Unticks a skill; `:ok` also when it was not ticked."
-  @callback delete_skill_check(user_id :: id(), rank_id :: id(), skill :: String.t()) :: :ok
+  @callback delete_skill_check(user_id :: id(), rank_id :: id(), skill_id :: id()) :: :ok
 end

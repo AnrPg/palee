@@ -852,3 +852,9 @@ msgstr ""
 
 msgid "Palee stopped sending events to %{host}. Open the webhook to check it and turn it back on."
 msgstr ""
+
+msgid "New skills"
+msgstr ""
+
+msgid "Your coach ticked new skills for %{rank}."
+msgstr ""

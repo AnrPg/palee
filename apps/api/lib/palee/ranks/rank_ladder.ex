@@ -18,6 +18,7 @@ defmodule Palee.Ranks.RankLadder do
     field(:style, :string, default: "belt")
     field(:class_type_ids, {:array, :binary_id}, default: [])
     field(:position, :integer, default: 0)
+    field(:ready_criteria, {:array, :string}, default: ["classes", "days"])
     field(:archived_at, :utc_datetime_usec)
     has_many(:ranks, Palee.Ranks.Rank, foreign_key: :ladder_id, preload_order: [asc: :position])
 
@@ -26,13 +27,23 @@ defmodule Palee.Ranks.RankLadder do
 
   def changeset(ladder \\ %__MODULE__{}, attrs) do
     ladder
-    |> cast(attrs, [:organization_id, :name, :discipline, :style, :class_type_ids, :position])
+    |> cast(attrs, [
+      :organization_id,
+      :name,
+      :discipline,
+      :style,
+      :class_type_ids,
+      :position,
+      :ready_criteria
+    ])
     |> validate_required([:organization_id, :name, :discipline, :style])
     |> update_change(:name, &String.trim/1)
     |> validate_length(:name, min: 1, max: 60)
     |> validate_inclusion(:discipline, LadderPolicy.disciplines())
     |> validate_inclusion(:style, LadderPolicy.styles())
     |> validate_length(:class_type_ids, max: 20)
+    |> validate_length(:ready_criteria, min: 1)
+    |> validate_subset(:ready_criteria, LadderPolicy.ready_criteria())
     |> unique_constraint(:name, name: :rank_ladders_organization_name_index)
   end
 

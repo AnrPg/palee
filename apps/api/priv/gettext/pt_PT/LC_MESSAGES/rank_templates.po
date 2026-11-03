@@ -2371,8 +2371,8 @@ msgstr "Distinções de trampolim 1-15"
 msgid "British Gymnastics trampoline proficiency awards"
 msgstr "Diplomas de trampolim da British Gymnastics"
 
-msgid "Award %{n}"
-msgstr "Distinção %{n}"
+msgid "Badge %{n}"
+msgstr "Emblema %{n}"
 
 msgid "Waits their turn and behaves safely around the trampoline"
 msgstr ""

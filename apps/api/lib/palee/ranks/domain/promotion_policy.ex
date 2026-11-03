@@ -12,8 +12,12 @@ defmodule Palee.Ranks.Domain.PromotionPolicy do
     decision, never automatic.
   * **An award** goes up the ladder or adds stripes on the same rank; a
     step down is a withdrawal with a reason, never a new award.
+  * **What counts** for `ready` is chosen per ladder (days, classes,
+    skills); the rest is shown for information only.
   * **Diploma number**: `R-<year>-<8 hex of the award id>`, unique per box.
   """
+
+  alias Palee.Ranks.Domain.LadderPolicy
 
   @doc "The current award (not withdrawn), or nil."
   def current(awards) do
@@ -33,47 +37,70 @@ defmodule Palee.Ranks.Domain.PromotionPolicy do
   end
 
   @doc """
-  Progress to `next`: `%{classes, days, skills, skills_checked,
-  all_skills_checked, ready}`. `attended` counts classes since `since` (the
-  current award's date, nil for never). `checks` are the person's ticked
-  skills (ADR-400, `%{rank_id, skill, checked_on, note}`): those of `next`
-  that are still on its list show as `skills_checked`. `ready` stays the
-  counted requirements only; `all_skills_checked` says every listed skill
-  is ticked (true when the rank lists none).
+  Progress to `next`: `%{classes, days, skills, skill_ids, skills_checked,
+  all_skills_checked, criteria, ready}`. `attended` counts classes since
+  `since` (the current award's date, nil for never). `checks` are the
+  person's ticked skills (ADR-400, `%{rank_id, skill_id, skill, checked_on,
+  note}`): those of `next` still on its list show as `skills_checked`, by
+  the skill's id and with its current text (a tick without an id matches
+  by text). `criteria` are what the ladder counts (`days`, `classes`,
+  `skills`; days and classes when not given): `ready` says those are met,
+  `all_skills_checked` that every listed skill is ticked (true when the
+  rank lists none).
   """
-  def progress(next, since, attended, today, checks \\ [])
+  def progress(next, since, attended, today, checks \\ [], criteria \\ ["classes", "days"])
 
-  def progress(nil, _since, _attended, _today, _checks), do: nil
+  def progress(nil, _since, _attended, _today, _checks, _criteria), do: nil
 
-  def progress(next, since, attended, today, checks) do
+  def progress(next, since, attended, today, checks, criteria) do
     requirements = next.requirements || %{}
-    skills = requirements["skills"] || []
-    checked = skills_checked(next, skills, checks)
-    checked_names = Enum.map(checked, & &1.skill)
+    entries = LadderPolicy.skill_entries(next)
+    skills = Enum.map(entries, &elem(&1, 1))
+    checked = skills_checked(next, entries, checks)
     classes_needed = requirements["min_classes"]
     days_needed = requirements["min_days"]
     days = if since, do: Date.diff(today, since), else: nil
+    all_checked = length(checked) == length(entries)
+
+    met = %{
+      "classes" => is_nil(classes_needed) or attended >= classes_needed,
+      "days" => is_nil(days_needed) or (is_integer(days) and days >= days_needed),
+      "skills" => all_checked
+    }
 
     %{
       rank_id: next.id,
       classes: %{done: attended, needed: classes_needed},
       days: %{done: days, needed: days_needed},
       skills: skills,
+      skill_ids: Enum.map(entries, &elem(&1, 0)),
       skills_checked: checked,
-      all_skills_checked: Enum.all?(skills, &(&1 in checked_names)),
-      ready:
-        (is_nil(classes_needed) or attended >= classes_needed) and
-          (is_nil(days_needed) or (is_integer(days) and days >= days_needed))
+      all_skills_checked: all_checked,
+      criteria: criteria,
+      ready: Enum.all?(criteria, &Map.get(met, &1, true))
     }
   end
 
-  defp skills_checked(next, skills, checks) do
-    checks
-    |> Enum.filter(&(&1.rank_id == next.id and &1.skill in skills))
-    |> Enum.map(&%{skill: &1.skill, checked_on: &1.checked_on, note: &1.note})
+  defp skills_checked(next, entries, checks) do
+    mine = Enum.filter(checks, &(&1.rank_id == next.id))
+
+    Enum.flat_map(entries, fn {id, name} ->
+      case Enum.find(mine, &same_skill?(&1, id, name)) do
+        nil -> []
+        check -> [%{skill: name, skill_id: id, checked_on: check.checked_on, note: check.note}]
+      end
+    end)
   end
 
-  @doc "Whether `skill` is one of `rank`'s listed skills."
+  defp same_skill?(check, id, name) do
+    case {Map.get(check, :skill_id), id} do
+      {check_id, id} when is_binary(check_id) and is_binary(id) -> check_id == id
+      {nil, _id} -> Map.get(check, :skill) == name
+      _other -> false
+    end
+  end
+
+  @doc "Whether `skill` is one of `rank`'s listed skills (by text)."
   def listed_skill?(rank, skill), do: skill in ((rank.requirements || %{})["skills"] || [])
 
   @doc """

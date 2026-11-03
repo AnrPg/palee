@@ -855,3 +855,9 @@ msgstr "webhook כובה"
 
 msgid "Palee stopped sending events to %{host}. Open the webhook to check it and turn it back on."
 msgstr "Palee הפסיק לשלוח אירועים אל %{host}. פתחו את ה-webhook כדי לבדוק אותו ולהפעיל אותו מחדש."
+
+msgid "New skills"
+msgstr "מיומנויות חדשות"
+
+msgid "Your coach ticked new skills for %{rank}."
+msgstr "המאמן שלך סימן מיומנויות חדשות עבור %{rank}."

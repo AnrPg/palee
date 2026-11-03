@@ -71,6 +71,15 @@ defmodule Palee.Scheduling.Ports.SchedulingStore do
               entries: [map()],
               total: non_neg_integer()
             }
+  @doc """
+  Classes each person attended (checked in, on an approved booking), from
+  their own date on (nil: ever), only in `class_type_ids` when not empty,
+  for many people in one query (ADR-400 follow-up, «Πληροί τις
+  προϋποθέσεις»). `%{user_id => count}`; people with none are left out.
+  """
+  @callback count_attended_since(TenantContext.t(), %{Ecto.UUID.t() => Date.t() | nil}, [
+              Ecto.UUID.t()
+            ]) :: %{Ecto.UUID.t() => non_neg_integer()}
   @callback record_attendance(TenantContext.t(), map()) ::
               {:ok, map()} | {:error, Ecto.Changeset.t()}
   @callback delete_attendance(TenantContext.t(), Ecto.UUID.t()) ::

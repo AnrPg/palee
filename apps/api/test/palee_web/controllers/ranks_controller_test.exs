@@ -178,13 +178,22 @@ defmodule PaleeWeb.RanksControllerTest do
 
     assert Enum.find(greek, &(&1["key"] == "judo_kyu"))["name"] == "Ζώνες τζούντο"
 
-    # A coach (not only the owner) starts a ladder and makes it their own.
+    # ADR-400 follow-up: a coach of their own clients doesn't keep ladders;
+    # a head coach (every client) does, like the owner and admins.
     coach = user_fixture()
     {:ok, _} = Organizations.ensure_legacy_membership_for_migration(coach, :coach)
 
+    assert conn
+           |> as(coach)
+           |> send_json(:post, "#{ctx.admin}/rank-ladders", %{template: "judo_kyu"})
+           |> json_response(403)
+
+    assert conn |> as(coach) |> get("#{ctx.admin}/rank-ladders") |> json_response(403)
+    head_coach = head_coach_fixture()
+
     assert %{"ladder" => %{"id" => ladder_id, "ranks" => [white, yellow | _]} = ladder} =
              conn
-             |> as(coach)
+             |> as(head_coach)
              |> send_json(:post, "#{ctx.admin}/rank-ladders", %{
                template: "judo_kyu",
                locale: "en",
@@ -193,6 +202,8 @@ defmodule PaleeWeb.RanksControllerTest do
              |> json_response(201)
 
     assert ladder["name"] == "Kids judo"
+    # The template's default for «ready»: judo states intervals and skills.
+    assert "skills" in ladder["ready_criteria"]
     assert ladder["discipline"] == "judo"
     assert white["name"] == "White"
     assert [first_skill | _] = yellow["requirements"]["skills"]
@@ -272,6 +283,339 @@ defmodule PaleeWeb.RanksControllerTest do
              |> as(other_owner)
              |> get("/api/org/#{other_box.slug}/admin/rank-ladders")
              |> json_response(200)
+  end
+
+  test "skill ids keep ticks through renames; a class, a promotion and the ready list",
+       %{conn: conn} = ctx do
+    assert %{"box_disciplines" => []} =
+             conn |> as(ctx.owner) |> get("#{ctx.admin}/rank-ladders") |> json_response(200)
+
+    assert %{"ladder" => %{"id" => ladder_id, "ranks" => [white, blue]} = ladder} =
+             conn
+             |> as(ctx.owner)
+             |> send_json(:post, "#{ctx.admin}/rank-ladders", %{
+               name: "Kids BJJ",
+               discipline: "bjj_grappling",
+               ready_criteria: ["skills"],
+               ranks: [
+                 %{name: "White", color: "white"},
+                 %{
+                   name: "Blue",
+                   color: "blue",
+                   requirements: %{
+                     min_days: 365,
+                     skills: ["Armbar", "Triangle"],
+                     skill_notes: ["Both sides", nil],
+                     skill_videos: [nil, "https://video.example/triangle"]
+                   }
+                 }
+               ]
+             })
+             |> json_response(201)
+
+    assert ladder["ready_criteria"] == ["skills"]
+    assert [armbar_id, triangle_id] = blue["requirements"]["skill_ids"]
+    assert blue["requirements"]["skill_notes"] == ["Both sides", nil]
+
+    # «at least one criterion»
+    assert %{"errors" => [%{"source" => %{"pointer" => "/ready_criteria"}}]} =
+             conn
+             |> as(ctx.owner)
+             |> send_json(:put, "#{ctx.admin}/rank-ladders/#{ladder_id}", %{
+               name: "Kids BJJ",
+               discipline: "bjj_grappling",
+               ready_criteria: [],
+               ranks: [%{id: white["id"], name: "White"}, %{id: blue["id"], name: "Blue"}]
+             })
+             |> json_response(422)
+
+    award = fn user, body ->
+      conn
+      |> as(ctx.owner)
+      |> send_json(
+        :post,
+        "#{ctx.staff}/clients/#{user.id}/ranks",
+        Map.put(body, :ladder_id, ladder_id)
+      )
+      |> json_response(201)
+    end
+
+    award.(ctx.member, %{rank_id: white["id"]})
+    award.(ctx.other_member, %{rank_id: white["id"]})
+
+    # Mockup 3B: a class view and one skill for several people.
+    assert %{"ladders" => [_], "people" => people} =
+             conn
+             |> as(ctx.owner)
+             |> get(
+               "#{ctx.staff}/ranks/skills/batch?user_ids=#{ctx.member.id},#{ctx.other_member.id}"
+             )
+             |> json_response(200)
+
+    assert Enum.all?(people, &(&1["next_rank_ids"] == [blue["id"]] and &1["reachable"]))
+
+    assert %{"updated" => updated, "skipped" => []} =
+             conn
+             |> as(ctx.owner)
+             |> send_json(:put, "#{ctx.staff}/ranks/skills/batch", %{
+               rank_id: blue["id"],
+               skill_id: armbar_id,
+               user_ids: [ctx.member.id, ctx.other_member.id]
+             })
+             |> json_response(200)
+
+    assert Enum.sort(updated) == Enum.sort([ctx.member.id, ctx.other_member.id])
+
+    # Someone who doesn't work towards that rank (no rank yet: White is next) is skipped.
+    assert %{"updated" => [], "skipped" => [%{"reason" => "other_rank"}]} =
+             conn
+             |> as(ctx.owner)
+             |> send_json(:put, "#{ctx.staff}/ranks/skills/batch", %{
+               rank_id: blue["id"],
+               skill_id: triangle_id,
+               user_ids: [ctx.owner.id]
+             })
+             |> json_response(200)
+
+    assert %{"code" => "unknown_skills"} =
+             conn
+             |> as(ctx.owner)
+             |> send_json(:put, "#{ctx.staff}/ranks/skills/batch", %{
+               rank_id: white["id"],
+               skill: "Nothing",
+               user_ids: [ctx.member.id]
+             })
+             |> json_response(422)
+
+    # A coach of their own clients reaches nobody here.
+    coach = user_fixture()
+    {:ok, _} = Organizations.ensure_legacy_membership_for_migration(coach, :coach)
+
+    assert %{"updated" => [], "skipped" => [%{"reason" => "not_your_client"}]} =
+             conn
+             |> as(coach)
+             |> send_json(:put, "#{ctx.staff}/ranks/skills/batch", %{
+               rank_id: blue["id"],
+               skill_id: triangle_id,
+               user_ids: [ctx.member.id]
+             })
+             |> json_response(200)
+
+    # Renaming and reordering the skills keeps the tick.
+    conn
+    |> as(ctx.owner)
+    |> send_json(:put, "#{ctx.admin}/rank-ladders/#{ladder_id}", %{
+      name: "Kids BJJ",
+      discipline: "bjj_grappling",
+      ranks: [
+        %{id: white["id"], name: "White", color: "white"},
+        %{
+          id: blue["id"],
+          name: "Blue",
+          color: "blue",
+          requirements: %{
+            min_days: 365,
+            skills: ["Triangle", "Armbar from guard"],
+            skill_ids: [triangle_id, armbar_id]
+          }
+        }
+      ]
+    })
+    |> json_response(200)
+
+    standing = fn ->
+      conn
+      |> as(ctx.member)
+      |> get("#{ctx.me}/ranks")
+      |> json_response(200)
+      |> Map.fetch!("ladders")
+      |> hd()
+    end
+
+    progress = standing.()["progress"]
+
+    assert [%{"skill" => "Armbar from guard", "skill_id" => ^armbar_id}] =
+             progress["skills_checked"]
+
+    assert progress["criteria"] == ["skills"]
+    refute progress["ready"]
+
+    # The second tick, from the client's profile by id: ready counts skills only.
+    conn
+    |> as(ctx.owner)
+    |> send_json(:put, "#{ctx.staff}/clients/#{ctx.member.id}/ranks/skills", %{
+      rank_id: blue["id"],
+      skill_id: triangle_id,
+      checked_on: "2026-01-01",
+      note: "Clean"
+    })
+    |> json_response(200)
+
+    assert %{"ready" => true, "all_skills_checked" => true} = standing.()["progress"]
+
+    # «Πληροί τις προϋποθέσεις»: the member, not the other one (one skill short).
+    assert %{"people" => [%{"user_id" => ready_id, "next" => %{"name" => "Blue"}}]} =
+             conn |> as(ctx.owner) |> get("#{ctx.staff}/ranks/ready") |> json_response(200)
+
+    assert ready_id == ctx.member.id
+
+    assert %{"people" => []} =
+             conn |> as(coach) |> get("#{ctx.staff}/ranks/ready") |> json_response(200)
+
+    assert conn |> as(ctx.member) |> get("#{ctx.staff}/ranks/ready") |> json_response(403)
+
+    # Mockup 3C: a promotion ticks the skills ticked on the sheet.
+    award.(ctx.other_member, %{
+      rank_id: blue["id"],
+      skills_checked: ["Triangle", "Armbar from guard"]
+    })
+
+    checks =
+      Palee.Ranks.with_context(%{organization_id: legacy_organization_id()}, fn ->
+        Palee.Ranks.list_skill_checks(ctx.other_member.id)
+      end)
+
+    assert checks |> Enum.map(& &1.skill_id) |> Enum.sort() == Enum.sort([armbar_id, triangle_id])
+    # The armbar tick of the class keeps its date; the promotion's is told by the promotion.
+    assert Enum.find(checks, &(&1.skill_id == triangle_id)).notified_at
+  end
+
+  test "new ticks are told once, grouped; undone ticks are never told", %{conn: conn} = ctx do
+    %{"ladder" => %{"ranks" => [_white, blue]}} =
+      conn
+      |> as(ctx.owner)
+      |> send_json(:post, "#{ctx.admin}/rank-ladders", %{
+        name: "Judo",
+        discipline: "judo",
+        ranks: [
+          %{name: "White"},
+          %{name: "Yellow", requirements: %{skills: ["Ukemi", "O goshi", "Kesa gatame"]}}
+        ]
+      })
+      |> json_response(201)
+
+    tick = fn skill_id, checked ->
+      conn
+      |> as(ctx.owner)
+      |> send_json(:put, "#{ctx.staff}/clients/#{ctx.member.id}/ranks/skills", %{
+        rank_id: blue["id"],
+        skill_id: skill_id,
+        checked: checked
+      })
+      |> json_response(200)
+    end
+
+    [ukemi, o_goshi, kesa] = blue["requirements"]["skill_ids"]
+    tick.(ukemi, true)
+    tick.(o_goshi, true)
+    tick.(kesa, true)
+    tick.(kesa, false)
+
+    context = %{organization_id: legacy_organization_id()}
+    :ok = Palee.Application.RankSkillNotices.deliver(context, ctx.member.id)
+
+    assert [%{payload: payload}] = rank_notices(ctx.member.id)
+    assert payload["count"] in [2, "2"]
+    assert payload["rank_name"] == "Yellow"
+
+    # Told once: nothing new, nothing sent.
+    :ok = Palee.Application.RankSkillNotices.deliver(context, ctx.member.id)
+    assert length(rank_notices(ctx.member.id)) == 1
+
+    # Ticked and undone inside the next window: nothing is sent.
+    tick.(kesa, true)
+    tick.(kesa, false)
+    :ok = Palee.Application.RankSkillNotices.deliver(context, ctx.member.id)
+    assert length(rank_notices(ctx.member.id)) == 1
+  end
+
+  test "classes attended since each person's date, counted at once" do
+    organization_id = legacy_organization_id()
+    a = user_fixture()
+    b = user_fixture()
+    class_type = class_type_fixture()
+
+    for {user, at} <- [
+          {a, ~U[2026-09-01 18:00:00Z]},
+          {a, ~U[2026-03-01 18:00:00Z]},
+          {b, ~U[2026-09-02 18:00:00Z]}
+        ] do
+      attend(organization_id, class_type.id, user.id, at)
+    end
+
+    context = %{organization_id: organization_id}
+
+    counts =
+      Palee.Scheduling.count_attended_since(context, %{a.id => ~D[2026-06-01], b.id => nil}, [])
+
+    assert counts == %{a.id => 1, b.id => 1}
+
+    assert counts ==
+             Palee.Scheduling.count_attended_since(
+               context,
+               %{a.id => ~D[2026-06-01], b.id => nil},
+               [class_type.id]
+             )
+
+    assert %{} ==
+             Palee.Scheduling.count_attended_since(context, %{a.id => nil}, [Ecto.UUID.generate()])
+
+    assert %{} == Palee.Scheduling.count_attended_since(context, %{}, [])
+  end
+
+  defp attend(organization_id, class_type_id, user_id, at) do
+    class_id = Ecto.UUID.generate()
+    at = at |> DateTime.to_naive()
+    dump = &Ecto.UUID.dump!/1
+
+    Palee.Repo.query!(
+      """
+      INSERT INTO scheduled_classes (id, organization_id, class_type_id, scheduled_at, capacity, inserted_at, updated_at)
+      VALUES ($1, $2, $3, $4, 10, now(), now())
+      """,
+      [dump.(class_id), dump.(organization_id), dump.(class_type_id), at]
+    )
+
+    Palee.Repo.query!(
+      """
+      INSERT INTO bookings (id, organization_id, scheduled_class_id, user_id, status, inserted_at, updated_at)
+      VALUES ($1, $2, $3, $4, 'approved', now(), now())
+      """,
+      [dump.(Ecto.UUID.generate()), dump.(organization_id), dump.(class_id), dump.(user_id)]
+    )
+
+    Palee.Repo.query!(
+      """
+      INSERT INTO class_attendance_records (id, organization_id, scheduled_class_id, user_id, status, marked_at, inserted_at, updated_at)
+      VALUES ($1, $2, $3, $4, 'attended', $5, now(), now())
+      """,
+      [dump.(Ecto.UUID.generate()), dump.(organization_id), dump.(class_id), dump.(user_id), at]
+    )
+  end
+
+  defp rank_notices(user_id) do
+    user_id
+    |> Palee.Notifications.list_for_user()
+    |> Enum.filter(&(to_string(&1.type) == "rank_skills_checked"))
+  end
+
+  defp legacy_organization_id do
+    {:ok, organization} = Organizations.ensure_legacy_organization_for_migration()
+    organization.id
+  end
+
+  defp head_coach_fixture do
+    coach = user_fixture()
+    {:ok, membership} = Organizations.ensure_legacy_membership_for_migration(coach, :coach)
+
+    {:ok, _} =
+      Palee.Organizations.OrganizationStore.update_membership_settings(
+        legacy_organization_id(),
+        membership.id,
+        %{coach_scope: :all}
+      )
+
+    coach
   end
 
   defp as(conn, user), do: conn |> recycle() |> put_bearer_token(user)

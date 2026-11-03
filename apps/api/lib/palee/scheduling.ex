@@ -133,6 +133,19 @@ defmodule Palee.Scheduling do
   def list_class_history(context, user_id, opts),
     do: Palee.Scheduling.SchedulingStore.list_class_history(context, user_id, opts)
 
+  @doc "Classes attended per person since each one's date, in one query (ADR-400 follow-up)."
+  def count_attended_since(_context, since_by_user, _class_type_ids)
+      when map_size(since_by_user) == 0,
+      do: %{}
+
+  def count_attended_since(context, since_by_user, class_type_ids),
+    do:
+      Palee.Scheduling.SchedulingStore.count_attended_since(
+        context,
+        since_by_user,
+        class_type_ids
+      )
+
   def get_booking_execution_access(context, booking_id, user_id),
     do:
       Palee.Scheduling.SchedulingStore.get_booking_execution_access(
