@@ -16996,7 +16996,6 @@
       "withdrawReasonRequired": "Écris le motif.",
       "towards": "Pour {rank} :",
       "history": "Historique",
-      "historyStripe": "{rank} +{stripes}",
       "picker": {
         "count": "{count, plural, one {# modèle} other {# modèles}}",
         "step1": "Étape 1 sur 2 · Qu’enseignes-tu ?",

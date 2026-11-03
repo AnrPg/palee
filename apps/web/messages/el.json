@@ -16996,7 +16996,6 @@
       "withdrawReasonRequired": "Γράψε τον λόγο.",
       "towards": "Για {rank}:",
       "history": "Ιστορικό",
-      "historyStripe": "{rank} +{stripes}",
       "picker": {
         "count": "{count, plural, one {# πρότυπο} other {# πρότυπα}}",
         "step1": "Βήμα 1 από 2 · Τι διδάσκεις;",

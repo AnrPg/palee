@@ -16996,7 +16996,6 @@
       "withdrawReasonRequired": "اكتب السبب.",
       "towards": "إلى {rank}:",
       "history": "السجل",
-      "historyStripe": "{rank} +{stripes}",
       "picker": {
         "count": "{count, plural, one {قالب واحد} two {قالبان} few {# قوالب} many {# قالبًا} other {# قالب}}",
         "step1": "الخطوة 1 من 2 · ماذا تدرّس؟",

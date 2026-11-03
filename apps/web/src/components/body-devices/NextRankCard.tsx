@@ -42,7 +42,14 @@ export function NextRankCard({ standing }: { standing: RankStanding }) {
           <div className="flex min-w-0 flex-col">
             <span className="text-xs font-bold uppercase tracking-[0.18em]" style={{ color: "var(--dim)" }}>{t("ranks.my.nextRank")}</span>
             <span className="text-lg font-bold" style={{ color: "var(--text)" }}>{next.name}</span>
-            {counts.length > 0 ? <span className="text-sm" style={{ color: "var(--text-soft)" }}>{counts.join(" · ")}</span> : null}
+            {/* ANR 2026-11-03: one requirement per line, never joined. */}
+            {counts.length > 0 ? (
+              <ul className="flex flex-col text-sm" style={{ color: "var(--text-soft)" }} data-testid="next-rank-counts">
+                {counts.map((line) => (
+                  <li key={line}>{line}</li>
+                ))}
+              </ul>
+            ) : null}
           </div>
         </div>
         {left.length > 0 ? (

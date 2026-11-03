@@ -16996,7 +16996,6 @@
       "withdrawReasonRequired": "Escribe el motivo.",
       "towards": "Para {rank}:",
       "history": "Historial",
-      "historyStripe": "{rank} +{stripes}",
       "picker": {
         "count": "{count, plural, one {# plantilla} other {# plantillas}}",
         "step1": "Paso 1 de 2 · ¿Qué enseñas?",

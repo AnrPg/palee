@@ -16996,7 +16996,6 @@
       "withdrawReasonRequired": "Укажи причину.",
       "towards": "До {rank}:",
       "history": "История",
-      "historyStripe": "{rank} +{stripes}",
       "picker": {
         "count": "{count, plural, one {# шаблон} few {# шаблона} many {# шаблонов} other {# шаблона}}",
         "step1": "Шаг 1 из 2 · Что ты преподаёшь?",

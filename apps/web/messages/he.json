@@ -16996,7 +16996,6 @@
       "withdrawReasonRequired": "כתבו את הסיבה.",
       "towards": "לקראת {rank}:",
       "history": "היסטוריה",
-      "historyStripe": "{rank} +{stripes}",
       "picker": {
         "count": "{count, plural, one {תבנית אחת} other {# תבניות}}",
         "step1": "שלב 1 מתוך 2 · מה את/ה מלמד/ת?",

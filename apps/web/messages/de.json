@@ -16996,7 +16996,6 @@
       "withdrawReasonRequired": "Gib den Grund an.",
       "towards": "Für {rank}:",
       "history": "Verlauf",
-      "historyStripe": "{rank} +{stripes}",
       "picker": {
         "count": "{count, plural, one {# Vorlage} other {# Vorlagen}}",
         "step1": "Schritt 1 von 2 · Was unterrichtest du?",

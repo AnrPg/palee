@@ -16996,7 +16996,6 @@
       "withdrawReasonRequired": "Vul de reden in.",
       "towards": "Voor {rank}:",
       "history": "Geschiedenis",
-      "historyStripe": "{rank} +{stripes}",
       "picker": {
         "count": "{count, plural, one {# sjabloon} other {# sjablonen}}",
         "step1": "Stap 1 van 2 · Wat geef je?",

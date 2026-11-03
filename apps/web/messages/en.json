@@ -16996,7 +16996,6 @@
       "withdrawReasonRequired": "Write the reason.",
       "towards": "For {rank}:",
       "history": "History",
-      "historyStripe": "{rank} +{stripes}",
       "picker": {
         "count": "{count, plural, one {# template} other {# templates}}",
         "step1": "Step 1 of 2 · What do you teach?",
