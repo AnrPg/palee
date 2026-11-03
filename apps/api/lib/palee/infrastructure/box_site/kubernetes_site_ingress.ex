@@ -16,13 +16,24 @@ defmodule Palee.Infrastructure.BoxSite.KubernetesSiteIngress do
     * `api_url` (default `https://kubernetes.default.svc`),
       `namespace` (default: the service account's), `token_path`,
       `ca_path`; `token` only in tests;
-    * `issuer_kind` (`"Issuer"` or `"ClusterIssuer"`), `issuer_name`;
-    * `ingress_class` (`nil` uses the cluster's default class);
+    * `issuer_kind` (default `"ClusterIssuer"`, the only kind the cluster
+      allows; `"Issuer"` is kept for other clusters), `issuer_name` (default
+      `letsencrypt-production`);
+    * `ingress_class` (default `nginx`; `""` leaves `spec.ingressClassName`
+      out and uses the cluster's default class);
     * `api_service`/`api_port`, `web_service`/`web_port`;
     * `req_options` (tests use `Req.Test`).
 
   The token is read on every call (projected tokens rotate) and never
-  logged.
+  logged. RBAC it needs, in its namespace only: ingresses `get list create
+  patch delete` and cert-manager.io certificates `get`; nothing else (no
+  secrets, no events).
+
+  Hosts are lower-cased before they reach a name or the manifest. An
+  Ingress the cluster's admission policy rejects for its host (HTTP 400,
+  "Policy tenant-ingress failed: host not allowed": the host belongs to
+  another tenant or is a system domain) answers `{:error, :host_not_allowed}`,
+  final, not retried (ADR-398, 2026-11-03).
   """
 
   @behaviour Palee.BoxSite.Ports.SiteIngress
@@ -36,6 +47,7 @@ defmodule Palee.Infrastructure.BoxSite.KubernetesSiteIngress do
 
   @impl true
   def apply_site(host) do
+    host = String.downcase(host)
     config = config()
 
     request(config,
@@ -54,6 +66,7 @@ defmodule Palee.Infrastructure.BoxSite.KubernetesSiteIngress do
 
   @impl true
   def remove_site(host) do
+    host = String.downcase(host)
     config = config()
 
     case request(config, method: :delete, url: ingress_url(config, ingress_name(host))) do
@@ -64,6 +77,7 @@ defmodule Palee.Infrastructure.BoxSite.KubernetesSiteIngress do
 
   @impl true
   def certificate(host) do
+    host = String.downcase(host)
     config = config()
 
     url =
@@ -101,7 +115,11 @@ defmodule Palee.Infrastructure.BoxSite.KubernetesSiteIngress do
 
   @doc "The Ingress's name for a host (DNS-label safe, stable)."
   def ingress_name(host) do
-    hash = :crypto.hash(:sha256, host) |> Base.encode16(case: :lower) |> binary_part(0, 20)
+    hash =
+      :crypto.hash(:sha256, String.downcase(host))
+      |> Base.encode16(case: :lower)
+      |> binary_part(0, 20)
+
     "palee-site-" <> hash
   end
 
@@ -110,8 +128,10 @@ defmodule Palee.Infrastructure.BoxSite.KubernetesSiteIngress do
 
   @doc "The Ingress Palee applies for a host."
   def manifest(host, config \\ config()) do
+    host = String.downcase(host)
+
     issuer_annotation =
-      if Keyword.get(config, :issuer_kind, "Issuer") == "ClusterIssuer",
+      if Keyword.get(config, :issuer_kind, "ClusterIssuer") == "ClusterIssuer",
         do: "cert-manager.io/cluster-issuer",
         else: "cert-manager.io/issuer"
 
@@ -138,7 +158,7 @@ defmodule Palee.Infrastructure.BoxSite.KubernetesSiteIngress do
           }
         ]
       }
-      |> maybe_put("ingressClassName", Keyword.get(config, :ingress_class))
+      |> maybe_put("ingressClassName", Keyword.get(config, :ingress_class, "nginx"))
 
     %{
       "apiVersion" => "networking.k8s.io/v1",
@@ -151,7 +171,7 @@ defmodule Palee.Infrastructure.BoxSite.KubernetesSiteIngress do
         },
         "annotations" => %{
           @host_annotation => host,
-          issuer_annotation => Keyword.get(config, :issuer_name, "palee-sites")
+          issuer_annotation => Keyword.get(config, :issuer_name, "letsencrypt-production")
         }
       },
       "spec" => spec
@@ -247,6 +267,12 @@ defmodule Palee.Infrastructure.BoxSite.KubernetesSiteIngress do
     defaults |> Keyword.merge(options) |> Keyword.put(:headers, headers)
   end
 
+  defp failure({:ok, %{status: status, body: body}}) when status in 400..499 and status != 429 do
+    if host_not_allowed?(body),
+      do: {:error, :host_not_allowed},
+      else: failure({:ok, %{status: status}})
+  end
+
   defp failure({:ok, %{status: status}}) when status in [401, 403, 404, 409, 422],
     do: {:error, {:refused, {:http, status}}}
 
@@ -256,6 +282,19 @@ defmodule Palee.Infrastructure.BoxSite.KubernetesSiteIngress do
     do: {:error, error}
 
   defp failure({:error, _exception}), do: {:error, {:transient, :unreachable}}
+
+  @doc """
+  Whether an error answer is the tenant policy refusing the host
+  ("Policy tenant-ingress failed: host not allowed").
+  """
+  def host_not_allowed?(body) do
+    text = body |> error_message() |> String.downcase()
+    String.contains?(text, "host not allowed") and String.contains?(text, "tenant-ingress")
+  end
+
+  defp error_message(%{"message" => message}) when is_binary(message), do: message
+  defp error_message(body) when is_binary(body), do: body
+  defp error_message(_body), do: ""
 
   defp token(config) do
     case Keyword.get(config, :token) do

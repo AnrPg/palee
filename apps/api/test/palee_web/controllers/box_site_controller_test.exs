@@ -392,13 +392,21 @@ defmodule PaleeWeb.BoxSiteControllerTest do
     @impl true
     def remove_site(host), do: tell({:remove, host}, SandboxSiteIngress.remove_site(host))
     @impl true
-    def certificate(host), do: SandboxSiteIngress.certificate(host)
+    def certificate(host), do: tell({:certificate, host}, SandboxSiteIngress.certificate(host))
     @impl true
     def managed_hosts, do: SandboxSiteIngress.managed_hosts()
 
     defp tell(message, answer) do
       send(self(), {:ingress, message})
       answer
+    end
+  end
+
+  defp flush_ingress_calls do
+    receive do
+      {:ingress, _call} -> flush_ingress_calls()
+    after
+      0 -> :ok
     end
   end
 
@@ -475,11 +483,39 @@ defmodule PaleeWeb.BoxSiteControllerTest do
              |> post("#{ctx.admin}/domains/#{domain["id"]}/check")
              |> json_response(200)
 
+    # An active certificate is not read on every check, only by the nightly sweep.
+    flush_ingress_calls()
+
+    assert %{"domain" => %{"certificate_status" => "active"}} =
+             ctx
+             |> owner_conn()
+             |> post("#{ctx.admin}/domains/#{domain["id"]}/check")
+             |> json_response(200)
+
+    refute_received {:ingress, {:certificate, ^host}}
+
     # The sweep removes an Ingress no box has and restores a missing one.
     Application.put_env(:palee, :box_site_sandbox_managed_hosts, ["gone.example"])
     assert :ok = perform_job(Palee.Workers.BoxSiteIngressSweepJob, %{})
     assert_received {:ingress, {:remove, "gone.example"}}
     assert_received {:ingress, {:apply, ^host}}
+
+    # ... and rereads the active certificates of the Ingresses it found.
+    Application.put_env(:palee, :box_site_sandbox_managed_hosts, [host])
+
+    Application.put_env(:palee, :box_site_sandbox_certificates, %{
+      host => {:failed, :rate_limited}
+    })
+
+    assert :ok = perform_job(Palee.Workers.BoxSiteIngressSweepJob, %{})
+    assert_received {:ingress, {:certificate, ^host}}
+
+    assert [%{"certificate_status" => "failed", "certificate_error" => "rate_limited"}] =
+             ctx
+             |> owner_conn()
+             |> get("#{ctx.admin}/domains")
+             |> json_response(200)
+             |> Map.fetch!("domains")
 
     ctx |> owner_conn() |> delete("#{ctx.admin}/domains/#{domain["id"]}") |> response(204)
     assert_received {:ingress, {:remove, ^host}}
@@ -553,6 +589,173 @@ defmodule PaleeWeb.BoxSiteControllerTest do
              |> get("#{ctx.admin}/domains")
              |> json_response(200)
              |> Map.fetch!("domains")
+  end
+
+  test "ADR-398: system domains are refused when they are typed", ctx do
+    for host <- ~w(milos.4kq.net www.atha.gr atha.io palee.app shop.palee.app) do
+      assert %{"code" => "platform_hostname"} =
+               ctx
+               |> owner_conn()
+               |> post("#{ctx.admin}/domains", %{host: host})
+               |> json_response(422)
+    end
+  end
+
+  test "ADR-398: a flattened apex passes on the target's live addresses", ctx do
+    host = "apex#{System.unique_integer([:positive])}.test"
+
+    domain =
+      ctx
+      |> owner_conn()
+      |> post("#{ctx.admin}/domains", %{host: String.upcase(host)})
+      |> json_response(201)
+      |> Map.fetch!("domain")
+
+    assert %{"host" => ^host} = domain
+
+    assert [
+             %{"type" => "TXT", "value" => txt},
+             %{"type" => "ALIAS", "name" => ^host, "value" => "sites.palee.app"}
+           ] = domain["dns_records"]
+
+    check = fn ->
+      ctx
+      |> owner_conn()
+      |> post("#{ctx.admin}/domains/#{domain["id"]}/check")
+      |> json_response(200)
+      |> Map.fetch!("domain")
+    end
+
+    # A fixed address that is not the target's (any more) does not pass.
+    Application.put_env(:palee, :box_site_sandbox_dns, %{
+      {"_palee-challenge." <> host, :txt} => [txt],
+      {host, :a} => ["203.0.113.9"]
+    })
+
+    assert %{"status" => "pending_dns", "last_error" => "dns_not_pointing"} = check.()
+
+    # The resolver timing out says nothing: the host keeps its state.
+    Application.put_env(:palee, :box_site_sandbox_dns, %{
+      {"_palee-challenge." <> host, :txt} => [txt],
+      {host, :cname} => {:error, :timeout},
+      {host, :a} => {:error, :timeout}
+    })
+
+    assert %{"status" => "pending_dns", "last_error" => "dns_not_pointing"} = check.()
+
+    Application.put_env(:palee, :box_site_sandbox_dns, %{
+      {"_palee-challenge." <> host, :txt} => [txt],
+      {host, :a} => [Palee.Infrastructure.BoxSite.SandboxDomainDns.target_address()]
+    })
+
+    assert %{"status" => "pending_tls"} = check.()
+  end
+
+  test "ADR-398: a resolver error never deletes a verified host's Ingress", ctx do
+    previous = Application.get_env(:palee, :box_site_ingress)
+    Application.put_env(:palee, :box_site_ingress, RecordingIngress)
+    on_exit(fn -> Application.put_env(:palee, :box_site_ingress, previous) end)
+    host = "www.flaky#{System.unique_integer([:positive])}.test"
+
+    domain =
+      ctx |> owner_conn() |> post("#{ctx.admin}/domains", %{host: host}) |> json_response(201)
+
+    [txt | _cname] = Enum.map(domain["domain"]["dns_records"], & &1["value"])
+
+    Application.put_env(:palee, :box_site_sandbox_dns, %{
+      {"_palee-challenge." <> host, :txt} => [txt],
+      {host, :cname} => ["sites.palee.app."]
+    })
+
+    check = fn ->
+      ctx
+      |> owner_conn()
+      |> post("#{ctx.admin}/domains/#{domain["domain"]["id"]}/check")
+      |> json_response(200)
+      |> Map.fetch!("domain")
+    end
+
+    assert %{"status" => "pending_tls"} = check.()
+    assert_received {:ingress, {:apply, ^host}}
+
+    Application.put_env(:palee, :box_site_sandbox_dns, %{
+      {"_palee-challenge." <> host, :txt} => {:error, :timeout},
+      {host, :cname} => {:error, :servfail},
+      {host, :a} => {:error, :servfail}
+    })
+
+    assert %{"status" => "pending_tls", "certificate_status" => "issuing"} = check.()
+    refute_received {:ingress, {:remove, _host}}
+
+    # A real answer that no longer points here still takes it back.
+    Application.put_env(:palee, :box_site_sandbox_dns, %{})
+    assert %{"status" => "pending_dns", "certificate_status" => "none"} = check.()
+    assert_received {:ingress, {:remove, ^host}}
+  end
+
+  test "ADR-398: a host the cluster's policy refuses is final and says so", ctx do
+    previous = Application.get_env(:palee, :box_site_ingress)
+    Application.put_env(:palee, :box_site_ingress, RecordingIngress)
+    host = "www.taken#{System.unique_integer([:positive])}.test"
+    Application.put_env(:palee, :box_site_sandbox_ingress_not_allowed, [host])
+
+    on_exit(fn ->
+      Application.put_env(:palee, :box_site_ingress, previous)
+      Application.delete_env(:palee, :box_site_sandbox_ingress_not_allowed)
+      Application.delete_env(:palee, :box_site_sandbox_managed_hosts)
+    end)
+
+    domain =
+      ctx
+      |> owner_conn()
+      |> post("#{ctx.admin}/domains", %{host: host})
+      |> json_response(201)
+      |> Map.fetch!("domain")
+
+    [txt | _cname] = Enum.map(domain["dns_records"], & &1["value"])
+
+    Application.put_env(:palee, :box_site_sandbox_dns, %{
+      {"_palee-challenge." <> host, :txt} => [txt],
+      {host, :cname} => ["sites.palee.app."]
+    })
+
+    check = fn ->
+      ctx
+      |> owner_conn()
+      |> post("#{ctx.admin}/domains/#{domain["id"]}/check")
+      |> json_response(200)
+      |> Map.fetch!("domain")
+    end
+
+    assert %{"certificate_status" => "failed", "certificate_error" => "host_not_allowed"} =
+             check.()
+
+    assert_received {:ingress, {:apply, ^host}}
+
+    # One try, no retry loop.
+    assert [["failed", 1, "host_not_allowed"]] =
+             bypass_rls(fn ->
+               Palee.Repo.query!(
+                 "SELECT status, attempts, last_error FROM box_site_ingress_ops WHERE host = $1",
+                 [host]
+               ).rows
+             end)
+
+    # Neither «Έλεγχος τώρα», the cron nor the sweep tries again.
+    assert %{"certificate_error" => "host_not_allowed"} = check.()
+    assert :ok = perform_job(BoxSiteJob, %{})
+    Application.put_env(:palee, :box_site_sandbox_managed_hosts, [])
+    assert :ok = perform_job(Palee.Workers.BoxSiteIngressSweepJob, %{})
+    refute_received {:ingress, {:apply, ^host}}
+
+    # Removing it and adding it again is a fresh start.
+    ctx |> owner_conn() |> delete("#{ctx.admin}/domains/#{domain["id"]}") |> response(204)
+
+    assert %{"domain" => %{"certificate_status" => "none", "certificate_error" => nil}} =
+             ctx
+             |> owner_conn()
+             |> post("#{ctx.admin}/domains", %{host: host})
+             |> json_response(201)
   end
 
   test "the public timetable shows classes without people when the owner turns it on", ctx do

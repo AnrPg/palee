@@ -4,6 +4,8 @@ defmodule Palee.Infrastructure.BoxSite.SandboxSiteIngress do
   kept, except as configured:
 
     * `config :palee, :box_site_sandbox_ingress_refused, [host]`: refused;
+    * `config :palee, :box_site_sandbox_ingress_not_allowed, [host]`: the
+      tenant policy rejects the host (`:host_not_allowed`);
     * `config :palee, :box_site_sandbox_certificates, %{host => :active | {:failed, reason}}`
       (default `:issuing`);
     * `config :palee, :box_site_sandbox_managed_hosts, [host]`: what the
@@ -13,7 +15,11 @@ defmodule Palee.Infrastructure.BoxSite.SandboxSiteIngress do
   @behaviour Palee.BoxSite.Ports.SiteIngress
 
   @impl true
-  def apply_site(host), do: answer(host)
+  def apply_site(host) do
+    if host in Application.get_env(:palee, :box_site_sandbox_ingress_not_allowed, []),
+      do: {:error, :host_not_allowed},
+      else: answer(host)
+  end
 
   @impl true
   def remove_site(host), do: answer(host)

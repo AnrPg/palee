@@ -501,16 +501,13 @@ if config_env() == :prod do
     secret_key_base: secret_key_base
 end
 
-# ADR-352 §5: where custom hosts of box websites must point.
+# ADR-352 §5: where custom hosts of box websites must point. ADR-398
+# (2026-11-03): only a CNAME (or, at an apex, CNAME flattening / ALIAS /
+# ANAME) to this name; its addresses are resolved at each check, never fixed.
 if config_env() == :prod do
   config :palee, :box_site,
     cname_target: System.get_env("BOX_SITE_CNAME_TARGET", "sites.palee.app"),
-    a_records:
-      "BOX_SITE_A_RECORDS"
-      |> System.get_env("")
-      |> String.split(",", trim: true)
-      |> Enum.map(&String.trim/1),
-    refused_suffixes: ["palee.app", "4kq.net", "localhost", "localdomain", "invalid", "local"]
+    refused_suffixes: ["localhost", "localdomain", "invalid", "local"]
 
   # ADR-398: BOX_SITE_INGRESS=kubernetes lets the API create each verified
   # host's Ingress with its service account; anything else keeps the list.
@@ -519,9 +516,10 @@ if config_env() == :prod do
 
     config :palee, :box_site_kubernetes,
       api_url: System.get_env("BOX_SITE_KUBERNETES_API_URL"),
-      issuer_kind: System.get_env("BOX_SITE_CERT_ISSUER_KIND", "Issuer"),
-      issuer_name: System.get_env("BOX_SITE_CERT_ISSUER", "palee-sites"),
-      ingress_class: System.get_env("BOX_SITE_INGRESS_CLASS"),
+      # The cluster allows no namespaced Issuer (ADR-398, 2026-11-03).
+      issuer_kind: System.get_env("BOX_SITE_CERT_ISSUER_KIND", "ClusterIssuer"),
+      issuer_name: System.get_env("BOX_SITE_CERT_ISSUER", "letsencrypt-production"),
+      ingress_class: System.get_env("BOX_SITE_INGRESS_CLASS", "nginx"),
       api_service: System.get_env("BOX_SITE_API_SERVICE", "palee-api"),
       api_port: String.to_integer(System.get_env("BOX_SITE_API_PORT", "4000")),
       web_service: System.get_env("BOX_SITE_WEB_SERVICE", "palee-web"),

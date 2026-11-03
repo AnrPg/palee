@@ -32,6 +32,8 @@ defmodule Palee.BoxSite.Domain.IngressPolicyTest do
     refute IngressPolicy.needs_apply?(%{domain | certificate_status: "pending"})
     refute IngressPolicy.read_certificate?(%{domain | certificate_status: "pending"})
     assert IngressPolicy.read_certificate?(%{domain | certificate_status: "issuing"})
+    # Active certificates are reread nightly by the sweep, not by every check.
+    refute IngressPolicy.read_certificate?(%{domain | certificate_status: "active"})
   end
 
   test "ops: done, retried with backoff, failed after the last try" do
@@ -64,6 +66,26 @@ defmodule Palee.BoxSite.Domain.IngressPolicyTest do
 
     assert IngressPolicy.backoff(1) == 60
     assert IngressPolicy.backoff(99) == 21_600
+  end
+
+  test "the tenant policy refusing the host is final: no retry, no re-queue, no read" do
+    {op, certificate} =
+      IngressPolicy.after_op({:error, :host_not_allowed}, %{action: "apply", attempts: 1}, @now)
+
+    assert op == %{status: "failed", last_error: "host_not_allowed", claimed_at: nil}
+    assert certificate == %{certificate_status: "failed", certificate_error: "host_not_allowed"}
+
+    domain = %{
+      status: "pending_tls",
+      certificate_status: "failed",
+      certificate_error: "host_not_allowed"
+    }
+
+    assert IngressPolicy.host_not_allowed?(domain)
+    refute IngressPolicy.needs_apply?(domain)
+    refute IngressPolicy.read_certificate?(domain)
+    refute IngressPolicy.host_not_allowed?(%{domain | certificate_error: "cluster_refused"})
+    assert "host_not_allowed" in IngressPolicy.certificate_errors()
   end
 
   test "certificate changes" do

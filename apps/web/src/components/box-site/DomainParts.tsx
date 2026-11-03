@@ -36,7 +36,16 @@ export function DomainSteps({ status }: { status: string }) {
   );
 }
 
-const CERTIFICATE_ERRORS = ["cluster_refused", "cluster_unreachable", "challenge_failed", "rate_limited", "issuer_not_ready", "issuance_failed"];
+const CERTIFICATE_ERRORS = ["cluster_refused", "cluster_unreachable", "challenge_failed", "rate_limited", "issuer_not_ready", "issuance_failed", "host_not_allowed"];
+
+/** ADR-398: domains no box may claim (the API refuses them too, `Hostname.system_suffixes/0`). */
+export const SYSTEM_DOMAINS = ["palee.app", "4kq.net", "atha.gr", "atha.io"];
+
+/** Whether a typed host is one of the system domains or under one. */
+export function isSystemHost(input: string) {
+  const host = input.trim().toLowerCase().replace(/^https?:\/\//, "").replace(/\/+$/, "").replace(/\.$/, "");
+  return SYSTEM_DOMAINS.some((suffix) => host === suffix || host.endsWith(`.${suffix}`));
+}
 
 /**
  * ADR-398: the certificate's line under the status, or null. Shown once Palee
@@ -44,6 +53,8 @@ const CERTIFICATE_ERRORS = ["cluster_refused", "cluster_unreachable", "challenge
  * worth a line. A known certificate state replaces the generic TLS reason.
  */
 export function certificateLine(status: string, certificateStatus: string | null | undefined, certificateError: string | null | undefined) {
+  // The cluster will never route it: said whatever the DNS state, until the owner removes it.
+  if (certificateStatus === "failed" && certificateError === "host_not_allowed" && status !== "expired") return { key: "domains.certificateError.host_not_allowed", tone: "danger" as const };
   if (!certificateStatus || certificateStatus === "none" || status === "pending_dns" || status === "expired") return null;
   const error = certificateError && CERTIFICATE_ERRORS.includes(certificateError) ? certificateError : null;
   if (certificateStatus === "failed") return { key: `domains.certificateError.${error ?? "issuance_failed"}`, tone: "danger" as const };
@@ -98,9 +109,14 @@ export function DnsRecords({ records }: { records: DnsRecord[] }) {
       <ul className="flex flex-col gap-2">
         {records.map((record) => (
           <li key={`${record.type}-${record.name}-${record.value}`} className="grid gap-1 rounded-2xl p-3 text-sm" style={{ background: "var(--panel-muted)", border: "1px solid var(--border)" }}>
-            <span className="text-xs font-bold" style={{ color: "var(--dim)" }}>{record.type}</span>
+            <span className="text-xs font-bold" style={{ color: "var(--dim)" }}>{record.type === "ALIAS" ? t("domains.aliasType") : record.type}</span>
             <RecordValue label={t("domains.recordName")} value={record.name} />
             <RecordValue label={t("domains.recordValue")} value={record.value} />
+            {record.type === "ALIAS" ? (
+              <span className="text-xs" style={{ color: "var(--text-soft)" }} data-testid="site-dns-alias-hint">
+                {t("domains.aliasHint")}
+              </span>
+            ) : null}
           </li>
         ))}
       </ul>

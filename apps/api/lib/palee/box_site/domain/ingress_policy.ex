@@ -11,6 +11,11 @@ defmodule Palee.BoxSite.Domain.IngressPolicy do
                                ▼ unreachable, 8 tries       ▼ gave up (for now)
                              failed                       failed
 
+  The cluster's tenant policy refusing the host ("host not allowed": another
+  tenant's or a system domain) is final: `failed` with `host_not_allowed`,
+  the op is not retried, checks and the sweep leave it alone until the
+  owner removes the domain and adds it again (ADR-398, 2026-11-03).
+
   A host has an Ingress while its domain is `pending_tls`, `active` or
   `broken`; it loses it when it falls back to `pending_dns`, expires or is
   removed. Pure: callers bring the facts and the time.
@@ -20,15 +25,22 @@ defmodule Palee.BoxSite.Domain.IngressPolicy do
   @certificate_statuses ~w(none pending issuing active failed)
   @cluster_errors ~w(cluster_refused cluster_unreachable)
   @certificate_errors ~w(challenge_failed rate_limited issuer_not_ready issuance_failed)
+  @host_not_allowed "host_not_allowed"
   @backoff_seconds [60, 300, 900, 3_600, 21_600]
   @max_attempts 8
 
   def certificate_statuses, do: @certificate_statuses
-  def certificate_errors, do: @cluster_errors ++ @certificate_errors
+  def certificate_errors, do: @cluster_errors ++ @certificate_errors ++ [@host_not_allowed]
   def max_attempts, do: @max_attempts
 
   @doc "Whether a host in this domain status should have an Ingress."
   def wanted?(status), do: status in @wanted
+
+  @doc "Whether the cluster refused the host for good (`host_not_allowed`)."
+  def host_not_allowed?(domain),
+    do:
+      Map.get(domain, :certificate_status) == "failed" and
+        Map.get(domain, :certificate_error) == @host_not_allowed
 
   @doc """
   The cluster call a status change needs: `:apply` when the host starts
@@ -53,10 +65,15 @@ defmodule Palee.BoxSite.Domain.IngressPolicy do
          (domain.certificate_status == "failed" and domain.certificate_error in @cluster_errors))
   end
 
-  @doc "Whether the certificate is worth reading from the cluster now."
+  @doc """
+  Whether a check should read the certificate from the cluster: only while
+  it is not active yet (issuing, or failed for a reason cert-manager retries).
+  An active certificate is reread once a night by the sweep, so the 5-minute
+  checks do not poll the cluster for every live host.
+  """
   def read_certificate?(%{status: status} = domain) do
     wanted?(status) and
-      (domain.certificate_status in ["issuing", "active"] or
+      (domain.certificate_status == "issuing" or
          (domain.certificate_status == "failed" and
             domain.certificate_error in @certificate_errors))
   end
@@ -90,6 +107,11 @@ defmodule Palee.BoxSite.Domain.IngressPolicy do
 
   defp outcome(:ok, _attempts, _now),
     do: {:done, %{certificate_status: "issuing", certificate_error: nil}}
+
+  defp outcome({:error, :host_not_allowed}, _attempts, _now),
+    do:
+      {%{status: "failed", last_error: @host_not_allowed, claimed_at: nil},
+       %{certificate_status: "failed", certificate_error: @host_not_allowed}}
 
   defp outcome({:error, {kind, _reason}}, attempts, now) do
     error = if kind == :refused, do: "cluster_refused", else: "cluster_unreachable"

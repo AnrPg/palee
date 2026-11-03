@@ -31,7 +31,9 @@ config :palee, Oban,
        # ADR-352/353: custom domain checks and the website form outbox.
        {"*/5 * * * *", Palee.Workers.BoxSiteJob},
        # ADR-398: remove Ingresses of hosts no box has any more.
-       {"41 * * * *", Palee.Workers.BoxSiteIngressSweepJob},
+       # ADR-398: nightly. The cron runs in UTC: 01:15 UTC is 03:15 in Athens
+       # in winter (04:15 in summer), a quiet hour either way.
+       {"15 1 * * *", Palee.Workers.BoxSiteIngressSweepJob},
        # ADR-387: refresh due Google listings (each box once a day).
        {"17 * * * *", Palee.Workers.GooglePlacesJob},
        # ADR-397: removed review texts after 6 months; the open reports summary.
@@ -554,9 +556,9 @@ config :palee, :box_site_conversions_api, Palee.Infrastructure.BoxSite.MetaConve
 config :palee, :box_site_ingress, nil
 
 config :palee, :box_site_kubernetes,
-  issuer_kind: "Issuer",
-  issuer_name: "palee-sites",
-  ingress_class: nil,
+  issuer_kind: "ClusterIssuer",
+  issuer_name: "letsencrypt-production",
+  ingress_class: "nginx",
   api_service: "palee-api",
   api_port: 4000,
   web_service: "palee-web",
@@ -564,8 +566,8 @@ config :palee, :box_site_kubernetes,
 
 config :palee, :box_site,
   cname_target: "sites.palee.app",
-  a_records: [],
-  refused_suffixes: ["palee.app", "4kq.net", "localhost", "localdomain", "invalid", "local"]
+  # On top of Hostname.system_suffixes/0 (palee.app, 4kq.net, atha.gr, atha.io).
+  refused_suffixes: ["localhost", "localdomain", "invalid", "local"]
 
 # ADR-355: Google review asks.
 config :palee, :review_ask_store, Palee.Infrastructure.ReviewAsks.EctoReviewAskStore

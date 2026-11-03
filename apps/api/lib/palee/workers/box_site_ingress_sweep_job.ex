@@ -1,7 +1,8 @@
 defmodule Palee.Workers.BoxSiteIngressSweepJob do
   @moduledoc """
-  ADR-398, hourly: removes the Ingresses of custom hosts no box has any
-  more and recreates missing ones (`SiteIngresses.sweep/0`).
+  ADR-398, nightly (01:15 UTC): removes the Ingresses of custom hosts no
+  box has any more, recreates missing ones and rereads active certificates
+  (`SiteIngresses.sweep/0`).
   """
 
   use Oban.Worker, queue: :box_site, max_attempts: 1, unique: [period: 600]
@@ -13,8 +14,12 @@ defmodule Palee.Workers.BoxSiteIngressSweepJob do
   @impl Oban.Worker
   def perform(_job) do
     case SiteIngresses.sweep() do
-      {:ok, %{removed: removed, restored: restored}} when removed + restored > 0 ->
-        Logger.info("site ingress sweep: #{removed} removed, #{restored} restored")
+      {:ok, %{removed: removed, restored: restored, certificates: changed}}
+      when removed + restored + changed > 0 ->
+        Logger.info(
+          "site ingress sweep: #{removed} removed, #{restored} restored, " <>
+            "#{changed} certificates changed"
+        )
 
       {:ok, _counts} ->
         :ok

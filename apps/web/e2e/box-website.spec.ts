@@ -375,6 +375,47 @@ test.describe("Settings › Website", () => {
     // Only the background session refresh and the time-zone sync write; the domain card writes nothing.
     expect(writes.filter((write) => write.path.startsWith("/api/admin/site"))).toEqual([]);
   });
+
+  // ADR-398 (2026-11-03): a host the cluster refuses, an apex record, and a system domain typed in.
+  test("the domain card says when a domain is not available, and refuses system domains", async ({ page }) => {
+    const writes: Write[] = [];
+    const domain = {
+      id: "domain-kypseli.gr",
+      host: "kypseli.gr",
+      primary: true,
+      status: "pending_tls",
+      last_error: "tls_not_ready",
+      checked_at: new Date().toISOString(),
+      next_check_at: new Date().toISOString(),
+      verified_at: new Date().toISOString(),
+      active_at: null,
+      certificate_status: "failed",
+      certificate_error: "host_not_allowed",
+      dns_records: [
+        { type: "TXT", name: "_palee-challenge.kypseli.gr", value: "palee-site-verification=tok" },
+        { type: "ALIAS", name: "kypseli.gr", value: "sites.palee.app" },
+      ],
+    };
+    await asOwner(page, writes, (path, method, _body, route) => {
+      if (path === "/api/admin/site" && method === "GET") return json(route, { settings: siteSettings, domains: [domain] });
+      if (path === "/api/admin/site/summary") {
+        return json(route, { days: 30, submissions: { total: 0, delivered: 0, failed: 0, waiting: 0 }, consents: { accept_all: 0, custom: 0, reject_all: 0, withdraw: 0 } });
+      }
+      return null;
+    });
+    await page.goto("/admin/settings/website");
+
+    const card = page.getByTestId("website-domain");
+    await expect(card.getByTestId("site-domain-certificate")).toContainText("This domain is not available");
+    await expect(card.getByText("CNAME flattening / ALIAS / ANAME")).toBeVisible();
+    await expect(card.getByTestId("site-dns-alias-hint")).toContainText("our addresses change");
+
+    await page.getByTestId("website-domain-input").fill("shop.milos.4kq.net");
+    await page.getByRole("button", { name: "Add", exact: true }).click();
+    await expect(page.locator("#website-domain-host-error")).toHaveText("This is a Palee or system domain. Enter your own, e.g. www.mybox.gr.");
+    // Refused before it is sent.
+    expect(writes.filter((write) => write.path.startsWith("/api/admin/site/domains"))).toEqual([]);
+  });
 });
 
 test.describe("Settings › Reviews", () => {
