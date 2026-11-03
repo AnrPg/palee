@@ -481,4 +481,20 @@ if config_env() == :prod do
       |> String.split(",", trim: true)
       |> Enum.map(&String.trim/1),
     refused_suffixes: ["palee.app", "4kq.net", "localhost", "localdomain", "invalid", "local"]
+
+  # ADR-398: BOX_SITE_INGRESS=kubernetes lets the API create each verified
+  # host's Ingress with its service account; anything else keeps the list.
+  if System.get_env("BOX_SITE_INGRESS") == "kubernetes" do
+    config :palee, :box_site_ingress, Palee.Infrastructure.BoxSite.KubernetesSiteIngress
+
+    config :palee, :box_site_kubernetes,
+      api_url: System.get_env("BOX_SITE_KUBERNETES_API_URL"),
+      issuer_kind: System.get_env("BOX_SITE_CERT_ISSUER_KIND", "Issuer"),
+      issuer_name: System.get_env("BOX_SITE_CERT_ISSUER", "palee-sites"),
+      ingress_class: System.get_env("BOX_SITE_INGRESS_CLASS"),
+      api_service: System.get_env("BOX_SITE_API_SERVICE", "palee-api"),
+      api_port: String.to_integer(System.get_env("BOX_SITE_API_PORT", "4000")),
+      web_service: System.get_env("BOX_SITE_WEB_SERVICE", "palee-web"),
+      web_port: String.to_integer(System.get_env("BOX_SITE_WEB_PORT", "3000"))
+  end
 end
