@@ -192,7 +192,12 @@ questions as follows, and the UI was built with option A of all four parts.
   console page `/platform/review-reports` (cards per review, «Ανοιχτές» and
   «Αποφασισμένες» with «Επαναφορά»).
 - Palee's terms of use need the moderation paragraph, checked by a lawyer
-  with the privacy template (decision 11).
+  with the privacy template (decision 11). Drafted on 2026-11-03 as the
+  «Κριτικές και αναφορές περιεχομένου» section of `/terms`
+  (`legal.terms.reviewsTitle` and `reviewsBody1..5` in all 12 locales, section
+  list in `apps/web/src/components/legal/termsSections.ts`); the reasoning and
+  the lawyer's list are in
+  `docs/research/legal-terms-v3.2-2026-11-03.md`.
 - Migration `20270605000000_box_review_reports.exs`; notification types
   `box_review_moderated`, `box_review_report_decided` (category `account`,
   locked); email template `review_reports_summary`.

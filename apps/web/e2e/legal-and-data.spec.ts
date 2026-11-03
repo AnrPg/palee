@@ -72,6 +72,17 @@ test.describe("privacy policy and terms", () => {
     await expect(page).toHaveURL(/\/terms$/);
     await expect(page.getByRole("heading", { level: 1, name: "Terms of use" })).toBeVisible();
     await expect(page.getByText("You must be 16 or older.", { exact: false })).toBeVisible();
+
+    // ADR-397 (DSA Art. 14) and ADR-370/371: the v3.2 sections and the moderation address.
+    await expect(page.getByRole("heading", { name: "Reviews and content reports" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Training programmes" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "For boxes and coaches" })).toBeVisible();
+    await expect(page.getByText("Only the Palee team decides.", { exact: false })).toBeVisible();
+    await expect(page.getByText("moderation@palee.app", { exact: false }).first()).toBeVisible();
+    await expect(page.getByText("14 days from the purchase to withdraw", { exact: false })).toBeVisible();
+
+    await page.goto("/terms#reviews");
+    await expect(page.locator("#reviews")).toBeInViewport();
   });
 
   test("read in Greek, with the canonical names", async ({ page }) => {
@@ -80,6 +91,12 @@ test.describe("privacy policy and terms", () => {
     await expect(page.getByRole("heading", { level: 1, name: "Πολιτική απορρήτου" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Τα δικαιώματά σου" })).toBeVisible();
     await expect(page.getByText("«Λήψη των δεδομένων μου»", { exact: false })).toBeVisible();
+
+    // ADR-397 and the ontology (§4.29, §4.26): the Greek section names.
+    await page.goto("/terms");
+    await expect(page.getByRole("heading", { name: "Κριτικές και αναφορές περιεχομένου" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Προγράμματα προπόνησης" })).toBeVisible();
+    await expect(page.getByText("Την απόφαση την παίρνει μόνο η ομάδα του Palee.", { exact: false })).toBeVisible();
   });
 
   test("are in the sitemap and linked from About", async ({ page, request }) => {
