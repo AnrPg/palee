@@ -407,8 +407,16 @@ defmodule PaleeWeb.Schemas.OpenPlatform do
         reason: @maybe_string,
         method: %Schema{type: :string, enum: ~w(qr nfc staff provider)},
         provider_event: @maybe_string,
-        person_name: %Schema{type: :string, nullable: true, description: "Who entered or was refused"},
-        actor_name: %Schema{type: :string, nullable: true, description: "Who opened from the desk"},
+        person_name: %Schema{
+          type: :string,
+          nullable: true,
+          description: "Who entered or was refused"
+        },
+        actor_name: %Schema{
+          type: :string,
+          nullable: true,
+          description: "Who opened from the desk"
+        },
         door_name: %Schema{type: :string, nullable: true},
         occurred_at: @datetime
       },
