@@ -16465,5 +16465,20 @@
     "done": "You will no longer get SMS with offers from {box}.",
     "invalid": "This link is not valid.",
     "error": "Something went wrong. Please try again."
+  },
+  "FitnessCoach": {
+    "title": "Fitness level",
+    "bodyWeight": "Body weight",
+    "kg": "{weight} kg",
+    "birthYear": "Birth year",
+    "notFilled": "not filled in",
+    "noneFilled": "{name} hasn't filled in body weight or birth year.",
+    "question": "What they see on the card",
+    "theirChoice": "Their choice ({choice})",
+    "display_all": "All",
+    "display_progress_only": "Progress only",
+    "display_none": "Nothing",
+    "hint": "With “Progress only” or “Nothing”, their card says “Set by your coach”.",
+    "theirsIsStricter": "{name} chose “{choice}”, which is stricter, so that stays."
   }
 }

@@ -16465,5 +16465,20 @@
     "done": "לא תקבלו עוד הודעות SMS עם הצעות מ-{box}.",
     "invalid": "הקישור הזה אינו תקף.",
     "error": "משהו השתבש. נסו שוב."
+  },
+  "FitnessCoach": {
+    "title": "רמת כושר",
+    "bodyWeight": "משקל גוף",
+    "kg": "{weight} ק״ג",
+    "birthYear": "שנת לידה",
+    "notFilled": "לא מולא",
+    "noneFilled": "{name} לא מילא/ה משקל גוף ושנת לידה.",
+    "question": "מה רואים בכרטיס",
+    "theirChoice": "הבחירה שלו/ה ({choice})",
+    "display_all": "הכול",
+    "display_progress_only": "רק התקדמות",
+    "display_none": "כלום",
+    "hint": "עם «רק התקדמות» או «כלום», בכרטיס כתוב «נקבע על ידי המאמן שלך».",
+    "theirsIsStricter": "{name} בחר/ה «{choice}», שהוא מחמיר יותר, ולכן זה נשאר."
   }
 }

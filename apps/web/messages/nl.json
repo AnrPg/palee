@@ -16465,5 +16465,20 @@
     "done": "Je krijgt geen sms'jes met aanbiedingen van {box} meer.",
     "invalid": "Deze link is niet geldig.",
     "error": "Er ging iets mis. Probeer het opnieuw."
+  },
+  "FitnessCoach": {
+    "title": "Fitnessniveau",
+    "bodyWeight": "Lichaamsgewicht",
+    "kg": "{weight} kg",
+    "birthYear": "Geboortejaar",
+    "notFilled": "niet ingevuld",
+    "noneFilled": "{name} heeft geen lichaamsgewicht en geboortejaar ingevuld.",
+    "question": "Wat de kaart toont",
+    "theirChoice": "Eigen keuze ({choice})",
+    "display_all": "Alles",
+    "display_progress_only": "Alleen voortgang",
+    "display_none": "Niets",
+    "hint": "Bij ‘Alleen voortgang’ of ‘Niets’ staat op de kaart ‘Ingesteld door je coach’.",
+    "theirsIsStricter": "{name} koos ‘{choice}’, dat is strenger, dus dat blijft."
   }
 }

@@ -16465,5 +16465,20 @@
     "done": "Deixará de receber SMS com ofertas de {box}.",
     "invalid": "Esta ligação não é válida.",
     "error": "Algo correu mal. Tente novamente."
+  },
+  "FitnessCoach": {
+    "title": "Nível de forma física",
+    "bodyWeight": "Peso corporal",
+    "kg": "{weight} kg",
+    "birthYear": "Ano de nascimento",
+    "notFilled": "não indicado",
+    "noneFilled": "{name} não indicou o peso corporal nem o ano de nascimento.",
+    "question": "O que vê no cartão",
+    "theirChoice": "A escolha dele/dela ({choice})",
+    "display_all": "Tudo",
+    "display_progress_only": "Só progresso",
+    "display_none": "Nada",
+    "hint": "Com «Só progresso» ou «Nada», o cartão diz «Definido pelo teu coach».",
+    "theirsIsStricter": "{name} escolheu «{choice}», que é mais restrito, por isso fica assim."
   }
 }
