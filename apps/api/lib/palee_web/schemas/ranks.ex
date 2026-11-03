@@ -130,7 +130,10 @@ defmodule PaleeWeb.Schemas.Ranks do
           enum: ~w(federation palee),
           description: "A federation's or school's system, or Palee's own levels"
         },
-        system: %Schema{type: :string, description: "The system it follows (English note)"},
+        system: %Schema{
+          type: :string,
+          description: "The system it follows, in the requested language"
+        },
         ranks: %Schema{
           type: :array,
           items: %Schema{

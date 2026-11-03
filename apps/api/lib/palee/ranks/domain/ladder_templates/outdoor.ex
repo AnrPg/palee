@@ -11,7 +11,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Outdoor do
         "skateboarding",
         "level",
         :palee,
-        "Palee levels from Skateboard GB beginner awards and common progression",
+        "Palee levels from Skateboard GB awards",
         [
           rank({"Level %{n}", 1}, nil, 0, [], [
             "Stance (regular or goofy) and pushing",
@@ -52,22 +52,21 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Outdoor do
         "climbing_bouldering",
         "level",
         :federation,
-        "NICAS levels 1-5 (UK national indoor climbing scheme)",
+        "NICAS levels 1-5 (UK indoor climbing scheme)",
         [
-          rank("Foundation climber", nil, 0, [], [
+          rank("New climber", nil, 0, [], [
             "Fits a harness and helmet correctly",
             "Figure-eight knot checked by a partner",
             "Climbs a top-rope route and is lowered"
           ]),
-          rank("Top-rope climber", nil, 0, [], [
+          rank("Foundation climber", nil, 0, [], [
             "Belays top-rope with an assisted device",
-            "Climbs grade 4 routes cleanly",
-            "Safe bouldering falls"
+            "Safe bouldering falls",
+            "Climbs smoothly with straight arms"
           ]),
           rank("Technical climber", nil, 0, [], [
             "Footwork: edging and smearing",
-            "Flagging and drop knee",
-            "Climbs grade 5 routes"
+            "Flagging and drop knee"
           ]),
           rank("Lead climber", nil, 0, [], [
             "Lead climbs and clips in sequence",
@@ -75,7 +74,6 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Outdoor do
             "Takes practice lead falls"
           ]),
           rank("Advanced climber", nil, 0, [], [
-            "Climbs grade 6a or harder on lead",
             "Plans training and route reading",
             "Takes part in a competition"
           ])
@@ -86,8 +84,8 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Outdoor do
         "Bouldering grades",
         "climbing_bouldering",
         "level",
-        :federation,
-        "V-scale grades (Fontainebleau in brackets)",
+        :palee,
+        "Palee levels by V-grade (Font in brackets)",
         [
           rank("V0 (4)", nil, 0, [], ["Tops three different V0 problems"]),
           rank("V1 (5)", nil, 0, [], ["Tops three different V1 problems"]),

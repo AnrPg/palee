@@ -11,15 +11,15 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
         "ballet",
         "level",
         :federation,
-        "Follows the Royal Academy of Dance graded structure; not affiliated with or endorsed by the RAD",
+        "RAD graded structure (not affiliated)",
         [
-          rank("Pre-Primary", nil, 0, [], [
+          rank({:exam, "Pre-Primary"}, nil, 0, [], [
             "Posture and parallel feet",
             "Pointing and flexing feet",
             "Skips and galops to music",
             "Free movement to a story"
           ]),
-          rank("Primary", nil, 0, [], [
+          rank({:exam, "Primary"}, nil, 0, [], [
             "First position and demi-plie",
             "Transfer of weight and balance on demi-pointe",
             "Sautes in first position",
@@ -72,25 +72,31 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
         "ballet",
         "level",
         :federation,
-        "Follows the RAD vocational structure; not affiliated with or endorsed by the RAD",
+        "RAD vocational structure (not affiliated)",
         [
-          rank("Intermediate Foundation", nil, 0, [], [
+          rank({:exam, "Intermediate Foundation"}, nil, 0, [], [
             "Barre and centre at vocational standard",
             "Pointe work introduction",
             "Double pirouette en dehors"
           ]),
-          rank("Intermediate", nil, 0, [], [
+          rank({:exam, "Intermediate"}, nil, 0, [], [
             "Pointe enchaînements",
             "Fouetté rond de jambe en tournant",
             "Grand allegro with tours en l'air (male)"
           ]),
-          rank("Advanced Foundation", nil, 0, [], [
+          rank({:exam, "Advanced Foundation"}, nil, 0, [], [
             "Multiple pirouettes and fouettés",
             "Batterie with entrechat six"
           ]),
-          rank("Advanced 1", nil, 0, [], ["Classical solo variation", "Sustained adage on pointe"]),
-          rank("Advanced 2", nil, 0, [], ["Professional-level class", "Two solo variations"]),
-          rank("Solo Seal", nil, 0, [], ["Solo Seal variations and own solo"])
+          rank({:exam, "Advanced 1"}, nil, 0, [], [
+            "Classical solo variation",
+            "Sustained adage on pointe"
+          ]),
+          rank({:exam, "Advanced 2"}, nil, 0, [], [
+            "Professional-level class",
+            "Two solo variations"
+          ]),
+          rank({:exam, "Solo Seal"}, nil, 0, [], ["Solo Seal variations and own solo"])
         ]
       ),
       template(
@@ -98,8 +104,8 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
         "Contemporary dance grades",
         "contemporary_dance",
         "level",
-        :federation,
-        "Grades 1-6 like ISTD contemporary exams; not affiliated with the ISTD",
+        :palee,
+        "Palee grades (the ISTD has no graded contemporary exams)",
         [
           rank({"Grade %{n}", 1}, nil, 0, [], [
             "Parallel and turned-out positions",
@@ -138,24 +144,27 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
         "latin_dance",
         "level",
         :federation,
-        "Bronze Silver Gold like ISTD and IDTA medal tests; not affiliated with them",
+        "Medal tests like the ISTD and IDTA (not affiliated)",
         [
           rank("Social", nil, 0, [], [
             "Cha cha and rumba basic movement",
             "Leading and following in closed hold"
           ]),
           rank("Bronze", nil, 0, [], [
-            "Two dances from cha cha samba rumba paso doble jive",
+            "Chosen dances from cha cha samba rumba paso doble and jive",
             "Bronze figures with timing",
             "Hip action (Cuban motion)"
           ]),
           rank("Silver", nil, 0, [], [
-            "Three dances with silver figures",
+            "Silver figures in the chosen dances",
             "Spins and turns with spotting"
           ]),
-          rank("Gold", nil, 0, [], ["Four dances with gold figures", "Musicality and floorcraft"]),
+          rank("Gold", nil, 0, [], [
+            "Gold figures in the chosen dances",
+            "Musicality and floorcraft"
+          ]),
           rank("Gold Star", nil, 0, [], [
-            "Five dances at gold standard",
+            "Gold Star awards in the chosen dances",
             "Competition-ready routines"
           ])
         ]
@@ -206,7 +215,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
         "latin_dance",
         "level",
         :palee,
-        "Palee levels (traditional sensual and dominican styles)",
+        "Palee levels (sensual and Dominican styles)",
         [
           rank({"Beginner %{n}", 1}, nil, 0, [], [
             "Basic step with the tap on 4 and 8",
@@ -241,7 +250,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
         "street_dance",
         "level",
         :federation,
-        "ISTD street dance medal tests (Bronze Silver Gold) with Palee starter level",
+        "ISTD street dance medals plus a Palee starter level",
         [
           rank("Starter", nil, 0, [], [
             "Bounce and rock grooves",
@@ -334,7 +343,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
         "street_dance",
         "level",
         :palee,
-        "Palee levels (urban latin)",
+        "Palee levels (urban Latin)",
         [
           rank({"Level %{n}", 1}, nil, 0, [], [
             "Dembow rhythm in the feet",
@@ -392,7 +401,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
         "pole_aerial",
         "level",
         :palee,
-        "Palee levels from common studio grading (spins climbs inverts)",
+        "Palee levels from common studio grading",
         [
           rank({"Level %{n}", 1}, nil, 0, [], [
             "Walks and pivots around the pole",
@@ -434,7 +443,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
         "pole_aerial",
         "level",
         :palee,
-        "Palee levels from common circus school progression",
+        "Palee levels from circus school progression",
         [
           rank({"Level %{n}", 1}, nil, 0, [], [
             "Single foot lock from the ground",
@@ -466,7 +475,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
         "pole_aerial",
         "level",
         :palee,
-        "Palee levels from common circus school progression",
+        "Palee levels from circus school progression",
         [
           rank({"Level %{n}", 1}, nil, 0, [], [
             "Hip-hang and seated mount from the ground",
@@ -496,9 +505,9 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
         "dance",
         "level",
         :federation,
-        "ISTD (Imperial Society of Teachers of Dancing) Tap Faculty graded and vocational examinations: Pre-Primary and Primary class exams then Grades 1-6 (Of",
+        "ISTD tap structure (not affiliated)",
         [
-          rank("Pre-Primary", nil, 0, [], [
+          rank({:exam, "Pre-Primary"}, nil, 0, [], [
             "Bounce in time to music",
             "Step and jump with clear sounds",
             "Ball taps and ball beats",
@@ -510,7 +519,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
             "Keeps a steady beat when clapping",
             "Performs a short teacher-led tap routine"
           ]),
-          rank("Primary", nil, 0, [], [
+          rank({:exam, "Primary"}, nil, 0, [], [
             "All Pre-Primary steps clean and in time",
             "Ball change",
             "Single paradiddle (paddle)",
@@ -559,7 +568,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
             "Pick up on 1 foot (with preparation)",
             "Pick up change and pick up ball change",
             "Shuffle spring",
-            "Basic · single and double waltz step",
+            "Basic waltz step single and double",
             "Double time step",
             "Paddles exercise",
             "Unseen sequence of 2 known steps set by teacher"
@@ -586,7 +595,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
             "3 beat and 4 beat wing preparation",
             "Maxi Ford with toe tap",
             "Sugars",
-            "Single · double and triple pick up time steps",
+            "Pick up time steps single double and triple",
             "Shuffle time step solo",
             "Basic Shim Sham",
             "Optional: double wings and toe beat crawl"
@@ -603,7 +612,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
             "Time steps starting on 8 or on 1",
             "Solo dance of own style choice"
           ]),
-          rank("Intermediate", nil, 0, [], [
+          rank({:exam, "Intermediate"}, nil, 0, [], [
             "Slap · splat · snatch and slam",
             "3 beat shuffles · flaps and pull backs",
             "Drum cramp roll and 6 beat cramp roll",
@@ -622,7 +631,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
             "Theatre tap and commercial tap sequences",
             "Own dance composition up to 2 minutes"
           ]),
-          rank("Advanced 1", nil, 0, [], [
+          rank({:exam, "Advanced 1"}, nil, 0, [], [
             "Progressive taps",
             "Roll time steps",
             "12 beat criss cross riffs",
@@ -635,7 +644,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
             "Blues and quick jazz sequences",
             "Optional: mixed Maxi Ford · wing on one foot · wing change"
           ]),
-          rank("Advanced 2", nil, 0, [], [
+          rank({:exam, "Advanced 2"}, nil, 0, [], [
             "Single · double · triple and double-triple cramp roll time steps",
             "4 beat press cramp roll",
             "Syncopated shuffle pick up change",
@@ -656,9 +665,9 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
         "dance",
         "level",
         :federation,
-        "ISTD Modern Theatre Faculty (the UK exam syllabus for jazz/theatre jazz): Primary then Grades 1-6 then vocational Intermediate Foundation · Intermedia",
+        "ISTD Modern Theatre structure (not affiliated)",
         [
-          rank("Primary", nil, 0, [], [
+          rank({:exam, "Primary"}, nil, 0, [], [
             "Natural walks on the diagonal in time",
             "Limbering: magic feet · leg stretching · squeeze and stretch",
             "Running in a circle with control",
@@ -748,7 +757,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
             "Dance vocabulary sequence with 4-count improvisation",
             "Lyrical · musical theatre or jazz amalgamation"
           ]),
-          rank("Intermediate Foundation", nil, 0, [], [
+          rank({:exam, "Intermediate Foundation"}, nil, 0, [], [
             "Circular walk and triple run",
             "Drag run",
             "Jazz change of weight",
@@ -762,7 +771,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
             "Circular spring and forward leap",
             "Isolations and set rhythm clapping"
           ]),
-          rank("Intermediate", nil, 0, [], [
+          rank({:exam, "Intermediate"}, nil, 0, [], [
             "Barre work: figure of 8 leg swings",
             "Développé walk with lay back",
             "Trudging · cushion and circular walks",
@@ -778,7 +787,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
             "Leaps on the diagonal and elevated turns",
             "Interprets free rhythm with syncopation"
           ]),
-          rank("Advanced 1", nil, 0, [], [
+          rank({:exam, "Advanced 1"}, nil, 0, [], [
             "Jazz adage set exercise",
             "Falls: knee drop and back fall",
             "Triple walk and walks set exercise",
@@ -793,7 +802,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
             "Accented hops with a whole turn",
             "Improvises immediately to examiner's free amalgamation"
           ]),
-          rank("Advanced 2", nil, 0, [], [
+          rank({:exam, "Advanced 2"}, nil, 0, [], [
             "Technical floor sequence",
             "Falls and tilts set exercise",
             "Extended walks with body tilt",
@@ -816,9 +825,9 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
         "ballet",
         "level",
         :federation,
-        "ISTD Cecchetti Classical Ballet Faculty (UK; also Cecchetti Society/Cecchetti Council of America and Cecchetti Ballet Australia use similar ladders)",
+        "ISTD Cecchetti structure (not affiliated)",
         [
-          rank("Pre-Primary", nil, 0, [], [
+          rank({:exam, "Pre-Primary"}, nil, 0, [], [
             "Demi-pliés in 1st position",
             "Walking on tip toes",
             "Flexing and pointing the feet",
@@ -829,7 +838,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
             "Responds to music in imaginative scenes",
             "Curtsey or bow"
           ]),
-          rank("Primary", nil, 0, [], [
+          rank({:exam, "Primary"}, nil, 0, [], [
             "Skips into the room to music",
             "Demi-pliés and rises",
             "Battement tendu",
@@ -938,7 +947,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
             "Entrechat royale and entrechat trois",
             "Unseen enchaînement of up to 4 steps"
           ]),
-          rank("Intermediate Foundation", nil, 0, [], [
+          rank({:exam, "Intermediate Foundation"}, nil, 0, [], [
             "Theory: positions · seven movements · eight directions · five arabesques",
             "Uses the eight fixed points of the room",
             "Full traditional barre from pliés to relevés",
@@ -953,7 +962,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
             "Boys option: grands changements and échappés battus",
             "Classical solo up to one minute (not on pointe)"
           ]),
-          rank("Intermediate", nil, 0, [], [
+          rank({:exam, "Intermediate"}, nil, 0, [], [
             "Theory of port de bras and correct movements of the foot",
             "Ronds de jambe en l'air and fouettés à terre",
             "Grand fouetté and développé en tournant",
@@ -970,7 +979,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
             "Pointe: pas de bourrée piqués · couru · posés coupés and emboîtés",
             "Boys: tour en l'air from changement and from relevé"
           ]),
-          rank("Advanced 1", nil, 0, [], [
+          rank({:exam, "Advanced 1"}, nil, 0, [], [
             "Traditional and additional barre including battements jetés at 45°",
             "Adage study and jetés of adage",
             "Arabesque penchée",
@@ -986,7 +995,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
             "Pointe: soutenu turns · posé tours · posé développé",
             "Boys: double tour en l'air and tours à la seconde"
           ]),
-          rank("Advanced 2", nil, 0, [], [
+          rank({:exam, "Advanced 2"}, nil, 0, [], [
             "Full traditional barre with option A or B additions",
             "Battements tendus with dégagé en tournant",
             "Advanced adages from the Cecchetti days of the week",
@@ -1009,7 +1018,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
         "ballet",
         "level",
         :federation,
-        "Vaganova Academy of Russian Ballet 8-year professional programme (classes 1-8 · entry around age 10)",
+        "Vaganova 8-year programme (yearly content reconstructed)",
         [
           rank("Year 1", nil, 0, [], [
             "Five positions of the feet and preparatory arm position",
@@ -1124,7 +1133,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
         "dance",
         "level",
         :palee,
-        "No federation or examining body grades kizomba",
+        "Palee levels (no examining body)",
         [
           rank("Level 1 · Foundations", nil, 0, [], [
             "Finds the main beat in kizomba music",
@@ -1189,7 +1198,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
         "dance_fitness",
         "level",
         :palee,
-        "Zumba has instructor licensing (Zumba Basic 1 on the four core rhythms merengue · salsa · cumbia · reggaeton and the Zumba formula; Basic 2 adds more ",
+        "Palee levels for dance fitness classes",
         [
           rank("Starter", nil, 0, [], [
             "Follows the instructor's visual cues",
@@ -1243,7 +1252,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Dance do
         "pole_aerial",
         "level",
         :palee,
-        "No governing body grades aerial hammock or aerial yoga for students (teacher trainings such as AYOGA · Unnata · AntiGravity exist)",
+        "Palee levels (no body grades students)",
         [
           rank("Intro", nil, 0, [], [
             "Sets hammock height for seated and standing work",

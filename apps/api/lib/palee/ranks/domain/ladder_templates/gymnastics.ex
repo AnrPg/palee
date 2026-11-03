@@ -11,7 +11,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Gymnastics do
         "gymnastics",
         "level",
         :palee,
-        "Generic numbered levels (no skills; fill in your own)",
+        "Generic numbered levels (add your own skills)",
         [
           rank({"Level %{n}", 1}, nil, 0, [], []),
           rank({"Level %{n}", 2}, nil, 0, [], []),
@@ -57,30 +57,30 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Gymnastics do
           ]),
           rank({"Level %{n}", 4}, nil, 0, [], [
             "Back walkover",
-            "Front limber",
-            "Bars: kip with spot and cast to handstand practice",
+            "Round-off back handspring",
+            "Bars: glide kip and cast to horizontal",
+            "Bars: long hang kip and back hip circle",
             "Beam: cartwheel",
             "Vault: front handspring over the table"
           ]),
           rank({"Level %{n}", 5}, nil, 0, [], [
-            "Back handspring",
-            "Round-off back handspring",
-            "Bars: kip cast to horizontal and clear hip circle",
-            "Beam: back walkover",
-            "Bars: long hang kip"
+            "Round-off back handspring back tuck",
+            "Front tuck or aerial",
+            "Bars: kip cast above horizontal and clear hip circle",
+            "Bars: flyaway dismount",
+            "Beam: back walkover or back handspring",
+            "Beam: back tuck dismount"
           ]),
           rank({"Level %{n}", 6}, nil, 0, [], [
-            "Back tuck",
-            "Front tuck",
+            "Optional routines with required elements",
             "Bars: cast to 45 degrees above horizontal",
-            "Beam: back handspring",
-            "Optional routines with required elements"
+            "Back layout"
           ]),
           rank({"Level %{n}", 7}, nil, 0, [], [
             "Round-off back handspring layout",
-            "Bars: giant swing drills and flyaway dismount",
+            "Bars: giant swing drills",
             "Beam: acro series of two elements",
-            "Vault: Yamashita or handspring"
+            "Vault: handspring (Yamashita optional)"
           ]),
           rank({"Level %{n}", 8}, nil, 0, [], [
             "Full twisting layout",
@@ -130,12 +130,12 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Gymnastics do
           ]),
           rank("Platinum", nil, 0, [], [
             "Back tuck in a pass",
-            "Bars: six A and one B value parts",
+            "Every event meets the Platinum special requirements",
             "Beam: acro series"
           ]),
           rank("Diamond", nil, 0, [], [
             "Layout or twisting salto",
-            "Bars: five A and two B value parts",
+            "Every event meets the Diamond special requirements",
             "Beam: salto or two-flight series"
           ]),
           rank("Sapphire", nil, 0, [], ["Harder value parts on every event", "Age 12 or older"])
@@ -147,7 +147,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Gymnastics do
         "artistic_gymnastics",
         "level",
         :federation,
-        "USA Gymnastics men's Development Program (6 apparatus)",
+        "USA Gymnastics men's Development Program",
         [
           rank({"Level %{n}", 1}, nil, 0, [], [
             "Forward and backward rolls",
@@ -206,59 +206,52 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Gymnastics do
         "rhythmic_gymnastics",
         "level",
         :federation,
-        "USA Gymnastics Rhythmic Development Program levels 1-10",
+        "USA Gymnastics rhythmic levels 3-8 then FIG Junior and Senior",
         [
-          rank({"Level %{n}", 1}, nil, 0, [], [
-            "Releve walks and balance on toes",
-            "Pointed feet and straight-leg positions",
-            "Rope: swings and skips forward",
-            "Ball: rolls on the floor and bounces"
-          ]),
-          rank({"Level %{n}", 2}, nil, 0, [], [
-            "Passe balance for 2 seconds",
-            "Front and side splits",
-            "Rope: double turn swing and toss",
-            "Ball: roll along the arms"
-          ]),
           rank({"Level %{n}", 3}, nil, 0, [], [
-            "Pivot 360 degrees in passe",
+            "Age 6 or older",
+            "Releve walks and passe balance",
             "Split leap and stag leap",
             "Floor routine to music",
-            "Rope and ball routines"
+            "One apparatus routine (rope or ball)"
           ]),
           rank({"Level %{n}", 4}, nil, 0, [], [
+            "Pivot 360 degrees in passe",
             "Arabesque and attitude balances",
-            "Back bend and walkover",
-            "Hoop: rolls spins and tosses"
+            "Group floor routine",
+            "Two apparatus routines"
           ]),
           rank({"Level %{n}", 5}, nil, 0, [], [
-            "Ring leap and cossack jump",
-            "Pivots of 720 degrees",
-            "Ball: throw and catch with one hand",
-            "Hoop: rotation around the hand and the body"
+            "Age 7 or older",
+            "Floor and three apparatus routines",
+            "Hoop: rolls spins and tosses",
+            "Ball: throw and catch with one hand"
           ]),
           rank({"Level %{n}", 6}, nil, 0, [], [
+            "Age 8 or older",
+            "Pivots of 720 degrees",
             "Clubs: mills and small circles",
+            "Ring leap and cossack jump"
+          ]),
+          rank({"Level %{n}", 7}, nil, 0, [], [
+            "Age 9 or older",
+            "Ribbon: spirals and snakes",
             "Leg in hand balance (penche drills)",
             "Dynamic elements with rotation under a throw"
           ]),
-          rank({"Level %{n}", 7}, nil, 0, [], [
-            "Ribbon: spirals and snakes",
-            "Clubs: asymmetric movements and throws",
-            "Two apparatus routines with difficulty"
-          ]),
           rank({"Level %{n}", 8}, nil, 0, [], [
-            "Four routines: floor and three apparatus",
+            "Age 10 or older",
             "Penche and ring balances",
             "Apparatus masteries (risk elements)"
           ]),
-          rank({"Level %{n}", 9}, nil, 0, [], [
+          rank("Junior", nil, 0, [], [
+            "Age 13 or older (FIG junior)",
             "Routines with hoop ball clubs and ribbon",
             "Fouette and illusion pivots"
           ]),
-          rank({"Level %{n}", 10}, nil, 0, [], [
-            "Routines under the FIG Code of Points",
-            "Body and apparatus difficulties at junior or senior level"
+          rank("Senior", nil, 0, [], [
+            "Age 16 or older (FIG senior)",
+            "Routines under the FIG Code of Points"
           ])
         ]
       ),
@@ -271,60 +264,99 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Gymnastics do
         "British Gymnastics trampoline proficiency awards",
         [
           rank({"Award %{n}", 1}, nil, 0, [], [
-            "Straight jump with controlled stop",
-            "Tuck jump",
-            "Straddle and pike jumps"
+            "Waits their turn and behaves safely around the trampoline",
+            "Mounts and dismounts from the centre",
+            "Bounces lying sitting or on hands and knees"
           ]),
           rank({"Award %{n}", 2}, nil, 0, [], [
-            "Seat drop",
-            "Half twist jump",
-            "Hands and knees drop"
+            "Seated bounce with arm movements",
+            "Bounces a set number of times and stops",
+            "Quarter turn upright",
+            "Seat drop without returning to feet",
+            "Star position"
           ]),
           rank({"Award %{n}", 3}, nil, 0, [], [
-            "Full twist jump",
-            "Seat drop half twist to seat",
-            "Five-move routine"
+            "Straight jumps using the arms",
+            "Tuck jump",
+            "Astride jump and star jump",
+            "Half twist jump"
           ]),
-          rank({"Award %{n}", 4}, nil, 0, [], ["Front drop", "Back drop", "Swivel hips"]),
+          rank({"Award %{n}", 4}, nil, 0, [], [
+            "Tuck jump touching below the knees",
+            "Straddle jump and split jump",
+            "Seat drop returning to feet",
+            "Two half twist jumps linked"
+          ]),
           rank({"Award %{n}", 5}, nil, 0, [], [
-            "Half twist to front drop",
-            "Back drop half twist to feet",
-            "Ten-move routine"
+            "Five straight jumps then stop for 3 seconds",
+            "Piked straddle jump",
+            "Front landing and back landing on a mat",
+            "Seat drop to feet with half twist",
+            "Routine: straddle seat to feet tuck half twist straight"
           ]),
           rank({"Award %{n}", 6}, nil, 0, [], [
-            "Front somersault tucked",
-            "Back drop to front drop (turnover)"
+            "Seat landing half twist to feet",
+            "Full twist jump",
+            "Front landing to feet",
+            "Pike jump",
+            "Ten-move routine with seat landings and twists"
           ]),
-          rank({"Award %{n}", 7}, nil, 0, [], ["Back somersault tucked", "Cradle"]),
-          rank({"Award %{n}", 8}, nil, 0, [], ["Back somersault piked", "Barani tucked"]),
+          rank({"Award %{n}", 7}, nil, 0, [], [
+            "Swivel hips (seat half twist to seat)",
+            "Back landing to feet",
+            "Hands and knees forward turnover to back landing",
+            "Seat landing to feet then front landing to feet"
+          ]),
+          rank({"Award %{n}", 8}, nil, 0, [], [
+            "Seat landing to front landing to feet",
+            "Half twist to front landing and to back landing",
+            "Front and back landing with half twist to feet",
+            "Five back bounces"
+          ]),
           rank({"Award %{n}", 9}, nil, 0, [], [
-            "Back somersault straight",
-            "Barani piked",
-            "Ten-move routine with somersaults"
+            "Piked and straight front and back landings",
+            "Front landing to back landing and back to front",
+            "Forward three-quarter turnover to back landing",
+            "Seat landing full twist to seat (roller)"
           ]),
           rank({"Award %{n}", 10}, nil, 0, [], [
-            "Back somersault with full twist",
-            "Barani straight"
+            "Front or back somersault tucked",
+            "Back landing back pullover to feet",
+            "Front landing half turntable",
+            "Ten-move routine with one somersault"
           ]),
           rank({"Award %{n}", 11}, nil, 0, [], [
-            "Front somersault piked and tuck with three half twists",
-            "Ball-out"
+            "Front somersault piked",
+            "Back somersault tucked and back somersault straight or piked",
+            "Three-quarter front somersault straight to back landing",
+            "Routine with three somersaults",
+            "Floor conditioning: 20 crunches and 20 dorsal raises"
           ]),
           rank({"Award %{n}", 12}, nil, 0, [], [
-            "Barani straight with five somersault shapes",
-            "Rudolph (front with one and a half twists)"
+            "Barani with straight legs",
+            "Crash dive straight",
+            "Back somersault tucked then front somersault piked",
+            "Routine with four somersaults including a barani"
           ]),
           rank({"Award %{n}", 13}, nil, 0, [], [
-            "Double back somersault tucked",
-            "Double twisting back"
+            "Barani tucked and piked",
+            "Back somersault then barani in the same shape",
+            "Crash dive to bounce roll",
+            "Routine with six somersaults"
           ]),
           rank({"Award %{n}", 14}, nil, 0, [], [
-            "Double front or barani-out",
-            "Voluntary routine with doubles"
+            "Barani straight",
+            "Back somersault with half twist",
+            "Full twisting front somersault",
+            "Crash dive to ball out",
+            "Routine with seven somersaults"
           ]),
           rank({"Award %{n}", 15}, nil, 0, [], [
-            "Competition voluntary routine at national grade",
-            "Triple-twisting or twisting doubles"
+            "Crash dive to ball-out barani",
+            "Full twisting back somersault straight",
+            "Rudi (front with one and a half twists)",
+            "Cody from a front landing",
+            "Ten-somersault routine with tariff 5.6 or more"
           ])
         ]
       ),
@@ -334,29 +366,40 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Gymnastics do
         "trampoline_tumbling",
         "level",
         :federation,
-        "USA Gymnastics trampoline and tumbling levels 1-10",
+        "USA Gymnastics tumbling levels 1-10",
         [
           rank({"Level %{n}", 1}, nil, 0, [], [
             "Forward roll and backward roll",
-            "Cartwheel and handstand"
+            "Cartwheel",
+            "Straight jump with stuck landing"
           ]),
-          rank({"Level %{n}", 2}, nil, 0, [], ["Round-off", "Bridge kickover"]),
+          rank({"Level %{n}", 2}, nil, 0, [], [
+            "Handstand forward roll",
+            "Round-off",
+            "Back roll to push-up"
+          ]),
           rank({"Level %{n}", 3}, nil, 0, [], [
-            "Back walkover and front walkover",
-            "Round-off rebound"
+            "Round-off back handspring rebound",
+            "Front handspring"
           ]),
-          rank({"Level %{n}", 4}, nil, 0, [], ["Back handspring", "Front handspring"]),
+          rank({"Level %{n}", 4}, nil, 0, [], ["Round-off and two to four back handsprings"]),
           rank({"Level %{n}", 5}, nil, 0, [], [
-            "Round-off back handspring back tuck",
-            "Front tuck"
+            "Round-off back handsprings back tuck",
+            "Passes of eight elements"
           ]),
-          rank({"Level %{n}", 6}, nil, 0, [], ["Series of back handsprings", "Back layout"]),
-          rank({"Level %{n}", 7}, nil, 0, [], ["Whip back", "Back full twist"]),
-          rank({"Level %{n}", 8}, nil, 0, [], ["Double full", "Front layout"]),
-          rank({"Level %{n}", 9}, nil, 0, [], ["Double back tucked", "Passes of eight elements"]),
+          rank({"Level %{n}", 6}, nil, 0, [], ["Back pike or tuck finish", "Whip back"]),
+          rank({"Level %{n}", 7}, nil, 0, [], [
+            "Whip backs and back handsprings in series",
+            "Back layout"
+          ]),
+          rank({"Level %{n}", 8}, nil, 0, [], ["Back somersault with a full twist (360 degrees)"]),
+          rank({"Level %{n}", 9}, nil, 0, [], [
+            "Back full in elements two to seven",
+            "No double somersault before the last element"
+          ]),
           rank({"Level %{n}", 10}, nil, 0, [], [
-            "Double back piked or full-in",
-            "Competition passes to the code"
+            "A double somersault in the pass",
+            "Double back tucked or piked"
           ])
         ]
       ),
@@ -366,7 +409,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Gymnastics do
         "acrobatics",
         "level",
         :palee,
-        "Acrobatic gymnastics and hand balancing (USA Gymnastics acro and circus schools)",
+        "Palee levels from acro gymnastics and hand balancing",
         [
           rank({"Level %{n}", 1}, nil, 0, [], [
             "Handstand against the wall 30 seconds",
@@ -406,7 +449,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Gymnastics do
         "gymnastics",
         "level",
         :palee,
-        "Skill progressions used in CrossFit gymnastics courses",
+        "Palee skill progressions for CrossFit gymnastics",
         [
           rank("Foundations", nil, 0, [], [
             "Hollow hold 30 seconds and arch hold 30 seconds",
@@ -452,7 +495,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Gymnastics do
         "calisthenics",
         "level",
         :palee,
-        "Street workout strength progressions",
+        "Palee street workout strength progressions",
         [
           rank({"Level %{n}", 1}, nil, 0, [], [
             "10 push-ups and 20 bodyweight squats",
@@ -500,7 +543,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Gymnastics do
         "calisthenics",
         "level",
         :palee,
-        "Freestyle bar skills (statics dynamics and power moves)",
+        "Palee freestyle bar progression",
         [
           rank({"Level %{n}", 1}, nil, 0, [], [
             "Front and back support on the bar",
@@ -535,7 +578,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Gymnastics do
         "parkour",
         "level",
         :palee,
-        "Basic to expert technique tiers used by parkour schools",
+        "Palee technique tiers used by parkour schools",
         [
           rank({"Level %{n}", 1}, nil, 0, [], [
             "Safe landing and roll",
@@ -579,7 +622,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Gymnastics do
         "parkour",
         "level",
         :palee,
-        "Acrobatic freerunning progression",
+        "Palee acrobatic freerunning progression",
         [
           rank({"Level %{n}", 1}, nil, 0, [], [
             "Forward roll on hard ground",

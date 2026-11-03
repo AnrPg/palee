@@ -149,8 +149,10 @@ defmodule Palee.Ranks.Domain.LadderPolicy do
 
   @doc """
   A template in one language: `translate.(message_id, bindings)` gives the
-  text (gettext's `rank_templates` domain). Numbered names (`{pattern, n}`)
-  are translated with their number; the family of the discipline is added.
+  text (gettext's `rank_templates` domain; a `{context, message_id}` id
+  carries a msgctxt). Numbered names (`{pattern, n}`) are translated with
+  their number, exam names (`{:exam, name}`) in the "exam" context; the
+  family of the discipline is added.
   """
   def localize_template(template, translate) when is_function(translate, 2) do
     %{
@@ -158,8 +160,14 @@ defmodule Palee.Ranks.Domain.LadderPolicy do
       | name: translate.(template.name, %{}),
         ranks: Enum.map(template.ranks, &localize_rank(&1, translate))
     }
+    |> localize_system(translate)
     |> Map.put(:family, family(template.discipline))
   end
+
+  defp localize_system(%{system: system} = template, translate) when is_binary(system),
+    do: %{template | system: translate.(system, %{})}
+
+  defp localize_system(template, _translate), do: template
 
   defp localize_rank(rank, translate) do
     requirements =
@@ -174,6 +182,7 @@ defmodule Palee.Ranks.Domain.LadderPolicy do
     %{rank | name: rank_name(rank.name, translate), requirements: requirements}
   end
 
+  defp rank_name({:exam, name}, translate), do: translate.({"exam", name}, %{})
   defp rank_name({pattern, number}, translate), do: translate.(pattern, %{n: number})
   defp rank_name(name, translate), do: translate.(name, %{})
 

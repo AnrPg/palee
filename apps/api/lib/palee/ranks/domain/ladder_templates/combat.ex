@@ -15,6 +15,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Combat do
         [
           rank("White", "white", 4, [], ["Tapping and mat etiquette"]),
           rank("Blue", "blue", 4, [], [
+            "Age 16 or older (IBJJF)",
             "Break-falls back and to the side",
             "Shrimp and bridge escapes to both sides",
             "Closed guard posture and guard break",
@@ -38,6 +39,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Combat do
             "Live rolls with a clear game plan"
           ]),
           rank("Brown", "brown", 4, [days: 540], [
+            "Age 18 or older (IBJJF)",
             "Connected attacks from a personal guard game",
             "Leg-lock entries and straight ankle lock",
             "Counters to the common guard passes",
@@ -61,7 +63,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Combat do
         "bjj_grappling",
         "belt",
         :federation,
-        "IBJJF kids system (ages 4 to 15)",
+        "IBJJF kids belts (ages 4-15)",
         [
           rank("White", "white", 4, [], ["Tapping and mat etiquette"]),
           rank("Grey-white", "grey", 4, [], [
@@ -80,6 +82,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Combat do
             "Side control escape to guard"
           ]),
           rank("Yellow-white", "yellow", 4, [], [
+            "Age 7 or older (IBJJF)",
             "Hip-bump sweep",
             "Guard pass to side control",
             "Knee on belly"
@@ -95,6 +98,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Combat do
             "Butterfly sweep"
           ]),
           rank("Orange-white", "orange", 4, [], [
+            "Age 10 or older (IBJJF)",
             "Collar choke from mount",
             "Half guard sweep",
             "Turtle defence"
@@ -105,23 +109,24 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Combat do
             "Osoto-gari or single-leg takedown"
           ]),
           rank("Orange-black", "orange", 4, [], [
-            "Omoplata",
+            "Arm drag to back take",
             "Back take from turtle",
             "Positional sparring with a plan"
           ]),
           rank("Green-white", "green", 4, [], [
+            "Age 13 or older (IBJJF)",
             "Open guard retention",
             "Bow and arrow choke",
             "Counter to a guard pass"
           ]),
           rank("Green", "green", 4, [], [
             "Three attacks chained from guard",
-            "Straight ankle lock (allowed for the age)",
+            "Cross collar choke from guard",
             "Helps younger children drill"
           ]),
           rank("Green-black", "green", 4, [], [
             "Whole kids curriculum in live sparring",
-            "Ready for the adult blue belt at 16"
+            "At 16 moves to adult blue or purple belt (coach decides)"
           ])
         ]
       ),
@@ -130,8 +135,8 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Combat do
         "Karate belts",
         "karate",
         "belt",
-        :federation,
-        "Common 7-belt kyu ladder",
+        :palee,
+        "Palee 7-belt kyu ladder (no single federation)",
         [
           rank("White", "white", 0, [], ["Dojo etiquette (rei and seiza)"]),
           rank("Yellow", "yellow", 0, [], [
@@ -164,7 +169,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Combat do
             "Tekki Shodan and Bassai Dai",
             "Controlled free sparring (jiyu kumite)"
           ]),
-          rank("Black", "black", 0, [days: 365], [
+          rank("Black", "black", 0, [], [
             "All kihon with power and control",
             "A senior kata of choice with bunkai",
             "Free sparring against two opponents in turn"
@@ -177,28 +182,30 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Combat do
         "karate",
         "belt",
         :federation,
-        "JKA-style 10 kyu to shodan",
+        "Shotokan kyu (shoto.uk colours and intervals)",
         [
-          rank({"Kyu %{n}", 10}, "white", 0, [], ["Dojo etiquette and dojo kun"]),
-          rank({"Kyu %{n}", 9}, "yellow", 0, [days: 90], [
+          rank("Beginner", "white", 0, [], ["Dojo etiquette and dojo kun"]),
+          rank({"Kyu %{n}", 10}, "red", 0, [days: 90], [
             "Zenkutsu-dachi with oi-zuki",
             "Age-uke soto-uke and gedan-barai",
-            "Mae-geri keage",
-            "Kata Heian Shodan"
+            "Mae-geri keage"
           ]),
-          rank({"Kyu %{n}", 8}, "orange", 0, [days: 90], [
-            "Uchi-uke and shuto-uke in kokutsu-dachi",
+          rank({"Kyu %{n}", 9}, "orange", 0, [days: 90], [
+            "Kata Heian Shodan",
+            "Uchi-uke and shuto-uke in kokutsu-dachi"
+          ]),
+          rank({"Kyu %{n}", 8}, "yellow", 0, [days: 90], [
             "Mawashi-geri",
             "Gohon kumite jodan and chudan",
             "Kata Heian Nidan"
           ]),
-          rank({"Kyu %{n}", 7}, "red", 0, [days: 90], [
+          rank({"Kyu %{n}", 7}, "green", 0, [days: 90], [
             "Yoko-geri keage and kekomi in kiba-dachi",
             "Kizami-zuki and gyaku-zuki combination",
             "Sanbon kumite",
             "Kata Heian Sandan"
           ]),
-          rank({"Kyu %{n}", 6}, "green", 0, [days: 90], [
+          rank({"Kyu %{n}", 6}, "blue", 0, [days: 90], [
             "Ushiro-geri",
             "Kihon ippon kumite",
             "Kata Heian Yondan"
@@ -208,7 +215,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Combat do
             "Kihon ippon kumite with counter",
             "Kata Heian Godan"
           ]),
-          rank({"Kyu %{n}", 4}, "purple", 0, [days: 90], [
+          rank({"Kyu %{n}", 4}, "purple", 1, [days: 90], [
             "Mawashi-geri and ura-mawashi-geri",
             "Jiyu ippon kumite",
             "Kata Tekki Shodan"
@@ -239,7 +246,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Combat do
         "karate",
         "belt",
         :federation,
-        "Kyokushin colours (orange blue yellow green brown)",
+        "Kyokushin kyu colours (IKO intervals)",
         [
           rank("White", "white", 0, [], ["Dojo etiquette and seiza"]),
           rank({"Kyu %{n}", 10}, "orange", 0, [days: 90], [
@@ -261,33 +268,33 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Combat do
             "Combination punching on pads",
             "Kata Pinan Sono Ni"
           ]),
-          rank({"Kyu %{n}", 6}, "yellow", 0, [days: 120], [
+          rank({"Kyu %{n}", 6}, "yellow", 0, [days: 90], [
             "Ushiro-geri",
             "Kata Pinan Sono San and Sanchin",
             "Full-contact kumite (two rounds)"
           ]),
-          rank({"Kyu %{n}", 5}, "yellow", 1, [days: 120], [
+          rank({"Kyu %{n}", 5}, "yellow", 1, [days: 90], [
             "Kata Pinan Sono Yon",
             "Conditioning: 50 push-ups on knuckles"
           ]),
-          rank({"Kyu %{n}", 4}, "green", 0, [days: 180], [
+          rank({"Kyu %{n}", 4}, "green", 0, [days: 90], [
             "Jodan mawashi-geri",
             "Kata Pinan Sono Go and Gekisai Dai",
             "Kumite five rounds"
           ]),
-          rank({"Kyu %{n}", 3}, "green", 1, [days: 180], [
+          rank({"Kyu %{n}", 3}, "green", 1, [days: 90], [
             "Kata Tsuki no Kata and Yantsu",
             "Tameshiwari (breaking) when the club tests it"
           ]),
-          rank({"Kyu %{n}", 2}, "brown", 0, [days: 180], [
+          rank({"Kyu %{n}", 2}, "brown", 0, [days: 90], [
             "Kata Saiha and Tensho",
             "Kumite eight rounds"
           ]),
-          rank({"Kyu %{n}", 1}, "brown", 1, [days: 180], [
+          rank({"Kyu %{n}", 1}, "brown", 1, [days: 90], [
             "Kata Gekisai Sho and Bassai Dai",
             "Helps teach the junior grades"
           ]),
-          rank({"Dan %{n}", 1}, "black", 0, [days: 365], [
+          rank({"Dan %{n}", 1}, "black", 0, [], [
             "All kyu kata and kihon",
             "Kumite of 10 or more rounds"
           ])
@@ -299,39 +306,39 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Combat do
         "judo",
         "belt",
         :federation,
-        "IJF/European kyu colours (6 kyu to shodan)",
+        "European kyu colours with British Judo intervals",
         [
           rank("White", "white", 0, [], ["Bow (rei) and judogi care", "Ukemi back and side"]),
-          rank("Yellow", "yellow", 0, [days: 90], [
+          rank("Yellow", "yellow", 0, [days: 30], [
             "Ukemi forward rolling",
             "O-soto-gari and o-goshi",
             "Hiza-guruma and de-ashi-barai",
             "Kesa-gatame and escape",
             "Kumikata (grips) and tsukuri"
           ]),
-          rank("Orange", "orange", 0, [days: 120], [
+          rank("Orange", "orange", 0, [days: 90], [
             "Ippon-seoi-nage and tai-otoshi",
             "O-uchi-gari and ko-uchi-gari",
             "Yoko-shiho-gatame and kami-shiho-gatame",
             "Randori standing and on the ground"
           ]),
-          rank("Green", "green", 0, [days: 180], [
+          rank("Green", "green", 0, [days: 90], [
             "Harai-goshi and uchi-mata",
             "Combination throws (renraku-waza)",
             "Turnovers into hold-downs",
-            "Juji-gatame (age 13 or older)"
+            "Juji-gatame (no submission under 16)"
           ]),
-          rank("Blue", "blue", 0, [days: 180], [
+          rank("Blue", "blue", 0, [days: 90], [
             "Counter throws (kaeshi-waza)",
-            "Sankaku and shime-waza (age 16 or older)",
+            "Shime-waza (no submission under 16)",
             "Nage-no-kata first set"
           ]),
-          rank("Brown", "brown", 0, [days: 270], [
+          rank("Brown", "brown", 0, [days: 90], [
             "Sumi-gaeshi and tomoe-nage",
             "Tokui-waza in randori",
             "Nage-no-kata three sets"
           ]),
-          rank("Black", "black", 0, [days: 365], [
+          rank("Black", "black", 0, [], [
             "Nage-no-kata complete",
             "Katame-no-kata",
             "Competition or shiai points as the federation requires",
@@ -345,19 +352,19 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Combat do
         "taekwondo",
         "belt",
         :federation,
-        "World Taekwondo/Kukkiwon 10 geup to 1st dan/poom",
+        "Kukkiwon 10 geup to 1st dan (British Taekwondo intervals)",
         [
           rank({"Geup %{n}", 10}, "white", 0, [], ["Dojang etiquette and stances"]),
-          rank({"Geup %{n}", 9}, "white", 1, [days: 60], [
+          rank({"Geup %{n}", 9}, "white", 1, [days: 90], [
             "Ap seogi and ap kubi",
             "Momtong jireugi and arae makki",
             "Ap chagi"
           ]),
-          rank({"Geup %{n}", 8}, "yellow", 0, [days: 60], [
+          rank({"Geup %{n}", 8}, "yellow", 0, [days: 90], [
             "Poomsae Taegeuk Il Jang",
             "Bandal chagi"
           ]),
-          rank({"Geup %{n}", 7}, "yellow", 1, [days: 60], [
+          rank({"Geup %{n}", 7}, "yellow", 1, [days: 90], [
             "Poomsae Taegeuk Ee Jang",
             "Yeop chagi"
           ]),
@@ -375,11 +382,11 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Combat do
             "Poomsae Taegeuk Yuk Jang",
             "Naeryeo chagi"
           ]),
-          rank({"Geup %{n}", 2}, "red", 0, [days: 120], [
+          rank({"Geup %{n}", 2}, "red", 0, [days: 90], [
             "Poomsae Taegeuk Chil Jang",
             "Spinning kicks (dwi huryeo chagi)"
           ]),
-          rank({"Geup %{n}", 1}, "red", 1, [days: 120], [
+          rank({"Geup %{n}", 1}, "red", 1, [days: 90], [
             "Poomsae Taegeuk Pal Jang",
             "Board breaking"
           ]),
@@ -396,9 +403,9 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Combat do
         "martial_arts",
         "belt",
         :federation,
-        "Aikikai Hombu (practice days per grade)",
+        "Aikikai Hombu practice days per grade",
         [
-          rank({"Kyu %{n}", 6}, "white", 0, [], ["Ukemi forward and backward"]),
+          rank("Beginner", "white", 0, [], ["Ukemi forward and backward"]),
           rank({"Kyu %{n}", 5}, "white", 0, [classes: 30], [
             "Shomen-uchi ikkyo omote and ura",
             "Katate-dori shiho-nage",
@@ -407,26 +414,29 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Combat do
           ]),
           rank({"Kyu %{n}", 4}, "white", 0, [classes: 40], [
             "Shomen-uchi nikyo and sankyo",
-            "Chudan-tsuki kote-gaeshi",
-            "Ryote-dori tenchi-nage"
+            "Katate-dori kote-gaeshi",
+            "Suwari-waza kokyu-ho"
           ]),
           rank({"Kyu %{n}", 3}, "white", 0, [classes: 50], [
+            "Chudan-tsuki kote-gaeshi",
+            "Ryote-dori tenchi-nage",
             "Yokomen-uchi shiho-nage and irimi-nage",
-            "Shomen-uchi yonkyo",
-            "Ushiro ryote-dori kote-gaeshi"
+            "Shomen-uchi yonkyo"
           ]),
           rank({"Kyu %{n}", 2}, "white", 0, [classes: 50], [
-            "Ushiro waza from several grabs",
             "Suwari-waza ikkyo to yonkyo",
-            "Hanmi handachi shiho-nage"
+            "Hanmi handachi shiho-nage",
+            "Ushiro waza from several grabs"
           ]),
           rank({"Kyu %{n}", 1}, "white", 0, [classes: 60], [
+            "Ushiro ryote-dori kote-gaeshi",
             "Jiyu-waza against one attacker",
-            "Tanto-dori basics"
+            "Tanto-dori basics (dojo addition)"
           ]),
           rank({"Dan %{n}", 1}, "black", 0, [classes: 70], [
-            "Randori against two attackers",
-            "All kyu techniques fluidly"
+            "Age 15 or older (Aikikai)",
+            "All kyu techniques fluidly",
+            "Randori against two attackers (dojo addition)"
           ])
         ]
       ),
@@ -436,51 +446,52 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Combat do
         "muay_thai",
         "level",
         :federation,
-        "Khan grading with prajied (Kru Muay Thai Association style)",
+        "Kru Muay Thai Association khan 1-10",
         [
           rank({"Khan %{n}", 1}, "white", 0, [], [
             "Fighting stance and footwork",
             "Jab cross hook uppercut",
             "Wai kru ram muay respect"
           ]),
-          rank({"Khan %{n}", 2}, "yellow", 0, [days: 90], [
+          rank({"Khan %{n}", 2}, "yellow", 0, [], [
             "Teep (front kick) both legs",
             "Roundhouse kick to body both sides",
             "Check (block) a low kick"
           ]),
-          rank({"Khan %{n}", 3}, "yellow", 0, [days: 90], [
+          rank({"Khan %{n}", 3}, "yellow", 1, [], [
             "Straight knee and diagonal knee",
             "Horizontal and upward elbows",
             "Combinations of four on pads"
           ]),
-          rank({"Khan %{n}", 4}, "green", 0, [days: 120], [
+          rank({"Khan %{n}", 4}, "green", 0, [], [
             "Clinch entry and neck control",
             "Catch a kick and counter",
             "Technical sparring three rounds"
           ]),
-          rank({"Khan %{n}", 5}, "green", 0, [days: 120], [
+          rank({"Khan %{n}", 5}, "green", 1, [], [
             "Switch kick and switch knee",
             "Clinch knees and off-balancing",
             "Teep defence and counter"
           ]),
-          rank({"Khan %{n}", 6}, "blue", 0, [days: 180], [
+          rank({"Khan %{n}", 6}, "blue", 0, [], [
             "Spinning elbow and back elbow",
             "Sweeps from the catch",
             "Sparring five rounds"
           ]),
-          rank({"Khan %{n}", 7}, "blue", 0, [days: 180], [
+          rank({"Khan %{n}", 7}, "blue", 1, [], [
             "Ram muay performed in full",
             "Feints and rhythm changes"
           ]),
-          rank({"Khan %{n}", 8}, "brown", 0, [days: 180], [
+          rank({"Khan %{n}", 8}, "brown", 0, [], [
             "Ring craft and cutting off the ring",
             "Holds pads for others"
           ]),
-          rank({"Khan %{n}", 9}, "brown", 0, [days: 365], [
+          rank({"Khan %{n}", 9}, "brown", 1, [], [
             "Interclub bout or full sparring test",
             "Explains the history of Muay Thai"
           ]),
-          rank({"Khan %{n}", 10}, "red", 0, [days: 365], [
+          rank({"Khan %{n}", 10}, "red", 0, [classes: 217], [
+            "At least 217 hours of training in total (KMA)",
             "Assists teaching a class",
             "Builds a pad round for a beginner"
           ])
@@ -492,38 +503,40 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Combat do
         "kickboxing",
         "belt",
         :federation,
-        "WAKO optional grading syllabus (2025)",
+        "WAKO grading programme (2025)",
         [
           rank("White", "white", 0, [], ["Guard stance and footwork"]),
           rank("Yellow", "yellow", 0, [days: 180], [
             "Jab cross hook uppercut",
             "Front kick and roundhouse kick",
+            "Knee strikes and low kick to the thigh",
             "Parry and block straight punches"
           ]),
           rank("Orange", "orange", 0, [days: 180], [
-            "Side kick and low kick",
+            "Side kick and hook kick to the head",
             "Slip and roll under punches",
             "Three-technique combinations"
           ]),
           rank("Green", "green", 0, [days: 180], [
-            "Hook kick and axe kick",
+            "Back kick",
             "Counter-attacks after defence",
             "Light sparring two rounds"
           ]),
-          rank("Blue", "blue", 0, [days: 240], [
-            "Spinning back kick",
+          rank("Blue", "blue", 0, [days: 180], [
+            "Jumping spinning back side kick and jumping spinning hook kick",
             "Kick catching defence",
             "Sparring three rounds in point or light contact"
           ]),
-          rank("Brown", "brown", 0, [days: 365], [
-            "Jumping and spinning kicks",
+          rank("Brown", "brown", 0, [days: 180], [
+            "Jumping kicks with rotation",
             "Ring and tatami tactics",
-            "Rules of WAKO disciplines"
+            "Free sparring"
           ]),
           rank("Black", "black", 0, [days: 365], [
+            "Axe kick external and internal",
             "Full technical exam of all colours",
-            "Sparring several rounds against fresh opponents",
-            "Age 16 or older"
+            "Written paper on kickboxing history",
+            "Age 16 or older in the year of grading"
           ])
         ]
       ),
@@ -533,7 +546,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Combat do
         "boxing",
         "level",
         :federation,
-        "Modelled on England Boxing awards (3 non-contact + 3 contact)",
+        "Modelled on England Boxing awards",
         [
           rank({"Level %{n}", 1}, nil, 0, [], [
             "Stance and guard",
@@ -570,7 +583,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Combat do
         "mma",
         "level",
         :palee,
-        "Gym progression (no federation ranks)",
+        "Palee gym progression (no federation ranks)",
         [
           rank({"Level %{n}", 1}, nil, 0, [], [
             "Stance and footwork for striking",
@@ -605,7 +618,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Combat do
         "krav_maga",
         "level",
         :federation,
-        "IKMF/KMG Practitioner Graduate Expert patches",
+        "IKMF/KMG Practitioner Graduate Expert",
         [
           rank("P1", nil, 0, [], [
             "Fighting stance and movement",
@@ -661,21 +674,21 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Combat do
         "krav_maga",
         "belt",
         :federation,
-        "Lichtenfeld/KMW/FEKM colour belts",
+        "FEKM colour belts (at most one a year)",
         [
           rank("White", "white", 0, [], ["Fighting stance and safety rules"]),
-          rank("Yellow", "yellow", 0, [days: 90], [
+          rank("Yellow", "yellow", 0, [days: 365], [
             "Punches palm strikes elbows knees",
             "Front and round kicks",
             "360 outside defence and inside defences",
             "Choke releases front side and back"
           ]),
-          rank("Orange", "orange", 0, [days: 180], [
+          rank("Orange", "orange", 0, [days: 365], [
             "Defences against hooks and kicks",
             "Bear hug and headlock releases",
             "Ground escapes from mount and guard"
           ]),
-          rank("Green", "green", 0, [days: 270], [
+          rank("Green", "green", 0, [days: 365], [
             "Knife threat and stab defences",
             "Stick defences",
             "Fighting from the ground to standing"
@@ -699,40 +712,40 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Combat do
         "Kung fu sashes",
         "kung_fu",
         "belt",
-        :federation,
-        "Common school sash ladder (styles vary)",
+        :palee,
+        "Palee sash ladder (styles and colours vary)",
         [
           rank("White", "white", 0, [], ["Horse stance bow stance cat stance"]),
-          rank("Yellow", "yellow", 0, [days: 90], [
+          rank("Yellow", "yellow", 0, [], [
             "Basic punches palms and blocks",
             "Front snap and side kicks",
             "First form of the school"
           ]),
-          rank("Orange", "orange", 0, [days: 90], [
+          rank("Orange", "orange", 0, [], [
             "Stance transitions with balance",
             "Sweeps and low stances (pu bu)",
             "Second form"
           ]),
-          rank("Green", "green", 0, [days: 120], [
+          rank("Green", "green", 0, [], [
             "Jumping front kick and tornado kick",
             "Partner drills (two-person set)",
             "Third form"
           ]),
-          rank("Blue", "blue", 0, [days: 180], [
+          rank("Blue", "blue", 0, [], [
             "Applications of the forms",
             "Light sanda sparring",
             "First weapon (staff)"
           ]),
-          rank("Brown", "brown", 0, [days: 180], [
+          rank("Brown", "brown", 0, [], [
             "Advanced form",
             "Second weapon (broadsword or spear)",
             "Chin na basics"
           ]),
-          rank("Red", "red", 0, [days: 365], [
+          rank("Red", "red", 0, [], [
             "All forms with power and spirit",
             "Sanda sparring three rounds"
           ]),
-          rank("Black", "black", 0, [days: 365], [
+          rank("Black", "black", 0, [], [
             "Complete syllabus and a demonstration",
             "Assists teaching"
           ])
@@ -777,39 +790,40 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Combat do
         "martial_arts",
         "belt",
         :federation,
-        "Brazilian Capoeira Confederation colours (groups vary)",
+        "Brazilian Capoeira Confederation student cords",
         [
-          rank("Beginner cord", "white", 0, [], [
-            "Ginga",
-            "Basic esquivas (cocorinha and negativa)"
-          ]),
-          rank("Green", "green", 0, [days: 365], [
+          rank("No cord yet", nil, 0, [], ["Ginga", "Basic esquivas (cocorinha and negativa)"]),
+          rank("Green cord", "green", 0, [], [
+            "Batizado: plays in the roda for the first time",
             "Meia-lua de frente and armada",
             "Queixada and benção",
-            "Au (cartwheel) and role",
-            "Sings a corrido and claps the rhythm"
+            "Au (cartwheel) and role"
           ]),
-          rank("Green-yellow", "green", 0, [days: 365], [
+          rank("Yellow cord", "yellow", 0, [], [
             "Martelo and meia-lua de compasso",
-            "Plays pandeiro and atabaque basics",
-            "Roda game at Regional rhythm"
+            "Sings a corrido and claps the rhythm",
+            "Plays pandeiro and atabaque basics"
           ]),
-          rank("Yellow", "yellow", 0, [days: 365], [
+          rank("Blue cord", "blue", 0, [], [
             "Rasteira and other take-downs",
             "Basic berimbau toques",
             "Angola rhythm game"
           ]),
-          rank("Yellow-blue", "yellow", 0, [days: 365], [
-            "Floreios (macaco and au sem mao)",
-            "Leads a song in the roda"
+          rank("Green-yellow cord", "green", 0, [], [
+            "Roda game at Regional rhythm",
+            "Floreios (macaco and au sem mao)"
           ]),
-          rank("Blue", "blue", 0, [days: 365], [
+          rank("Green-blue cord", "green", 0, [], [
+            "Leads a song in the roda",
+            "Sequences of Mestre Bimba"
+          ]),
+          rank("Yellow-blue cord", "yellow", 0, [], [
             "Plays every instrument of the bateria",
-            "History of capoeira and its masters"
+            "History of capoeira and its mestres"
           ]),
-          rank("Green-yellow-blue", "blue", 0, [days: 730], [
-            "Formado: teaches beginners under supervision",
-            "Complete sequences of Mestre Bimba"
+          rank("Green-yellow-blue cord", "blue", 0, [], [
+            "Formado: age 18 or older and 5 years of capoeira (CBC)",
+            "Teaches beginners under supervision"
           ])
         ]
       ),
@@ -819,7 +833,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Combat do
         "wrestling",
         "level",
         :palee,
-        "No belt or grade system in Olympic wrestling (UWW)",
+        "Palee levels (Olympic wrestling has no grades)",
         [
           rank("Novice", nil, 0, [], [
             "Square and staggered stance with head up",
@@ -897,7 +911,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Combat do
         "martial_arts",
         "level",
         :federation,
-        "FIAS Belt System (International Sambo Federation · belt.sambo.sport): Beginner (no stripe) · Student Levels 1-6 (coloured stripes on the red/blue comp",
+        "FIAS sambo belt system",
         [
           rank("Beginner", nil, 0, [], [
             "Breakfall forward on hands from a squat",

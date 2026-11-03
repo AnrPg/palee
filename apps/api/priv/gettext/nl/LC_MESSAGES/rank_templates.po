@@ -7,6 +7,9 @@ msgstr ""
 msgid "BJJ belts"
 msgstr "BJJ-banden"
 
+msgid "IBJJF adult belts (16+)"
+msgstr "IBJJF-banden voor volwassenen (16+)"
+
 msgid "White"
 msgstr "Wit"
 
@@ -15,6 +18,9 @@ msgstr ""
 
 msgid "Blue"
 msgstr "Blauw"
+
+msgid "Age 16 or older (IBJJF)"
+msgstr ""
 
 msgid "Break-falls back and to the side"
 msgstr ""
@@ -79,6 +85,9 @@ msgstr ""
 msgid "Brown"
 msgstr "Bruin"
 
+msgid "Age 18 or older (IBJJF)"
+msgstr ""
+
 msgid "Connected attacks from a personal guard game"
 msgstr ""
 
@@ -121,6 +130,9 @@ msgstr ""
 msgid "BJJ kids belts"
 msgstr "BJJ-banden voor kinderen"
 
+msgid "IBJJF kids belts (ages 4-15)"
+msgstr "IBJJF-kinderbanden (4-15 jaar)"
+
 msgid "Grey-white"
 msgstr "Grijs-wit"
 
@@ -156,6 +168,9 @@ msgstr ""
 
 msgid "Yellow-white"
 msgstr "Geel-wit"
+
+msgid "Age 7 or older (IBJJF)"
+msgstr ""
 
 msgid "Hip-bump sweep"
 msgstr ""
@@ -193,6 +208,9 @@ msgstr ""
 msgid "Orange-white"
 msgstr "Oranje-wit"
 
+msgid "Age 10 or older (IBJJF)"
+msgstr ""
+
 msgid "Collar choke from mount"
 msgstr ""
 
@@ -217,7 +235,7 @@ msgstr ""
 msgid "Orange-black"
 msgstr "Oranje-zwart"
 
-msgid "Omoplata"
+msgid "Arm drag to back take"
 msgstr ""
 
 msgid "Back take from turtle"
@@ -228,6 +246,9 @@ msgstr ""
 
 msgid "Green-white"
 msgstr "Groen-wit"
+
+msgid "Age 13 or older (IBJJF)"
+msgstr ""
 
 msgid "Open guard retention"
 msgstr ""
@@ -244,7 +265,7 @@ msgstr "Groen"
 msgid "Three attacks chained from guard"
 msgstr ""
 
-msgid "Straight ankle lock (allowed for the age)"
+msgid "Cross collar choke from guard"
 msgstr ""
 
 msgid "Helps younger children drill"
@@ -256,11 +277,14 @@ msgstr "Groen-zwart"
 msgid "Whole kids curriculum in live sparring"
 msgstr ""
 
-msgid "Ready for the adult blue belt at 16"
+msgid "At 16 moves to adult blue or purple belt (coach decides)"
 msgstr ""
 
 msgid "Karate belts"
 msgstr "Karatebanden"
+
+msgid "Palee 7-belt kyu ladder (no single federation)"
+msgstr "Palee-kyuladder met 7 banden (geen enkele bond)"
 
 msgid "Dojo etiquette (rei and seiza)"
 msgstr ""
@@ -337,11 +361,17 @@ msgstr ""
 msgid "Shotokan karate kyu"
 msgstr "Shotokan-karate kyu"
 
-msgid "Kyu %{n}"
-msgstr "%{n}e kyu"
+msgid "Shotokan kyu (shoto.uk colours and intervals)"
+msgstr "Shotokan-kyu (kleuren en termijnen van shoto.uk)"
+
+msgid "Beginner"
+msgstr "Beginner"
 
 msgid "Dojo etiquette and dojo kun"
 msgstr ""
+
+msgid "Kyu %{n}"
+msgstr "%{n}e kyu"
 
 msgid "Zenkutsu-dachi with oi-zuki"
 msgstr ""
@@ -430,6 +460,9 @@ msgstr ""
 msgid "Kyokushin karate kyu"
 msgstr "Kyokushin-karate kyu"
 
+msgid "Kyokushin kyu colours (IKO intervals)"
+msgstr "Kyokushin-kyukleuren (IKO-termijnen)"
+
 msgid "Dojo etiquette and seiza"
 msgstr ""
 
@@ -514,6 +547,9 @@ msgstr ""
 msgid "Judo belts"
 msgstr "Judobanden"
 
+msgid "European kyu colours with British Judo intervals"
+msgstr "Europese kyukleuren met termijnen van British Judo"
+
 msgid "Bow (rei) and judogi care"
 msgstr ""
 
@@ -556,13 +592,13 @@ msgstr ""
 msgid "Turnovers into hold-downs"
 msgstr ""
 
-msgid "Juji-gatame (age 13 or older)"
+msgid "Juji-gatame (no submission under 16)"
 msgstr ""
 
 msgid "Counter throws (kaeshi-waza)"
 msgstr ""
 
-msgid "Sankaku and shime-waza (age 16 or older)"
+msgid "Shime-waza (no submission under 16)"
 msgstr ""
 
 msgid "Nage-no-kata first set"
@@ -591,6 +627,9 @@ msgstr ""
 
 msgid "Taekwondo belts"
 msgstr "Taekwondobanden"
+
+msgid "Kukkiwon 10 geup to 1st dan (British Taekwondo intervals)"
+msgstr "Kukkiwon 10e geup tot 1e dan (termijnen van British Taekwondo)"
 
 msgid "Geup %{n}"
 msgstr "%{n}e geup"
@@ -670,6 +709,9 @@ msgstr ""
 msgid "Aikido kyu"
 msgstr "Aikido kyu"
 
+msgid "Aikikai Hombu practice days per grade"
+msgstr "Trainingsdagen per graad volgens Aikikai Hombu"
+
 msgid "Ukemi forward and backward"
 msgstr ""
 
@@ -688,6 +730,12 @@ msgstr ""
 msgid "Shomen-uchi nikyo and sankyo"
 msgstr ""
 
+msgid "Katate-dori kote-gaeshi"
+msgstr ""
+
+msgid "Suwari-waza kokyu-ho"
+msgstr ""
+
 msgid "Chudan-tsuki kote-gaeshi"
 msgstr ""
 
@@ -700,32 +748,38 @@ msgstr ""
 msgid "Shomen-uchi yonkyo"
 msgstr ""
 
-msgid "Ushiro ryote-dori kote-gaeshi"
-msgstr ""
-
-msgid "Ushiro waza from several grabs"
-msgstr ""
-
 msgid "Suwari-waza ikkyo to yonkyo"
 msgstr ""
 
 msgid "Hanmi handachi shiho-nage"
 msgstr ""
 
+msgid "Ushiro waza from several grabs"
+msgstr ""
+
+msgid "Ushiro ryote-dori kote-gaeshi"
+msgstr ""
+
 msgid "Jiyu-waza against one attacker"
 msgstr ""
 
-msgid "Tanto-dori basics"
+msgid "Tanto-dori basics (dojo addition)"
 msgstr ""
 
-msgid "Randori against two attackers"
+msgid "Age 15 or older (Aikikai)"
 msgstr ""
 
 msgid "All kyu techniques fluidly"
 msgstr ""
 
+msgid "Randori against two attackers (dojo addition)"
+msgstr ""
+
 msgid "Muay Thai khan"
 msgstr "Muay Thai khan"
+
+msgid "Kru Muay Thai Association khan 1-10"
+msgstr "Khan 1-10 van de Kru Muay Thai Association"
 
 msgid "Khan %{n}"
 msgstr "Khan %{n}"
@@ -802,6 +856,9 @@ msgstr ""
 msgid "Explains the history of Muay Thai"
 msgstr ""
 
+msgid "At least 217 hours of training in total (KMA)"
+msgstr ""
+
 msgid "Assists teaching a class"
 msgstr ""
 
@@ -811,16 +868,22 @@ msgstr ""
 msgid "Kickboxing belts"
 msgstr "Kickboksbanden"
 
+msgid "WAKO grading programme (2025)"
+msgstr "WAKO-examenprogramma (2025)"
+
 msgid "Guard stance and footwork"
 msgstr ""
 
 msgid "Front kick and roundhouse kick"
 msgstr ""
 
+msgid "Knee strikes and low kick to the thigh"
+msgstr ""
+
 msgid "Parry and block straight punches"
 msgstr ""
 
-msgid "Side kick and low kick"
+msgid "Side kick and hook kick to the head"
 msgstr ""
 
 msgid "Slip and roll under punches"
@@ -829,7 +892,7 @@ msgstr ""
 msgid "Three-technique combinations"
 msgstr ""
 
-msgid "Hook kick and axe kick"
+msgid "Back kick"
 msgstr ""
 
 msgid "Counter-attacks after defence"
@@ -838,7 +901,7 @@ msgstr ""
 msgid "Light sparring two rounds"
 msgstr ""
 
-msgid "Spinning back kick"
+msgid "Jumping spinning back side kick and jumping spinning hook kick"
 msgstr ""
 
 msgid "Kick catching defence"
@@ -847,26 +910,32 @@ msgstr ""
 msgid "Sparring three rounds in point or light contact"
 msgstr ""
 
-msgid "Jumping and spinning kicks"
+msgid "Jumping kicks with rotation"
 msgstr ""
 
 msgid "Ring and tatami tactics"
 msgstr ""
 
-msgid "Rules of WAKO disciplines"
+msgid "Free sparring"
+msgstr ""
+
+msgid "Axe kick external and internal"
 msgstr ""
 
 msgid "Full technical exam of all colours"
 msgstr ""
 
-msgid "Sparring several rounds against fresh opponents"
+msgid "Written paper on kickboxing history"
 msgstr ""
 
-msgid "Age 16 or older"
+msgid "Age 16 or older in the year of grading"
 msgstr ""
 
 msgid "Boxing levels"
 msgstr "Boksniveaus"
+
+msgid "Modelled on England Boxing awards"
+msgstr "Naar het voorbeeld van de England Boxing-awards"
 
 msgid "Level %{n}"
 msgstr "Niveau %{n}"
@@ -919,6 +988,9 @@ msgstr ""
 msgid "MMA levels"
 msgstr "MMA-niveaus"
 
+msgid "Palee gym progression (no federation ranks)"
+msgstr "Palee-sportschoolprogressie (geen bondsrangen)"
+
 msgid "Stance and footwork for striking"
 msgstr ""
 
@@ -966,6 +1038,9 @@ msgstr ""
 
 msgid "Krav Maga grades (P G E)"
 msgstr "Krav maga-graden (P G E)"
+
+msgid "IKMF/KMG Practitioner Graduate Expert"
+msgstr "IKMF/KMG: Practitioner Graduate Expert"
 
 msgid "P1"
 msgstr ""
@@ -1093,6 +1168,9 @@ msgstr ""
 msgid "Krav Maga belts"
 msgstr "Krav maga-banden"
 
+msgid "FEKM colour belts (at most one a year)"
+msgstr "FEKM-kleurbanden (hoogstens één per jaar)"
+
 msgid "Fighting stance and safety rules"
 msgstr ""
 
@@ -1146,6 +1224,9 @@ msgstr ""
 
 msgid "Kung fu sashes"
 msgstr "Kungfu-sjerpen"
+
+msgid "Palee sash ladder (styles and colours vary)"
+msgstr "Palee-sjerpenladder (stijlen en kleuren verschillen)"
 
 msgid "Horse stance bow stance cat stance"
 msgstr ""
@@ -1212,6 +1293,9 @@ msgstr ""
 
 msgid "Wing Chun levels"
 msgstr "Wing Chun-niveaus"
+
+msgid "Ip Man lineage form order"
+msgstr "Vormvolgorde van de Ip Man-lijn"
 
 msgid "Siu Nim Tao"
 msgstr ""
@@ -1285,13 +1369,22 @@ msgstr ""
 msgid "Capoeira cords"
 msgstr "Capoeira-koorden"
 
-msgid "Beginner cord"
-msgstr "Beginnerskoord"
+msgid "Brazilian Capoeira Confederation student cords"
+msgstr "Leerlingkoorden van de Braziliaanse Capoeiraconfederatie"
+
+msgid "No cord yet"
+msgstr ""
 
 msgid "Ginga"
 msgstr ""
 
 msgid "Basic esquivas (cocorinha and negativa)"
+msgstr ""
+
+msgid "Green cord"
+msgstr ""
+
+msgid "Batizado: plays in the roda for the first time"
 msgstr ""
 
 msgid "Meia-lua de frente and armada"
@@ -1303,19 +1396,19 @@ msgstr ""
 msgid "Au (cartwheel) and role"
 msgstr ""
 
-msgid "Sings a corrido and claps the rhythm"
+msgid "Yellow cord"
 msgstr ""
 
-msgid "Green-yellow"
-msgstr "Groen-geel"
-
 msgid "Martelo and meia-lua de compasso"
+msgstr ""
+
+msgid "Sings a corrido and claps the rhythm"
 msgstr ""
 
 msgid "Plays pandeiro and atabaque basics"
 msgstr ""
 
-msgid "Roda game at Regional rhythm"
+msgid "Blue cord"
 msgstr ""
 
 msgid "Rasteira and other take-downs"
@@ -1327,32 +1420,47 @@ msgstr ""
 msgid "Angola rhythm game"
 msgstr ""
 
-msgid "Yellow-blue"
-msgstr "Geel-blauw"
+msgid "Green-yellow cord"
+msgstr ""
+
+msgid "Roda game at Regional rhythm"
+msgstr ""
 
 msgid "Floreios (macaco and au sem mao)"
+msgstr ""
+
+msgid "Green-blue cord"
 msgstr ""
 
 msgid "Leads a song in the roda"
 msgstr ""
 
+msgid "Sequences of Mestre Bimba"
+msgstr ""
+
+msgid "Yellow-blue cord"
+msgstr ""
+
 msgid "Plays every instrument of the bateria"
 msgstr ""
 
-msgid "History of capoeira and its masters"
+msgid "History of capoeira and its mestres"
 msgstr ""
 
-msgid "Green-yellow-blue"
-msgstr "Groen-geel-blauw"
-
-msgid "Formado: teaches beginners under supervision"
+msgid "Green-yellow-blue cord"
 msgstr ""
 
-msgid "Complete sequences of Mestre Bimba"
+msgid "Formado: age 18 or older and 5 years of capoeira (CBC)"
+msgstr ""
+
+msgid "Teaches beginners under supervision"
 msgstr ""
 
 msgid "Wrestling"
 msgstr "Worstelen"
+
+msgid "Palee levels (Olympic wrestling has no grades)"
+msgstr "Palee-niveaus (Olympisch worstelen kent geen graden)"
 
 msgid "Novice"
 msgstr "Novice"
@@ -1543,8 +1651,8 @@ msgstr ""
 msgid "Sambo"
 msgstr "Sambo"
 
-msgid "Beginner"
-msgstr "Beginner"
+msgid "FIAS sambo belt system"
+msgstr "FIAS-sambobandensysteem"
 
 msgid "Breakfall forward on hands from a squat"
 msgstr ""
@@ -1837,8 +1945,14 @@ msgstr ""
 msgid "Gymnastics levels 1-10"
 msgstr "Turnniveaus 1-10"
 
+msgid "Generic numbered levels (add your own skills)"
+msgstr "Algemene genummerde niveaus (voeg eigen vaardigheden toe)"
+
 msgid "Women's artistic gymnastics levels"
 msgstr "Turnen dames: niveaus"
+
+msgid "USA Gymnastics Development Program levels 1-10"
+msgstr "Niveaus 1-10 van het USA Gymnastics Development Program"
 
 msgid "Forward roll and backward roll"
 msgstr ""
@@ -1891,10 +2005,13 @@ msgstr ""
 msgid "Back walkover"
 msgstr ""
 
-msgid "Front limber"
+msgid "Round-off back handspring"
 msgstr ""
 
-msgid "Bars: kip with spot and cast to handstand practice"
+msgid "Bars: glide kip and cast to horizontal"
+msgstr ""
+
+msgid "Bars: long hang kip and back hip circle"
 msgstr ""
 
 msgid "Beam: cartwheel"
@@ -1903,46 +2020,43 @@ msgstr ""
 msgid "Vault: front handspring over the table"
 msgstr ""
 
-msgid "Back handspring"
+msgid "Round-off back handspring back tuck"
 msgstr ""
 
-msgid "Round-off back handspring"
+msgid "Front tuck or aerial"
 msgstr ""
 
-msgid "Bars: kip cast to horizontal and clear hip circle"
+msgid "Bars: kip cast above horizontal and clear hip circle"
 msgstr ""
 
-msgid "Beam: back walkover"
+msgid "Bars: flyaway dismount"
 msgstr ""
 
-msgid "Bars: long hang kip"
+msgid "Beam: back walkover or back handspring"
 msgstr ""
 
-msgid "Back tuck"
-msgstr ""
-
-msgid "Front tuck"
-msgstr ""
-
-msgid "Bars: cast to 45 degrees above horizontal"
-msgstr ""
-
-msgid "Beam: back handspring"
+msgid "Beam: back tuck dismount"
 msgstr ""
 
 msgid "Optional routines with required elements"
 msgstr ""
 
+msgid "Bars: cast to 45 degrees above horizontal"
+msgstr ""
+
+msgid "Back layout"
+msgstr ""
+
 msgid "Round-off back handspring layout"
 msgstr ""
 
-msgid "Bars: giant swing drills and flyaway dismount"
+msgid "Bars: giant swing drills"
 msgstr ""
 
 msgid "Beam: acro series of two elements"
 msgstr ""
 
-msgid "Vault: Yamashita or handspring"
+msgid "Vault: handspring (Yamashita optional)"
 msgstr ""
 
 msgid "Full twisting layout"
@@ -1984,6 +2098,9 @@ msgstr ""
 msgid "Xcel divisions (women's artistic)"
 msgstr "Xcel-divisies (turnen dames)"
 
+msgid "USA Gymnastics Xcel Bronze to Sapphire"
+msgstr "USA Gymnastics Xcel van Bronze tot Sapphire"
+
 msgid "Bronze"
 msgstr "Brons"
 
@@ -2023,7 +2140,7 @@ msgstr "Platina"
 msgid "Back tuck in a pass"
 msgstr ""
 
-msgid "Bars: six A and one B value parts"
+msgid "Every event meets the Platinum special requirements"
 msgstr ""
 
 msgid "Beam: acro series"
@@ -2035,7 +2152,7 @@ msgstr "Diamant"
 msgid "Layout or twisting salto"
 msgstr ""
 
-msgid "Bars: five A and two B value parts"
+msgid "Every event meets the Diamond special requirements"
 msgstr ""
 
 msgid "Beam: salto or two-flight series"
@@ -2052,6 +2169,9 @@ msgstr ""
 
 msgid "Men's artistic gymnastics levels"
 msgstr "Turnen heren: niveaus"
+
+msgid "USA Gymnastics men's Development Program"
+msgstr "Development Program voor heren van USA Gymnastics"
 
 msgid "Pommel: front support hold 10 seconds"
 msgstr ""
@@ -2149,31 +2269,13 @@ msgstr ""
 msgid "Rhythmic gymnastics levels"
 msgstr "Ritmische gymnastiek: niveaus"
 
-msgid "Releve walks and balance on toes"
+msgid "USA Gymnastics rhythmic levels 3-8 then FIG Junior and Senior"
+msgstr "Ritmische niveaus 3-8 van USA Gymnastics dan FIG junior en senior"
+
+msgid "Age 6 or older"
 msgstr ""
 
-msgid "Pointed feet and straight-leg positions"
-msgstr ""
-
-msgid "Rope: swings and skips forward"
-msgstr ""
-
-msgid "Ball: rolls on the floor and bounces"
-msgstr ""
-
-msgid "Passe balance for 2 seconds"
-msgstr ""
-
-msgid "Front and side splits"
-msgstr ""
-
-msgid "Rope: double turn swing and toss"
-msgstr ""
-
-msgid "Ball: roll along the arms"
-msgstr ""
-
-msgid "Pivot 360 degrees in passe"
+msgid "Releve walks and passe balance"
 msgstr ""
 
 msgid "Split leap and stag leap"
@@ -2182,31 +2284,49 @@ msgstr ""
 msgid "Floor routine to music"
 msgstr ""
 
-msgid "Rope and ball routines"
+msgid "One apparatus routine (rope or ball)"
+msgstr ""
+
+msgid "Pivot 360 degrees in passe"
 msgstr ""
 
 msgid "Arabesque and attitude balances"
 msgstr ""
 
-msgid "Back bend and walkover"
+msgid "Group floor routine"
+msgstr ""
+
+msgid "Two apparatus routines"
+msgstr ""
+
+msgid "Age 7 or older"
+msgstr ""
+
+msgid "Floor and three apparatus routines"
 msgstr ""
 
 msgid "Hoop: rolls spins and tosses"
 msgstr ""
 
-msgid "Ring leap and cossack jump"
+msgid "Ball: throw and catch with one hand"
+msgstr ""
+
+msgid "Age 8 or older"
 msgstr ""
 
 msgid "Pivots of 720 degrees"
 msgstr ""
 
-msgid "Ball: throw and catch with one hand"
-msgstr ""
-
-msgid "Hoop: rotation around the hand and the body"
-msgstr ""
-
 msgid "Clubs: mills and small circles"
+msgstr ""
+
+msgid "Ring leap and cossack jump"
+msgstr ""
+
+msgid "Age 9 or older"
+msgstr ""
+
+msgid "Ribbon: spirals and snakes"
 msgstr ""
 
 msgid "Leg in hand balance (penche drills)"
@@ -2215,16 +2335,7 @@ msgstr ""
 msgid "Dynamic elements with rotation under a throw"
 msgstr ""
 
-msgid "Ribbon: spirals and snakes"
-msgstr ""
-
-msgid "Clubs: asymmetric movements and throws"
-msgstr ""
-
-msgid "Two apparatus routines with difficulty"
-msgstr ""
-
-msgid "Four routines: floor and three apparatus"
+msgid "Age 10 or older"
 msgstr ""
 
 msgid "Penche and ring balances"
@@ -2233,182 +2344,290 @@ msgstr ""
 msgid "Apparatus masteries (risk elements)"
 msgstr ""
 
+msgid "Junior"
+msgstr "Junioren"
+
+msgid "Age 13 or older (FIG junior)"
+msgstr ""
+
 msgid "Routines with hoop ball clubs and ribbon"
 msgstr ""
 
 msgid "Fouette and illusion pivots"
 msgstr ""
 
-msgid "Routines under the FIG Code of Points"
+msgid "Senior"
+msgstr "Senioren"
+
+msgid "Age 16 or older (FIG senior)"
 msgstr ""
 
-msgid "Body and apparatus difficulties at junior or senior level"
+msgid "Routines under the FIG Code of Points"
 msgstr ""
 
 msgid "Trampoline awards 1-15"
 msgstr "Trampolinebrevetten 1-15"
 
+msgid "British Gymnastics trampoline proficiency awards"
+msgstr "Trampolinevaardigheidsbrevetten van British Gymnastics"
+
 msgid "Award %{n}"
 msgstr "Brevet %{n}"
 
-msgid "Straight jump with controlled stop"
+msgid "Waits their turn and behaves safely around the trampoline"
+msgstr ""
+
+msgid "Mounts and dismounts from the centre"
+msgstr ""
+
+msgid "Bounces lying sitting or on hands and knees"
+msgstr ""
+
+msgid "Seated bounce with arm movements"
+msgstr ""
+
+msgid "Bounces a set number of times and stops"
+msgstr ""
+
+msgid "Quarter turn upright"
+msgstr ""
+
+msgid "Seat drop without returning to feet"
+msgstr ""
+
+msgid "Star position"
+msgstr ""
+
+msgid "Straight jumps using the arms"
 msgstr ""
 
 msgid "Tuck jump"
 msgstr ""
 
-msgid "Straddle and pike jumps"
-msgstr ""
-
-msgid "Seat drop"
+msgid "Astride jump and star jump"
 msgstr ""
 
 msgid "Half twist jump"
 msgstr ""
 
-msgid "Hands and knees drop"
+msgid "Tuck jump touching below the knees"
+msgstr ""
+
+msgid "Straddle jump and split jump"
+msgstr ""
+
+msgid "Seat drop returning to feet"
+msgstr ""
+
+msgid "Two half twist jumps linked"
+msgstr ""
+
+msgid "Five straight jumps then stop for 3 seconds"
+msgstr ""
+
+msgid "Piked straddle jump"
+msgstr ""
+
+msgid "Front landing and back landing on a mat"
+msgstr ""
+
+msgid "Seat drop to feet with half twist"
+msgstr ""
+
+msgid "Routine: straddle seat to feet tuck half twist straight"
+msgstr ""
+
+msgid "Seat landing half twist to feet"
 msgstr ""
 
 msgid "Full twist jump"
 msgstr ""
 
-msgid "Seat drop half twist to seat"
+msgid "Front landing to feet"
 msgstr ""
 
-msgid "Five-move routine"
+msgid "Pike jump"
 msgstr ""
 
-msgid "Front drop"
+msgid "Ten-move routine with seat landings and twists"
 msgstr ""
 
-msgid "Back drop"
+msgid "Swivel hips (seat half twist to seat)"
 msgstr ""
 
-msgid "Swivel hips"
+msgid "Back landing to feet"
 msgstr ""
 
-msgid "Half twist to front drop"
+msgid "Hands and knees forward turnover to back landing"
 msgstr ""
 
-msgid "Back drop half twist to feet"
+msgid "Seat landing to feet then front landing to feet"
 msgstr ""
 
-msgid "Ten-move routine"
+msgid "Seat landing to front landing to feet"
 msgstr ""
 
-msgid "Front somersault tucked"
+msgid "Half twist to front landing and to back landing"
 msgstr ""
 
-msgid "Back drop to front drop (turnover)"
+msgid "Front and back landing with half twist to feet"
 msgstr ""
 
-msgid "Back somersault tucked"
+msgid "Five back bounces"
 msgstr ""
 
-msgid "Cradle"
+msgid "Piked and straight front and back landings"
 msgstr ""
 
-msgid "Back somersault piked"
+msgid "Front landing to back landing and back to front"
 msgstr ""
 
-msgid "Barani tucked"
+msgid "Forward three-quarter turnover to back landing"
 msgstr ""
 
-msgid "Back somersault straight"
+msgid "Seat landing full twist to seat (roller)"
 msgstr ""
 
-msgid "Barani piked"
+msgid "Front or back somersault tucked"
 msgstr ""
 
-msgid "Ten-move routine with somersaults"
+msgid "Back landing back pullover to feet"
 msgstr ""
 
-msgid "Back somersault with full twist"
+msgid "Front landing half turntable"
+msgstr ""
+
+msgid "Ten-move routine with one somersault"
+msgstr ""
+
+msgid "Front somersault piked"
+msgstr ""
+
+msgid "Back somersault tucked and back somersault straight or piked"
+msgstr ""
+
+msgid "Three-quarter front somersault straight to back landing"
+msgstr ""
+
+msgid "Routine with three somersaults"
+msgstr ""
+
+msgid "Floor conditioning: 20 crunches and 20 dorsal raises"
+msgstr ""
+
+msgid "Barani with straight legs"
+msgstr ""
+
+msgid "Crash dive straight"
+msgstr ""
+
+msgid "Back somersault tucked then front somersault piked"
+msgstr ""
+
+msgid "Routine with four somersaults including a barani"
+msgstr ""
+
+msgid "Barani tucked and piked"
+msgstr ""
+
+msgid "Back somersault then barani in the same shape"
+msgstr ""
+
+msgid "Crash dive to bounce roll"
+msgstr ""
+
+msgid "Routine with six somersaults"
 msgstr ""
 
 msgid "Barani straight"
 msgstr ""
 
-msgid "Front somersault piked and tuck with three half twists"
+msgid "Back somersault with half twist"
 msgstr ""
 
-msgid "Ball-out"
+msgid "Full twisting front somersault"
 msgstr ""
 
-msgid "Barani straight with five somersault shapes"
+msgid "Crash dive to ball out"
 msgstr ""
 
-msgid "Rudolph (front with one and a half twists)"
+msgid "Routine with seven somersaults"
 msgstr ""
 
-msgid "Double back somersault tucked"
+msgid "Crash dive to ball-out barani"
 msgstr ""
 
-msgid "Double twisting back"
+msgid "Full twisting back somersault straight"
 msgstr ""
 
-msgid "Double front or barani-out"
+msgid "Rudi (front with one and a half twists)"
 msgstr ""
 
-msgid "Voluntary routine with doubles"
+msgid "Cody from a front landing"
 msgstr ""
 
-msgid "Competition voluntary routine at national grade"
-msgstr ""
-
-msgid "Triple-twisting or twisting doubles"
+msgid "Ten-somersault routine with tariff 5.6 or more"
 msgstr ""
 
 msgid "Tumbling levels"
 msgstr "Tumblingniveaus"
 
-msgid "Cartwheel and handstand"
+msgid "USA Gymnastics tumbling levels 1-10"
+msgstr "Tumblingniveaus 1-10 van USA Gymnastics"
+
+msgid "Straight jump with stuck landing"
 msgstr ""
 
-msgid "Back walkover and front walkover"
+msgid "Handstand forward roll"
 msgstr ""
 
-msgid "Round-off rebound"
+msgid "Back roll to push-up"
+msgstr ""
+
+msgid "Round-off back handspring rebound"
 msgstr ""
 
 msgid "Front handspring"
 msgstr ""
 
-msgid "Round-off back handspring back tuck"
+msgid "Round-off and two to four back handsprings"
 msgstr ""
 
-msgid "Series of back handsprings"
-msgstr ""
-
-msgid "Back layout"
-msgstr ""
-
-msgid "Whip back"
-msgstr ""
-
-msgid "Back full twist"
-msgstr ""
-
-msgid "Double full"
-msgstr ""
-
-msgid "Front layout"
-msgstr ""
-
-msgid "Double back tucked"
+msgid "Round-off back handsprings back tuck"
 msgstr ""
 
 msgid "Passes of eight elements"
 msgstr ""
 
-msgid "Double back piked or full-in"
+msgid "Back pike or tuck finish"
 msgstr ""
 
-msgid "Competition passes to the code"
+msgid "Whip back"
+msgstr ""
+
+msgid "Whip backs and back handsprings in series"
+msgstr ""
+
+msgid "Back somersault with a full twist (360 degrees)"
+msgstr ""
+
+msgid "Back full in elements two to seven"
+msgstr ""
+
+msgid "No double somersault before the last element"
+msgstr ""
+
+msgid "A double somersault in the pass"
+msgstr ""
+
+msgid "Double back tucked or piked"
 msgstr ""
 
 msgid "Acrobatics levels"
 msgstr "Acrobatiekniveaus"
+
+msgid "Palee levels from acro gymnastics and hand balancing"
+msgstr "Palee-niveaus uit acrogym en handstand"
 
 msgid "Handstand against the wall 30 seconds"
 msgstr ""
@@ -2463,6 +2682,9 @@ msgstr ""
 
 msgid "CrossFit gymnastics skills"
 msgstr "CrossFit-gymnastiekvaardigheden"
+
+msgid "Palee skill progressions for CrossFit gymnastics"
+msgstr "Palee-vaardigheidsprogressies voor CrossFit-gymnastics"
 
 msgid "Foundations"
 msgstr "Basis"
@@ -2554,6 +2776,9 @@ msgstr ""
 msgid "Calisthenics levels"
 msgstr "Calisthenics-niveaus"
 
+msgid "Palee street workout strength progressions"
+msgstr "Palee-krachtprogressies voor street workout"
+
 msgid "10 push-ups and 20 bodyweight squats"
 msgstr ""
 
@@ -2635,6 +2860,9 @@ msgstr ""
 msgid "Street workout freestyle"
 msgstr "Street workout freestyle"
 
+msgid "Palee freestyle bar progression"
+msgstr "Palee-freestyleprogressie aan de stang"
+
 msgid "Front and back support on the bar"
 msgstr ""
 
@@ -2682,6 +2910,9 @@ msgstr ""
 
 msgid "Parkour levels"
 msgstr "Parkourniveaus"
+
+msgid "Palee technique tiers used by parkour schools"
+msgstr "Palee-techniekniveaus zoals in parkourscholen"
 
 msgid "Safe landing and roll"
 msgstr ""
@@ -2752,6 +2983,9 @@ msgstr ""
 msgid "Freerunning levels"
 msgstr "Freerunningniveaus"
 
+msgid "Palee acrobatic freerunning progression"
+msgstr "Palee-acrobatische freerunningprogressie"
+
 msgid "Forward roll on hard ground"
 msgstr ""
 
@@ -2787,6 +3021,9 @@ msgstr ""
 
 msgid "CrossFit levels"
 msgstr "CrossFit-niveaus"
+
+msgid "Palee levels from CrossFit scaling and benchmarks"
+msgstr "Palee-niveaus op basis van CrossFit-scaling en benchmarks"
 
 msgid "Air squat to full depth with a neutral spine"
 msgstr ""
@@ -2872,6 +3109,9 @@ msgstr ""
 msgid "Metcon engine levels"
 msgstr "Metcon-niveaus"
 
+msgid "Palee benchmarks for conditioning classes"
+msgstr "Palee-benchmarks voor conditielessen"
+
 msgid "Finishes a 12-minute AMRAP at a steady pace"
 msgstr ""
 
@@ -2919,6 +3159,9 @@ msgstr ""
 
 msgid "HYROX divisions"
 msgstr "HYROX-divisies"
+
+msgid "HYROX race divisions (organiser's system)"
+msgstr "HYROX-wedstrijdcategorieën (systeem van de organisator)"
 
 msgid "Relay ready"
 msgstr "Klaar voor estafette"
@@ -2971,7 +3214,7 @@ msgstr ""
 msgid "Elite 15"
 msgstr ""
 
-msgid "Qualifies through a Pro race result"
+msgid "Qualifies at a Major or a regional championship"
 msgstr ""
 
 msgid "Season plan with peaking"
@@ -2979,6 +3222,9 @@ msgstr ""
 
 msgid "Weightlifting classes"
 msgstr "Gewichtheffen: klassen"
+
+msgid "Russian/EVSK sports classification (national tables)"
+msgstr "Russische EVSK-sportclassificatie (nationale tabellen)"
 
 msgid "Technique"
 msgstr "Techniek"
@@ -3034,8 +3280,17 @@ msgstr "Meester in de sport"
 msgid "Total meets the MS standard at a national meet"
 msgstr ""
 
+msgid "Master of Sport International Class"
+msgstr "Meester in de sport internationale klasse"
+
+msgid "Total meets the MSIC standard at an international meet"
+msgstr ""
+
 msgid "Powerlifting levels"
 msgstr "Powerliftingniveaus"
+
+msgid "Palee strength standards (bodyweight multiples)"
+msgstr "Palee-krachtstandaarden (veelvouden van lichaamsgewicht)"
 
 msgid "Squat deadlift and bench press to competition depth with empty bar"
 msgstr ""
@@ -3088,6 +3343,9 @@ msgstr ""
 msgid "Learn to swim stages"
 msgstr "Leren zwemmen: stappen"
 
+msgid "Swim England Learn to Swim stages 1-7"
+msgstr "Stappen 1-7 van Swim England Learn to Swim"
+
 msgid "Stage %{n}"
 msgstr "Stap %{n}"
 
@@ -3121,44 +3379,65 @@ msgstr ""
 msgid "Submerges and picks up an object"
 msgstr ""
 
-msgid "10 metres of three strokes"
+msgid "Push and glide underwater"
 msgstr ""
 
-msgid "Treads water 30 seconds"
+msgid "Kicks 10 metres of each of the four strokes"
+msgstr ""
+
+msgid "Swims 10 metres continuously"
 msgstr ""
 
 msgid "Sculls head first on the back"
 msgstr ""
 
+msgid "Treads water 30 seconds"
+msgstr ""
+
+msgid "10 metres each of backstroke front crawl breaststroke and butterfly"
+msgstr ""
+
+msgid "Handstand in water held 3 seconds"
+msgstr ""
+
+msgid "Forward somersault in water"
+msgstr ""
+
 msgid "25 metres of one stroke"
 msgstr ""
 
-msgid "Mushroom float and handstand in water"
+msgid "Swims 10 metres wearing clothes"
 msgstr ""
 
-msgid "Push and glide underwater"
+msgid "Shouts and signals for rescue"
 msgstr ""
 
-msgid "Sitting dive"
+msgid "Surface dive"
 msgstr ""
 
-msgid "25 metres of three strokes"
-msgstr ""
-
-msgid "Survival sequence (fall in tread signal)"
-msgstr ""
-
-msgid "25 metres front crawl backstroke and breaststroke to standard"
+msgid "25 metres each of front crawl backstroke breaststroke and butterfly"
 msgstr ""
 
 msgid "50 metres without stopping"
 msgstr ""
 
-msgid "Obstacle course of stage 1 to 7 skills"
+msgid "100 metres using three strokes"
+msgstr ""
+
+msgid "Eggbeater tread for 30 seconds"
+msgstr ""
+
+msgid "Sitting dive"
+msgstr ""
+
+msgid "Obstacle course of four objects with feet off the floor"
 msgstr ""
 
 msgid "Ashtanga yoga series"
 msgstr "Ashtanga yoga-series"
+
+msgid "Mysore-style series order (the school's system)"
+msgstr "Volgorde van de series in Mysore-stijl (systeem van de school)"
 
 msgid "Sun salutations"
 msgstr "Zonnegroeten"
@@ -3222,6 +3501,9 @@ msgstr ""
 
 msgid "Strongman Levels"
 msgstr "Strongmanniveaus"
+
+msgid "Palee levels (strongman has no athlete ladder)"
+msgstr "Palee-niveaus (strongman kent geen atletenladder)"
 
 msgid "Barbell deadlift with neutral spine and full lockout"
 msgstr ""
@@ -3397,6 +3679,9 @@ msgstr ""
 msgid "Kettlebell Levels"
 msgstr "Kettlebellniveaus"
 
+msgid "Palee levels from StrongFirst standards"
+msgstr "Palee-niveaus volgens StrongFirst-standaarden"
+
 msgid "Hip hinge with dowel: three points of contact kept"
 msgstr ""
 
@@ -3559,6 +3844,9 @@ msgstr ""
 msgid "Kettlebell Sport Ranks"
 msgstr "Kettlebellsport-rangen"
 
+msgid "Kettlebell sport ranks (IUKL and IKO)"
+msgstr "Kettlebellsportrangen (IUKL en IKO)"
+
 msgid "Rank 3"
 msgstr ""
 
@@ -3628,6 +3916,9 @@ msgstr ""
 msgid "CMS (Candidate Master of Sport)"
 msgstr ""
 
+msgid "Trains with professional bell (men 32 kg · women 24 kg)"
+msgstr ""
+
 msgid "Reaches CMS reps in a sanctioned meet for own class"
 msgstr ""
 
@@ -3641,9 +3932,6 @@ msgid "Travel and weigh-in routine for meets"
 msgstr ""
 
 msgid "MS (Master of Sport)"
-msgstr ""
-
-msgid "Trains with professional bell (men 32 kg · women 24 kg)"
 msgstr ""
 
 msgid "Reaches MS reps at a sanctioned national or international meet"
@@ -3663,6 +3951,9 @@ msgstr ""
 
 msgid "Running Levels"
 msgstr "Hardloopniveaus"
+
+msgid "Palee levels for recreational runners"
+msgstr "Palee-niveaus voor recreatieve lopers"
 
 msgid "Walk-Run Starter"
 msgstr ""
@@ -3817,6 +4108,9 @@ msgstr ""
 msgid "Road Cycling Levels"
 msgstr "Wegwielrenniveaus"
 
+msgid "Palee levels (the first three follow Bikeability)"
+msgstr "Palee-niveaus (de eerste drie volgen Bikeability)"
+
 msgid "Bike Handling"
 msgstr ""
 
@@ -3946,6 +4240,9 @@ msgstr ""
 msgid "Indoor Cycling Levels"
 msgstr "Indoor cycling-niveaus"
 
+msgid "Palee levels (programmes certify coaches only)"
+msgstr "Palee-niveaus (programma's certificeren alleen instructeurs)"
+
 msgid "Bike Set-up"
 msgstr ""
 
@@ -4044,6 +4341,9 @@ msgstr ""
 
 msgid "Rowing Levels"
 msgstr "Roeiniveaus"
+
+msgid "Palee levels from British Rowing and Concept2 technique"
+msgstr "Palee-niveaus volgens de techniek van British Rowing en Concept2"
 
 msgid "Stroke Basics"
 msgstr ""
@@ -4170,6 +4470,9 @@ msgstr ""
 
 msgid "Pilates Mat Levels"
 msgstr "Pilates mat-niveaus"
+
+msgid "Palee levels from the classical mat order"
+msgstr "Palee-niveaus volgens de klassieke matvolgorde"
 
 msgid "Fundamentals"
 msgstr ""
@@ -4339,6 +4642,9 @@ msgstr ""
 msgid "Pilates Reformer Levels"
 msgstr "Pilates reformer-niveaus"
 
+msgid "Palee levels from the classical Reformer order"
+msgstr "Palee-niveaus volgens de klassieke Reformer-volgorde"
+
 msgid "Reformer Orientation"
 msgstr ""
 
@@ -4501,6 +4807,9 @@ msgstr ""
 msgid "Mobility Levels"
 msgstr "Mobiliteitsniveaus"
 
+msgid "Palee levels (no standard system)"
+msgstr "Palee-niveaus (geen standaardsysteem)"
+
 msgid "Joint Health"
 msgstr ""
 
@@ -4639,6 +4948,9 @@ msgstr ""
 msgid "HIIT Levels"
 msgstr "HIIT-niveaus"
 
+msgid "Palee levels for interval training (no standard system)"
+msgstr "Palee-niveaus voor intervaltraining (geen standaardsysteem)"
+
 msgid "Starter"
 msgstr "Starter"
 
@@ -4752,6 +5064,9 @@ msgstr ""
 
 msgid "Strength Training Levels"
 msgstr "Krachttrainingniveaus"
+
+msgid "Palee levels from novice to advanced lifter"
+msgstr "Palee-niveaus van beginner tot gevorderde lifter"
 
 msgid "Movement Foundations"
 msgstr ""
@@ -4873,8 +5188,12 @@ msgstr ""
 msgid "Ballet graded levels (RAD structure)"
 msgstr "Balletgraden (RAD-structuur)"
 
+msgid "RAD graded structure (not affiliated)"
+msgstr "RAD-gradenstructuur (niet aangesloten)"
+
+msgctxt "exam"
 msgid "Pre-Primary"
-msgstr ""
+msgstr "Pre-Primary (voorbereidend)"
 
 msgid "Posture and parallel feet"
 msgstr ""
@@ -4888,8 +5207,9 @@ msgstr ""
 msgid "Free movement to a story"
 msgstr ""
 
+msgctxt "exam"
 msgid "Primary"
-msgstr ""
+msgstr "Primary (basis)"
 
 msgid "First position and demi-plie"
 msgstr ""
@@ -4978,8 +5298,12 @@ msgstr ""
 msgid "Ballet vocational levels (RAD structure)"
 msgstr "Beroepsballetgraden (RAD-structuur)"
 
+msgid "RAD vocational structure (not affiliated)"
+msgstr "RAD-beroepsstructuur (niet aangesloten)"
+
+msgctxt "exam"
 msgid "Intermediate Foundation"
-msgstr ""
+msgstr "Intermediate Foundation (voor-gemiddeld)"
 
 msgid "Barre and centre at vocational standard"
 msgstr ""
@@ -4990,6 +5314,10 @@ msgstr ""
 msgid "Double pirouette en dehors"
 msgstr ""
 
+msgctxt "exam"
+msgid "Intermediate"
+msgstr "Intermediate (gemiddeld)"
+
 msgid "Pointe enchaînements"
 msgstr ""
 
@@ -4999,8 +5327,9 @@ msgstr ""
 msgid "Grand allegro with tours en l'air (male)"
 msgstr ""
 
+msgctxt "exam"
 msgid "Advanced Foundation"
-msgstr ""
+msgstr "Advanced Foundation (voor-gevorderd)"
 
 msgid "Multiple pirouettes and fouettés"
 msgstr ""
@@ -5008,8 +5337,9 @@ msgstr ""
 msgid "Batterie with entrechat six"
 msgstr ""
 
+msgctxt "exam"
 msgid "Advanced 1"
-msgstr ""
+msgstr "Advanced 1 (gevorderd 1)"
 
 msgid "Classical solo variation"
 msgstr ""
@@ -5017,8 +5347,9 @@ msgstr ""
 msgid "Sustained adage on pointe"
 msgstr ""
 
+msgctxt "exam"
 msgid "Advanced 2"
-msgstr ""
+msgstr "Advanced 2 (gevorderd 2)"
 
 msgid "Professional-level class"
 msgstr ""
@@ -5026,14 +5357,18 @@ msgstr ""
 msgid "Two solo variations"
 msgstr ""
 
+msgctxt "exam"
 msgid "Solo Seal"
-msgstr ""
+msgstr "Solo Seal (solo-onderscheiding)"
 
 msgid "Solo Seal variations and own solo"
 msgstr ""
 
 msgid "Contemporary dance grades"
 msgstr "Hedendaagse dans: graden"
+
+msgid "Palee grades (the ISTD has no graded contemporary exams)"
+msgstr "Palee-graden (ISTD heeft geen moderne-dansgraden)"
 
 msgid "Parallel and turned-out positions"
 msgstr ""
@@ -5089,6 +5424,9 @@ msgstr ""
 msgid "Latin American medal levels"
 msgstr "Latijns-Amerikaanse medailles"
 
+msgid "Medal tests like the ISTD and IDTA (not affiliated)"
+msgstr "Medailletests zoals ISTD en IDTA (niet aangesloten)"
+
 msgid "Social"
 msgstr "Sociaal"
 
@@ -5098,7 +5436,7 @@ msgstr ""
 msgid "Leading and following in closed hold"
 msgstr ""
 
-msgid "Two dances from cha cha samba rumba paso doble jive"
+msgid "Chosen dances from cha cha samba rumba paso doble and jive"
 msgstr ""
 
 msgid "Bronze figures with timing"
@@ -5107,13 +5445,13 @@ msgstr ""
 msgid "Hip action (Cuban motion)"
 msgstr ""
 
-msgid "Three dances with silver figures"
+msgid "Silver figures in the chosen dances"
 msgstr ""
 
 msgid "Spins and turns with spotting"
 msgstr ""
 
-msgid "Four dances with gold figures"
+msgid "Gold figures in the chosen dances"
 msgstr ""
 
 msgid "Musicality and floorcraft"
@@ -5122,7 +5460,7 @@ msgstr ""
 msgid "Gold Star"
 msgstr "Gouden ster"
 
-msgid "Five dances at gold standard"
+msgid "Gold Star awards in the chosen dances"
 msgstr ""
 
 msgid "Competition-ready routines"
@@ -5130,6 +5468,9 @@ msgstr ""
 
 msgid "Salsa levels"
 msgstr "Salsaniveaus"
+
+msgid "Palee levels (common school progression)"
+msgstr "Palee-niveaus (gangbare schoolprogressie)"
 
 msgid "Beginner %{n}"
 msgstr "Beginner %{n}"
@@ -5197,6 +5538,9 @@ msgstr ""
 msgid "Bachata levels"
 msgstr "Bachataniveaus"
 
+msgid "Palee levels (sensual and Dominican styles)"
+msgstr "Palee-niveaus (sensual en Dominicaanse stijl)"
+
 msgid "Basic step with the tap on 4 and 8"
 msgstr ""
 
@@ -5245,6 +5589,9 @@ msgstr ""
 msgid "Hip-hop levels"
 msgstr "Hiphopniveaus"
 
+msgid "ISTD street dance medals plus a Palee starter level"
+msgstr "ISTD-streetdancemedailles plus Palee-startniveau"
+
 msgid "Bounce and rock grooves"
 msgstr ""
 
@@ -5284,6 +5631,9 @@ msgstr ""
 msgid "Commercial and R&B levels"
 msgstr "Commercial- en R&B-niveaus"
 
+msgid "Palee levels for commercial dance classes"
+msgstr "Palee-niveaus voor commercial-danslessen"
+
 msgid "Grooves in R&B tempo"
 msgstr ""
 
@@ -5316,6 +5666,9 @@ msgstr ""
 
 msgid "Breaking levels"
 msgstr "Breakingniveaus"
+
+msgid "Palee levels from WDSF breaking elements"
+msgstr "Palee-niveaus volgens de WDSF-breakingelementen"
 
 msgid "Toprock: Indian step and two-step"
 msgstr ""
@@ -5365,6 +5718,9 @@ msgstr ""
 msgid "Reggaeton levels"
 msgstr "Reggaetonniveaus"
 
+msgid "Palee levels (urban Latin)"
+msgstr "Palee-niveaus (urban latin)"
+
 msgid "Dembow rhythm in the feet"
 msgstr ""
 
@@ -5398,6 +5754,9 @@ msgstr ""
 msgid "Heels levels"
 msgstr "Heelsniveaus"
 
+msgid "Palee levels for heels classes"
+msgstr "Palee-niveaus voor heelslessen"
+
 msgid "Walks and turns in heels with ankle control"
 msgstr ""
 
@@ -5430,6 +5789,9 @@ msgstr ""
 
 msgid "Pole levels"
 msgstr "Poleniveaus"
+
+msgid "Palee levels from common studio grading"
+msgstr "Palee-niveaus volgens gangbare studio-indeling"
 
 msgid "Walks and pivots around the pole"
 msgstr ""
@@ -5493,6 +5855,9 @@ msgstr ""
 
 msgid "Aerial silks levels"
 msgstr "Aerial silks-niveaus"
+
+msgid "Palee levels from circus school progression"
+msgstr "Palee-niveaus volgens de progressie van circusscholen"
 
 msgid "Single foot lock from the ground"
 msgstr ""
@@ -5583,6 +5948,9 @@ msgstr ""
 
 msgid "Tap dance"
 msgstr "Tapdansgraden"
+
+msgid "ISTD tap structure (not affiliated)"
+msgstr "ISTD-tapdansstructuur (niet aangesloten)"
 
 msgid "Bounce in time to music"
 msgstr ""
@@ -5740,7 +6108,7 @@ msgstr ""
 msgid "Shuffle spring"
 msgstr ""
 
-msgid "Basic · single and double waltz step"
+msgid "Basic waltz step single and double"
 msgstr ""
 
 msgid "Double time step"
@@ -5809,7 +6177,7 @@ msgstr ""
 msgid "Sugars"
 msgstr ""
 
-msgid "Single · double and triple pick up time steps"
+msgid "Pick up time steps single double and triple"
 msgstr ""
 
 msgid "Shuffle time step solo"
@@ -5970,6 +6338,9 @@ msgstr ""
 
 msgid "Jazz dance"
 msgstr "Jazzdansgraden"
+
+msgid "ISTD Modern Theatre structure (not affiliated)"
+msgstr "ISTD-Modern-Theatre-structuur (niet aangesloten)"
 
 msgid "Natural walks on the diagonal in time"
 msgstr ""
@@ -6354,6 +6725,9 @@ msgstr ""
 
 msgid "Ballet (Cecchetti method)"
 msgstr "Ballet (Cecchetti-methode)"
+
+msgid "ISTD Cecchetti structure (not affiliated)"
+msgstr "ISTD-Cecchetti-structuur (niet aangesloten)"
 
 msgid "Demi-pliés in 1st position"
 msgstr ""
@@ -6835,6 +7209,9 @@ msgstr ""
 msgid "Ballet (Vaganova method)"
 msgstr "Ballet (Vaganova-methode)"
 
+msgid "Vaganova 8-year programme (yearly content reconstructed)"
+msgstr "Achtjarig Vaganova-programma (jaarinhoud gereconstrueerd)"
+
 msgid "Year 1"
 msgstr ""
 
@@ -7129,6 +7506,9 @@ msgstr ""
 msgid "Kizomba"
 msgstr "Kizombaniveaus"
 
+msgid "Palee levels (no examining body)"
+msgstr "Palee-niveaus (geen examenorgaan)"
+
 msgid "Level 1 · Foundations"
 msgstr ""
 
@@ -7282,6 +7662,9 @@ msgstr ""
 msgid "Zumba / dance fitness"
 msgstr "Zumba / dansfitness"
 
+msgid "Palee levels for dance fitness classes"
+msgstr "Palee-niveaus voor dansfitnesslessen"
+
 msgid "Follows the instructor's visual cues"
 msgstr ""
 
@@ -7399,6 +7782,9 @@ msgstr ""
 msgid "Aerial hammock / aerial yoga"
 msgstr "Aerial yoga / hangmat"
 
+msgid "Palee levels (no body grades students)"
+msgstr "Palee-niveaus (geen orgaan beoordeelt leerlingen)"
+
 msgid "Intro"
 msgstr ""
 
@@ -7513,6 +7899,9 @@ msgstr ""
 msgid "Skateboarding levels"
 msgstr "Skateboardniveaus"
 
+msgid "Palee levels from Skateboard GB awards"
+msgstr "Palee-niveaus volgens de Skateboard GB-awards"
+
 msgid "Stance (regular or goofy) and pushing"
 msgstr ""
 
@@ -7573,8 +7962,11 @@ msgstr ""
 msgid "Indoor climbing levels"
 msgstr "Indoorklimmen: niveaus"
 
-msgid "Foundation climber"
-msgstr "Basisklimmer"
+msgid "NICAS levels 1-5 (UK indoor climbing scheme)"
+msgstr "NICAS-niveaus 1-5 (Britse indoorklimregeling)"
+
+msgid "New climber"
+msgstr "Nieuwe klimmer"
 
 msgid "Fits a harness and helmet correctly"
 msgstr ""
@@ -7585,16 +7977,16 @@ msgstr ""
 msgid "Climbs a top-rope route and is lowered"
 msgstr ""
 
-msgid "Top-rope climber"
-msgstr "Topropeklimmer"
+msgid "Foundation climber"
+msgstr "Basisklimmer"
 
 msgid "Belays top-rope with an assisted device"
 msgstr ""
 
-msgid "Climbs grade 4 routes cleanly"
+msgid "Safe bouldering falls"
 msgstr ""
 
-msgid "Safe bouldering falls"
+msgid "Climbs smoothly with straight arms"
 msgstr ""
 
 msgid "Technical climber"
@@ -7604,9 +7996,6 @@ msgid "Footwork: edging and smearing"
 msgstr ""
 
 msgid "Flagging and drop knee"
-msgstr ""
-
-msgid "Climbs grade 5 routes"
 msgstr ""
 
 msgid "Lead climber"
@@ -7624,9 +8013,6 @@ msgstr ""
 msgid "Advanced climber"
 msgstr "Gevorderde klimmer"
 
-msgid "Climbs grade 6a or harder on lead"
-msgstr ""
-
 msgid "Plans training and route reading"
 msgstr ""
 
@@ -7635,6 +8021,9 @@ msgstr ""
 
 msgid "Bouldering grades"
 msgstr "Bouldergraden"
+
+msgid "Palee levels by V-grade (Font in brackets)"
+msgstr "Palee-niveaus per V-graad (Font tussen haakjes)"
 
 msgid "V0 (4)"
 msgstr ""

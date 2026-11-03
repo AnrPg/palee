@@ -91,7 +91,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Fitness do
         "hyrox",
         "level",
         :federation,
-        "HYROX race divisions (Open Pro Elite 15)",
+        "HYROX race divisions (organiser's system)",
         [
           rank("Relay ready", nil, 0, [], [
             "Runs 1 km four times with recovery",
@@ -114,7 +114,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Fitness do
             "Race plan with target splits per station"
           ]),
           rank("Elite 15", nil, 0, [], [
-            "Qualifies through a Pro race result",
+            "Qualifies at a Major or a regional championship",
             "Season plan with peaking"
           ])
         ]
@@ -125,7 +125,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Fitness do
         "olympic_lifting",
         "level",
         :federation,
-        "Sports classification (Class III to Master of Sport) by bodyweight tables",
+        "Russian/EVSK sports classification (national tables)",
         [
           rank("Technique", nil, 0, [], [
             "Snatch and clean with PVC from the hang",
@@ -148,7 +148,10 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Fitness do
           rank("Candidate Master of Sport", nil, 0, [], [
             "Total meets the CMS standard at an official meet"
           ]),
-          rank("Master of Sport", nil, 0, [], ["Total meets the MS standard at a national meet"])
+          rank("Master of Sport", nil, 0, [], ["Total meets the MS standard at a national meet"]),
+          rank("Master of Sport International Class", nil, 0, [], [
+            "Total meets the MSIC standard at an international meet"
+          ])
         ]
       ),
       template(
@@ -212,24 +215,30 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Fitness do
             "Submerges and picks up an object"
           ]),
           rank({"Stage %{n}", 4}, nil, 0, [], [
-            "10 metres of three strokes",
-            "Treads water 30 seconds",
+            "Push and glide underwater",
+            "Kicks 10 metres of each of the four strokes",
+            "Swims 10 metres continuously",
             "Sculls head first on the back"
           ]),
           rank({"Stage %{n}", 5}, nil, 0, [], [
-            "25 metres of one stroke",
-            "Mushroom float and handstand in water",
-            "Push and glide underwater"
+            "Treads water 30 seconds",
+            "10 metres each of backstroke front crawl breaststroke and butterfly",
+            "Handstand in water held 3 seconds",
+            "Forward somersault in water"
           ]),
           rank({"Stage %{n}", 6}, nil, 0, [], [
-            "Sitting dive",
-            "25 metres of three strokes",
-            "Survival sequence (fall in tread signal)"
+            "25 metres of one stroke",
+            "Swims 10 metres wearing clothes",
+            "Shouts and signals for rescue",
+            "Surface dive"
           ]),
           rank({"Stage %{n}", 7}, nil, 0, [], [
-            "25 metres front crawl backstroke and breaststroke to standard",
+            "25 metres each of front crawl backstroke breaststroke and butterfly",
             "50 metres without stopping",
-            "Obstacle course of stage 1 to 7 skills"
+            "100 metres using three strokes",
+            "Eggbeater tread for 30 seconds",
+            "Sitting dive",
+            "Obstacle course of four objects with feet off the floor"
           ])
         ]
       ),
@@ -239,7 +248,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Fitness do
         "yoga",
         "level",
         :federation,
-        "Mysore-style series order (teacher gives the next posture)",
+        "Mysore-style series order (the school's system)",
         [
           rank("Sun salutations", nil, 0, [], [
             "Surya Namaskara A and B with breath",
@@ -275,7 +284,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Fitness do
         "strongman",
         "level",
         :palee,
-        "No federation runs an athlete level ladder for strongman (contests use bodyweight/novice/open classes)",
+        "Palee levels (strongman has no athlete ladder)",
         [
           rank("Foundations", nil, 0, [], [
             "Barbell deadlift with neutral spine and full lockout",
@@ -351,7 +360,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Fitness do
         "kettlebell",
         "level",
         :palee,
-        "StrongFirst certifies instructors (SFG I) not students so Palee levels are built from its standards",
+        "Palee levels from StrongFirst standards",
         [
           rank("Foundations", nil, 0, [], [
             "Hip hinge with dowel: three points of contact kept",
@@ -422,7 +431,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Fitness do
         "kettlebell",
         "level",
         :federation,
-        "Russian-origin rank ladder used by IUKL/IKO and national federations: Rank 3 · Rank 2 · Rank 1 · CMS · MS · MSIC (IKMF also awards HMS · MSWC · MS · C",
+        "Kettlebell sport ranks (IUKL and IKO)",
         [
           rank("Rank 3", nil, 0, [], [
             "Competition bell rack: bell on chest · elbows on hips",
@@ -450,13 +459,13 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Fitness do
             "Has completed a sanctioned competition with judges"
           ]),
           rank("CMS (Candidate Master of Sport)", nil, 0, [], [
+            "Trains with professional bell (men 32 kg · women 24 kg)",
             "Reaches CMS reps in a sanctioned meet for own class",
             "Clean pacing graph: last minute close to first",
             "Efficient hand switch under 2 s in snatch",
             "Travel and weigh-in routine for meets"
           ]),
           rank("MS (Master of Sport)", nil, 0, [], [
-            "Trains with professional bell (men 32 kg · women 24 kg)",
             "Reaches MS reps at a sanctioned national or international meet",
             "Mentors lower-rank lifters in technique"
           ]),
@@ -472,7 +481,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Fitness do
         "running",
         "level",
         :palee,
-        "No federation level ladder for recreational runners (England Athletics levels are for leaders/coaches)",
+        "Palee levels for recreational runners",
         [
           rank("Walk-Run Starter", nil, 0, [], [
             "5-min brisk walk warm-up and 5-min cool-down every session",
@@ -539,7 +548,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Fitness do
         "cycling",
         "level",
         :palee,
-        "First three Palee levels mirror the UK National Standard for Cycle Training / Bikeability: Level 1 = Roles 1-2 in traffic-free space (bike check · con",
+        "Palee levels (the first three follow Bikeability)",
         [
           rank("Bike Handling", nil, 0, [], [
             "Pre-ride bike check: brakes · tyres · chain · quick releases",
@@ -597,7 +606,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Fitness do
         "indoor_cycling",
         "level",
         :palee,
-        "Instructor programmes (Spinning · Schwinn · Stages) certify coaches not riders",
+        "Palee levels (programmes certify coaches only)",
         [
           rank("Bike Set-up", nil, 0, [], [
             "Sets saddle height: slight knee bend at bottom of stroke",
@@ -644,7 +653,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Fitness do
         "rowing",
         "level",
         :palee,
-        "British Rowing Go Row Indoor technique areas (posture · grip · recovery · catch · drive · finish) and Concept2 drills (arms-and-body · pauses · counti",
+        "Palee levels from British Rowing and Concept2 technique",
         [
           rank("Stroke Basics", nil, 0, [], [
             "Foot straps set across widest part of foot",
@@ -701,7 +710,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Fitness do
         "pilates",
         "level",
         :palee,
-        "No governing body sets student levels; Palee uses the widely taught classical Basic · Intermediate · Advanced mat orders (Pilatesology order sheets wi",
+        "Palee levels from the classical mat order",
         [
           rank("Fundamentals", nil, 0, [], [
             "Lateral (ribcage) breathing coordinated with movement",
@@ -771,7 +780,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Fitness do
         "pilates",
         "level",
         :palee,
-        "Exercise names and their sequence come from the classical Universal Reformer order (Online Pilates Classes · 46 items from Footwork to Russian Squat)",
+        "Palee levels from the classical Reformer order",
         [
           rank("Reformer Orientation", nil, 0, [], [
             "Safe getting on and off the carriage",
@@ -839,7 +848,7 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Fitness do
         "mobility",
         "level",
         :palee,
-        "No standard level system",
+        "Palee levels (no standard system)",
         [
           rank("Joint Health", nil, 0, [], [
             "Daily CARs routine: neck · shoulders · spine · hips · ankles",
@@ -894,60 +903,68 @@ defmodule Palee.Ranks.Domain.LadderTemplates.Fitness do
           ])
         ]
       ),
-      template("hiit_levels", "HIIT Levels", "hiit", "level", :palee, "No level system exists", [
-        rank("Starter", nil, 0, [], [
-          "Completes 30 s work / 15 s rest intervals at RPE 4-6",
-          "Bodyweight squat to depth with heels down",
-          "Incline or knee push-up with straight body line",
-          "Step-back burpee without jump",
-          "Forearm plank 30 s",
-          "Reverse lunge with knee control",
-          "Knows RPE scale and when to scale down",
-          "Completes a full 30-min class with modifications"
-        ]),
-        rank("Foundations", nil, 0, [], [
-          "Equal work:rest intervals (e.g. 40:40) sustained",
-          "Full push-up x10 with chest to fist height",
-          "Full burpee with chest to floor x10",
-          "Jump squat with soft landing",
-          "Mountain climbers with hips level 30 s",
-          "Kettlebell or dumbbell swing with hip hinge",
-          "Bear crawl forward and back 10 m",
-          "Jumping jacks and high knees for 60 s"
-        ]),
-        rank("Intermediate", nil, 0, [], [
-          "Tabata 20:10 x8 with consistent reps",
-          "EMOM 10 min with planned reps",
-          "Jumping lunges with upright torso",
-          "Box or step jump with full hip extension and step down",
-          "Plank variations: shoulder taps and side plank 30 s",
-          "Shuttle sprints with sharp turns",
-          "Medicine-ball slams and throws",
-          "Partner drills (wheelbarrow · plank high-fives)"
-        ]),
-        rank("Advanced", nil, 0, [], [
-          "Work:rest of 2:1 or longer intervals at RPE 8-9",
-          "Burpee broad jumps or burpee box jumps",
-          "Plyometric push-up",
-          "Sled push or sprint intervals outdoors",
-          "AMRAP 20 min with steady pacing",
-          "Heart-rate recovery tracked between rounds",
-          "Bootcamp obstacle or partner carry course"
-        ]),
-        rank("Athlete", nil, 0, [], [
-          "Completes a benchmark HIIT test and re-tests to improve",
-          "Scales any session for self and a partner",
-          "Leads warm-up and demonstrates all standards",
-          "Balances HIIT with recovery days (max 2-3 hard/week)"
-        ])
-      ]),
+      template(
+        "hiit_levels",
+        "HIIT Levels",
+        "hiit",
+        "level",
+        :palee,
+        "Palee levels for interval training (no standard system)",
+        [
+          rank("Starter", nil, 0, [], [
+            "Completes 30 s work / 15 s rest intervals at RPE 4-6",
+            "Bodyweight squat to depth with heels down",
+            "Incline or knee push-up with straight body line",
+            "Step-back burpee without jump",
+            "Forearm plank 30 s",
+            "Reverse lunge with knee control",
+            "Knows RPE scale and when to scale down",
+            "Completes a full 30-min class with modifications"
+          ]),
+          rank("Foundations", nil, 0, [], [
+            "Equal work:rest intervals (e.g. 40:40) sustained",
+            "Full push-up x10 with chest to fist height",
+            "Full burpee with chest to floor x10",
+            "Jump squat with soft landing",
+            "Mountain climbers with hips level 30 s",
+            "Kettlebell or dumbbell swing with hip hinge",
+            "Bear crawl forward and back 10 m",
+            "Jumping jacks and high knees for 60 s"
+          ]),
+          rank("Intermediate", nil, 0, [], [
+            "Tabata 20:10 x8 with consistent reps",
+            "EMOM 10 min with planned reps",
+            "Jumping lunges with upright torso",
+            "Box or step jump with full hip extension and step down",
+            "Plank variations: shoulder taps and side plank 30 s",
+            "Shuttle sprints with sharp turns",
+            "Medicine-ball slams and throws",
+            "Partner drills (wheelbarrow · plank high-fives)"
+          ]),
+          rank("Advanced", nil, 0, [], [
+            "Work:rest of 2:1 or longer intervals at RPE 8-9",
+            "Burpee broad jumps or burpee box jumps",
+            "Plyometric push-up",
+            "Sled push or sprint intervals outdoors",
+            "AMRAP 20 min with steady pacing",
+            "Heart-rate recovery tracked between rounds",
+            "Bootcamp obstacle or partner carry course"
+          ]),
+          rank("Athlete", nil, 0, [], [
+            "Completes a benchmark HIIT test and re-tests to improve",
+            "Scales any session for self and a partner",
+            "Leads warm-up and demonstrates all standards",
+            "Balances HIIT with recovery days (max 2-3 hard/week)"
+          ])
+        ]
+      ),
       template(
         "strength_levels",
         "Strength Training Levels",
         "strength",
         "level",
         :palee,
-        "Palee levels follow the novice → advanced novice → intermediate → advanced stages popularised by Rippetoe's Practical Programming (novice adds load ev",
+        "Palee levels from novice to advanced lifter",
         [
           rank("Movement Foundations", nil, 0, [], [
             "Squat pattern: goblet squat to depth",

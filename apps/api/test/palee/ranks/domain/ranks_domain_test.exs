@@ -55,10 +55,10 @@ defmodule Palee.Ranks.Domain.RanksDomainTest do
       end
     end
 
-    test "every template is a valid ladder" do
+    # Every template as a valid ladder in every language: LadderTemplatesTest.
+    test "every template names a known discipline" do
       for template <- LadderPolicy.templates() do
         assert template.discipline in LadderPolicy.disciplines()
-        assert {:ok, _ranks} = LadderPolicy.cast_ranks(template.ranks, [])
       end
     end
 

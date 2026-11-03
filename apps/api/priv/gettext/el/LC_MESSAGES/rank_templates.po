@@ -7,6 +7,9 @@ msgstr ""
 msgid "BJJ belts"
 msgstr "Ζώνες BJJ"
 
+msgid "IBJJF adult belts (16+)"
+msgstr "Ζώνες ενηλίκων IBJJF (16+)"
+
 msgid "White"
 msgstr "Λευκή"
 
@@ -15,6 +18,9 @@ msgstr "Χτύπημα για παραίτηση και συμπεριφορά �
 
 msgid "Blue"
 msgstr "Μπλε"
+
+msgid "Age 16 or older (IBJJF)"
+msgstr "Ηλικία 16 ετών και άνω (IBJJF)"
 
 msgid "Break-falls back and to the side"
 msgstr "Πτώσεις (break-falls) πίσω και στο πλάι"
@@ -79,6 +85,9 @@ msgstr "Ελεύθερο sparring με καθαρό σχέδιο"
 msgid "Brown"
 msgstr "Καφέ"
 
+msgid "Age 18 or older (IBJJF)"
+msgstr "Ηλικία 18 ετών και άνω (IBJJF)"
+
 msgid "Connected attacks from a personal guard game"
 msgstr "Συνδεδεμένες επιθέσεις από το δικό του παιχνίδι guard"
 
@@ -104,7 +113,7 @@ msgid "A complete game in every position"
 msgstr "Ολοκληρωμένο παιχνίδι σε κάθε θέση"
 
 msgid "Chains submissions and transitions fluidly"
-msgstr "Αλυσίδες από λαβές και μεταβάσεις με ροή"
+msgstr "Αλυσίδες από λαβές υποταγής και μεταβάσεις με ροή"
 
 msgid "Heel hook defence and no-gi adaptations"
 msgstr "Άμυνα σε heel hook και προσαρμογές για no-gi"
@@ -120,6 +129,9 @@ msgstr "Ηλικία 19 ετών και άνω (IBJJF)"
 
 msgid "BJJ kids belts"
 msgstr "Ζώνες BJJ παιδιών"
+
+msgid "IBJJF kids belts (ages 4-15)"
+msgstr "Ζώνες παιδιών IBJJF (4-15 ετών)"
 
 msgid "Grey-white"
 msgstr "Γκρι-λευκή"
@@ -157,6 +169,9 @@ msgstr "Armbar από mount"
 msgid "Yellow-white"
 msgstr "Κίτρινη-λευκή"
 
+msgid "Age 7 or older (IBJJF)"
+msgstr "Ηλικία 7 ετών και άνω (IBJJF)"
+
 msgid "Hip-bump sweep"
 msgstr "Hip-bump sweep"
 
@@ -193,6 +208,9 @@ msgstr "Butterfly sweep"
 msgid "Orange-white"
 msgstr "Πορτοκαλί-λευκή"
 
+msgid "Age 10 or older (IBJJF)"
+msgstr "Ηλικία 10 ετών και άνω (IBJJF)"
+
 msgid "Collar choke from mount"
 msgstr "Πνιγμός με το γιακά από mount"
 
@@ -206,7 +224,7 @@ msgid "Orange"
 msgstr "Πορτοκαλί"
 
 msgid "Sweep to submission combination"
-msgstr "Συνδυασμός sweep και λαβής"
+msgstr "Συνδυασμός sweep και λαβής υποταγής"
 
 msgid "Two guard passes"
 msgstr "Δύο περάσματα guard"
@@ -217,8 +235,8 @@ msgstr "Osoto-gari ή single-leg takedown"
 msgid "Orange-black"
 msgstr "Πορτοκαλί-μαύρη"
 
-msgid "Omoplata"
-msgstr "Omoplata"
+msgid "Arm drag to back take"
+msgstr "Arm drag και πάρσιμο πλάτης"
 
 msgid "Back take from turtle"
 msgstr "Πάρσιμο πλάτης από turtle"
@@ -228,6 +246,9 @@ msgstr "Positional sparring με σχέδιο"
 
 msgid "Green-white"
 msgstr "Πράσινη-λευκή"
+
+msgid "Age 13 or older (IBJJF)"
+msgstr "Ηλικία 13 ετών και άνω (IBJJF)"
 
 msgid "Open guard retention"
 msgstr "Διατήρηση open guard"
@@ -244,8 +265,8 @@ msgstr "Πράσινη"
 msgid "Three attacks chained from guard"
 msgstr "Τρεις επιθέσεις σε αλυσίδα από guard"
 
-msgid "Straight ankle lock (allowed for the age)"
-msgstr "Straight ankle lock (όπου επιτρέπεται για την ηλικία)"
+msgid "Cross collar choke from guard"
+msgstr "Πνιγμός cross collar από guard"
 
 msgid "Helps younger children drill"
 msgstr "Βοηθά τα μικρότερα παιδιά στις ασκήσεις"
@@ -256,11 +277,14 @@ msgstr "Πράσινη-μαύρη"
 msgid "Whole kids curriculum in live sparring"
 msgstr "Όλο το παιδικό πρόγραμμα σε ελεύθερο sparring"
 
-msgid "Ready for the adult blue belt at 16"
-msgstr "Έτοιμο για την μπλε ζώνη ενηλίκων στα 16"
+msgid "At 16 moves to adult blue or purple belt (coach decides)"
+msgstr "Στα 16 περνά σε μπλε ή μωβ ζώνη ενηλίκων (αποφασίζει ο coach)"
 
 msgid "Karate belts"
 msgstr "Ζώνες καράτε"
+
+msgid "Palee 7-belt kyu ladder (no single federation)"
+msgstr "Κλίμακα kyu 7 ζωνών Palee (χωρίς μία ομοσπονδία)"
 
 msgid "Dojo etiquette (rei and seiza)"
 msgstr "Εθιμοτυπία του dojo (rei και seiza)"
@@ -337,11 +361,17 @@ msgstr "Ελεύθερο kumite με δύο αντιπάλους διαδοχι�
 msgid "Shotokan karate kyu"
 msgstr "Καράτε Shotokan kyu"
 
-msgid "Kyu %{n}"
-msgstr "%{n}ο kyu"
+msgid "Shotokan kyu (shoto.uk colours and intervals)"
+msgstr "Shotokan kyu (χρώματα και διαστήματα shoto.uk)"
+
+msgid "Beginner"
+msgstr "Αρχάριος"
 
 msgid "Dojo etiquette and dojo kun"
 msgstr "Εθιμοτυπία και dojo kun"
+
+msgid "Kyu %{n}"
+msgstr "%{n}ο kyu"
 
 msgid "Zenkutsu-dachi with oi-zuki"
 msgstr "Zenkutsu-dachi με oi-zuki"
@@ -430,6 +460,9 @@ msgstr "Jiyu kumite"
 msgid "Kyokushin karate kyu"
 msgstr "Καράτε Kyokushin kyu"
 
+msgid "Kyokushin kyu colours (IKO intervals)"
+msgstr "Χρώματα kyu Kyokushin (διαστήματα IKO)"
+
 msgid "Dojo etiquette and seiza"
 msgstr "Εθιμοτυπία του dojo και seiza"
 
@@ -514,6 +547,9 @@ msgstr "Kumite 10 ή περισσότερων γύρων"
 msgid "Judo belts"
 msgstr "Ζώνες τζούντο"
 
+msgid "European kyu colours with British Judo intervals"
+msgstr "Ευρωπαϊκά χρώματα kyu με διαστήματα British Judo"
+
 msgid "Bow (rei) and judogi care"
 msgstr "Χαιρετισμός (rei) και φροντίδα του judogi"
 
@@ -556,14 +592,14 @@ msgstr "Συνδυασμοί ρίψεων (renraku-waza)"
 msgid "Turnovers into hold-downs"
 msgstr "Αναστροφές σε ακινητοποιήσεις"
 
-msgid "Juji-gatame (age 13 or older)"
-msgstr "Juji-gatame (13 ετών και άνω)"
+msgid "Juji-gatame (no submission under 16)"
+msgstr "Juji-gatame (χωρίς υποταγή κάτω των 16)"
 
 msgid "Counter throws (kaeshi-waza)"
 msgstr "Ρίψεις αντεπίθεσης (kaeshi-waza)"
 
-msgid "Sankaku and shime-waza (age 16 or older)"
-msgstr "Sankaku και shime-waza (16 ετών και άνω)"
+msgid "Shime-waza (no submission under 16)"
+msgstr "Shime-waza (χωρίς υποταγή κάτω των 16)"
 
 msgid "Nage-no-kata first set"
 msgstr "Nage-no-kata πρώτη ομάδα"
@@ -591,6 +627,9 @@ msgstr "Ηλικία 15 ετών και άνω"
 
 msgid "Taekwondo belts"
 msgstr "Ζώνες ταεκβοντό"
+
+msgid "Kukkiwon 10 geup to 1st dan (British Taekwondo intervals)"
+msgstr "Kukkiwon 10 geup έως 1ο dan (διαστήματα British Taekwondo)"
 
 msgid "Geup %{n}"
 msgstr "%{n}ο geup"
@@ -670,6 +709,9 @@ msgstr "Poom αντί για dan κάτω των 15 (Kukkiwon)"
 msgid "Aikido kyu"
 msgstr "Αϊκίντο kyu"
 
+msgid "Aikikai Hombu practice days per grade"
+msgstr "Ημέρες εξάσκησης ανά βαθμό Aikikai Hombu"
+
 msgid "Ukemi forward and backward"
 msgstr "Ukemi μπροστά και πίσω"
 
@@ -688,6 +730,12 @@ msgstr "Tai no henko και kokyu-dosa"
 msgid "Shomen-uchi nikyo and sankyo"
 msgstr "Shomen-uchi nikyo και sankyo"
 
+msgid "Katate-dori kote-gaeshi"
+msgstr "Katate-dori kote-gaeshi"
+
+msgid "Suwari-waza kokyu-ho"
+msgstr "Suwari-waza kokyu-ho"
+
 msgid "Chudan-tsuki kote-gaeshi"
 msgstr "Chudan-tsuki kote-gaeshi"
 
@@ -700,32 +748,38 @@ msgstr "Yokomen-uchi shiho-nage και irimi-nage"
 msgid "Shomen-uchi yonkyo"
 msgstr "Shomen-uchi yonkyo"
 
-msgid "Ushiro ryote-dori kote-gaeshi"
-msgstr "Ushiro ryote-dori kote-gaeshi"
-
-msgid "Ushiro waza from several grabs"
-msgstr "Ushiro waza από διάφορες λαβές"
-
 msgid "Suwari-waza ikkyo to yonkyo"
 msgstr "Suwari-waza ikkyo έως yonkyo"
 
 msgid "Hanmi handachi shiho-nage"
 msgstr "Hanmi handachi shiho-nage"
 
+msgid "Ushiro waza from several grabs"
+msgstr "Ushiro waza από διάφορες λαβές"
+
+msgid "Ushiro ryote-dori kote-gaeshi"
+msgstr "Ushiro ryote-dori kote-gaeshi"
+
 msgid "Jiyu-waza against one attacker"
 msgstr "Jiyu-waza με έναν επιτιθέμενο"
 
-msgid "Tanto-dori basics"
-msgstr "Βασικά tanto-dori"
+msgid "Tanto-dori basics (dojo addition)"
+msgstr "Βασικά tanto-dori (προσθήκη του dojo)"
 
-msgid "Randori against two attackers"
-msgstr "Randori με δύο επιτιθέμενους"
+msgid "Age 15 or older (Aikikai)"
+msgstr "Ηλικία 15 ετών και άνω (Aikikai)"
 
 msgid "All kyu techniques fluidly"
 msgstr "Όλες οι τεχνικές των kyu με ροή"
 
+msgid "Randori against two attackers (dojo addition)"
+msgstr "Randori με δύο επιτιθέμενους (προσθήκη του dojo)"
+
 msgid "Muay Thai khan"
 msgstr "Muay Thai khan"
+
+msgid "Kru Muay Thai Association khan 1-10"
+msgstr "Khan 1-10 της Kru Muay Thai Association"
 
 msgid "Khan %{n}"
 msgstr "Khan %{n}"
@@ -802,6 +856,9 @@ msgstr "Αγώνας interclub ή τεστ πλήρους sparring"
 msgid "Explains the history of Muay Thai"
 msgstr "Εξηγεί την ιστορία του Muay Thai"
 
+msgid "At least 217 hours of training in total (KMA)"
+msgstr "Τουλάχιστον 217 ώρες προπόνησης συνολικά (KMA)"
+
 msgid "Assists teaching a class"
 msgstr "Βοηθά στη διδασκαλία μαθήματος"
 
@@ -811,17 +868,23 @@ msgstr "Στήνει γύρο pads για αρχάριο"
 msgid "Kickboxing belts"
 msgstr "Ζώνες kickboxing"
 
+msgid "WAKO grading programme (2025)"
+msgstr "Πρόγραμμα εξετάσεων WAKO (2025)"
+
 msgid "Guard stance and footwork"
 msgstr "Στάση φύλαξης και κινήσεις ποδιών"
 
 msgid "Front kick and roundhouse kick"
 msgstr "Μετωπικό λάκτισμα και roundhouse"
 
+msgid "Knee strikes and low kick to the thigh"
+msgstr "Γονατιές και low kick στον μηρό"
+
 msgid "Parry and block straight punches"
 msgstr "Απόκρουση και μπλοκ ευθειών"
 
-msgid "Side kick and low kick"
-msgstr "Πλάγιο λάκτισμα και low kick"
+msgid "Side kick and hook kick to the head"
+msgstr "Πλάγιο λάκτισμα και hook kick στο κεφάλι"
 
 msgid "Slip and roll under punches"
 msgstr "Slip και roll κάτω από γροθιές"
@@ -829,8 +892,8 @@ msgstr "Slip και roll κάτω από γροθιές"
 msgid "Three-technique combinations"
 msgstr "Συνδυασμοί τριών τεχνικών"
 
-msgid "Hook kick and axe kick"
-msgstr "Hook kick και axe kick"
+msgid "Back kick"
+msgstr "Πίσω λάκτισμα (back kick)"
 
 msgid "Counter-attacks after defence"
 msgstr "Αντεπιθέσεις μετά από άμυνα"
@@ -838,8 +901,8 @@ msgstr "Αντεπιθέσεις μετά από άμυνα"
 msgid "Light sparring two rounds"
 msgstr "Ελαφρύ sparring δύο γύροι"
 
-msgid "Spinning back kick"
-msgstr "Περιστροφικό πίσω λάκτισμα"
+msgid "Jumping spinning back side kick and jumping spinning hook kick"
+msgstr "Πλάγιο πίσω και hook kick με άλμα και περιστροφή"
 
 msgid "Kick catching defence"
 msgstr "Άμυνα στο πιάσιμο λακτίσματος"
@@ -847,26 +910,32 @@ msgstr "Άμυνα στο πιάσιμο λακτίσματος"
 msgid "Sparring three rounds in point or light contact"
 msgstr "Sparring τρεις γύροι σε point ή light contact"
 
-msgid "Jumping and spinning kicks"
-msgstr "Άλματα και περιστροφικά λακτίσματα"
+msgid "Jumping kicks with rotation"
+msgstr "Λακτίσματα με άλμα και περιστροφή"
 
 msgid "Ring and tatami tactics"
 msgstr "Τακτική σε ρινγκ και τατάμι"
 
-msgid "Rules of WAKO disciplines"
-msgstr "Κανονισμοί των αγωνισμάτων WAKO"
+msgid "Free sparring"
+msgstr "Ελεύθερο sparring"
+
+msgid "Axe kick external and internal"
+msgstr "Axe kick εξωτερικό και εσωτερικό"
 
 msgid "Full technical exam of all colours"
 msgstr "Πλήρης τεχνική εξέταση όλων των χρωμάτων"
 
-msgid "Sparring several rounds against fresh opponents"
-msgstr "Sparring πολλών γύρων με ξεκούραστους αντιπάλους"
+msgid "Written paper on kickboxing history"
+msgstr "Γραπτή εργασία για την ιστορία του kickboxing"
 
-msgid "Age 16 or older"
-msgstr "Ηλικία 16 ετών και άνω"
+msgid "Age 16 or older in the year of grading"
+msgstr "Ηλικία 16 ετών και άνω στο έτος της εξέτασης"
 
 msgid "Boxing levels"
 msgstr "Επίπεδα πυγμαχίας"
+
+msgid "Modelled on England Boxing awards"
+msgstr "Με πρότυπο τα διπλώματα England Boxing"
 
 msgid "Level %{n}"
 msgstr "Επίπεδο %{n}"
@@ -919,6 +988,9 @@ msgstr "Γνωρίζει κανονισμούς και βαθμολόγηση ε
 msgid "MMA levels"
 msgstr "Επίπεδα MMA"
 
+msgid "Palee gym progression (no federation ranks)"
+msgstr "Πρόοδος γυμναστηρίου Palee (χωρίς βαθμούς ομοσπονδίας)"
+
 msgid "Stance and footwork for striking"
 msgstr "Στάση και κινήσεις ποδιών για striking"
 
@@ -966,6 +1038,9 @@ msgstr "Γνωρίζει τους ενιαίους κανονισμούς"
 
 msgid "Krav Maga grades (P G E)"
 msgstr "Βαθμοί Krav Maga (P G E)"
+
+msgid "IKMF/KMG Practitioner Graduate Expert"
+msgstr "IKMF/KMG Practitioner Graduate Expert"
 
 msgid "P1"
 msgstr ""
@@ -1093,6 +1168,9 @@ msgstr "Τεστ αντοχής σε μάχη"
 msgid "Krav Maga belts"
 msgstr "Ζώνες Krav Maga"
 
+msgid "FEKM colour belts (at most one a year)"
+msgstr "Χρωματιστές ζώνες FEKM (έως μία τον χρόνο)"
+
 msgid "Fighting stance and safety rules"
 msgstr "Στάση μάχης και κανόνες ασφάλειας"
 
@@ -1146,6 +1224,9 @@ msgstr "Ικανότητα διδασκαλίας"
 
 msgid "Kung fu sashes"
 msgstr "Ζώνες κουνγκ φου"
+
+msgid "Palee sash ladder (styles and colours vary)"
+msgstr "Κλίμακα ζωνών Palee (στυλ και χρώματα διαφέρουν)"
 
 msgid "Horse stance bow stance cat stance"
 msgstr "Στάσεις αλόγου τόξου και γάτας (ma bu gong bu xu bu)"
@@ -1212,6 +1293,9 @@ msgstr "Βοηθά στη διδασκαλία"
 
 msgid "Wing Chun levels"
 msgstr "Επίπεδα Wing Chun"
+
+msgid "Ip Man lineage form order"
+msgstr "Σειρά φορμών της γραμμής Ip Man"
 
 msgid "Siu Nim Tao"
 msgstr ""
@@ -1285,14 +1369,23 @@ msgstr "Διδάσκει τις φόρμες χωρίς όπλα"
 msgid "Capoeira cords"
 msgstr "Κορδόνια καποέιρα"
 
-msgid "Beginner cord"
-msgstr "Κορδόνι αρχαρίου"
+msgid "Brazilian Capoeira Confederation student cords"
+msgstr "Κορδόνια μαθητών της Βραζιλιάνικης Συνομοσπονδίας Capoeira"
+
+msgid "No cord yet"
+msgstr "Χωρίς κορδόνι ακόμα"
 
 msgid "Ginga"
 msgstr "Ginga"
 
 msgid "Basic esquivas (cocorinha and negativa)"
 msgstr "Βασικές esquivas (cocorinha και negativa)"
+
+msgid "Green cord"
+msgstr "Πράσινο κορδόνι"
+
+msgid "Batizado: plays in the roda for the first time"
+msgstr "Batizado: παίζει στη roda για πρώτη φορά"
 
 msgid "Meia-lua de frente and armada"
 msgstr "Meia-lua de frente και armada"
@@ -1303,23 +1396,23 @@ msgstr "Queixada και benção"
 msgid "Au (cartwheel) and role"
 msgstr "Au (τροχός) και role"
 
-msgid "Sings a corrido and claps the rhythm"
-msgstr "Τραγουδά ένα corrido και κρατά ρυθμό με παλαμάκια"
-
-msgid "Green-yellow"
-msgstr "Πράσινη-κίτρινη"
+msgid "Yellow cord"
+msgstr "Κίτρινο κορδόνι"
 
 msgid "Martelo and meia-lua de compasso"
 msgstr "Martelo και meia-lua de compasso"
 
+msgid "Sings a corrido and claps the rhythm"
+msgstr "Τραγουδά ένα corrido και κρατά ρυθμό με παλαμάκια"
+
 msgid "Plays pandeiro and atabaque basics"
 msgstr "Βασικά pandeiro και atabaque"
 
-msgid "Roda game at Regional rhythm"
-msgstr "Παιχνίδι στη roda σε ρυθμό Regional"
+msgid "Blue cord"
+msgstr "Μπλε κορδόνι"
 
 msgid "Rasteira and other take-downs"
-msgstr "Rasteira και άλλα ρίχνοντα"
+msgstr "Rasteira και άλλα σαρώματα"
 
 msgid "Basic berimbau toques"
 msgstr "Βασικά toques στο berimbau"
@@ -1327,32 +1420,47 @@ msgstr "Βασικά toques στο berimbau"
 msgid "Angola rhythm game"
 msgstr "Παιχνίδι σε ρυθμό Angola"
 
-msgid "Yellow-blue"
-msgstr "Κίτρινη-μπλε"
+msgid "Green-yellow cord"
+msgstr "Πράσινο-κίτρινο κορδόνι"
+
+msgid "Roda game at Regional rhythm"
+msgstr "Παιχνίδι στη roda σε ρυθμό Regional"
 
 msgid "Floreios (macaco and au sem mao)"
 msgstr "Floreios (macaco και au sem mão)"
 
+msgid "Green-blue cord"
+msgstr "Πράσινο-μπλε κορδόνι"
+
 msgid "Leads a song in the roda"
 msgstr "Οδηγεί τραγούδι στη roda"
+
+msgid "Sequences of Mestre Bimba"
+msgstr "Sequências του Mestre Bimba"
+
+msgid "Yellow-blue cord"
+msgstr "Κίτρινο-μπλε κορδόνι"
 
 msgid "Plays every instrument of the bateria"
 msgstr "Παίζει όλα τα όργανα της bateria"
 
-msgid "History of capoeira and its masters"
-msgstr "Ιστορία της καποέιρα και των μεστρε της"
+msgid "History of capoeira and its mestres"
+msgstr "Ιστορία της καποέιρα και των mestres της"
 
-msgid "Green-yellow-blue"
-msgstr "Πράσινη-κίτρινη-μπλε"
+msgid "Green-yellow-blue cord"
+msgstr "Πράσινο-κίτρινο-μπλε κορδόνι"
 
-msgid "Formado: teaches beginners under supervision"
-msgstr "Formado: διδάσκει αρχάριους με επίβλεψη"
+msgid "Formado: age 18 or older and 5 years of capoeira (CBC)"
+msgstr "Formado: ηλικία 18+ και 5 χρόνια καποέιρα (CBC)"
 
-msgid "Complete sequences of Mestre Bimba"
-msgstr "Ολοκληρωμένες sequências του Mestre Bimba"
+msgid "Teaches beginners under supervision"
+msgstr "Διδάσκει αρχάριους με επίβλεψη"
 
 msgid "Wrestling"
 msgstr "Πάλη (ελευθέρα και ελληνορωμαϊκή)"
+
+msgid "Palee levels (Olympic wrestling has no grades)"
+msgstr "Επίπεδα Palee (η ολυμπιακή πάλη δεν έχει βαθμούς)"
 
 msgid "Novice"
 msgstr "Αρχάριος με βάση"
@@ -1543,8 +1651,8 @@ msgstr "Συμμετέχει σε επίσημο τουρνουά"
 msgid "Sambo"
 msgstr "Σάμπο"
 
-msgid "Beginner"
-msgstr "Αρχάριος"
+msgid "FIAS sambo belt system"
+msgstr "Σύστημα ζωνών σάμπο FIAS"
 
 msgid "Breakfall forward on hands from a squat"
 msgstr "Πτώση εμπρός στα χέρια από βαθύ κάθισμα"
@@ -1837,8 +1945,14 @@ msgstr "Εξετάζει και προάγει μαθητές"
 msgid "Gymnastics levels 1-10"
 msgstr "Γυμναστική: επίπεδα 1-10"
 
+msgid "Generic numbered levels (add your own skills)"
+msgstr "Γενικά αριθμημένα επίπεδα (προσθέστε δικές σας δεξιότητες)"
+
 msgid "Women's artistic gymnastics levels"
 msgstr "Ενόργανη γυναικών: επίπεδα"
+
+msgid "USA Gymnastics Development Program levels 1-10"
+msgstr "Επίπεδα 1-10 του USA Gymnastics Development Program"
 
 msgid "Forward roll and backward roll"
 msgstr "Κυβίστηση μπροστά και πίσω"
@@ -1853,7 +1967,7 @@ msgid "Beam: walks and releve turns"
 msgstr "Δοκός: βαδίσματα και στροφές σε μισές πατούσες"
 
 msgid "Bars: pullover with spot and front support"
-msgstr "Δίζυγο: pullover με βοήθεια και στήριξη"
+msgstr "Ασύμμετροι ζυγοί: pullover με βοήθεια και στήριξη"
 
 msgid "Vault: straight jump onto mats"
 msgstr "Άλμα: τεντωμένο άλμα στα στρώματα"
@@ -1865,7 +1979,7 @@ msgid "Backward roll to push-up position"
 msgstr "Κυβίστηση πίσω σε θέση κάμψης"
 
 msgid "Bars: pullover and back hip circle"
-msgstr "Δίζυγο: pullover και κυκλική πίσω (back hip circle)"
+msgstr "Ασύμμετροι ζυγοί: pullover και κυκλική πίσω (back hip circle)"
 
 msgid "Beam: cartwheel to handstand practice on low beam"
 msgstr "Δοκός: προετοιμασία τροχού και κατακόρυφου σε χαμηλή δοκό"
@@ -1880,7 +1994,7 @@ msgid "Bridge kickover"
 msgstr "Γέφυρα με ανατροπή (bridge kickover)"
 
 msgid "Bars: squat-on and cast to horizontal"
-msgstr "Δίζυγο: squat-on και cast σε οριζόντια"
+msgstr "Ασύμμετροι ζυγοί: squat-on και cast σε οριζόντια"
 
 msgid "Beam: split leap and handstand"
 msgstr "Δοκός: άλμα σε spagat και κατακόρυφος"
@@ -1891,11 +2005,14 @@ msgstr "Άλμα: χειροκυβίστηση μπροστά σε στρώμα�
 msgid "Back walkover"
 msgstr "Ανατροπή πίσω (back walkover)"
 
-msgid "Front limber"
-msgstr "Front limber"
+msgid "Round-off back handspring"
+msgstr "Round-off και flic-flac"
 
-msgid "Bars: kip with spot and cast to handstand practice"
-msgstr "Δίζυγο: kip με βοήθεια και προετοιμασία cast σε κατακόρυφο"
+msgid "Bars: glide kip and cast to horizontal"
+msgstr "Ασύμμετροι ζυγοί: glide kip και cast σε οριζόντια"
+
+msgid "Bars: long hang kip and back hip circle"
+msgstr "Ασύμμετροι ζυγοί: long hang kip και back hip circle"
 
 msgid "Beam: cartwheel"
 msgstr "Δοκός: τροχός"
@@ -1903,53 +2020,50 @@ msgstr "Δοκός: τροχός"
 msgid "Vault: front handspring over the table"
 msgstr "Άλμα: χειροκυβίστηση μπροστά πάνω από τον εφαλτήρα"
 
-msgid "Back handspring"
-msgstr "Χειροκυβίστηση πίσω (flic-flac)"
+msgid "Round-off back handspring back tuck"
+msgstr "Round-off flic-flac και σάλτο πίσω συσπειρωμένο"
 
-msgid "Round-off back handspring"
-msgstr "Round-off και flic-flac"
+msgid "Front tuck or aerial"
+msgstr "Σάλτο μπροστά συσπειρωμένο ή aerial"
 
-msgid "Bars: kip cast to horizontal and clear hip circle"
-msgstr "Δίζυγο: kip cast και clear hip circle"
+msgid "Bars: kip cast above horizontal and clear hip circle"
+msgstr "Ασύμμετροι ζυγοί: kip cast πάνω από την οριζόντια και clear hip circle"
 
-msgid "Beam: back walkover"
-msgstr "Δοκός: ανατροπή πίσω"
+msgid "Bars: flyaway dismount"
+msgstr "Ασύμμετροι ζυγοί: έξοδος flyaway"
 
-msgid "Bars: long hang kip"
-msgstr "Δίζυγο: long hang kip"
+msgid "Beam: back walkover or back handspring"
+msgstr "Δοκός: ανατροπή πίσω ή flic-flac"
 
-msgid "Back tuck"
-msgstr "Σάλτο πίσω συσπειρωμένο"
-
-msgid "Front tuck"
-msgstr "Σάλτο μπροστά συσπειρωμένο"
-
-msgid "Bars: cast to 45 degrees above horizontal"
-msgstr "Δίζυγο: cast 45 μοίρες πάνω από την οριζόντια"
-
-msgid "Beam: back handspring"
-msgstr "Δοκός: flic-flac"
+msgid "Beam: back tuck dismount"
+msgstr "Δοκός: έξοδος με σάλτο πίσω συσπειρωμένο"
 
 msgid "Optional routines with required elements"
 msgstr "Ελεύθερα προγράμματα με τα απαιτούμενα στοιχεία"
 
+msgid "Bars: cast to 45 degrees above horizontal"
+msgstr "Ασύμμετροι ζυγοί: cast 45 μοίρες πάνω από την οριζόντια"
+
+msgid "Back layout"
+msgstr "Σάλτο πίσω τεντωμένο"
+
 msgid "Round-off back handspring layout"
 msgstr "Round-off flic-flac και τεντωμένο σάλτο"
 
-msgid "Bars: giant swing drills and flyaway dismount"
-msgstr "Δίζυγο: ασκήσεις γιγαντιαίας και έξοδος flyaway"
+msgid "Bars: giant swing drills"
+msgstr "Ασύμμετροι ζυγοί: προετοιμασία γιγαντιαίας"
 
 msgid "Beam: acro series of two elements"
 msgstr "Δοκός: ακροβατική σειρά δύο στοιχείων"
 
-msgid "Vault: Yamashita or handspring"
-msgstr "Άλμα: Yamashita ή χειροκυβίστηση"
+msgid "Vault: handspring (Yamashita optional)"
+msgstr "Άλμα: χειροκυβίστηση (ή Yamashita)"
 
 msgid "Full twisting layout"
 msgstr "Τεντωμένο σάλτο με πλήρη στροφή"
 
 msgid "Bars: giant swings and release move drills"
-msgstr "Δίζυγο: γιγαντιαίες και προετοιμασία αφέσεων"
+msgstr "Ασύμμετροι ζυγοί: γιγαντιαίες και προετοιμασία αφέσεων"
 
 msgid "Beam: salto element"
 msgstr "Δοκός: στοιχείο σάλτο"
@@ -1961,7 +2075,7 @@ msgid "Double twist or front layout full"
 msgstr "Διπλή στροφή ή τεντωμένο μπροστά με στροφή"
 
 msgid "Bars: release move"
-msgstr "Δίζυγο: άφεση και επανάληψη"
+msgstr "Ασύμμετροι ζυγοί: άφεση και επανάληψη"
 
 msgid "Beam: two-element acro series with a salto"
 msgstr "Δοκός: σειρά δύο στοιχείων με σάλτο"
@@ -1973,7 +2087,7 @@ msgid "Floor: D and E value skills in routine"
 msgstr "Έδαφος: στοιχεία αξίας D και E στο πρόγραμμα"
 
 msgid "Bars: release and pirouetting elements"
-msgstr "Δίζυγο: αφέσεις και περιστροφές"
+msgstr "Ασύμμετροι ζυγοί: αφέσεις και περιστροφές"
 
 msgid "Beam: complete optional routine to Level 10 rules"
 msgstr "Δοκός: πλήρες ελεύθερο πρόγραμμα με κανόνες Level 10"
@@ -1983,6 +2097,9 @@ msgstr "Άλμα: Yurchenko με πλήρη στροφή ή δυσκολότερ
 
 msgid "Xcel divisions (women's artistic)"
 msgstr "Ενόργανη γυναικών: κατηγορίες Xcel"
+
+msgid "USA Gymnastics Xcel Bronze to Sapphire"
+msgstr "USA Gymnastics Xcel από Bronze έως Sapphire"
 
 msgid "Bronze"
 msgstr "Χάλκινο"
@@ -2003,7 +2120,7 @@ msgid "Round-off and back walkover"
 msgstr "Round-off και ανατροπή πίσω"
 
 msgid "Bars: kip or cast with clear hip"
-msgstr "Δίζυγο: kip ή cast με clear hip"
+msgstr "Ασύμμετροι ζυγοί: kip ή cast με clear hip"
 
 msgid "Beam: cartwheel or walkover"
 msgstr "Δοκός: τροχός ή ανατροπή"
@@ -2012,7 +2129,7 @@ msgid "Gold"
 msgstr "Χρυσό"
 
 msgid "Bars: kip cast and squat-on or circle"
-msgstr "Δίζυγο: kip cast και squat-on ή κυκλική"
+msgstr "Ασύμμετροι ζυγοί: kip cast και squat-on ή κυκλική"
 
 msgid "Beam: acro element and split leap 120 degrees"
 msgstr "Δοκός: ακροβατικό στοιχείο και άλμα spagat 120 μοίρες"
@@ -2023,8 +2140,8 @@ msgstr "Πλατινένιο"
 msgid "Back tuck in a pass"
 msgstr "Σάλτο πίσω συσπειρωμένο σε διαδρομή"
 
-msgid "Bars: six A and one B value parts"
-msgstr "Δίζυγο: έξι στοιχεία A και ένα B"
+msgid "Every event meets the Platinum special requirements"
+msgstr "Κάθε όργανο καλύπτει τις ειδικές απαιτήσεις Platinum"
 
 msgid "Beam: acro series"
 msgstr "Δοκός: ακροβατική σειρά"
@@ -2035,8 +2152,8 @@ msgstr "Διαμάντι"
 msgid "Layout or twisting salto"
 msgstr "Τεντωμένο σάλτο ή σάλτο με στροφή"
 
-msgid "Bars: five A and two B value parts"
-msgstr "Δίζυγο: πέντε στοιχεία A και δύο B"
+msgid "Every event meets the Diamond special requirements"
+msgstr "Κάθε όργανο καλύπτει τις ειδικές απαιτήσεις Diamond"
 
 msgid "Beam: salto or two-flight series"
 msgstr "Δοκός: σάλτο ή σειρά δύο πτήσεων"
@@ -2053,6 +2170,9 @@ msgstr "Ηλικία 12 ετών και άνω"
 msgid "Men's artistic gymnastics levels"
 msgstr "Ενόργανη ανδρών: επίπεδα"
 
+msgid "USA Gymnastics men's Development Program"
+msgstr "Ανδρικό Development Program του USA Gymnastics"
+
 msgid "Pommel: front support hold 10 seconds"
 msgstr "Πλάγιος ίππος: στήριξη μπροστά 10 δευτερόλεπτα"
 
@@ -2060,7 +2180,7 @@ msgid "Rings: tuck hang and skin the cat"
 msgstr "Κρίκοι: συσπείρωση σε εξάρτηση και skin the cat"
 
 msgid "Parallel bars: support walk"
-msgstr "Δίζυγο ανδρών: βάδισμα σε στήριξη"
+msgstr "Δίζυγο: βάδισμα σε στήριξη"
 
 msgid "High bar: hang and pullover"
 msgstr "Μονόζυγο: εξάρτηση και pullover"
@@ -2084,7 +2204,7 @@ msgid "Pommel: double leg circles on mushroom"
 msgstr "Πλάγιος ίππος: διπλοί κύκλοι στο μανιτάρι"
 
 msgid "Parallel bars: swing in support and straddle dismount"
-msgstr "Δίζυγο ανδρών: αιωρήσεις σε στήριξη και έξοδος σε διάσταση"
+msgstr "Δίζυγο: αιωρήσεις σε στήριξη και έξοδος σε διάσταση"
 
 msgid "Vault: front handspring"
 msgstr "Άλμα: χειροκυβίστηση μπροστά"
@@ -2102,7 +2222,7 @@ msgid "Pommel: circles on the pommel horse"
 msgstr "Πλάγιος ίππος: κύκλοι στο όργανο"
 
 msgid "Parallel bars: peach basket drills"
-msgstr "Δίζυγο ανδρών: προετοιμασία peach basket"
+msgstr "Δίζυγο: προετοιμασία peach basket"
 
 msgid "High bar: giant swing drills"
 msgstr "Μονόζυγο: προετοιμασία γιγαντιαίας"
@@ -2120,7 +2240,7 @@ msgid "Pommel: flairs or scissors"
 msgstr "Πλάγιος ίππος: flairs ή ψαλίδια"
 
 msgid "Parallel bars: handstand and stutz"
-msgstr "Δίζυγο ανδρών: κατακόρυφος και stutz"
+msgstr "Δίζυγο: κατακόρυφος και stutz"
 
 msgid "Vault: handspring front tuck"
 msgstr "Άλμα: χειροκυβίστηση με σάλτο μπροστά"
@@ -2149,32 +2269,14 @@ msgstr "Και τα έξι όργανα σε επίπεδο αγώνων"
 msgid "Rhythmic gymnastics levels"
 msgstr "Ρυθμική γυμναστική: επίπεδα"
 
-msgid "Releve walks and balance on toes"
-msgstr "Βαδίσματα και ισορροπία στις μισές πατούσες"
+msgid "USA Gymnastics rhythmic levels 3-8 then FIG Junior and Senior"
+msgstr "Επίπεδα ρυθμικής 3-8 USA Gymnastics και μετά FIG Junior και Senior"
 
-msgid "Pointed feet and straight-leg positions"
-msgstr "Τεντωμένα πέλματα και θέσεις με τεντωμένα πόδια"
+msgid "Age 6 or older"
+msgstr "Ηλικία 6 ετών και άνω"
 
-msgid "Rope: swings and skips forward"
-msgstr "Σχοινάκι: αιωρήσεις και πηδήματα μπροστά"
-
-msgid "Ball: rolls on the floor and bounces"
-msgstr "Μπάλα: κυλίσματα στο έδαφος και αναπηδήσεις"
-
-msgid "Passe balance for 2 seconds"
-msgstr "Ισορροπία passé για 2 δευτερόλεπτα"
-
-msgid "Front and side splits"
-msgstr "Spagat μπροστά και στο πλάι"
-
-msgid "Rope: double turn swing and toss"
-msgstr "Σχοινάκι: διπλή περιστροφή και ρίψη"
-
-msgid "Ball: roll along the arms"
-msgstr "Μπάλα: κύλισμα στα χέρια"
-
-msgid "Pivot 360 degrees in passe"
-msgstr "Στροφή 360 μοιρών σε passé"
+msgid "Releve walks and passe balance"
+msgstr "Βαδίσματα σε μισές πατούσες και ισορροπία passé"
 
 msgid "Split leap and stag leap"
 msgstr "Άλμα spagat και άλμα stag"
@@ -2182,32 +2284,50 @@ msgstr "Άλμα spagat και άλμα stag"
 msgid "Floor routine to music"
 msgstr "Πρόγραμμα ελεύθερων με μουσική"
 
-msgid "Rope and ball routines"
-msgstr "Προγράμματα με σχοινάκι και μπάλα"
+msgid "One apparatus routine (rope or ball)"
+msgstr "Πρόγραμμα με ένα όργανο (σχοινάκι ή μπάλα)"
+
+msgid "Pivot 360 degrees in passe"
+msgstr "Στροφή 360 μοιρών σε passé"
 
 msgid "Arabesque and attitude balances"
 msgstr "Ισορροπίες arabesque και attitude"
 
-msgid "Back bend and walkover"
-msgstr "Κάμψη πίσω και ανατροπή"
+msgid "Group floor routine"
+msgstr "Ομαδικό πρόγραμμα ελεύθερων"
+
+msgid "Two apparatus routines"
+msgstr "Δύο προγράμματα οργάνων"
+
+msgid "Age 7 or older"
+msgstr "Ηλικία 7 ετών και άνω"
+
+msgid "Floor and three apparatus routines"
+msgstr "Ελεύθερα και τρία προγράμματα οργάνων"
 
 msgid "Hoop: rolls spins and tosses"
 msgstr "Στεφάνι: κυλίσματα περιστροφές και ρίψεις"
 
-msgid "Ring leap and cossack jump"
-msgstr "Άλμα ring και άλμα cossack"
+msgid "Ball: throw and catch with one hand"
+msgstr "Μπάλα: ρίψη και υποδοχή με το ένα χέρι"
+
+msgid "Age 8 or older"
+msgstr "Ηλικία 8 ετών και άνω"
 
 msgid "Pivots of 720 degrees"
 msgstr "Στροφές 720 μοιρών"
 
-msgid "Ball: throw and catch with one hand"
-msgstr "Μπάλα: ρίψη και υποδοχή με το ένα χέρι"
-
-msgid "Hoop: rotation around the hand and the body"
-msgstr "Στεφάνι: περιστροφή γύρω από το χέρι και το σώμα"
-
 msgid "Clubs: mills and small circles"
 msgstr "Κορύνες: mills και μικροί κύκλοι"
+
+msgid "Ring leap and cossack jump"
+msgstr "Άλμα ring και άλμα cossack"
+
+msgid "Age 9 or older"
+msgstr "Ηλικία 9 ετών και άνω"
+
+msgid "Ribbon: spirals and snakes"
+msgstr "Κορδέλα: σπείρες και φίδια"
 
 msgid "Leg in hand balance (penche drills)"
 msgstr "Ισορροπία με πόδι στο χέρι (προετοιμασία penché)"
@@ -2215,17 +2335,8 @@ msgstr "Ισορροπία με πόδι στο χέρι (προετοιμασί
 msgid "Dynamic elements with rotation under a throw"
 msgstr "Δυναμικά στοιχεία με περιστροφή κάτω από ρίψη"
 
-msgid "Ribbon: spirals and snakes"
-msgstr "Κορδέλα: σπείρες και φίδια"
-
-msgid "Clubs: asymmetric movements and throws"
-msgstr "Κορύνες: ασύμμετρες κινήσεις και ρίψεις"
-
-msgid "Two apparatus routines with difficulty"
-msgstr "Δύο προγράμματα οργάνων με δυσκολίες"
-
-msgid "Four routines: floor and three apparatus"
-msgstr "Τέσσερα προγράμματα: ελεύθερα και τρία όργανα"
+msgid "Age 10 or older"
+msgstr "Ηλικία 10 ετών και άνω"
 
 msgid "Penche and ring balances"
 msgstr "Ισορροπίες penché και ring"
@@ -2233,182 +2344,290 @@ msgstr "Ισορροπίες penché και ring"
 msgid "Apparatus masteries (risk elements)"
 msgstr "Χειρισμοί οργάνων με ρίσκο"
 
+msgid "Junior"
+msgstr "Νεάνιδες (junior)"
+
+msgid "Age 13 or older (FIG junior)"
+msgstr "Ηλικία 13 ετών και άνω (νεάνιδες FIG)"
+
 msgid "Routines with hoop ball clubs and ribbon"
 msgstr "Προγράμματα με στεφάνι μπάλα κορύνες και κορδέλα"
 
 msgid "Fouette and illusion pivots"
 msgstr "Στροφές fouetté και illusion"
 
+msgid "Senior"
+msgstr "Γυναίκες (senior)"
+
+msgid "Age 16 or older (FIG senior)"
+msgstr "Ηλικία 16 ετών και άνω (γυναίκες FIG)"
+
 msgid "Routines under the FIG Code of Points"
 msgstr "Προγράμματα με τον κώδικα βαθμολογίας FIG"
 
-msgid "Body and apparatus difficulties at junior or senior level"
-msgstr "Δυσκολίες σώματος και οργάνου σε επίπεδο νεανίδων ή γυναικών"
-
 msgid "Trampoline awards 1-15"
-msgstr "Τραμπολίνο: διακρίσεις 1-15"
+msgstr "Τραμπολίνο: διπλώματα 1-15"
+
+msgid "British Gymnastics trampoline proficiency awards"
+msgstr "Διπλώματα επάρκειας τραμπολίνου British Gymnastics"
 
 msgid "Award %{n}"
-msgstr "Διάκριση %{n}"
+msgstr "Δίπλωμα %{n}"
 
-msgid "Straight jump with controlled stop"
-msgstr "Τεντωμένο άλμα και ελεγχόμενο σταμάτημα"
+msgid "Waits their turn and behaves safely around the trampoline"
+msgstr "Περιμένει τη σειρά του και κινείται με ασφάλεια γύρω από το τραμπολίνο"
+
+msgid "Mounts and dismounts from the centre"
+msgstr "Ανεβαίνει και κατεβαίνει από το κέντρο"
+
+msgid "Bounces lying sitting or on hands and knees"
+msgstr "Αναπηδά ξαπλωμένο καθιστό ή στα τέσσερα"
+
+msgid "Seated bounce with arm movements"
+msgstr "Αναπηδήσεις σε καθιστή θέση με κινήσεις χεριών"
+
+msgid "Bounces a set number of times and stops"
+msgstr "Κάνει ορισμένο αριθμό αναπηδήσεων και σταματά"
+
+msgid "Quarter turn upright"
+msgstr "Τέταρτο στροφής σε όρθια θέση"
+
+msgid "Seat drop without returning to feet"
+msgstr "Πτώση σε κάθισμα χωρίς επιστροφή στα πόδια"
+
+msgid "Star position"
+msgstr "Θέση αστεριού"
+
+msgid "Straight jumps using the arms"
+msgstr "Τεντωμένα άλματα με χρήση χεριών"
 
 msgid "Tuck jump"
 msgstr "Άλμα με συσπείρωση"
 
-msgid "Straddle and pike jumps"
-msgstr "Άλματα σε διάσταση και κάμψη"
-
-msgid "Seat drop"
-msgstr "Πτώση σε κάθισμα"
+msgid "Astride jump and star jump"
+msgstr "Άλμα σε διάσταση και άλμα αστέρι"
 
 msgid "Half twist jump"
 msgstr "Άλμα με μισή στροφή"
 
-msgid "Hands and knees drop"
-msgstr "Πτώση σε χέρια και γόνατα"
+msgid "Tuck jump touching below the knees"
+msgstr "Άλμα με συσπείρωση αγγίζοντας κάτω από τα γόνατα"
+
+msgid "Straddle jump and split jump"
+msgstr "Άλμα straddle και άλμα spagat"
+
+msgid "Seat drop returning to feet"
+msgstr "Πτώση σε κάθισμα με επιστροφή στα πόδια"
+
+msgid "Two half twist jumps linked"
+msgstr "Δύο άλματα με μισή στροφή στη σειρά"
+
+msgid "Five straight jumps then stop for 3 seconds"
+msgstr "Πέντε τεντωμένα άλματα και σταμάτημα για 3 δευτερόλεπτα"
+
+msgid "Piked straddle jump"
+msgstr "Άλμα straddle σε κάμψη"
+
+msgid "Front landing and back landing on a mat"
+msgstr "Προσγείωση μπρούμυτα και ανάσκελα σε στρώμα"
+
+msgid "Seat drop to feet with half twist"
+msgstr "Κάθισμα και στα πόδια με μισή στροφή"
+
+msgid "Routine: straddle seat to feet tuck half twist straight"
+msgstr "Πρόγραμμα: straddle κάθισμα όρθιο tuck μισή στροφή τεντωμένο"
+
+msgid "Seat landing half twist to feet"
+msgstr "Κάθισμα με μισή στροφή στα πόδια"
 
 msgid "Full twist jump"
 msgstr "Άλμα με πλήρη στροφή"
 
-msgid "Seat drop half twist to seat"
-msgstr "Κάθισμα με μισή στροφή σε κάθισμα"
+msgid "Front landing to feet"
+msgstr "Μπρούμυτα και στα πόδια"
 
-msgid "Five-move routine"
-msgstr "Πρόγραμμα πέντε κινήσεων"
+msgid "Pike jump"
+msgstr "Άλμα σε κάμψη"
 
-msgid "Front drop"
-msgstr "Πτώση μπρούμυτα"
+msgid "Ten-move routine with seat landings and twists"
+msgstr "Πρόγραμμα δέκα κινήσεων με καθίσματα και στροφές"
 
-msgid "Back drop"
-msgstr "Πτώση ανάσκελα"
+msgid "Swivel hips (seat half twist to seat)"
+msgstr "Swivel hips (κάθισμα μισή στροφή σε κάθισμα)"
 
-msgid "Swivel hips"
-msgstr "Swivel hips"
+msgid "Back landing to feet"
+msgstr "Ανάσκελα και στα πόδια"
 
-msgid "Half twist to front drop"
-msgstr "Μισή στροφή σε πτώση μπρούμυτα"
+msgid "Hands and knees forward turnover to back landing"
+msgstr "Από τα τέσσερα ανατροπή μπροστά σε ανάσκελα"
 
-msgid "Back drop half twist to feet"
-msgstr "Πτώση ανάσκελα με μισή στροφή στα πόδια"
+msgid "Seat landing to feet then front landing to feet"
+msgstr "Κάθισμα στα πόδια και μετά μπρούμυτα στα πόδια"
 
-msgid "Ten-move routine"
-msgstr "Πρόγραμμα δέκα κινήσεων"
+msgid "Seat landing to front landing to feet"
+msgstr "Από κάθισμα σε μπρούμυτα και στα πόδια"
 
-msgid "Front somersault tucked"
-msgstr "Σάλτο μπροστά συσπειρωμένο"
+msgid "Half twist to front landing and to back landing"
+msgstr "Μισή στροφή σε μπρούμυτα και σε ανάσκελα"
 
-msgid "Back drop to front drop (turnover)"
-msgstr "Από ανάσκελα σε μπρούμυτα"
+msgid "Front and back landing with half twist to feet"
+msgstr "Μπρούμυτα και ανάσκελα με μισή στροφή στα πόδια"
 
-msgid "Back somersault tucked"
-msgstr "Σάλτο πίσω συσπειρωμένο"
+msgid "Five back bounces"
+msgstr "Πέντε αναπηδήσεις στην πλάτη"
 
-msgid "Cradle"
-msgstr "Cradle"
+msgid "Piked and straight front and back landings"
+msgstr "Προσγειώσεις μπρούμυτα και ανάσκελα σε κάμψη και τεντωμένες"
 
-msgid "Back somersault piked"
-msgstr "Σάλτο πίσω σε κάμψη"
+msgid "Front landing to back landing and back to front"
+msgstr "Από μπρούμυτα σε ανάσκελα και αντίστροφα"
 
-msgid "Barani tucked"
-msgstr "Barani συσπειρωμένο"
+msgid "Forward three-quarter turnover to back landing"
+msgstr "Ανατροπή τριών τετάρτων μπροστά σε ανάσκελα"
 
-msgid "Back somersault straight"
-msgstr "Σάλτο πίσω τεντωμένο"
+msgid "Seat landing full twist to seat (roller)"
+msgstr "Κάθισμα με πλήρη στροφή σε κάθισμα (roller)"
 
-msgid "Barani piked"
-msgstr "Barani σε κάμψη"
+msgid "Front or back somersault tucked"
+msgstr "Σάλτο μπροστά ή πίσω συσπειρωμένο"
 
-msgid "Ten-move routine with somersaults"
-msgstr "Πρόγραμμα δέκα κινήσεων με σάλτο"
+msgid "Back landing back pullover to feet"
+msgstr "Ανάσκελα και pullover πίσω στα πόδια"
 
-msgid "Back somersault with full twist"
-msgstr "Σάλτο πίσω με πλήρη στροφή"
+msgid "Front landing half turntable"
+msgstr "Μπρούμυτα με μισό turntable"
+
+msgid "Ten-move routine with one somersault"
+msgstr "Πρόγραμμα δέκα κινήσεων με ένα σάλτο"
+
+msgid "Front somersault piked"
+msgstr "Σάλτο μπροστά σε κάμψη"
+
+msgid "Back somersault tucked and back somersault straight or piked"
+msgstr "Σάλτο πίσω συσπειρωμένο και σάλτο πίσω τεντωμένο ή σε κάμψη"
+
+msgid "Three-quarter front somersault straight to back landing"
+msgstr "Τρία τέταρτα σάλτο μπροστά τεντωμένο σε ανάσκελα"
+
+msgid "Routine with three somersaults"
+msgstr "Πρόγραμμα με τρία σάλτο"
+
+msgid "Floor conditioning: 20 crunches and 20 dorsal raises"
+msgstr "Φυσική κατάσταση: 20 κοιλιακοί και 20 ραχιαίοι"
+
+msgid "Barani with straight legs"
+msgstr "Barani με τεντωμένα πόδια"
+
+msgid "Crash dive straight"
+msgstr "Crash dive τεντωμένο"
+
+msgid "Back somersault tucked then front somersault piked"
+msgstr "Σάλτο πίσω συσπειρωμένο και μετά σάλτο μπροστά σε κάμψη"
+
+msgid "Routine with four somersaults including a barani"
+msgstr "Πρόγραμμα με τέσσερα σάλτο μαζί με barani"
+
+msgid "Barani tucked and piked"
+msgstr "Barani συσπειρωμένο και σε κάμψη"
+
+msgid "Back somersault then barani in the same shape"
+msgstr "Σάλτο πίσω και μετά barani στο ίδιο σχήμα"
+
+msgid "Crash dive to bounce roll"
+msgstr "Crash dive σε bounce roll"
+
+msgid "Routine with six somersaults"
+msgstr "Πρόγραμμα με έξι σάλτο"
 
 msgid "Barani straight"
 msgstr "Barani τεντωμένο"
 
-msgid "Front somersault piked and tuck with three half twists"
-msgstr "Σάλτο μπροστά σε κάμψη και συσπειρωμένο με τρεις μισές στροφές"
+msgid "Back somersault with half twist"
+msgstr "Σάλτο πίσω με μισή στροφή"
 
-msgid "Ball-out"
-msgstr "Ball-out"
+msgid "Full twisting front somersault"
+msgstr "Σάλτο μπροστά με πλήρη στροφή"
 
-msgid "Barani straight with five somersault shapes"
-msgstr "Barani τεντωμένο και πέντε σάλτο σε διάφορα σχήματα"
+msgid "Crash dive to ball out"
+msgstr "Crash dive σε ball out"
 
-msgid "Rudolph (front with one and a half twists)"
-msgstr "Rudolph (μπροστά με μιάμιση στροφή)"
+msgid "Routine with seven somersaults"
+msgstr "Πρόγραμμα με επτά σάλτο"
 
-msgid "Double back somersault tucked"
-msgstr "Διπλό σάλτο πίσω συσπειρωμένο"
+msgid "Crash dive to ball-out barani"
+msgstr "Crash dive σε ball-out barani"
 
-msgid "Double twisting back"
-msgstr "Σάλτο πίσω με διπλή στροφή"
+msgid "Full twisting back somersault straight"
+msgstr "Σάλτο πίσω τεντωμένο με πλήρη στροφή"
 
-msgid "Double front or barani-out"
-msgstr "Διπλό μπροστά ή barani-out"
+msgid "Rudi (front with one and a half twists)"
+msgstr "Rudi (μπροστά με μιάμιση στροφή)"
 
-msgid "Voluntary routine with doubles"
-msgstr "Ελεύθερο πρόγραμμα με διπλά"
+msgid "Cody from a front landing"
+msgstr "Cody από προσγείωση μπρούμυτα"
 
-msgid "Competition voluntary routine at national grade"
-msgstr "Ελεύθερο πρόγραμμα αγώνων σε εθνική κατηγορία"
-
-msgid "Triple-twisting or twisting doubles"
-msgstr "Τριπλή στροφή ή διπλά με στροφές"
+msgid "Ten-somersault routine with tariff 5.6 or more"
+msgstr "Πρόγραμμα δέκα σάλτο με δυσκολία 5.6 ή περισσότερο"
 
 msgid "Tumbling levels"
 msgstr "Ακροβατικά εδάφους (tumbling): επίπεδα"
 
-msgid "Cartwheel and handstand"
-msgstr "Τροχός και κατακόρυφος"
+msgid "USA Gymnastics tumbling levels 1-10"
+msgstr "Επίπεδα tumbling 1-10 USA Gymnastics"
 
-msgid "Back walkover and front walkover"
-msgstr "Ανατροπή πίσω και μπροστά"
+msgid "Straight jump with stuck landing"
+msgstr "Τεντωμένο άλμα με σταθερή προσγείωση"
 
-msgid "Round-off rebound"
-msgstr "Round-off με αναπήδηση"
+msgid "Handstand forward roll"
+msgstr "Κατακόρυφος με κυβίστηση"
+
+msgid "Back roll to push-up"
+msgstr "Κυβίστηση πίσω σε θέση κάμψης"
+
+msgid "Round-off back handspring rebound"
+msgstr "Round-off flic-flac και αναπήδηση"
 
 msgid "Front handspring"
 msgstr "Χειροκυβίστηση μπροστά"
 
-msgid "Round-off back handspring back tuck"
-msgstr "Round-off flic-flac και σάλτο πίσω"
+msgid "Round-off and two to four back handsprings"
+msgstr "Round-off και δύο έως τέσσερα flic-flac"
 
-msgid "Series of back handsprings"
-msgstr "Σειρά από flic-flac"
-
-msgid "Back layout"
-msgstr "Σάλτο πίσω τεντωμένο"
-
-msgid "Whip back"
-msgstr "Whip back"
-
-msgid "Back full twist"
-msgstr "Σάλτο πίσω με πλήρη στροφή"
-
-msgid "Double full"
-msgstr "Διπλή στροφή"
-
-msgid "Front layout"
-msgstr "Σάλτο μπροστά τεντωμένο"
-
-msgid "Double back tucked"
-msgstr "Διπλό σάλτο πίσω συσπειρωμένο"
+msgid "Round-off back handsprings back tuck"
+msgstr "Round-off flic-flac και σάλτο πίσω συσπειρωμένο"
 
 msgid "Passes of eight elements"
 msgstr "Διαδρομές οκτώ στοιχείων"
 
-msgid "Double back piked or full-in"
-msgstr "Διπλό σάλτο πίσω σε κάμψη ή full-in"
+msgid "Back pike or tuck finish"
+msgstr "Τέλος με σάλτο πίσω σε κάμψη ή συσπειρωμένο"
 
-msgid "Competition passes to the code"
-msgstr "Διαδρομές αγώνων σύμφωνα με τον κώδικα"
+msgid "Whip back"
+msgstr "Whip back"
+
+msgid "Whip backs and back handsprings in series"
+msgstr "Σειρά από whip back και flic-flac"
+
+msgid "Back somersault with a full twist (360 degrees)"
+msgstr "Σάλτο πίσω με πλήρη στροφή (360 μοιρών)"
+
+msgid "Back full in elements two to seven"
+msgstr "Σάλτο πίσω με πλήρη στροφή στα στοιχεία δύο έως επτά"
+
+msgid "No double somersault before the last element"
+msgstr "Χωρίς διπλό σάλτο πριν από το τελευταίο στοιχείο"
+
+msgid "A double somersault in the pass"
+msgstr "Διπλό σάλτο μέσα στη διαδρομή"
+
+msgid "Double back tucked or piked"
+msgstr "Διπλό σάλτο πίσω συσπειρωμένο ή σε κάμψη"
 
 msgid "Acrobatics levels"
 msgstr "Ακροβατική: επίπεδα"
+
+msgid "Palee levels from acro gymnastics and hand balancing"
+msgstr "Επίπεδα Palee από ακροβατική γυμναστική και ισορροπίες στα χέρια"
 
 msgid "Handstand against the wall 30 seconds"
 msgstr "Κατακόρυφος στον τοίχο 30 δευτερόλεπτα"
@@ -2463,6 +2682,9 @@ msgstr "Συνδυασμένο πρόγραμμα με μουσική"
 
 msgid "CrossFit gymnastics skills"
 msgstr "Δεξιότητες gymnastics για CrossFit"
+
+msgid "Palee skill progressions for CrossFit gymnastics"
+msgstr "Πρόοδος δεξιοτήτων Palee για CrossFit gymnastics"
 
 msgid "Foundations"
 msgstr "Βάσεις"
@@ -2554,6 +2776,9 @@ msgstr "Handstand push-ups με deficit"
 msgid "Calisthenics levels"
 msgstr "Calisthenics: επίπεδα"
 
+msgid "Palee street workout strength progressions"
+msgstr "Πρόοδος δύναμης street workout Palee"
+
 msgid "10 push-ups and 20 bodyweight squats"
 msgstr "10 κάμψεις και 20 καθίσματα με το βάρος σώματος"
 
@@ -2591,7 +2816,7 @@ msgid "5 pistol squats per leg (assisted allowed)"
 msgstr "5 pistol squats ανά πόδι (με βοήθεια)"
 
 msgid "Muscle-up on the bar"
-msgstr "Muscle-up στη μονόζυγο"
+msgstr "Muscle-up στο μονόζυγο"
 
 msgid "Freestanding handstand 10 seconds"
 msgstr "Ελεύθερος κατακόρυφος 10 δευτερόλεπτα"
@@ -2635,8 +2860,11 @@ msgstr "Προετοιμασία έλξης με ένα χέρι"
 msgid "Street workout freestyle"
 msgstr "Street workout freestyle"
 
+msgid "Palee freestyle bar progression"
+msgstr "Πρόοδος freestyle στο μονόζυγο Palee"
+
 msgid "Front and back support on the bar"
-msgstr "Στήριξη μπροστά και πίσω στη μονόζυγο"
+msgstr "Στήριξη μπροστά και πίσω στο μονόζυγο"
 
 msgid "Swing with hollow and arch"
 msgstr "Αιώρηση με hollow και arch"
@@ -2682,6 +2910,9 @@ msgstr "Ελεύθερο πρόγραμμα 60 δευτερολέπτων"
 
 msgid "Parkour levels"
 msgstr "Parkour: επίπεδα"
+
+msgid "Palee technique tiers used by parkour schools"
+msgstr "Βαθμίδες τεχνικής Palee όπως στις σχολές parkour"
 
 msgid "Safe landing and roll"
 msgstr "Ασφαλής προσγείωση και κύλισμα"
@@ -2752,6 +2983,9 @@ msgstr "Καθοδηγεί αρχάριο σε μια γραμμή"
 msgid "Freerunning levels"
 msgstr "Freerunning: επίπεδα"
 
+msgid "Palee acrobatic freerunning progression"
+msgstr "Ακροβατική πρόοδος freerunning Palee"
+
 msgid "Forward roll on hard ground"
 msgstr "Κύλισμα μπροστά σε σκληρό έδαφος"
 
@@ -2787,6 +3021,9 @@ msgstr "Ελεύθερη γραμμή με τρία σάλτο"
 
 msgid "CrossFit levels"
 msgstr "Επίπεδα CrossFit"
+
+msgid "Palee levels from CrossFit scaling and benchmarks"
+msgstr "Επίπεδα Palee από κλιμάκωση και benchmarks CrossFit"
 
 msgid "Air squat to full depth with a neutral spine"
 msgstr "Air squat σε πλήρες βάθος με ουδέτερη σπονδυλική στήλη"
@@ -2872,6 +3109,9 @@ msgstr "Σχέδιο ρυθμού για μεγάλα chippers"
 msgid "Metcon engine levels"
 msgstr "Επίπεδα metcon (αντοχή)"
 
+msgid "Palee benchmarks for conditioning classes"
+msgstr "Benchmarks Palee για μαθήματα φυσικής κατάστασης"
+
 msgid "Finishes a 12-minute AMRAP at a steady pace"
 msgstr "Ολοκληρώνει AMRAP 12 λεπτών με σταθερό ρυθμό"
 
@@ -2919,6 +3159,9 @@ msgstr "Σχεδιάζει και καταγράφει τον ρυθμό του"
 
 msgid "HYROX divisions"
 msgstr "Κατηγορίες HYROX"
+
+msgid "HYROX race divisions (organiser's system)"
+msgstr "Κατηγορίες αγώνων HYROX (σύστημα του διοργανωτή)"
 
 msgid "Relay ready"
 msgstr "Έτοιμος για Relay"
@@ -2971,14 +3214,17 @@ msgstr "Σχέδιο αγώνα με στόχους ανά σταθμό"
 msgid "Elite 15"
 msgstr ""
 
-msgid "Qualifies through a Pro race result"
-msgstr "Προκρίνεται μέσω αποτελέσματος σε αγώνα Pro"
+msgid "Qualifies at a Major or a regional championship"
+msgstr "Προκρίνεται σε Major ή σε περιφερειακό πρωτάθλημα"
 
 msgid "Season plan with peaking"
 msgstr "Πλάνο σεζόν με κορύφωση"
 
 msgid "Weightlifting classes"
 msgstr "Κατηγορίες άρσης βαρών"
+
+msgid "Russian/EVSK sports classification (national tables)"
+msgstr "Ρωσική αθλητική κατάταξη EVSK (εθνικοί πίνακες)"
 
 msgid "Technique"
 msgstr "Τεχνική"
@@ -3034,8 +3280,17 @@ msgstr "Μετρ του αθλήματος"
 msgid "Total meets the MS standard at a national meet"
 msgstr "Το σύνολο πιάνει το όριο MA σε εθνικό αγώνα"
 
+msgid "Master of Sport International Class"
+msgstr "Μετρ του αθλήματος διεθνούς κλάσης"
+
+msgid "Total meets the MSIC standard at an international meet"
+msgstr "Το σύνολο πιάνει το όριο MSIC σε διεθνή αγώνα"
+
 msgid "Powerlifting levels"
 msgstr "Επίπεδα powerlifting"
+
+msgid "Palee strength standards (bodyweight multiples)"
+msgstr "Πρότυπα δύναμης Palee (πολλαπλάσια σωματικού βάρους)"
 
 msgid "Squat deadlift and bench press to competition depth with empty bar"
 msgstr "Squat deadlift και bench press με άδεια μπάρα σε βάθος αγώνα"
@@ -3088,6 +3343,9 @@ msgstr "Σύνολο επιπέδου εθνικών αγώνων"
 msgid "Learn to swim stages"
 msgstr "Στάδια εκμάθησης κολύμβησης"
 
+msgid "Swim England Learn to Swim stages 1-7"
+msgstr "Στάδια 1-7 Learn to Swim της Swim England"
+
 msgid "Stage %{n}"
 msgstr "Στάδιο %{n}"
 
@@ -3121,44 +3379,65 @@ msgstr "Γυρίζει από μπρούμυτα σε ανάσκελα"
 msgid "Submerges and picks up an object"
 msgstr "Βουτά και πιάνει αντικείμενο από τον πάτο"
 
-msgid "10 metres of three strokes"
-msgstr "10 μέτρα σε τρία στυλ"
+msgid "Push and glide underwater"
+msgstr "Ώθηση και γλίστρημα κάτω από το νερό"
 
-msgid "Treads water 30 seconds"
-msgstr "Επιπλέει όρθιος 30 δευτερόλεπτα"
+msgid "Kicks 10 metres of each of the four strokes"
+msgstr "Κάνει πεδίλευση 10 μέτρα σε καθένα από τα τέσσερα στυλ"
+
+msgid "Swims 10 metres continuously"
+msgstr "Κολυμπά 10 μέτρα συνεχόμενα"
 
 msgid "Sculls head first on the back"
 msgstr "Sculling ανάσκελα με το κεφάλι μπροστά"
 
+msgid "Treads water 30 seconds"
+msgstr "Επιπλέει όρθιος 30 δευτερόλεπτα"
+
+msgid "10 metres each of backstroke front crawl breaststroke and butterfly"
+msgstr "10 μέτρα σε καθένα από ύπτιο ελεύθερο πρόσθιο και πεταλούδα"
+
+msgid "Handstand in water held 3 seconds"
+msgstr "Κατακόρυφος στο νερό για 3 δευτερόλεπτα"
+
+msgid "Forward somersault in water"
+msgstr "Τούμπα μπροστά μέσα στο νερό"
+
 msgid "25 metres of one stroke"
 msgstr "25 μέτρα σε ένα στυλ"
 
-msgid "Mushroom float and handstand in water"
-msgstr "Επίπλευση μανιτάρι και κατακόρυφος στο νερό"
+msgid "Swims 10 metres wearing clothes"
+msgstr "Κολυμπά 10 μέτρα με ρούχα"
 
-msgid "Push and glide underwater"
-msgstr "Ώθηση και γλίστρημα κάτω από το νερό"
+msgid "Shouts and signals for rescue"
+msgstr "Φωνάζει και κάνει σήμα για διάσωση"
 
-msgid "Sitting dive"
-msgstr "Βουτιά από καθιστή θέση"
+msgid "Surface dive"
+msgstr "Κατάδυση από την επιφάνεια"
 
-msgid "25 metres of three strokes"
-msgstr "25 μέτρα σε τρία στυλ"
-
-msgid "Survival sequence (fall in tread signal)"
-msgstr "Ακολουθία επιβίωσης (πτώση στο νερό επίπλευση σήμα)"
-
-msgid "25 metres front crawl backstroke and breaststroke to standard"
-msgstr "25 μέτρα ελεύθερο ύπτιο και πρόσθιο σωστά"
+msgid "25 metres each of front crawl backstroke breaststroke and butterfly"
+msgstr "25 μέτρα σε καθένα από ελεύθερο ύπτιο πρόσθιο και πεταλούδα"
 
 msgid "50 metres without stopping"
 msgstr "50 μέτρα χωρίς στάση"
 
-msgid "Obstacle course of stage 1 to 7 skills"
-msgstr "Διαδρομή εμποδίων με δεξιότητες των σταδίων 1 έως 7"
+msgid "100 metres using three strokes"
+msgstr "100 μέτρα με τρία στυλ"
+
+msgid "Eggbeater tread for 30 seconds"
+msgstr "Επίπλευση eggbeater για 30 δευτερόλεπτα"
+
+msgid "Sitting dive"
+msgstr "Βουτιά από καθιστή θέση"
+
+msgid "Obstacle course of four objects with feet off the floor"
+msgstr "Διαδρομή με τέσσερα εμπόδια χωρίς να πατά στον πάτο"
 
 msgid "Ashtanga yoga series"
 msgstr "Ashtanga yoga: σειρές"
+
+msgid "Mysore-style series order (the school's system)"
+msgstr "Σειρά Mysore (το σύστημα της σχολής)"
 
 msgid "Sun salutations"
 msgstr "Χαιρετισμοί στον ήλιο"
@@ -3222,6 +3501,9 @@ msgstr "Καθημερινή πρακτική έξι ημέρες την εβδ�
 
 msgid "Strongman Levels"
 msgstr "Επίπεδα Strongman"
+
+msgid "Palee levels (strongman has no athlete ladder)"
+msgstr "Επίπεδα Palee (το strongman δεν έχει κλίμακα αθλητών)"
 
 msgid "Barbell deadlift with neutral spine and full lockout"
 msgstr "Deadlift με μπάρα με ουδέτερη σπονδυλική στήλη και πλήρες κλείδωμα"
@@ -3397,6 +3679,9 @@ msgstr "Καταγεγραμμένες προσπάθειες σε benchmarks (�
 msgid "Kettlebell Levels"
 msgstr "Επίπεδα Kettlebell"
 
+msgid "Palee levels from StrongFirst standards"
+msgstr "Επίπεδα Palee από τα πρότυπα StrongFirst"
+
 msgid "Hip hinge with dowel: three points of contact kept"
 msgstr "Hip hinge με ραβδί: διατήρηση τριών σημείων επαφής"
 
@@ -3559,6 +3844,9 @@ msgstr "Διδάσκει το hinge και το swing σε αρχάριο"
 msgid "Kettlebell Sport Ranks"
 msgstr "Αθλητικές κατηγορίες Kettlebell Sport"
 
+msgid "Kettlebell sport ranks (IUKL and IKO)"
+msgstr "Κατηγορίες kettlebell sport (IUKL και IKO)"
+
 msgid "Rank 3"
 msgstr "3η Κατηγορία"
 
@@ -3628,6 +3916,9 @@ msgstr "Έχει αγωνιστεί σε επίσημο αγώνα με κριτ
 msgid "CMS (Candidate Master of Sport)"
 msgstr "Υποψήφιος Master of Sport (CMS)"
 
+msgid "Trains with professional bell (men 32 kg · women 24 kg)"
+msgstr "Προπονείται με επαγγελματικό βάρος (άνδρες 32 kg · γυναίκες 24 kg)"
+
 msgid "Reaches CMS reps in a sanctioned meet for own class"
 msgstr "Πετυχαίνει επαναλήψεις CMS σε επίσημο αγώνα για την κατηγορία του"
 
@@ -3642,9 +3933,6 @@ msgstr "Ρουτίνα ταξιδιού και ζύγισης για αγώνε�
 
 msgid "MS (Master of Sport)"
 msgstr "Master of Sport (MS)"
-
-msgid "Trains with professional bell (men 32 kg · women 24 kg)"
-msgstr "Προπονείται με επαγγελματικό βάρος (άνδρες 32 kg · γυναίκες 24 kg)"
 
 msgid "Reaches MS reps at a sanctioned national or international meet"
 msgstr "Πετυχαίνει επαναλήψεις MS σε επίσημο εθνικό ή διεθνή αγώνα"
@@ -3663,6 +3951,9 @@ msgstr "Αγωνίζεται με επαγγελματικό βάρος στα �
 
 msgid "Running Levels"
 msgstr "Επίπεδα Τρεξίματος"
+
+msgid "Palee levels for recreational runners"
+msgstr "Επίπεδα Palee για ερασιτέχνες δρομείς"
 
 msgid "Walk-Run Starter"
 msgstr "Περπάτημα-Τρέξιμο"
@@ -3710,7 +4001,7 @@ msgid "Logs runs (time · distance · RPE)"
 msgstr "Καταγράφει τις προπονήσεις (χρόνος · απόσταση · RPE)"
 
 msgid "5K Improver"
-msgstr "Βελτίωση στα 5K"
+msgstr "5K: επίπεδο βελτίωσης"
 
 msgid "Four runs a week including one long easy run"
 msgstr "Τέσσερις προπονήσεις την εβδομάδα με ένα μακρύ εύκολο τρέξιμο"
@@ -3816,6 +4107,9 @@ msgstr "Ρουτίνα πρόληψης τραυματισμών σε όλη τ�
 
 msgid "Road Cycling Levels"
 msgstr "Επίπεδα Ποδηλασίας Δρόμου"
+
+msgid "Palee levels (the first three follow Bikeability)"
+msgstr "Επίπεδα Palee (τα τρία πρώτα ακολουθούν το Bikeability)"
 
 msgid "Bike Handling"
 msgstr "Χειρισμός ποδηλάτου"
@@ -3946,6 +4240,9 @@ msgstr "Αγωνίζεται σε χρονομετρημένο αγώνα (TT ·
 msgid "Indoor Cycling Levels"
 msgstr "Επίπεδα Indoor Cycling"
 
+msgid "Palee levels (programmes certify coaches only)"
+msgstr "Επίπεδα Palee (τα προγράμματα πιστοποιούν μόνο προπονητές)"
+
 msgid "Bike Set-up"
 msgstr "Ρύθμιση ποδηλάτου"
 
@@ -4044,6 +4341,9 @@ msgstr "Βελτιώνει το FTP μεταξύ δύο τεστ"
 
 msgid "Rowing Levels"
 msgstr "Επίπεδα Κωπηλασίας"
+
+msgid "Palee levels from British Rowing and Concept2 technique"
+msgstr "Επίπεδα Palee από την τεχνική British Rowing και Concept2"
 
 msgid "Stroke Basics"
 msgstr "Βασικά της κωπηλασίας"
@@ -4170,6 +4470,9 @@ msgstr "Μεγάλη απόσταση: 10 000 m ή ημιμαραθώνιος κ
 
 msgid "Pilates Mat Levels"
 msgstr "Επίπεδα Pilates Mat"
+
+msgid "Palee levels from the classical mat order"
+msgstr "Επίπεδα Palee από την κλασική σειρά mat"
 
 msgid "Fundamentals"
 msgstr "Βασικές αρχές"
@@ -4339,6 +4642,9 @@ msgstr "Ρέουσες μεταβάσεις χωρίς διακοπές σε ό�
 msgid "Pilates Reformer Levels"
 msgstr "Επίπεδα Pilates Reformer"
 
+msgid "Palee levels from the classical Reformer order"
+msgstr "Επίπεδα Palee από την κλασική σειρά Reformer"
+
 msgid "Reformer Orientation"
 msgstr "Εξοικείωση με το Reformer"
 
@@ -4501,6 +4807,9 @@ msgstr "Πλήρης κλασική σειρά reformer με τη σωστή σ�
 msgid "Mobility Levels"
 msgstr "Επίπεδα Κινητικότητας"
 
+msgid "Palee levels (no standard system)"
+msgstr "Επίπεδα Palee (δεν υπάρχει καθιερωμένο σύστημα)"
+
 msgid "Joint Health"
 msgstr "Υγεία αρθρώσεων"
 
@@ -4639,8 +4948,11 @@ msgstr "Διατηρεί ρουτίνα δύναμης τελικού εύρου
 msgid "HIIT Levels"
 msgstr "Επίπεδα HIIT"
 
+msgid "Palee levels for interval training (no standard system)"
+msgstr "Επίπεδα Palee για προπόνηση διαστημάτων (δεν υπάρχει καθιερωμένο σύστημα)"
+
 msgid "Starter"
-msgstr "Αρχή"
+msgstr "Εισαγωγικό"
 
 msgid "Completes 30 s work / 15 s rest intervals at RPE 4-6"
 msgstr "Ολοκληρώνει διαστήματα 30 s εργασία / 15 s ξεκούραση σε RPE 4-6"
@@ -4752,6 +5064,9 @@ msgstr "Ισορροπεί HIIT με ημέρες αποκατάστασης (έ
 
 msgid "Strength Training Levels"
 msgstr "Επίπεδα Προπόνησης Δύναμης"
+
+msgid "Palee levels from novice to advanced lifter"
+msgstr "Επίπεδα Palee από αρχάριο έως προχωρημένο αθλητή δύναμης"
 
 msgid "Movement Foundations"
 msgstr "Βασικά κινητικά πρότυπα"
@@ -4873,6 +5188,10 @@ msgstr "Καθοδηγεί αρχάριο στις βασικές άρσεις"
 msgid "Ballet graded levels (RAD structure)"
 msgstr "Μπαλέτο: βαθμίδες (δομή RAD)"
 
+msgid "RAD graded structure (not affiliated)"
+msgstr "Δομή βαθμίδων RAD (χωρίς συνεργασία)"
+
+msgctxt "exam"
 msgid "Pre-Primary"
 msgstr "Pre-Primary (προκαταρκτικό)"
 
@@ -4888,6 +5207,7 @@ msgstr "Skips και galops με μουσική"
 msgid "Free movement to a story"
 msgstr "Ελεύθερη κίνηση πάνω σε μια ιστορία"
 
+msgctxt "exam"
 msgid "Primary"
 msgstr "Primary (αρχικό)"
 
@@ -4978,6 +5298,10 @@ msgstr "Ερμηνεία μουσικής και ύφους διαφορετικ
 msgid "Ballet vocational levels (RAD structure)"
 msgstr "Μπαλέτο: επαγγελματικές βαθμίδες (δομή RAD)"
 
+msgid "RAD vocational structure (not affiliated)"
+msgstr "Επαγγελματική δομή RAD (χωρίς συνεργασία)"
+
+msgctxt "exam"
 msgid "Intermediate Foundation"
 msgstr "Intermediate Foundation (προ-ενδιάμεσο)"
 
@@ -4990,8 +5314,12 @@ msgstr "Εισαγωγή στις πουέντ"
 msgid "Double pirouette en dehors"
 msgstr "Διπλή pirouette en dehors"
 
+msgctxt "exam"
+msgid "Intermediate"
+msgstr "Intermediate (ενδιάμεσο)"
+
 msgid "Pointe enchaînements"
-msgstr "Ενχαινεμάν σε πουέντ"
+msgstr "Enchaînements σε πουέντ"
 
 msgid "Fouetté rond de jambe en tournant"
 msgstr "Fouetté rond de jambe en tournant"
@@ -4999,8 +5327,9 @@ msgstr "Fouetté rond de jambe en tournant"
 msgid "Grand allegro with tours en l'air (male)"
 msgstr "Grand allegro με tours en l'air (άνδρες)"
 
+msgctxt "exam"
 msgid "Advanced Foundation"
-msgstr ""
+msgstr "Advanced Foundation (προ-προχωρημένο)"
 
 msgid "Multiple pirouettes and fouettés"
 msgstr "Πολλαπλές pirouettes και fouettés"
@@ -5008,6 +5337,7 @@ msgstr "Πολλαπλές pirouettes και fouettés"
 msgid "Batterie with entrechat six"
 msgstr "Batterie με entrechat six"
 
+msgctxt "exam"
 msgid "Advanced 1"
 msgstr "Advanced 1 (προχωρημένο 1)"
 
@@ -5017,6 +5347,7 @@ msgstr "Κλασική παραλλαγή σόλο"
 msgid "Sustained adage on pointe"
 msgstr "Παρατεταμένο adage σε πουέντ"
 
+msgctxt "exam"
 msgid "Advanced 2"
 msgstr "Advanced 2 (προχωρημένο 2)"
 
@@ -5026,14 +5357,18 @@ msgstr "Μάθημα επαγγελματικού επιπέδου"
 msgid "Two solo variations"
 msgstr "Δύο παραλλαγές σόλο"
 
+msgctxt "exam"
 msgid "Solo Seal"
-msgstr ""
+msgstr "Solo Seal (σόλο διάκριση)"
 
 msgid "Solo Seal variations and own solo"
 msgstr "Παραλλαγές Solo Seal και δικό του σόλο"
 
 msgid "Contemporary dance grades"
 msgstr "Σύγχρονος χορός: βαθμίδες"
+
+msgid "Palee grades (the ISTD has no graded contemporary exams)"
+msgstr "Βαθμίδες Palee (το ISTD δεν έχει εξετάσεις βαθμίδων σύγχρονου)"
 
 msgid "Parallel and turned-out positions"
 msgstr "Παράλληλες και ανοιχτές θέσεις"
@@ -5089,6 +5424,9 @@ msgstr "Χορογραφία με σαφή πρόθεση"
 msgid "Latin American medal levels"
 msgstr "Λάτιν: μετάλλια"
 
+msgid "Medal tests like the ISTD and IDTA (not affiliated)"
+msgstr "Εξετάσεις μεταλλίων όπως ISTD και IDTA (χωρίς συνεργασία)"
+
 msgid "Social"
 msgstr "Social"
 
@@ -5098,8 +5436,8 @@ msgstr "Βασικό βήμα cha cha και rumba"
 msgid "Leading and following in closed hold"
 msgstr "Οδήγηση και ακολούθηση σε κλειστή λαβή"
 
-msgid "Two dances from cha cha samba rumba paso doble jive"
-msgstr "Δύο χοροί από cha cha samba rumba paso doble και jive"
+msgid "Chosen dances from cha cha samba rumba paso doble and jive"
+msgstr "Επιλεγμένοι χοροί από cha cha samba rumba paso doble και jive"
 
 msgid "Bronze figures with timing"
 msgstr "Φιγούρες Bronze με σωστό χρονισμό"
@@ -5107,14 +5445,14 @@ msgstr "Φιγούρες Bronze με σωστό χρονισμό"
 msgid "Hip action (Cuban motion)"
 msgstr "Κίνηση λεκάνης (Cuban motion)"
 
-msgid "Three dances with silver figures"
-msgstr "Τρεις χοροί με φιγούρες Silver"
+msgid "Silver figures in the chosen dances"
+msgstr "Φιγούρες Silver στους επιλεγμένους χορούς"
 
 msgid "Spins and turns with spotting"
 msgstr "Περιστροφές και στροφές με spotting"
 
-msgid "Four dances with gold figures"
-msgstr "Τέσσερις χοροί με φιγούρες Gold"
+msgid "Gold figures in the chosen dances"
+msgstr "Φιγούρες Gold στους επιλεγμένους χορούς"
 
 msgid "Musicality and floorcraft"
 msgstr "Μουσικότητα και floorcraft"
@@ -5122,14 +5460,17 @@ msgstr "Μουσικότητα και floorcraft"
 msgid "Gold Star"
 msgstr "Χρυσό αστέρι"
 
-msgid "Five dances at gold standard"
-msgstr "Πέντε χοροί σε επίπεδο Gold"
+msgid "Gold Star awards in the chosen dances"
+msgstr "Διακρίσεις Gold Star στους επιλεγμένους χορούς"
 
 msgid "Competition-ready routines"
 msgstr "Χορογραφίες έτοιμες για αγώνα"
 
 msgid "Salsa levels"
 msgstr "Σάλσα: επίπεδα"
+
+msgid "Palee levels (common school progression)"
+msgstr "Επίπεδα Palee (συνήθης πρόοδος σχολών)"
 
 msgid "Beginner %{n}"
 msgstr "Αρχάριοι %{n}"
@@ -5156,7 +5497,7 @@ msgid "Hears the clave and the one"
 msgstr "Ακούει την clave και το ένα"
 
 msgid "Improver"
-msgstr "Βελτίωση"
+msgstr "Επίπεδο βελτίωσης"
 
 msgid "Cross-body lead variations"
 msgstr "Παραλλαγές cross-body lead"
@@ -5196,6 +5537,9 @@ msgstr "Ανυψώσεις και dips με ασφαλή τεχνική"
 
 msgid "Bachata levels"
 msgstr "Μπατσάτα: επίπεδα"
+
+msgid "Palee levels (sensual and Dominican styles)"
+msgstr "Επίπεδα Palee (sensual και δομινικανό στυλ)"
 
 msgid "Basic step with the tap on 4 and 8"
 msgstr "Βασικό βήμα με tap στο 4 και στο 8"
@@ -5245,6 +5589,9 @@ msgstr "Οδήγηση σύνθετων μοτίβων σε social"
 msgid "Hip-hop levels"
 msgstr "Hip-hop: επίπεδα"
 
+msgid "ISTD street dance medals plus a Palee starter level"
+msgstr "Μετάλλια street dance ISTD και εισαγωγικό επίπεδο Palee"
+
 msgid "Bounce and rock grooves"
 msgstr "Grooves bounce και rock"
 
@@ -5284,6 +5631,9 @@ msgstr "Γύρος freestyle battle"
 msgid "Commercial and R&B levels"
 msgstr "Commercial και R&B: επίπεδα"
 
+msgid "Palee levels for commercial dance classes"
+msgstr "Επίπεδα Palee για μαθήματα commercial"
+
 msgid "Grooves in R&B tempo"
 msgstr "Grooves σε ρυθμό R&B"
 
@@ -5316,6 +5666,9 @@ msgstr "Δική του χορογραφία σε σύντομο κομμάτι"
 
 msgid "Breaking levels"
 msgstr "Breaking: επίπεδα"
+
+msgid "Palee levels from WDSF breaking elements"
+msgstr "Επίπεδα Palee από τα στοιχεία breaking της WDSF"
 
 msgid "Toprock: Indian step and two-step"
 msgstr "Toprock: Indian step και two-step"
@@ -5365,6 +5718,9 @@ msgstr "Γύροι battle με μουσικότητα"
 msgid "Reggaeton levels"
 msgstr "Reggaeton: επίπεδα"
 
+msgid "Palee levels (urban Latin)"
+msgstr "Επίπεδα Palee (urban latin)"
+
 msgid "Dembow rhythm in the feet"
 msgstr "Ρυθμός dembow στα πόδια"
 
@@ -5398,6 +5754,9 @@ msgstr "Βασικά reggaeton σε ζευγάρι"
 msgid "Heels levels"
 msgstr "Heels: επίπεδα"
 
+msgid "Palee levels for heels classes"
+msgstr "Επίπεδα Palee για μαθήματα heels"
+
 msgid "Walks and turns in heels with ankle control"
 msgstr "Βαδίσματα και στροφές με τακούνια και έλεγχο αστραγάλου"
 
@@ -5430,6 +5789,9 @@ msgstr "Drops και spagat με τακούνια (όταν υπάρχει ευ�
 
 msgid "Pole levels"
 msgstr "Pole: επίπεδα"
+
+msgid "Palee levels from common studio grading"
+msgstr "Επίπεδα Palee από τη συνήθη βαθμολόγηση στούντιο"
 
 msgid "Walks and pivots around the pole"
 msgstr "Βαδίσματα και περιστροφές γύρω από τον στύλο"
@@ -5493,6 +5855,9 @@ msgstr "Πρόγραμμα 2 λεπτών και στις δύο πλευρές"
 
 msgid "Aerial silks levels"
 msgstr "Αερικά υφάσματα: επίπεδα"
+
+msgid "Palee levels from circus school progression"
+msgstr "Επίπεδα Palee από την πρόοδο των σχολών τσίρκου"
 
 msgid "Single foot lock from the ground"
 msgstr "Μονό κλείδωμα ποδιού από το έδαφος"
@@ -5583,6 +5948,9 @@ msgstr "Πρόγραμμα 2 λεπτών"
 
 msgid "Tap dance"
 msgstr "Tap (κλακέτες)"
+
+msgid "ISTD tap structure (not affiliated)"
+msgstr "Δομή tap του ISTD (χωρίς συνεργασία)"
 
 msgid "Bounce in time to music"
 msgstr "Αναπηδήσεις (bounce) στον ρυθμό της μουσικής"
@@ -5740,8 +6108,8 @@ msgstr "Pick up change και pick up ball change"
 msgid "Shuffle spring"
 msgstr "Shuffle spring"
 
-msgid "Basic · single and double waltz step"
-msgstr "Βασικό · μονό και διπλό βήμα βαλς"
+msgid "Basic waltz step single and double"
+msgstr "Βασικό βήμα βαλς μονό και διπλό"
 
 msgid "Double time step"
 msgstr "Διπλό time step"
@@ -5809,8 +6177,8 @@ msgstr "Maxi Ford με toe tap"
 msgid "Sugars"
 msgstr "Sugars"
 
-msgid "Single · double and triple pick up time steps"
-msgstr "Μονά · διπλά και τριπλά pick up time steps"
+msgid "Pick up time steps single double and triple"
+msgstr "Pick up time steps μονά διπλά και τριπλά"
 
 msgid "Shuffle time step solo"
 msgstr "Shuffle time step σόλο"
@@ -5970,6 +6338,9 @@ msgstr "Προαιρετικά: pendulum wings"
 
 msgid "Jazz dance"
 msgstr "Jazz (τζαζ χορός)"
+
+msgid "ISTD Modern Theatre structure (not affiliated)"
+msgstr "Δομή Modern Theatre του ISTD (χωρίς συνεργασία)"
 
 msgid "Natural walks on the diagonal in time"
 msgstr "Φυσικό περπάτημα στη διαγώνιο στον χρόνο"
@@ -6354,6 +6725,9 @@ msgstr "Δικό του σόλο 1½ λεπτού"
 
 msgid "Ballet (Cecchetti method)"
 msgstr "Κλασικό μπαλέτο (μέθοδος Cecchetti)"
+
+msgid "ISTD Cecchetti structure (not affiliated)"
+msgstr "Δομή Cecchetti του ISTD (χωρίς συνεργασία)"
 
 msgid "Demi-pliés in 1st position"
 msgstr "Demi-pliés σε 1η θέση"
@@ -6835,6 +7209,9 @@ msgstr "Κλασικό σόλο (προαιρετικά με τουτού)"
 msgid "Ballet (Vaganova method)"
 msgstr "Κλασικό μπαλέτο (μέθοδος Vaganova)"
 
+msgid "Vaganova 8-year programme (yearly content reconstructed)"
+msgstr "Οκταετές πρόγραμμα Vaganova (ανασύνθεση ύλης ανά έτος)"
+
 msgid "Year 1"
 msgstr "1ο έτος"
 
@@ -7129,6 +7506,9 @@ msgstr "Παράσταση σε ολοκληρωμένο μπαλέτο"
 msgid "Kizomba"
 msgstr "Κιζόμπα"
 
+msgid "Palee levels (no examining body)"
+msgstr "Επίπεδα Palee (δεν υπάρχει εξεταστικός φορέας)"
+
 msgid "Level 1 · Foundations"
 msgstr "Επίπεδο 1 · Βάσεις"
 
@@ -7163,7 +7543,7 @@ msgid "Pause and restart on the beat"
 msgstr "Παύση και επανεκκίνηση στον παλμό"
 
 msgid "Level 2 · Improver"
-msgstr "Επίπεδο 2 · Βελτίωση"
+msgstr "Επίπεδο 2 · Αρχάριοι+"
 
 msgid "Saída da dama (follower's exit)"
 msgstr "Saída da dama (έξοδος της ντάμας)"
@@ -7282,6 +7662,9 @@ msgstr "Δίνει σαφή ανατροφοδότηση σύνδεσης στο
 msgid "Zumba / dance fitness"
 msgstr "Zumba / χορευτική γυμναστική"
 
+msgid "Palee levels for dance fitness classes"
+msgstr "Επίπεδα Palee για μαθήματα χορευτικής γυμναστικής"
+
 msgid "Follows the instructor's visual cues"
 msgstr "Ακολουθεί τα οπτικά σήματα του εκπαιδευτή"
 
@@ -7399,6 +7782,9 @@ msgstr "Προσφέρει τροποποιήσεις για αρχάριους"
 msgid "Aerial hammock / aerial yoga"
 msgstr "Aerial yoga / αιώρα (hammock)"
 
+msgid "Palee levels (no body grades students)"
+msgstr "Επίπεδα Palee (κανένας φορέας δεν βαθμολογεί μαθητές)"
+
 msgid "Intro"
 msgstr "Εισαγωγικό"
 
@@ -7513,6 +7899,9 @@ msgstr "Υποστηρίζει και καθοδηγεί αρχάριο με α�
 msgid "Skateboarding levels"
 msgstr "Skateboard: επίπεδα"
 
+msgid "Palee levels from Skateboard GB awards"
+msgstr "Επίπεδα Palee από τα διπλώματα Skateboard GB"
+
 msgid "Stance (regular or goofy) and pushing"
 msgstr "Στάση (regular ή goofy) και πάτημα (push)"
 
@@ -7573,8 +7962,11 @@ msgstr "Γραμμή τριών κόλπων"
 msgid "Indoor climbing levels"
 msgstr "Αναρρίχηση: επίπεδα"
 
-msgid "Foundation climber"
-msgstr "Αναρριχητής βάσης"
+msgid "NICAS levels 1-5 (UK indoor climbing scheme)"
+msgstr "Επίπεδα NICAS 1-5 (βρετανικό πρόγραμμα αναρρίχησης σε τοίχο)"
+
+msgid "New climber"
+msgstr "Νέος αναρριχητής"
 
 msgid "Fits a harness and helmet correctly"
 msgstr "Φορά σωστά ζώνη και κράνος"
@@ -7585,17 +7977,17 @@ msgstr "Κόμπος οκτώ με έλεγχο από συνεργάτη"
 msgid "Climbs a top-rope route and is lowered"
 msgstr "Σκαρφαλώνει διαδρομή top-rope και κατεβαίνει"
 
-msgid "Top-rope climber"
-msgstr "Αναρριχητής top-rope"
+msgid "Foundation climber"
+msgstr "Αναρριχητής βάσης"
 
 msgid "Belays top-rope with an assisted device"
 msgstr "Ασφαλίζει top-rope με υποβοηθούμενη συσκευή"
 
-msgid "Climbs grade 4 routes cleanly"
-msgstr "Σκαρφαλώνει διαδρομές βαθμού 4 καθαρά"
-
 msgid "Safe bouldering falls"
 msgstr "Ασφαλείς πτώσεις στο bouldering"
+
+msgid "Climbs smoothly with straight arms"
+msgstr "Σκαρφαλώνει ομαλά με τεντωμένα χέρια"
 
 msgid "Technical climber"
 msgstr "Τεχνικός αναρριχητής"
@@ -7605,9 +7997,6 @@ msgstr "Τεχνική ποδιών: edging και smearing"
 
 msgid "Flagging and drop knee"
 msgstr "Flagging και drop knee"
-
-msgid "Climbs grade 5 routes"
-msgstr "Σκαρφαλώνει διαδρομές βαθμού 5"
 
 msgid "Lead climber"
 msgstr "Αναρριχητής lead"
@@ -7624,9 +8013,6 @@ msgstr "Κάνει πτώσεις εξάσκησης σε lead"
 msgid "Advanced climber"
 msgstr "Προχωρημένος αναρριχητής"
 
-msgid "Climbs grade 6a or harder on lead"
-msgstr "Σκαρφαλώνει 6a ή δυσκολότερο σε lead"
-
 msgid "Plans training and route reading"
 msgstr "Σχεδιάζει προπόνηση και διαβάζει διαδρομές"
 
@@ -7635,6 +8021,9 @@ msgstr "Συμμετέχει σε αγώνα"
 
 msgid "Bouldering grades"
 msgstr "Bouldering: βαθμοί"
+
+msgid "Palee levels by V-grade (Font in brackets)"
+msgstr "Επίπεδα Palee ανά βαθμό V (Font σε παρένθεση)"
 
 msgid "V0 (4)"
 msgstr ""
