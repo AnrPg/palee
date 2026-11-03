@@ -16421,5 +16421,21 @@
     "done": "Non riceverai più SMS con offerte da {box}.",
     "invalid": "Questo link non è valido.",
     "error": "Qualcosa è andato storto. Riprova."
+  },
+  "FitnessCoach": {
+    "title": "Livello di forma",
+    "bodyWeight": "Peso corporeo",
+    "kg": "{weight} kg",
+    "birthYear": "Anno di nascita",
+    "notFilled": "non indicato",
+    "noneFilled": "{name} non ha indicato né il peso corporeo né l'anno di nascita.",
+    "question": "Cosa vede nella scheda",
+    "theirChoice": "La sua scelta ({choice})",
+    "display_all": "Tutto",
+    "display_progress_only": "Solo progressi",
+    "display_none": "Niente",
+    "hint": "Con «Solo progressi» o «Niente», la sua scheda dice «Deciso dal tuo coach».",
+    "theirsIsStricter": "{name} ha scelto «{choice}», che è più restrittivo, quindi resta così.",
+    "saved": "Salvato."
   }
 }

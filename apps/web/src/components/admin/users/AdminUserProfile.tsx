@@ -68,6 +68,7 @@ import { ClientTrainingGoalPanel } from "@/components/training-goal/ClientTraini
 import { CoachBodyPanel } from "@/components/body/CoachBodyPanel";
 import { CoachWellnessPanel } from "@/components/buddy/CoachWellnessPanel";
 import { CoachTrainingDepthPanel } from "@/components/member-app/progress/CoachTrainingDepthPanel";
+import { ClientFitnessDisplayPanel } from "@/components/admin/users/ClientFitnessDisplayPanel";
 import {
   activeProfileTab,
   SECTION_TAB,
@@ -597,6 +598,7 @@ export function AdminUserProfile({ userId }: { userId: string }) {
   const tFloor = useTranslations("TrainingFloor");
   const tPrSharing = useTranslations("PrSharing");
   const tDepth = useTranslations("Depth");
+  const tFitness = useTranslations("FitnessCoach");
   const tGoal = useTranslations("TrainingGoal");
   const tSms = useTranslations("Sms");
   const { tokens, currentUser } = useSession();
@@ -725,6 +727,8 @@ export function AdminUserProfile({ userId }: { userId: string }) {
   if (showBody) tabSections.add("wellness_summary");
   // ADR-165: coverage, qualities and load from the entries the client shares.
   if (isClient && actorCoaches && can(actor, "view_client_training")) tabSections.add("training_depth");
+  // ADR-395: only the client's coach (the API checks the coaching relationship).
+  if (isClient && actorCoaches && can(actor, "view_client_training")) tabSections.add("fitness_display");
   const tabs = visibleProfileTabs(tabSections);
   const tab = activeProfileTab(tabs, searchParams.get("tab"), hashSection);
   const inTab = (section: string) => SECTION_TAB[section] === tab && tabSections.has(section);
@@ -886,6 +890,14 @@ export function AdminUserProfile({ userId }: { userId: string }) {
             <Panel id="training_depth" title={tDepth("coach.title")}>
               <CoachTrainingDepthPanel userId={userId} />
             </Panel>
+          ) : null}
+
+          {token && inTab("fitness_display") ? (
+            <ClientFitnessDisplayPanel
+              userId={userId}
+              nickname={profile.identity.nickname}
+              frame={(content) => <Panel id="fitness_display" title={tFitness("title")}>{content}</Panel>}
+            />
           ) : null}
 
           {inTab("prs") ? <Panel id="prs" title={i18n("personalRecords05223a0")}><div className="grid gap-3">{prs.data?.visibility === "coach_role_required" ? <Empty>{tPrSharing("dossierCoachOnly")}</Empty> : prs.data?.prs.length ? prs.data.prs.map((pr) => <PRCard key={pr.id} pr={pr} />) : <Empty>{i18n("noPersonalRecordsRecorded22a0fce")}</Empty>}</div></Panel> : null}

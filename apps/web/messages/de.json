@@ -16421,5 +16421,21 @@
     "done": "Sie erhalten keine SMS mit Angeboten von {box} mehr.",
     "invalid": "Dieser Link ist nicht gültig.",
     "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
+  },
+  "FitnessCoach": {
+    "title": "Fitnesslevel",
+    "bodyWeight": "Körpergewicht",
+    "kg": "{weight} kg",
+    "birthYear": "Geburtsjahr",
+    "notFilled": "nicht angegeben",
+    "noneFilled": "{name} hat weder Körpergewicht noch Geburtsjahr angegeben.",
+    "question": "Was die Karte zeigt",
+    "theirChoice": "Eigene Wahl ({choice})",
+    "display_all": "Alles",
+    "display_progress_only": "Nur Fortschritt",
+    "display_none": "Nichts",
+    "hint": "Bei „Nur Fortschritt“ oder „Nichts“ steht auf der Karte „Von deinem Coach festgelegt“.",
+    "theirsIsStricter": "{name} hat „{choice}“ gewählt, das ist strenger und bleibt deshalb.",
+    "saved": "Gespeichert."
   }
 }

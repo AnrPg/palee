@@ -16421,5 +16421,21 @@
     "done": "Ya no recibirás SMS con ofertas de {box}.",
     "invalid": "Este enlace no es válido.",
     "error": "Algo salió mal. Inténtalo de nuevo."
+  },
+  "FitnessCoach": {
+    "title": "Nivel de forma física",
+    "bodyWeight": "Peso corporal",
+    "kg": "{weight} kg",
+    "birthYear": "Año de nacimiento",
+    "notFilled": "sin indicar",
+    "noneFilled": "{name} no ha indicado su peso corporal ni su año de nacimiento.",
+    "question": "Qué ve en la tarjeta",
+    "theirChoice": "Su elección ({choice})",
+    "display_all": "Todo",
+    "display_progress_only": "Solo progreso",
+    "display_none": "Nada",
+    "hint": "Con «Solo progreso» o «Nada», su tarjeta dice «Lo ha decidido tu coach».",
+    "theirsIsStricter": "{name} eligió «{choice}», que es más estricto, así que se mantiene.",
+    "saved": "Guardado."
   }
 }
