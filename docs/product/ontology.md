@@ -698,6 +698,20 @@ Staff screens only. Never part of a fiscal document: a pay statement is an inter
 | Gross / Net | Μικτά / Καθαρά | `amount_basis: gross \| net` | Whether an amount is before or after the person's taxes and contributions, as staff say; Palee computes neither. Gross is the default; net lines are marked «Καθαρά» and the two are always shown as separate subtotals («Μικτά X · Καθαρά Y»). (ADR-382) | Total (never one sum of both without labels). |
 | Pay statement (PDF) | Εκκαθαριστικό | `GET …/coach-pay/periods/:id/statements/:user_id/pdf`, `GET …/coach-pay/mine/:period_id/pdf` | One person's approved statement as PDF, headed «Εσωτερική κατάσταση αμοιβής» (Internal pay statement): an internal record, not an official payroll document (ADR-382). | Payslip issued by payroll; receipt. |
 
+### 4.26 Training programmes (ADR-370, ADR-371)
+
+Programmes a box or a coach sells (CP-D4). The prospect assistant of the same workstream (CP-C8, ADR-372/373) moved to v4.
+
+| English | Ελληνικά | Code | What it is | Not to be confused with |
+|---|---|---|---|---|
+| Training programme | Πρόγραμμα προπόνησης | `programmes` | A multi-week plan of structured WODs that a box or coach sells; the buyer gets its WODs on dated days. Always the full name in Greek, never a bare «πρόγραμμα» (that is the class schedule). | Season (dated, with places and a crew); the class schedule («Πρόγραμμα»); Plan (Palee). |
+| Programme version | Έκδοση προγράμματος | `programme_versions` | The frozen days of a programme when it was published; buyers keep the version they bought. | Workout revisions (ADR-031). |
+| Programme store | Αγορά προγραμμάτων | `listing: marketplace`, `/public/programmes` | The catalogue of programmes from every business that lists them there. | Shop (physical goods, ADR-190). |
+| Preview days | Ημέρες προεπισκόπησης | `preview_days` | The first days anyone sees (titles only) before buying. | Trial class. |
+| Start date | Ημερομηνία έναρξης | `starts_on` | The day the buyer's day 0 falls on (today up to 60 days ahead). | Season start. |
+| Refund rule | Κανόνας επιστροφής χρημάτων | `refund_policy` | The seller's rule on top of the law: «Πλήρης επιστροφή μέχρι την έναρξη» (`before_start`), «Μόνο στην προθεσμία υπαναχώρησης» (`withdrawal_only`), «Για τις ημέρες που δεν ήρθαν» (`pro_rata`). | Withdrawal («Υπαναχώρηση», the 14 days the law gives). |
+| Programme review | Κριτική προγράμματος | `programme_reviews` | A buyer's 1–5 stars and text about a programme; the seller may hide it («Απόκρυψη») with a reason, never edit or delete it. Same word as a box review («Κριτική», §4.22), always with «προγράμματος» where both can appear. | Box review (`box_reviews`, §4.22); review questionnaire (ADR feedback, «Ερωτηματολόγιο»). |
+
 ## 5. Name clashes found, and proposals
 
 Each needs ANR's choice before the UI changes. The recommended option is first.

@@ -365,6 +365,15 @@ defmodule PaleeWeb.Router do
     post("/:slug/forms/:kind", PublicSiteController, :submit_form)
   end
 
+  # ADR-370: programmes without an account (catalogue, a box's own).
+  scope "/api/public", PaleeWeb do
+    pipe_through([:api, :public_box_rate_limited])
+
+    get("/programmes", PublicProgrammeController, :catalogue)
+    get("/boxes/:slug/programmes", PublicProgrammeController, :index)
+    get("/boxes/:slug/programmes/:id", PublicProgrammeController, :show)
+  end
+
   # ADR-272: a walk-in's receipt behind the QR on the staff phone.
   scope "/api/public/receipts", PaleeWeb do
     pipe_through([:api, :public_box_rate_limited])
@@ -677,6 +686,13 @@ defmodule PaleeWeb.Router do
     get("/package-requests", MyPaymentsController, :package_requests)
     post("/package-requests/:id/cancel", MyPaymentsController, :cancel_package_request)
     post("/payments/:id/withdraw", MyPaymentsController, :withdraw)
+    # ADR-371: programmes bought online (never in the store apps, ADR-256).
+    get("/programmes/:id/purchase-terms", MyProgrammeController, :terms)
+    post("/programmes/:id/buy", MyProgrammeController, :buy)
+    get("/programme-purchases", MyProgrammeController, :index)
+    get("/programme-purchases/:id", MyProgrammeController, :show)
+    post("/programme-purchases/:id/withdraw", MyProgrammeController, :withdraw)
+    post("/programme-purchases/:id/review", MyProgrammeController, :review)
     post("/shop/orders/:id/pay-online", MyPaymentsController, :pay_shop_order)
     # ADR-252: Box › Documents (sign, certificates, health certificate).
     get("/documents", MyDocumentsController, :index)
@@ -1364,6 +1380,18 @@ defmodule PaleeWeb.Router do
     post("/trials/:id/accept", AdminTrialController, :accept)
     post("/trials/:id/decline", AdminTrialController, :decline)
     post("/trials/:id/attendance", AdminTrialController, :attendance)
+    # ADR-370/371: programmes the business sells.
+    get("/programmes", AdminProgrammeController, :index)
+    post("/programmes", AdminProgrammeController, :create)
+    get("/programmes/:id", AdminProgrammeController, :show)
+    patch("/programmes/:id", AdminProgrammeController, :update)
+    post("/programmes/:id/publish", AdminProgrammeController, :publish)
+    post("/programmes/:id/archive", AdminProgrammeController, :archive)
+    post("/programmes/:id/restore", AdminProgrammeController, :restore)
+    get("/programmes/:id/purchases", AdminProgrammeController, :purchases)
+    get("/programmes/:id/reviews", AdminProgrammeController, :reviews)
+    post("/programme-purchases/:id/refund", AdminProgrammeController, :refund)
+    post("/programme-reviews/:id/moderate", AdminProgrammeController, :moderate_review)
     # ADR-191: partner perks.
     get("/perks", AdminPerkController, :index)
     post("/perks", AdminPerkController, :create)

@@ -14,6 +14,7 @@ defmodule Palee.Application.Payments.FinanceFulfilment do
 
   alias Palee.Application.Fiscal.PaymentDocuments
   alias Palee.Application.Payments.{CardSurcharges, OnlineSales, TerminalFulfilment}
+  alias Palee.Application.Programmes
   alias Palee.Application.ReceiveFinancePayment
   alias Palee.Finance
   alias Palee.Organizations
@@ -72,6 +73,10 @@ defmodule Palee.Application.Payments.FinanceFulfilment do
   defp fulfil_sale(context, %{purpose_type: "shop_order"} = intent),
     do: OnlineSales.fulfil_shop_order(context, intent)
 
+  # ADR-371: a programme bought online.
+  defp fulfil_sale(context, %{purpose_type: "programme"} = intent),
+    do: Programmes.Fulfilment.fulfil(context, intent)
+
   defp fulfil_sale(_context, intent), do: {:error, {:purpose_not_supported, intent.purpose_type}}
 
   @doc false
@@ -99,6 +104,9 @@ defmodule Palee.Application.Payments.FinanceFulfilment do
       reverse_finance(context, facts.membership_id, intent, refund)
     end
   end
+
+  def reverse(context, %{purpose_type: "programme"} = intent, refund),
+    do: Programmes.Fulfilment.reverse(context, intent, refund)
 
   # Shop refunds are recorded on the order by the shop's own refund flow.
   def reverse(_context, _intent, _refund), do: {:ok, %{}}

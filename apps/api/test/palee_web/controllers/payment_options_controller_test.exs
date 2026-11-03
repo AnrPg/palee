@@ -107,7 +107,8 @@ defmodule PaleeWeb.PaymentOptionsControllerTest do
                "autopay" => true,
                "drop_in" => true,
                "shop" => true,
-               "personal_training" => true
+               "personal_training" => true,
+               "programmes" => true
              },
              "notify_member" => true,
              "notify_staff" => true

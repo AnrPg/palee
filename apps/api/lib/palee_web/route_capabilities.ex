@@ -452,6 +452,18 @@ defmodule PaleeWeb.RouteCapabilities do
     {W.AdminFinanceController, :cleanup_records} => [:manage_billing],
     {W.AdminFinanceController, :purge_record} => [:manage_billing],
     {W.AdminFinanceController, :packages} => [:view_package_catalog],
+    # ADR-370/371: programmes are written from WODs and sold like packages.
+    {W.AdminProgrammeController, :index} => [:manage_workouts, :view_package_catalog],
+    {W.AdminProgrammeController, :show} => [:manage_workouts, :view_package_catalog],
+    {W.AdminProgrammeController, :create} => [:manage_workouts],
+    {W.AdminProgrammeController, :update} => [:manage_workouts],
+    {W.AdminProgrammeController, :publish} => [:manage_packages],
+    {W.AdminProgrammeController, :archive} => [:manage_packages],
+    {W.AdminProgrammeController, :restore} => [:manage_packages],
+    {W.AdminProgrammeController, :purchases} => [:take_payments, :manage_billing],
+    {W.AdminProgrammeController, :refund} => [:manage_billing],
+    {W.AdminProgrammeController, :reviews} => [:manage_workouts, :manage_packages],
+    {W.AdminProgrammeController, :moderate_review} => [:manage_packages],
     # ADR-167: seasons are sold like packages; places are answered like payments.
     {W.AdminSeasonController, :index} => [:view_package_catalog, :take_payments],
     {W.AdminSeasonController, :show} => [:view_package_catalog, :take_payments],
