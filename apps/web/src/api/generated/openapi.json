@@ -17761,6 +17761,11 @@
                 "circuit_training",
                 "calisthenics",
                 "gymnastics",
+                "artistic_gymnastics",
+                "rhythmic_gymnastics",
+                "trampoline_tumbling",
+                "acrobatics",
+                "parkour",
                 "running",
                 "indoor_cycling",
                 "cycling",
@@ -17783,13 +17788,23 @@
                 "wrestling",
                 "martial_arts",
                 "self_defense",
+                "judo",
+                "karate",
+                "taekwondo",
+                "kung_fu",
+                "krav_maga",
                 "dance",
                 "dance_fitness",
                 "pole_aerial",
+                "ballet",
+                "contemporary_dance",
+                "latin_dance",
+                "street_dance",
                 "swimming",
                 "aqua_fitness",
                 "outdoor_training",
                 "climbing_bouldering",
+                "skateboarding",
                 "physio_rehab",
                 "sports_massage",
                 "recovery"
@@ -18231,6 +18246,11 @@
                     "circuit_training",
                     "calisthenics",
                     "gymnastics",
+                    "artistic_gymnastics",
+                    "rhythmic_gymnastics",
+                    "trampoline_tumbling",
+                    "acrobatics",
+                    "parkour",
                     "running",
                     "indoor_cycling",
                     "cycling",
@@ -18253,13 +18273,23 @@
                     "wrestling",
                     "martial_arts",
                     "self_defense",
+                    "judo",
+                    "karate",
+                    "taekwondo",
+                    "kung_fu",
+                    "krav_maga",
                     "dance",
                     "dance_fitness",
                     "pole_aerial",
+                    "ballet",
+                    "contemporary_dance",
+                    "latin_dance",
+                    "street_dance",
                     "swimming",
                     "aqua_fitness",
                     "outdoor_training",
                     "climbing_bouldering",
+                    "skateboarding",
                     "physio_rehab",
                     "sports_massage",
                     "recovery"
@@ -18538,6 +18568,11 @@
                 "circuit_training",
                 "calisthenics",
                 "gymnastics",
+                "artistic_gymnastics",
+                "rhythmic_gymnastics",
+                "trampoline_tumbling",
+                "acrobatics",
+                "parkour",
                 "running",
                 "indoor_cycling",
                 "cycling",
@@ -18560,13 +18595,23 @@
                 "wrestling",
                 "martial_arts",
                 "self_defense",
+                "judo",
+                "karate",
+                "taekwondo",
+                "kung_fu",
+                "krav_maga",
                 "dance",
                 "dance_fitness",
                 "pole_aerial",
+                "ballet",
+                "contemporary_dance",
+                "latin_dance",
+                "street_dance",
                 "swimming",
                 "aqua_fitness",
                 "outdoor_training",
                 "climbing_bouldering",
+                "skateboarding",
                 "physio_rehab",
                 "sports_massage",
                 "recovery"
@@ -22498,6 +22543,11 @@
                       "circuit_training",
                       "calisthenics",
                       "gymnastics",
+                      "artistic_gymnastics",
+                      "rhythmic_gymnastics",
+                      "trampoline_tumbling",
+                      "acrobatics",
+                      "parkour",
                       "running",
                       "indoor_cycling",
                       "cycling",
@@ -22520,13 +22570,23 @@
                       "wrestling",
                       "martial_arts",
                       "self_defense",
+                      "judo",
+                      "karate",
+                      "taekwondo",
+                      "kung_fu",
+                      "krav_maga",
                       "dance",
                       "dance_fitness",
                       "pole_aerial",
+                      "ballet",
+                      "contemporary_dance",
+                      "latin_dance",
+                      "street_dance",
                       "swimming",
                       "aqua_fitness",
                       "outdoor_training",
                       "climbing_bouldering",
+                      "skateboarding",
                       "physio_rehab",
                       "sports_massage",
                       "recovery"
@@ -80920,6 +80980,24 @@
           "discipline": {
             "type": "string"
           },
+          "locale": {
+            "description": "The language of template names and skills; Greek when left out",
+            "enum": [
+              "en",
+              "el",
+              "ar",
+              "ru",
+              "de",
+              "es",
+              "pt-PT",
+              "he",
+              "it",
+              "bg",
+              "nl",
+              "fr"
+            ],
+            "type": "string"
+          },
           "name": {
             "maxLength": 60,
             "type": "string"
@@ -81276,7 +81354,112 @@
           },
           "templates": {
             "items": {
-              "additionalProperties": true,
+              "description": "A ready-made ladder (ADR-400) in the requested language; a starting point the box edits freely",
+              "properties": {
+                "discipline": {
+                  "type": "string"
+                },
+                "family": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "key": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ranks": {
+                  "items": {
+                    "properties": {
+                      "color": {
+                        "description": "Belt palette key; the screen maps it to the theme's --belt-* token",
+                        "enum": [
+                          "white",
+                          "grey",
+                          "yellow",
+                          "orange",
+                          "green",
+                          "blue",
+                          "purple",
+                          "brown",
+                          "red",
+                          "black",
+                          "pink"
+                        ],
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "max_stripes": {
+                        "type": "integer"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "requirements": {
+                        "properties": {
+                          "min_classes": {
+                            "maximum": 2000,
+                            "minimum": 0,
+                            "type": "integer"
+                          },
+                          "min_days": {
+                            "maximum": 3650,
+                            "minimum": 0,
+                            "type": "integer"
+                          },
+                          "skills": {
+                            "items": {
+                              "maxLength": 120,
+                              "type": "string"
+                            },
+                            "maxItems": 20,
+                            "type": "array"
+                          }
+                        },
+                        "title": "RankRequirements",
+                        "type": "object"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "max_stripes",
+                      "requirements"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "source": {
+                  "description": "A federation's or school's system, or Palee's own levels",
+                  "enum": [
+                    "federation",
+                    "palee"
+                  ],
+                  "type": "string"
+                },
+                "style": {
+                  "enum": [
+                    "belt",
+                    "level"
+                  ],
+                  "type": "string"
+                },
+                "system": {
+                  "description": "The system it follows, in the requested language",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "key",
+                "name",
+                "discipline",
+                "style",
+                "source",
+                "system",
+                "ranks"
+              ],
+              "title": "RankTemplate",
               "type": "object"
             },
             "type": "array"
@@ -81312,6 +81495,39 @@
           }
         },
         "title": "RankRequirements",
+        "type": "object"
+      },
+      "RankSkillCheckRequest": {
+        "description": "ADR-400: tick (or untick) one skill of a rank for a client, between promotions",
+        "properties": {
+          "checked": {
+            "description": "false unticks; true when left out",
+            "type": "boolean"
+          },
+          "checked_on": {
+            "format": "date",
+            "type": "string"
+          },
+          "note": {
+            "maxLength": 280,
+            "nullable": true,
+            "type": "string"
+          },
+          "rank_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "skill": {
+            "maxLength": 120,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "rank_id",
+          "skill"
+        ],
+        "title": "RankSkillCheckRequest",
         "type": "object"
       },
       "RankStanding": {
@@ -81690,6 +81906,10 @@
             "description": "Towards the next rank; `ready` only says the counted requirements are met",
             "nullable": true,
             "properties": {
+              "all_skills_checked": {
+                "description": "Every listed skill is ticked (true when the rank lists none)",
+                "type": "boolean"
+              },
               "classes": {
                 "properties": {
                   "done": {
@@ -81734,6 +81954,30 @@
               "skills": {
                 "items": {
                   "type": "string"
+                },
+                "type": "array"
+              },
+              "skills_checked": {
+                "description": "ADR-400: the next rank's skills the coach ticked so far",
+                "items": {
+                  "properties": {
+                    "checked_on": {
+                      "format": "date",
+                      "type": "string"
+                    },
+                    "note": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "skill": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "skill",
+                    "checked_on"
+                  ],
+                  "type": "object"
                 },
                 "type": "array"
               }
@@ -82137,6 +82381,10 @@
                   "description": "Towards the next rank; `ready` only says the counted requirements are met",
                   "nullable": true,
                   "properties": {
+                    "all_skills_checked": {
+                      "description": "Every listed skill is ticked (true when the rank lists none)",
+                      "type": "boolean"
+                    },
                     "classes": {
                       "properties": {
                         "done": {
@@ -82183,6 +82431,30 @@
                         "type": "string"
                       },
                       "type": "array"
+                    },
+                    "skills_checked": {
+                      "description": "ADR-400: the next rank's skills the coach ticked so far",
+                      "items": {
+                        "properties": {
+                          "checked_on": {
+                            "format": "date",
+                            "type": "string"
+                          },
+                          "note": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "skill": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "skill",
+                          "checked_on"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
                     }
                   },
                   "required": [
@@ -82216,6 +82488,115 @@
           "ladders"
         ],
         "title": "RankStandingsResponse",
+        "type": "object"
+      },
+      "RankTemplate": {
+        "description": "A ready-made ladder (ADR-400) in the requested language; a starting point the box edits freely",
+        "properties": {
+          "discipline": {
+            "type": "string"
+          },
+          "family": {
+            "nullable": true,
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "ranks": {
+            "items": {
+              "properties": {
+                "color": {
+                  "description": "Belt palette key; the screen maps it to the theme's --belt-* token",
+                  "enum": [
+                    "white",
+                    "grey",
+                    "yellow",
+                    "orange",
+                    "green",
+                    "blue",
+                    "purple",
+                    "brown",
+                    "red",
+                    "black",
+                    "pink"
+                  ],
+                  "nullable": true,
+                  "type": "string"
+                },
+                "max_stripes": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "requirements": {
+                  "properties": {
+                    "min_classes": {
+                      "maximum": 2000,
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "min_days": {
+                      "maximum": 3650,
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "skills": {
+                      "items": {
+                        "maxLength": 120,
+                        "type": "string"
+                      },
+                      "maxItems": 20,
+                      "type": "array"
+                    }
+                  },
+                  "title": "RankRequirements",
+                  "type": "object"
+                }
+              },
+              "required": [
+                "name",
+                "max_stripes",
+                "requirements"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "source": {
+            "description": "A federation's or school's system, or Palee's own levels",
+            "enum": [
+              "federation",
+              "palee"
+            ],
+            "type": "string"
+          },
+          "style": {
+            "enum": [
+              "belt",
+              "level"
+            ],
+            "type": "string"
+          },
+          "system": {
+            "description": "The system it follows, in the requested language",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "name",
+          "discipline",
+          "style",
+          "source",
+          "system",
+          "ranks"
+        ],
+        "title": "RankTemplate",
         "type": "object"
       },
       "ReferralClaim": {
@@ -123263,6 +123644,11 @@
                                 "circuit_training",
                                 "calisthenics",
                                 "gymnastics",
+                                "artistic_gymnastics",
+                                "rhythmic_gymnastics",
+                                "trampoline_tumbling",
+                                "acrobatics",
+                                "parkour",
                                 "running",
                                 "indoor_cycling",
                                 "cycling",
@@ -123285,13 +123671,23 @@
                                 "wrestling",
                                 "martial_arts",
                                 "self_defense",
+                                "judo",
+                                "karate",
+                                "taekwondo",
+                                "kung_fu",
+                                "krav_maga",
                                 "dance",
                                 "dance_fitness",
                                 "pole_aerial",
+                                "ballet",
+                                "contemporary_dance",
+                                "latin_dance",
+                                "street_dance",
                                 "swimming",
                                 "aqua_fitness",
                                 "outdoor_training",
                                 "climbing_bouldering",
+                                "skateboarding",
                                 "physio_rehab",
                                 "sports_massage",
                                 "recovery"
@@ -184850,6 +185246,11 @@
                               "kettlebell",
                               "gymnastics",
                               "calisthenics",
+                              "artistic_gymnastics",
+                              "rhythmic_gymnastics",
+                              "trampoline_tumbling",
+                              "acrobatics",
+                              "parkour",
                               "aerobics",
                               "running",
                               "cycling",
@@ -184872,11 +185273,21 @@
                               "wrestling",
                               "martial_arts",
                               "self_defense",
+                              "judo",
+                              "karate",
+                              "taekwondo",
+                              "kung_fu",
+                              "krav_maga",
                               "dance",
                               "dance_fitness",
                               "pole_aerial",
+                              "ballet",
+                              "contemporary_dance",
+                              "latin_dance",
+                              "street_dance",
                               "outdoor_training",
                               "climbing_bouldering",
+                              "skateboarding",
                               "recovery"
                             ],
                             "type": "string"
@@ -185194,6 +185605,11 @@
                               "kettlebell",
                               "gymnastics",
                               "calisthenics",
+                              "artistic_gymnastics",
+                              "rhythmic_gymnastics",
+                              "trampoline_tumbling",
+                              "acrobatics",
+                              "parkour",
                               "aerobics",
                               "running",
                               "cycling",
@@ -185216,11 +185632,21 @@
                               "wrestling",
                               "martial_arts",
                               "self_defense",
+                              "judo",
+                              "karate",
+                              "taekwondo",
+                              "kung_fu",
+                              "krav_maga",
                               "dance",
                               "dance_fitness",
                               "pole_aerial",
+                              "ballet",
+                              "contemporary_dance",
+                              "latin_dance",
+                              "street_dance",
                               "outdoor_training",
                               "climbing_bouldering",
+                              "skateboarding",
                               "recovery"
                             ],
                             "type": "string"
@@ -262306,6 +262732,11 @@
                               "circuit_training",
                               "calisthenics",
                               "gymnastics",
+                              "artistic_gymnastics",
+                              "rhythmic_gymnastics",
+                              "trampoline_tumbling",
+                              "acrobatics",
+                              "parkour",
                               "running",
                               "indoor_cycling",
                               "cycling",
@@ -262328,13 +262759,23 @@
                               "wrestling",
                               "martial_arts",
                               "self_defense",
+                              "judo",
+                              "karate",
+                              "taekwondo",
+                              "kung_fu",
+                              "krav_maga",
                               "dance",
                               "dance_fitness",
                               "pole_aerial",
+                              "ballet",
+                              "contemporary_dance",
+                              "latin_dance",
+                              "street_dance",
                               "swimming",
                               "aqua_fitness",
                               "outdoor_training",
                               "climbing_bouldering",
+                              "skateboarding",
                               "physio_rehab",
                               "sports_massage",
                               "recovery"
@@ -262635,6 +263076,11 @@
                         "circuit_training",
                         "calisthenics",
                         "gymnastics",
+                        "artistic_gymnastics",
+                        "rhythmic_gymnastics",
+                        "trampoline_tumbling",
+                        "acrobatics",
+                        "parkour",
                         "running",
                         "indoor_cycling",
                         "cycling",
@@ -262657,13 +263103,23 @@
                         "wrestling",
                         "martial_arts",
                         "self_defense",
+                        "judo",
+                        "karate",
+                        "taekwondo",
+                        "kung_fu",
+                        "krav_maga",
                         "dance",
                         "dance_fitness",
                         "pole_aerial",
+                        "ballet",
+                        "contemporary_dance",
+                        "latin_dance",
+                        "street_dance",
                         "swimming",
                         "aqua_fitness",
                         "outdoor_training",
                         "climbing_bouldering",
+                        "skateboarding",
                         "physio_rehab",
                         "sports_massage",
                         "recovery"
@@ -262940,6 +263396,11 @@
                               "circuit_training",
                               "calisthenics",
                               "gymnastics",
+                              "artistic_gymnastics",
+                              "rhythmic_gymnastics",
+                              "trampoline_tumbling",
+                              "acrobatics",
+                              "parkour",
                               "running",
                               "indoor_cycling",
                               "cycling",
@@ -262962,13 +263423,23 @@
                               "wrestling",
                               "martial_arts",
                               "self_defense",
+                              "judo",
+                              "karate",
+                              "taekwondo",
+                              "kung_fu",
+                              "krav_maga",
                               "dance",
                               "dance_fitness",
                               "pole_aerial",
+                              "ballet",
+                              "contemporary_dance",
+                              "latin_dance",
+                              "street_dance",
                               "swimming",
                               "aqua_fitness",
                               "outdoor_training",
                               "climbing_bouldering",
+                              "skateboarding",
                               "physio_rehab",
                               "sports_massage",
                               "recovery"
@@ -263679,6 +264150,11 @@
                               "circuit_training",
                               "calisthenics",
                               "gymnastics",
+                              "artistic_gymnastics",
+                              "rhythmic_gymnastics",
+                              "trampoline_tumbling",
+                              "acrobatics",
+                              "parkour",
                               "running",
                               "indoor_cycling",
                               "cycling",
@@ -263701,13 +264177,23 @@
                               "wrestling",
                               "martial_arts",
                               "self_defense",
+                              "judo",
+                              "karate",
+                              "taekwondo",
+                              "kung_fu",
+                              "krav_maga",
                               "dance",
                               "dance_fitness",
                               "pole_aerial",
+                              "ballet",
+                              "contemporary_dance",
+                              "latin_dance",
+                              "street_dance",
                               "swimming",
                               "aqua_fitness",
                               "outdoor_training",
                               "climbing_bouldering",
+                              "skateboarding",
                               "physio_rehab",
                               "sports_massage",
                               "recovery"
@@ -264281,6 +264767,11 @@
                               "circuit_training",
                               "calisthenics",
                               "gymnastics",
+                              "artistic_gymnastics",
+                              "rhythmic_gymnastics",
+                              "trampoline_tumbling",
+                              "acrobatics",
+                              "parkour",
                               "running",
                               "indoor_cycling",
                               "cycling",
@@ -264303,13 +264794,23 @@
                               "wrestling",
                               "martial_arts",
                               "self_defense",
+                              "judo",
+                              "karate",
+                              "taekwondo",
+                              "kung_fu",
+                              "krav_maga",
                               "dance",
                               "dance_fitness",
                               "pole_aerial",
+                              "ballet",
+                              "contemporary_dance",
+                              "latin_dance",
+                              "street_dance",
                               "swimming",
                               "aqua_fitness",
                               "outdoor_training",
                               "climbing_bouldering",
+                              "skateboarding",
                               "physio_rehab",
                               "sports_massage",
                               "recovery"
@@ -264525,7 +265026,32 @@
       "get": {
         "callbacks": {},
         "operationId": "PaleeWeb.AdminRankLaddersController.index",
-        "parameters": [],
+        "parameters": [
+          {
+            "description": "The language of the templates (ADR-400); Greek when left out",
+            "in": "query",
+            "name": "locale",
+            "required": false,
+            "schema": {
+              "description": "The language of template names and skills; Greek when left out",
+              "enum": [
+                "en",
+                "el",
+                "ar",
+                "ru",
+                "de",
+                "es",
+                "pt-PT",
+                "he",
+                "it",
+                "bg",
+                "nl",
+                "fr"
+              ],
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -264661,7 +265187,112 @@
                     },
                     "templates": {
                       "items": {
-                        "additionalProperties": true,
+                        "description": "A ready-made ladder (ADR-400) in the requested language; a starting point the box edits freely",
+                        "properties": {
+                          "discipline": {
+                            "type": "string"
+                          },
+                          "family": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "key": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "ranks": {
+                            "items": {
+                              "properties": {
+                                "color": {
+                                  "description": "Belt palette key; the screen maps it to the theme's --belt-* token",
+                                  "enum": [
+                                    "white",
+                                    "grey",
+                                    "yellow",
+                                    "orange",
+                                    "green",
+                                    "blue",
+                                    "purple",
+                                    "brown",
+                                    "red",
+                                    "black",
+                                    "pink"
+                                  ],
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "max_stripes": {
+                                  "type": "integer"
+                                },
+                                "name": {
+                                  "type": "string"
+                                },
+                                "requirements": {
+                                  "properties": {
+                                    "min_classes": {
+                                      "maximum": 2000,
+                                      "minimum": 0,
+                                      "type": "integer"
+                                    },
+                                    "min_days": {
+                                      "maximum": 3650,
+                                      "minimum": 0,
+                                      "type": "integer"
+                                    },
+                                    "skills": {
+                                      "items": {
+                                        "maxLength": 120,
+                                        "type": "string"
+                                      },
+                                      "maxItems": 20,
+                                      "type": "array"
+                                    }
+                                  },
+                                  "title": "RankRequirements",
+                                  "type": "object"
+                                }
+                              },
+                              "required": [
+                                "name",
+                                "max_stripes",
+                                "requirements"
+                              ],
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "source": {
+                            "description": "A federation's or school's system, or Palee's own levels",
+                            "enum": [
+                              "federation",
+                              "palee"
+                            ],
+                            "type": "string"
+                          },
+                          "style": {
+                            "enum": [
+                              "belt",
+                              "level"
+                            ],
+                            "type": "string"
+                          },
+                          "system": {
+                            "description": "The system it follows, in the requested language",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "key",
+                          "name",
+                          "discipline",
+                          "style",
+                          "source",
+                          "system",
+                          "ranks"
+                        ],
+                        "title": "RankTemplate",
                         "type": "object"
                       },
                       "type": "array"
@@ -264708,6 +265339,24 @@
                     "type": "array"
                   },
                   "discipline": {
+                    "type": "string"
+                  },
+                  "locale": {
+                    "description": "The language of template names and skills; Greek when left out",
+                    "enum": [
+                      "en",
+                      "el",
+                      "ar",
+                      "ru",
+                      "de",
+                      "es",
+                      "pt-PT",
+                      "he",
+                      "it",
+                      "bg",
+                      "nl",
+                      "fr"
+                    ],
                     "type": "string"
                   },
                   "name": {
@@ -265039,6 +265688,24 @@
                     "type": "array"
                   },
                   "discipline": {
+                    "type": "string"
+                  },
+                  "locale": {
+                    "description": "The language of template names and skills; Greek when left out",
+                    "enum": [
+                      "en",
+                      "el",
+                      "ar",
+                      "ru",
+                      "de",
+                      "es",
+                      "pt-PT",
+                      "he",
+                      "it",
+                      "bg",
+                      "nl",
+                      "fr"
+                    ],
                     "type": "string"
                   },
                   "name": {
@@ -272991,6 +273658,11 @@
                               "kettlebell",
                               "gymnastics",
                               "calisthenics",
+                              "artistic_gymnastics",
+                              "rhythmic_gymnastics",
+                              "trampoline_tumbling",
+                              "acrobatics",
+                              "parkour",
                               "aerobics",
                               "running",
                               "cycling",
@@ -273013,11 +273685,21 @@
                               "wrestling",
                               "martial_arts",
                               "self_defense",
+                              "judo",
+                              "karate",
+                              "taekwondo",
+                              "kung_fu",
+                              "krav_maga",
                               "dance",
                               "dance_fitness",
                               "pole_aerial",
+                              "ballet",
+                              "contemporary_dance",
+                              "latin_dance",
+                              "street_dance",
                               "outdoor_training",
                               "climbing_bouldering",
+                              "skateboarding",
                               "recovery"
                             ],
                             "type": "string"
@@ -273209,6 +273891,11 @@
                             "kettlebell",
                             "gymnastics",
                             "calisthenics",
+                            "artistic_gymnastics",
+                            "rhythmic_gymnastics",
+                            "trampoline_tumbling",
+                            "acrobatics",
+                            "parkour",
                             "aerobics",
                             "running",
                             "cycling",
@@ -273231,11 +273918,21 @@
                             "wrestling",
                             "martial_arts",
                             "self_defense",
+                            "judo",
+                            "karate",
+                            "taekwondo",
+                            "kung_fu",
+                            "krav_maga",
                             "dance",
                             "dance_fitness",
                             "pole_aerial",
+                            "ballet",
+                            "contemporary_dance",
+                            "latin_dance",
+                            "street_dance",
                             "outdoor_training",
                             "climbing_bouldering",
+                            "skateboarding",
                             "recovery"
                           ],
                           "type": "string"
@@ -273491,6 +274188,11 @@
                               "kettlebell",
                               "gymnastics",
                               "calisthenics",
+                              "artistic_gymnastics",
+                              "rhythmic_gymnastics",
+                              "trampoline_tumbling",
+                              "acrobatics",
+                              "parkour",
                               "aerobics",
                               "running",
                               "cycling",
@@ -273513,11 +274215,21 @@
                               "wrestling",
                               "martial_arts",
                               "self_defense",
+                              "judo",
+                              "karate",
+                              "taekwondo",
+                              "kung_fu",
+                              "krav_maga",
                               "dance",
                               "dance_fitness",
                               "pole_aerial",
+                              "ballet",
+                              "contemporary_dance",
+                              "latin_dance",
+                              "street_dance",
                               "outdoor_training",
                               "climbing_bouldering",
+                              "skateboarding",
                               "recovery"
                             ],
                             "type": "string"
@@ -296381,6 +297093,11 @@
                       "kettlebell",
                       "gymnastics",
                       "calisthenics",
+                      "artistic_gymnastics",
+                      "rhythmic_gymnastics",
+                      "trampoline_tumbling",
+                      "acrobatics",
+                      "parkour",
                       "aerobics",
                       "running",
                       "cycling",
@@ -296403,11 +297120,21 @@
                       "wrestling",
                       "martial_arts",
                       "self_defense",
+                      "judo",
+                      "karate",
+                      "taekwondo",
+                      "kung_fu",
+                      "krav_maga",
                       "dance",
                       "dance_fitness",
                       "pole_aerial",
+                      "ballet",
+                      "contemporary_dance",
+                      "latin_dance",
+                      "street_dance",
                       "outdoor_training",
                       "climbing_bouldering",
+                      "skateboarding",
                       "recovery"
                     ],
                     "nullable": true,
@@ -301654,6 +302381,11 @@
                       "kettlebell",
                       "gymnastics",
                       "calisthenics",
+                      "artistic_gymnastics",
+                      "rhythmic_gymnastics",
+                      "trampoline_tumbling",
+                      "acrobatics",
+                      "parkour",
                       "aerobics",
                       "running",
                       "cycling",
@@ -301676,11 +302408,21 @@
                       "wrestling",
                       "martial_arts",
                       "self_defense",
+                      "judo",
+                      "karate",
+                      "taekwondo",
+                      "kung_fu",
+                      "krav_maga",
                       "dance",
                       "dance_fitness",
                       "pole_aerial",
+                      "ballet",
+                      "contemporary_dance",
+                      "latin_dance",
+                      "street_dance",
                       "outdoor_training",
                       "climbing_bouldering",
+                      "skateboarding",
                       "recovery"
                     ],
                     "nullable": true,
@@ -329147,6 +329889,10 @@
                             "description": "Towards the next rank; `ready` only says the counted requirements are met",
                             "nullable": true,
                             "properties": {
+                              "all_skills_checked": {
+                                "description": "Every listed skill is ticked (true when the rank lists none)",
+                                "type": "boolean"
+                              },
                               "classes": {
                                 "properties": {
                                   "done": {
@@ -329191,6 +329937,30 @@
                               "skills": {
                                 "items": {
                                   "type": "string"
+                                },
+                                "type": "array"
+                              },
+                              "skills_checked": {
+                                "description": "ADR-400: the next rank's skills the coach ticked so far",
+                                "items": {
+                                  "properties": {
+                                    "checked_on": {
+                                      "format": "date",
+                                      "type": "string"
+                                    },
+                                    "note": {
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "skill": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "skill",
+                                    "checked_on"
+                                  ],
+                                  "type": "object"
                                 },
                                 "type": "array"
                               }
@@ -344927,6 +345697,10 @@
                             "description": "Towards the next rank; `ready` only says the counted requirements are met",
                             "nullable": true,
                             "properties": {
+                              "all_skills_checked": {
+                                "description": "Every listed skill is ticked (true when the rank lists none)",
+                                "type": "boolean"
+                              },
                               "classes": {
                                 "properties": {
                                   "done": {
@@ -344971,6 +345745,30 @@
                               "skills": {
                                 "items": {
                                   "type": "string"
+                                },
+                                "type": "array"
+                              },
+                              "skills_checked": {
+                                "description": "ADR-400: the next rank's skills the coach ticked so far",
+                                "items": {
+                                  "properties": {
+                                    "checked_on": {
+                                      "format": "date",
+                                      "type": "string"
+                                    },
+                                    "note": {
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "skill": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "skill",
+                                    "checked_on"
+                                  ],
+                                  "type": "object"
                                 },
                                 "type": "array"
                               }
@@ -345216,6 +346014,591 @@
           }
         ],
         "summary": "Promote a client, or add a stripe, ticking the skills shown",
+        "tags": [
+          "Ranks"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/staff/clients/{user_id}/ranks/skills": {
+      "put": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.StaffRanksController.check_skill",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "ADR-400: tick (or untick) one skill of a rank for a client, between promotions",
+                "properties": {
+                  "checked": {
+                    "description": "false unticks; true when left out",
+                    "type": "boolean"
+                  },
+                  "checked_on": {
+                    "format": "date",
+                    "type": "string"
+                  },
+                  "note": {
+                    "maxLength": 280,
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "rank_id": {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "skill": {
+                    "maxLength": 120,
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "rank_id",
+                  "skill"
+                ],
+                "title": "RankSkillCheckRequest",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "ladders": {
+                      "items": {
+                        "properties": {
+                          "current": {
+                            "nullable": true,
+                            "properties": {
+                              "award_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "awarded_on": {
+                                "format": "date",
+                                "type": "string"
+                              },
+                              "rank": {
+                                "properties": {
+                                  "color": {
+                                    "description": "Belt palette key; the screen maps it to the theme's --belt-* token",
+                                    "enum": [
+                                      "white",
+                                      "grey",
+                                      "yellow",
+                                      "orange",
+                                      "green",
+                                      "blue",
+                                      "purple",
+                                      "brown",
+                                      "red",
+                                      "black",
+                                      "pink"
+                                    ],
+                                    "nullable": true,
+                                    "type": "string"
+                                  },
+                                  "id": {
+                                    "format": "uuid",
+                                    "type": "string"
+                                  },
+                                  "max_stripes": {
+                                    "type": "integer"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "position": {
+                                    "type": "integer"
+                                  },
+                                  "requirements": {
+                                    "properties": {
+                                      "min_classes": {
+                                        "maximum": 2000,
+                                        "minimum": 0,
+                                        "type": "integer"
+                                      },
+                                      "min_days": {
+                                        "maximum": 3650,
+                                        "minimum": 0,
+                                        "type": "integer"
+                                      },
+                                      "skills": {
+                                        "items": {
+                                          "maxLength": 120,
+                                          "type": "string"
+                                        },
+                                        "maxItems": 20,
+                                        "type": "array"
+                                      }
+                                    },
+                                    "title": "RankRequirements",
+                                    "type": "object"
+                                  },
+                                  "scale_level_slug": {
+                                    "nullable": true,
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "max_stripes",
+                                  "name",
+                                  "position",
+                                  "requirements"
+                                ],
+                                "title": "Rank",
+                                "type": "object"
+                              },
+                              "stripes": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "award_id",
+                              "awarded_on",
+                              "rank",
+                              "stripes"
+                            ],
+                            "type": "object"
+                          },
+                          "history": {
+                            "items": {
+                              "properties": {
+                                "awarded_on": {
+                                  "format": "date",
+                                  "type": "string"
+                                },
+                                "certificate_number": {
+                                  "type": "string"
+                                },
+                                "color": {
+                                  "description": "Belt palette key; the screen maps it to the theme's --belt-* token",
+                                  "enum": [
+                                    "white",
+                                    "grey",
+                                    "yellow",
+                                    "orange",
+                                    "green",
+                                    "blue",
+                                    "purple",
+                                    "brown",
+                                    "red",
+                                    "black",
+                                    "pink"
+                                  ],
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "id": {
+                                  "format": "uuid",
+                                  "type": "string"
+                                },
+                                "ladder_id": {
+                                  "format": "uuid",
+                                  "type": "string"
+                                },
+                                "note": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "rank_id": {
+                                  "format": "uuid",
+                                  "type": "string"
+                                },
+                                "rank_name": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "revoke_reason": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "revoked": {
+                                  "type": "boolean"
+                                },
+                                "skills_checked": {
+                                  "items": {
+                                    "type": "string"
+                                  },
+                                  "type": "array"
+                                },
+                                "stripes": {
+                                  "type": "integer"
+                                }
+                              },
+                              "required": [
+                                "awarded_on",
+                                "certificate_number",
+                                "id",
+                                "ladder_id",
+                                "rank_id",
+                                "revoked",
+                                "skills_checked",
+                                "stripes"
+                              ],
+                              "title": "RankAward",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "ladder": {
+                            "properties": {
+                              "class_type_ids": {
+                                "items": {
+                                  "format": "uuid",
+                                  "type": "string"
+                                },
+                                "type": "array"
+                              },
+                              "discipline": {
+                                "description": "A workout type (ADR-275)",
+                                "type": "string"
+                              },
+                              "family": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "ranks": {
+                                "items": {
+                                  "properties": {
+                                    "color": {
+                                      "description": "Belt palette key; the screen maps it to the theme's --belt-* token",
+                                      "enum": [
+                                        "white",
+                                        "grey",
+                                        "yellow",
+                                        "orange",
+                                        "green",
+                                        "blue",
+                                        "purple",
+                                        "brown",
+                                        "red",
+                                        "black",
+                                        "pink"
+                                      ],
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "id": {
+                                      "format": "uuid",
+                                      "type": "string"
+                                    },
+                                    "max_stripes": {
+                                      "type": "integer"
+                                    },
+                                    "name": {
+                                      "type": "string"
+                                    },
+                                    "position": {
+                                      "type": "integer"
+                                    },
+                                    "requirements": {
+                                      "properties": {
+                                        "min_classes": {
+                                          "maximum": 2000,
+                                          "minimum": 0,
+                                          "type": "integer"
+                                        },
+                                        "min_days": {
+                                          "maximum": 3650,
+                                          "minimum": 0,
+                                          "type": "integer"
+                                        },
+                                        "skills": {
+                                          "items": {
+                                            "maxLength": 120,
+                                            "type": "string"
+                                          },
+                                          "maxItems": 20,
+                                          "type": "array"
+                                        }
+                                      },
+                                      "title": "RankRequirements",
+                                      "type": "object"
+                                    },
+                                    "scale_level_slug": {
+                                      "nullable": true,
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "max_stripes",
+                                    "name",
+                                    "position",
+                                    "requirements"
+                                  ],
+                                  "title": "Rank",
+                                  "type": "object"
+                                },
+                                "type": "array"
+                              },
+                              "style": {
+                                "enum": [
+                                  "belt",
+                                  "level"
+                                ],
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "class_type_ids",
+                              "discipline",
+                              "id",
+                              "name",
+                              "ranks",
+                              "style"
+                            ],
+                            "title": "RankLadder",
+                            "type": "object"
+                          },
+                          "next": {
+                            "allOf": [
+                              {
+                                "properties": {
+                                  "color": {
+                                    "description": "Belt palette key; the screen maps it to the theme's --belt-* token",
+                                    "enum": [
+                                      "white",
+                                      "grey",
+                                      "yellow",
+                                      "orange",
+                                      "green",
+                                      "blue",
+                                      "purple",
+                                      "brown",
+                                      "red",
+                                      "black",
+                                      "pink"
+                                    ],
+                                    "nullable": true,
+                                    "type": "string"
+                                  },
+                                  "id": {
+                                    "format": "uuid",
+                                    "type": "string"
+                                  },
+                                  "max_stripes": {
+                                    "type": "integer"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "position": {
+                                    "type": "integer"
+                                  },
+                                  "requirements": {
+                                    "properties": {
+                                      "min_classes": {
+                                        "maximum": 2000,
+                                        "minimum": 0,
+                                        "type": "integer"
+                                      },
+                                      "min_days": {
+                                        "maximum": 3650,
+                                        "minimum": 0,
+                                        "type": "integer"
+                                      },
+                                      "skills": {
+                                        "items": {
+                                          "maxLength": 120,
+                                          "type": "string"
+                                        },
+                                        "maxItems": 20,
+                                        "type": "array"
+                                      }
+                                    },
+                                    "title": "RankRequirements",
+                                    "type": "object"
+                                  },
+                                  "scale_level_slug": {
+                                    "nullable": true,
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "max_stripes",
+                                  "name",
+                                  "position",
+                                  "requirements"
+                                ],
+                                "title": "Rank",
+                                "type": "object"
+                              }
+                            ],
+                            "nullable": true
+                          },
+                          "progress": {
+                            "description": "Towards the next rank; `ready` only says the counted requirements are met",
+                            "nullable": true,
+                            "properties": {
+                              "all_skills_checked": {
+                                "description": "Every listed skill is ticked (true when the rank lists none)",
+                                "type": "boolean"
+                              },
+                              "classes": {
+                                "properties": {
+                                  "done": {
+                                    "nullable": true,
+                                    "type": "integer"
+                                  },
+                                  "needed": {
+                                    "nullable": true,
+                                    "type": "integer"
+                                  }
+                                },
+                                "required": [
+                                  "done",
+                                  "needed"
+                                ],
+                                "type": "object"
+                              },
+                              "days": {
+                                "properties": {
+                                  "done": {
+                                    "nullable": true,
+                                    "type": "integer"
+                                  },
+                                  "needed": {
+                                    "nullable": true,
+                                    "type": "integer"
+                                  }
+                                },
+                                "required": [
+                                  "done",
+                                  "needed"
+                                ],
+                                "type": "object"
+                              },
+                              "rank_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "ready": {
+                                "type": "boolean"
+                              },
+                              "skills": {
+                                "items": {
+                                  "type": "string"
+                                },
+                                "type": "array"
+                              },
+                              "skills_checked": {
+                                "description": "ADR-400: the next rank's skills the coach ticked so far",
+                                "items": {
+                                  "properties": {
+                                    "checked_on": {
+                                      "format": "date",
+                                      "type": "string"
+                                    },
+                                    "note": {
+                                      "nullable": true,
+                                      "type": "string"
+                                    },
+                                    "skill": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "skill",
+                                    "checked_on"
+                                  ],
+                                  "type": "object"
+                                },
+                                "type": "array"
+                              }
+                            },
+                            "required": [
+                              "classes",
+                              "days",
+                              "rank_id",
+                              "ready",
+                              "skills"
+                            ],
+                            "type": "object"
+                          }
+                        },
+                        "required": [
+                          "current",
+                          "history",
+                          "ladder",
+                          "next",
+                          "progress"
+                        ],
+                        "title": "RankStanding",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "user_id": {
+                      "format": "uuid",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "ladders"
+                  ],
+                  "title": "RankStandingsResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Standing"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not your client"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not a skill of that rank"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Tick or untick one skill of a rank for a client, between promotions (ADR-400)",
         "tags": [
           "Ranks"
         ]

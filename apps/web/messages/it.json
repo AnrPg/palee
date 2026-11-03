@@ -4912,7 +4912,7 @@
     "semanticWorkoutBallet": "Danza classica",
     "semanticWorkoutContemporaryDance": "Danza contemporanea",
     "semanticWorkoutLatinDance": "Balli latini (salsa, bachata)",
-    "semanticWorkoutStreetDance": "Street dance (hip-hop, heels, reggaeton)",
+    "semanticWorkoutStreetDance": "Danza urbana (hip-hop, heels, reggaeton)",
     "semanticWorkoutSkateboarding": "Skateboard"
   },
   "PrSharing": {
@@ -6318,7 +6318,7 @@
       "ballet": "Danza classica",
       "contemporary_dance": "Danza contemporanea",
       "latin_dance": "Balli latini (salsa, bachata)",
-      "street_dance": "Street dance (hip-hop, heels, reggaeton)",
+      "street_dance": "Danza urbana (hip-hop, heels, reggaeton)",
       "skateboarding": "Skateboard"
     },
     "audience": {
