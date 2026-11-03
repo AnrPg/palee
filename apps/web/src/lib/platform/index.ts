@@ -7,7 +7,7 @@
 
 export type NativePlatform = "ios" | "android";
 
-export type Capability = "nativePush" | "healthKit" | "healthConnect" | "widgets" | "geofence" | "nfc" | "tapToPay";
+export type Capability = "nativePush" | "healthKit" | "healthConnect" | "widgets" | "geofence" | "nfc" | "tapToPay" | "watch";
 
 export type Capabilities = Record<Capability, boolean>;
 
@@ -29,6 +29,8 @@ const CAPABILITY_PLUGINS: Record<Capability, { plugin: string; platforms: Native
   nfc: { plugin: "PaleeNfc", platforms: ["ios", "android"] },
   // ADR-249: Tap to Pay through the Viva.com Terminal app (staff phones).
   tapToPay: { plugin: "PaleeVivaTerminal", platforms: ["ios", "android"] },
+  // ADR-375: the watch companion (WatchConnectivity / Wearable Data Layer).
+  watch: { plugin: "PaleeWatch", platforms: ["ios", "android"] },
 };
 
 export const CAPABILITIES = Object.keys(CAPABILITY_PLUGINS) as Capability[];

@@ -70,7 +70,7 @@ describe("phone-health rows", () => {
     { provider: "apple_health", status: "native_only" },
     { provider: "health_connect", status: "native_only" },
   ];
-  const off = { nativePush: true, healthKit: false, healthConnect: false, widgets: false, geofence: false, nfc: false, tapToPay: false };
+  const off = { nativePush: true, healthKit: false, healthConnect: false, widgets: false, geofence: false, nfc: false, tapToPay: false, watch: false };
 
   it("keeps both rows and their status on the web", () => {
     expect(visibleIntegrations(rows, null)).toHaveLength(3);
