@@ -133,3 +133,25 @@ export function doorAnswer(result: DoorOpenResult | null, error: unknown): DoorA
       return { kind: "error" };
   }
 }
+
+// Door hours ↔ the branch's opening-hours editor (one span per weekday row) -----
+
+export type HoursSpan = { weekday: number; opens: string; closes: string };
+
+export function hoursToSpans(hours: DoorPeriod[]): HoursSpan[] {
+  return hours
+    .flatMap((period) => period.days.map((weekday) => ({ weekday, opens: period.from, closes: period.to })))
+    .sort((a, b) => a.weekday - b.weekday || a.opens.localeCompare(b.opens));
+}
+
+/** Days with the same times become one period (the API keeps at most 14). */
+export function spansToHours(spans: HoursSpan[]): DoorPeriod[] {
+  const byTimes = new Map<string, DoorPeriod>();
+  for (const span of spans) {
+    const key = `${span.opens}-${span.closes}`;
+    const period = byTimes.get(key) ?? { days: [], from: span.opens, to: span.closes };
+    if (!period.days.includes(span.weekday)) period.days.push(span.weekday);
+    byTimes.set(key, period);
+  }
+  return [...byTimes.values()].map((period) => ({ ...period, days: [...period.days].sort((a, b) => a - b) }));
+}

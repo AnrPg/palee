@@ -10,7 +10,7 @@ import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { Select } from "@/components/ui/Select";
 import { useUiLocale } from "@/i18n/use-ui-locale";
 
-import { Card, CardTitle, Field, INPUT_CLASS, OutlineButton, Pill, PrimaryButton, TextButton, inputStyle, useIntegrationError, useWhen } from "./connections-ui";
+import { Card, CardTitle, Field, INPUT_CLASS, OutlineButton, Pill, PrimaryButton, TextButton, apiErrorCode, inputStyle, useIntegrationError, useWhen } from "./connections-ui";
 
 const PROVIDERS: AudienceProvider[] = ["mailchimp", "brevo"];
 
@@ -90,7 +90,7 @@ function ConnectForm({ token, connection, onSaved, onCancel }: { token: string; 
     mutationFn: () => saveEmailList(token, { provider, list_id: listId.trim(), ...(apiKey.trim() ? { api_key: apiKey.trim() } : {}) }),
     onSuccess: onSaved,
   });
-  const code = save.error && "payload" in (save.error as object) ? ((save.error as { payload: { code?: string } }).payload.code ?? null) : null;
+  const code = apiErrorCode(save.error);
   const keyError = (tried && !apiKey.trim() && !connection?.key_saved) || code === "audience_key_required" || code === "audience_unauthorized";
   const listError = (tried && !listId.trim()) || code === "invalid_audience_list" || code === "audience_list_not_found";
   const submit = () => {

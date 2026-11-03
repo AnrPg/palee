@@ -117,6 +117,11 @@ export function SecretOnce({ title, secret, hint, testId }: { title: string; sec
 
 export { AdvancedDisclosure as Advanced } from "@/components/settings/AdvancedSettings";
 
+/** The API's error code, if the error came from the API. */
+export function apiErrorCode(error: unknown): string | undefined {
+  return error instanceof ApiError ? error.payload.code : undefined;
+}
+
 /** The API's code in words (Connections and doors). */
 export function useIntegrationError() {
   const t = useTranslations("Connections");
