@@ -138,6 +138,8 @@ defmodule Mix.Tasks.Palee.Architecture do
     coach_pay/coach_pay_store
     box_screens/box_screen_store
     documents/document_store
+    integrations/integration_store
+    access/access_store
     setup/recipe_application_store
     imports/import_store
     personal_data/export_store

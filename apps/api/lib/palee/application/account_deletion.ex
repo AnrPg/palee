@@ -35,6 +35,8 @@ defmodule Palee.Application.AccountDeletion do
     SecurityNotices
   }
 
+  alias Palee.Application.Integrations.AudienceSync
+
   alias Palee.{Channels, Email, Identity, Organizations}
   alias Palee.Email.LinkTokens
   alias Palee.Identity.AccountDeletionStore
@@ -333,6 +335,8 @@ defmodule Palee.Application.AccountDeletion do
     # ADR-348: the box's SMS number, consents and messages (tenant rows,
     # removed in each box's own session; an anonymised profile keeps none).
     :ok = forget_channel_contacts(profile.id)
+    # ADR-380: boxes' email lists drop the address while it is still known.
+    :ok = AudienceSync.forget_person(profile)
 
     if AccountDeletionStore.has_retained_records?(profile.id) do
       :ok = AccountDeletionStore.anonymize_profile(profile.id)
