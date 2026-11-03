@@ -481,6 +481,8 @@ defmodule PaleeWeb.Router do
     pipe_through([:payment_provider_webhook])
 
     post("/:organization_id/:token", ChannelWebhookController, :create)
+    # ADR-396: Yuboto (and Vonage when set so) report deliveries with a GET.
+    get("/:organization_id/:token", ChannelWebhookController, :create)
   end
 
   scope "/api/email/unsubscribe", PaleeWeb do
