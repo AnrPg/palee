@@ -2,7 +2,7 @@ defmodule PaleeWeb.ExecutionPacerController do
   @moduledoc "«Ο προηγούμενος εαυτός σου» on the person's own execution (ADR-374, CP-D7)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias OpenApiSpex.{Parameter, Schema}
   alias Palee.Application.ExecutionPacer

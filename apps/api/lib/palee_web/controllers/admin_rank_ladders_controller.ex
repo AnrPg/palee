@@ -2,7 +2,7 @@ defmodule PaleeWeb.AdminRankLaddersController do
   @moduledoc "Staff › Ρυθμίσεις › «Βαθμοί»: the box's ladders of belts and levels (ADR-377)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias OpenApiSpex.{Parameter, Schema}
   alias Palee.Application.RankLadders

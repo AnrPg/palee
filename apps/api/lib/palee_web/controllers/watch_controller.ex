@@ -2,7 +2,7 @@ defmodule PaleeWeb.WatchController do
   @moduledoc "The watch companion's server side (ADR-375, CP-D8), called by the phone app."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias OpenApiSpex.{Parameter, Schema}
   alias Palee.Application.WatchCompanion

@@ -5,7 +5,7 @@ defmodule PaleeWeb.AdminProgrammeController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.Programmes.Studio
   alias PaleeWeb.Schemas.Programmes, as: S

@@ -5,7 +5,7 @@ defmodule PaleeWeb.MarketingConsentController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.Integrations.MarketingConsents
   alias PaleeWeb.Schemas.OpenPlatform, as: S

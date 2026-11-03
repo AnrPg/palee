@@ -6,7 +6,7 @@ defmodule PaleeWeb.MyProgrammeController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.Programmes.Buying
   alias PaleeWeb.Schemas.Programmes, as: S

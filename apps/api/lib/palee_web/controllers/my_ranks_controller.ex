@@ -2,7 +2,7 @@ defmodule PaleeWeb.MyRanksController do
   @moduledoc "The person's own belts and levels at a box, and their diplomas (ADR-377)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias OpenApiSpex.{Parameter, Schema}
   alias Palee.Application.MyRanks

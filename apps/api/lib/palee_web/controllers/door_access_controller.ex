@@ -6,7 +6,7 @@ defmodule PaleeWeb.DoorAccessController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Guardian.Plug, as: GuardianPlug
   alias OpenApiSpex.{MediaType, Parameter, RequestBody, Schema}

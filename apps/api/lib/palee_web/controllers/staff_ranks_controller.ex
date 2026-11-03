@@ -2,7 +2,7 @@ defmodule PaleeWeb.StaffRanksController do
   @moduledoc "A client's belts and levels for their coach: standing, promotion, withdrawal, diploma (ADR-377)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Guardian.Plug, as: GuardianPlug
   alias OpenApiSpex.{Parameter, Schema}
