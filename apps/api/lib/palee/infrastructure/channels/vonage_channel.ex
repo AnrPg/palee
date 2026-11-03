@@ -55,7 +55,8 @@ defmodule Palee.Infrastructure.Channels.VonageChannel do
             {"from", String.trim_leading(sender, "+")},
             {"to", String.trim_leading(outgoing.to, "+")},
             {"text", outgoing.body},
-            {"type", if(MessageText.encoding(outgoing.body) == :ucs2, do: "unicode", else: "text")},
+            {"type",
+             if(MessageText.encoding(outgoing.body) == :ucs2, do: "unicode", else: "text")},
             {"client-ref", outgoing.id}
           ] ++ callback(outgoing)
 
@@ -184,7 +185,9 @@ defmodule Palee.Infrastructure.Channels.VonageChannel do
   end
 
   defp events(%{"msisdn" => from, "text" => text}) when is_binary(from) and is_binary(text),
-    do: [%{type: :inbound, channel: "sms", from: "+" <> String.trim_leading(from, "+"), text: text}]
+    do: [
+      %{type: :inbound, channel: "sms", from: "+" <> String.trim_leading(from, "+"), text: text}
+    ]
 
   defp events(_params), do: []
 

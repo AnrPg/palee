@@ -51,7 +51,9 @@ defmodule Palee.Infrastructure.Channels.ApifonChannel do
       sender when is_binary(sender) and sender != "" ->
         payload =
           %{
-            subscribers: [%{number: String.trim_leading(outgoing.to, "+"), custom_id: outgoing.id}],
+            subscribers: [
+              %{number: String.trim_leading(outgoing.to, "+"), custom_id: outgoing.id}
+            ],
             reference_id: outgoing.id,
             message: %{
               text: outgoing.body,
@@ -107,14 +109,23 @@ defmodule Palee.Infrastructure.Channels.ApifonChannel do
 
   defp accepted({:ok, %{body: %{} = body}}, outgoing) do
     case {get_in(body, ["result_info", "status_code"]), message_id(body["results"])} do
-      {401, _id} -> {:error, {:unauthorized, "apifon_401"}}
-      {code, _id} when is_integer(code) and code != 200 -> {:error, {:rejected, "apifon_#{code}"}}
-      {_ok, id} when is_binary(id) -> {:ok, %{provider_message_id: id, cost_cents: nil, currency: nil}}
-      {_ok, nil} -> {:error, {:uncertain, "apifon_unexpected_answer:" <> outgoing.id}}
+      {401, _id} ->
+        {:error, {:unauthorized, "apifon_401"}}
+
+      {code, _id} when is_integer(code) and code != 200 ->
+        {:error, {:rejected, "apifon_#{code}"}}
+
+      {_ok, id} when is_binary(id) ->
+        {:ok, %{provider_message_id: id, cost_cents: nil, currency: nil}}
+
+      {_ok, nil} ->
+        {:error, {:uncertain, "apifon_unexpected_answer:" <> outgoing.id}}
     end
   end
 
-  defp accepted({:ok, _unexpected}, _outgoing), do: {:error, {:uncertain, "apifon_unexpected_answer"}}
+  defp accepted({:ok, _unexpected}, _outgoing),
+    do: {:error, {:uncertain, "apifon_unexpected_answer"}}
+
   defp accepted({:error, error}, _outgoing), do: {:error, http_error(error)}
 
   # `results` maps each number to its message (a list in Apifon's examples).
@@ -151,7 +162,16 @@ defmodule Palee.Infrastructure.Channels.ApifonChannel do
 
   def parse_webhook(_account, %{params: %{"from" => from, "text" => text}})
       when is_binary(from) and is_binary(text),
-      do: {:ok, [%{type: :inbound, channel: "sms", from: "+" <> String.trim_leading(from, "+"), text: text}]}
+      do:
+        {:ok,
+         [
+           %{
+             type: :inbound,
+             channel: "sms",
+             from: "+" <> String.trim_leading(from, "+"),
+             text: text
+           }
+         ]}
 
   def parse_webhook(_account, _request), do: {:ok, []}
 

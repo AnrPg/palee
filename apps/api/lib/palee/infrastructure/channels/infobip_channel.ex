@@ -51,7 +51,12 @@ defmodule Palee.Infrastructure.Channels.InfobipChannel do
         }
         |> webhooks(outgoing)
 
-      [method: :post, url: base <> "/sms/3/messages", headers: headers(key), json: %{messages: [message]}]
+      [
+        method: :post,
+        url: base <> "/sms/3/messages",
+        headers: headers(key),
+        json: %{messages: [message]}
+      ]
       |> Http.request()
       |> accepted(outgoing)
     end
@@ -98,7 +103,9 @@ defmodule Palee.Infrastructure.Channels.InfobipChannel do
     end
   end
 
-  defp accepted({:ok, _unexpected}, _outgoing), do: {:error, {:uncertain, "infobip_unexpected_answer"}}
+  defp accepted({:ok, _unexpected}, _outgoing),
+    do: {:error, {:uncertain, "infobip_unexpected_answer"}}
+
   defp accepted({:error, error}, _outgoing), do: {:error, error(error)}
 
   defp error({kind, {:http, status}}), do: {kind, "infobip_http_#{status}"}
@@ -109,9 +116,14 @@ defmodule Palee.Infrastructure.Channels.InfobipChannel do
   def check(%{secret: key, base_url: base}) when is_binary(key) and is_binary(base) do
     with {:ok, base} <- base(base) do
       case Http.request(method: :get, url: base <> "/account/1/balance", headers: headers(key)) do
-        {:ok, %{body: %{} = body}} -> {:ok, %{balance: body["balance"], currency: body["currency"]}}
-        {:ok, _other} -> {:ok, %{balance: nil, currency: nil}}
-        {:error, error} -> {:error, error(error)}
+        {:ok, %{body: %{} = body}} ->
+          {:ok, %{balance: body["balance"], currency: body["currency"]}}
+
+        {:ok, _other} ->
+          {:ok, %{balance: nil, currency: nil}}
+
+        {:error, error} ->
+          {:error, error(error)}
       end
     end
   end
@@ -145,15 +157,19 @@ defmodule Palee.Infrastructure.Channels.InfobipChannel do
 
   defp event(%{"from" => from} = result) when is_binary(from) do
     case result["cleanText"] || result["text"] do
-      text when is_binary(text) -> [%{type: :inbound, channel: "sms", from: "+" <> digits(from), text: text}]
-      _none -> []
+      text when is_binary(text) ->
+        [%{type: :inbound, channel: "sms", from: "+" <> digits(from), text: text}]
+
+      _none ->
+        []
     end
   end
 
   defp event(_result), do: []
 
-  defp price(%{"pricePerMessage" => amount, "currency" => "EUR"}) when is_number(amount) and amount > 0,
-    do: {Http.cents(amount), "EUR"}
+  defp price(%{"pricePerMessage" => amount, "currency" => "EUR"})
+       when is_number(amount) and amount > 0,
+       do: {Http.cents(amount), "EUR"}
 
   defp price(_price), do: {nil, nil}
 

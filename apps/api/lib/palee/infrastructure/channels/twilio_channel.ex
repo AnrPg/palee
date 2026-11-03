@@ -118,9 +118,12 @@ defmodule Palee.Infrastructure.Channels.TwilioChannel do
   @impl true
   def parse_webhook(%{secret: token}, %{url: url, params: params, headers: headers})
       when is_binary(token) and is_binary(url) do
-    if Http.secure_equal?(Http.header(headers, "x-twilio-signature") || "", signature(token, url, params)),
-      do: {:ok, events(params)},
-      else: {:error, :invalid_signature}
+    if Http.secure_equal?(
+         Http.header(headers, "x-twilio-signature") || "",
+         signature(token, url, params)
+       ),
+       do: {:ok, events(params)},
+       else: {:error, :invalid_signature}
   end
 
   def parse_webhook(_account, _request), do: {:error, :invalid_signature}

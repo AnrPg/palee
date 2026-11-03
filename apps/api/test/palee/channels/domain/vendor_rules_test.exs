@@ -30,10 +30,16 @@ defmodule Palee.Channels.Domain.VendorRulesTest do
 
     assert VendorRules.credential_errors("vonage", %{account_id: "abc", secret: "s"}) == %{}
 
-    assert VendorRules.credential_errors("infobip", %{secret: "k", base_url: "https://evil.example"}) ==
+    assert VendorRules.credential_errors("infobip", %{
+             secret: "k",
+             base_url: "https://evil.example"
+           }) ==
              %{base_url: "invalid"}
 
-    assert VendorRules.credential_errors("apifon", %{account_id: "token"}) == %{secret: "required"}
+    assert VendorRules.credential_errors("apifon", %{account_id: "token"}) == %{
+             secret: "required"
+           }
+
     assert VendorRules.credential_errors("brevo", %{secret: String.duplicate("x", 301)}) == %{
              secret: "invalid"
            }

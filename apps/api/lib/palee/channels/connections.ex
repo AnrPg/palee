@@ -178,7 +178,10 @@ defmodule Palee.Channels.Connections do
 
     credentials = %{
       account_id:
-        if(Map.has_key?(params, :account_id), do: clean(params[:account_id]), else: kept.(:account_id)),
+        if(Map.has_key?(params, :account_id),
+          do: clean(params[:account_id]),
+          else: kept.(:account_id)
+        ),
       base_url:
         if(Map.has_key?(params, :base_url),
           do: params[:base_url] |> clean() |> trim_slash(),

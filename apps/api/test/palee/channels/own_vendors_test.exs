@@ -158,7 +158,13 @@ defmodule Palee.Channels.OwnVendorsTest do
       Channels.set_consent(
         ctx.context,
         contact.id,
-        %{channel: "sms", purpose: "service", granted: true, source: "person", text_version: "v1"},
+        %{
+          channel: "sms",
+          purpose: "service",
+          granted: true,
+          source: "person",
+          text_version: "v1"
+        },
         ctx.member.id,
         @noon
       )
@@ -216,12 +222,19 @@ defmodule Palee.Channels.OwnVendorsTest do
         webhook_secret: "sig"
       })
 
-    token = connection |> Channels.public_connection() |> Map.fetch!(:webhook_url) |> Path.basename()
+    token =
+      connection |> Channels.public_connection() |> Map.fetch!(:webhook_url) |> Path.basename()
+
     org = %{organization_id: ctx.organization.id}
     params = %{"messageId" => "V9", "status" => "delivered", "timestamp" => "1"}
 
     assert {:error, :invalid_signature} =
-             Channels.handle_webhook(org, token, %{params: params, raw_body: "", headers: []}, @noon)
+             Channels.handle_webhook(
+               org,
+               token,
+               %{params: params, raw_body: "", headers: []},
+               @noon
+             )
 
     sig = VonageChannel.digest(:sha256, "sig", VonageChannel.signed_data(params))
 

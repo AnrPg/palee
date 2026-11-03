@@ -84,7 +84,10 @@ defmodule Palee.Channels.Domain.VendorRules do
 
   @doc "Whether the vendor takes `sender` (nil is no sender)."
   def sender?(_provider, nil), do: true
-  def sender?("twilio", "MG" <> rest) when byte_size(rest) == 32, do: rest =~ ~r/^[0-9a-fA-F]{32}$/
+
+  def sender?("twilio", "MG" <> rest) when byte_size(rest) == 32,
+    do: rest =~ ~r/^[0-9a-fA-F]{32}$/
+
   def sender?(_provider, "+" <> digits), do: digits =~ ~r/^[1-9][0-9]{7,14}$/
 
   def sender?(_provider, sender),

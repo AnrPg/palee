@@ -53,7 +53,8 @@ defmodule Palee.Infrastructure.Channels.YubotoChannel do
             sms: %{
               sender: String.trim_leading(sender, "+"),
               text: outgoing.body,
-              typesms: if(MessageText.encoding(outgoing.body) == :ucs2, do: "unicode", else: "sms"),
+              typesms:
+                if(MessageText.encoding(outgoing.body) == :ucs2, do: "unicode", else: "sms"),
               longsms: true,
               validity: 1440
             }
@@ -109,7 +110,11 @@ defmodule Palee.Infrastructure.Channels.YubotoChannel do
 
   @impl true
   def check(%{secret: key}) when is_binary(key) do
-    case Http.request(method: :post, url: base_url() <> "/omni/v1/UserBalance", headers: headers(key)) do
+    case Http.request(
+           method: :post,
+           url: base_url() <> "/omni/v1/UserBalance",
+           headers: headers(key)
+         ) do
       {:ok, %{body: %{"ErrorCode" => 0} = body}} ->
         {:ok, %{balance: body["currentBalance"], balance_type: body["type"]}}
 

@@ -40,7 +40,12 @@ defmodule Palee.Infrastructure.Channels.OwnSmsVendorsTest do
 
     Req.Test.stub(Palee.ChannelsHttp, fn conn ->
       {:ok, body, conn} = Plug.Conn.read_body(conn)
-      send(test_pid, {:request, conn.method, conn.request_path, conn.query_string, conn.req_headers, body})
+
+      send(
+        test_pid,
+        {:request, conn.method, conn.request_path, conn.query_string, conn.req_headers, body}
+      )
+
       answer.(conn)
     end)
   end
@@ -87,15 +92,20 @@ defmodule Palee.Infrastructure.Channels.OwnSmsVendorsTest do
                @account |> TwilioChannel.send_message(outgoing()) |> refute_secret(["tw-token"])
 
       capture(&status(&1, 401, %{"code" => 20_003, "message" => "Authenticate"}))
-      assert {:error, {:unauthorized, "twilio_http_401"}} = TwilioChannel.send_message(@account, outgoing())
+
+      assert {:error, {:unauthorized, "twilio_http_401"}} =
+               TwilioChannel.send_message(@account, outgoing())
 
       capture(&status(&1, 503, %{}))
-      assert {:error, {:transient, "twilio_http_503"}} = TwilioChannel.send_message(@account, outgoing())
+
+      assert {:error, {:transient, "twilio_http_503"}} =
+               TwilioChannel.send_message(@account, outgoing())
 
       assert {:error, {:rejected, "sms_sender_missing"}} =
                TwilioChannel.send_message(%{@account | sms_sender: nil}, outgoing())
 
-      assert {:error, {:unauthorized, _}} = TwilioChannel.send_message(%{provider: "twilio"}, outgoing())
+      assert {:error, {:unauthorized, _}} =
+               TwilioChannel.send_message(%{provider: "twilio"}, outgoing())
     end
 
     test "check reads the account" do
@@ -105,18 +115,43 @@ defmodule Palee.Infrastructure.Channels.OwnSmsVendorsTest do
     end
 
     test "webhook: signed status callbacks only" do
-      params = %{"MessageSid" => "SM123", "MessageStatus" => "undelivered", "ErrorCode" => "30003"}
-      signature = TwilioChannel.signature("tw-token", @callback, params)
-      request = %{url: @callback, params: params, headers: [{"x-twilio-signature", signature}], raw_body: ""}
+      params = %{
+        "MessageSid" => "SM123",
+        "MessageStatus" => "undelivered",
+        "ErrorCode" => "30003"
+      }
 
-      assert {:ok, [%{type: :status, status: "failed", error_code: "30003", event_key: "twilio:SM123:undelivered"}]} =
+      signature = TwilioChannel.signature("tw-token", @callback, params)
+
+      request = %{
+        url: @callback,
+        params: params,
+        headers: [{"x-twilio-signature", signature}],
+        raw_body: ""
+      }
+
+      assert {:ok,
+              [
+                %{
+                  type: :status,
+                  status: "failed",
+                  error_code: "30003",
+                  event_key: "twilio:SM123:undelivered"
+                }
+              ]} =
                TwilioChannel.parse_webhook(@account, request)
 
       assert {:error, :invalid_signature} =
-               TwilioChannel.parse_webhook(@account, %{request | headers: [{"x-twilio-signature", "AAAA"}]})
+               TwilioChannel.parse_webhook(@account, %{
+                 request
+                 | headers: [{"x-twilio-signature", "AAAA"}]
+               })
 
       assert {:error, :invalid_signature} =
-               TwilioChannel.parse_webhook(@account, %{request | params: Map.put(params, "MessageStatus", "delivered")})
+               TwilioChannel.parse_webhook(@account, %{
+                 request
+                 | params: Map.put(params, "MessageStatus", "delivered")
+               })
 
       inbound = %{"From" => "+306912345678", "Body" => "STOP"}
 
@@ -124,7 +159,10 @@ defmodule Palee.Infrastructure.Channels.OwnSmsVendorsTest do
                TwilioChannel.parse_webhook(@account, %{
                  request
                  | params: inbound,
-                   headers: [{"x-twilio-signature", TwilioChannel.signature("tw-token", @callback, inbound)}]
+                   headers: [
+                     {"x-twilio-signature",
+                      TwilioChannel.signature("tw-token", @callback, inbound)}
+                   ]
                })
     end
   end
@@ -133,9 +171,16 @@ defmodule Palee.Infrastructure.Channels.OwnSmsVendorsTest do
     @account %{provider: "vonage", account_id: "vk1", secret: "vs-secret", sms_sender: "CFAthina"}
 
     test "sends Greek as unicode with the callback and client reference" do
-      capture(&Req.Test.json(&1, %{"message-count" => "1", "messages" => [%{"status" => "0", "message-id" => "V1"}]}))
+      capture(
+        &Req.Test.json(&1, %{
+          "message-count" => "1",
+          "messages" => [%{"status" => "0", "message-id" => "V1"}]
+        })
+      )
 
-      assert {:ok, %{provider_message_id: "V1"}} = VonageChannel.send_message(@account, outgoing())
+      assert {:ok, %{provider_message_id: "V1"}} =
+               VonageChannel.send_message(@account, outgoing())
+
       assert_received {:request, "POST", "/sms/json", _query, _headers, body}
       form = URI.decode_query(body)
       assert form["to"] == "306912345678"
@@ -149,11 +194,18 @@ defmodule Palee.Infrastructure.Channels.OwnSmsVendorsTest do
     end
 
     test "a status per part maps onto the port without the secret" do
-      for {code, kind} <- [{"1", :transient}, {"9", :transient}, {"4", :unauthorized}, {"15", :rejected}] do
+      for {code, kind} <- [
+            {"1", :transient},
+            {"9", :transient},
+            {"4", :unauthorized},
+            {"15", :rejected}
+          ] do
         capture(&Req.Test.json(&1, %{"messages" => [%{"status" => code, "error-text" => "x"}]}))
 
         assert {:error, {^kind, detail}} =
-                 @account |> VonageChannel.send_message(outgoing()) |> refute_secret(["vs-secret"])
+                 @account
+                 |> VonageChannel.send_message(outgoing())
+                 |> refute_secret(["vs-secret"])
 
         assert detail == "vonage_" <> code
       end
@@ -188,16 +240,24 @@ defmodule Palee.Infrastructure.Channels.OwnSmsVendorsTest do
 
       for algorithm <- [:md5hash, :sha256, :sha512] do
         sig = VonageChannel.digest(algorithm, "sig-secret", data)
-        assert {:ok, [_receipt]} = VonageChannel.parse_webhook(signed, %{params: Map.put(params, "sig", String.upcase(sig))})
+
+        assert {:ok, [_receipt]} =
+                 VonageChannel.parse_webhook(signed, %{
+                   params: Map.put(params, "sig", String.upcase(sig))
+                 })
       end
 
       assert {:error, :invalid_signature} = VonageChannel.parse_webhook(signed, %{params: params})
 
       assert {:error, :invalid_signature} =
-               VonageChannel.parse_webhook(signed, %{params: Map.put(params, "sig", String.duplicate("0", 64))})
+               VonageChannel.parse_webhook(signed, %{
+                 params: Map.put(params, "sig", String.duplicate("0", 64))
+               })
 
       assert {:ok, [%{status: "failed", error_code: "6"}]} =
-               VonageChannel.parse_webhook(@account, %{params: %{params | "status" => "rejected", "err-code" => "6"}})
+               VonageChannel.parse_webhook(@account, %{
+                 params: %{params | "status" => "rejected", "err-code" => "6"}
+               })
     end
   end
 
@@ -210,9 +270,16 @@ defmodule Palee.Infrastructure.Channels.OwnSmsVendorsTest do
     }
 
     test "sends through v3 with the delivery webhook" do
-      capture(&Req.Test.json(&1, %{"bulkId" => "b", "messages" => [%{"messageId" => @id, "status" => %{"groupName" => "PENDING"}}]}))
+      capture(
+        &Req.Test.json(&1, %{
+          "bulkId" => "b",
+          "messages" => [%{"messageId" => @id, "status" => %{"groupName" => "PENDING"}}]
+        })
+      )
 
-      assert {:ok, %{provider_message_id: @id}} = InfobipChannel.send_message(@account, outgoing())
+      assert {:ok, %{provider_message_id: @id}} =
+               InfobipChannel.send_message(@account, outgoing())
+
       assert_received {:request, "POST", "/sms/3/messages", _query, headers, body}
       assert {"authorization", "App ib-key"} in headers
       [message] = Jason.decode!(body)["messages"]
@@ -222,8 +289,16 @@ defmodule Palee.Infrastructure.Channels.OwnSmsVendorsTest do
     end
 
     test "a rejected message, refused key and a base URL that is not Infobip's" do
-      capture(&Req.Test.json(&1, %{"messages" => [%{"status" => %{"groupName" => "REJECTED", "name" => "REJECTED_DESTINATION"}}]}))
-      assert {:error, {:rejected, "infobip_REJECTED_DESTINATION"}} = InfobipChannel.send_message(@account, outgoing())
+      capture(
+        &Req.Test.json(&1, %{
+          "messages" => [
+            %{"status" => %{"groupName" => "REJECTED", "name" => "REJECTED_DESTINATION"}}
+          ]
+        })
+      )
+
+      assert {:error, {:rejected, "infobip_REJECTED_DESTINATION"}} =
+               InfobipChannel.send_message(@account, outgoing())
 
       capture(&status(&1, 401, %{"requestError" => %{}}))
 
@@ -231,7 +306,10 @@ defmodule Palee.Infrastructure.Channels.OwnSmsVendorsTest do
                @account |> InfobipChannel.send_message(outgoing()) |> refute_secret(["ib-key"])
 
       assert {:error, {:unauthorized, "infobip_base_url_invalid"}} =
-               InfobipChannel.send_message(%{@account | base_url: "https://evil.example"}, outgoing())
+               InfobipChannel.send_message(
+                 %{@account | base_url: "https://evil.example"},
+                 outgoing()
+               )
     end
 
     test "check reads the balance" do
@@ -259,7 +337,9 @@ defmodule Palee.Infrastructure.Channels.OwnSmsVendorsTest do
         ]
       }
 
-      assert {:ok, [delivered, failed]} = InfobipChannel.parse_webhook(@account, %{params: report})
+      assert {:ok, [delivered, failed]} =
+               InfobipChannel.parse_webhook(@account, %{params: report})
+
       assert %{status: "delivered", cost_cents: 5, currency: "EUR", error_code: nil} = delivered
       assert delivered.occurred_at == ~U[2026-11-03 10:15:00.000000Z]
       assert %{status: "failed", cost_cents: nil, error_code: "EC_ABSENT_SUBSCRIBER"} = failed
@@ -270,9 +350,17 @@ defmodule Palee.Infrastructure.Channels.OwnSmsVendorsTest do
     @account %{provider: "yuboto", secret: "WVVCT1RPLUtFWQ==", sms_sender: "CFAthina"}
 
     test "sends with the encoded key and asks for the delivery callback" do
-      capture(&Req.Test.json(&1, %{"ErrorCode" => 0, "ErrorMessage" => "", "Message" => [%{"id" => "Y1", "status" => "Submitted", "errorCode" => 0}]}))
+      capture(
+        &Req.Test.json(&1, %{
+          "ErrorCode" => 0,
+          "ErrorMessage" => "",
+          "Message" => [%{"id" => "Y1", "status" => "Submitted", "errorCode" => 0}]
+        })
+      )
 
-      assert {:ok, %{provider_message_id: "Y1"}} = YubotoChannel.send_message(@account, outgoing())
+      assert {:ok, %{provider_message_id: "Y1"}} =
+               YubotoChannel.send_message(@account, outgoing())
+
       assert_received {:request, "POST", "/omni/v1/Send", _query, headers, body}
       assert {"authorization", "Basic WVVCT1RPLUtFWQ=="} in headers
       payload = Jason.decode!(body)
@@ -284,7 +372,9 @@ defmodule Palee.Infrastructure.Channels.OwnSmsVendorsTest do
     end
 
     test "a key that is not Base64 yet is encoded once" do
-      assert YubotoChannel.authorization("54E3B5F5-2CF3-412E") == "Basic " <> Base.encode64("54E3B5F5-2CF3-412E")
+      assert YubotoChannel.authorization("54E3B5F5-2CF3-412E") ==
+               "Basic " <> Base.encode64("54E3B5F5-2CF3-412E")
+
       assert YubotoChannel.authorization("WVVCT1RPLUtFWQ==") == "Basic WVVCT1RPLUtFWQ=="
     end
 
@@ -293,45 +383,66 @@ defmodule Palee.Infrastructure.Channels.OwnSmsVendorsTest do
         capture(&Req.Test.json(&1, %{"ErrorCode" => code, "ErrorMessage" => "x"}))
 
         assert {:error, {^kind, detail}} =
-                 @account |> YubotoChannel.send_message(outgoing()) |> refute_secret(["WVVCT1RPLUtFWQ=="])
+                 @account
+                 |> YubotoChannel.send_message(outgoing())
+                 |> refute_secret(["WVVCT1RPLUtFWQ=="])
 
         assert detail == "yuboto_#{code}"
       end
     end
 
     test "check reads the balance" do
-      capture(&Req.Test.json(&1, %{"ErrorCode" => 0, "currentBalance" => 112.8, "type" => "money"}))
+      capture(
+        &Req.Test.json(&1, %{"ErrorCode" => 0, "currentBalance" => 112.8, "type" => "money"})
+      )
+
       assert {:ok, %{balance: 112.8, balance_type: "money"}} = YubotoChannel.check(@account)
       assert_received {:request, "POST", "/omni/v1/UserBalance", _, _, _}
     end
 
     test "webhook: the GET callback's query" do
       assert {:ok, [%{status: "delivered", event_key: "yuboto:Y1:1"}]} =
-               YubotoChannel.parse_webhook(@account, %{params: %{"smsid" => "Y1", "status" => "1", "statusDescription" => "Delivered"}})
+               YubotoChannel.parse_webhook(@account, %{
+                 params: %{"smsid" => "Y1", "status" => "1", "statusDescription" => "Delivered"}
+               })
 
       assert {:ok, [%{status: "failed", error_code: "yuboto_status_-6"}]} =
-               YubotoChannel.parse_webhook(@account, %{params: %{"smsid" => "Y1", "status" => "-6"}})
+               YubotoChannel.parse_webhook(@account, %{
+                 params: %{"smsid" => "Y1", "status" => "-6"}
+               })
 
       assert {:ok, []} = YubotoChannel.parse_webhook(@account, %{params: %{}})
     end
   end
 
   describe "Apifon" do
-    @account %{provider: "apifon", account_id: "ap-token", secret: "ap-secret", sms_sender: "CFAthina"}
+    @account %{
+      provider: "apifon",
+      account_id: "ap-token",
+      secret: "ap-secret",
+      sms_sender: "CFAthina"
+    }
 
     test "signs every request and sends UCS-2 for Greek" do
-      capture(&Req.Test.json(&1, %{
-        "request_id" => "r1",
-        "results" => %{"306912345678" => [%{"message_id" => "A1", "custom_id" => @id}]},
-        "result_info" => %{"status_code" => 200, "description" => "OK"}
-      }))
+      capture(
+        &Req.Test.json(&1, %{
+          "request_id" => "r1",
+          "results" => %{"306912345678" => [%{"message_id" => "A1", "custom_id" => @id}]},
+          "result_info" => %{"status_code" => 200, "description" => "OK"}
+        })
+      )
 
-      assert {:ok, %{provider_message_id: "A1"}} = ApifonChannel.send_message(@account, outgoing())
+      assert {:ok, %{provider_message_id: "A1"}} =
+               ApifonChannel.send_message(@account, outgoing())
+
       assert_received {:request, "POST", "/services/api/v1/sms/send", _query, headers, body}
 
       {_, date} = List.keyfind(headers, "x-apifonws-date", 0)
       {_, authorization} = List.keyfind(headers, "authorization", 0)
-      expected = ApifonChannel.signature("ap-secret", "POST", "/services/api/v1/sms/send", body, date)
+
+      expected =
+        ApifonChannel.signature("ap-secret", "POST", "/services/api/v1/sms/send", body, date)
+
       assert authorization == "ApifonWS ap-token:" <> expected
 
       payload = Jason.decode!(body)
@@ -347,8 +458,14 @@ defmodule Palee.Infrastructure.Channels.OwnSmsVendorsTest do
       assert {:error, {:unauthorized, "apifon_401"}} =
                @account |> ApifonChannel.send_message(outgoing()) |> refute_secret(["ap-secret"])
 
-      capture(&Req.Test.json(&1, %{"result_info" => %{"status_code" => 403, "description" => "Wrong parameters"}}))
-      assert {:error, {:rejected, "apifon_403"}} = ApifonChannel.send_message(@account, outgoing())
+      capture(
+        &Req.Test.json(&1, %{
+          "result_info" => %{"status_code" => 403, "description" => "Wrong parameters"}
+        })
+      )
+
+      assert {:error, {:rejected, "apifon_403"}} =
+               ApifonChannel.send_message(@account, outgoing())
     end
 
     test "check signs the empty balance request" do
@@ -360,19 +477,32 @@ defmodule Palee.Infrastructure.Channels.OwnSmsVendorsTest do
     test "webhook: delivery callbacks and replies" do
       callback = %{
         "data" => [
-          %{"message_id" => "A1", "status" => %{"code" => 7, "text" => "delivered"}, "error_code" => "000", "timestamp" => 1_730_628_000},
-          %{"message_id" => "A2", "status" => %{"code" => 22, "text" => "unknown_sub"}, "error_code" => "001"}
+          %{
+            "message_id" => "A1",
+            "status" => %{"code" => 7, "text" => "delivered"},
+            "error_code" => "000",
+            "timestamp" => 1_730_628_000
+          },
+          %{
+            "message_id" => "A2",
+            "status" => %{"code" => 22, "text" => "unknown_sub"},
+            "error_code" => "001"
+          }
         ],
         "type" => "SMS"
       }
 
-      assert {:ok, [delivered, failed]} = ApifonChannel.parse_webhook(@account, %{params: callback})
+      assert {:ok, [delivered, failed]} =
+               ApifonChannel.parse_webhook(@account, %{params: callback})
+
       assert %{status: "delivered", error_code: nil, event_key: "apifon:A1:7"} = delivered
       assert delivered.occurred_at == ~U[2024-11-03 10:00:00.000000Z]
       assert %{status: "failed", error_code: "001"} = failed
 
       assert {:ok, [%{type: :inbound, from: "+306912345678", text: "STOP"}]} =
-               ApifonChannel.parse_webhook(@account, %{params: %{"from" => "306912345678", "text" => "STOP"}})
+               ApifonChannel.parse_webhook(@account, %{
+                 params: %{"from" => "306912345678", "text" => "STOP"}
+               })
     end
   end
 end

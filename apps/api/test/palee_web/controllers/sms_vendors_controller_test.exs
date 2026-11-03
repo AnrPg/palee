@@ -16,7 +16,9 @@ defmodule PaleeWeb.SmsVendorsControllerTest do
     coach = user_fixture(%{nickname: "sv_coach"})
 
     {:ok, organization} =
-      Organizations.create_organization(%{name: "SMS vendors #{System.unique_integer([:positive])}"})
+      Organizations.create_organization(%{
+        name: "SMS vendors #{System.unique_integer([:positive])}"
+      })
 
     for {user, role} <- [{owner, :owner}, {coach, :coach}] do
       {:ok, _} =
@@ -83,9 +85,15 @@ defmodule PaleeWeb.SmsVendorsControllerTest do
 
     assert %{"ok" => true} =
              build_conn()
-             |> get(path, %{"smsid" => "unknown", "status" => "1", "statusDescription" => "Delivered"})
+             |> get(path, %{
+               "smsid" => "unknown",
+               "status" => "1",
+               "statusDescription" => "Delivered"
+             })
              |> json_response(200)
 
-    assert build_conn() |> get(path <> "x", %{"smsid" => "a", "status" => "1"}) |> json_response(404)
+    assert build_conn()
+           |> get(path <> "x", %{"smsid" => "a", "status" => "1"})
+           |> json_response(404)
   end
 end
