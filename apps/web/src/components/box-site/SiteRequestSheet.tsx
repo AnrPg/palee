@@ -46,6 +46,7 @@ export function SiteRequestSheet({ slug, kind, privacyHref, onClose }: { slug: s
   const consent = useSiteConsent();
   const ids = useId();
   const [openedAt] = useState(nowMs);
+  const [eventId] = useState(() => crypto.randomUUID());
   const [form, setForm] = useState({ name: "", contact: "", preferred: "", message: "", marketing: false, privacy: false, website: "" });
   const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
   const [failed, setFailed] = useState(false);
@@ -73,11 +74,12 @@ export function SiteRequestSheet({ slug, kind, privacyHref, onClose }: { slug: s
         marketing_opt_in: form.marketing,
         privacy_ack: true,
         visitor_id: consent.visitorId() ?? undefined,
+        event_id: eventId,
         attribution: attribution(window.location, document.referrer),
         website: form.website,
         elapsed_ms: nowMs() - openedAt,
       });
-      if (consent.marketing()) trackLead();
+      if (consent.marketing()) trackLead(eventId);
       setSent(true);
     } catch (error) {
       const fields = formErrors(error);

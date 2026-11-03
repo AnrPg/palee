@@ -44132,6 +44132,11 @@ export interface components {
             /** @description Time spent on the form */
             elapsed_ms?: number | null;
             email?: string | null;
+            /**
+             * Format: uuid
+             * @description The browser Pixel's eventID for the same Lead, so Meta counts the Conversions API event once
+             */
+            event_id?: string | null;
             locale?: string | null;
             /** @description Separate, unticked opt-in to marketing follow-ups */
             marketing_opt_in?: boolean;
@@ -145784,6 +145789,11 @@ export interface operations {
                     /** @description Time spent on the form */
                     elapsed_ms?: number | null;
                     email?: string | null;
+                    /**
+                     * Format: uuid
+                     * @description The browser Pixel's eventID for the same Lead, so Meta counts the Conversions API event once
+                     */
+                    event_id?: string | null;
                     locale?: string | null;
                     /** @description Separate, unticked opt-in to marketing follow-ups */
                     marketing_opt_in?: boolean;

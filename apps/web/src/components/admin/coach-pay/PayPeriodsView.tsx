@@ -200,7 +200,7 @@ export function PayPeriodDetail({ periodId, canEdit, onBack }: { periodId: strin
   if (query.isError || !query.data) return <ErrorNotice>{localizeError(query.error, ui)}</ErrorNotice>;
   const period = query.data.period;
   const statements = period.statements ?? [];
-  const action = canEdit ? primaryAction(period.status) : null;
+  const action = primaryAction(period.status, canEdit);
   const busy = calculate.isPending || approve.isPending || exportCsv.isPending;
 
   return (

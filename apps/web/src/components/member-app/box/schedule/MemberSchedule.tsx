@@ -4,7 +4,7 @@ import { AfterBookingSmsAsk } from "@/components/channels/AfterBookingSmsAsk";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { documentsRequired, type DocumentsRequired } from "@/api/documents";
 import { fetchMyEntitlement } from "@/api/my-finance";
@@ -20,7 +20,7 @@ import { useUiTranslations } from "@/i18n/ui";
 import { useSelectedMembershipRole } from "@/lib/membership-role";
 import { OFFLINE_COMMAND_OUTBOX_EVENT } from "@/lib/offline-command-outbox";
 import { organizationTopic, subscribeToTopic } from "@/lib/realtime";
-import { calendarOfferPending } from "@/lib/training-floor";
+import { shouldOfferCalendar } from "@/lib/once-asked";
 import { addDaysToKey, dateKeyInZone, formatInZone, startOfDayInZone } from "@/lib/zoned-time";
 
 import { ClassRow } from "./ClassRow";
@@ -63,6 +63,7 @@ export function MemberSchedule({ initialOpenSlotId = null }: { initialOpenSlotId
   const locale = useLocale();
   const { tokens, currentUser } = useSession();
   const token = tokens?.access_token ?? null;
+  const queryClient = useQueryClient();
   const { membership } = useSelectedMembershipRole();
   const organizationId = membership?.organization.id ?? null;
   // ADR-179: days and times are the gym's own, wherever the member is.
@@ -251,7 +252,7 @@ export function MemberSchedule({ initialOpenSlotId = null }: { initialOpenSlotId
       // W3 screen 2 B: once, after the booking, ask about SMS for cancellations.
       setAskSms(true);
       if (outcome.status === "delivered") reload();
-      if (outcome.status === "delivered" && calendarOfferPending(currentUser?.id)) setCalendarOffer(true);
+      if (outcome.status === "delivered" && (await shouldOfferCalendar(queryClient, token, currentUser?.id))) setCalendarOffer(true);
     } catch (error) {
       const gate = documentsRequired(error);
       if (gate) {

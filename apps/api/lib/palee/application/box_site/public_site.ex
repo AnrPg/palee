@@ -204,7 +204,7 @@ defmodule Palee.Application.BoxSite.PublicSite do
       attrs =
         attrs
         |> Map.put(:id, Ecto.UUID.generate())
-        |> with_conversion(context, settings, box, now)
+        |> with_conversion(context, settings, box, now, event_id(params))
 
       {:ok, _submission} = BoxSite.insert_submission(context, attrs)
       SiteOutbox.schedule(context)
@@ -219,7 +219,7 @@ defmodule Palee.Application.BoxSite.PublicSite do
   defp forms_open(_settings), do: {:error, :site_forms_closed}
 
   # ADR-354 §5: only with the visitor's unexpired marketing consent.
-  defp with_conversion(attrs, context, settings, box, now) do
+  defp with_conversion(attrs, context, settings, box, now, event_id) do
     granted =
       settings.conversions_api_enabled and is_binary(attrs.visitor_id) and
         BoxSite.effective_consent(context, attrs.visitor_id, settings.banner_version, now).marketing
@@ -227,7 +227,7 @@ defmodule Palee.Application.BoxSite.PublicSite do
     event =
       granted &&
         BoxSite.conversion_event(
-          Map.take(attrs, [:id, :email, :phone, :submitted_at]),
+          %{Map.take(attrs, [:id, :email, :phone, :submitted_at]) | id: event_id || attrs.id},
           canonical_url(box)
         )
 
@@ -241,6 +241,16 @@ defmodule Palee.Application.BoxSite.PublicSite do
       attrs
     end
   end
+
+  # The browser Pixel sends the same eventID, so Meta deduplicates the Lead.
+  defp event_id(%{"event_id" => value}) when is_binary(value) do
+    case Ecto.UUID.cast(value) do
+      {:ok, uuid} -> uuid
+      :error -> nil
+    end
+  end
+
+  defp event_id(_params), do: nil
 
   @doc "Records a visitor's consent choice; answers what it allows."
   def record_consent(slug, params) do

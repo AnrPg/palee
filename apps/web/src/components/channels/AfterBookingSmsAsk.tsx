@@ -10,6 +10,7 @@ import { useSession } from "@/components/session-provider";
 
 import { myChannelsKey, smsLocale, usePhoneError } from "./MySmsSettings";
 import { bookingAskDeclined, inputStyle, rememberBookingAskDeclined, shouldAskAfterBooking } from "./sms";
+import { saveSmsAskDeclined, smsAskDeclinedOnServer } from "@/lib/once-asked";
 
 /**
  * W3 screen 2, option B (ADR-350): right after a booking, once, «Να σου
@@ -24,7 +25,13 @@ export function AfterBookingSmsAsk({ slug, onDone }: { slug: string; onDone: () 
   const { tokens, currentUser } = useSession();
   const token = tokens?.access_token;
   const queryClient = useQueryClient();
-  const declined = bookingAskDeclined(slug, currentUser?.id);
+  const declinedHere = bookingAskDeclined(slug, currentUser?.id);
+  const declinedElsewhere = useQuery({
+    queryKey: ["sms-ask-declined", slug],
+    queryFn: () => smsAskDeclinedOnServer(queryClient, token!, slug),
+    enabled: Boolean(token) && !declinedHere,
+  });
+  const declined = declinedHere || declinedElsewhere.data !== false;
   const mine = useQuery({ queryKey: myChannelsKey(slug), queryFn: () => fetchMyChannels(token!, slug), enabled: Boolean(token) && !declined });
   const [phone, setPhone] = useState("");
   const [current, setCurrent] = useState<string | null>(null);
@@ -46,8 +53,11 @@ export function AfterBookingSmsAsk({ slug, onDone }: { slug: string; onDone: () 
   if (!token || !shouldAskAfterBooking(mine.data, declined)) return null;
   const error = save.isError ? phoneError(save.error) ?? t("errors.generic") : null;
 
+  // «Όχι τώρα» is kept with the person's account (ADR-193 progress), so no
+  // device asks again; this device also remembers it at once.
   const notNow = () => {
     rememberBookingAskDeclined(slug, currentUser?.id);
+    saveSmsAskDeclined(queryClient, token, slug);
     onDone();
   };
 

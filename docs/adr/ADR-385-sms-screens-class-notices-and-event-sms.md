@@ -67,3 +67,7 @@ co-hosts) and the reminder job already loads the event.
   in Στατιστικά & Μάρκετινγκ, Box › Ειδοποιήσεις switches, the post-booking question, the
   client card «Κινητό για μηνύματα», «Ενημέρωση συμμετεχόντων» in the class menu, the SMS box
   on «Θα έρθω» and the organiser's event SMS card.
+
+## Amendment (v3.1 integration, 2026-11-03)
+
+«Όχι τώρα» to the SMS question after a booking is kept with the person's account, as the walkthrough progress row `sms_ask_<slug>` with status `dismissed` (ADR-193), so no device asks again at that box. A refusal cannot live in `channel_contacts`, which needs a number. The device still remembers it at once.

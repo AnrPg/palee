@@ -45,7 +45,7 @@ export function SiteSections({
   const render = (key: SiteSection): ReactNode => {
     const part = ABOUT_PARTS[key];
     if (part) {
-      return <AboutTab key={key} page={page} onOpenPhoto={onOpenPhoto} parts={[part]} aboutText={part === "about" ? siteText(language, page.profile.about, site.about_en) || undefined : undefined} />;
+      return <AboutTab key={key} page={page} onOpenPhoto={onOpenPhoto} parts={[part]} enquiry={false} aboutText={part === "about" ? siteText(language, page.profile.about, site.about_en) || undefined : undefined} />;
     }
     switch (key) {
       case "schedule":

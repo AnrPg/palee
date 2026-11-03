@@ -27,6 +27,12 @@ vi.mock("@/api/channels", async (importOriginal) => ({
   fetchMyChannels: vi.fn(),
   saveMyChannels: vi.fn(),
 }));
+const guides = vi.hoisted(() => ({ putGuideProgress: vi.fn(), fetchGuideProgress: vi.fn() }));
+vi.mock("@/api/guides", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/api/guides")>()),
+  putGuideProgress: guides.putGuideProgress,
+  fetchGuideProgress: guides.fetchGuideProgress,
+}));
 vi.mock("@/api/events", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/api/events")>()),
   fetchEventSms: vi.fn(),
@@ -64,6 +70,8 @@ const contact = (consents: ChannelContact["consents"]): ChannelContact => ({ id:
 
 beforeEach(() => {
   vi.clearAllMocks();
+  guides.fetchGuideProgress.mockResolvedValue({ guides: [] });
+  guides.putGuideProgress.mockResolvedValue({ guide_id: "sms_ask_box", status: "dismissed" });
   try {
     window.localStorage.clear();
   } catch {
@@ -163,6 +171,8 @@ describe("Ask once after a booking (W3 screen 2 B)", () => {
 
     fireEvent.click(await screen.findByRole("button", { name: "Not now" }));
     expect(onDone).toHaveBeenCalled();
+    // Kept with the account too, so another device never asks again.
+    expect(guides.putGuideProgress).toHaveBeenCalledWith("access", "sms_ask_box", { status: "dismissed", step: 0, version: 1 });
     first.unmount();
 
     const second = wrap(<AfterBookingSmsAsk slug="box" onDone={onDone} />);
@@ -185,6 +195,16 @@ describe("Ask once after a booking (W3 screen 2 B)", () => {
     expect(update.phone).toBe("6912345678");
     expect(update.consents).toEqual([{ channel: "sms", purpose: "service", granted: true }]);
     await waitFor(() => expect(onDone).toHaveBeenCalled());
+  });
+
+  it("is not asked again after «Όχι τώρα» on another device", async () => {
+    guides.fetchGuideProgress.mockResolvedValue({ guides: [{ guide_id: "sms_ask_box3", status: "dismissed" }] });
+    vi.mocked(channels.fetchMyChannels).mockResolvedValue({ channels: ["sms"], contact: null });
+    const { container } = wrap(<AfterBookingSmsAsk slug="box3" onDone={vi.fn()} />);
+    await waitFor(() => expect(guides.fetchGuideProgress).toHaveBeenCalled());
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(container.querySelector("[data-testid=after-booking-sms]")).toBeNull();
+    expect(channels.fetchMyChannels).not.toHaveBeenCalled();
   });
 
   it("is not asked where the box sends no SMS", async () => {

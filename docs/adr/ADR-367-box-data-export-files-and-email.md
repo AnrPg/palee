@@ -57,3 +57,7 @@ tomorrow). The closing card links to it.
 - `BoxData.Domain.FilePacking`, `ExportPolicy.part_name/3`,
   `TenantObjectStorage.list_box_files/1` and `download_box_file/4`,
   `Email.Templates.BoxDataExportReady`.
+
+## Amendment (v3.1 integration, 2026-11-03)
+
+A key already under its kind's folder keeps it once inside the ZIP (`media/p1/photo.jpg`, never `media/media/…`).

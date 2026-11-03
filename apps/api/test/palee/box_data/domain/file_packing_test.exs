@@ -17,6 +17,7 @@ defmodule Palee.BoxData.Domain.FilePackingTest do
           object(:documents, "documents/contract.pdf", 10),
           object(:branding, "branding/logo.png", 5, :branding),
           object(:media, "media/p1/photo.jpg", 20, :media_public),
+          object(:media, "posts/p2/clip.mp4", 30, :media_public),
           object(:documents, "exports/box-data/e1/palee.zip", 99),
           object(:documents, "folder/", 0),
           object(:documents, "a/../../other-org/secret.pdf", 1),
@@ -26,9 +27,10 @@ defmodule Palee.BoxData.Domain.FilePackingTest do
       )
 
     assert Enum.map(selected, & &1.entry) == [
-             "branding/branding/logo.png",
-             "documents/documents/contract.pdf",
-             "media/media/p1/photo.jpg"
+             "branding/logo.png",
+             "documents/contract.pdf",
+             "media/p1/photo.jpg",
+             "media/posts/p2/clip.mp4"
            ]
   end
 

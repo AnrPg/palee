@@ -4,6 +4,11 @@ defmodule Palee.Infrastructure.BoxSite.SandboxConversionsApi do
   @behaviour Palee.BoxSite.Ports.ConversionsApi
 
   @impl true
-  def send_event(_pixel_id, _token, %{"event_name" => "Lead"}), do: :ok
+  def send_event(_pixel_id, _token, %{"event_name" => "Lead"} = event) do
+    # Tests read what would have been sent (the inline outbox runs in their process).
+    if probe = Process.get(:palee_conversions_probe), do: send(probe, {:conversion_event, event})
+    :ok
+  end
+
   def send_event(_pixel_id, _token, _event), do: {:error, {:rejected, :unknown_event}}
 end

@@ -118,6 +118,13 @@ defmodule Palee.Pantheon.Domain.FitnessProfileTest do
     refute Enum.any?(profile.focus, &(&1.domain == "gymnastics"))
     assert profile.injury_caution
 
+    # An active injury of unknown domains: nothing is suggested at all.
+    profile =
+      FitnessProfile.build(%{prs: [], today: @today, qualities: qualities, active_injury: true})
+
+    assert profile.focus == []
+    assert profile.injury_caution
+
     profile = FitnessProfile.build(%{prs: [], today: @today, qualities: qualities})
 
     assert Enum.any?(

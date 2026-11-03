@@ -30,3 +30,7 @@ Each placement is the option the product owner chose on the W1 board. The weekly
 ## Implementation Notes
 - Web: `src/components/admin/payments/CardSurchargeSettings.tsx`, `src/components/payments/SurchargeTotal.tsx`, `src/components/admin/finance/payments/DeskSurchargeQuestion.tsx`, `src/components/admin/coach-pay/*`, `src/app/admin/my-pay/page.tsx`, the package wizard in `src/components/admin/finance/packages/package-ui.tsx`.
 - API: `Palee.Scheduling.Domain.BookingLimits` counts the daily limit from the start of the class's gym-local day; the weekly branch and `booking_weekly_limit_reached` are gone.
+
+## Amendment (v3.1 integration, 2026-11-03)
+
+The CSV of an approved coach-pay period is offered to whoever may read the finance reports (the accountant), as the API allows; approving still needs `manage_billing`.

@@ -236,8 +236,14 @@ function loadTags(tags: SiteTags, choice: ConsentChoice) {
   }
 }
 
-/** ADR-354 §5: the browser Pixel's Lead event, only with marketing consent. */
-export function trackLead() {
+/**
+ * ADR-354 §5: the browser Pixel's Lead event, only with marketing consent.
+ * `eventId` is the one sent with the form, so Meta counts the Pixel and the
+ * Conversions API event once.
+ */
+export function trackLead(eventId?: string) {
   const w = window as TagWindow;
-  if (w.__paleeSiteTags?.has("meta_pixel_id") && w.fbq) w.fbq("track", PIXEL_EVENTS.lead);
+  if (!w.__paleeSiteTags?.has("meta_pixel_id") || !w.fbq) return;
+  if (eventId) w.fbq("track", PIXEL_EVENTS.lead, {}, { eventID: eventId });
+  else w.fbq("track", PIXEL_EVENTS.lead);
 }

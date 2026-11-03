@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMemo, useState, type DragEvent } from "react";
 
@@ -40,7 +41,9 @@ export function LeadsBoard() {
   const errorText = useLeadErrorText();
   const [view, setView] = useState<View>("open");
   const [phoneStage, setPhoneStage] = useState<OpenStage>("new");
-  const [selected, setSelected] = useState<string | null>(null);
+  // ADR-388: a website request's notification opens /admin/leads?lead=<id>.
+  const searchParams = useSearchParams();
+  const [selected, setSelected] = useState<string | null>(() => searchParams?.get("lead") ?? null);
   const [dialog, setDialog] = useState<"new" | "import" | null>(null);
   const [dragging, setDragging] = useState<string | null>(null);
   const [over, setOver] = useState<OpenStage | null>(null);

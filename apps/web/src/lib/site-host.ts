@@ -41,6 +41,23 @@ export function siteRewritePath(pathname: string, slug: string) {
   return `/b/${slug}${rest}`;
 }
 
+/**
+ * A page of the app (an event, sign-in, a member screen) opened on a box's
+ * own domain moves to the app's address, so the app never runs under the
+ * box's name. Files (paths with an extension) stay, the site page needs them.
+ */
+export function appPageRedirect(pathname: string, search: string, env: Record<string, string | undefined> = process.env) {
+  if (/\.[a-z0-9]+$/i.test(pathname) || pathname.startsWith("/_next/")) return null;
+  const site = env.NEXT_PUBLIC_SITE_URL;
+  if (!site) return null;
+  try {
+    const target = new URL(pathname + search, site.includes("://") ? site : `https://${site}`);
+    return target.toString();
+  } catch {
+    return null;
+  }
+}
+
 /** The box whose website a host serves, or null; cached per instance (correctness never depends on it). */
 export async function lookupSiteHost(
   host: string,

@@ -189,8 +189,13 @@ export function ruleBody(draft: RuleDraft, userId: string): PayRuleBody {
 // ── Periods ─────────────────────────────────────────────────────────────────
 
 /** Mockup s5 A: one primary action per status (Έγκριση, then Εξαγωγή CSV); an exported period is locked. */
-export function primaryAction(status: PayPeriodStatus): "approve" | "export" | null {
-  if (status === "draft") return "approve";
+/**
+ * The period's one filled button. Approving needs manage_billing; the CSV of
+ * an approved period is also for whoever only reads the finance reports (the
+ * accountant), as the API allows.
+ */
+export function primaryAction(status: PayPeriodStatus, canEdit = true): "approve" | "export" | null {
+  if (status === "draft") return canEdit ? "approve" : null;
   if (status === "approved") return "export";
   return null;
 }

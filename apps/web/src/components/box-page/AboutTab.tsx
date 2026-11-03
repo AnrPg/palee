@@ -43,11 +43,14 @@ export function AboutTab({
   onOpenPhoto,
   parts = ALL_PARTS,
   aboutText,
+  enquiry = true,
 }: {
   page: PublicBoxPage;
   onOpenPhoto: (index: number) => void;
   parts?: AboutPart[];
   aboutText?: string;
+  /** The website has its own trial and contact cards (ADR-388), so it turns this off. */
+  enquiry?: boolean;
 }) {
   const t = useTranslations("BoxPage");
   const tags = useTranslations("BoxTags");
@@ -246,7 +249,7 @@ export function AboutTab({
       ) : null}
 
       {/* ADR-345 (W2 p6): an enquiry from a visitor without an account becomes a lead. */}
-      <EnquiryCard slug={page.box.slug} boxName={page.box.name} />
+      {enquiry ? <EnquiryCard slug={page.box.slug} boxName={page.box.name} /> : null}
     </div>
   );
 }

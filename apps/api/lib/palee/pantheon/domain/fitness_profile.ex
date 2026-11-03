@@ -23,8 +23,9 @@ defmodule Palee.Pantheon.Domain.FitnessProfile do
        least 4 sessions were logged;
      * `stale_benchmark` – a domain scored only from PRs older than
        `@stale_days` (test it again).
-     A domain touched by an active injury is never suggested; the profile
-     carries `injury_caution` instead.
+     A domain touched by an active injury is never suggested, and with an
+     active injury of unknown domains nothing is; the profile carries
+     `injury_caution` instead.
 
   Every number comes with what produced it (`reasons`), so the screen can
   show the reasoning. Comparison is with the person's own results and fixed
@@ -86,7 +87,7 @@ defmodule Palee.Pantheon.Domain.FitnessProfile do
       neutral_standards: is_nil(division),
       overall: overall(scored),
       domains: domains,
-      focus: focus(domains, Map.get(input, :qualities), injured),
+      focus: focus(domains, Map.get(input, :qualities), injured, Map.get(input, :active_injury, false)),
       injury_caution: Map.get(input, :active_injury, false) or MapSet.size(injured) > 0,
       benchmarks_known: length(FitnessBenchmarks.all())
     }
@@ -200,6 +201,14 @@ defmodule Palee.Pantheon.Domain.FitnessProfile do
       domains_scored: length(scored),
       reason: "mean_of_domains"
     }
+  end
+
+  # An active injury whose domains are unknown (injuries name body parts, not
+  # domains) could touch any domain, so nothing is suggested until it heals.
+  defp focus(domains, qualities, injured, active_injury) do
+    if active_injury and MapSet.size(injured) == 0,
+      do: [],
+      else: focus(domains, qualities, injured)
   end
 
   defp focus(domains, qualities, injured) do

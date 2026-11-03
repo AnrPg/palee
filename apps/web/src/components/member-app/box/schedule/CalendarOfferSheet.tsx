@@ -1,13 +1,14 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 
 import { fetchCalendarExportLinks } from "@/api/calendar";
 import { useSession } from "@/components/session-provider";
 import { Dialog } from "@/components/ui/Dialog";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
-import { googleCalendarUrl, rememberCalendarOffer } from "@/lib/training-floor";
+import { saveCalendarOfferAnswer } from "@/lib/once-asked";
+import { googleCalendarUrl } from "@/lib/training-floor";
 
 /**
  * ADR-359 (ANR mockup e4 A): right after the first booking, once, «Να μπαίνουν
@@ -20,6 +21,7 @@ export function CalendarOfferSheet({ userId, onClose }: { userId: string; onClos
   const t = useTranslations("TrainingFloor");
   const { tokens } = useSession();
   const token = tokens?.access_token ?? null;
+  const queryClient = useQueryClient();
   const links = useQuery({
     queryKey: ["calendar", "export-links"],
     enabled: Boolean(token),
@@ -27,7 +29,7 @@ export function CalendarOfferSheet({ userId, onClose }: { userId: string; onClos
     staleTime: 5 * 60_000,
   });
   const answer = (choice: "apple" | "google" | "no") => {
-    rememberCalendarOffer(userId, choice);
+    saveCalendarOfferAnswer(queryClient, token, userId, choice);
     onClose();
   };
   const webcal = links.data?.webcal_url ?? null;

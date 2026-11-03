@@ -54,3 +54,10 @@ visitors; more languages would need texts nobody keeps up to date.
 - The web host rewrite and the site pages consume these fields.
 - Migration `20270511000000_box_reviews_and_site_v31.exs` (also notification
   type `site_request`).
+
+## Amendment (v3.1 integration, 2026-11-03)
+
+- On the website (About tab rendered as sections) the W2 «Ενδιαφέρομαι» card is not shown: the site's own trial and contact cards are the one way in, and both become leads.
+- The website form sends `event_id`, the browser Pixel's eventID of the same Lead; the Conversions API event uses it, so Meta counts the lead once.
+- On a box's own domain, a path that is not a site page (an event, sign-in, any app screen) redirects (307) to the app's address (`NEXT_PUBLIC_SITE_URL`); files stay. `STATUS_HOST` counts as an app host.
+- The site-request notification opens `/admin/leads?lead=<id>` with that lead's panel.

@@ -391,6 +391,12 @@ defmodule PaleeWeb.Schemas.BoxSite do
         },
         privacy_ack: %Schema{type: :boolean, description: "Must be true"},
         visitor_id: %{@uuid | nullable: true},
+        event_id: %{
+          @uuid
+          | nullable: true,
+            description:
+              "The browser Pixel's eventID for the same Lead, so Meta counts the Conversions API event once"
+        },
         consent_text_version: %Schema{type: :string, nullable: true, maxLength: 40},
         consent_text_hash: %Schema{type: :string, nullable: true, maxLength: 80},
         attribution: %Schema{

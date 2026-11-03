@@ -84023,6 +84023,12 @@
             "nullable": true,
             "type": "string"
           },
+          "event_id": {
+            "description": "The browser Pixel's eventID for the same Lead, so Meta counts the Conversions API event once",
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
           "locale": {
             "maxLength": 10,
             "nullable": true,
@@ -372621,6 +372627,12 @@
                   },
                   "email": {
                     "maxLength": 320,
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "event_id": {
+                    "description": "The browser Pixel's eventID for the same Lead, so Meta counts the Conversions API event once",
+                    "format": "uuid",
                     "nullable": true,
                     "type": "string"
                   },

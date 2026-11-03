@@ -43,6 +43,7 @@ describe("SiteRequestSheet", () => {
     const [, kind, body] = api.sendSiteForm.mock.calls[0]!;
     expect(kind).toBe("trial");
     expect(body).toMatchObject({ name: "Ελένη", email: "eleni@example.com", privacy_ack: true, marketing_opt_in: false, website: "" });
+    expect(body.event_id).toMatch(/^[0-9a-f-]{36}$/);
   });
 
   it("maps the API's field errors to the form's fields", () => {

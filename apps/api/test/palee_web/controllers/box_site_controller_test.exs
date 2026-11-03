@@ -148,6 +148,9 @@ defmodule PaleeWeb.BoxSiteControllerTest do
              })
              |> json_response(422)
 
+    Process.put(:palee_conversions_probe, self())
+    pixel_event_id = Ecto.UUID.generate()
+
     assert %{"status" => "received"} =
              visitor()
              |> post("#{ctx.public}/forms/trial", %{
@@ -155,6 +158,7 @@ defmodule PaleeWeb.BoxSiteControllerTest do
                email: "maria@example.gr",
                privacy_ack: true,
                visitor_id: visitor,
+               event_id: pixel_event_id,
                elapsed_ms: 8_000,
                attribution: %{utm_source: "instagram"}
              })
@@ -186,6 +190,9 @@ defmodule PaleeWeb.BoxSiteControllerTest do
       end)
 
     assert [["delivered", nil, nil, lead_id, "sent", nil]] = rows
+
+    # The Conversions API event carries the browser Pixel's eventID (dedupe).
+    assert_received {:conversion_event, %{"event_id" => ^pixel_event_id}}
     assert is_binary(lead_id)
 
     # ADR-388: the lead has no owner yet, so whoever handles «Ενδιαφερόμενοι»

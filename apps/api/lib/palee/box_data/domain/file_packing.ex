@@ -10,7 +10,8 @@ defmodule Palee.BoxData.Domain.FilePacking do
   * Files are packed in key order into parts of at most `max_bytes`; a file
     bigger than that gets a part of its own. No files, no parts.
   * Inside a part a file keeps its path under the box's prefix, under a
-    folder per kind: `documents/…`, `branding/…`, `media/…`. Keys that try to
+    folder per kind: `documents/…`, `branding/…`, `media/…` (a key already
+    under that folder keeps it once). Keys that try to
     climb out (`..`) or are empty are skipped.
 
   Pure: objects are `%{source, bucket, key, size}` where `source` is
@@ -64,11 +65,17 @@ defmodule Palee.BoxData.Domain.FilePacking do
          false <- Enum.any?(@excluded_prefixes, &String.starts_with?(relative, &1)),
          segments = String.split(relative, "/"),
          false <- Enum.any?(segments, &(&1 in ["", ".", ".."])) do
-      {:ok, "#{source}/#{relative}"}
+      {:ok, kind_folder(source, relative)}
     else
       _skip -> :skip
     end
   end
 
   defp entry(_source, _prefix, _key), do: :skip
+
+  # A key already under its kind's folder (`media/…`) keeps it once, never `media/media/…`.
+  defp kind_folder(source, relative) do
+    folder = "#{source}/"
+    if String.starts_with?(relative, folder), do: relative, else: folder <> relative
+  end
 end

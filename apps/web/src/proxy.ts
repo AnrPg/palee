@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { configuredMapOrigins } from "@/lib/map-style";
 import { retiredOrganizationSlugRedirect } from "@/lib/organization-slug-alias";
 import { statusHostRewrite } from "@/lib/service-status";
-import { isAppHost, isSitePath, lookupSiteHost, SITE_TAG_ORIGINS, siteRewritePath } from "@/lib/site-host";
+import { appPageRedirect, isAppHost, isSitePath, lookupSiteHost, SITE_TAG_ORIGINS, siteRewritePath } from "@/lib/site-host";
 
 type MediaOriginEnv = Record<string, string | undefined>;
 
@@ -39,6 +39,8 @@ export async function proxy(request: NextRequest) {
     if (site) {
       siteDestination = siteRewritePath(request.nextUrl.pathname, site.slug);
       siteHost = host;
+      const appPage = siteDestination ? null : appPageRedirect(request.nextUrl.pathname, request.nextUrl.search);
+      if (appPage) return applySecurityHeaders(NextResponse.redirect(appPage, 307));
     }
   }
 

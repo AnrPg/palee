@@ -63,3 +63,8 @@ ADR-357: nothing to keep in sync when a WOD is edited.
 
 ## Implementation Notes
 Branch filtering uses the membership's `home_location_id`; the branch choice is hidden without one.
+
+## Amendment (v3.1 integration, 2026-11-03)
+
+- The calendar offer at the first booking is answered once per person on every device: the answer is the walkthrough progress row `calendar_offer` (ADR-193), `completed` for Apple or Google and `dismissed` for «Όχι τώρα».
+- ADR-358 amendment: injuries name body parts, not fitness domains, so with an active injury and no known injured domain «Τι να δουλέψεις» suggests nothing and shows only the injury note.

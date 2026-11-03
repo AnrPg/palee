@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { isAppHost, isSitePath, lookupSiteHost, siteRewritePath } from "./site-host";
+import { appPageRedirect, isAppHost, isSitePath, lookupSiteHost, siteRewritePath } from "./site-host";
 
 describe("box website on its own domain", () => {
   it("never looks up the app's own hosts", () => {
@@ -42,5 +42,13 @@ describe("box website on its own domain", () => {
     await lookupSiteHost("WWW.mybox.gr", { apiOrigin: "http://api", fetchImpl, now, cache });
     expect(fetchImpl).toHaveBeenCalledTimes(1);
     expect(await lookupSiteHost("unknown.gr", { apiOrigin: "http://api", fetchImpl, now, cache })).toBeNull();
+  });
+
+  it("sends the app's own pages on a box's domain to the app's address", () => {
+    const env = { NEXT_PUBLIC_SITE_URL: "https://palee.app" };
+    expect(appPageRedirect("/events/42", "?from=site", env)).toBe("https://palee.app/events/42?from=site");
+    expect(appPageRedirect("/login", "", env)).toBe("https://palee.app/login");
+    expect(appPageRedirect("/logo.svg", "", env)).toBeNull();
+    expect(appPageRedirect("/events/42", "", {})).toBeNull();
   });
 });

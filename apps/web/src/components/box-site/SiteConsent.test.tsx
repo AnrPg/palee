@@ -9,7 +9,7 @@ import el from "../../../messages/el.json";
 const api = vi.hoisted(() => ({ recordSiteConsent: vi.fn(async () => ({})) }));
 vi.mock("@/api/box-site", async (original) => ({ ...(await original<object>()), ...api }));
 
-import { SiteConsentProvider } from "./SiteConsent";
+import { SiteConsentProvider, trackLead } from "./SiteConsent";
 
 const SITE = {
   tracking: {
@@ -57,5 +57,16 @@ describe("SiteConsentProvider", () => {
   it("shows no bar when the box has no tags", () => {
     wrap({ ...SITE, tracking: { ...SITE.tracking, consent_required: false } });
     expect(screen.queryByTestId("site-consent-bar")).toBeNull();
+  });
+
+  it("sends the Pixel Lead with the form's eventID so Meta counts it once", () => {
+    const fbq = vi.fn();
+    const w = window as unknown as { fbq?: unknown; __paleeSiteTags?: Set<string> };
+    w.fbq = fbq;
+    w.__paleeSiteTags = new Set(["meta_pixel_id"]);
+    trackLead("8a7c1d2e-0000-4000-8000-000000000001");
+    expect(fbq).toHaveBeenCalledWith("track", "Lead", {}, { eventID: "8a7c1d2e-0000-4000-8000-000000000001" });
+    delete w.fbq;
+    delete w.__paleeSiteTags;
   });
 });

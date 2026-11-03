@@ -112,6 +112,9 @@ describe("pay periods", () => {
     expect(primaryAction("draft")).toBe("approve");
     expect(primaryAction("approved")).toBe("export");
     expect(primaryAction("exported")).toBeNull();
+    // The accountant (finance reports only) may export an approved period, never approve.
+    expect(primaryAction("draft", false)).toBeNull();
+    expect(primaryAction("approved", false)).toBe("export");
   });
 
   it("suggests the month after the latest period, or last month", () => {

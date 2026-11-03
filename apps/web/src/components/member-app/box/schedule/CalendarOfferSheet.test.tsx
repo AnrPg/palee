@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { ReactNode } from "react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { calendarOfferPending } from "@/lib/training-floor";
 
@@ -16,6 +16,12 @@ vi.mock("@/api/calendar", () => ({
   fetchCalendarExportLinks: vi.fn(async () => ({ webcal_url: "webcal://palee.app/feed.ics?t=1", https_url: "https://palee.app/feed.ics?t=1" })),
 }));
 
+const guides = vi.hoisted(() => ({ putGuideProgress: vi.fn() }));
+vi.mock("@/api/guides", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/api/guides")>()),
+  putGuideProgress: guides.putGuideProgress,
+}));
+
 function renderSheet() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   const wrapper = ({ children }: { children: ReactNode }) => <QueryClientProvider client={client}>{children}</QueryClientProvider>;
@@ -26,6 +32,7 @@ function renderSheet() {
 
 describe("CalendarOfferSheet (ADR-359, mockup e4 A)", () => {
   afterEach(() => window.localStorage.clear());
+  beforeEach(() => guides.putGuideProgress.mockReset().mockResolvedValue({ guide_id: "calendar_offer", status: "dismissed" }));
 
   it("offers the private feed for Apple and Google, and «Όχι τώρα» as text", async () => {
     renderSheet();
@@ -40,5 +47,7 @@ describe("CalendarOfferSheet (ADR-359, mockup e4 A)", () => {
     fireEvent.click(await screen.findByRole("button", { name: "calendarOfferNotNow" }));
     expect(onClose).toHaveBeenCalled();
     expect(calendarOfferPending("u1")).toBe(false);
+    // Kept on the server too, so no other device asks again.
+    expect(guides.putGuideProgress).toHaveBeenCalledWith("tok", "calendar_offer", { status: "dismissed", step: 0, version: 1 });
   });
 });
