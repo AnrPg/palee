@@ -20,7 +20,8 @@ defmodule Palee.Infrastructure.BoxSite.SandboxSiteIngress do
 
   @impl true
   def certificate(host) do
-    {:ok, Map.get(Application.get_env(:palee, :box_site_sandbox_certificates, %{}), host, :issuing)}
+    {:ok,
+     Map.get(Application.get_env(:palee, :box_site_sandbox_certificates, %{}), host, :issuing)}
   end
 
   @impl true

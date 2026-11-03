@@ -81,7 +81,9 @@ defmodule Palee.Infrastructure.BoxSite.KubernetesSiteIngress do
   @impl true
   def managed_hosts do
     config = config()
-    url = ingress_url(config, nil) <> "?labelSelector=" <> URI.encode_www_form("#{@site_label}=true")
+
+    url =
+      ingress_url(config, nil) <> "?labelSelector=" <> URI.encode_www_form("#{@site_label}=true")
 
     case request(config, method: :get, url: url) do
       {:ok, %{status: 200, body: %{"items" => items}}} when is_list(items) ->
@@ -121,8 +123,16 @@ defmodule Palee.Infrastructure.BoxSite.KubernetesSiteIngress do
             "host" => host,
             "http" => %{
               "paths" => [
-                path("/api", Keyword.get(config, :api_service, "palee-api"), Keyword.get(config, :api_port, 4000)),
-                path("/", Keyword.get(config, :web_service, "palee-web"), Keyword.get(config, :web_port, 3000))
+                path(
+                  "/api",
+                  Keyword.get(config, :api_service, "palee-api"),
+                  Keyword.get(config, :api_port, 4000)
+                ),
+                path(
+                  "/",
+                  Keyword.get(config, :web_service, "palee-web"),
+                  Keyword.get(config, :web_port, 3000)
+                )
               ]
             }
           }
@@ -241,7 +251,10 @@ defmodule Palee.Infrastructure.BoxSite.KubernetesSiteIngress do
     do: {:error, {:refused, {:http, status}}}
 
   defp failure({:ok, %{status: status}}), do: {:error, {:transient, {:http, status}}}
-  defp failure({:error, {kind, _reason} = error}) when kind in [:refused, :transient], do: {:error, error}
+
+  defp failure({:error, {kind, _reason} = error}) when kind in [:refused, :transient],
+    do: {:error, error}
+
   defp failure({:error, _exception}), do: {:error, {:transient, :unreachable}}
 
   defp token(config) do

@@ -125,7 +125,11 @@ defmodule Palee.BoxSite.RLSTest do
 
     %{rows: due} =
       as_session(conn, nil, nil, false, fn ->
-        Postgrex.query!(conn, "SELECT organization_id FROM palee_box_site_due_organizations(now())", [])
+        Postgrex.query!(
+          conn,
+          "SELECT organization_id FROM palee_box_site_due_organizations(now())",
+          []
+        )
       end)
 
     assert [org] in due

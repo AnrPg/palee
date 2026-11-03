@@ -38,7 +38,8 @@ defmodule Palee.Infrastructure.BoxSite.KubernetesSiteIngressTest do
   end
 
   test "the manifest routes /api to the API and the rest to the web, with the issuer" do
-    manifest = KubernetesSiteIngress.manifest(@host, issuer_kind: "Issuer", issuer_name: "palee-sites")
+    manifest =
+      KubernetesSiteIngress.manifest(@host, issuer_kind: "Issuer", issuer_name: "palee-sites")
 
     assert manifest["metadata"]["annotations"] == %{
              "palee.app/site-host" => @host,
@@ -51,7 +52,10 @@ defmodule Palee.Infrastructure.BoxSite.KubernetesSiteIngressTest do
     assert secret == KubernetesSiteIngress.secret_name(@host)
 
     assert [%{"host" => @host, "http" => %{"paths" => [api, web]}}] = manifest["spec"]["rules"]
-    assert api["path"] == "/api" and api["backend"]["service"] == %{"name" => "palee-api", "port" => %{"number" => 4000}}
+
+    assert api["path"] == "/api" and
+             api["backend"]["service"] == %{"name" => "palee-api", "port" => %{"number" => 4000}}
+
     assert web["path"] == "/" and web["backend"]["service"]["name"] == "palee-web"
 
     cluster =
@@ -61,7 +65,9 @@ defmodule Palee.Infrastructure.BoxSite.KubernetesSiteIngressTest do
         ingress_class: "nginx"
       )
 
-    assert cluster["metadata"]["annotations"]["cert-manager.io/cluster-issuer"] == "letsencrypt-production"
+    assert cluster["metadata"]["annotations"]["cert-manager.io/cluster-issuer"] ==
+             "letsencrypt-production"
+
     assert cluster["spec"]["ingressClassName"] == "nginx"
   end
 
@@ -70,7 +76,10 @@ defmodule Palee.Infrastructure.BoxSite.KubernetesSiteIngressTest do
 
     Req.Test.stub(__MODULE__, fn conn ->
       assert conn.method == "PATCH"
-      assert conn.request_path == "/apis/networking.k8s.io/v1/namespaces/tenant-m4/ingresses/#{name}"
+
+      assert conn.request_path ==
+               "/apis/networking.k8s.io/v1/namespaces/tenant-m4/ingresses/#{name}"
+
       assert conn.query_string == "fieldManager=palee-api&force=true"
       assert Plug.Conn.get_req_header(conn, "authorization") == ["Bearer sa-token"]
       assert Plug.Conn.get_req_header(conn, "content-type") == ["application/apply-patch+yaml"]
@@ -170,10 +179,14 @@ defmodule Palee.Infrastructure.BoxSite.KubernetesSiteIngressTest do
 
     assert KubernetesSiteIngress.certificate_state(renewing) == :active
 
-    assert KubernetesSiteIngress.failure_reason("429 urn:ietf:params:acme:error:rateLimited: too many certificates") ==
+    assert KubernetesSiteIngress.failure_reason(
+             "429 urn:ietf:params:acme:error:rateLimited: too many certificates"
+           ) ==
              :rate_limited
 
-    assert KubernetesSiteIngress.failure_reason("issuer.cert-manager.io \"palee-sites\" not found") ==
+    assert KubernetesSiteIngress.failure_reason(
+             "issuer.cert-manager.io \"palee-sites\" not found"
+           ) ==
              :issuer_not_ready
 
     assert KubernetesSiteIngress.failure_reason("Waiting for HTTP-01 challenge propagation") ==

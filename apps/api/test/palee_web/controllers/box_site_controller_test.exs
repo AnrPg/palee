@@ -443,9 +443,16 @@ defmodule PaleeWeb.BoxSiteControllerTest do
     assert_received {:ingress, {:apply, ^host}}
 
     # cert-manager gave up for now: the card shows a plain reason.
-    Application.put_env(:palee, :box_site_sandbox_certificates, %{host => {:failed, :challenge_failed}})
+    Application.put_env(:palee, :box_site_sandbox_certificates, %{
+      host => {:failed, :challenge_failed}
+    })
 
-    assert %{"domain" => %{"certificate_status" => "failed", "certificate_error" => "challenge_failed"}} =
+    assert %{
+             "domain" => %{
+               "certificate_status" => "failed",
+               "certificate_error" => "challenge_failed"
+             }
+           } =
              ctx
              |> owner_conn()
              |> post("#{ctx.admin}/domains/#{domain["id"]}/check")
@@ -456,7 +463,13 @@ defmodule PaleeWeb.BoxSiteControllerTest do
     Application.put_env(:palee, :box_site_sandbox_certificates, %{host => :active})
     Application.put_env(:palee, :box_site_sandbox_tls_ready, [host])
 
-    assert %{"domain" => %{"status" => "active", "certificate_status" => "active", "certificate_error" => nil}} =
+    assert %{
+             "domain" => %{
+               "status" => "active",
+               "certificate_status" => "active",
+               "certificate_error" => nil
+             }
+           } =
              ctx
              |> owner_conn()
              |> post("#{ctx.admin}/domains/#{domain["id"]}/check")
@@ -471,7 +484,10 @@ defmodule PaleeWeb.BoxSiteControllerTest do
     ctx |> owner_conn() |> delete("#{ctx.admin}/domains/#{domain["id"]}") |> response(204)
     assert_received {:ingress, {:remove, ^host}}
 
-    assert [] = bypass_rls(fn -> Palee.Repo.query!("SELECT 1 FROM box_site_ingress_ops WHERE host = $1", [host]).rows end)
+    assert [] =
+             bypass_rls(fn ->
+               Palee.Repo.query!("SELECT 1 FROM box_site_ingress_ops WHERE host = $1", [host]).rows
+             end)
   end
 
   test "ADR-398: a cluster that refuses keeps the op for a retry and says so", ctx do
@@ -486,7 +502,10 @@ defmodule PaleeWeb.BoxSiteControllerTest do
     end)
 
     domain =
-      ctx |> owner_conn() |> post("#{ctx.admin}/domains", %{host: host}) |> json_response(201)
+      ctx
+      |> owner_conn()
+      |> post("#{ctx.admin}/domains", %{host: host})
+      |> json_response(201)
       |> Map.fetch!("domain")
 
     [txt | _cname] = Enum.map(domain["dns_records"], & &1["value"])
@@ -496,7 +515,12 @@ defmodule PaleeWeb.BoxSiteControllerTest do
       {host, :cname} => ["sites.palee.app."]
     })
 
-    assert %{"domain" => %{"certificate_status" => "pending", "certificate_error" => "cluster_refused"}} =
+    assert %{
+             "domain" => %{
+               "certificate_status" => "pending",
+               "certificate_error" => "cluster_refused"
+             }
+           } =
              ctx
              |> owner_conn()
              |> post("#{ctx.admin}/domains/#{domain["id"]}/check")

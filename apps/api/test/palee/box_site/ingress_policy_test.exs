@@ -43,7 +43,11 @@ defmodule Palee.BoxSite.Domain.IngressPolicyTest do
     {retry, certificate} = IngressPolicy.after_op({:error, {:transient, :unreachable}}, op, @now)
     assert retry.status == "pending"
     assert retry.next_attempt_at == DateTime.add(@now, 60, :second)
-    assert certificate == %{certificate_status: "pending", certificate_error: "cluster_unreachable"}
+
+    assert certificate == %{
+             certificate_status: "pending",
+             certificate_error: "cluster_unreachable"
+           }
 
     last = %{op | attempts: IngressPolicy.max_attempts()}
     {failed, certificate} = IngressPolicy.after_op({:error, {:refused, {:http, 403}}}, last, @now)
@@ -52,7 +56,11 @@ defmodule Palee.BoxSite.Domain.IngressPolicyTest do
 
     # A delete never touches a domain's certificate fields.
     assert {_retry, %{}} =
-             IngressPolicy.after_op({:error, {:transient, :x}}, %{action: "delete", attempts: 1}, @now)
+             IngressPolicy.after_op(
+               {:error, {:transient, :x}},
+               %{action: "delete", attempts: 1},
+               @now
+             )
 
     assert IngressPolicy.backoff(1) == 60
     assert IngressPolicy.backoff(99) == 21_600
