@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 
 import type { CommunityClub } from "@/api/community";
 import type { PtSquadsOverview } from "@/api/squads";
-import { CountBadge, DashboardCard } from "@/components/admin/DashboardWidgets";
+import { CardAction, CountBadge, DashboardCard, EmptyNote } from "@/components/admin/DashboardWidgets";
 import { gymClubFor } from "@/components/community/community";
 import { useMyClubs } from "@/components/community/use-community";
 import { HubCard } from "@/components/member-app/HubParts";
@@ -25,6 +25,7 @@ type Membership = ReturnType<typeof useSelectedMembershipRole>["membership"];
  */
 export function SquadsSection({ membership }: { membership: Membership }) {
   const t = useTranslations("Squads");
+  const tUi = useUiTranslations();
   const slug = membership?.organization.slug ?? null;
   const squads = useSquads(slug);
   const club = useGymClub(membership);
@@ -37,9 +38,14 @@ export function SquadsSection({ membership }: { membership: Membership }) {
       id="home-my-squads"
       eyebrow={t("title")}
       badge={<CountBadge value={data.coached.length} />}
-      action={<NewSquadButton onClick={() => setCreating(true)} />}
+      // Short label: the card's title already says «Ομάδες του coach».
+      action={<CardAction onClick={() => setCreating(true)}>+ {tUi("shNewCoachGroup")}</CardAction>}
     >
-      <CoachList data={data} club={club} slug={slug} />
+      {data.coached.length === 0 && data.archived.length === 0 ? (
+        <EmptyNote>{t("coachedEmpty")}</EmptyNote>
+      ) : (
+        <CoachList data={data} club={club} slug={slug} />
+      )}
       {creating ? (
         <CreateSquadSheet slug={slug} clients={data.clients} maxMembers={data.limits.max_members} onClose={() => setCreating(false)} />
       ) : null}

@@ -163,7 +163,10 @@ export function DashboardCard({
       className={`flex min-w-0 flex-col rounded-[2.2rem] p-6 ${className}`}
       style={{ background: "var(--panel)", border: "1px solid var(--border)" }}
     >
-      <div className="flex items-start justify-between gap-4">
+      {/* One header shape for every card: eyebrow + count left, one action
+          right, the same height whether or not there is an action, so the
+          bodies of cards in one row start on the same line. */}
+      <div className={`flex min-h-10 justify-between gap-4 ${title ? "items-start" : "items-center"}`}>
         <div className="min-w-0">
           <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.24em]" style={{ color: "var(--dim)" }}>
             <span className="truncate">{eyebrow}</span>
@@ -201,11 +204,34 @@ export function CardLink({ href, children }: { href: string; children: ReactNode
   return (
     <Link
       href={href}
-      className="rounded-full px-4 py-2 text-sm font-semibold transition-opacity hover:opacity-80"
+      className="whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition-opacity hover:opacity-80"
       style={{ background: "var(--border)", border: "1px solid var(--border-strong)", color: "var(--text-soft)" }}
     >
       {children}
     </Link>
+  );
+}
+
+/** The card's one action as a button, styled exactly like `CardLink`. */
+export function CardAction({
+  onClick,
+  children,
+  expanded,
+}: {
+  onClick: () => void;
+  children: ReactNode;
+  expanded?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      aria-expanded={expanded}
+      onClick={onClick}
+      className="whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition-opacity hover:opacity-80"
+      style={{ background: "var(--border)", border: "1px solid var(--border-strong)", color: "var(--text-soft)" }}
+    >
+      {children}
+    </button>
   );
 }
 
@@ -232,6 +258,8 @@ export type TimelineEntry = {
   filled: number;
   capacity: number;
   past?: boolean;
+  /** What the row is when a list mixes kinds («Τμήμα», «Ραντεβού»). */
+  kind?: { label: string; tone: "class" | "appointment" };
 };
 
 /** Today's classes as a vertical timeline with a capacity bar per class. */
@@ -256,8 +284,23 @@ export function ClassTimeline({ entries }: { entries: TimelineEntry[] }) {
               className="mb-1 min-w-0 flex-1 rounded-[1.3rem] px-4 py-3 transition-transform hover:-translate-y-0.5"
               style={{ background: "var(--panel-muted)", border: "1px solid var(--border)" }}
             >
-              <span className="block truncate text-sm font-semibold" style={{ color: "var(--text)" }}>
-                {entry.title}
+              <span className="flex min-w-0 items-center gap-2">
+                {entry.kind ? (
+                  <span
+                    data-testid="timeline-kind"
+                    className="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.06em]"
+                    style={
+                      entry.kind.tone === "class"
+                        ? { background: "color-mix(in srgb, var(--primary) 12%, transparent)", color: "var(--primary-strong)" }
+                        : { background: "var(--panel)", border: "1px solid var(--border)", color: "var(--warning)" }
+                    }
+                  >
+                    {entry.kind.label}
+                  </span>
+                ) : null}
+                <span className="min-w-0 truncate text-sm font-semibold" style={{ color: "var(--text)" }}>
+                  {entry.title}
+                </span>
               </span>
               <span className="mt-2 flex items-center gap-3">
                 <span className="h-1.5 flex-1 overflow-hidden rounded-full" style={{ background: "var(--border)" }}>
@@ -410,10 +453,13 @@ export function StatPill({ label, value, href, warn = false, loading = false }: 
 export type HubGroup = { label: string; items: Array<{ label: string; href: string; icon: IconName }> };
 
 /** Every page the role can open, as icon tiles grouped by area. */
+// Each tool group gets its own icon colour (ANR, 2026-11-03), from the theme.
+const HUB_TONES = ["var(--primary-strong)", "var(--success)", "var(--warning)", "var(--info)", "var(--heat)"];
+
 export function HubTiles({ groups }: { groups: HubGroup[] }) {
   return (
     <section className="grid gap-6 lg:grid-cols-3">
-      {groups.map((group) => (
+      {groups.map((group, groupIndex) => (
         <div key={group.label} className="rounded-[2rem] p-6" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
           <p className="text-xs font-semibold uppercase tracking-[0.26em]" style={{ color: "var(--primary-strong)" }}>
             {group.label}
@@ -423,13 +469,14 @@ export function HubTiles({ groups }: { groups: HubGroup[] }) {
               <li key={item.href} className="min-w-0">
                 <Link
                   href={item.href}
-                  className="flex h-full items-center gap-2.5 rounded-[1.2rem] px-3 py-3 text-sm font-semibold transition-colors hover:bg-[var(--border)]"
+                  className="flex h-full items-center justify-between gap-2.5 rounded-[1.2rem] px-3 py-3 text-sm font-semibold transition-colors hover:bg-[var(--border)]"
                   style={{ background: "var(--panel-muted)", border: "1px solid var(--border)", color: "var(--text)" }}
                 >
-                  <span className="shrink-0" style={{ color: "var(--primary-strong)" }}>
+                  {/* Label first, the coloured line icon on the right of the same row. */}
+                  <span className="min-w-0 break-words leading-tight">{item.label}</span>
+                  <span data-testid="hub-tile-icon" className="shrink-0" style={{ color: HUB_TONES[groupIndex % HUB_TONES.length] }}>
                     <DashboardIcon name={item.icon} className="h-[18px] w-[18px]" />
                   </span>
-                  <span className="min-w-0 break-words leading-tight">{item.label}</span>
                 </Link>
               </li>
             ))}

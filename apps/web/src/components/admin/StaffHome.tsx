@@ -9,13 +9,12 @@ import { fetchAthletes } from "@/api/admin";
 import { fetchPRDossierMembers } from "@/api/admin-users";
 import { filterDossierMembers } from "@/components/admin/users/admin-user-profile";
 import { fetchCleaningAreas, fetchCoachingRelationships, fetchMyClientStats, startCoachingRelationship } from "@/api/roles";
-import { fetchAppointmentSlots } from "@/api/staff";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
 import {
   ActionTiles,
   AvatarChips,
+  CardAction,
   CardLink,
-  ClassTimeline,
   CountBadge,
   DashboardCard,
   EmptyNote,
@@ -27,11 +26,8 @@ import { formatDateTime } from "@/components/client/format";
 import { useSession } from "@/components/session-provider";
 import { CleaningLog } from "@/components/staff/CleaningLog";
 import { SquadsSection } from "@/components/community/squads/SquadsSection";
-import { FormReviewQueue } from "@/components/staff/FormReviewQueue";
-import { ScalingQueue } from "@/components/scaling/ScalingQueue";
 import { SetupRecipeCard } from "@/components/admin/setup/SetupRecipeCard";
 import { CollectEntry } from "@/components/admin/collect/CollectEntry";
-import { ReplyQueue } from "@/components/staff/ReplyQueue";
 import {
   inputClass,
   inputStyle,
@@ -47,8 +43,10 @@ import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
 import { can } from "@/lib/role-navigation";
 
 // The staff home (ADR-103, ADR-135): every staff role gets the dashboard,
-// trimmed to what its capabilities open, with role cards under the metrics.
-// A janitor's home stays the cleaning log.
+// trimmed to what its capabilities open. A janitor's home stays the cleaning
+// log. Layout B (ANR, 2026-11-03): set-up first, then «Σήμερα» beside
+// «Θέλει προσοχή» (which also holds the coach's queues), the role cards,
+// «Οι άνθρωποί σου», and every tool last. See AdminDashboard.
 
 type Membership = ReturnType<typeof useSelectedMembershipRole>["membership"];
 
@@ -82,20 +80,18 @@ export function StaffHome() {
   const has = (capability: string) => can(membership, capability);
 
   return (
-    <AdminDashboard membership={membership}>
-      {/* ADR-255: a new box picks its kind once (mockup s10 A). */}
-      <SetupRecipeCard membership={membership} />
+    <AdminDashboard
+      membership={membership}
+      // ADR-255: a new box picks its kind once (mockup s10 A); first while it is to do.
+      setup={<SetupRecipeCard membership={membership} />}
+      appointments={coach && has("manage_appointments")}
+      coachQueues={coach && has("manage_coaching")}
+      people={coach ? <PeopleSection membership={membership} /> : null}
+    >
       {/* ADR-272: «Είσπραξη» with Tap to Pay, on a staff phone only. */}
       {has("take_payments") ? <CollectEntry /> : null}
       {frontDesk ? <FrontDeskCard membership={membership} /> : null}
       {accountant ? <AccountsCard membership={membership} /> : null}
-      {coach ? <MyClientsSection membership={membership} /> : null}
-      {coach ? <SquadsSection membership={membership} /> : null}
-      {coach && has("manage_appointments") ? <MyAppointments /> : null}
-      {coach && has("manage_coaching") ? <ReplyQueue /> : null}
-      {coach && has("manage_coaching") ? <FormReviewQueue /> : null}
-      {coach ? <MemberPRsSection /> : null}
-      {coach && has("manage_coaching") ? <ScalingQueue /> : null}
       {frontDesk && (has("review_cleaning") || has("record_cleaning")) ? <CleaningStatus /> : null}
     </AdminDashboard>
   );
@@ -156,18 +152,15 @@ export function MyClientsSection({ membership }: { membership: Membership }) {
   const canTake = can(membership, "self_assign_athletes");
   const takeError = take.isError ? (roleErrorKey(take.error) ? i18n(roleErrorKey(take.error)!) : localizeError(take.error, i18n)) : null;
   const takeButton = canTake ? (
-    <button
-      type="button"
-      aria-expanded={taking}
-      className={secondaryButtonClass}
-      style={secondaryButtonStyle}
+    <CardAction
+      expanded={taking}
       onClick={() => {
         setTaking((value) => !value);
         take.reset();
       }}
     >
       {taking ? i18n("cancel77dfd21") : i18n("rhTakeAthlete")}
-    </button>
+    </CardAction>
   ) : null;
 
   return (
@@ -255,12 +248,30 @@ export function MyClientsSection({ membership }: { membership: Membership }) {
   );
 }
 
+/** «Οι άνθρωποί σου»: find any box member, then the coach's clients and groups. */
+function PeopleSection({ membership }: { membership: Membership }) {
+  const i18n = useUiTranslations();
+  return (
+    <section id="home-people" aria-labelledby="home-people-title" className="space-y-3">
+      <h2 id="home-people-title" className="text-base font-bold" style={{ color: "var(--text)" }}>
+        {i18n("shPeopleTitle")}
+      </h2>
+      <MemberSearch />
+      <div className="grid items-stretch gap-6 md:grid-cols-2 md:[&>*:only-child]:col-span-2">
+        <MyClientsSection membership={membership} />
+        <SquadsSection membership={membership} />
+      </div>
+    </section>
+  );
+}
+
 /**
  * ADR-132: every coach of the gym reads members' PRs (ADR-129), while "My
- * clients" lists only their own clients (ADR-100). Search first, then the
- * matches as chips — nothing long until the coach asks for it.
+ * clients" lists only their own clients (ADR-100). One search field: nobody
+ * is listed until the coach types, and a match opens the member's profile
+ * at their PRs.
  */
-function MemberPRsSection() {
+function MemberSearch() {
   const t = useTranslations("PrSharing");
   const i18n = useUiTranslations();
   const { tokens } = useSession();
@@ -274,88 +285,49 @@ function MemberPRsSection() {
     queryFn: () => fetchPRDossierMembers(token!),
     staleTime: 60_000,
   });
-  // Nobody is listed until the coach types: the card stays short.
-  const matches = search.trim() ? filterDossierMembers(members.data?.members ?? [], search).slice(0, 8) : [];
+  const typed = search.trim();
+  const list = Array.isArray(members.data?.members) ? members.data.members : [];
+  const matches = typed ? filterDossierMembers(list, search).slice(0, 8) : [];
 
   return (
-    <DashboardCard id="home-member-prs" eyebrow={t("membersTitle")}>
-      <div className="space-y-3">
-        <p className="text-xs" style={{ color: "var(--dim)" }}>{t("membersHint")}</p>
+    <div id="home-member-search" className="space-y-2">
+      <label
+        className="flex items-center gap-3 rounded-[1.4rem] px-4 py-2 focus-within:ring-2 focus-within:ring-[var(--focus-ring)]"
+        style={{ background: "var(--panel)", border: "1px solid var(--border)" }}
+      >
+        <span aria-hidden="true" style={{ color: "var(--dim)" }}>⌕</span>
         <input
-          aria-label={t("membersSearch")}
-          placeholder={t("membersSearch")}
-          className={inputClass}
-          style={inputStyle}
+          aria-label={i18n("shMemberSearch")}
+          placeholder={i18n("shMemberSearch")}
+          className="min-w-0 flex-1 bg-transparent py-1.5 text-sm outline-none"
+          style={{ color: "var(--text)" }}
           value={search}
           onChange={(event) => setSearch(event.target.value)}
         />
-        {members.isPending ? (
-          <StatusText tone="muted">{i18n("loading33ce417")}</StatusText>
-        ) : members.isError ? (
-          <StatusText tone="error">{t("membersLoadError")}</StatusText>
-        ) : !search.trim() ? null : matches.length === 0 ? (
-          <EmptyNote>{t("membersEmpty")}</EmptyNote>
-        ) : (
-          <AvatarChips
-            people={matches.map((member) => ({
-              id: member.id,
-              name: member.nickname,
-              href: `${adminHref(`/admin/users/${member.id}`, organizationSlug)}#prs`,
-            }))}
-          />
-        )}
-      </div>
-    </DashboardCard>
-  );
-}
-
-function MyAppointments() {
-  const i18n = useUiTranslations();
-  const locale = useUiLocale();
-  const { tokens, currentUser } = useSession();
-  const token = tokens?.access_token;
-  const organizationSlug = useOrganizationSlug();
-  const query = useQuery({
-    queryKey: ["staff", "home", "appointments", currentUser?.id],
-    enabled: Boolean(token && currentUser?.id),
-    queryFn: () => {
-      const from = new Date();
-      const to = new Date(from);
-      to.setDate(from.getDate() + 7);
-      return fetchAppointmentSlots(token!, { from: from.toISOString(), to: to.toISOString(), coach_id: currentUser!.id });
-    },
-  });
-  const slots = (query.data ?? []).filter((slot) => !slot.cancelled_at).sort((a, b) => a.starts_at.localeCompare(b.starts_at));
-  const booked = (slot: (typeof slots)[number]) => (slot.bookings ?? []).filter((booking) => booking.status === "booked").length;
-  const href = adminHref("/admin/appointments", organizationSlug);
-
-  return (
-    <DashboardCard
-      id="home-appointments"
-      eyebrow={i18n("rhMyAppointments")}
-      badge={query.data ? <CountBadge value={slots.length} /> : null}
-      action={<CardLink href={href}>{i18n("open6f4789b")}</CardLink>}
-    >
-      {query.isPending ? (
-        <StatusText tone="muted">{i18n("loading33ce417")}</StatusText>
-      ) : query.isError ? (
-        <StatusText tone="error">{localizeError(query.error, i18n)}</StatusText>
-      ) : slots.length === 0 ? (
-        <EmptyNote>{i18n("rhAppointmentsThisWeek", { count: 0 })}</EmptyNote>
-      ) : (
-        <ClassTimeline
-          entries={slots.slice(0, 4).map((slot) => ({
-            id: slot.id,
-            time: new Intl.DateTimeFormat(locale, { weekday: "short" }).format(new Date(slot.starts_at)),
-            title: formatDateTime(slot.starts_at, locale),
-            href,
-            caption: i18n("rhBookedCount", { count: booked(slot), capacity: slot.capacity }),
-            filled: booked(slot),
-            capacity: slot.capacity,
-          }))}
-        />
+        <span className="hidden shrink-0 text-xs sm:inline" style={{ color: "var(--dim)" }}>
+          {i18n("shMemberSearchHint")}
+        </span>
+      </label>
+      {!typed ? null : (
+        <div className="rounded-[1.4rem] p-3" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
+          {members.isPending ? (
+            <StatusText tone="muted">{i18n("loading33ce417")}</StatusText>
+          ) : members.isError ? (
+            <StatusText tone="error">{t("membersLoadError")}</StatusText>
+          ) : matches.length === 0 ? (
+            <EmptyNote>{t("membersEmpty")}</EmptyNote>
+          ) : (
+            <AvatarChips
+              people={matches.map((member) => ({
+                id: member.id,
+                name: member.nickname,
+                href: `${adminHref(`/admin/users/${member.id}`, organizationSlug)}#prs`,
+              }))}
+            />
+          )}
+        </div>
       )}
-    </DashboardCard>
+    </div>
   );
 }
 

@@ -15,6 +15,8 @@ const CAPABILITY_LABELS: Record<string, string> = {
   view_finance_reports: "roleAccessReports",
   manage_spaces: "roleAccessSpaces",
   manage_health_certificates: "roleAccessHealthCertificates",
+  manage_shop: "roleAccessShop",
+  view_business_analytics: "roleAccessAnalytics",
 };
 
 /** What this gym unlocks for front desk in Finance (navigation-by-role §3). */

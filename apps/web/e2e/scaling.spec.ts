@@ -142,7 +142,14 @@ test("the owner switches suggestions on with the gym's key", async ({ page }) =>
 test("a coach approves a suggestion with an edit and drops one change", async ({ page }) => {
   const approvals: Array<Record<string, unknown>> = [];
   await stubOwner(page, [], approvals);
+  // The staff home counts the queue in «Needs attention»; the row opens the
+  // «Scaling» tab of the coaching workspace, where the coach reviews it.
   await page.goto("/admin");
+  const row = page.locator("#home-attention").getByRole("link", { name: "1 scaling suggestion" });
+  await expect(row).toBeVisible();
+  await expect(page.getByTestId("scaling-suggestion")).toHaveCount(0);
+  await row.click();
+  await expect(page).toHaveURL(/\/admin\/coaching\?tab=scaling/);
   const card = page.getByTestId("scaling-suggestion");
   await expect(card).toContainText("Maria L");
   await expect(card).toContainText("knee");
