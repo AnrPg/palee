@@ -11865,6 +11865,10 @@
         "title": "Compte et paiements",
         "hint": "Sécurité, factures, renouvellements et commandes"
       }
+    },
+    "bookingEmail": {
+      "title": "E-mail de réservation avec invitation d’agenda",
+      "hint": "Un e-mail quand vous réservez un cours, puis s’il change ou est annulé, avec l’invitation pour votre agenda"
     }
   },
   "Spaces": {

@@ -11865,6 +11865,10 @@
         "title": "Account & payments",
         "hint": "Security, invoices, renewals and orders"
       }
+    },
+    "bookingEmail": {
+      "title": "Booking email with calendar invite",
+      "hint": "One email when you book a class, and when it moves or is cancelled, with the invite for your calendar"
     }
   },
   "Spaces": {

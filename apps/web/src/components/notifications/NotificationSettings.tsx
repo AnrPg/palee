@@ -14,6 +14,7 @@ import {
   type NotificationPreferenceList,
 } from "@/api/notifications";
 import { CollapsibleSection } from "@/components/profile/CollapsibleSection";
+import { applyChange, emailSwitch } from "@/components/notifications/notification-preferences";
 import { PushDeviceCard } from "@/components/notifications/PushDeviceCard";
 import { useSession } from "@/components/session-provider";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
@@ -21,6 +22,7 @@ import { useOrganizationMemberships } from "@/lib/membership-role";
 import { hasStaffRole } from "@/lib/role-navigation";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 
+// The columns; the booking email (ADR-392) is its own switch under its row.
 const CHANNELS: NotificationChannel[] = ["in_app", "push"];
 
 /**
@@ -107,15 +109,6 @@ export function NotificationSettings() {
   );
 }
 
-function applyChange(
-  channels: NotificationPreference["channels"],
-  change: Partial<Record<NotificationChannel, boolean>>,
-): NotificationPreference["channels"] {
-  const next = { ...channels, ...change };
-  // A push is made from the bell's notification, so it needs the bell (ADR-199).
-  return next.in_app === false ? { ...next, push: false } : next;
-}
-
 function CategoryRow({
   row,
   pending,
@@ -127,13 +120,11 @@ function CategoryRow({
 }) {
   const t = useTranslations("NotificationSettings");
   const title = t(`category.${row.category}.title`);
+  const email = emailSwitch(row);
 
   return (
-    <div
-      data-category={row.category}
-      className="flex items-center justify-between gap-3 py-3"
-      style={{ borderTop: "1px solid var(--border)" }}
-    >
+    <div data-category={row.category} style={{ borderTop: "1px solid var(--border)" }}>
+    <div className="flex items-center justify-between gap-3 py-3">
       <div className="min-w-0">
         <p className="text-sm font-semibold" style={{ color: "var(--text)" }}>{title}</p>
         <p className="mt-0.5 text-xs leading-5" style={{ color: "var(--muted)" }}>
@@ -172,6 +163,22 @@ function CategoryRow({
           })}
         </div>
       )}
+    </div>
+    {email ? (
+      // ADR-392: «Email κράτησης με ημερολόγιο», one switch, on by default.
+      <div className="flex items-center justify-between gap-3 pb-3 ps-3" data-testid="booking-email-switch">
+        <div className="min-w-0">
+          <p className="text-sm font-semibold" style={{ color: "var(--text)" }}>{t("bookingEmail.title")}</p>
+          <p className="mt-0.5 text-xs leading-5" style={{ color: "var(--muted)" }}>{t("bookingEmail.hint")}</p>
+        </div>
+        <Switch
+          on={email.on}
+          disabled={pending}
+          label={t("bookingEmail.title")}
+          onChange={(next) => onChange("email", next)}
+        />
+      </div>
+    ) : null}
     </div>
   );
 }

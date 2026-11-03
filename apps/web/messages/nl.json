@@ -11865,6 +11865,10 @@
         "title": "Account en betalingen",
         "hint": "Beveiliging, facturen, verlengingen en bestellingen"
       }
+    },
+    "bookingEmail": {
+      "title": "Boekingsmail met agenda-uitnodiging",
+      "hint": "Eén e-mail als je een les boekt, en als die verandert of wordt geannuleerd, met de uitnodiging voor je agenda"
     }
   },
   "Spaces": {

@@ -11865,6 +11865,10 @@
         "title": "Konto & Zahlungen",
         "hint": "Sicherheit, Rechnungen, Verlängerungen und Bestellungen"
       }
+    },
+    "bookingEmail": {
+      "title": "Buchungs-E-Mail mit Kalendereinladung",
+      "hint": "Eine E-Mail, wenn du einen Kurs buchst und wenn er sich ändert oder abgesagt wird, mit der Einladung für deinen Kalender"
     }
   },
   "Spaces": {

@@ -11865,6 +11865,10 @@
         "title": "Conta e pagamentos",
         "hint": "Segurança, faturas, renovações e encomendas"
       }
+    },
+    "bookingEmail": {
+      "title": "Email de reserva com convite de calendário",
+      "hint": "Um email quando reserva uma aula, e quando muda ou é cancelada, com o convite para o seu calendário"
     }
   },
   "Spaces": {

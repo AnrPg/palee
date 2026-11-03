@@ -11865,6 +11865,10 @@
         "title": "Account e pagamenti",
         "hint": "Sicurezza, fatture, rinnovi e ordini"
       }
+    },
+    "bookingEmail": {
+      "title": "Email di prenotazione con invito del calendario",
+      "hint": "Un’email quando prenoti una lezione, e quando cambia o viene annullata, con l’invito per il tuo calendario"
     }
   },
   "Spaces": {

@@ -251,10 +251,10 @@ msgid "Where"
 msgstr "איפה"
 
 msgid "The attached invite adds the class to your calendar, or updates it."
-msgstr "ההזמנה המצורפת מוסיפה את השיעור ליומן שלך או מעדכנת אותו."
+msgstr "הזימון המצורף מוסיף את השיעור ליומן שלך או מעדכן אותו."
 
 msgid "The attached invite removes the class from your calendar."
-msgstr "ההזמנה המצורפת מסירה את השיעור מהיומן שלך."
+msgstr "הזימון המצורף מסיר את השיעור מהיומן שלך."
 
 msgid "Open in the app"
 msgstr "פתיחה באפליקציה"
