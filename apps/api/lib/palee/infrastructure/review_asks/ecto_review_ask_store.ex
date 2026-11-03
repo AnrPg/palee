@@ -313,7 +313,6 @@ defmodule Palee.Infrastructure.ReviewAsks.EctoReviewAskStore do
       :rating,
       :rating_count,
       :maps_uri,
-      :reviews,
       :status,
       :fetched_at,
       :next_refresh_at,

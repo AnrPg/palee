@@ -34,6 +34,7 @@ defmodule Palee.Channels.Domain.UnsubscribeLink do
   def verify(key, token) when is_binary(token) and byte_size(token) <= 64 do
     with {:ok, <<raw::binary-size(@id_bytes), given::binary-size(@mac_bytes)>>} <-
            Base.url_decode64(token, padding: false),
+         true <- Base.url_encode64(raw <> given, padding: false) == token,
          true <- Plug.Crypto.secure_compare(mac(key, raw), given) do
       Ecto.UUID.load(raw)
     else

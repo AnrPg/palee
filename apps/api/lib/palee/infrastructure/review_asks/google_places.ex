@@ -17,7 +17,8 @@ defmodule Palee.Infrastructure.ReviewAsks.GooglePlaces do
 
   @base "https://places.googleapis.com/v1"
   @search_mask "places.id,places.displayName,places.formattedAddress,places.rating,places.userRatingCount"
-  @details_mask "id,displayName,rating,userRatingCount,googleMapsUri,reviews"
+  # No `reviews`: their texts and authors are not read (ADR-387 amendment).
+  @details_mask "id,displayName,rating,userRatingCount,googleMapsUri"
   @place_id ~r/^[A-Za-z0-9_-]{10,300}$/
 
   @impl true
@@ -94,20 +95,7 @@ defmodule Palee.Infrastructure.ReviewAsks.GooglePlaces do
       name: get_in(body, ["displayName", "text"]),
       rating: body["rating"],
       rating_count: body["userRatingCount"],
-      maps_uri: body["googleMapsUri"],
-      reviews: body |> Map.get("reviews", []) |> List.wrap() |> Enum.map(&review/1)
-    }
-  end
-
-  defp review(review) do
-    %{
-      author_name: get_in(review, ["authorAttribution", "displayName"]),
-      author_uri: get_in(review, ["authorAttribution", "uri"]),
-      author_photo_uri: get_in(review, ["authorAttribution", "photoUri"]),
-      rating: review["rating"],
-      text: get_in(review, ["text", "text"]) || get_in(review, ["originalText", "text"]),
-      relative_time: review["relativePublishTimeDescription"],
-      published_at: review["publishTime"]
+      maps_uri: body["googleMapsUri"]
     }
   end
 end

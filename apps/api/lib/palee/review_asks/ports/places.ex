@@ -7,9 +7,8 @@ defmodule Palee.ReviewAsks.Ports.Places do
   Both callbacks answer normalised maps (string values, no raw JSON):
 
     * `search/2` – `[%{place_id, name, address, rating, rating_count}]`;
-    * `details/2` – `%{place_id, name, rating, rating_count, maps_uri,
-      reviews: [%{author_name, author_uri, author_photo_uri, rating, text,
-      relative_time, published_at}]}`.
+    * `details/2` – `%{place_id, name, rating, rating_count, maps_uri}`
+      (no review texts or authors: ADR-387 amendment, 2026-11-03).
 
   `opts`: `language` (the box's language for Google's texts).
   """

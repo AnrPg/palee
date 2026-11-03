@@ -32,18 +32,7 @@ defmodule Palee.Infrastructure.ReviewAsks.SandboxPlaces do
        name: "Box (sandbox)",
        rating: 4.8,
        rating_count: 126,
-       maps_uri: "https://maps.google.com/?cid=1",
-       reviews: [
-         %{
-           author_name: "Μαρία Π.",
-           author_uri: "https://www.google.com/maps/contrib/1",
-           author_photo_uri: nil,
-           rating: 5,
-           text: "Υπέροχοι coaches.",
-           relative_time: "πριν από 2 μήνες",
-           published_at: "2026-09-01T10:00:00Z"
-         }
-       ]
+       maps_uri: "https://maps.google.com/?cid=1"
      }}
   end
 end

@@ -1,13 +1,12 @@
 defmodule Palee.ReviewAsks.Domain.GooglePlacePolicy do
   @moduledoc """
-  ADR-387: the box's Google rating and reviews, read from the Places API and
-  kept as a snapshot refreshed once a day.
+  ADR-387: the box's Google rating, read from the Places API and kept as a
+  snapshot refreshed once a day.
 
-    * At most #{5} reviews are kept: what Google returns, in Google's order,
-      never chosen by Palee (no gating, ADR-355).
-    * Each review keeps its author attribution (name, profile link, photo)
-      and Google's own relative time, as Google's attribution rules ask; the
-      site and app show «Από το Google» next to them.
+    * Only the rating, the number of reviews, the name and the Maps link
+      are kept. Until a lawyer has checked Google's terms, no review texts
+      or authors are read, stored or shown (product owner, 2026-11-03; data
+      minimisation). The site and app show «Από το Google» next to them.
     * A snapshot older than #{7} days is not shown (the refresh failed for a
       week); the rating then waits for the next good read.
     * Failures back off from 1 hour to the daily refresh.
@@ -15,14 +14,10 @@ defmodule Palee.ReviewAsks.Domain.GooglePlacePolicy do
   Pure: callers bring the read and the time.
   """
 
-  @max_reviews 5
-  @max_text 1_500
   @refresh_hours 24
   @stale_days 7
   @min_query 3
   @max_query 120
-
-  def max_reviews, do: @max_reviews
 
   @doc "Validates a search text: `{:ok, query}` or `{:error, :invalid_place_query}`."
   def query(value) when is_binary(value) do
@@ -44,7 +39,6 @@ defmodule Palee.ReviewAsks.Domain.GooglePlacePolicy do
       rating: rating(details[:rating]),
       rating_count: count(details[:rating_count]),
       maps_uri: uri(details[:maps_uri]),
-      reviews: details |> Map.get(:reviews, []) |> Enum.take(@max_reviews) |> Enum.map(&review/1),
       status: "ok",
       attempts: 0,
       fetched_at: now,
@@ -60,7 +54,6 @@ defmodule Palee.ReviewAsks.Domain.GooglePlacePolicy do
       rating: nil,
       rating_count: nil,
       maps_uri: nil,
-      reviews: [],
       status: "not_found",
       attempts: 0,
       fetched_at: now,
@@ -97,26 +90,10 @@ defmodule Palee.ReviewAsks.Domain.GooglePlacePolicy do
 
   def visible(_snapshot, _place_id, _now), do: nil
 
-  defp review(review) do
-    %{
-      "author_name" => clip(review[:author_name], 80),
-      "author_uri" => uri(review[:author_uri]),
-      "author_photo_uri" => uri(review[:author_photo_uri]),
-      "rating" => review |> Map.get(:rating) |> star(),
-      "text" => clip(review[:text], @max_text),
-      "relative_time" => clip(review[:relative_time], 60),
-      "published_at" => clip(review[:published_at], 40)
-    }
-  end
-
   defp rating(value) when is_number(value) and value >= 1 and value <= 5,
     do: Decimal.from_float(value * 1.0) |> Decimal.round(1)
 
   defp rating(_value), do: nil
-
-  defp star(value) when is_integer(value) and value in 1..5, do: value
-  defp star(value) when is_float(value), do: value |> round() |> max(1) |> min(5)
-  defp star(_value), do: nil
 
   defp count(value) when is_integer(value) and value >= 0, do: value
   defp count(_value), do: nil

@@ -39,47 +39,23 @@ defmodule PaleeWeb.Schemas.BoxReviews do
     }
   end
 
-  def google_review do
-    %Schema{
-      title: "GoogleReview",
-      type: :object,
-      properties: %{
-        author_name: @text,
-        author_uri: @text,
-        author_photo_uri: @text,
-        rating: %Schema{type: :integer, nullable: true},
-        text: @text,
-        relative_time: @text,
-        published_at: @text
-      },
-      required: [
-        :author_name,
-        :author_photo_uri,
-        :author_uri,
-        :published_at,
-        :rating,
-        :relative_time,
-        :text
-      ]
-    }
-  end
-
   def google do
     %Schema{
       title: "GoogleListing",
       type: :object,
       nullable: true,
-      description: "The box's Google rating and up to five reviews, kept apart (ADR-387)",
+      description:
+        "The box's Google rating and number of reviews, kept apart (ADR-387); " <>
+          "no review texts until a legal check of Google's terms",
       properties: %{
         name: @text,
         rating: %Schema{type: :number, nullable: true},
         count: %Schema{type: :integer, nullable: true},
         maps_uri: @text,
         write_review_url: @text,
-        fetched_at: @time,
-        reviews: %Schema{type: :array, items: google_review(), maxItems: 5}
+        fetched_at: @time
       },
-      required: [:count, :fetched_at, :maps_uri, :name, :rating, :reviews, :write_review_url]
+      required: [:count, :fetched_at, :maps_uri, :name, :rating, :write_review_url]
     }
   end
 

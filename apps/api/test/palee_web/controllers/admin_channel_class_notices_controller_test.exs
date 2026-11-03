@@ -113,8 +113,7 @@ defmodule PaleeWeb.AdminChannelClassNoticesControllerTest do
     |> send_json(:put, "#{ctx.base}/settings", %{
       provider: "sandbox",
       channels: ["sms"],
-      quiet_start: nil,
-      quiet_end: nil
+      monthly_budget_cents: 2000
     })
     |> json_response(200)
 
