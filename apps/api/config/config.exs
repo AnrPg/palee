@@ -32,6 +32,8 @@ config :palee, Oban,
        {"*/5 * * * *", Palee.Workers.BoxSiteJob},
        # ADR-387: refresh due Google listings (each box once a day).
        {"17 * * * *", Palee.Workers.GooglePlacesJob},
+       # ADR-397: removed review texts after 6 months; the open reports summary.
+       {"10 7 * * *", Palee.Workers.ReviewReportsDailyJob},
        {"*/15 * * * *", Palee.Workers.RefreshFinanceAggregatesJob},
        {"*/15 * * * *", Palee.Workers.RefreshCoachingAggregatesJob},
        {"0 2 * * *", Palee.Workers.MarkOverdueInvoicesJob},
@@ -620,6 +622,14 @@ config :palee,
 config :palee, :push_key_store, Palee.Infrastructure.Notifications.EctoPushKeyStore
 config :palee, :web_push_auto_keys, true
 config :palee, :web_push_default_subject, "mailto:alerts@palee.app"
+
+# ADR-397: the Palee team's review moderation. `contact_email` is named in
+# every statement of reasons and in the box website's footer; the daily
+# summary of open review reports goes to `team_email` in `team_locale`.
+config :palee, :review_moderation,
+  contact_email: "moderation@palee.app",
+  team_email: "moderation@palee.app",
+  team_locale: "el"
 
 config :palee,
        :notification_store,

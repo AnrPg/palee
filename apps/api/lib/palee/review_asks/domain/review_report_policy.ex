@@ -15,6 +15,9 @@ defmodule Palee.ReviewAsks.Domain.ReviewReportPolicy do
       the author sees it) or `remove` (the text and the box's reply go). A
       hide or remove names its ground and a statement the author receives
       (DSA Art. 17); every reporter hears the outcome (DSA Art. 16(5)).
+    * The Palee team may later `restore` a hidden review, with a statement
+      the author receives too. A removed text is kept 6 months after the
+      decision, then only the decision remains.
   """
 
   @reasons ~w(offensive personal_data not_genuine spam illegal other)
@@ -26,6 +29,7 @@ defmodule Palee.ReviewAsks.Domain.ReviewReportPolicy do
   @daily_limit 10
 
   @status_by_outcome %{"keep" => "kept", "hide" => "hidden", "remove" => "removed"}
+  @removed_text_days 183
 
   def reasons, do: @reasons
   def roles, do: @roles
@@ -35,6 +39,9 @@ defmodule Palee.ReviewAsks.Domain.ReviewReportPolicy do
   def daily_limit, do: @daily_limit
   def max_note, do: @max_note
   def max_statement, do: @max_statement
+
+  @doc "Before when a removed review's text and the notes on it are cleared (6 months)."
+  def removed_text_before(now), do: DateTime.add(now, -@removed_text_days * 24 * 3600, :second)
 
   @doc """
   Validates a report (string keys): `{:ok, %{reason, note}}` or
@@ -123,8 +130,23 @@ defmodule Palee.ReviewAsks.Domain.ReviewReportPolicy do
   defp statement_present(_outcome, nil), do: {:error, {:invalid_fields, %{statement: "required"}}}
   defp statement_present(_outcome, _statement), do: :ok
 
+  @doc """
+  Validates a restore of a hidden review (string keys): a statement for the
+  author is required. `{:ok, %{outcome: "restore", ground: "no_violation", statement}}`.
+  """
+  def restore(params) when is_map(params) do
+    case statement(Map.get(params, "statement")) do
+      {:ok, nil} -> {:error, {:invalid_fields, %{statement: "required"}}}
+      {:ok, text} -> {:ok, %{outcome: "restore", ground: "no_violation", statement: text}}
+      error -> error
+    end
+  end
+
+  def restore(_params), do: {:error, {:invalid_fields, %{statement: "required"}}}
+
   @doc "What the decision does to the review."
   def review_changes("keep", _now), do: %{moderation: nil, moderated_at: nil}
+  def review_changes("restore", _now), do: %{moderation: nil, moderated_at: nil}
   def review_changes("hide", now), do: %{moderation: "hidden", moderated_at: now}
 
   def review_changes("remove", now) do
@@ -152,9 +174,10 @@ defmodule Palee.ReviewAsks.Domain.ReviewReportPolicy do
   @doc """
   The statement of reasons as the author reads it (DSA Art. 17(3)): what
   was restricted, the ground and its basis, the facts in Palee's words,
-  that a person decided (no automated means), and where to seek redress.
+  that a person decided (no automated means), and where to seek redress:
+  Palee's moderation contact, or the courts.
   """
-  def statement_of_reasons(%{outcome: outcome, ground: ground} = decision) do
+  def statement_of_reasons(%{outcome: outcome, ground: ground} = decision, contact \\ nil) do
     %{
       outcome: outcome,
       ground: ground,
@@ -163,7 +186,8 @@ defmodule Palee.ReviewAsks.Domain.ReviewReportPolicy do
       after_report: (decision.reports_count || 0) > 0,
       automated: false,
       decided_at: decision.decided_at,
-      redress: ~w(ask_palee_again court)
+      redress: ~w(contact_palee court),
+      contact: contact
     }
   end
 

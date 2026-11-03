@@ -844,3 +844,9 @@ msgstr "Екипът на Palee скри твоя отзив"
 
 msgid "See why and what you can do."
 msgstr "Виж защо и какво можеш да направиш."
+
+msgid "The Palee team restored your review"
+msgstr "Екипът на Palee възстанови твоя отзив"
+
+msgid "Your review shows again in the box's reviews."
+msgstr "Отзивът ти отново се вижда сред отзивите за бокса."

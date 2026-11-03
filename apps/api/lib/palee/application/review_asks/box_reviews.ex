@@ -149,7 +149,8 @@ defmodule Palee.Application.ReviewAsks.BoxReviews do
             after_report: false,
             automated: false,
             decided_at: review.moderated_at,
-            redress: []
+            redress: ~w(contact_palee court),
+            contact: ReviewAsks.moderation_contact()
           }
 
         decision ->

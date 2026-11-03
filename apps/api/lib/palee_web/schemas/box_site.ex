@@ -297,6 +297,11 @@ defmodule PaleeWeb.Schemas.BoxSite do
           required: [:contact, :kinds, :trial]
         },
         reviews: BoxReviews.site_reviews(),
+        report_contact: %Schema{
+          type: :string,
+          nullable: true,
+          description: "Palee's address for reporting content on the site (ADR-397, DSA Art. 16)"
+        },
         language: %Schema{type: :string, description: "The box's language (ADR-388)"},
         languages: %Schema{
           type: :array,
@@ -348,6 +353,7 @@ defmodule PaleeWeb.Schemas.BoxSite do
         :forms,
         :language,
         :languages,
+        :report_contact,
         :reviews,
         :sections,
         :slug,

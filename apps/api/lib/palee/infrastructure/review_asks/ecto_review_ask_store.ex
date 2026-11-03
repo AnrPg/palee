@@ -412,6 +412,31 @@ defmodule Palee.Infrastructure.ReviewAsks.EctoReviewAskStore do
     end)
   end
 
+  @impl true
+  def restore_review(%{organization_id: organization_id}, review_id, changes, decision) do
+    Repo.transaction(fn ->
+      review =
+        Repo.one(
+          from r in BoxReview,
+            where: r.organization_id == ^organization_id and r.id == ^review_id,
+            lock: "FOR UPDATE"
+        ) || Repo.rollback(:box_review_not_found)
+
+      if review.moderation != "hidden", do: Repo.rollback(:review_not_hidden)
+
+      updated = review |> Ecto.Changeset.change(changes) |> Repo.update!()
+
+      saved =
+        %BoxReviewDecision{organization_id: organization_id}
+        |> BoxReviewDecision.changeset(
+          Map.merge(decision, %{review_id: review.id, review_author_id: review.user_id})
+        )
+        |> Repo.insert!()
+
+      %{review: review_map(updated), decision: decision_map(saved)}
+    end)
+  end
+
   # The Palee team's reads span every box: the vendor read policy admits
   # them, the session has no organization.
   @impl true
@@ -441,11 +466,30 @@ defmodule Palee.Infrastructure.ReviewAsks.EctoReviewAskStore do
         |> where([r], r.review_id == ^id)
         |> select([r], r.organization_id)
         |> limit(1)
-        |> Repo.one()
+        |> Repo.one() ||
+          BoxReviewDecision
+          |> where([d], d.review_id == ^id)
+          |> select([d], d.organization_id)
+          |> limit(1)
+          |> Repo.one()
 
       :error ->
         nil
     end
+  end
+
+  @impl true
+  def purge_removed_texts(before) do
+    %{rows: [[count]]} = Repo.query!("SELECT palee_purge_removed_review_texts($1)", [before])
+    count
+  end
+
+  @impl true
+  def open_report_totals do
+    %{rows: [[reviews, reports, oldest]]} =
+      Repo.query!("SELECT reviews, reports, oldest FROM palee_open_box_review_reports()")
+
+    %{reviews: reviews, reports: reports, oldest: oldest}
   end
 
   defp decision_map(nil), do: nil

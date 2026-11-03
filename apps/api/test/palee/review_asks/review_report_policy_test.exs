@@ -94,6 +94,20 @@ defmodule Palee.ReviewAsks.Domain.ReviewReportPolicyTest do
     end
   end
 
+  test "a restore needs a statement for the author" do
+    assert {:error, {:invalid_fields, %{statement: "required"}}} = Policy.restore(%{})
+    assert {:error, {:invalid_fields, %{statement: "required"}}} = Policy.restore(nil)
+
+    assert {:ok, %{outcome: "restore", ground: "no_violation", statement: "Λάθος μας."}} =
+             Policy.restore(%{"statement" => " Λάθος μας. "})
+
+    assert Policy.review_changes("restore", @now) == %{moderation: nil, moderated_at: nil}
+  end
+
+  test "removed texts are kept six months" do
+    assert Policy.removed_text_before(@now) == ~U[2026-05-04 10:00:00.000000Z]
+  end
+
   test "what each outcome does to the review and its reports" do
     assert Policy.review_changes("keep", @now) == %{moderation: nil, moderated_at: nil}
     assert Policy.review_changes("hide", @now) == %{moderation: "hidden", moderated_at: @now}
@@ -117,8 +131,9 @@ defmodule Palee.ReviewAsks.Domain.ReviewReportPolicyTest do
              legal_basis: "law",
              after_report: true,
              automated: false,
-             redress: ["ask_palee_again", "court"]
-           } = Policy.statement_of_reasons(decision)
+             redress: ["contact_palee", "court"],
+             contact: "moderation@palee.test"
+           } = Policy.statement_of_reasons(decision, "moderation@palee.test")
 
     assert Policy.legal_basis("offensive") == "terms"
     assert Policy.legal_basis("no_violation") == nil

@@ -844,3 +844,9 @@ msgstr "A equipa Palee ocultou a tua avaliação"
 
 msgid "See why and what you can do."
 msgstr "Vê porquê e o que podes fazer."
+
+msgid "The Palee team restored your review"
+msgstr "A equipa Palee repôs a tua avaliação"
+
+msgid "Your review shows again in the box's reviews."
+msgstr "A tua avaliação volta a aparecer nas avaliações da box."

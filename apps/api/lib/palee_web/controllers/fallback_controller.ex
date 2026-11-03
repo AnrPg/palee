@@ -529,6 +529,7 @@ defmodule PaleeWeb.FallbackController do
     review_report_limit: {:too_many_requests, "Too many reports today; try again tomorrow"},
     review_moderated: {:conflict, "The Palee team hid or removed this review"},
     review_report_decided: {:conflict, "This review has no open reports"},
+    review_not_hidden: {:conflict, "Only a hidden review can be shown again"},
     invalid_review_report_status: {:unprocessable_entity, "Choose open or decided"}
   }
 

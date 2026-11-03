@@ -171,7 +171,9 @@ defmodule PaleeWeb.BoxReviewReportsControllerTest do
                  "legal_basis" => "terms",
                  "statement" => "Η κριτική προσβάλλει έναν coach με το όνομά του.",
                  "after_report" => true,
-                 "automated" => false
+                 "automated" => false,
+                 "redress" => ["contact_palee", "court"],
+                 "contact" => "moderation@palee.app"
                }
              }
            } = ctx.author |> as() |> get("#{ctx.me}/box-reviews") |> json_response(200)
@@ -210,6 +212,46 @@ defmodule PaleeWeb.BoxReviewReportsControllerTest do
              Enum.filter(decisions, &(&1["review_id"] == review_id))
 
     assert is_binary(decided_by)
+
+    assert Enum.all?(
+             Enum.filter(decisions, &(&1["review_id"] == review_id)),
+             &(&1["review_status"] == "hidden")
+           )
+
+    # Restoring needs a statement; then the review is back and the author hears it.
+    restore = fn params ->
+      ctx.vendor |> as() |> post("/api/platform/review-reports/#{review_id}/restore", params)
+    end
+
+    assert %{"errors" => _} = restore.(%{}) |> json_response(422)
+
+    ctx.owner
+    |> as()
+    |> post("/api/platform/review-reports/#{review_id}/restore", %{statement: "x"})
+    |> json_response(403)
+
+    assert %{"outcome" => "restore", "resolved" => 0} =
+             restore.(%{statement: "Το ξαναδείξαμε: ο coach δεν κατονομάζεται πια."})
+             |> json_response(200)
+
+    assert %{"code" => "review_not_hidden"} = restore.(%{statement: "Ξανά"}) |> json_response(409)
+
+    assert %{"count" => 1, "reviews" => [%{"id" => ^review_id}]} =
+             ctx.reporter |> as() |> get("#{ctx.me}/box-reviews") |> json_response(200)
+
+    assert %{"mine" => %{"moderation" => nil}} =
+             ctx.author |> as() |> get("#{ctx.me}/box-reviews") |> json_response(200)
+
+    assert [_restored] =
+             ctx.author
+             |> notices("box_review_moderated")
+             |> Enum.filter(&(&1.payload["outcome"] == "restore"))
+
+    assert %{"decisions" => [%{"outcome" => "restore", "review_status" => "visible"} | _]} =
+             ctx.vendor
+             |> as()
+             |> get("/api/platform/review-reports?status=decided")
+             |> json_response(200)
 
     # The author may still delete it.
     ctx.author |> as() |> delete("#{ctx.me}/box-review") |> response(204)
@@ -279,6 +321,62 @@ defmodule PaleeWeb.BoxReviewReportsControllerTest do
     end)
 
     assert count.() == 0
+  end
+
+  test "the daily job: removed texts go after 6 months, a summary while reports wait", ctx do
+    alias Palee.Application.ReviewAsks.ReviewReportsDaily
+
+    ctx |> report(ctx.reporter, %{reason: "spam"}) |> json_response(200)
+
+    now = DateTime.utc_now()
+    assert %{summary: {:ok, message}} = ReviewReportsDaily.run(now)
+    assert message.kind in [:review_reports_summary, "review_reports_summary"]
+
+    ctx.vendor
+    |> as()
+    |> post("/api/platform/review-reports/#{ctx.review_id}/decision", %{
+      outcome: "remove",
+      ground: "spam",
+      statement: "Διαφήμιση."
+    })
+    |> json_response(200)
+
+    copy = fn ->
+      bypass_rls(fn ->
+        %{rows: [[body]]} =
+          Repo.query!("SELECT review_body FROM box_review_reports WHERE review_id = $1", [
+            Ecto.UUID.dump!(ctx.review_id)
+          ])
+
+        body
+      end)
+    end
+
+    assert %{cleared: 0, summary: :none} = ReviewReportsDaily.run(now)
+    assert copy.() == "Ο coach Γιώργος είναι ηλίθιος."
+    assert %{cleared: cleared} = ReviewReportsDaily.run(DateTime.add(now, 184 * 86_400, :second))
+    assert cleared >= 1
+    assert copy.() == nil
+  end
+
+  test "the box's website names where to report content", ctx do
+    {:ok, context} = Organizations.resolve_tenant_context(ctx.owner, ctx.organization.slug)
+
+    {:ok, profile} =
+      Palee.Application.UpdateBoxPublicProfile.call(context, %{
+        "about" => "Box",
+        "disciplines" => ["crossfit"]
+      })
+
+    {:ok, _profile} =
+      Palee.Application.PublishBoxPublicProfile.publish(context, %{
+        "lock_version" => profile.lock_version
+      })
+
+    assert %{"report_contact" => "moderation@palee.app"} =
+             build_conn()
+             |> get("/api/public/sites/#{ctx.organization.slug}")
+             |> json_response(200)
   end
 
   test "decisions need the Palee team and a reported review", ctx do

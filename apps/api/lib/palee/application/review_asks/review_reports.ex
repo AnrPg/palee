@@ -13,6 +13,8 @@ defmodule Palee.Application.ReviewAsks.ReviewReports do
       written in the box's own tenant session and in the vendors' audit log.
     * Every reporter hears the outcome; the author receives the statement of
       reasons when their review was hidden or removed (DSA Art. 16(5) and 17).
+    * From «Αποφασισμένες» the Palee team may restore a hidden review, with a
+      statement; the author hears it.
   """
 
   require Logger
@@ -116,6 +118,8 @@ defmodule Palee.Application.ReviewAsks.ReviewReports do
       |> Identity.list_by_ids()
       |> Map.new(&{&1.id, display_name(&1)})
 
+    statuses = review_statuses(platform, decisions)
+
     Enum.map(decisions, fn decision ->
       %{
         id: decision.id,
@@ -129,10 +133,29 @@ defmodule Palee.Application.ReviewAsks.ReviewReports do
         statement: decision.statement,
         reports_count: decision.reports_count,
         decided_by: Map.get(deciders, decision.decided_by_id),
-        decided_at: decision.decided_at
+        decided_at: decision.decided_at,
+        review_status: Map.get(statuses, decision.review_id, "deleted")
       }
     end)
   end
+
+  # Whether each decided review is up, hidden, removed or deleted now, read
+  # in each box's session (so «Επαναφορά» shows only for hidden ones).
+  defp review_statuses(platform, decisions) do
+    decisions
+    |> Enum.reject(&is_nil(&1.review_id))
+    |> Enum.uniq_by(& &1.review_id)
+    |> Map.new(fn decision ->
+      review =
+        ReviewAsks.get_review_by_id(tenant(platform, decision.organization_id), decision.review_id)
+
+      {decision.review_id, review_status(review)}
+    end)
+  end
+
+  defp review_status(nil), do: "deleted"
+  defp review_status(%{moderation: nil}), do: "visible"
+  defp review_status(%{moderation: moderation}), do: moderation
 
   @doc """
   The Palee team decides on a reported review (string-key params `outcome`,
@@ -174,9 +197,37 @@ defmodule Palee.Application.ReviewAsks.ReviewReports do
 
   def platform_decide(_context, _review_id, _params, _now), do: {:error, :vendor_required}
 
+  @doc """
+  The Palee team shows a hidden review again (string-key param `statement`),
+  audited; the author hears it with the statement.
+  """
+  def platform_restore(platform_context, review_id, params, now \\ nil)
+
+  def platform_restore(%PlatformContext{user_id: vendor_id} = platform, review_id, params, now) do
+    now = now || now()
+
+    with organization_id when is_binary(organization_id) <-
+           ReviewAsks.platform_review_organization(platform, review_id) ||
+             {:error, :box_review_not_found},
+         context = tenant(platform, organization_id),
+         {:ok, %{decision: decision}} <-
+           ReviewAsks.restore_review(context, review_id, stringify(params), vendor_id, now),
+         {:ok, _event} <-
+           Organizations.record_platform_event(platform, organization_id, %{
+             event: "box_review_moderated",
+             metadata: %{review_id: review_id, outcome: "restore", ground: "no_violation", reports: 0}
+           }) do
+      notify(organization_id, %{decision: decision, reports: []})
+      {:ok, %{review_id: review_id, outcome: "restore", ground: "no_violation", resolved: 0}}
+    end
+  end
+
+  def platform_restore(_context, _review_id, _params, _now), do: {:error, :vendor_required}
+
   # Reporters hear every outcome (DSA Art. 16(5)); the author hears a
-  # restriction with its statement of reasons (Art. 17). A `keep` is not
-  # sent to the author: nothing changed for them.
+  # restriction with its statement of reasons (Art. 17), and a restore. A
+  # `keep` is not sent to the author: nothing changed for them (ANR,
+  # 2026-11-03).
   defp notify(organization_id, %{decision: decision, reports: reports}) do
     reports
     |> Enum.map(& &1.reporter_id)

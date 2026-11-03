@@ -125,7 +125,23 @@ defmodule Palee.ReviewAsks do
 
   defdelegate report_reasons(), to: ReviewReportPolicy, as: :reasons
   defdelegate report_statuses(), to: ReviewReportPolicy, as: :statuses
-  defdelegate statement_of_reasons(decision), to: ReviewReportPolicy
+  defdelegate removed_text_before(now), to: ReviewReportPolicy
+  defdelegate purge_removed_texts(before), to: ReviewAskStore
+  defdelegate open_report_totals(), to: ReviewAskStore
+
+  @doc """
+  The Palee team's moderation settings (`config :palee, :review_moderation`):
+  `contact_email` (named in every statement of reasons and in the box
+  website's footer), `team_email` and `team_locale` (the daily summary).
+  """
+  def moderation_config, do: Application.get_env(:palee, :review_moderation, [])
+
+  @doc "Where anyone reports content or asks for a decision to be looked at again."
+  def moderation_contact, do: Keyword.get(moderation_config(), :contact_email)
+
+  @doc "The statement of reasons with Palee's moderation contact (DSA Art. 17(3)(f))."
+  def statement_of_reasons(decision),
+    do: ReviewReportPolicy.statement_of_reasons(decision, moderation_contact())
   defdelegate reported_review_ids(context, reporter_id), to: ReviewAskStore
   defdelegate latest_decision(context, review_id), to: ReviewAskStore
   defdelegate platform_open_reports(context, limit), to: ReviewAskStore
@@ -177,6 +193,21 @@ defmodule Palee.ReviewAsks do
         ReviewReportPolicy.review_changes(decision.outcome, now),
         Map.merge(decision, %{decided_by_id: decided_by_id, decided_at: now}),
         ReviewReportPolicy.report_status(decision.outcome)
+      )
+    end
+  end
+
+  @doc """
+  The Palee team shows a hidden review again, with a statement for the
+  author; a removed review cannot come back (its text is gone).
+  """
+  def restore_review(context, review_id, params, decided_by_id, now) do
+    with {:ok, decision} <- ReviewReportPolicy.restore(params) do
+      ReviewAskStore.restore_review(
+        context,
+        review_id,
+        ReviewReportPolicy.review_changes("restore", now),
+        Map.merge(decision, %{decided_by_id: decided_by_id, decided_at: now})
       )
     end
   end

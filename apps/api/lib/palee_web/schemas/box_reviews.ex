@@ -148,6 +148,7 @@ defmodule PaleeWeb.Schemas.BoxReviews do
       required: [
         :after_report,
         :automated,
+        :contact,
         :decided_at,
         :ground,
         :legal_basis,
@@ -278,12 +279,17 @@ defmodule PaleeWeb.Schemas.BoxReviews do
               id: @uuid,
               review_id: %Schema{type: :string, format: :uuid, nullable: true},
               organization: organization_ref(),
-              outcome: %Schema{type: :string, enum: ~w(keep hide remove)},
+              outcome: %Schema{type: :string, enum: ~w(keep hide remove restore)},
               ground: %Schema{type: :string},
               statement: @text,
               reports_count: @int,
               decided_by: @text,
-              decided_at: @time
+              decided_at: @time,
+              review_status: %Schema{
+                type: :string,
+                enum: ~w(visible hidden removed deleted),
+                description: "The review now; only a hidden one can be restored"
+              }
             },
             required: [
               :decided_at,
@@ -294,6 +300,7 @@ defmodule PaleeWeb.Schemas.BoxReviews do
               :outcome,
               :reports_count,
               :review_id,
+              :review_status,
               :statement
             ]
           }
@@ -323,6 +330,22 @@ defmodule PaleeWeb.Schemas.BoxReviews do
         }
       },
       required: [:outcome]
+    }
+  end
+
+  def restore_request do
+    %Schema{
+      title: "PlatformReviewRestoreRequest",
+      type: :object,
+      properties: %{
+        statement: %Schema{
+          type: :string,
+          minLength: 1,
+          maxLength: 1000,
+          description: "What the author reads"
+        }
+      },
+      required: [:statement]
     }
   end
 

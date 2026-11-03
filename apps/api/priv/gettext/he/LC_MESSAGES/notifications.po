@@ -844,3 +844,9 @@ msgstr "צוות Palee הסתיר את הביקורת שלך"
 
 msgid "See why and what you can do."
 msgstr "ראה למה ומה אפשר לעשות."
+
+msgid "The Palee team restored your review"
+msgstr "צוות Palee החזיר את הביקורת שלך"
+
+msgid "Your review shows again in the box's reviews."
+msgstr "הביקורת שלך מוצגת שוב בביקורות של המכון."

@@ -149,5 +149,9 @@ defmodule Palee.Notifications.Domain.PushMessageBuilderTest do
 
     assert PushMessageBuilder.build("box_review_moderated", %{"outcome" => "hide"}).title ==
              "The Palee team hid your review"
+
+    restored = PushMessageBuilder.build("box_review_moderated", %{"outcome" => "restore"})
+    assert restored.title == "The Palee team restored your review"
+    assert restored.body == "Your review shows again in the box's reviews."
   end
 end

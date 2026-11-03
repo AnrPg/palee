@@ -844,3 +844,9 @@ msgstr "Η ομάδα Palee έκρυψε την κριτική σου"
 
 msgid "See why and what you can do."
 msgstr "Δες γιατί και τι μπορείς να κάνεις."
+
+msgid "The Palee team restored your review"
+msgstr "Η ομάδα Palee επανέφερε την κριτική σου"
+
+msgid "Your review shows again in the box's reviews."
+msgstr "Η κριτική σου φαίνεται ξανά στις κριτικές του box."

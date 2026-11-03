@@ -14,14 +14,19 @@ defmodule Palee.Repo.Migrations.BoxReviewReports do
       per person and review.
     * `box_review_decisions`: one row per decision of the Palee team on a
       review, the statement of reasons the author receives (DSA Art. 17):
-      outcome, ground, text, who decided and when, how many reports it closed.
+      outcome (`keep`, `hide`, `remove`, or `restore` of a hidden review),
+      ground, text, who decided and when, how many reports it closed.
 
   Both new tables are tenant tables (forced RLS and the tenant trigger) with a
   second, read-only policy for the Palee team (`palee_acting_user_is_vendor()`),
   whose queue spans every box; the decision itself is written in the box's
   own tenant session. `palee_forget_box_review_reports(uuid)` deletes a
   person's reports when their profile is kept anonymised (a deleted user row
-  takes them by cascade). Notification types `box_review_moderated` (to the
+  takes them by cascade). Two functions serve the daily job:
+  `palee_purge_removed_review_texts(timestamptz)` clears the copy of a removed
+  review's text 6 months after the decision, and
+  `palee_open_box_review_reports()` counts the open reports across boxes for
+  the Palee team's summary email. Notification types `box_review_moderated` (to the
   author) and `box_review_report_decided` (to whoever reported).
   Functions pin only `search_path`.
   """
@@ -72,9 +77,9 @@ defmodule Palee.Repo.Migrations.BoxReviewReports do
 
     create constraint(:box_review_decisions, :box_review_decisions_check,
              check: """
-             outcome IN ('keep', 'hide', 'remove')
+             outcome IN ('keep', 'hide', 'remove', 'restore')
              AND ground IN ('no_violation', #{@reasons})
-             AND ((outcome = 'keep') = (ground = 'no_violation'))
+             AND ((outcome IN ('keep', 'restore')) = (ground = 'no_violation'))
              AND (statement IS NULL OR char_length(statement) BETWEEN 1 AND 1000)
              AND (outcome = 'keep' OR statement IS NOT NULL)
              AND reports_count >= 0
@@ -173,6 +178,42 @@ defmodule Palee.Repo.Migrations.BoxReviewReports do
     $$
     """)
 
+    # The daily job (ADR-397): a removed review's text is kept 6 months for a
+    # new look, then only the decision remains.
+    execute("""
+    CREATE FUNCTION palee_purge_removed_review_texts(before timestamptz)
+    RETURNS integer
+    LANGUAGE plpgsql
+    VOLATILE
+    SECURITY DEFINER
+    SET search_path = public, pg_temp
+    AS $$
+    DECLARE
+      cleared integer;
+    BEGIN
+      UPDATE public.box_review_reports
+      SET review_body = NULL, note = NULL, updated_at = now()
+      WHERE status = 'removed' AND decided_at < before
+        AND (review_body IS NOT NULL OR note IS NOT NULL);
+      GET DIAGNOSTICS cleared = ROW_COUNT;
+      RETURN cleared;
+    END
+    $$
+    """)
+
+    execute("""
+    CREATE FUNCTION palee_open_box_review_reports()
+    RETURNS TABLE (reviews bigint, reports bigint, oldest timestamptz)
+    LANGUAGE sql
+    STABLE
+    SECURITY DEFINER
+    SET search_path = public, pg_temp
+    AS $$
+      SELECT count(DISTINCT review_id), count(*), min(inserted_at)
+      FROM public.box_review_reports WHERE status = 'open'
+    $$
+    """)
+
     rewrite_notification_types(&Enum.uniq(&1 ++ @types))
   end
 
@@ -183,6 +224,8 @@ defmodule Palee.Repo.Migrations.BoxReviewReports do
 
     rewrite_notification_types(&(&1 -- @types))
     execute("DROP FUNCTION IF EXISTS palee_forget_box_review_reports(uuid)")
+    execute("DROP FUNCTION IF EXISTS palee_purge_removed_review_texts(timestamptz)")
+    execute("DROP FUNCTION IF EXISTS palee_open_box_review_reports()")
 
     drop table(:box_review_reports)
     drop table(:box_review_decisions)

@@ -39,9 +39,19 @@ defmodule Palee.ReviewAsks.Ports.ReviewAskStore do
             ) ::
               {:ok, %{review: map(), decision: map(), reports: [map()]}}
               | {:error, :box_review_not_found | :review_report_decided | term()}
+  @callback restore_review(context(), review_id :: id(), review_changes :: map(), map()) ::
+              {:ok, %{review: map(), decision: map()}}
+              | {:error, :box_review_not_found | :review_not_hidden | term()}
   @callback platform_open_reports(context(), limit :: pos_integer()) :: [map()]
   @callback platform_decisions(context(), limit :: pos_integer()) :: [map()]
   @callback platform_review_organization(context(), review_id :: id()) :: id() | nil
+  # The daily job: no session, through SECURITY DEFINER functions.
+  @callback purge_removed_texts(before :: DateTime.t()) :: non_neg_integer()
+  @callback open_report_totals() :: %{
+              reviews: non_neg_integer(),
+              reports: non_neg_integer(),
+              oldest: DateTime.t() | nil
+            }
 
   # ADR-387: the Google listing snapshot.
   @callback get_place_snapshot(context()) :: map() | nil

@@ -62,6 +62,10 @@ defmodule Palee.ReviewAsks.ReviewAskStore do
     do: call(context, :decide_review, [review_id, review_changes, decision, report_status])
 
   @impl true
+  def restore_review(context, review_id, review_changes, decision),
+    do: call(context, :restore_review, [review_id, review_changes, decision])
+
+  @impl true
   def platform_open_reports(context, limit), do: call(context, :platform_open_reports, [limit])
   @impl true
   def platform_decisions(context, limit), do: call(context, :platform_decisions, [limit])
@@ -74,6 +78,10 @@ defmodule Palee.ReviewAsks.ReviewAskStore do
   def get_place_snapshot(context), do: call(context, :get_place_snapshot, [])
   @impl true
   def save_place_snapshot(context, attrs), do: call(context, :save_place_snapshot, [attrs])
+  @impl true
+  def purge_removed_texts(before), do: adapter().purge_removed_texts(before)
+  @impl true
+  def open_report_totals, do: adapter().open_report_totals()
   @impl true
   def place_due_organizations(now), do: adapter().place_due_organizations(now)
 end

@@ -70,4 +70,33 @@ defmodule PaleeWeb.PlatformReviewReportController do
            ),
          do: json(conn, result)
   end
+
+  operation(:restore,
+    summary: "Show a hidden review again, with a statement for its author (vendors)",
+    parameters: [
+      %Parameter{
+        name: :review_id,
+        in: :path,
+        required: true,
+        schema: %Schema{type: :string, format: :uuid}
+      }
+    ],
+    request_body: BoxSite.body(S.restore_request()),
+    responses: [
+      ok: {"Restored", "application/json", S.decision_response()},
+      not_found: {"No such review", "application/json", %Schema{type: :object}},
+      conflict: {"Not hidden", "application/json", %Schema{type: :object}},
+      unprocessable_entity: {"Invalid", "application/json", %Schema{type: :object}}
+    ]
+  )
+
+  def restore(conn, %{review_id: review_id}) do
+    with {:ok, result} <-
+           ReviewReports.platform_restore(
+             conn.assigns.platform_context,
+             review_id,
+             conn.body_params
+           ),
+         do: json(conn, result)
+  end
 end

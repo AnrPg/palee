@@ -2552,6 +2552,7 @@ defmodule PaleeWeb.Router do
     # ADR-397: reported box reviews, decided only by the Palee team.
     get("/review-reports", PlatformReviewReportController, :index)
     post("/review-reports/:review_id/decision", PlatformReviewReportController, :decide)
+    post("/review-reports/:review_id/restore", PlatformReviewReportController, :restore)
   end
 
   # ADR-185: creating an event as yourself or a business has its own budget

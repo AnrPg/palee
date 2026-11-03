@@ -969,7 +969,15 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
     }
   end
 
-  # ADR-397: the Palee team hid or removed the person's review, with reasons.
+  # ADR-397: the Palee team hid, removed or restored the person's review.
+  def build("box_review_moderated", %{"outcome" => "restore"} = payload, localize) do
+    %{
+      title: localize.("The Palee team restored your review", %{}),
+      body: localize.("Your review shows again in the box's reviews.", %{}),
+      url: payload["url"] || "/box"
+    }
+  end
+
   def build("box_review_moderated", payload, localize) do
     title =
       if payload["outcome"] == "remove",

@@ -842,3 +842,9 @@ msgstr ""
 
 msgid "See why and what you can do."
 msgstr ""
+
+msgid "The Palee team restored your review"
+msgstr ""
+
+msgid "Your review shows again in the box's reviews."
+msgstr ""

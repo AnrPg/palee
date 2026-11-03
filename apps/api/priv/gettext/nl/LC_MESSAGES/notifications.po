@@ -844,3 +844,9 @@ msgstr "Het Palee-team heeft je review verborgen"
 
 msgid "See why and what you can do."
 msgstr "Bekijk waarom en wat je kunt doen."
+
+msgid "The Palee team restored your review"
+msgstr "Het Palee-team heeft je review teruggezet"
+
+msgid "Your review shows again in the box's reviews."
+msgstr "Je review staat weer bij de reviews van de box."

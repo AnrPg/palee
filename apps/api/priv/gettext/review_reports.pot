@@ -1,0 +1,15 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Review reports waiting: %{count}"
+msgstr ""
+
+msgid "Open the queue"
+msgstr ""
+
+msgid "%{reviews} reviews with %{reports} reports wait for a decision, the oldest since %{date}. Until you decide, they stay up."
+msgstr ""
+
+msgid "You get this email because you moderate box reviews for Palee."
+msgstr ""

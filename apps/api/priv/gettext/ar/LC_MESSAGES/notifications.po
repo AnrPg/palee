@@ -844,3 +844,9 @@ msgstr "أخفى فريق Palee مراجعتك"
 
 msgid "See why and what you can do."
 msgstr "اعرف السبب وما يمكنك فعله."
+
+msgid "The Palee team restored your review"
+msgstr "أعاد فريق Palee مراجعتك"
+
+msgid "Your review shows again in the box's reviews."
+msgstr "تظهر مراجعتك مجددًا ضمن مراجعات الصالة."

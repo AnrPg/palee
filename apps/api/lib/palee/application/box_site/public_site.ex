@@ -73,7 +73,9 @@ defmodule Palee.Application.BoxSite.PublicSite do
            categories: BoxSite.consent_categories(),
            validity_days: BoxSite.consent_validity_days()
          },
-         timetable: if("schedule" in sections, do: timetable(slug), else: [])
+         timetable: if("schedule" in sections, do: timetable(slug), else: []),
+         # ADR-397: where anyone reports content on the site (DSA Art. 16).
+         report_contact: ReviewAsks.moderation_contact()
        }}
     end
   end
