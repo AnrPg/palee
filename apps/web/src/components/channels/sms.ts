@@ -165,7 +165,7 @@ export function consentAnswered(contact: ChannelContact | null | undefined, purp
  */
 export function shouldAskAfterBooking(mine: MyChannels | null | undefined, declined: boolean): boolean {
   if (declined || !mine) return false;
-  if (!mine.channels.includes("sms")) return false;
+  if (!Array.isArray(mine.channels) || !mine.channels.includes("sms")) return false;
   return !consentAnswered(mine.contact, "service");
 }
 

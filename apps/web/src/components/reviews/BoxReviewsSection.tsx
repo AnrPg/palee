@@ -38,7 +38,7 @@ export function BoxReviewsSection({ membership }: BoxExtensionProps) {
     },
   });
   const data = reviews.data;
-  if (!data) return null;
+  if (!data || !Array.isArray(data.reviews)) return null;
   if (data.count === 0 && !data.can_review && !data.google) return null;
   const box = membership.organization.name;
   const others = data.reviews.filter((review) => review.id !== data.mine?.id);

@@ -77,6 +77,14 @@ describe("FitnessProfileCard (ADR-358, mockup d6 A)", () => {
     expect(screen.getByText("fitnessOverall:61")).toBeInTheDocument();
   });
 
+  it("stays out of the way, without breaking Progress, when the answer is malformed", async () => {
+    fetchFitnessProfile.mockResolvedValue({} as FitnessProfile);
+    const { container } = renderCard();
+    await waitFor(() => expect(fetchFitnessProfile).toHaveBeenCalled());
+    await waitFor(() => expect(container.querySelector("[data-testid=fitness-profile]")).toBeNull());
+    expect(screen.queryByRole("meter")).toBeNull();
+  });
+
   it("«Γιατί;» lists the PRs that made the number", async () => {
     fetchFitnessProfile.mockResolvedValue(profile());
     renderCard();

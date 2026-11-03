@@ -69,7 +69,8 @@ export function FitnessProfileCard() {
 
   if (query.isPending) return <LoadingLine />;
   // Πρόοδος has many cards; a failed one stays out of the way.
-  if (query.isError || !query.data) return null;
+  // A malformed answer (no domains list, no algorithm) also stays out of the way.
+  if (query.isError || !Array.isArray(query.data?.domains) || !query.data.algorithm) return null;
   const profile = query.data;
   const domains = orderedDomains(profile.domains);
   const scored = domains.some((domain) => domain.score !== null);
@@ -100,7 +101,7 @@ export function FitnessProfileCard() {
         </ul>
       )}
 
-      {scored || profile.focus.length > 0 ? <Focus focus={profile.focus} injury={profile.injury_caution} /> : null}
+      {scored || (profile.focus ?? []).length > 0 ? <Focus focus={profile.focus ?? []} injury={profile.injury_caution} /> : null}
 
       <p className="text-xs" style={{ color: "var(--dim)" }}>
         {t("fitnessMeta", {

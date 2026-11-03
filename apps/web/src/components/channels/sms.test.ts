@@ -115,6 +115,7 @@ describe("sms rules", () => {
     expect(shouldAskAfterBooking(fresh, false)).toBe(true);
     expect(shouldAskAfterBooking(fresh, true)).toBe(false);
     expect(shouldAskAfterBooking({ channels: [], contact: null }, false)).toBe(false);
+    expect(shouldAskAfterBooking({} as MyChannels, false)).toBe(false);
     expect(
       shouldAskAfterBooking({ channels: ["sms"], contact: contact({ consents: [{ channel: "sms", purpose: "service", granted: false }] }) }, false),
     ).toBe(false);
