@@ -3,6 +3,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 import { describe, expect, it, vi } from "vitest";
 
+import { chooseOption } from "@/components/ui/select-test-utils";
+
 import { PlatformFoodMissesPage } from "./PlatformFoodMissesPage";
 
 const fetchBarcodeMisses = vi.fn();
@@ -29,8 +31,10 @@ describe("PlatformFoodMissesPage (ADR-421)", () => {
     expect(await screen.findByText("5201234500006")).toBeInTheDocument();
     expect(screen.getByText("scans:4")).toBeInTheDocument();
     expect(screen.getByText(/noCountry/)).toBeInTheDocument();
-    expect(screen.getByRole("option", { name: "GR" })).toBeInTheDocument();
     expect(fetchBarcodeMisses).toHaveBeenCalledWith("tok", null);
+    // The country filter is the themed Select (no native <select>).
+    chooseOption(screen.getByRole("combobox", { name: /country/ }), "GR");
+    expect(screen.getByRole("combobox", { name: /country/ })).toHaveTextContent("GR");
   });
 
   it("shows the empty state", async () => {
