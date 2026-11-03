@@ -6,6 +6,8 @@ import {
   DEFAULT_LEADERBOARD_FILTERS,
   advancedActive,
   ageGroupFor,
+  journalEntryFocused,
+  loggedWodChangedText,
   ageGroupLabel,
   birthYearOptions,
   calendarOfferPending,
@@ -173,5 +175,23 @@ describe("note audience (ADR-359, mockup e5 A)", () => {
     expect(defaultNoteAudience(["owner"], true)).toBe("staff");
     expect(defaultNoteAudience(["front_desk"], false)).toBe("staff");
     expect(defaultNoteAudience(["coach"], false)).toBe("staff");
+  });
+});
+
+describe("ADR-393: the WOD changed after you logged it", () => {
+  const t = (key: string, values?: Record<string, string>) => (values?.title ? `${key}:${values.title}` : key);
+
+  it("names the WOD when it has a name, and answers only its own type", () => {
+    expect(loggedWodChangedText("logged_workout_changed", { workout_title: "Fran" }, "title", t)).toBe("notifWodChangedTitle");
+    expect(loggedWodChangedText("logged_workout_changed", { workout_title: "Fran" }, "body", t)).toBe("notifWodChangedBody:Fran");
+    expect(loggedWodChangedText("logged_workout_changed", { workout_title: "  " }, "body", t)).toBe("notifWodChangedBodyUntitled");
+    expect(loggedWodChangedText("workout_changed", {}, "body", t)).toBeNull();
+  });
+
+  it("focuses the Journal entry the notification opened", () => {
+    expect(journalEntryFocused("?entry=e1", "e1")).toBe(true);
+    expect(journalEntryFocused("?entry=e1&x=1", "e2")).toBe(false);
+    expect(journalEntryFocused("", "e1")).toBe(false);
+    expect(journalEntryFocused(null, "e1")).toBe(false);
   });
 });

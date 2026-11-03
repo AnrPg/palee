@@ -15359,7 +15359,10 @@
     "notesStaffTitle": "Note per lo staff",
     "videoSend": "Invia un video di tecnica al tuo coach",
     "videoSent": "Inviato. Il tuo coach lo vedrà nella sua coda.",
-    "videoLeft": "{count, plural, one {Ti resta # video nel pacchetto} other {Ti restano # video nel pacchetto}}"
+    "videoLeft": "{count, plural, one {Ti resta # video nel pacchetto} other {Ti restano # video nel pacchetto}}",
+    "notifWodChangedTitle": "Il WOD è cambiato",
+    "notifWodChangedBody": "«{title}» è cambiato dopo che l’hai fatto. Guardalo com’era nel tuo Diario.",
+    "notifWodChangedBodyUntitled": "Un WOD che hai fatto è cambiato. Guardalo com’era nel tuo Diario."
   },
   "ServiceStatus": {
     "metaTitle": "Stato del servizio Palee",

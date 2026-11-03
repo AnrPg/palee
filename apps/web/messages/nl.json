@@ -15359,7 +15359,10 @@
     "notesStaffTitle": "Notities voor het team",
     "videoSend": "Stuur een techniekvideo naar je coach",
     "videoSent": "Verstuurd. Je coach ziet het in zijn wachtrij.",
-    "videoLeft": "{count, plural, one {Nog # video in je pakket} other {Nog # video's in je pakket}}"
+    "videoLeft": "{count, plural, one {Nog # video in je pakket} other {Nog # video's in je pakket}}",
+    "notifWodChangedTitle": "De WOD is gewijzigd",
+    "notifWodChangedBody": "‘{title}’ is gewijzigd nadat je hem deed. Bekijk hem zoals hij was in je Logboek.",
+    "notifWodChangedBodyUntitled": "Een WOD die je deed is gewijzigd. Bekijk hem zoals hij was in je Logboek."
   },
   "ServiceStatus": {
     "metaTitle": "Status van Palee",

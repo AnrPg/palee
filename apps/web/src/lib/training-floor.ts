@@ -250,3 +250,31 @@ export function defaultNoteAudience(roles: string[], canWritePrivate: boolean): 
   if (!canWritePrivate) return "staff";
   return roles.includes("coach") ? "private" : "staff";
 }
+
+// -- ADR-393: the WOD changed after you logged it ------------------------------
+
+/**
+ * The bell's title and body of `logged_workout_changed`: the WOD's name when
+ * it has one. Null for any other notification type.
+ */
+export function loggedWodChangedText(
+  type: string,
+  payload: Record<string, unknown>,
+  part: "title" | "body",
+  t: (key: string, values?: Record<string, string>) => string,
+): string | null {
+  if (type !== "logged_workout_changed") return null;
+  if (part === "title") return t("notifWodChangedTitle");
+  const title = typeof payload.workout_title === "string" ? payload.workout_title.trim() : "";
+  return title ? t("notifWodChangedBody", { title }) : t("notifWodChangedBodyUntitled");
+}
+
+/**
+ * Whether the Journal was opened on this run or score (`/journal?entry=<id>`,
+ * the link of `logged_workout_changed`), so its «Το WOD άλλαξε από τότε» line
+ * is brought into view.
+ */
+export function journalEntryFocused(search: string | null | undefined, id: string): boolean {
+  if (!search || !id) return false;
+  return new URLSearchParams(search).get("entry") === id;
+}

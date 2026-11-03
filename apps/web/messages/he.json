@@ -15359,7 +15359,10 @@
     "notesStaffTitle": "הערות לצוות",
     "videoSend": "שליחת סרטון טכניקה למאמן",
     "videoSent": "נשלח. המאמן יראה אותו בתור שלו.",
-    "videoLeft": "{count, plural, one {נותר סרטון אחד בחבילה} two {נותרו # סרטונים בחבילה} other {נותרו # סרטונים בחבילה}}"
+    "videoLeft": "{count, plural, one {נותר סרטון אחד בחבילה} two {נותרו # סרטונים בחבילה} other {נותרו # סרטונים בחבילה}}",
+    "notifWodChangedTitle": "ה-WOD השתנה",
+    "notifWodChangedBody": "„{title}” השתנה אחרי שעשית אותו. אפשר לראות אותו כפי שהיה ביומן שלך.",
+    "notifWodChangedBodyUntitled": "WOD שעשית השתנה. אפשר לראות אותו כפי שהיה ביומן שלך."
   },
   "ServiceStatus": {
     "metaTitle": "מצב השירות של Palee",

@@ -15359,7 +15359,10 @@
     "notesStaffTitle": "Σημειώσεις για το staff",
     "videoSend": "Στείλε βίντεο τεχνικής στον coach",
     "videoSent": "Στάλθηκε. Ο coach θα το δει στην ουρά του.",
-    "videoLeft": "{count, plural, one {Απομένει # βίντεο στο πακέτο σου} other {Απομένουν # βίντεο στο πακέτο σου}}"
+    "videoLeft": "{count, plural, one {Απομένει # βίντεο στο πακέτο σου} other {Απομένουν # βίντεο στο πακέτο σου}}",
+    "notifWodChangedTitle": "Το WOD άλλαξε",
+    "notifWodChangedBody": "Το «{title}» άλλαξε αφού το έκανες. Δες το όπως ήταν στο Journal σου.",
+    "notifWodChangedBodyUntitled": "Ένα WOD που έκανες άλλαξε. Δες το όπως ήταν στο Journal σου."
   },
   "ServiceStatus": {
     "metaTitle": "Κατάσταση υπηρεσίας Palee",
