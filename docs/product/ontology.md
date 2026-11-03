@@ -735,7 +735,10 @@ Programmes a box or a coach sells (CP-D4). The prospect assistant of the same wo
 | Rank | Βαθμός | `ranks` | A step on a box's ladder: a belt (martial arts) or a level (gymnastics). (ADR-377) | Scale level (Rx/Scaled); XP level («Επίπεδο XP»). |
 | Belt | Ζώνη | `ranks.color` | A rank shown as a coloured belt, optionally with stripes. | |
 | Stripe | Ρίγα | `rank_awards.stripes` | A mark of progress inside a belt (up to the rank's maximum). | |
-| Rank ladder | Κλίμακα βαθμών | `rank_ladders` | A box's ordered ranks for one discipline (a workout type), e.g. «Ζώνες BJJ», «Επίπεδα ενόργανης». | Class types. |
+| Rank ladder | Κλίμακα βαθμών | `rank_ladders` | A box's ordered ranks for one discipline (a workout type), e.g. «Ζώνες BJJ», «Ενόργανη γυναικών: επίπεδα». | Class types. |
+| Rank template | Πρότυπο | `LadderTemplates`, `templates[]` (ADR-400) | A ready-made ladder the box copies and then edits freely: a federation's system or Palee's own levels. | Setup recipe; document template. |
+| Palee levels | Επίπεδα Palee | `source: palee` (ADR-400) | A template whose levels Palee built from researched skills because no official levels exist. Shown next to «Επίσημο σύστημα» (`source: federation`). | A federation's grading. |
+| Skill (of a rank) | Δεξιότητα | `ranks.requirements.skills`, `rank_skill_checks` (ADR-400) | One thing a coach ticks for a person on the way to the next rank, one at a time, with a date and an optional note. | Skill of the fitness profile; WOD movement. |
 | Promotion | Προαγωγή | `rank_awards` | A coach gives a person the next rank or a stripe; always the coach's decision. Withdrawn with a reason, never deleted. | |
 | Diploma | Δίπλωμα | `/rank-awards/:id/certificate` | The PDF of a promotion with its number. | Health certificate («Πιστοποιητικό υγείας», ADR-252). |
 | Watch question | Το χρονόμετρο και στο ρολόι; | `POST /executions/:id/watch-offer` | Asked only when a WOD is opened for execution and the phone sees a connected watch; a box class WOD only after check-in. Box members are asked on their first 5 such WODs, then it starts on the watch by itself; free athletes are asked every time. Never a notification (ANR's D8 rules, ADR-375). | Push notifications. |
