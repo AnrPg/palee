@@ -17,7 +17,9 @@ defmodule Palee.Application.ReviewAsks.ReviewAskAdmin do
 
   def settings(context) do
     settings = ReviewAsks.settings(context)
-    {:ok, %{settings: present(settings), google: BoxReviews.google(context, settings.google_place_id)}}
+
+    {:ok,
+     %{settings: present(settings), google: BoxReviews.google(context, settings.google_place_id)}}
   end
 
   def update(context, params) do

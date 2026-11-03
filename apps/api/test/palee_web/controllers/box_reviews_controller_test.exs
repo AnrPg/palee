@@ -22,15 +22,19 @@ defmodule PaleeWeb.BoxReviewsControllerTest do
     end)
 
     owner = admin_fixture()
+
     member =
       user_fixture(%{
         nickname: "eleni_#{System.unique_integer([:positive])}",
         display_name: "Ελένη Παπαδοπούλου"
       })
+
     newcomer = user_fixture()
 
     {:ok, organization} =
-      Organizations.create_organization(%{name: "Review Box #{System.unique_integer([:positive])}"})
+      Organizations.create_organization(%{
+        name: "Review Box #{System.unique_integer([:positive])}"
+      })
 
     for {user, role} <- [{owner, :owner}, {member, :member}, {newcomer, :member}] do
       {:ok, _membership} =
@@ -81,14 +85,28 @@ defmodule PaleeWeb.BoxReviewsControllerTest do
     assert %{"errors" => _} =
              ctx.member |> as() |> put("#{ctx.me}/box-review", %{rating: 6}) |> json_response(422)
 
-    assert %{"review" => %{"id" => id, "rating" => 4, "author_name" => "Ελένη", "edited_at" => nil}} =
+    assert %{
+             "review" => %{
+               "id" => id,
+               "rating" => 4,
+               "author_name" => "Ελένη",
+               "edited_at" => nil
+             }
+           } =
              ctx.member
              |> as()
              |> put("#{ctx.me}/box-review", %{rating: 4, body: "  Καλοί coaches. "})
              |> json_response(200)
 
     # A second write edits the first.
-    assert %{"review" => %{"id" => ^id, "rating" => 2, "body" => "Πολύς κόσμος.", "edited_at" => edited}} =
+    assert %{
+             "review" => %{
+               "id" => ^id,
+               "rating" => 2,
+               "body" => "Πολύς κόσμος.",
+               "edited_at" => edited
+             }
+           } =
              ctx.member
              |> as()
              |> put("#{ctx.me}/box-review", %{rating: 2, body: "Πολύς κόσμος."})
@@ -103,7 +121,9 @@ defmodule PaleeWeb.BoxReviewsControllerTest do
     assert %{"review" => %{"reply" => %{"body" => "Ευχαριστούμε, φτιάχνουμε ώρες."}}} =
              ctx.owner
              |> as()
-             |> put("#{ctx.admin}/box-reviews/#{id}/reply", %{body: "Ευχαριστούμε, φτιάχνουμε ώρες."})
+             |> put("#{ctx.admin}/box-reviews/#{id}/reply", %{
+               body: "Ευχαριστούμε, φτιάχνουμε ώρες."
+             })
              |> json_response(200)
 
     ctx.owner
@@ -121,7 +141,9 @@ defmodule PaleeWeb.BoxReviewsControllerTest do
              ctx.member |> as() |> get("#{ctx.me}/box-reviews") |> json_response(200)
 
     # The website shows the count, average and latest, apart from Google.
-    assert %{"reviews" => %{"palee" => %{"count" => 1, "latest" => [%{"author_name" => "Ελένη"}]}}} =
+    assert %{
+             "reviews" => %{"palee" => %{"count" => 1, "latest" => [%{"author_name" => "Ελένη"}]}}
+           } =
              site = build_conn() |> get(ctx.public) |> json_response(200)
 
     assert "reviews" in site["sections"]
@@ -136,16 +158,24 @@ defmodule PaleeWeb.BoxReviewsControllerTest do
     assert %{"places" => [%{"place_id" => place_id, "name" => "Box Κυψέλη"}]} =
              ctx.owner
              |> as()
-             |> get("#{ctx.admin}/review-asks/places?q=Box%20%CE%9A%CF%85%CF%88%CE%AD%CE%BB%CE%B7")
+             |> get(
+               "#{ctx.admin}/review-asks/places?q=Box%20%CE%9A%CF%85%CF%88%CE%AD%CE%BB%CE%B7"
+             )
              |> json_response(200)
 
     assert %{"code" => "invalid_place_query"} =
-             ctx.owner |> as() |> get("#{ctx.admin}/review-asks/places?q=ab") |> json_response(422)
+             ctx.owner
+             |> as()
+             |> get("#{ctx.admin}/review-asks/places?q=ab")
+             |> json_response(422)
 
     assert %{"google" => %{"rating" => 4.8, "count" => 126, "reviews" => [review]}} =
              ctx.owner
              |> as()
-             |> put("#{ctx.admin}/review-asks/settings", %{lock_version: 0, google_place_id: place_id})
+             |> put("#{ctx.admin}/review-asks/settings", %{
+               lock_version: 0,
+               google_place_id: place_id
+             })
              |> json_response(200)
 
     assert %{"author_name" => "Μαρία Π.", "rating" => 5, "relative_time" => _} = review

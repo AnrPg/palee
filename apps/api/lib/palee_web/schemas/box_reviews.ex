@@ -210,7 +210,16 @@ defmodule PaleeWeb.Schemas.BoxReviews do
         price_cents: @int,
         currency: %Schema{type: :string}
       },
-      required: [:currency, :ends_at, :id, :place_name, :price_cents, :starts_at, :time_zone, :title]
+      required: [
+        :currency,
+        :ends_at,
+        :id,
+        :place_name,
+        :price_cents,
+        :starts_at,
+        :time_zone,
+        :title
+      ]
     }
   end
 

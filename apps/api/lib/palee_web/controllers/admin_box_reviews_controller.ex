@@ -33,7 +33,12 @@ defmodule PaleeWeb.AdminBoxReviewsController do
   operation(:reply,
     summary: "Reply to a review as the box (or edit the reply)",
     parameters: [
-      %Parameter{name: :id, in: :path, required: true, schema: %Schema{type: :string, format: :uuid}}
+      %Parameter{
+        name: :id,
+        in: :path,
+        required: true,
+        schema: %Schema{type: :string, format: :uuid}
+      }
     ],
     request_body: BoxSite.body(S.reply_request()),
     responses: [

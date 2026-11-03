@@ -14,8 +14,11 @@ defmodule Palee.ReviewAsks.BoxReviewPolicyTest do
   end
 
   test "a review: 1–5 stars and an optional, trimmed text" do
-    assert {:ok, %{rating: 5, body: nil}} = BoxReviewPolicy.review(%{"rating" => 5, "body" => "  "})
-    assert {:ok, %{rating: 1, body: "Όχι"}} = BoxReviewPolicy.review(%{"rating" => 1, "body" => " Όχι "})
+    assert {:ok, %{rating: 5, body: nil}} =
+             BoxReviewPolicy.review(%{"rating" => 5, "body" => "  "})
+
+    assert {:ok, %{rating: 1, body: "Όχι"}} =
+             BoxReviewPolicy.review(%{"rating" => 1, "body" => " Όχι "})
 
     assert {:error, {:invalid_fields, %{rating: "invalid"}}} =
              BoxReviewPolicy.review(%{"rating" => 0})
@@ -24,7 +27,9 @@ defmodule Palee.ReviewAsks.BoxReviewPolicyTest do
              BoxReviewPolicy.review(%{"rating" => 3, "body" => String.duplicate("a", 2001)})
 
     assert {:ok, "Ευχαριστούμε"} = BoxReviewPolicy.reply(%{"body" => " Ευχαριστούμε "})
-    assert {:error, {:invalid_fields, %{body: "invalid"}}} = BoxReviewPolicy.reply(%{"body" => " "})
+
+    assert {:error, {:invalid_fields, %{body: "invalid"}}} =
+             BoxReviewPolicy.reply(%{"body" => " "})
   end
 
   test "average and first names" do
@@ -36,10 +41,15 @@ defmodule Palee.ReviewAsks.BoxReviewPolicyTest do
   end
 
   test "a Google read keeps at most five reviews with attribution, refreshed daily" do
-    reviews = for n <- 1..7, do: %{author_name: "A#{n}", author_uri: "http://x", rating: 4.6, text: "t"}
+    reviews =
+      for n <- 1..7, do: %{author_name: "A#{n}", author_uri: "http://x", rating: 4.6, text: "t"}
 
     snapshot =
-      GooglePlacePolicy.snapshot("ChIJplace12345", %{name: "Box", rating: 4.84, rating_count: 9, reviews: reviews}, @now)
+      GooglePlacePolicy.snapshot(
+        "ChIJplace12345",
+        %{name: "Box", rating: 4.84, rating_count: 9, reviews: reviews},
+        @now
+      )
 
     assert length(snapshot.reviews) == 5
     assert %{"author_name" => "A1", "author_uri" => nil, "rating" => 5} = hd(snapshot.reviews)
@@ -57,13 +67,20 @@ defmodule Palee.ReviewAsks.BoxReviewPolicyTest do
              GooglePlacePolicy.failure("p", :places_unavailable, 5, @now)
 
     assert later == DateTime.add(@now, 24 * 3_600, :second)
-    assert %{status: "not_found", rating: nil} = GooglePlacePolicy.failure("p", :not_found, 2, @now)
+
+    assert %{status: "not_found", rating: nil} =
+             GooglePlacePolicy.failure("p", :not_found, 2, @now)
 
     good = %{place_id: "p", status: "ok", rating: Decimal.new("4.5"), fetched_at: @now}
     assert GooglePlacePolicy.visible(good, "p", @now) == good
     refute GooglePlacePolicy.visible(good, "other", @now)
     refute GooglePlacePolicy.visible(good, nil, @now)
-    refute GooglePlacePolicy.visible(%{good | fetched_at: DateTime.add(@now, -8 * 86_400)}, "p", @now)
+
+    refute GooglePlacePolicy.visible(
+             %{good | fetched_at: DateTime.add(@now, -8 * 86_400)},
+             "p",
+             @now
+           )
 
     assert {:error, :invalid_place_query} = GooglePlacePolicy.query("ab")
     assert {:ok, "Box Κυψέλη"} = GooglePlacePolicy.query(" Box Κυψέλη ")

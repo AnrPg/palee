@@ -57,7 +57,13 @@ defmodule Palee.Application.ReviewAsks.BoxReviews do
   @doc "The box replies to a review (or edits its reply)."
   def reply(context, id, params) do
     with {:ok, review} <-
-           ReviewAsks.reply_review(context, id, stringify(params), Map.get(context, :user_id), now()) do
+           ReviewAsks.reply_review(
+             context,
+             id,
+             stringify(params),
+             Map.get(context, :user_id),
+             now()
+           ) do
       {:ok, %{review: present(review, names([review]))}}
     end
   end

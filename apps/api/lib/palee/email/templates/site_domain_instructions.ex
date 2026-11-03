@@ -73,7 +73,8 @@ defmodule Palee.Email.Templates.SiteDomainInstructions do
       )
 
   defp reason(%{box_name: box}, locale),
-    do: s(locale, "You get this email because %{box} sent you its domain instructions.", %{box: box})
+    do:
+      s(locale, "You get this email because %{box} sent you its domain instructions.", %{box: box})
 
   defp records_text(records), do: Enum.map_join(records, "\n", &record_line/1)
 

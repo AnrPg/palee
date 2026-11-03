@@ -28,8 +28,16 @@ defmodule PaleeWeb.Schemas.BoxSite do
       properties: %{
         question: %Schema{type: :string, maxLength: 200},
         answer: %Schema{type: :string, maxLength: 1000},
-        question_en: %Schema{type: :string, maxLength: 200, description: "Optional English text (ADR-388)"},
-        answer_en: %Schema{type: :string, maxLength: 1000, description: "Optional English text (ADR-388)"}
+        question_en: %Schema{
+          type: :string,
+          maxLength: 200,
+          description: "Optional English text (ADR-388)"
+        },
+        answer_en: %Schema{
+          type: :string,
+          maxLength: 1000,
+          description: "Optional English text (ADR-388)"
+        }
       },
       required: [:answer, :question]
     }

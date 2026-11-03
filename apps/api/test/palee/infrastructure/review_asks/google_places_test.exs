@@ -73,7 +73,10 @@ defmodule Palee.Infrastructure.ReviewAsks.GooglePlacesTest do
     assert {:error, :not_found} = GooglePlaces.details("ChIJzzzzzzzzzz", [])
     assert {:error, :not_found} = GooglePlaces.details("../etc", [])
 
-    Application.put_env(:palee, :google_places_api, req_options: [plug: {Req.Test, Palee.GooglePlacesHttp}])
+    Application.put_env(:palee, :google_places_api,
+      req_options: [plug: {Req.Test, Palee.GooglePlacesHttp}]
+    )
+
     assert {:error, :places_unavailable} = GooglePlaces.search("Box", [])
   end
 end

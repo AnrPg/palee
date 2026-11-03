@@ -6,6 +6,7 @@ defmodule Palee.Infrastructure.ReviewAsks.EctoReviewAskStore do
   import Ecto.Query
 
   alias Palee.Repo
+
   alias Palee.ReviewAsks.{
     BoxReview,
     GooglePlaceSnapshot,
