@@ -583,6 +583,10 @@ test.describe("member app shell", () => {
     await page.goto("/");
 
     const bottom = page.getByRole("navigation", { name: "Main sections" });
+    // A member of one box opens the app on Box (W7 screen 12); tapping Feed then shows Feed.
+    await expect(page).toHaveURL(/\/box$/);
+    await bottom.getByRole("link", { name: "Feed" }).click();
+    await expect(page).toHaveURL(/\/$/);
     await expect(bottom.getByRole("link", { name: "Messages", exact: true })).toHaveAttribute("href", "/messages");
     await expect(bottom.getByRole("button", { name: "Notifications" })).toHaveCount(0);
     const top = page.getByTestId("member-top-bar");
