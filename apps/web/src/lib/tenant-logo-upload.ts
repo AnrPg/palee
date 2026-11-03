@@ -23,6 +23,43 @@ export class TenantLogoUploadError extends Error {
   }
 }
 
+/** Turns a WebP into a PNG (transparency kept); null when the browser cannot. */
+export type ToPng = (file: Blob) => Promise<Blob | null>;
+
+async function canvasToPng(file: Blob): Promise<Blob | null> {
+  if (typeof createImageBitmap !== "function" || typeof document === "undefined") return null;
+  try {
+    const bitmap = await createImageBitmap(file);
+    try {
+      const canvas = document.createElement("canvas");
+      canvas.width = bitmap.width;
+      canvas.height = bitmap.height;
+      const context = canvas.getContext("2d");
+      if (!context) return null;
+      context.drawImage(bitmap, 0, 0);
+      return await new Promise((resolve) => canvas.toBlob((blob) => resolve(blob), "image/png"));
+    } finally {
+      bitmap.close();
+    }
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * A WebP logo is stored as a PNG (ADR-377 amendment): a diploma PDF cannot
+ * hold WebP and the server has no image library. When the browser cannot
+ * convert it, or the PNG would be over the limit, the WebP goes as it is
+ * (the diploma then shows only the box name).
+ */
+export async function logoForUpload(file: File, toPng: ToPng = canvasToPng): Promise<File> {
+  if (file.type !== "image/webp") return file;
+  const png = await toPng(file);
+  if (!png || png.type !== "image/png" || png.size <= 0 || png.size > TENANT_LOGO_MAX_BYTES) return file;
+  const name = file.name.replace(/\.webp$/i, "") || "logo";
+  return new File([png], `${name}.png`, { type: "image/png" });
+}
+
 type PutObject = (url: string, init: { method: "PUT"; body: Blob; headers: Record<string, string> }) => Promise<{ ok: boolean }>;
 
 /**
@@ -31,12 +68,14 @@ type PutObject = (url: string, init: { method: "PUT"; body: Blob; headers: Recor
  * client-side problems or a failed storage PUT; API errors propagate as-is.
  */
 export async function uploadTenantLogo(
-  file: File,
+  picked: File,
   api: Pick<OrganizationLogoApi, "requestUpload" | "finalize">,
   putObject: PutObject = (url, init) => fetch(url, init),
+  toPng: ToPng = canvasToPng,
 ): Promise<OrganizationBranding> {
-  const problem = validateTenantLogoFile(file);
+  const problem = validateTenantLogoFile(picked);
   if (problem) throw new TenantLogoUploadError(problem);
+  const file = await logoForUpload(picked, toPng);
 
   const upload = await api.requestUpload(file);
   const response = await putObject(upload.upload_url, {

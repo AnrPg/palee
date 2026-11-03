@@ -3,7 +3,8 @@ defmodule Palee.Application.RankCertificates do
   «Δίπλωμα» of a rank award as a PDF (ADR-377), for the coach and for the
   person. Option Γ (ADR-377 addendum): the box's uploaded logo at the top
   (only the name without one, or when it is a WebP or a link to another
-  site: nothing is fetched from the network) and the awarding coach's
+  site: nothing is fetched from the network; the web turns a new WebP
+  logo into a PNG before uploading it, since the API has no image library) and the awarding coach's
   signature kept with the award (`signature_id`), above the line with their
   name.
   """
