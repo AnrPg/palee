@@ -164,5 +164,37 @@ describe("MealFoods (ADR-376, mockups d9scan A and d9manual A)", () => {
     open();
     type("2012345678903");
     expect(await screen.findByText("foods.storeCodeTitle")).toBeInTheDocument();
+    expect(screen.queryByTestId("own-food-share")).not.toBeInTheDocument();
+  });
+
+  it("shares a barcoded own food only when the member ticks «Μοιράσου το» (ADR-421 addendum)", async () => {
+    lookUpBarcode.mockResolvedValue({ barcode: "5201054017104", status: "manual", reason: "not_found", macros_visible: false });
+    createCustomFood.mockResolvedValue({ id: "f3", name: "Rusk", portion_hint: null, nutrients: null, shared_at: "2026-11-03T10:00:00Z" });
+    open();
+    type("5201054017104");
+    const share = await screen.findByTestId("own-food-share");
+    expect(share).not.toBeChecked();
+    expect(screen.getByText("foods.staysYours")).toBeInTheDocument();
+    expect(screen.getByText("foods.shareHelp")).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText(/foods.name/), { target: { value: "Rusk" } });
+    fireEvent.click(share);
+    expect(screen.queryByText("foods.staysYours")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByText("foods.saveOwn"));
+    await waitFor(() => expect(createCustomFood).toHaveBeenCalledWith("tok", { name: "Rusk", barcode: "5201054017104", share: true }));
+  });
+
+  it("marks a product members shared with «από μέλη»", async () => {
+    lookUpBarcode.mockResolvedValue({
+      barcode: "5201054017104",
+      status: "found",
+      source: "palee_members",
+      macros_visible: false,
+      attribution: { source: "Palee members", licence: "ODbL-1.0", licence_url: "u", images_licence: null, url: null },
+      food: { name: "Rusk", barcode: "5201054017104", portion_hint: "carbs", nutrients: null },
+    });
+    open();
+    type("5201054017104");
+    expect(await screen.findByTestId("from-members")).toHaveTextContent("foods.fromMembers");
+    expect(screen.getByText("foods.source:foods.membersSource,ODbL-1.0")).toBeInTheDocument();
   });
 });

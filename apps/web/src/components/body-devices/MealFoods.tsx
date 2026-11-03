@@ -48,7 +48,9 @@ const chip = (on: boolean) => ({
  * with a suggested hand portion. Never calories; grams per 100 g only when a
  * coach's plan sets macros and they are not hidden (the server decides).
  * When nothing is found, the same card turns into «Δικό μου τρόφιμο», which
- * «Φωτογραφία ετικέτας» can prefill from photos of the pack (ADR-421).
+ * «Φωτογραφία ετικέτας» can prefill from photos of the pack (ADR-421). A product
+ * with a barcode can be shared with everyone (Palee and Open Food Facts) only by
+ * ticking «Μοιράσου το»; a product members shared shows «από μέλη».
  */
 export function MealFoods({ foods, onChange }: { foods: MealFood[]; onChange: (foods: MealFood[]) => void }) {
   const t = useTranslations("BodyDevices");
@@ -232,6 +234,7 @@ function FoundFood({ lookup, food, onAdd, onCancel }: { lookup: BarcodeLookup; f
   const t = useTranslations("BodyDevices");
   const [portion, setPortion] = useState<FoodPortion | null>(food.portion_hint ?? null);
   const nutrients = lookup.macros_visible ? food.nutrients : null;
+  const sourceName = lookup.source === "palee_members" ? t("foods.membersSource") : (lookup.attribution?.source ?? "");
   return (
     <section
       data-testid="barcode-found"
@@ -252,6 +255,15 @@ function FoundFood({ lookup, food, onAdd, onCancel }: { lookup: BarcodeLookup; f
           })}
         </p>
       ) : null}
+      {lookup.source === "palee_members" ? (
+        <span
+          data-testid="from-members"
+          className="self-start rounded-full px-2 py-0.5 text-xs font-semibold"
+          style={{ background: "var(--panel-muted)", color: "var(--text-soft)", border: "1px solid var(--border)" }}
+        >
+          {t("foods.fromMembers")}
+        </span>
+      ) : null}
       {lookup.attribution?.source ? (
         lookup.attribution.url || lookup.attribution.licence_url ? (
           <a
@@ -261,11 +273,11 @@ function FoundFood({ lookup, food, onAdd, onCancel }: { lookup: BarcodeLookup; f
             className="text-xs"
             style={{ color: "var(--dim)" }}
           >
-            {t("foods.source", { source: lookup.attribution.source, licence: lookup.attribution.licence })}
+            {t("foods.source", { source: sourceName, licence: lookup.attribution.licence })}
           </a>
         ) : (
           <span className="text-xs" style={{ color: "var(--dim)" }}>
-            {t("foods.source", { source: lookup.attribution.source, licence: lookup.attribution.licence })}
+            {t("foods.source", { source: sourceName, licence: lookup.attribution.licence })}
           </span>
         )
       ) : null}
@@ -343,6 +355,9 @@ function OwnFoodForm({
   const [serving, setServing] = useState("");
   const [nutrients, setNutrients] = useState<NutrientFields>({});
   const [nutrientErrors, setNutrientErrors] = useState<FoodNutrientKey[]>([]);
+  // ADR-421 addendum: an explicit choice, never ticked for the person; only a product barcode.
+  const shareable = barcode !== null && !storeCode;
+  const [share, setShare] = useState(false);
   const save = useMutation({
     mutationFn: (grams: Partial<Record<FoodNutrientKey, number>>) =>
       createCustomFood(tokens!.access_token, {
@@ -352,6 +367,7 @@ function OwnFoodForm({
         ...(serving.trim() ? { serving_label: serving.trim() } : {}),
         ...(portion ? { portion_hint: portion } : {}),
         ...(Object.keys(grams).length > 0 ? { nutrients: grams } : {}),
+        ...(shareable && share ? { share: true } : {}),
       }),
     onSuccess: (food) => onAdd({ name: food.name, ...(food.id ? { custom_food_id: food.id } : {}), ...(portion ? { portion } : {}) }),
   });
@@ -448,7 +464,26 @@ function OwnFoodForm({
           ) : null}
         </div>
       ) : null}
-      <p className="text-xs" style={{ color: "var(--dim)" }}>{t("foods.staysYours")}</p>
+      {shareable ? (
+        <label className="flex items-start gap-3 text-sm font-semibold" style={{ color: "var(--text)" }}>
+          <input
+            type="checkbox"
+            checked={share}
+            onChange={(event) => setShare(event.target.checked)}
+            aria-describedby="own-food-share-help"
+            data-testid="own-food-share"
+            className="mt-1 h-5 w-5 shrink-0"
+            style={{ accentColor: "var(--primary)" }}
+          />
+          <span className="flex flex-col gap-1">
+            {t("foods.share")}
+            <span id="own-food-share-help" className="text-xs font-normal" style={{ color: "var(--dim)" }}>
+              {t("foods.shareHelp")}
+            </span>
+          </span>
+        </label>
+      ) : null}
+      {shareable && share ? null : <p className="text-xs" style={{ color: "var(--dim)" }}>{t("foods.staysYours")}</p>}
       {save.isError ? <ErrorNotice>{t("errorGeneric")}</ErrorNotice> : null}
       <div className="flex items-center gap-3">
         <button
