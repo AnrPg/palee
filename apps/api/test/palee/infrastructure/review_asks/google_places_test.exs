@@ -43,10 +43,14 @@ defmodule Palee.Infrastructure.ReviewAsks.GooglePlacesTest do
              GooglePlaces.search("Box Κυψέλη", language: "el")
   end
 
-  test "details normalise reviews; 404 is not found; no key means unavailable" do
+  test "details read no reviews; 404 is not found; no key means unavailable" do
     Req.Test.stub(Palee.GooglePlacesHttp, fn conn ->
       case conn.request_path do
         "/v1/places/ChIJabcdefghij" ->
+          # ADR-387 amendment: review texts are not even asked for.
+          [mask] = Plug.Conn.get_req_header(conn, "x-goog-fieldmask")
+          refute mask =~ "reviews"
+
           Req.Test.json(conn, %{
             "id" => "ChIJabcdefghij",
             "rating" => 4.7,
@@ -67,8 +71,10 @@ defmodule Palee.Infrastructure.ReviewAsks.GooglePlacesTest do
       end
     end)
 
-    assert {:ok, %{rating: 4.7, reviews: [%{author_name: "Νίκος", text: "Τέλειο", rating: 5}]}} =
+    assert {:ok, %{rating: 4.7, rating_count: 10} = details} =
              GooglePlaces.details("ChIJabcdefghij", language: "el")
+
+    refute Map.has_key?(details, :reviews)
 
     assert {:error, :not_found} = GooglePlaces.details("ChIJzzzzzzzzzz", [])
     assert {:error, :not_found} = GooglePlaces.details("../etc", [])

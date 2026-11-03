@@ -169,7 +169,7 @@ defmodule PaleeWeb.BoxReviewsControllerTest do
              |> get("#{ctx.admin}/review-asks/places?q=ab")
              |> json_response(422)
 
-    assert %{"google" => %{"rating" => 4.8, "count" => 126, "reviews" => [review]}} =
+    assert %{"google" => %{"rating" => 4.8, "count" => 126} = google} =
              ctx.owner
              |> as()
              |> put("#{ctx.admin}/review-asks/settings", %{
@@ -178,7 +178,8 @@ defmodule PaleeWeb.BoxReviewsControllerTest do
              })
              |> json_response(200)
 
-    assert %{"author_name" => "Μαρία Π.", "rating" => 5, "relative_time" => _} = review
+    # ADR-387 amendment: only the rating and the count, no review texts.
+    refute Map.has_key?(google, "reviews")
 
     assert %{"google" => %{"rating" => 4.8}, "count" => 0} =
              ctx.member |> as() |> get("#{ctx.me}/box-reviews") |> json_response(200)
