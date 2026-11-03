@@ -17152,7 +17152,7 @@
       "invalid_door_name": "Geef de deur een naam (maximaal 80 tekens).",
       "invalid_door_settings": "Controleer de gegevens en de sleutel van de controller.",
       "invalid_door_rules": "Controleer wie er binnen mag, de minuten en de openingstijden.",
-      "door_offline": "De deur antwoordt niet. Hij blijft op slot.",
+      "door_offline": "De deur antwoordt niet. Hij blijft vergrendeld.",
       "door_unauthorized": "De controller heeft de sleutel van Palee geweigerd. Controleer de instellingen van de deur.",
       "door_refused": "De controller weigerde te openen.",
       "door_disabled": "Deze deur staat uit."
@@ -17186,14 +17186,14 @@
       "sandbox": "Testdeur"
     },
     "providerHint": {
-      "shelly": "Een Shelly Plus/Pro 1 relais op het slot, via de Shelly-cloud.",
-      "kisi": "Een Kisi-slot met zijn controller.",
+      "shelly": "Een Shelly Plus/Pro 1 relais op het deurslot, via de Shelly-cloud.",
+      "kisi": "Een Kisi-deurslot met zijn controller.",
       "sandbox": "Om te proberen: er gaat niets open."
     },
     "shellyServer": "Shelly-cloudserver",
     "shellyServerHint": "In de Shelly-app › User settings › Authorization cloud key.",
     "shellyDevice": "Apparaat-ID",
-    "kisiLock": "Slot-ID",
+    "kisiLock": "Deurslot-ID",
     "controllerKey": "Controllersleutel",
     "controllerKeyHint": "Versleuteld bewaard en nooit meer getoond.",
     "checkAndSave": "Controleren en opslaan",
@@ -17206,7 +17206,7 @@
     "statusOnline": "Verbonden",
     "statusOffline": "Antwoordt niet",
     "statusOff": "Uit",
-    "offlineHint": "De deur antwoordt niet en blijft dus op slot. Leden worden naar de balie gestuurd. Controleer de wifi van de controller.",
+    "offlineHint": "De deur antwoordt niet en blijft dus vergrendeld. Leden worden naar de balie gestuurd. Controleer de wifi van de controller.",
     "unlock": "Openen",
     "openedFromDesk": "«{door}» is geopend. Het staat in het toegangslogboek met jouw naam.",
     "more": "Meer",
@@ -17300,7 +17300,7 @@
     },
     "memberDeniedHint": "Boek een les of ga naar de balie.",
     "memberOffline": "De deur antwoordt niet",
-    "memberOfflineHint": "Hij blijft voor de veiligheid op slot. Ga naar de balie of bel aan.",
+    "memberOfflineHint": "Hij blijft voor de veiligheid vergrendeld. Ga naar de balie of bel aan.",
     "memberChoose": "Welke deur?",
     "memberError": "De deur kon niet worden geopend. Ga naar de balie.",
     "errors": {

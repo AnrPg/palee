@@ -23,7 +23,7 @@ import { Select } from "@/components/ui/Select";
 import { useWorkoutTypeLabels, WorkoutTypeSelect } from "@/components/workouts/WorkoutTypeSelect";
 import type { WorkoutType } from "@/lib/workout-types";
 
-const RANK_COLORS: RankColor[] = ["white", "grey", "yellow", "orange", "green", "blue", "purple", "brown", "red", "black", "pink"];
+const BELT_SHADES: RankColor[] = ["white", "grey", "yellow", "orange", "green", "blue", "purple", "brown", "red", "black", "pink"];
 const TEMPLATE_KEYS = ["bjj_adult", "karate_kyu", "gymnastics_levels"] as const;
 
 type DraftRank = {
@@ -256,7 +256,7 @@ function LadderEditor({ token, slug, ladder }: { token: string; slug: string; la
                       className="min-h-10 min-w-28"
                     >
                       <option value="">{t("ranks.noColor")}</option>
-                      {RANK_COLORS.map((color) => (
+                      {BELT_SHADES.map((color) => (
                         <option key={color} value={color}>
                           {t(`ranks.color.${color}`)}
                         </option>

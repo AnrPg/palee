@@ -16833,7 +16833,7 @@
       "belt": "Ζώνη",
       "stripes": "Ρίγες (έως)",
       "minDays": "Μέρες",
-      "minClasses": "Μαθήματα",
+      "minClasses": "Προπονήσεις",
       "nameRequired": "Γράψε ένα όνομα.",
       "noColor": "Χωρίς χρώμα",
       "color": {
@@ -16866,7 +16866,7 @@
       "currentLine": "{rank} · {stripes, plural, =0 {χωρίς ρίγες} one {# ρίγα} other {# ρίγες}}",
       "nextIs": "επόμενη: {rank}",
       "noRankYet": "Χωρίς βαθμό ακόμα.",
-      "classesCount": "Μαθήματα {done}/{needed}",
+      "classesCount": "Προπονήσεις {done}/{needed}",
       "daysCount": "Μέρες {done}/{needed}",
       "ready": "Πληροί τις προϋποθέσεις. Η απόφαση είναι του coach.",
       "promote": "Προαγωγή",
