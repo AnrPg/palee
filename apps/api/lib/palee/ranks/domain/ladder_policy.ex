@@ -4,7 +4,8 @@ defmodule Palee.Ranks.Domain.LadderPolicy do
 
   * **Discipline**: one of the workout types of ADR-275, so ranks sit in
     the same families as WODs, stats and badges (a «Ζώνες BJJ» ladder is
-    `bjj_grappling` in `combat`; «Επίπεδα ενόργανης» is `gymnastics`).
+    `bjj_grappling` in `combat`; «Ενόργανη γυναικών: επίπεδα» is
+    `artistic_gymnastics` in `gymnastics`).
   * **Style**: `belt` (a colour, optional stripes) or `level` (a number or
     a name such as «Επίπεδο 3»).
   * **Ranks**: 1–30, in order; a name, a colour from the belt palette, up
@@ -13,8 +14,10 @@ defmodule Palee.Ranks.Domain.LadderPolicy do
     requirements for reaching it: classes attended since the previous
     rank, days since it, and skills the coach ticks (up to 20).
   * **Templates** start a ladder in one tap (the calm default); every
-    name stays editable.
+    name stays editable. The catalogue (ADR-400) is `LadderTemplates`.
   """
+
+  alias Palee.Ranks.Domain.LadderTemplates
 
   @styles ~w(belt level)
   @colors ~w(white grey yellow orange green blue purple brown red black pink)
@@ -134,64 +137,45 @@ defmodule Palee.Ranks.Domain.LadderPolicy do
 
   def cast_requirements(_requirements), do: {:error, "requirements are an object"}
 
-  @doc "Ready-made ladders («Πρότυπα»): name, discipline, style and ranks."
-  def templates do
-    [
-      %{
-        key: "bjj_adult",
-        name: "Ζώνες BJJ",
-        discipline: "bjj_grappling",
-        style: "belt",
-        ranks: bjj_ranks()
-      },
-      %{
-        key: "karate_kyu",
-        name: "Ζώνες καράτε",
-        discipline: "martial_arts",
-        style: "belt",
-        ranks: karate_ranks()
-      },
-      %{
-        key: "gymnastics_levels",
-        name: "Επίπεδα ενόργανης",
-        discipline: "gymnastics",
-        style: "level",
-        ranks: gymnastics_ranks()
-      }
-    ]
+  @doc """
+  Ready-made ladders («Πρότυπα», ADR-400): key, name, discipline, style,
+  source (`federation` or `palee`), a short note on the system, and ranks.
+  Texts are untranslated message ids; see `localize_template/2`.
+  """
+  def templates, do: LadderTemplates.all()
+
+  @doc "The template with this key, or nil."
+  def template(key), do: Enum.find(templates(), &(&1.key == key))
+
+  @doc """
+  A template in one language: `translate.(message_id, bindings)` gives the
+  text (gettext's `rank_templates` domain). Numbered names (`{pattern, n}`)
+  are translated with their number; the family of the discipline is added.
+  """
+  def localize_template(template, translate) when is_function(translate, 2) do
+    %{
+      template
+      | name: translate.(template.name, %{}),
+        ranks: Enum.map(template.ranks, &localize_rank(&1, translate))
+    }
+    |> Map.put(:family, family(template.discipline))
   end
 
-  defp bjj_ranks do
-    for {name, color, days} <- [
-          {"Λευκή", "white", nil},
-          {"Μπλε", "blue", 730},
-          {"Μωβ", "purple", 540},
-          {"Καφέ", "brown", 540},
-          {"Μαύρη", "black", 365}
-        ],
-        do: %{name: name, color: color, max_stripes: 4, requirements: days_req(days)}
+  defp localize_rank(rank, translate) do
+    requirements =
+      case rank.requirements do
+        %{skills: skills} = requirements ->
+          %{requirements | skills: Enum.map(skills, &translate.(&1, %{}))}
+
+        requirements ->
+          requirements
+      end
+
+    %{rank | name: rank_name(rank.name, translate), requirements: requirements}
   end
 
-  defp karate_ranks do
-    for {name, color} <- [
-          {"Λευκή", "white"},
-          {"Κίτρινη", "yellow"},
-          {"Πορτοκαλί", "orange"},
-          {"Πράσινη", "green"},
-          {"Μπλε", "blue"},
-          {"Καφέ", "brown"},
-          {"Μαύρη", "black"}
-        ],
-        do: %{name: name, color: color, max_stripes: 0, requirements: %{}}
-  end
-
-  defp gymnastics_ranks do
-    for level <- 1..10,
-        do: %{name: "Επίπεδο #{level}", color: nil, max_stripes: 0, requirements: %{}}
-  end
-
-  defp days_req(nil), do: %{}
-  defp days_req(days), do: %{min_days: days}
+  defp rank_name({pattern, number}, translate), do: translate.(pattern, %{n: number})
+  defp rank_name(name, translate), do: translate.(name, %{})
 
   defp id_ok?(nil), do: true
   defp id_ok?(id), do: match?({:ok, _uuid}, Ecto.UUID.cast(id))
