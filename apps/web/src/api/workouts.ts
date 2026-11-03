@@ -1,5 +1,5 @@
 import { apiRequest } from "@/api/client";
-import type { components } from "@/api/generated/schema";
+import type { components, operations } from "@/api/generated/schema";
 import type { WorkoutContentEntry } from "@/components/workouts/WorkoutContent";
 import type { WorkoutDslVocabulary } from "@/lib/workout-dsl-suggestions";
 import type { FreeTextTimerPreset } from "@/lib/free-text-timer";
@@ -214,6 +214,8 @@ export type WorkoutRecord = {
   title: string;
   type: string;
   is_team_workout?: boolean;
+  /** ADR-394: the benchmark the coach tagged the WOD with. */
+  benchmark_key?: string | null;
   status?: string;
   created_by_id?: string;
   folder_id?: string | null;
@@ -568,6 +570,25 @@ export function setWorkoutIcon(token: string, id: string, icon: string | null) {
     method: "PATCH",
     token,
     body: { icon },
+  });
+}
+
+// ADR-394: the benchmarks a coach can tag a WOD with, for the Palee-wide board.
+type BenchmarkList =
+  operations["PaleeWeb.AdminWorkoutController.benchmarks"]["responses"][200]["content"]["application/json"];
+export type WorkoutBenchmark = BenchmarkList["benchmarks"][number];
+
+export const WORKOUT_BENCHMARKS_KEY = ["admin", "workouts", "benchmarks"] as const;
+
+export function fetchWorkoutBenchmarks(token: string) {
+  return apiRequest<BenchmarkList>("/admin/workouts/benchmarks", { token });
+}
+
+export function setWorkoutBenchmark(token: string, id: string, benchmarkKey: string | null) {
+  return apiRequest<{ id: string; benchmark: WorkoutBenchmark | null }>(`/admin/workouts/${encodeURIComponent(id)}/benchmark`, {
+    method: "PUT",
+    token,
+    body: { benchmark_key: benchmarkKey },
   });
 }
 

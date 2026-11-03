@@ -19,7 +19,8 @@ export type LeaderboardFilters = {
   ageGroup: AgeGroup | null;
   scale: string | null;
   window: LeaderboardWindow;
-  scope: "box" | "branch";
+  /** ADR-394: `palee` ranks a benchmark WOD across every box. */
+  scope: "box" | "branch" | "palee";
   buddies: boolean;
 };
 
@@ -57,6 +58,7 @@ export function ageGroupLabel(group: AgeGroup): string {
 
 export type LeaderboardChip =
   | { kind: "all"; on: boolean }
+  | { kind: "scope"; value: "box" | "palee"; on: boolean }
   | { kind: "division"; value: Division; on: boolean }
   | { kind: "age"; value: AgeGroup; on: boolean }
   | { kind: "scale"; value: string; label: string; on: boolean };
@@ -65,6 +67,9 @@ export type LeaderboardChip =
  * One row of chips (mockup d2 A): «Όλοι», then only the slices that are the
  * viewer's own: their division and age group (when they told the box) and
  * the scale level of their own result.
+ *
+ * ADR-394: on a WOD the coach tagged as a benchmark, «Όλοι» gives way to
+ * two scope chips, «Το box μου» and «Όλο το Palee». Other WODs are unchanged.
  */
 export function leaderboardChips(
   filters: LeaderboardFilters,
@@ -74,10 +79,15 @@ export function leaderboardChips(
     year: number;
     scale: { slug: string; label: string } | null;
   },
+  options: { benchmark?: boolean } = {},
 ): LeaderboardChip[] {
-  const chips: LeaderboardChip[] = [
-    { kind: "all", on: !filters.division && !filters.ageGroup && !filters.scale },
-  ];
+  const palee = filters.scope === "palee";
+  const chips: LeaderboardChip[] = options.benchmark
+    ? [
+        { kind: "scope", value: "box", on: !palee },
+        { kind: "scope", value: "palee", on: palee },
+      ]
+    : [{ kind: "all", on: !filters.division && !filters.ageGroup && !filters.scale }];
   if (own.division) chips.push({ kind: "division", value: own.division, on: filters.division === own.division });
   const age = ageGroupFor(own.birthYear, own.year);
   if (age) chips.push({ kind: "age", value: age, on: filters.ageGroup === age });
@@ -85,11 +95,28 @@ export function leaderboardChips(
   return chips;
 }
 
-/** Tapping a chip: «Όλοι» clears the slices, any other toggles its own. */
+/**
+ * The window a scope starts from: the box compares today's class, the
+ * Palee-wide board every result of the benchmark (ADR-394).
+ */
+export function defaultWindow(scope: LeaderboardFilters["scope"]): LeaderboardWindow {
+  return scope === "palee" ? "all" : "day";
+}
+
+/**
+ * Tapping a chip: «Όλοι» clears the slices, a scope chip switches between the
+ * box and all of Palee (with that scope's own window), any other toggles its
+ * own slice.
+ */
 export function toggleChip(filters: LeaderboardFilters, chip: LeaderboardChip): LeaderboardFilters {
   switch (chip.kind) {
     case "all":
       return { ...filters, division: null, ageGroup: null, scale: null };
+    case "scope":
+      if (chip.on) return filters;
+      return chip.value === "palee"
+        ? { ...filters, scope: "palee", window: defaultWindow("palee"), buddies: false }
+        : { ...filters, scope: "box", window: defaultWindow("box") };
     case "division":
       return { ...filters, division: chip.on ? null : chip.value };
     case "age":
@@ -101,7 +128,7 @@ export function toggleChip(filters: LeaderboardFilters, chip: LeaderboardChip): 
 
 /** Whether anything under «Προχωρημένα» differs from the calm default. */
 export function advancedActive(filters: LeaderboardFilters): boolean {
-  return filters.window !== "day" || filters.scope !== "box" || filters.buddies;
+  return filters.window !== defaultWindow(filters.scope) || filters.scope === "branch" || filters.buddies;
 }
 
 /** The API query; the branch is always the person's home branch. */
@@ -109,6 +136,16 @@ export function leaderboardQuery(
   filters: LeaderboardFilters,
   context: { date: string; homeLocationId: string | null },
 ): LeaderboardQuery {
+  if (filters.scope === "palee") {
+    return {
+      date: context.date,
+      window: filters.window,
+      ...(filters.division ? { division: filters.division } : {}),
+      ...(filters.ageGroup ? { age_group: filters.ageGroup } : {}),
+      ...(filters.scale ? { scale: filters.scale } : {}),
+      scope: "palee" as const,
+    };
+  }
   const branch = filters.scope === "branch" && context.homeLocationId;
   return {
     date: context.date,
