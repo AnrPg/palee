@@ -21,6 +21,10 @@ vi.mock("@/api/workouts", () => ({
   WOD_ASSISTANT_AVAILABILITY_KEY: ["authoring-settings"],
   fetchAdminWorkout: api.fetchAdminWorkout,
   fetchWorkoutAuthoringSettings: api.fetchWorkoutAuthoringSettings,
+  // ADR-394: the benchmark picker under «Προχωρημένα».
+  WORKOUT_BENCHMARKS_KEY: ["workout-benchmarks"],
+  fetchWorkoutBenchmarks: async () => ({ benchmarks: [] }),
+  setWorkoutBenchmark: async () => ({}),
 }));
 vi.mock("next/navigation", () => ({ useRouter: () => router, useSearchParams: () => search.params }));
 vi.mock("@/components/session-provider", () => ({ useSession: () => ({ tokens: { access_token: "token" } }) }));

@@ -242,7 +242,7 @@ defmodule PaleeWeb.AdminChannelsControllerTest do
              |> json_response(422)
   end
 
-  test "SMS cannot go on without the cap the box types; quiet hours start off", ctx do
+  test "SMS cannot go on without the cap the box types; quiet hours start at 21:00–09:00", ctx do
     # ADR-390: a form error on the field, no invented 20 €.
     assert %{"code" => "validation_failed", "errors" => %{"monthly_budget_cents" => ["required"]}} =
              ctx.owner
@@ -252,8 +252,8 @@ defmodule PaleeWeb.AdminChannelsControllerTest do
     assert %{
              "connection" => %{
                "monthly_budget_cents" => 2500,
-               "quiet_start" => nil,
-               "quiet_end" => nil
+               "quiet_start" => "21:00",
+               "quiet_end" => "09:00"
              }
            } =
              ctx.owner
