@@ -113,7 +113,10 @@ defmodule PaleeWeb.LoggedWorkoutChangeTest do
   end
 
   defp notices(user),
-    do: user.id |> Notifications.list_for_user() |> Enum.filter(&(to_string(&1.type) == "logged_workout_changed"))
+    do:
+      user.id
+      |> Notifications.list_for_user()
+      |> Enum.filter(&(to_string(&1.type) == "logged_workout_changed"))
 
   test "only the people who logged it hear it, once per save, never the editor", ctx do
     %{coach: coach, person: person} = ctx
@@ -182,7 +185,9 @@ defmodule PaleeWeb.LoggedWorkoutChangeTest do
     logged = person.(:member)
     booked = person.(:member)
     slot = slot_fixture(workout, %{auto_approve: true})
-    {:ok, context} = Organizations.resolve_tenant_context(coach, Organizations.legacy_organization_slug())
+
+    {:ok, context} =
+      Organizations.resolve_tenant_context(coach, Organizations.legacy_organization_slug())
 
     for user <- [logged, booked] do
       {:ok, _booking} =
@@ -193,7 +198,9 @@ defmodule PaleeWeb.LoggedWorkoutChangeTest do
     edit(ctx, coach, 15)
 
     changed = fn user ->
-      user.id |> Notifications.list_for_user() |> Enum.filter(&(to_string(&1.type) == "workout_changed"))
+      user.id
+      |> Notifications.list_for_user()
+      |> Enum.filter(&(to_string(&1.type) == "workout_changed"))
     end
 
     assert [_notice] = notices(logged)

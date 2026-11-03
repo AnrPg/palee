@@ -20,7 +20,9 @@ defmodule Palee.Scheduling.Domain.BookingInviteEmailTest do
     test "a moved class updates confirmed seats only" do
       assert {:send, :changed} = BookingInviteEmail.decide(:moved, %{status: :approved})
       assert :skip = BookingInviteEmail.decide(:moved, %{status: :pending})
-      assert :skip = BookingInviteEmail.decide(:moved, %{status: :approved, class_cancelled?: true})
+
+      assert :skip =
+               BookingInviteEmail.decide(:moved, %{status: :approved, class_cancelled?: true})
     end
 
     test "a cancellation reaches a seat that was confirmed or had its invite" do
@@ -28,7 +30,10 @@ defmodule Palee.Scheduling.Domain.BookingInviteEmailTest do
                BookingInviteEmail.decide(:cancelled, %{previous_status: :approved})
 
       assert {:send, :cancelled} =
-               BookingInviteEmail.decide(:cancelled, %{previous_status: :pending, sent_before?: true})
+               BookingInviteEmail.decide(:cancelled, %{
+                 previous_status: :pending,
+                 sent_before?: true
+               })
 
       assert :skip = BookingInviteEmail.decide(:cancelled, %{previous_status: :pending})
       assert :skip = BookingInviteEmail.decide(:cancelled, %{previous_status: "waitlisted"})
@@ -46,7 +51,11 @@ defmodule Palee.Scheduling.Domain.BookingInviteEmailTest do
       same = DateTime.shift_zone!(@before.scheduled_at, "Europe/Athens")
       refute BookingInviteEmail.moved?(@before, %{@before | scheduled_at: same})
 
-      assert BookingInviteEmail.moved?(@before, %{@before | scheduled_at: ~U[2026-11-10 18:00:00Z]})
+      assert BookingInviteEmail.moved?(@before, %{
+               @before
+               | scheduled_at: ~U[2026-11-10 18:00:00Z]
+             })
+
       assert BookingInviteEmail.moved?(@before, %{@before | duration_minutes: 45})
       assert BookingInviteEmail.moved?(@before, %{@before | location_id: "b"})
     end

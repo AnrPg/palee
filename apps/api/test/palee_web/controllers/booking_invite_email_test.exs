@@ -67,7 +67,8 @@ defmodule PaleeWeb.BookingInviteEmailTest do
     {attachment, attachment["data"] |> Base.decode64!() |> String.replace("\r\n ", "")}
   end
 
-  defp sequence(ics), do: ~r/SEQUENCE:(\d+)/ |> Regex.run(ics) |> List.last() |> String.to_integer()
+  defp sequence(ics),
+    do: ~r/SEQUENCE:(\d+)/ |> Regex.run(ics) |> List.last() |> String.to_integer()
 
   defp invites(user), do: enqueued_emails(kind: "booking_invite", user_id: user.id)
 
@@ -94,7 +95,10 @@ defmodule PaleeWeb.BookingInviteEmailTest do
     assert ics =~ "UID:class-#{slot.id}@palee"
     assert ics =~ "STATUS:CONFIRMED"
     assert ics =~ "ORGANIZER;CN="
-    assert ics =~ ~r/ATTENDEE;CN="[^"]+";ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;RSVP=FALSE:mailto:/
+
+    assert ics =~
+             ~r/ATTENDEE;CN="[^"]+";ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;RSVP=FALSE:mailto:/
+
     first = sequence(ics)
 
     # The same UID as «Προσθήκη στο ημερολόγιο».
@@ -206,7 +210,11 @@ defmodule PaleeWeb.BookingInviteEmailTest do
 
   test "a class the box cancels sends a CANCEL to the people booked, in their language", ctx do
     %{member: member, owner: owner} = ctx
-    Repo.query!("UPDATE users SET preferred_locale = 'el' WHERE id = $1", [Ecto.UUID.dump!(member.id)])
+
+    Repo.query!("UPDATE users SET preferred_locale = 'el' WHERE id = $1", [
+      Ecto.UUID.dump!(member.id)
+    ])
+
     slot = slot_fixture(ctx.workout, %{auto_approve: true})
     book(ctx, member, slot)
     booked = assert_email_enqueued(kind: "booking_invite", user_id: member.id)

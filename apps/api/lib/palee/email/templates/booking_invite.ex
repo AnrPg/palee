@@ -66,7 +66,8 @@ defmodule Palee.Email.Templates.BookingInvite do
     )
   end
 
-  defp bindings(assigns, locale), do: %{class: assigns.class_name, when: when_text(assigns, locale)}
+  defp bindings(assigns, locale),
+    do: %{class: assigns.class_name, when: when_text(assigns, locale)}
 
   @weekdays ~w(Monday Tuesday Wednesday Thursday Friday Saturday Sunday)
 

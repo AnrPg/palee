@@ -21,7 +21,11 @@ defmodule Palee.Workouts.Domain.LoggedWorkoutChangeTest do
     end
 
     test "a dated result beats one without a date; nothing changed means nobody" do
-      performed = [result("ana", "a1", "old", nil), result("ana", "a2", "old", ~U[2026-11-02 08:00:00Z])]
+      performed = [
+        result("ana", "a1", "old", nil),
+        result("ana", "a2", "old", ~U[2026-11-02 08:00:00Z])
+      ]
+
       assert [%{holder_id: "a2"}] = LoggedWorkoutChange.recipients(performed, "new", nil)
       assert LoggedWorkoutChange.recipients(performed, "old", nil) == []
       assert LoggedWorkoutChange.recipients([], "new", nil) == []

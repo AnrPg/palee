@@ -167,7 +167,9 @@ defmodule Palee.Application.BookingInviteEmails do
         :ok
 
       {:error, reason} ->
-        Logger.info("booking invite email not queued booking=#{booking.id} reason=#{inspect(reason)}")
+        Logger.info(
+          "booking invite email not queued booking=#{booking.id} reason=#{inspect(reason)}"
+        )
 
         :ok
     end
