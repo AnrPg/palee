@@ -115,8 +115,9 @@ test.describe("public status page", () => {
     await publicStatus(page, [incident()]);
     await page.goto("/status");
 
-    await expect(page.getByTestId("status-now")).toContainText("Partial problem");
+    // With an open problem, the problem card itself carries the overall state.
     const open = page.getByTestId("status-incident");
+    await expect(open).toContainText("Partial problem");
     await expect(open).toContainText("Email delays");
     await expect(open).toContainText("Receipts are delayed by up to an hour.");
     await expect(open).toContainText("automatic translation");

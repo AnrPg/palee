@@ -8,7 +8,7 @@ import { HomeHub } from "@/components/member-app/HomeHub";
 import { PlatformOrganizationsPage } from "@/components/platform/PlatformOrganizationsPage";
 import { appOpenLanding, claimAppOpenLanding, noteRoute } from "@/lib/app-open-landing";
 import { needsFirstRun } from "@/lib/first-run";
-import { useSelectedMembershipRole } from "@/lib/membership-role";
+import { useOrganizationMemberships } from "@/lib/organization-slug";
 
 // Vendors (SaaS operators) have no tenant homepage to speak of by default -
 // the platform console *is* their home. "/platform/organizations" stays
@@ -32,7 +32,11 @@ export function Home() {
   const inOrganizationContext = pathname.startsWith("/org/");
   // ADR-183: a new account's first stop is the first-run, once.
   const firstRun = needsFirstRun(currentUser);
-  const { memberships, isLoading } = useSelectedMembershipRole();
+  // Decide only once the memberships have loaded: while the session is still
+  // starting the query is disabled, and an empty list would wrongly pick Feed.
+  const membershipsQuery = useOrganizationMemberships();
+  const loaded = membershipsQuery.isSuccess && Array.isArray(membershipsQuery.data);
+  const membershipCount = loaded ? membershipsQuery.data.length : 0;
   const vendor = Boolean(currentUser?.vendor);
 
   useEffect(() => {
@@ -41,11 +45,11 @@ export function Home() {
 
   useEffect(() => {
     noteRoute(pathname);
-    if (firstRun || !currentUser || isLoading || inOrganizationContext || pathname !== "/") return;
+    if (firstRun || !currentUser || !loaded || inOrganizationContext || pathname !== "/") return;
     if (!claimAppOpenLanding(pathname)) return;
-    const landing = appOpenLanding({ membershipCount: memberships.length, vendor });
+    const landing = appOpenLanding({ membershipCount, vendor });
     if (landing) router.replace(landing);
-  }, [firstRun, currentUser, isLoading, inOrganizationContext, pathname, memberships.length, vendor, router]);
+  }, [firstRun, currentUser, loaded, inOrganizationContext, pathname, membershipCount, vendor, router]);
 
   if (firstRun) return null;
   if (currentUser?.vendor && !inOrganizationContext) return <PlatformOrganizationsPage />;

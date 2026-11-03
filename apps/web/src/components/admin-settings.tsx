@@ -196,9 +196,29 @@ function CollapsibleSection({
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(defaultOpen);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // A link to /admin/settings#<id> (e.g. the box data email's
+  // «#organization») opens this section and brings it into view, also when
+  // the hash changes on the same page.
+  useEffect(() => {
+    function openFromHash() {
+      if (window.location.hash !== `#${id}`) return;
+      setOpen(true);
+      window.requestAnimationFrame(() => sectionRef.current?.scrollIntoView({ block: "start", behavior: "smooth" }));
+    }
+    openFromHash();
+    window.addEventListener("hashchange", openFromHash);
+    return () => window.removeEventListener("hashchange", openFromHash);
+  }, [id]);
 
   return (
-    <section id={id} className="overflow-hidden rounded-[2.4rem]" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
+    <section
+      ref={sectionRef}
+      id={id}
+      className="scroll-mt-24 overflow-hidden rounded-[2.4rem]"
+      style={{ background: "var(--panel)", border: "1px solid var(--border)" }}
+    >
       <button
         className="flex w-full items-center justify-between gap-4 p-8 text-start"
         type="button"

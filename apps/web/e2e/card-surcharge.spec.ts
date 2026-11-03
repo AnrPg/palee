@@ -159,7 +159,7 @@ test("at «Κάρτα στο POS» the desk asks what card it was and shows the 
   });
   await page.goto("/admin/finance?tab=members");
 
-  await page.getByRole("button", { name: /Maria/ }).first().click();
+  await page.getByRole("button", { name: "Καταγραφή πληρωμής από Maria" }).click();
   const dialog = page.getByRole("dialog").filter({ has: page.getByTestId("receive-payment-outcome") });
   await dialog.getByRole("radio", { name: "Κάρτα στο POS" }).click();
 
@@ -170,8 +170,10 @@ test("at «Κάρτα στο POS» the desk asks what card it was and shows the 
   await expect(question.getByTestId("desk-surcharge-amount")).toContainText("0,90");
   await expect(question.getByTestId("desk-surcharge-total")).toContainText("60,90");
 
-  await dialog.getByRole("button", { name: /Καταχώριση/ }).click();
-  const receive = writes.find((write) => write.path === `/api/admin/finance/members/${MEMBER_ID}/payments/receive`);
+  await dialog.getByRole("button", { name: "Καταγραφή πληρωμής", exact: true }).click();
+  const receivePath = `/api/admin/finance/members/${MEMBER_ID}/payments/receive`;
+  await expect.poll(() => writes.some((write) => write.path === receivePath)).toBe(true);
+  const receive = writes.find((write) => write.path === receivePath);
   expect(receive?.body).toMatchObject({ payment_method: "card_manual", amount_cents: 6000, surcharge_cents: 90, card: { commercial: true } });
   expect(quotes.length).toBeGreaterThan(0);
 });
