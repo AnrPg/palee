@@ -9,6 +9,7 @@ import { fetchBarcodeMisses } from "@/api/body-devices";
 import { useSession } from "@/components/session-provider";
 import { BackLink } from "@/components/ui/BackLink";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
+import { Select } from "@/components/ui/Select";
 
 /**
  * «Barcode χωρίς προϊόν» (ADR-421): barcodes members scanned that no food
@@ -49,18 +50,14 @@ export function PlatformFoodMissesPage() {
       {choices.length > 0 ? (
         <label className="mt-6 flex items-center gap-3 text-sm font-semibold text-[var(--text)]">
           {t("country")}
-          <select
-            value={country}
-            onChange={(event) => setCountry(event.target.value)}
-            className="min-h-11 rounded-2xl border border-[var(--border)] bg-[var(--panel-muted)] px-3 text-[var(--text)]"
-          >
+          <Select value={country} onValueChange={setCountry} className="min-h-11">
             <option value="">{t("countryAll")}</option>
             {choices.map((code) => (
               <option key={code} value={code}>
                 {code}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
       ) : null}
 
