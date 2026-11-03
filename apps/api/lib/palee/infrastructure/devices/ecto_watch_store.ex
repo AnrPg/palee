@@ -5,7 +5,7 @@ defmodule Palee.Infrastructure.Devices.EctoWatchStore do
 
   import Ecto.Query
 
-  alias Palee.Devices.{HeartRateBatch, WatchLink}
+  alias Palee.Devices.{HeartRateBatch, WatchLink, WatchOffer}
   alias Palee.Repo
 
   @impl true
@@ -68,4 +68,30 @@ defmodule Palee.Infrastructure.Devices.EctoWatchStore do
     |> order_by([b], asc: b.sequence)
     |> Repo.all()
   end
+
+  @impl true
+  def get_offer(execution_id), do: Repo.get_by(WatchOffer, execution_id: execution_id)
+
+  @impl true
+  def count_asked_offers(user_id) do
+    WatchOffer
+    |> where([o], o.user_id == ^user_id and o.mode == "asked")
+    |> select([o], count(o.id))
+    |> Repo.one()
+  end
+
+  @impl true
+  def save_offer(nil, attrs) do
+    attrs
+    |> WatchOffer.changeset()
+    |> Repo.insert(on_conflict: :nothing, conflict_target: [:execution_id])
+    |> case do
+      # Two opens at once: the first row wins and both read it back.
+      {:ok, _maybe_not_inserted} -> {:ok, get_offer(attrs.execution_id)}
+      error -> error
+    end
+  end
+
+  def save_offer(%WatchOffer{} = offer, attrs),
+    do: offer |> WatchOffer.changeset(attrs) |> Repo.update()
 end

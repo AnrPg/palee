@@ -3594,6 +3594,8 @@ defmodule PaleeWeb.FallbackController do
     unknown_watch_platform: {:unprocessable_entity, "Choose apple_watch or wear_os"},
     watch_upgrade_required: {:upgrade_required, "Update Palee on the watch to keep using it"},
     watch_not_paired: {:not_found, "That watch isn't paired"},
+    watch_offer_not_asked: {:conflict, "The watch wasn't offered for this workout"},
+    invalid_watch_offer_answer: {:unprocessable_entity, "Answer yes or no"},
     invalid_watch_settings:
       {:unprocessable_entity, "Settings are on/off, and the maximum heart rate 120–230"},
     invalid_heart_rate_batch:

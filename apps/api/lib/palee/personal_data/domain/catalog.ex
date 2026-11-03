@@ -142,6 +142,8 @@ defmodule Palee.PersonalData.Domain.Catalog do
       account("devices", "device_imports", @me),
       # ADR-375: paired watches.
       account("devices", "watch_links", @me),
+      # ADR-375 amendment: whether the watch was offered for each workout.
+      account("devices", "watch_offers", @me),
       account("devices", "native_push_tokens", @me),
       account("devices", "push_subscriptions", @me, drop: ~w(endpoint)),
 

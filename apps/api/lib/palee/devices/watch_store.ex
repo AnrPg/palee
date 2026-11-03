@@ -23,5 +23,12 @@ defmodule Palee.Devices.WatchStore do
   @impl true
   def list_heart_rate(execution_id), do: adapter().list_heart_rate(execution_id)
 
+  @impl true
+  def get_offer(execution_id), do: adapter().get_offer(execution_id)
+  @impl true
+  def count_asked_offers(user_id), do: adapter().count_asked_offers(user_id)
+  @impl true
+  def save_offer(offer, attrs), do: adapter().save_offer(offer, attrs)
+
   defp adapter, do: Application.fetch_env!(:palee, :watch_store)
 end

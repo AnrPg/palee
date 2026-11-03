@@ -53,6 +53,79 @@ defmodule Palee.Execution.Domain.SplitMarks do
 
   def cast(_marks, _segments), do: {:error, :invalid_split_marks}
 
+  @doc """
+  The marks a progress update implies, so a timer that only saves its
+  progress still leaves a pace line (ADR-374 amendment 2026-11-03):
+
+    * every segment the update moved past ended (`round` 0);
+    * every new count of a segment's rounds (`segment_cycle_counts`, the
+      AMRAP «Γύρος» taps) finished that round.
+
+  Each takes the update's `total_elapsed_ms`. Marks the segments do not
+  allow are dropped, never an error: progress must save regardless. Marks
+  the timer or a watch sent itself win, because the store keeps the first
+  mark of a segment and round.
+  """
+  def from_progress(previous, updated, segments) when is_list(segments) do
+    elapsed = get(updated, :total_elapsed_ms)
+
+    if is_integer(elapsed) and segments != [] do
+      ended = ended_segments(get(previous, :current_segment_index), updated, segments)
+      rounds = finished_rounds(previous, updated, segments)
+
+      (ended ++ rounds)
+      |> Enum.map(&Map.put(&1, :elapsed_ms, elapsed))
+      |> Enum.flat_map(fn mark ->
+        case cast([mark], segments) do
+          {:ok, rows} -> rows
+          {:error, _invalid} -> []
+        end
+      end)
+      |> Enum.uniq_by(&{&1.segment_index, &1.round})
+      |> Enum.take(@max_marks)
+    else
+      []
+    end
+  end
+
+  def from_progress(_previous, _updated, _segments), do: []
+
+  defp ended_segments(from, updated, segments) do
+    to = get(updated, :current_segment_index)
+    last = length(segments) - 1
+
+    finished? =
+      to_string(get(updated, :status)) == "completed" and is_integer(to) and to == last
+
+    to = if finished?, do: to + 1, else: to
+
+    if is_integer(from) and is_integer(to) and to > from,
+      do: for(index <- from..(to - 1)//1, do: %{segment_index: index, round: 0}),
+      else: []
+  end
+
+  defp finished_rounds(previous, updated, segments) do
+    before = get(previous, :segment_cycle_counts) || %{}
+    now = get(updated, :segment_cycle_counts) || %{}
+
+    index_by_key =
+      segments
+      |> Enum.with_index()
+      |> Map.new(fn {segment, index} -> {to_string(get(segment, :segment_key)), index} end)
+
+    Enum.flat_map(now, fn {key, count} ->
+      old = Map.get(before, key, Map.get(before, to_string(key), 0))
+
+      with index when is_integer(index) <- Map.get(index_by_key, to_string(key)),
+           true <- is_integer(count) and is_integer(old) and count > old do
+        for round <- max(old + 1, count - @max_marks + 1)..count//1,
+            do: %{segment_index: index, round: round}
+      else
+        _none -> []
+      end
+    end)
+  end
+
   defp cast_mark(mark, segments, ordinals) when is_map(mark) do
     index = get(mark, :segment_index)
     round = get(mark, :round) || 0

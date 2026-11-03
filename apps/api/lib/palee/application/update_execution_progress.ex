@@ -1,6 +1,14 @@
 defmodule Palee.Application.UpdateExecutionProgress do
+  @moduledoc """
+  Saves a timer's progress. Since ADR-374's amendment (2026-11-03) it also
+  stores the split marks the update implies (segments ended, AMRAP rounds
+  counted), so every timer that saves progress feeds «Ο προηγούμενος εαυτός
+  σου» without posting marks itself.
+  """
+
+  alias Palee.Application.Clock
   alias Palee.{Execution, Workouts}
-  alias Palee.Execution.ExecutionStore
+  alias Palee.Execution.{ExecutionStore, SplitStore}
 
   def call(context, execution_id, user_id, params),
     do: ExecutionStore.with_user_context(context, fn -> call(execution_id, user_id, params) end)
@@ -14,9 +22,19 @@ defmodule Palee.Application.UpdateExecutionProgress do
              user_id,
              Map.put(params, :segments, segments)
            ) do
+      record_implied_splits(current_execution, execution, segments)
       broadcast_progress_updated(execution)
       {:ok, execution}
     end
+  end
+
+  defp record_implied_splits(previous, execution, segments) do
+    case Execution.split_marks_from_progress(previous, execution, segments) do
+      [] -> :ok
+      rows -> {:ok, _stored} = SplitStore.insert_splits(execution.id, execution.user_id, rows, Clock.now())
+    end
+
+    :ok
   end
 
   defp fetch_execution(execution_id, user_id) do

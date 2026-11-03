@@ -2731,6 +2731,9 @@ defmodule PaleeWeb.Router do
     get("/:id/pacer", ExecutionPacerController, :show)
     post("/:id/splits", ExecutionPacerController, :splits)
     get("/:id/watch-plan", WatchController, :plan)
+    # ADR-375 amendment (ANR's D8 rules): ask, start or leave the watch.
+    post("/:id/watch-offer", WatchController, :offer)
+    put("/:id/watch-offer/answer", WatchController, :answer_offer)
     post("/:id/heart-rate", WatchController, :heart_rate)
     get("/:id/heart-rate", WatchController, :heart_rate_summary)
   end

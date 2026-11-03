@@ -4,7 +4,7 @@ defmodule Palee.Devices.Ports.WatchStore do
   run inside the person's own RepoContext; row security admits only them.
   """
 
-  alias Palee.Devices.{HeartRateBatch, WatchLink}
+  alias Palee.Devices.{HeartRateBatch, WatchLink, WatchOffer}
 
   @type id :: Ecto.UUID.t()
 
@@ -14,4 +14,7 @@ defmodule Palee.Devices.Ports.WatchStore do
   @callback delete_link(id(), String.t()) :: non_neg_integer()
   @callback insert_heart_rate(id(), id(), [map()], DateTime.t()) :: {:ok, non_neg_integer()}
   @callback list_heart_rate(id()) :: [HeartRateBatch.t()]
+  @callback get_offer(id()) :: WatchOffer.t() | nil
+  @callback count_asked_offers(id()) :: non_neg_integer()
+  @callback save_offer(WatchOffer.t() | nil, map()) :: {:ok, WatchOffer.t()} | {:error, term()}
 end

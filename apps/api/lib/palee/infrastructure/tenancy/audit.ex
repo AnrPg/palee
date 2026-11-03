@@ -151,7 +151,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     training_goals
     personal_data_exports
     palee_leaderboard_consents
-    execution_splits watch_links execution_heart_rate_batches custom_foods
+    execution_splits watch_links execution_heart_rate_batches custom_foods watch_offers
   )
 
   def report do

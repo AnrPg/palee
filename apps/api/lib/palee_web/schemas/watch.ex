@@ -294,4 +294,64 @@ defmodule PaleeWeb.Schemas.Watch do
       required: [:heart_rate]
     }
   end
+
+  def offer_request do
+    %Schema{
+      title: "WatchOfferRequest",
+      type: :object,
+      description:
+        "Sent by the phone when a WOD is opened for execution: which watch it sees and whether it is connected now",
+      properties: %{platform: @platform, watch_connected: %Schema{type: :boolean}},
+      required: [:platform, :watch_connected]
+    }
+  end
+
+  def offer_response do
+    %Schema{
+      title: "WatchOfferResponse",
+      type: :object,
+      properties: %{
+        mode: %Schema{
+          type: :string,
+          enum: ~w(ask start none),
+          description:
+            "ask: show «Το χρονόμετρο και στο ρολόι;»; start: put the timer on the watch; none: leave it"
+        },
+        reason: %Schema{
+          type: :string,
+          enum:
+            ~w(execution_closed watch_not_connected not_checked_in already_started answered_yes answered_no not_answered free_athlete first_wods box_member_after_first_wods)
+        },
+        answer: %Schema{type: :string, enum: ~w(yes no), nullable: true},
+        asked_count: %Schema{type: :integer},
+        ask_limit: %Schema{
+          type: :integer,
+          nullable: true,
+          description: "Box members are asked this many times; null for free athletes (always asked)"
+        }
+      },
+      required: [:answer, :ask_limit, :asked_count, :mode, :reason]
+    }
+  end
+
+  def offer_answer_request do
+    %Schema{
+      title: "WatchOfferAnswerRequest",
+      type: :object,
+      properties: %{answer: %Schema{type: :string, enum: ~w(yes no)}},
+      required: [:answer]
+    }
+  end
+
+  def offer_answer_response do
+    %Schema{
+      title: "WatchOfferAnswerResponse",
+      type: :object,
+      properties: %{
+        mode: %Schema{type: :string, enum: ~w(start none)},
+        answer: %Schema{type: :string, enum: ~w(yes no)}
+      },
+      required: [:answer, :mode]
+    }
+  end
 end

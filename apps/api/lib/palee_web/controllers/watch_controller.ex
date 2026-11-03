@@ -112,4 +112,39 @@ defmodule PaleeWeb.WatchController do
     with {:ok, summary} <- WatchCompanion.heart_rate_summary(conn.assigns.user_context, id),
          do: json(conn, %{heart_rate: summary})
   end
+
+  operation(:offer,
+    summary:
+      "When a WOD is opened for execution and the phone sees a connected watch: ask, start on the watch, or leave it (ANR's D8 rules)",
+    parameters: [@id],
+    request_body: S.body(S.offer_request()),
+    responses: [
+      ok: {"What the phone does", "application/json", S.offer_response()},
+      not_found: {"Not your execution", "application/json", S.error()},
+      unprocessable_entity: {"Unknown watch platform", "application/json", S.error()}
+    ]
+  )
+
+  def offer(conn, %{id: id}) do
+    with {:ok, offer} <- WatchCompanion.offer(conn.assigns.user_context, id, conn.body_params),
+         do: json(conn, offer)
+  end
+
+  operation(:answer_offer,
+    summary: "The person's answer to «Το χρονόμετρο και στο ρολόι;» for this execution",
+    parameters: [@id],
+    request_body: S.body(S.offer_answer_request()),
+    responses: [
+      ok: {"Answer saved", "application/json", S.offer_answer_response()},
+      conflict: {"The watch was not offered for this execution", "application/json", S.error()},
+      not_found: {"Not your execution", "application/json", S.error()},
+      unprocessable_entity: {"Answer yes or no", "application/json", S.error()}
+    ]
+  )
+
+  def answer_offer(conn, %{id: id}) do
+    with {:ok, result} <-
+           WatchCompanion.answer_offer(conn.assigns.user_context, id, conn.body_params),
+         do: json(conn, result)
+  end
 end
