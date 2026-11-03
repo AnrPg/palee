@@ -14723,7 +14723,8 @@
     "noEnd": "Χωρίς λήξη",
     "renews": "ανανεώνεται",
     "dueSince": "λήξη {date}",
-    "debtsQueue": "Οφειλές"
+    "debtsQueue": "Οφειλές",
+    "keptContact": "Ο λογαριασμός διαγράφηκε · η επαφή κρατιέται μέχρι να εξοφληθεί"
   },
   "WorkoutTypes": {
     "family": {

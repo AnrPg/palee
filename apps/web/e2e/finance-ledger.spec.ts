@@ -339,6 +339,16 @@ test.describe("finance ledger", () => {
             open_charges: [
               { id: "m-2", user_id: "u-2", user_label: "nikos", balance_due_cents: 5000, oldest_due_on: "2026-10-05", state: "overdue" },
               { id: "m-1", user_id: MEMBER_ID, user_label: "Maria", balance_due_cents: 4500, oldest_due_on: "2026-10-29", state: "unpaid" },
+              // ADR-396: deleted their account while owing; the box kept how to reach them.
+              {
+                id: "m-3",
+                user_id: "u-3",
+                user_label: "Eleni",
+                balance_due_cents: 3000,
+                oldest_due_on: "2026-10-01",
+                state: "overdue",
+                kept_contact: { display_name: "Eleni", email: "eleni@example.com", phone_e164: "+306900000000" },
+              },
             ],
           },
         }),
@@ -348,7 +358,12 @@ test.describe("finance ledger", () => {
 
     const debts = page.getByRole("button", { name: /Debts/ });
     await expect(debts).toBeVisible();
-    await expect(page.locator("[data-debt-state]")).toHaveText(["Overdue", "Unpaid"]);
+    await expect(page.locator("[data-debt-state]")).toHaveText(["Overdue", "Unpaid", "Overdue"]);
+    const kept = page.getByTestId("debt-kept-contact");
+    await expect(kept).toHaveCount(1);
+    await expect(kept).toContainText("Account deleted · contact kept until this is paid");
+    await expect(kept.getByRole("link", { name: "eleni@example.com" })).toHaveAttribute("href", "mailto:eleni@example.com");
+    await expect(kept.getByRole("link", { name: "+306900000000" })).toHaveAttribute("href", "tel:+306900000000");
     await expect(page.getByText("€45.00")).toBeVisible();
     await page.getByRole("button", { name: "+ Payment" }).nth(1).click();
     await expect(page.getByRole("dialog", { name: "Record payment" })).toBeVisible();

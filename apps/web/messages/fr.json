@@ -14723,7 +14723,8 @@
     "noEnd": "Sans fin",
     "renews": "se renouvelle",
     "dueSince": "échéance {date}",
-    "debtsQueue": "Dettes"
+    "debtsQueue": "Dettes",
+    "keptContact": "Compte supprimé · contact conservé jusqu'au paiement"
   },
   "WorkoutTypes": {
     "family": {

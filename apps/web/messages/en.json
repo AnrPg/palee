@@ -14723,7 +14723,8 @@
     "noEnd": "No end",
     "renews": "renews",
     "dueSince": "since {date}",
-    "debtsQueue": "Debts"
+    "debtsQueue": "Debts",
+    "keptContact": "Account deleted · contact kept until this is paid"
   },
   "WorkoutTypes": {
     "family": {

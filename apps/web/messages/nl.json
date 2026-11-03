@@ -14723,7 +14723,8 @@
     "noEnd": "Geen einde",
     "renews": "wordt verlengd",
     "dueSince": "vervalt {date}",
-    "debtsQueue": "Schulden"
+    "debtsQueue": "Schulden",
+    "keptContact": "Account verwijderd · contact bewaard tot dit betaald is"
   },
   "WorkoutTypes": {
     "family": {

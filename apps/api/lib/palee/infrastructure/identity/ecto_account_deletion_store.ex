@@ -105,6 +105,20 @@ defmodule Palee.Infrastructure.Identity.EctoAccountDeletionStore do
   end
 
   @impl true
+  def deleting_profile_memberships(user_id) do
+    Repo.query!(
+      "SELECT organization_id, membership_id FROM palee_deleting_profile_memberships($1)",
+      [Ecto.UUID.dump!(user_id)]
+    ).rows
+    |> Enum.map(fn [organization_id, membership_id] ->
+      %{
+        organization_id: Ecto.UUID.load!(organization_id),
+        membership_id: Ecto.UUID.load!(membership_id)
+      }
+    end)
+  end
+
+  @impl true
   def anonymize_profile(user_id) do
     Repo.transaction(fn ->
       case User |> where([u], u.id == ^user_id) |> lock("FOR UPDATE") |> Repo.one() do

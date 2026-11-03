@@ -14723,7 +14723,8 @@
     "noEnd": "Без край",
     "renews": "подновява се",
     "dueSince": "падеж {date}",
-    "debtsQueue": "Задължения"
+    "debtsQueue": "Задължения",
+    "keptContact": "Профилът е изтрит · контактът се пази до плащането"
   },
   "WorkoutTypes": {
     "family": {
