@@ -24,6 +24,9 @@ defmodule Palee.Appointments.AppointmentStore do
   def list_slots(context, filters), do: tenant_call(context, :list_slots, [filters])
 
   @impl true
+  def coach_sessions(context, from, to), do: tenant_call(context, :coach_sessions, [from, to])
+
+  @impl true
   def cancel_slot(context, id), do: tenant_call(context, :cancel_slot, [id])
 
   @impl true

@@ -105,3 +105,17 @@ describe("map origins", () => {
     ).toBe("https://maps.example.net https://tiles.example.net");
   });
 });
+
+describe("status host (ADR-366)", () => {
+  test("status.palee.app serves the status page at its root and keeps the email link's query", async () => {
+    const root = await proxy(new NextRequest("https://status.palee.app/?confirm=abc"));
+    expect(root.headers.get("x-middleware-rewrite")).toBe("https://status.palee.app/status?confirm=abc");
+  });
+
+  test("other paths on the status host and the app's own /status are not rewritten", async () => {
+    const asset = await proxy(new NextRequest("https://status.palee.app/icon.svg"));
+    expect(asset.headers.get("x-middleware-rewrite")).toBeNull();
+    const app = await proxy(new NextRequest("https://palee.app/"));
+    expect(app.headers.get("x-middleware-rewrite")).toBeNull();
+  });
+});

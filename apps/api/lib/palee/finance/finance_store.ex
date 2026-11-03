@@ -309,6 +309,11 @@ defmodule Palee.Finance.FinanceStore do
   def list_freezes(user_id), do: adapter().list_freezes(user_id)
   @impl true
   def booking_terms(user_id, occurred_on), do: adapter().booking_terms(user_id, occurred_on)
+  @impl true
+  def coach_sales(from, to), do: adapter().coach_sales(from, to)
+  @impl true
+  def purchase_eligibility(user_id, package_id, channel, today),
+    do: adapter().purchase_eligibility(user_id, package_id, channel, today)
 
   @impl true
   def allowance_terms(user_id, allowance, occurred_on),

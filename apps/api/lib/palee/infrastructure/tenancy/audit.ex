@@ -10,6 +10,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     class_attendance_records class_timers
     master_workouts workout_folders workout_sections workout_exercises
     exercise_variations assigned_workouts assigned_workout_athletes scale_levels
+    workout_snapshots
     workout_goals
     membership_packages memberships membership_package_subscriptions
     membership_payments promotion_campaigns promotion_codes promotion_redemptions
@@ -20,6 +21,9 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     finance_accounting_exports
     finance_entitlement_usage_entries finance_settings finance_subscription_freezes
     finance_value_overrides finance_package_requests
+    leads lead_tasks lead_events
+    box_automations automation_deliveries automation_member_preferences
+    retention_risks retention_risk_actions
     facility_locations facility_check_ins facility_check_in_settings
     membership_location_scopes
     facility_visitor_scans facility_member_codes wallet_passes content_videos
@@ -60,10 +64,16 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     fiscal_till_connections fiscal_till_signatures fiscal_till_signature_attempts
     fiscal_connection_settings
     payment_accounts payment_methods payment_intents payment_refunds payment_webhook_events
+    channel_connections channel_contacts channel_consents channel_templates channel_messages
+    channel_message_events channel_email_connections
+
+    payment_surcharge_settings
+    coach_pay_rules coach_pay_periods coach_pay_statements coach_pay_lines coach_pay_items
     box_screens
     document_settings document_templates document_versions document_signature_requests
     document_signatures document_audit_events health_certificates
     setup_recipe_applications
+    box_data_exports
     imports import_rows imported_people
     review_questionnaires reviews review_answers
     messaging_threads
@@ -76,6 +86,8 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     training_log_entries
     ai_usage_records organization_ai_settings scaling_suggestions
     demo_records
+    box_site_settings box_site_domains box_site_submissions box_site_consents
+    review_ask_settings review_asks review_ask_opt_outs box_reviews google_place_snapshots
   )
 
   @transitional_tenant_tables []
@@ -93,6 +105,9 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
   # `palee_claim_demo_reminder`, `palee_mark_demo_archived`,
   # `palee_reopen_demo_business`), never by a tenant session directly.
   #
+  # `status_*` (ADR-364) are the public status page: platform data with no
+  # tenant (probes, incidents, maintenance, subscriber addresses).
+  #
   # `email_messages` (ADR-203) is the platform's email outbox: written by
   # `Palee.Email` and its worker (no session scope), never read by a tenant
   # session; its `organization_id` only records which business sent it.
@@ -103,6 +118,8 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     platform_plans organization_platform_subscriptions
     business_activation_links business_requests
     email_messages
+    status_component_states status_daily_samples status_incidents
+    status_incident_updates status_subscribers
   )
 
   # Materialized views carry denormalized tenant data but cannot have RLS
@@ -132,6 +149,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     user_insights guide_progress notification_preferences
     training_goals
     personal_data_exports
+    palee_leaderboard_consents
   )
 
   def report do

@@ -36,6 +36,26 @@ defmodule Palee.Application.DayWorkouts do
   end
 
   @doc """
+  ADR-357 (CP-D3): the tag of each gym day in [from, to]: `none`,
+  `not_assigned`, `mixed` («Μικτό») or `all_assigned`, over the classes the
+  caller may see (ADR-186).
+  """
+  def assignment_tags(%{organization_id: _} = context, %Date{} = from, %Date{} = to) do
+    zone = zone(context)
+
+    classes =
+      context
+      |> DayWorkoutStore.list_classes(
+        ZonedTime.start_of_day(from, zone),
+        ZonedTime.start_of_day(Date.add(to, 1), zone)
+      )
+      |> scoped_classes(context)
+      |> Enum.map(&Map.put(&1, :local_date, ZonedTime.local_date(&1.scheduled_at, zone)))
+
+    Scheduling.day_assignment_tags(Date.range(from, to) |> Enum.to_list(), classes)
+  end
+
+  @doc """
   What setting a day WOD would do, before it is saved: the classes that
   would take it, those keeping their own WOD, and those already started.
   """

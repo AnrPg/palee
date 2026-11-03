@@ -2734,6 +2734,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/me/events/{id}/sms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** ADR-385: the organiser's SMS view of an event: who will get SMS and its cost */
+        get: operations["PaleeWeb.CommunityEventController.sms"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me/events/{id}/views": {
         parameters: {
             query?: never;
@@ -2833,6 +2850,23 @@ export interface paths {
          * @description At most one notification a day, only when something new matches. Turning it on counts only what appears from now on. Only the `around_me` surface has alerts.
          */
         put: operations["PaleeWeb.SavedFilterController.alert"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/fitness-profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Your fitness score per domain, its reasoning and what to work on */
+        get: operations["PaleeWeb.FitnessProfileController.show"];
+        put?: never;
         post?: never;
         delete?: never;
         options?: never;
@@ -3388,6 +3422,25 @@ export interface paths {
         put: operations["PaleeWeb.OpenClubController.set_notify_level"];
         post?: never;
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/palee-leaderboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Your answer about the Palee-wide benchmark board */
+        get: operations["PaleeWeb.PaleeLeaderboardConsentController.show"];
+        /** Put your score on the Palee-wide board (share) or only see your place (see_only) */
+        put: operations["PaleeWeb.PaleeLeaderboardConsentController.update"];
+        post?: never;
+        /** Withdraw: leave every Palee-wide board at once */
+        delete: operations["PaleeWeb.PaleeLeaderboardConsentController.delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -5053,6 +5106,77 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/automations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The ready recipes as the box has them */
+        get: operations["PaleeWeb.AdminAutomationController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/automations/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Recent automatic messages, newest first */
+        get: operations["PaleeWeb.AdminAutomationController.deliveries"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/automations/{recipe}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Switch a recipe on or off, or change its text, channels, delay or settings
+         * @description Switching a recipe off cancels the messages it had queued.
+         */
+        patch: operations["PaleeWeb.AdminAutomationController.update"];
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/automations/{recipe}/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** The message as a person would get it (sample name) */
+        post: operations["PaleeWeb.AdminAutomationController.preview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/bookings/{id}/approve": {
         parameters: {
             query?: never;
@@ -5091,6 +5215,40 @@ export interface paths {
          * @description Booking resolution is never replayed blindly (ADR-120): a booking that is no longer pending returns 409 `booking_not_pending` unless it was resolved by this same `client_operation_id`, which returns the booking with 200.
          */
         patch: operations["PaleeWeb.AdminScheduleController.reject_booking"];
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/box-reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box's reviews (newest first) with the average and the Google listing */
+        get: operations["PaleeWeb.AdminBoxReviewsController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/box-reviews/{id}/reply": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Reply to a review as the box (or edit the reply) */
+        put: operations["PaleeWeb.AdminBoxReviewsController.reply"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/org/{organization_slug}/admin/box-screens": {
@@ -5312,6 +5470,342 @@ export interface paths {
         head?: never;
         /** Update a seasonal challenge */
         patch: operations["PaleeWeb.AdminChallengeController.update"];
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/class-notices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send a class notice: in the app to those with a device, by SMS to the rest
+         * @description `idempotency_key` is required: a repeated press sends nothing twice.
+         */
+        post: operations["PaleeWeb.AdminChannelClassNoticesController.create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/class-notices/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Who would learn of a class notice, in the app or by SMS, and the SMS cost
+         * @description Nothing is sent. `channels_demo_mode` and the like come back as `sms_blocked`.
+         */
+        post: operations["PaleeWeb.AdminChannelClassNoticesController.preview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/contacts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Contacts of several members or leads */
+        get: operations["PaleeWeb.AdminChannelContactsController.index"];
+        /**
+         * Save a member's or lead's mobile number and language
+         * @description The number is normalised to E.164 with the box's country; it must be a mobile.
+         */
+        put: operations["PaleeWeb.AdminChannelContactsController.save"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/contacts/lookup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The contact of one member (`user_id`) or lead (`lead_id`), or null */
+        get: operations["PaleeWeb.AdminChannelContactsController.lookup"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/contacts/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Forget a contact with its consents and messages */
+        delete: operations["PaleeWeb.AdminChannelContactsController.delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/contacts/{id}/consents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Record a consent the person gave (or withdrew) for one channel and purpose */
+        put: operations["PaleeWeb.AdminChannelContactsController.consent"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/email": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box's own email provider (null: Palee sends), the options and the DNS guide */
+        get: operations["PaleeWeb.AdminChannelEmailController.show"];
+        /**
+         * Connect the box's own email provider over SMTP
+         * @description Every email provider speaks SMTP. `secret` (the password) is kept when not sent and never returned. A change to the host, port, TLS mode, user name or password needs «Δοκιμή σύνδεσης» before the box's email goes through it. Platform email (verification, password reset, security notices) always goes through Palee.
+         */
+        put: operations["PaleeWeb.AdminChannelEmailController.save"];
+        post?: never;
+        /** Remove the box's own email provider: Palee sends the box's email again */
+        delete: operations["PaleeWeb.AdminChannelEmailController.delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/email/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** «Δοκιμή σύνδεσης»: connect, start TLS and log in, then quit; nothing is sent */
+        post: operations["PaleeWeb.AdminChannelEmailController.check"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Sent and waiting messages, newest first */
+        get: operations["PaleeWeb.AdminChannelMessagesController.index"];
+        put?: never;
+        /**
+         * Send a message to a member or lead by SMS (or another channel they agreed to)
+         * @description Queued in the outbox: quiet hours hold it unless `urgent` (service only). `idempotency_key` makes a repeated click answer the same message.
+         */
+        post: operations["PaleeWeb.AdminChannelMessagesController.create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/messages/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * What a message would be: channel, text, parts, cost, when it leaves, budget
+         * @description Nothing is queued. Same errors as sending: `channels_not_connected`, `channel_contact_missing`, `channel_consent_missing`, `channel_opted_out`, `channel_budget_exceeded`, `channel_template_missing`…
+         */
+        post: operations["PaleeWeb.AdminChannelMessagesController.preview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/messages/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One message with its attempts and delivery receipts */
+        get: operations["PaleeWeb.AdminChannelMessagesController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/messages/{id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Stop a message that has not left yet */
+        post: operations["PaleeWeb.AdminChannelMessagesController.cancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/messages/{id}/retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Send a failed message again */
+        post: operations["PaleeWeb.AdminChannelMessagesController.retry"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The SMS/Viber/WhatsApp provider, the providers on offer and this month's cost */
+        get: operations["PaleeWeb.AdminChannelSettingsController.show"];
+        /**
+         * Connect the box's messaging provider, then check it
+         * @description `account_mode` `palee` (default) sends through Palee's own Brevo account, with the box's cost tracked against `monthly_budget_cents`; `own` uses the box's own Brevo API key (`secret`, kept when not sent, never returned). `quiet_start`/`quiet_end` ("HH:MM" on the box's clock, both null for none) hold non-urgent messages. `rotate_webhook` draws a new webhook URL.
+         */
+        put: operations["PaleeWeb.AdminChannelSettingsController.save"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/settings/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** «Δοκιμή σύνδεσης»: ask the provider something harmless with the saved credentials */
+        post: operations["PaleeWeb.AdminChannelSettingsController.check"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Palee's message wording and the box's own, per language */
+        get: operations["PaleeWeb.AdminChannelSettingsController.templates"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/templates/{key}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Write the box's own wording of a message in one language
+         * @description Placeholders are `{{name}}`. Channel `whatsapp` rows carry the provider's template id and whether Meta approved it; WhatsApp only sends approved templates.
+         */
+        put: operations["PaleeWeb.AdminChannelSettingsController.save_template"];
+        post?: never;
+        /** Go back to Palee's wording for a message in one language */
+        delete: operations["PaleeWeb.AdminChannelSettingsController.delete_template"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/channels/usage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Messages and cost of a month (the box's clock) against the budget cap */
+        get: operations["PaleeWeb.AdminChannelSettingsController.usage"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/org/{organization_slug}/admin/check-in/door/{location_id}": {
@@ -5556,6 +6050,381 @@ export interface paths {
         head?: never;
         /** Rename or reorder an active class type */
         patch: operations["PaleeWeb.AdminClassTypeController.update"];
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box's overtime and allowances (active ones unless `include_archived`) */
+        get: operations["PaleeWeb.AdminCoachPayController.items"];
+        put?: never;
+        /**
+         * Add overtime or an allowance to the box's catalogue
+         * @description Overtime: an amount per hour above `weekly_threshold` hours a week (both required), counted from the classes the person led. Allowance: per period or per occurrence, added to a period by hand. `roles`: the staff roles it applies to.
+         */
+        post: operations["PaleeWeb.AdminCoachPayController.create_item"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/items/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Change overtime or an allowance (statements keep the terms they paid by) */
+        patch: operations["PaleeWeb.AdminCoachPayController.update_item"];
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/items/{id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Stop overtime or an allowance (lines already made stay) */
+        post: operations["PaleeWeb.AdminCoachPayController.archive_item"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/mine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My pay statements (approved periods only), newest first, with totals */
+        get: operations["PaleeWeb.MyCoachPayController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/mine/{period_id}/pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My pay statement of an approved period as PDF («Εκκαθαριστικό») */
+        get: operations["PaleeWeb.MyCoachPayController.payslip"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/people/{user_id}/statements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A staff member's pay statements for their profile, with totals */
+        get: operations["PaleeWeb.AdminCoachPayController.person_statements"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/periods": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Pay periods, newest first */
+        get: operations["PaleeWeb.AdminCoachPayController.periods"];
+        put?: never;
+        /** Open a pay period (gym-local dates, at most 92 days, no overlap) */
+        post: operations["PaleeWeb.AdminCoachPayController.create_period"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A pay period with each coach's statement and its lines */
+        get: operations["PaleeWeb.AdminCoachPayController.period"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/adjustments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Add a line by hand to a person's statement (draft periods only)
+         * @description `adjustment` (default): a bonus or correction with a description; `ad_hoc` («Έκτακτη πληρωμή») and `non_taxable_reimbursement` («Μη φορολογητέο»): a positive amount with a required note. Who added it and when stay on the line.
+         */
+        post: operations["PaleeWeb.AdminCoachPayController.add_adjustment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/adjustments/{line_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove a line added by hand (draft periods only) */
+        delete: operations["PaleeWeb.AdminCoachPayController.delete_adjustment"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Approve a period: its statements are locked and shown to the coaches */
+        post: operations["PaleeWeb.AdminCoachPayController.approve"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/calculate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Calculate a draft period from the classes, sessions and sales (adjustments stay) */
+        post: operations["PaleeWeb.AdminCoachPayController.calculate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The approved period as CSV for the accountant (marks it exported) */
+        get: operations["PaleeWeb.AdminCoachPayController.export"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/lines/{line_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Mark a line gross or net (draft periods only)
+         * @description A calculated line takes its rule's basis again when the period is recalculated; a line added by hand keeps it.
+         */
+        patch: operations["PaleeWeb.AdminCoachPayController.set_line_basis"];
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/pay-items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add an allowance from the catalogue to a person's statement (draft periods only) */
+        post: operations["PaleeWeb.AdminCoachPayController.add_pay_item_line"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/reopen": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reopen an approved period, with a reason (an exported one stays as it is) */
+        post: operations["PaleeWeb.AdminCoachPayController.reopen"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/statements/{user_id}/pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A person's pay statement of an approved period as PDF («Εκκαθαριστικό»)
+         * @description An internal record of the business («Εσωτερική κατάσταση αμοιβής»), not an official payroll document. Gross and net amounts are shown apart.
+         */
+        get: operations["PaleeWeb.AdminCoachPayController.payslip"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/rules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Coach pay rules (active ones unless `include_archived`) */
+        get: operations["PaleeWeb.AdminCoachPayController.rules"];
+        put?: never;
+        /**
+         * Add a pay rule for a coach
+         * @description Per class, per attendee, per personal-training session, a fixed amount per month, week or day (prorated by calendar days), or a percent of the sales attributed to the coach (`personal_training`: packages they train; `sold_by`: sales they recorded; `own_clients`: subscription payments of the clients they coach; `box_all`: every subscription payment of the box). A coach may hold any number of rules at once. `amount_basis` (gross by default) is inherited by the rule's lines. The currency defaults to the business's.
+         */
+        post: operations["PaleeWeb.AdminCoachPayController.create_rule"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/rules/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Change a pay rule (approved periods keep what they paid) */
+        patch: operations["PaleeWeb.AdminCoachPayController.update_rule"];
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/rules/{id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Stop a pay rule: it pays nothing after today */
+        post: operations["PaleeWeb.AdminCoachPayController.archive_rule"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Finance: pay periods with each person's totals (gross and net apart) */
+        get: operations["PaleeWeb.AdminCoachPayController.summary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/org/{organization_slug}/admin/community/clubs": {
@@ -6016,6 +6885,24 @@ export interface paths {
         /** Whether members may start groups, and whether staff approve them first */
         put: operations["PaleeWeb.AdminCommunityController.update_settings"];
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/data-exports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box's data exports, with download links for ready files (owners) */
+        get: operations["PaleeWeb.AdminDataExportController.index"];
+        put?: never;
+        /** Ask for a copy of all the box's data (owners; one a day) */
+        post: operations["PaleeWeb.AdminDataExportController.create"];
         delete?: never;
         options?: never;
         head?: never;
@@ -8313,6 +9200,196 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/leads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box's leads, newest first, with the count per stage */
+        get: operations["PaleeWeb.AdminLeadController.index"];
+        put?: never;
+        /** A lead typed in by staff (walk-in, phone call, referral, event) */
+        post: operations["PaleeWeb.AdminLeadController.create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/leads/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Leads from a CSV file (`dry_run` reports per row without writing) */
+        post: operations["PaleeWeb.AdminLeadController.import"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/leads/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Open tasks of open leads, due first («Επόμενες ενέργειες») */
+        get: operations["PaleeWeb.AdminLeadController.tasks"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/leads/tasks/{task_id}/done": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Mark a lead's task done */
+        post: operations["PaleeWeb.AdminLeadController.complete_task"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/leads/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One lead with its tasks and history */
+        get: operations["PaleeWeb.AdminLeadController.show"];
+        put?: never;
+        post?: never;
+        /** Erase a lead with its tasks and history (an erasure request) */
+        delete: operations["PaleeWeb.AdminLeadController.delete"];
+        options?: never;
+        head?: never;
+        /** Change a lead's details or owner */
+        patch: operations["PaleeWeb.AdminLeadController.update"];
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/leads/{id}/contacted": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** «Μίλησα»: staff reached the person */
+        post: operations["PaleeWeb.AdminLeadController.contacted"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/leads/{id}/convert": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** «Έγινε μέλος»: link the lead to a box member and close it, keeping its history */
+        post: operations["PaleeWeb.AdminLeadController.convert"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/leads/{id}/move": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Move a lead to another stage (`lost` with a reason) */
+        post: operations["PaleeWeb.AdminLeadController.move"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/leads/{id}/notes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** A note in the lead's history */
+        post: operations["PaleeWeb.AdminLeadController.note"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/leads/{id}/opt-out": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** The person asked for no marketing messages */
+        post: operations["PaleeWeb.AdminLeadController.opt_out"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/leads/{id}/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** A task on the lead («Επόμενη ενέργεια») */
+        post: operations["PaleeWeb.AdminLeadController.add_task"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/locations": {
         parameters: {
             query?: never;
@@ -8359,6 +9436,74 @@ export interface paths {
         put?: never;
         /** Archive a location; its past classes keep the reference */
         post: operations["PaleeWeb.AdminFacilityController.archive_location"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/members-at-risk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Box members at risk, highest score first, with reasons */
+        get: operations["PaleeWeb.AdminMemberRiskController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/members-at-risk/{user_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One box member's risk with its reasons and what staff did (who and when, ADR-384) */
+        get: operations["PaleeWeb.AdminMemberRiskController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/members-at-risk/{user_id}/contacted": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** «Μίλησα»: staff reached the member */
+        post: operations["PaleeWeb.AdminMemberRiskController.contacted"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/members-at-risk/{user_id}/snooze": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** «Το είδα»: hide the member from the list for some days (0 shows them again) */
+        post: operations["PaleeWeb.AdminMemberRiskController.snooze"];
         delete?: never;
         options?: never;
         head?: never;
@@ -8590,6 +9735,47 @@ export interface paths {
         get: operations["PaleeWeb.AdminDeskBuyersController.people"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/payments/surcharge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The box's card surcharge and what the law of its country allows
+         * @description Off until the owner turns it on. `law` says which cards may carry a surcharge in the box's country (EU/EEA: commercial or non-EEA cards only; UK: commercial only; US/Canada: credit only, capped; elsewhere: none).
+         */
+        get: operations["PaleeWeb.AdminCardSurchargeController.show"];
+        /**
+         * Choose whether and where the card fee is passed on
+         * @description Refused with `card_surcharge_not_allowed` where the law forbids it or above its cap.
+         */
+        put: operations["PaleeWeb.AdminCardSurchargeController.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/payments/surcharge/quote": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** What a payment would carry, as shown before paying */
+        post: operations["PaleeWeb.AdminCardSurchargeController.quote"];
         delete?: never;
         options?: never;
         head?: never;
@@ -9281,6 +10467,58 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/review-asks/places": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Find the box's Google listing by name (Places API, ADR-387) */
+        get: operations["PaleeWeb.AdminReviewAsksController.places"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/review-asks/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box's Google Place ID, milestones and whether members are asked */
+        get: operations["PaleeWeb.AdminReviewAsksController.show"];
+        /** Set the Google Place ID, milestones and turn asks on or off */
+        put: operations["PaleeWeb.AdminReviewAsksController.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/review-asks/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** How many members were asked and what they chose (counts only) */
+        get: operations["PaleeWeb.AdminReviewAsksController.summary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/reviews": {
         parameters: {
             query?: never;
@@ -9542,6 +10780,23 @@ export interface paths {
          * @description ADR-200: with series_scope and every, also the other upcoming classes of its series. A cancel releases every booking without a late penalty; a delete leaves classes with bookings alone and counts them.
          */
         post: operations["PaleeWeb.AdminScheduleController.change_state"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/schedule/slots/{id}/visit-badges": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Visit badges of every seat of a class (first visit, guest, trial, how they came) */
+        get: operations["PaleeWeb.AdminVisitBadgesController.show"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -9967,6 +11222,127 @@ export interface paths {
         };
         /** Shop sales per gym-local day: gross, refunds, net, orders and AOV */
         get: operations["PaleeWeb.AdminShopReportController.sales"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/site": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The website's settings, section keys and custom domains */
+        get: operations["PaleeWeb.AdminSiteController.show"];
+        /** Change the website's sections, FAQ, forms and tags; live at once */
+        put: operations["PaleeWeb.AdminSiteController.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/site/domains": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The website's custom domains with the DNS records to add */
+        get: operations["PaleeWeb.AdminSiteController.domains"];
+        put?: never;
+        /** Add a custom domain (up to 2); it is checked at once */
+        post: operations["PaleeWeb.AdminSiteController.add_domain"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/site/domains/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove a custom domain; the site stays at its Palee address */
+        delete: operations["PaleeWeb.AdminSiteController.remove_domain"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/site/domains/{id}/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** «Έλεγχος τώρα»: check a custom domain's DNS and HTTPS now */
+        post: operations["PaleeWeb.AdminSiteController.check_domain"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/site/domains/{id}/instructions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** «Στείλε τις οδηγίες»: email the domain's DNS records with a status link */
+        post: operations["PaleeWeb.AdminSiteController.send_instructions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/site/domains/{id}/primary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Make a custom domain the site's main address */
+        put: operations["PaleeWeb.AdminSiteController.make_primary"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/site/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** What the website brought in over the last 30 days (counts only) */
+        get: operations["PaleeWeb.AdminSiteController.summary"];
         put?: never;
         post?: never;
         delete?: never;
@@ -10729,6 +12105,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/workouts/benchmarks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The benchmarks a coach can tag a WOD with (ADR-394) */
+        get: operations["PaleeWeb.AdminWorkoutController.benchmarks"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/workouts/choices": {
         parameters: {
             query?: never;
@@ -10844,6 +12237,23 @@ export interface paths {
         post?: never;
         /** Hard delete a workout and dependent records */
         delete: operations["PaleeWeb.AdminWorkoutController.delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/workouts/{id}/benchmark": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Tag a WOD as a known benchmark for the Palee-wide board, or clear the tag */
+        put: operations["PaleeWeb.AdminWorkoutController.update_benchmark"];
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -11126,6 +12536,23 @@ export interface paths {
         post?: never;
         /** Withdraw a pending or approved booking */
         delete: operations["PaleeWeb.ScheduleController.delete_booking"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/bookings/{id}/calendar.ics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Your booking as an iCalendar invite (METHOD:CANCEL once it is cancelled) */
+        get: operations["PaleeWeb.BookingCalendarController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -11896,6 +13323,77 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/me/automatic-messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My choices about this box's automatic messages */
+        get: operations["PaleeWeb.MyAutomationPreferencesController.show"];
+        /** Change my choices about this box's automatic messages */
+        put: operations["PaleeWeb.MyAutomationPreferencesController.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/box-review": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Write or edit my review of the box (only after checking in there) */
+        put: operations["PaleeWeb.MyBoxReviewsController.save"];
+        post?: never;
+        /** Delete my review of the box */
+        delete: operations["PaleeWeb.MyBoxReviewsController.delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/box-reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box's reviews (newest first), the average, mine and whether I may write one */
+        get: operations["PaleeWeb.MyBoxReviewsController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/channels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My number and consents for this box's SMS messages */
+        get: operations["PaleeWeb.MyChannelsController.show"];
+        /** Save my number and language and give or withdraw consents */
+        put: operations["PaleeWeb.MyChannelsController.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/me/check-in/code": {
         parameters: {
             query?: never;
@@ -12121,6 +13619,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/me/executions/{id}/workout-snapshot": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The WOD as my own run performed it, and whether it changed since (ADR-389) */
+        get: operations["PaleeWeb.WorkoutSnapshotController.execution"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/me/finance": {
         parameters: {
             query?: never;
@@ -12275,6 +13790,24 @@ export interface paths {
         /** What paying this invoice online costs, and the text to agree to when saving the card */
         get: operations["PaleeWeb.MyPaymentsController.terms"];
         put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/leaderboard-profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Your division and birth year for this box's leaderboards */
+        get: operations["PaleeWeb.WorkoutLeaderboardController.profile"];
+        /** Set your division and birth year (only after opting in to leaderboards) */
+        put: operations["PaleeWeb.WorkoutLeaderboardController.update_profile"];
         post?: never;
         delete?: never;
         options?: never;
@@ -12510,6 +14043,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/me/payments/surcharge-quote": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The card surcharge I would pay, shown before paying (ADR-340)
+         * @description With `payment_method_id`, for one of my saved cards; without, for a new card (which never carries one: Palee does not know yet whether the law allows it).
+         */
+        get: operations["PaleeWeb.MyPaymentsController.surcharge_quote"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/me/payments/{id}": {
         parameters: {
             query?: never;
@@ -12643,6 +14196,58 @@ export interface paths {
         get: operations["PaleeWeb.MyFinanceController.refund_receipt_document"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/review-ask": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The review ask to show now, or null */
+        get: operations["PaleeWeb.MyReviewAskController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/review-asks/opt-out": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Never ask me for a review at this box again */
+        put: operations["PaleeWeb.MyReviewAskController.opt_out"];
+        post?: never;
+        /** Allow review asks at this box again */
+        delete: operations["PaleeWeb.MyReviewAskController.opt_in"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/review-asks/{id}/respond": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Record what the member chose: opened Google, later or dismissed */
+        post: operations["PaleeWeb.MyReviewAskController.respond"];
         delete?: never;
         options?: never;
         head?: never;
@@ -13134,6 +14739,23 @@ export interface paths {
         put?: never;
         /** Void a training log entry (entries are never deleted) */
         post: operations["PaleeWeb.TrainingLogController.void"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/training-log/entries/{id}/workout-snapshot": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The WOD as my own logged score performed it, and whether it changed since (ADR-389) */
+        get: operations["PaleeWeb.WorkoutSnapshotController.training_log"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -15054,6 +16676,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/workout-snapshots/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A WOD snapshot (staff who program or follow training, or its own athlete) */
+        get: operations["PaleeWeb.WorkoutSnapshotController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/workouts/{id}": {
         parameters: {
             query?: never;
@@ -15083,6 +16722,23 @@ export interface paths {
          * @description goals is null when none are saved or the coach keeps them hidden.
          */
         get: operations["PaleeWeb.WorkoutGoalsController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/workouts/{id}/leaderboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A WOD's leaderboard, filtered, with a percentile for each score */
+        get: operations["PaleeWeb.WorkoutLeaderboardController.show"];
         put?: never;
         post?: never;
         delete?: never;
@@ -15417,6 +17073,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/platform/channel-margins": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Palee's margin per channel on Palee-managed messages (basis points) */
+        get: operations["PaleeWeb.PlatformChannelMarginsController.show"];
+        /** Set Palee's margin per channel; channels not sent keep theirs */
+        put: operations["PaleeWeb.PlatformChannelMarginsController.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/platform/organization-purges": {
         parameters: {
             query?: never;
@@ -15532,6 +17206,23 @@ export interface paths {
         put?: never;
         /** Create a constrained presigned upload for an organization logo */
         post: operations["PaleeWeb.PlatformOrganizationBrandingController.logo_upload_url"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/platform/organizations/{id}/channel-charges": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** What Palee charges a box for a month's messages, with the providers' cost */
+        get: operations["PaleeWeb.PlatformChannelMarginsController.charges"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -16043,6 +17734,108 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/platform/site-domains": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Custom domains in a state (default pending_tls: they need an Ingress) */
+        get: operations["PaleeWeb.PlatformSiteDomainsController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/platform/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Probes with reasons, incidents of the last 90 days and subscribers (vendors) */
+        get: operations["PaleeWeb.PlatformStatusController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/platform/status/incidents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publish an incident or planned maintenance (vendors) */
+        post: operations["PaleeWeb.PlatformStatusController.create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/platform/status/incidents/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Correct an incident's title, impact or components (vendors) */
+        patch: operations["PaleeWeb.PlatformStatusController.update"];
+        trace?: never;
+    };
+    "/api/platform/status/incidents/{id}/updates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add a step to an incident's timeline (vendors) */
+        post: operations["PaleeWeb.PlatformStatusController.add_update"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/platform/status/translations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Preview a title and note in English, by machine (vendors) */
+        post: operations["PaleeWeb.PlatformStatusController.translate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/platform/subscriptions": {
         parameters: {
             query?: never;
@@ -16440,6 +18233,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/public/boxes/{slug}/leads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send an enquiry to a box («Ενδιαφέρομαι»)
+         * @description Stores a lead for the box, or joins the open one of the same email. Always answers `received`, so the answer says nothing about who is known to the box.
+         */
+        post: operations["PaleeWeb.PublicLeadController.create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/public/boxes/{slug}/packages": {
         parameters: {
             query?: never;
@@ -16451,6 +18264,24 @@ export interface paths {
         get: operations["PaleeWeb.PublicBoxController.packages"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/channels/unsubscribe/{token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box behind a marketing SMS's unsubscribe link (changes nothing) */
+        get: operations["PaleeWeb.PublicSmsUnsubscribeController.show"];
+        put?: never;
+        /** Stop offers by SMS from this box (withdraws the marketing SMS consent) */
+        post: operations["PaleeWeb.PublicSmsUnsubscribeController.create"];
         delete?: never;
         options?: never;
         head?: never;
@@ -16536,6 +18367,196 @@ export interface paths {
         get: operations["PaleeWeb.ReferralController.invite"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/sites/by-host/{host}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box behind a custom domain (the web's host rewrite and the TLS probe) */
+        get: operations["PaleeWeb.PublicSiteController.by_host"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/sites/domain-status/{token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The emailed domain instructions' status page (ADR-388): records and state */
+        get: operations["PaleeWeb.PublicSiteController.domain_status"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/sites/tls-allowed": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** On-demand TLS `ask`: 200 only for a verified custom domain */
+        get: operations["PaleeWeb.PublicSiteController.tls_allowed"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/sites/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A published box's website: sections, FAQ, forms, tags and timetable */
+        get: operations["PaleeWeb.PublicSiteController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/sites/{slug}/consents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Record a visitor's cookie choice; answers which tags may load */
+        post: operations["PaleeWeb.PublicSiteController.consent"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/sites/{slug}/forms/{kind}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Send the trial or contact form; it reaches the box as a lead */
+        post: operations["PaleeWeb.PublicSiteController.submit_form"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The status of Palee now: components, incidents, maintenance */
+        get: operations["PaleeWeb.PublicStatusController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/status/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Uptime per component and day (up to 90 days) and past incidents */
+        get: operations["PaleeWeb.PublicStatusController.history"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/status/subscriptions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Ask for status emails (a confirmation email is sent)
+         * @description The answer is the same whether the address is new or already subscribed.
+         */
+        post: operations["PaleeWeb.PublicStatusController.subscribe"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/status/subscriptions/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Confirm status emails with the token from the confirmation email */
+        post: operations["PaleeWeb.PublicStatusController.confirm"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/status/subscriptions/unsubscribe": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Stop status emails with the token from a status email */
+        post: operations["PaleeWeb.PublicStatusController.unsubscribe"];
         delete?: never;
         options?: never;
         head?: never;
@@ -17105,6 +19126,60 @@ export interface components {
             total: number;
             tour_completed: boolean;
         };
+        /** AdminSiteResponse */
+        AdminSiteResponse: {
+            domains: {
+                /** Format: date-time */
+                active_at: string | null;
+                /** Format: date-time */
+                checked_at: string | null;
+                dns_records: {
+                    name: string;
+                    /** @enum {string} */
+                    type: "TXT" | "CNAME" | "A";
+                    value: string;
+                }[];
+                host: string;
+                /** Format: uuid */
+                id: string;
+                /** @enum {string|null} */
+                last_error: "dns_txt_missing" | "dns_not_pointing" | "tls_not_ready" | "tls_failed" | null;
+                /** Format: date-time */
+                next_check_at: string | null;
+                primary: boolean;
+                /** @enum {string} */
+                status: "pending_dns" | "pending_tls" | "active" | "broken" | "expired";
+                /** Format: date-time */
+                verified_at: string | null;
+            }[];
+            section_keys: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            /** SiteSettings */
+            settings: {
+                about_en: string | null;
+                banner_version: number;
+                conversions_api_enabled: boolean;
+                faq: {
+                    answer: string;
+                    /** @description Optional English text (ADR-388) */
+                    answer_en?: string;
+                    question: string;
+                    /** @description Optional English text (ADR-388) */
+                    question_en?: string;
+                }[];
+                forms_enabled: boolean;
+                ga4_measurement_id: string | null;
+                gtm_container_id: string | null;
+                /** @description A token is saved; the token itself is never returned */
+                has_conversions_api_token: boolean;
+                hidden_sections: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                lock_version: number;
+                meta_pixel_id: string | null;
+                public_schedule: boolean;
+                /** @description «WOD της ημέρας» on the site (ADR-388) */
+                public_wod: boolean;
+                section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            };
+        };
         /** AnatomyNode */
         AnatomyNode: {
             id: string;
@@ -17576,6 +19651,10 @@ export interface components {
                  * @description Shared by every week of a weekly event
                  */
                 series_id?: string | null;
+                /** @description ADR-385: the organiser's SMS switch for this event */
+                sms_enabled: boolean;
+                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                sms_offered: boolean;
                 /** @description Null: no limit */
                 spots_left?: number | null;
                 /** Format: date-time */
@@ -17748,6 +19827,10 @@ export interface components {
                      * @description Shared by every week of a weekly event
                      */
                     series_id?: string | null;
+                    /** @description ADR-385: the organiser's SMS switch for this event */
+                    sms_enabled: boolean;
+                    /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                    sms_offered: boolean;
                     /** @description Null: no limit */
                     spots_left?: number | null;
                     /** Format: date-time */
@@ -18007,6 +20090,10 @@ export interface components {
                      * @description Shared by every week of a weekly event
                      */
                     series_id?: string | null;
+                    /** @description ADR-385: the organiser's SMS switch for this event */
+                    sms_enabled: boolean;
+                    /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                    sms_offered: boolean;
                     /** @description Null: no limit */
                     spots_left?: number | null;
                     /** Format: date-time */
@@ -18300,6 +20387,10 @@ export interface components {
                          * @description Shared by every week of a weekly event
                          */
                         series_id?: string | null;
+                        /** @description ADR-385: the organiser's SMS switch for this event */
+                        sms_enabled: boolean;
+                        /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                        sms_offered: boolean;
                         /** @description Null: no limit */
                         spots_left?: number | null;
                         /** Format: date-time */
@@ -18739,6 +20830,10 @@ export interface components {
                      * @description Shared by every week of a weekly event
                      */
                     series_id?: string | null;
+                    /** @description ADR-385: the organiser's SMS switch for this event */
+                    sms_enabled: boolean;
+                    /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                    sms_offered: boolean;
                     /** @description Null: no limit */
                     spots_left?: number | null;
                     /** Format: date-time */
@@ -19029,6 +21124,10 @@ export interface components {
                          * @description Shared by every week of a weekly event
                          */
                         series_id?: string | null;
+                        /** @description ADR-385: the organiser's SMS switch for this event */
+                        sms_enabled: boolean;
+                        /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                        sms_offered: boolean;
                         /** @description Null: no limit */
                         spots_left?: number | null;
                         /** Format: date-time */
@@ -19474,6 +21573,10 @@ export interface components {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -19695,6 +21798,10 @@ export interface components {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -20052,6 +22159,10 @@ export interface components {
                          * @description Shared by every week of a weekly event
                          */
                         series_id?: string | null;
+                        /** @description ADR-385: the organiser's SMS switch for this event */
+                        sms_enabled: boolean;
+                        /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                        sms_offered: boolean;
                         /** @description Null: no limit */
                         spots_left?: number | null;
                         /** Format: date-time */
@@ -20273,6 +22384,10 @@ export interface components {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -21833,6 +23948,74 @@ export interface components {
                 unread: boolean;
             }[];
         };
+        /** BoxDataExport */
+        BoxDataExport: {
+            /** Format: date-time */
+            completed_at: string | null;
+            /** Format: date-time */
+            expires_at: string | null;
+            file: {
+                bytes: number;
+                download_url: string | null;
+                name: string;
+                sha256: string;
+            } | null;
+            /** Format: uuid */
+            id: string;
+            /** @description ADR-367: ZIP parts with the box's stored files (photos, PDFs) */
+            parts: {
+                bytes: number;
+                download_url: string | null;
+                files: number;
+                name: string;
+                sha256: string;
+            }[];
+            record_count: number | null;
+            /** Format: date-time */
+            requested_at: string;
+            /** @enum {string} */
+            status: "pending" | "ready" | "failed" | "expired";
+            table_count: number | null;
+        };
+        /** BoxDataExportPart */
+        BoxDataExportPart: {
+            bytes: number;
+            download_url: string | null;
+            files: number;
+            name: string;
+            sha256: string;
+        };
+        /** BoxDataExports */
+        BoxDataExports: {
+            exports: {
+                /** Format: date-time */
+                completed_at: string | null;
+                /** Format: date-time */
+                expires_at: string | null;
+                file: {
+                    bytes: number;
+                    download_url: string | null;
+                    name: string;
+                    sha256: string;
+                } | null;
+                /** Format: uuid */
+                id: string;
+                /** @description ADR-367: ZIP parts with the box's stored files (photos, PDFs) */
+                parts: {
+                    bytes: number;
+                    download_url: string | null;
+                    files: number;
+                    name: string;
+                    sha256: string;
+                }[];
+                record_count: number | null;
+                /** Format: date-time */
+                requested_at: string;
+                /** @enum {string} */
+                status: "pending" | "ready" | "failed" | "expired";
+                table_count: number | null;
+            }[];
+        };
         /** BoxPublicProfile */
         BoxPublicProfile: {
             about: string | null;
@@ -22044,6 +24227,100 @@ export interface components {
             /** @description Ready box_photo media of the gallery, in display order. */
             photo_ids?: string[];
             services?: ("personal_training" | "small_group_training" | "open_gym" | "nutrition_coaching" | "online_coaching" | "corporate")[];
+        };
+        /** BoxReview */
+        BoxReview: {
+            /** @description First name only; null for people who hide themselves */
+            author_name: string | null;
+            body: string | null;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            edited_at: string | null;
+            /** Format: uuid */
+            id: string;
+            rating: number;
+            /** BoxReviewReply */
+            reply: {
+                body: string;
+                /** Format: date-time */
+                replied_at: string;
+            } | null;
+        };
+        /** BoxReviewReply */
+        BoxReviewReply: {
+            body: string;
+            /** Format: date-time */
+            replied_at: string;
+        } | null;
+        /** BoxReviewReplyRequest */
+        BoxReviewReplyRequest: {
+            body: string;
+        };
+        /** BoxReviewRequest */
+        BoxReviewRequest: {
+            body?: string | null;
+            locale?: string | null;
+            rating: number;
+        };
+        /** BoxReviewResponse */
+        BoxReviewResponse: {
+            /** BoxReview */
+            review: {
+                /** @description First name only; null for people who hide themselves */
+                author_name: string | null;
+                body: string | null;
+                /** Format: date-time */
+                created_at: string;
+                /** Format: date-time */
+                edited_at: string | null;
+                /** Format: uuid */
+                id: string;
+                rating: number;
+                /** BoxReviewReply */
+                reply: {
+                    body: string;
+                    /** Format: date-time */
+                    replied_at: string;
+                } | null;
+            };
+        };
+        /** BoxReviewsResponse */
+        BoxReviewsResponse: {
+            average: number | null;
+            count: number;
+            /**
+             * GoogleListing
+             * @description The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms
+             */
+            google: {
+                count: number | null;
+                /** Format: date-time */
+                fetched_at: string;
+                maps_uri: string | null;
+                name: string | null;
+                rating: number | null;
+                write_review_url: string | null;
+            } | null;
+            has_more: boolean;
+            reviews: {
+                /** @description First name only; null for people who hide themselves */
+                author_name: string | null;
+                body: string | null;
+                /** Format: date-time */
+                created_at: string;
+                /** Format: date-time */
+                edited_at: string | null;
+                /** Format: uuid */
+                id: string;
+                rating: number;
+                /** BoxReviewReply */
+                reply: {
+                    body: string;
+                    /** Format: date-time */
+                    replied_at: string;
+                } | null;
+            }[];
         };
         /** BoxScreen */
         BoxScreen: {
@@ -23860,6 +26137,24 @@ export interface components {
                 unlimited?: boolean;
             } | null;
             problems: ("frozen" | "package_expired" | "unpaid" | "no_spots" | "nothing_to_check_in")[];
+            /** VisitBadges */
+            visit?: {
+                badges: ("first_visit" | "first_in_class_type" | "guest" | "trial" | "brought_by_member" | "came_via_event" | "came_via_referral")[];
+                /**
+                 * VisitVia
+                 * @description How a first-time visitor came (referral attribution)
+                 */
+                via: {
+                    by_nickname?: string | null;
+                    /** Format: uuid */
+                    by_user_id?: string | null;
+                    channel?: string | null;
+                    /** Format: uuid */
+                    event_id?: string | null;
+                    /** @enum {string} */
+                    kind: "event" | "referral";
+                } | null;
+            };
             warnings?: "payment_due"[];
         };
         /** CheckInDeskScanRequest */
@@ -24484,6 +26779,66 @@ export interface components {
             /** Format: uuid */
             workout_id?: string | null;
         };
+        /** ClassVisitBadges */
+        ClassVisitBadges: {
+            people: {
+                badges: ("first_visit" | "first_in_class_type" | "guest" | "trial" | "brought_by_member" | "came_via_event" | "came_via_referral")[];
+                /** Format: uuid */
+                booking_id: string;
+                brought_by: {
+                    nickname?: string | null;
+                    /** Format: uuid */
+                    user_id: string;
+                } | null;
+                guest_name: string | null;
+                /** Format: uuid */
+                user_id: string;
+                /**
+                 * VisitVia
+                 * @description How a first-time visitor came (referral attribution)
+                 */
+                via: {
+                    by_nickname?: string | null;
+                    /** Format: uuid */
+                    by_user_id?: string | null;
+                    channel?: string | null;
+                    /** Format: uuid */
+                    event_id?: string | null;
+                    /** @enum {string} */
+                    kind: "event" | "referral";
+                } | null;
+            }[];
+            /** Format: uuid */
+            slot_id: string;
+        };
+        /** ClassVisitPerson */
+        ClassVisitPerson: {
+            badges: ("first_visit" | "first_in_class_type" | "guest" | "trial" | "brought_by_member" | "came_via_event" | "came_via_referral")[];
+            /** Format: uuid */
+            booking_id: string;
+            brought_by: {
+                nickname?: string | null;
+                /** Format: uuid */
+                user_id: string;
+            } | null;
+            guest_name: string | null;
+            /** Format: uuid */
+            user_id: string;
+            /**
+             * VisitVia
+             * @description How a first-time visitor came (referral attribution)
+             */
+            via: {
+                by_nickname?: string | null;
+                /** Format: uuid */
+                by_user_id?: string | null;
+                channel?: string | null;
+                /** Format: uuid */
+                event_id?: string | null;
+                /** @enum {string} */
+                kind: "event" | "referral";
+            } | null;
+        };
         /** CleaningArea */
         CleaningArea: {
             /** Format: date-time */
@@ -24803,6 +27158,11 @@ export interface components {
         };
         /** CoachNote */
         CoachNote: {
+            /**
+             * @description ADR-359: private coach note (ADR-101) or a note every staff member reads
+             * @enum {string}
+             */
+            audience?: "private" | "staff";
             body: string;
             /** Format: uuid */
             client_user_id: string;
@@ -25395,6 +27755,10 @@ export interface components {
              * @description Shared by every week of a weekly event
              */
             series_id?: string | null;
+            /** @description ADR-385: the organiser's SMS switch for this event */
+            sms_enabled: boolean;
+            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+            sms_offered: boolean;
             /** @description Null: no limit */
             spots_left?: number | null;
             /** Format: date-time */
@@ -26084,6 +28448,10 @@ export interface components {
                  * @description Shared by every week of a weekly event
                  */
                 series_id?: string | null;
+                /** @description ADR-385: the organiser's SMS switch for this event */
+                sms_enabled: boolean;
+                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                sms_offered: boolean;
                 /** @description Null: no limit */
                 spots_left?: number | null;
                 /** Format: date-time */
@@ -26277,6 +28645,8 @@ export interface components {
              * @description «Επανάληψη κάθε εβδομάδα» until this date (box time zone), at most 26 weeks
              */
             repeat_until?: string;
+            /** @description ADR-385: the reminder and changes also go by SMS to those who asked at «Θα έρθω» (default on) */
+            sms_enabled?: boolean;
             /** Format: date-time */
             starts_at: string;
             /** @description ADR-179: an IANA zone for an event held away from its gym; null keeps the gym's */
@@ -26404,6 +28774,8 @@ export interface components {
              * @description «Επανάληψη κάθε εβδομάδα» until this date (box time zone), at most 26 weeks
              */
             repeat_until?: string;
+            /** @description ADR-385: the reminder and changes also go by SMS to those who asked at «Θα έρθω» (default on) */
+            sms_enabled?: boolean;
             /** Format: date-time */
             starts_at: string;
             /** @description ADR-179: an IANA zone for an event held away from its gym; null keeps the gym's */
@@ -26567,6 +28939,10 @@ export interface components {
                  * @description Shared by every week of a weekly event
                  */
                 series_id?: string | null;
+                /** @description ADR-385: the organiser's SMS switch for this event */
+                sms_enabled: boolean;
+                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                sms_offered: boolean;
                 /** @description Null: no limit */
                 spots_left?: number | null;
                 /** Format: date-time */
@@ -26585,11 +28961,32 @@ export interface components {
             going: boolean;
             /** @description From a member's guest pass link */
             invite_token?: string;
+            /** @description Language of the SMS (el, en) */
+            locale?: string;
+            /** @description Mobile number for `sms_consent` */
+            phone?: string;
+            /** @description The person agrees to SMS about this event (reminder, changes) from its organiser; needs `phone`. Recorded as a service SMS consent with the organiser. */
+            sms_consent?: boolean;
         };
         /** CommunityEventSentResponse */
         CommunityEventSentResponse: {
             /** @description People notified */
             sent: number;
+        };
+        /** CommunityEventSms */
+        CommunityEventSms: {
+            /** @description The organiser sends SMS (a connection with SMS switched on) */
+            connected: boolean;
+            currency: string;
+            /** @description This event's SMS switch */
+            enabled: boolean;
+            going: number;
+            /** @description The price of one event SMS (one part, the organiser's country) */
+            per_message_cents: number;
+            /** @description Going and agreed to SMS: «12 από 40 θα πάρουν SMS» */
+            recipients: number;
+            /** @description What this event's SMS cost so far */
+            spent_cents: number;
         };
         /** CommunityEventStats */
         CommunityEventStats: {
@@ -26652,6 +29049,8 @@ export interface components {
              * @enum {string}
              */
             scope?: "this" | "following";
+            /** @description ADR-385: the reminder and changes also go by SMS to those who asked at «Θα έρθω» (default on) */
+            sms_enabled?: boolean;
             /** Format: date-time */
             starts_at?: string;
             /** @description ADR-179: an IANA zone for an event held away from its gym; null keeps the gym's */
@@ -26818,6 +29217,10 @@ export interface components {
                  * @description Shared by every week of a weekly event
                  */
                 series_id?: string | null;
+                /** @description ADR-385: the organiser's SMS switch for this event */
+                sms_enabled: boolean;
+                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                sms_offered: boolean;
                 /** @description Null: no limit */
                 spots_left?: number | null;
                 /** Format: date-time */
@@ -27030,6 +29433,10 @@ export interface components {
                      * @description Shared by every week of a weekly event
                      */
                     series_id?: string | null;
+                    /** @description ADR-385: the organiser's SMS switch for this event */
+                    sms_enabled: boolean;
+                    /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                    sms_offered: boolean;
                     /** @description Null: no limit */
                     spots_left?: number | null;
                     /** Format: date-time */
@@ -27310,6 +29717,10 @@ export interface components {
                      * @description Shared by every week of a weekly event
                      */
                     series_id?: string | null;
+                    /** @description ADR-385: the organiser's SMS switch for this event */
+                    sms_enabled: boolean;
+                    /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                    sms_offered: boolean;
                     /** @description Null: no limit */
                     spots_left?: number | null;
                     /** Format: date-time */
@@ -28088,6 +30499,10 @@ export interface components {
                  * @description Shared by every week of a weekly event
                  */
                 series_id?: string | null;
+                /** @description ADR-385: the organiser's SMS switch for this event */
+                sms_enabled: boolean;
+                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                sms_offered: boolean;
                 /** @description Null: no limit */
                 spots_left?: number | null;
                 /** Format: date-time */
@@ -28347,6 +30762,10 @@ export interface components {
              * @description Shared by every week of a weekly event
              */
             series_id?: string | null;
+            /** @description ADR-385: the organiser's SMS switch for this event */
+            sms_enabled: boolean;
+            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+            sms_offered: boolean;
             /** @description Null: no limit */
             spots_left?: number | null;
             /** Format: date-time */
@@ -28573,6 +30992,10 @@ export interface components {
                      * @description Shared by every week of a weekly event
                      */
                     series_id?: string | null;
+                    /** @description ADR-385: the organiser's SMS switch for this event */
+                    sms_enabled: boolean;
+                    /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                    sms_offered: boolean;
                     /** @description Null: no limit */
                     spots_left?: number | null;
                     /** Format: date-time */
@@ -29372,6 +31795,15 @@ export interface components {
             sources: string[];
             /** Format: date */
             to: string;
+        };
+        /** DayAssignmentTag */
+        DayAssignmentTag: {
+            classes: number;
+            /** Format: date */
+            date: string;
+            /** @enum {string} */
+            tag: "none" | "not_assigned" | "mixed" | "all_assigned";
+            with_wod: number;
         };
         /**
          * DepthBalance
@@ -30610,6 +33042,127 @@ export interface components {
                 user_id: string;
             };
         };
+        /** FitnessDomain */
+        FitnessDomain: {
+            /** @enum {string|null} */
+            confidence: "low" | "medium" | "high" | null;
+            /** @enum {string} */
+            domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+            reasons: {
+                age_days: number;
+                anchors: {
+                    points: number;
+                    value: number;
+                }[];
+                /** Format: date */
+                beaten_on: string;
+                benchmark: string;
+                /** @enum {string} */
+                domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+                /** @description 1RM estimated from a multi-rep set */
+                estimated: boolean;
+                /** @description The PR as the person named it */
+                name: string;
+                points: number;
+                stale: boolean;
+                /** @enum {string} */
+                unit: "kg" | "reps" | "mins_secs";
+                /** @description kg (1RM), reps or seconds */
+                value: number;
+            }[];
+            score: number | null;
+            stale: boolean;
+        };
+        /** FitnessFocus */
+        FitnessFocus: {
+            /** @enum {string} */
+            domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+            /** @enum {string} */
+            kind: "weakest_domain" | "undertrained_quality" | "stale_benchmark" | "untested_domain";
+        } & {
+            [key: string]: unknown;
+        };
+        /** FitnessProfile */
+        FitnessProfile: {
+            algorithm: {
+                id: string;
+                version: number;
+            };
+            benchmarks_known: number;
+            /** @enum {string|null} */
+            division: "women" | "men" | null;
+            domains: {
+                /** @enum {string|null} */
+                confidence: "low" | "medium" | "high" | null;
+                /** @enum {string} */
+                domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+                reasons: {
+                    age_days: number;
+                    anchors: {
+                        points: number;
+                        value: number;
+                    }[];
+                    /** Format: date */
+                    beaten_on: string;
+                    benchmark: string;
+                    /** @enum {string} */
+                    domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+                    /** @description 1RM estimated from a multi-rep set */
+                    estimated: boolean;
+                    /** @description The PR as the person named it */
+                    name: string;
+                    points: number;
+                    stale: boolean;
+                    /** @enum {string} */
+                    unit: "kg" | "reps" | "mins_secs";
+                    /** @description kg (1RM), reps or seconds */
+                    value: number;
+                }[];
+                score: number | null;
+                stale: boolean;
+            }[];
+            focus: ({
+                /** @enum {string} */
+                domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+                /** @enum {string} */
+                kind: "weakest_domain" | "undertrained_quality" | "stale_benchmark" | "untested_domain";
+            } & {
+                [key: string]: unknown;
+            })[];
+            injury_caution: boolean;
+            neutral_standards: boolean;
+            overall: {
+                domains_scored: number;
+                reason: string;
+                score: number;
+            } | null;
+        };
+        /**
+         * FitnessReason
+         * @description One benchmark PR and the points it gave
+         */
+        FitnessReason: {
+            age_days: number;
+            anchors: {
+                points: number;
+                value: number;
+            }[];
+            /** Format: date */
+            beaten_on: string;
+            benchmark: string;
+            /** @enum {string} */
+            domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+            /** @description 1RM estimated from a multi-rep set */
+            estimated: boolean;
+            /** @description The PR as the person named it */
+            name: string;
+            points: number;
+            stale: boolean;
+            /** @enum {string} */
+            unit: "kg" | "reps" | "mins_secs";
+            /** @description kg (1RM), reps or seconds */
+            value: number;
+        };
         /** FloorPlan */
         FloorPlan: {
             height?: number | null;
@@ -31116,6 +33669,37 @@ export interface components {
             id: string;
             /** @enum {string} */
             role: "primary" | "secondary" | "stabilizer";
+        };
+        /**
+         * GoogleListing
+         * @description The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms
+         */
+        GoogleListing: {
+            count: number | null;
+            /** Format: date-time */
+            fetched_at: string;
+            maps_uri: string | null;
+            name: string | null;
+            rating: number | null;
+            write_review_url: string | null;
+        } | null;
+        /** GooglePlaceMatch */
+        GooglePlaceMatch: {
+            address: string | null;
+            name: string | null;
+            place_id: string;
+            rating: number | null;
+            rating_count: number | null;
+        };
+        /** GooglePlacesSearchResponse */
+        GooglePlacesSearchResponse: {
+            places: {
+                address: string | null;
+                name: string | null;
+                place_id: string;
+                rating: number | null;
+                rating_count: number | null;
+            }[];
         };
         /** GuideProgress */
         GuideProgress: {
@@ -31982,6 +34566,19 @@ export interface components {
                 thread_id?: string;
             } | null;
         };
+        /** LeaderboardProfile */
+        LeaderboardProfile: {
+            birth_year: number | null;
+            /** @enum {string|null} */
+            division: "women" | "men" | null;
+            opted_in: boolean;
+        };
+        /** LeaderboardProfileRequest */
+        LeaderboardProfileRequest: {
+            birth_year?: number | null;
+            /** @enum {string|null} */
+            division?: "women" | "men" | null;
+        };
         /** MachinePlacement */
         MachinePlacement: {
             /** @description ADR-290: a pin per item on the space's floor plan, `[x, y]` normalized (0..1). */
@@ -32637,6 +35234,83 @@ export interface components {
                 title?: string | null;
             }[];
         };
+        /** MyBoxReview */
+        MyBoxReview: {
+            /** @description First name only; null for people who hide themselves */
+            author_name: string | null;
+            body: string | null;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            edited_at: string | null;
+            /** Format: uuid */
+            id: string;
+            rating: number;
+            /** BoxReviewReply */
+            reply: {
+                body: string;
+                /** Format: date-time */
+                replied_at: string;
+            } | null;
+        } | null;
+        /** MyBoxReviewsResponse */
+        MyBoxReviewsResponse: {
+            average: number | null;
+            /** @description Checked in at least once */
+            can_review: boolean;
+            count: number;
+            /**
+             * GoogleListing
+             * @description The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms
+             */
+            google: {
+                count: number | null;
+                /** Format: date-time */
+                fetched_at: string;
+                maps_uri: string | null;
+                name: string | null;
+                rating: number | null;
+                write_review_url: string | null;
+            } | null;
+            has_more: boolean;
+            /** MyBoxReview */
+            mine: {
+                /** @description First name only; null for people who hide themselves */
+                author_name: string | null;
+                body: string | null;
+                /** Format: date-time */
+                created_at: string;
+                /** Format: date-time */
+                edited_at: string | null;
+                /** Format: uuid */
+                id: string;
+                rating: number;
+                /** BoxReviewReply */
+                reply: {
+                    body: string;
+                    /** Format: date-time */
+                    replied_at: string;
+                } | null;
+            } | null;
+            reviews: {
+                /** @description First name only; null for people who hide themselves */
+                author_name: string | null;
+                body: string | null;
+                /** Format: date-time */
+                created_at: string;
+                /** Format: date-time */
+                edited_at: string | null;
+                /** Format: uuid */
+                id: string;
+                rating: number;
+                /** BoxReviewReply */
+                reply: {
+                    body: string;
+                    /** Format: date-time */
+                    replied_at: string;
+                } | null;
+            }[];
+        };
         /** MyInjuryWarningsAcknowledged */
         MyInjuryWarningsAcknowledged: {
             /** @enum {string} */
@@ -33276,7 +35950,7 @@ export interface components {
              * @enum {string}
              */
             category: "bookings" | "messages" | "community" | "coach" | "partners" | "journal" | "staff" | "account";
-            /** @description Whether the category reaches the person on each channel it has: `in_app` (the bell), `push` (browser and app push; off while `in_app` is off), `email` (no category yet). */
+            /** @description Whether the category reaches the person on each channel it has: `in_app` (the bell), `push` (browser and app push; off while `in_app` is off), `email` (only `bookings`: the booking email with its calendar invite, ADR-392; independent of `in_app`). */
             channels: {
                 email?: boolean;
                 in_app?: boolean;
@@ -33298,7 +35972,7 @@ export interface components {
                  * @enum {string}
                  */
                 category: "bookings" | "messages" | "community" | "coach" | "partners" | "journal" | "staff" | "account";
-                /** @description Whether the category reaches the person on each channel it has: `in_app` (the bell), `push` (browser and app push; off while `in_app` is off), `email` (no category yet). */
+                /** @description Whether the category reaches the person on each channel it has: `in_app` (the bell), `push` (browser and app push; off while `in_app` is off), `email` (only `bookings`: the booking email with its calendar invite, ADR-392; independent of `in_app`). */
                 channels: {
                     email?: boolean;
                     in_app?: boolean;
@@ -33509,6 +36183,27 @@ export interface components {
             previous_score?: number | null;
             score: number;
             unit: string;
+        };
+        /** PaleeBenchmark */
+        PaleeBenchmark: {
+            group: string;
+            key: string;
+            lower_is_better: boolean;
+            /** @enum {string} */
+            unit: "kg" | "reps" | "mins_secs";
+        } | null;
+        /** PaleeLeaderboardConsent */
+        PaleeLeaderboardConsent: {
+            /**
+             * @description share: others see nickname, box and score; see_only: only you see your place; null: not answered or withdrawn
+             * @enum {string|null}
+             */
+            choice: "share" | "see_only" | null;
+        };
+        /** PaleeLeaderboardConsentRequest */
+        PaleeLeaderboardConsentRequest: {
+            /** @enum {string} */
+            choice: "share" | "see_only";
         };
         /** PartnerBadge */
         PartnerBadge: {
@@ -35405,6 +38100,10 @@ export interface components {
                      * @description Shared by every week of a weekly event
                      */
                     series_id?: string | null;
+                    /** @description ADR-385: the organiser's SMS switch for this event */
+                    sms_enabled: boolean;
+                    /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                    sms_offered: boolean;
                     /** @description Null: no limit */
                     spots_left?: number | null;
                     /** Format: date-time */
@@ -37965,6 +40664,10 @@ export interface components {
                      * @description Shared by every week of a weekly event
                      */
                     series_id?: string | null;
+                    /** @description ADR-385: the organiser's SMS switch for this event */
+                    sms_enabled: boolean;
+                    /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                    sms_offered: boolean;
                     /** @description Null: no limit */
                     spots_left?: number | null;
                     /** Format: date-time */
@@ -38286,6 +40989,121 @@ export interface components {
                     status: "requested" | "booked" | "declined" | "cancelled" | "expired" | "attended" | "no_show" | "converted";
                 } | null;
             } | null;
+        };
+        /** PublicSiteResponse */
+        PublicSiteResponse: {
+            about_en: string | null;
+            canonical_url: string;
+            events: {
+                currency: string;
+                /** Format: date-time */
+                ends_at: string;
+                /** Format: uuid */
+                id: string;
+                place_name: string | null;
+                price_cents: number;
+                /** Format: date-time */
+                starts_at: string;
+                time_zone: string | null;
+                title: string;
+            }[];
+            faq: {
+                answer: string;
+                /** @description Optional English text (ADR-388) */
+                answer_en?: string;
+                question: string;
+                /** @description Optional English text (ADR-388) */
+                question_en?: string;
+            }[];
+            forms: {
+                contact: boolean;
+                kinds: ("trial" | "contact")[];
+                trial: boolean;
+            };
+            /** @description The box's language (ADR-388) */
+            language: string;
+            /** @description The site's languages: the box's own and English */
+            languages: string[];
+            /** SiteReviews */
+            reviews: {
+                /**
+                 * GoogleListing
+                 * @description The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms
+                 */
+                google: {
+                    count: number | null;
+                    /** Format: date-time */
+                    fetched_at: string;
+                    maps_uri: string | null;
+                    name: string | null;
+                    rating: number | null;
+                    write_review_url: string | null;
+                } | null;
+                google_reviews_url: string | null;
+                /** SitePaleeReviews */
+                palee: {
+                    average: number | null;
+                    count: number;
+                    latest: {
+                        /** @description First name only; null for people who hide themselves */
+                        author_name: string | null;
+                        body: string | null;
+                        /** Format: date-time */
+                        created_at: string;
+                        /** Format: date-time */
+                        edited_at: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        rating: number;
+                        /** BoxReviewReply */
+                        reply: {
+                            body: string;
+                            /** Format: date-time */
+                            replied_at: string;
+                        } | null;
+                    }[];
+                } | null;
+            };
+            sections: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            slug: string;
+            time_zone: string;
+            /** @description The next 7 days' classes when the owner shows the timetable (no spots or people) */
+            timetable: {
+                /** Format: uuid */
+                class_type_id: string | null;
+                duration_minutes: number;
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                location_id: string | null;
+                name: string;
+                /** Format: date-time */
+                scheduled_at: string;
+            }[];
+            tracking: {
+                banner_version: number;
+                categories: ("necessary" | "analytics" | "marketing")[];
+                consent_required: boolean;
+                /**
+                 * SiteTags
+                 * @description Public tag ids; none loads before the visitor's consent (ADR-354)
+                 */
+                tags: {
+                    ga4_measurement_id: string | null;
+                    gtm_container_id: string | null;
+                    meta_pixel_id: string | null;
+                };
+                validity_days: number;
+            };
+            wod: {
+                body: string | null;
+                /** Format: date */
+                date: string;
+                /** Format: uuid */
+                id: string;
+                title: string;
+                type: string | null;
+            }[];
         };
         /** ReferralClaim */
         ReferralClaim: {
@@ -38936,6 +41754,97 @@ export interface components {
             }[];
             /** Format: date */
             to?: string | null;
+        };
+        /** ReviewAsk */
+        ReviewAsk: {
+            actions: ("opened" | "later" | "dismissed")[];
+            google_review_url: string | null;
+            /** @description The member already wrote an in-app review (ADR-386) */
+            has_review: boolean;
+            /** Format: uuid */
+            id: string;
+            milestone: number;
+            /** Format: date-time */
+            shown_at: string;
+            /** @enum {string} */
+            status: "shown" | "opened" | "later" | "dismissed";
+        } | null;
+        /** ReviewAskOptOutResponse */
+        ReviewAskOptOutResponse: {
+            opted_out: boolean;
+        };
+        /** ReviewAskRespondRequest */
+        ReviewAskRespondRequest: {
+            /** @enum {string} */
+            action: "opened" | "later" | "dismissed";
+        };
+        /** ReviewAskResponse */
+        ReviewAskResponse: {
+            /** ReviewAsk */
+            ask: {
+                actions: ("opened" | "later" | "dismissed")[];
+                google_review_url: string | null;
+                /** @description The member already wrote an in-app review (ADR-386) */
+                has_review: boolean;
+                /** Format: uuid */
+                id: string;
+                milestone: number;
+                /** Format: date-time */
+                shown_at: string;
+                /** @enum {string} */
+                status: "shown" | "opened" | "later" | "dismissed";
+            } | null;
+        };
+        /** ReviewAskSettings */
+        ReviewAskSettings: {
+            enabled: boolean;
+            google_place_id: string | null;
+            google_review_url: string | null;
+            lock_version: number;
+            milestones: number[];
+        };
+        /** ReviewAskSettingsResponse */
+        ReviewAskSettingsResponse: {
+            /**
+             * GoogleListing
+             * @description The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms
+             */
+            google: {
+                count: number | null;
+                /** Format: date-time */
+                fetched_at: string;
+                maps_uri: string | null;
+                name: string | null;
+                rating: number | null;
+                write_review_url: string | null;
+            } | null;
+            /** ReviewAskSettings */
+            settings: {
+                enabled: boolean;
+                google_place_id: string | null;
+                google_review_url: string | null;
+                lock_version: number;
+                milestones: number[];
+            };
+        };
+        /** ReviewAskSettingsUpdate */
+        ReviewAskSettingsUpdate: {
+            enabled?: boolean;
+            google_place_id?: string | null;
+            lock_version: number;
+            milestones?: number[];
+        };
+        /** ReviewAskSummaryResponse */
+        ReviewAskSummaryResponse: {
+            counts: {
+                asked: number;
+                dismissed: number;
+                later: number;
+                opened: number;
+                opted_out: number;
+                unanswered: number;
+            };
+            days: number;
         };
         /** SaveFilterRequest */
         SaveFilterRequest: {
@@ -41080,6 +43989,424 @@ export interface components {
             on_hand: number;
             reserved: number;
         };
+        /** SiteByHostResponse */
+        SiteByHostResponse: {
+            host: string;
+            primary: boolean;
+            primary_host: string | null;
+            slug: string;
+        };
+        /** SiteConsentRequest */
+        SiteConsentRequest: {
+            /** @enum {string} */
+            action: "accept_all" | "reject_all" | "custom" | "withdraw";
+            analytics?: boolean;
+            banner_version: number;
+            marketing?: boolean;
+            /** Format: uuid */
+            visitor_id: string;
+        };
+        /** SiteConsentResponse */
+        SiteConsentResponse: {
+            allowed_tags: ("ga4_measurement_id" | "meta_pixel_id" | "gtm_container_id")[];
+            analytics: boolean;
+            banner_version: number;
+            /** Format: date-time */
+            expires_at: string;
+            marketing: boolean;
+        };
+        /** SiteDnsRecord */
+        SiteDnsRecord: {
+            name: string;
+            /** @enum {string} */
+            type: "TXT" | "CNAME" | "A";
+            value: string;
+        };
+        /** SiteDomain */
+        SiteDomain: {
+            /** Format: date-time */
+            active_at: string | null;
+            /** Format: date-time */
+            checked_at: string | null;
+            dns_records: {
+                name: string;
+                /** @enum {string} */
+                type: "TXT" | "CNAME" | "A";
+                value: string;
+            }[];
+            host: string;
+            /** Format: uuid */
+            id: string;
+            /** @enum {string|null} */
+            last_error: "dns_txt_missing" | "dns_not_pointing" | "tls_not_ready" | "tls_failed" | null;
+            /** Format: date-time */
+            next_check_at: string | null;
+            primary: boolean;
+            /** @enum {string} */
+            status: "pending_dns" | "pending_tls" | "active" | "broken" | "expired";
+            /** Format: date-time */
+            verified_at: string | null;
+        };
+        /** SiteDomainInstructionsRequest */
+        SiteDomainInstructionsRequest: {
+            /** Format: email */
+            email: string;
+        };
+        /** SiteDomainInstructionsResponse */
+        SiteDomainInstructionsResponse: {
+            sent_to: string;
+        };
+        /** SiteDomainRequest */
+        SiteDomainRequest: {
+            host: string;
+        };
+        /** SiteDomainResponse */
+        SiteDomainResponse: {
+            /** SiteDomain */
+            domain: {
+                /** Format: date-time */
+                active_at: string | null;
+                /** Format: date-time */
+                checked_at: string | null;
+                dns_records: {
+                    name: string;
+                    /** @enum {string} */
+                    type: "TXT" | "CNAME" | "A";
+                    value: string;
+                }[];
+                host: string;
+                /** Format: uuid */
+                id: string;
+                /** @enum {string|null} */
+                last_error: "dns_txt_missing" | "dns_not_pointing" | "tls_not_ready" | "tls_failed" | null;
+                /** Format: date-time */
+                next_check_at: string | null;
+                primary: boolean;
+                /** @enum {string} */
+                status: "pending_dns" | "pending_tls" | "active" | "broken" | "expired";
+                /** Format: date-time */
+                verified_at: string | null;
+            };
+        };
+        /**
+         * SiteDomainStatusResponse
+         * @description What the person setting up the domain sees from the emailed link
+         */
+        SiteDomainStatusResponse: {
+            box_name: string;
+            /** Format: date-time */
+            checked_at: string | null;
+            dns_records: Record<string, never>[];
+            host: string;
+            last_error: string | null;
+            status: string;
+        };
+        /** SiteDomainsResponse */
+        SiteDomainsResponse: {
+            domains: {
+                /** Format: date-time */
+                active_at: string | null;
+                /** Format: date-time */
+                checked_at: string | null;
+                dns_records: {
+                    name: string;
+                    /** @enum {string} */
+                    type: "TXT" | "CNAME" | "A";
+                    value: string;
+                }[];
+                host: string;
+                /** Format: uuid */
+                id: string;
+                /** @enum {string|null} */
+                last_error: "dns_txt_missing" | "dns_not_pointing" | "tls_not_ready" | "tls_failed" | null;
+                /** Format: date-time */
+                next_check_at: string | null;
+                primary: boolean;
+                /** @enum {string} */
+                status: "pending_dns" | "pending_tls" | "active" | "broken" | "expired";
+                /** Format: date-time */
+                verified_at: string | null;
+            }[];
+        };
+        /** SiteEvent */
+        SiteEvent: {
+            currency: string;
+            /** Format: date-time */
+            ends_at: string;
+            /** Format: uuid */
+            id: string;
+            place_name: string | null;
+            price_cents: number;
+            /** Format: date-time */
+            starts_at: string;
+            time_zone: string | null;
+            title: string;
+        };
+        /** SiteFaqEntry */
+        SiteFaqEntry: {
+            answer: string;
+            /** @description Optional English text (ADR-388) */
+            answer_en?: string;
+            question: string;
+            /** @description Optional English text (ADR-388) */
+            question_en?: string;
+        };
+        /** SiteFormRequest */
+        SiteFormRequest: {
+            attribution?: {
+                landing_path?: string;
+                referrer_host?: string;
+                utm_campaign?: string;
+                utm_content?: string;
+                utm_medium?: string;
+                utm_source?: string;
+                utm_term?: string;
+            };
+            /** Format: uuid */
+            class_type_id?: string | null;
+            consent_text_hash?: string | null;
+            consent_text_version?: string | null;
+            /** @description Time spent on the form */
+            elapsed_ms?: number | null;
+            email?: string | null;
+            /**
+             * Format: uuid
+             * @description The browser Pixel's eventID for the same Lead, so Meta counts the Conversions API event once
+             */
+            event_id?: string | null;
+            locale?: string | null;
+            /** @description Separate, unticked opt-in to marketing follow-ups */
+            marketing_opt_in?: boolean;
+            message?: string | null;
+            name: string;
+            phone?: string | null;
+            preferred_time?: string | null;
+            /** @description Must be true */
+            privacy_ack: boolean;
+            /** Format: uuid */
+            visitor_id?: string | null;
+            /** @description Honeypot: leave empty */
+            website?: string | null;
+        };
+        /** SiteFormResponse */
+        SiteFormResponse: {
+            /** @enum {string} */
+            status: "received";
+        };
+        /** SiteOpsDomainsResponse */
+        SiteOpsDomainsResponse: {
+            cname_target: string;
+            domains: {
+                host: string;
+                slug: string;
+                /** @enum {string} */
+                status: "pending_dns" | "pending_tls" | "active" | "broken" | "expired";
+                /** Format: date-time */
+                updated_at: string | null;
+                /** Format: date-time */
+                verified_at: string | null;
+            }[];
+        };
+        /** SitePaleeReviews */
+        SitePaleeReviews: {
+            average: number | null;
+            count: number;
+            latest: {
+                /** @description First name only; null for people who hide themselves */
+                author_name: string | null;
+                body: string | null;
+                /** Format: date-time */
+                created_at: string;
+                /** Format: date-time */
+                edited_at: string | null;
+                /** Format: uuid */
+                id: string;
+                rating: number;
+                /** BoxReviewReply */
+                reply: {
+                    body: string;
+                    /** Format: date-time */
+                    replied_at: string;
+                } | null;
+            }[];
+        } | null;
+        /** SiteReviews */
+        SiteReviews: {
+            /**
+             * GoogleListing
+             * @description The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms
+             */
+            google: {
+                count: number | null;
+                /** Format: date-time */
+                fetched_at: string;
+                maps_uri: string | null;
+                name: string | null;
+                rating: number | null;
+                write_review_url: string | null;
+            } | null;
+            google_reviews_url: string | null;
+            /** SitePaleeReviews */
+            palee: {
+                average: number | null;
+                count: number;
+                latest: {
+                    /** @description First name only; null for people who hide themselves */
+                    author_name: string | null;
+                    body: string | null;
+                    /** Format: date-time */
+                    created_at: string;
+                    /** Format: date-time */
+                    edited_at: string | null;
+                    /** Format: uuid */
+                    id: string;
+                    rating: number;
+                    /** BoxReviewReply */
+                    reply: {
+                        body: string;
+                        /** Format: date-time */
+                        replied_at: string;
+                    } | null;
+                }[];
+            } | null;
+        };
+        /** SiteSettings */
+        SiteSettings: {
+            about_en: string | null;
+            banner_version: number;
+            conversions_api_enabled: boolean;
+            faq: {
+                answer: string;
+                /** @description Optional English text (ADR-388) */
+                answer_en?: string;
+                question: string;
+                /** @description Optional English text (ADR-388) */
+                question_en?: string;
+            }[];
+            forms_enabled: boolean;
+            ga4_measurement_id: string | null;
+            gtm_container_id: string | null;
+            /** @description A token is saved; the token itself is never returned */
+            has_conversions_api_token: boolean;
+            hidden_sections: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            lock_version: number;
+            meta_pixel_id: string | null;
+            public_schedule: boolean;
+            /** @description «WOD της ημέρας» on the site (ADR-388) */
+            public_wod: boolean;
+            section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+        };
+        /** SiteSettingsResponse */
+        SiteSettingsResponse: {
+            /** SiteSettings */
+            settings: {
+                about_en: string | null;
+                banner_version: number;
+                conversions_api_enabled: boolean;
+                faq: {
+                    answer: string;
+                    /** @description Optional English text (ADR-388) */
+                    answer_en?: string;
+                    question: string;
+                    /** @description Optional English text (ADR-388) */
+                    question_en?: string;
+                }[];
+                forms_enabled: boolean;
+                ga4_measurement_id: string | null;
+                gtm_container_id: string | null;
+                /** @description A token is saved; the token itself is never returned */
+                has_conversions_api_token: boolean;
+                hidden_sections: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                lock_version: number;
+                meta_pixel_id: string | null;
+                public_schedule: boolean;
+                /** @description «WOD της ημέρας» on the site (ADR-388) */
+                public_wod: boolean;
+                section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            };
+        };
+        /** SiteSettingsUpdate */
+        SiteSettingsUpdate: {
+            about_en?: string | null;
+            conversions_api_enabled?: boolean;
+            /** @description Meta Conversions API access token (write-only; empty removes it) */
+            conversions_api_token?: string | null;
+            faq?: {
+                answer: string;
+                /** @description Optional English text (ADR-388) */
+                answer_en?: string;
+                question: string;
+                /** @description Optional English text (ADR-388) */
+                question_en?: string;
+            }[];
+            forms_enabled?: boolean;
+            ga4_measurement_id?: string | null;
+            gtm_container_id?: string | null;
+            hidden_sections?: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+            lock_version: number;
+            meta_pixel_id?: string | null;
+            public_schedule?: boolean;
+            public_wod?: boolean;
+            section_order?: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+        };
+        /** SiteSummaryResponse */
+        SiteSummaryResponse: {
+            consents: {
+                accept_all: number;
+                custom: number;
+                reject_all: number;
+                withdraw: number;
+            };
+            days: number;
+            submissions: {
+                delivered: number;
+                failed: number;
+                total: number;
+                waiting: number;
+            };
+        };
+        /**
+         * SiteTags
+         * @description Public tag ids; none loads before the visitor's consent (ADR-354)
+         */
+        SiteTags: {
+            ga4_measurement_id: string | null;
+            gtm_container_id: string | null;
+            meta_pixel_id: string | null;
+        };
+        /** SiteTimetableClass */
+        SiteTimetableClass: {
+            /** Format: uuid */
+            class_type_id: string | null;
+            duration_minutes: number;
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            location_id: string | null;
+            name: string;
+            /** Format: date-time */
+            scheduled_at: string;
+        };
+        /** SiteWod */
+        SiteWod: {
+            body: string | null;
+            /** Format: date */
+            date: string;
+            /** Format: uuid */
+            id: string;
+            title: string;
+            type: string | null;
+        };
+        /**
+         * SmsUnsubscribe
+         * @description The box behind a marketing SMS's link and whether offers by SMS are off for the person
+         */
+        SmsUnsubscribe: {
+            box_name: string;
+            /** @enum {string} */
+            locale: "el" | "en" | "de" | "fr" | "it" | "es" | "nl" | "pt-PT" | "bg" | "ru" | "ar" | "he";
+            withdrawn: boolean;
+        };
         /**
          * SocialPrivacy
          * @description ADR-193: a private account answers follow requests; searchable shows you in people search
@@ -41652,6 +44979,10 @@ export interface components {
              * @description Shared by every week of a weekly event
              */
             series_id?: string | null;
+            /** @description ADR-385: the organiser's SMS switch for this event */
+            sms_enabled: boolean;
+            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+            sms_offered: boolean;
             /** @description Null: no limit */
             spots_left?: number | null;
             /** Format: date-time */
@@ -42024,6 +45355,10 @@ export interface components {
                  * @description Shared by every week of a weekly event
                  */
                 series_id?: string | null;
+                /** @description ADR-385: the organiser's SMS switch for this event */
+                sms_enabled: boolean;
+                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                sms_offered: boolean;
                 /** @description Null: no limit */
                 spots_left?: number | null;
                 /** Format: date-time */
@@ -42107,6 +45442,8 @@ export interface components {
              * @description «Επανάληψη κάθε εβδομάδα» until this date (box time zone), at most 26 weeks
              */
             repeat_until?: string;
+            /** @description ADR-385: the reminder and changes also go by SMS to those who asked at «Θα έρθω» (default on) */
+            sms_enabled?: boolean;
             /** Format: date-time */
             starts_at: string;
             /** @description ADR-179: an IANA zone for an event held away from its gym; null keeps the gym's */
@@ -42444,6 +45781,10 @@ export interface components {
                  * @description Shared by every week of a weekly event
                  */
                 series_id?: string | null;
+                /** @description ADR-385: the organiser's SMS switch for this event */
+                sms_enabled: boolean;
+                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                sms_offered: boolean;
                 /** @description Null: no limit */
                 spots_left?: number | null;
                 /** Format: date-time */
@@ -42635,6 +45976,10 @@ export interface components {
              * @description Shared by every week of a weekly event
              */
             series_id?: string | null;
+            /** @description ADR-385: the organiser's SMS switch for this event */
+            sms_enabled: boolean;
+            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+            sms_offered: boolean;
             /** @description Null: no limit */
             spots_left?: number | null;
             /** Format: date-time */
@@ -42818,6 +46163,10 @@ export interface components {
                  * @description Shared by every week of a weekly event
                  */
                 series_id?: string | null;
+                /** @description ADR-385: the organiser's SMS switch for this event */
+                sms_enabled: boolean;
+                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                sms_offered: boolean;
                 /** @description Null: no limit */
                 spots_left?: number | null;
                 /** Format: date-time */
@@ -43383,6 +46732,390 @@ export interface components {
                 taxonomy_version: number;
                 unmatched_exercises: number;
             };
+        };
+        /** StatusAccepted */
+        StatusAccepted: {
+            /** @enum {string} */
+            status: "accepted" | "confirmed" | "removed";
+        };
+        /** StatusComponent */
+        StatusComponent: {
+            /** Format: date-time */
+            checked_at: string | null;
+            /** @enum {string} */
+            key: "app" | "search" | "files" | "email" | "payments" | "fiscal";
+            /** @enum {string} */
+            status: "operational" | "degraded" | "down" | "maintenance" | "unknown";
+        };
+        /** StatusComponentHistory */
+        StatusComponentHistory: {
+            days: {
+                /** Format: date */
+                date: string;
+                /** @enum {string} */
+                status: "operational" | "degraded" | "down" | "no_data";
+                uptime_percent: number | null;
+            }[];
+            /** @enum {string} */
+            key: "app" | "search" | "files" | "email" | "payments" | "fiscal";
+            uptime_percent: number | null;
+        };
+        /** StatusConsole */
+        StatusConsole: {
+            incidents: {
+                components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                /** @enum {string|null} */
+                en_source: "auto" | "edited" | null;
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                impact: "none" | "minor" | "major" | "critical";
+                /** @enum {string} */
+                kind: "incident" | "maintenance";
+                locale: string | null;
+                /** @description Who published the incident (console only) */
+                published_by?: string | null;
+                /** Format: date-time */
+                resolved_at: string | null;
+                /** Format: date-time */
+                scheduled_for: string | null;
+                /** Format: date-time */
+                scheduled_until: string | null;
+                /** Format: date-time */
+                started_at: string;
+                /** @enum {string} */
+                status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                title: string;
+                title_en: string | null;
+                updates: {
+                    body: string;
+                    body_en: string | null;
+                    /** Format: date-time */
+                    created_at: string;
+                    /** @enum {string|null} */
+                    en_source: "auto" | "edited" | null;
+                    /** Format: uuid */
+                    id: string;
+                    locale: string | null;
+                    /** @description Who published this step (console only) */
+                    published_by?: string | null;
+                    /** @enum {string} */
+                    status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                }[];
+            }[];
+            probes: {
+                /** Format: date-time */
+                changed_at: string;
+                /** Format: date-time */
+                checked_at: string;
+                key: string;
+                reason: string | null;
+                /** @enum {string} */
+                status: "operational" | "degraded" | "down";
+            }[];
+            subscribers: {
+                confirmed: number;
+                waiting: number;
+            };
+        };
+        /** StatusHistory */
+        StatusHistory: {
+            components: {
+                days: {
+                    /** Format: date */
+                    date: string;
+                    /** @enum {string} */
+                    status: "operational" | "degraded" | "down" | "no_data";
+                    uptime_percent: number | null;
+                }[];
+                /** @enum {string} */
+                key: "app" | "search" | "files" | "email" | "payments" | "fiscal";
+                uptime_percent: number | null;
+            }[];
+            days: number;
+            /** Format: date */
+            from: string;
+            /** Format: date-time */
+            generated_at: string;
+            incidents: {
+                components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                /** @enum {string|null} */
+                en_source: "auto" | "edited" | null;
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                impact: "none" | "minor" | "major" | "critical";
+                /** @enum {string} */
+                kind: "incident" | "maintenance";
+                locale: string | null;
+                /** @description Who published the incident (console only) */
+                published_by?: string | null;
+                /** Format: date-time */
+                resolved_at: string | null;
+                /** Format: date-time */
+                scheduled_for: string | null;
+                /** Format: date-time */
+                scheduled_until: string | null;
+                /** Format: date-time */
+                started_at: string;
+                /** @enum {string} */
+                status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                title: string;
+                title_en: string | null;
+                updates: {
+                    body: string;
+                    body_en: string | null;
+                    /** Format: date-time */
+                    created_at: string;
+                    /** @enum {string|null} */
+                    en_source: "auto" | "edited" | null;
+                    /** Format: uuid */
+                    id: string;
+                    locale: string | null;
+                    /** @description Who published this step (console only) */
+                    published_by?: string | null;
+                    /** @enum {string} */
+                    status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                }[];
+            }[];
+            /** Format: date */
+            to: string;
+        };
+        /** StatusHistoryDay */
+        StatusHistoryDay: {
+            /** Format: date */
+            date: string;
+            /** @enum {string} */
+            status: "operational" | "degraded" | "down" | "no_data";
+            uptime_percent: number | null;
+        };
+        /** StatusIncident */
+        StatusIncident: {
+            components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+            /** @enum {string|null} */
+            en_source: "auto" | "edited" | null;
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            impact: "none" | "minor" | "major" | "critical";
+            /** @enum {string} */
+            kind: "incident" | "maintenance";
+            locale: string | null;
+            /** @description Who published the incident (console only) */
+            published_by?: string | null;
+            /** Format: date-time */
+            resolved_at: string | null;
+            /** Format: date-time */
+            scheduled_for: string | null;
+            /** Format: date-time */
+            scheduled_until: string | null;
+            /** Format: date-time */
+            started_at: string;
+            /** @enum {string} */
+            status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+            title: string;
+            title_en: string | null;
+            updates: {
+                body: string;
+                body_en: string | null;
+                /** Format: date-time */
+                created_at: string;
+                /** @enum {string|null} */
+                en_source: "auto" | "edited" | null;
+                /** Format: uuid */
+                id: string;
+                locale: string | null;
+                /** @description Who published this step (console only) */
+                published_by?: string | null;
+                /** @enum {string} */
+                status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+            }[];
+        };
+        /** StatusIncidentCreate */
+        StatusIncidentCreate: {
+            body: string;
+            body_en?: string;
+            components?: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+            /** @enum {string} */
+            en_source?: "auto" | "edited";
+            /** @enum {string} */
+            impact?: "none" | "minor" | "major" | "critical";
+            /** @enum {string} */
+            kind?: "incident" | "maintenance";
+            locale?: string;
+            notify?: boolean;
+            /** Format: date-time */
+            scheduled_for?: string;
+            /** Format: date-time */
+            scheduled_until?: string;
+            /** @enum {string} */
+            status?: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+            title: string;
+            title_en?: string;
+        };
+        /** StatusIncidentEdit */
+        StatusIncidentEdit: {
+            components?: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+            /** @enum {string} */
+            impact?: "none" | "minor" | "major" | "critical";
+            title?: string;
+        };
+        /** StatusIncidentUpdate */
+        StatusIncidentUpdate: {
+            body: string;
+            body_en: string | null;
+            /** Format: date-time */
+            created_at: string;
+            /** @enum {string|null} */
+            en_source: "auto" | "edited" | null;
+            /** Format: uuid */
+            id: string;
+            locale: string | null;
+            /** @description Who published this step (console only) */
+            published_by?: string | null;
+            /** @enum {string} */
+            status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+        };
+        /** StatusIncidentUpdateCreate */
+        StatusIncidentUpdateCreate: {
+            body: string;
+            body_en?: string;
+            /** @enum {string} */
+            en_source?: "auto" | "edited";
+            locale?: string;
+            notify?: boolean;
+            /** @enum {string} */
+            status?: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+        };
+        /** StatusOverview */
+        StatusOverview: {
+            active: {
+                components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                /** @enum {string|null} */
+                en_source: "auto" | "edited" | null;
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                impact: "none" | "minor" | "major" | "critical";
+                /** @enum {string} */
+                kind: "incident" | "maintenance";
+                locale: string | null;
+                /** @description Who published the incident (console only) */
+                published_by?: string | null;
+                /** Format: date-time */
+                resolved_at: string | null;
+                /** Format: date-time */
+                scheduled_for: string | null;
+                /** Format: date-time */
+                scheduled_until: string | null;
+                /** Format: date-time */
+                started_at: string;
+                /** @enum {string} */
+                status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                title: string;
+                title_en: string | null;
+                updates: {
+                    body: string;
+                    body_en: string | null;
+                    /** Format: date-time */
+                    created_at: string;
+                    /** @enum {string|null} */
+                    en_source: "auto" | "edited" | null;
+                    /** Format: uuid */
+                    id: string;
+                    locale: string | null;
+                    /** @description Who published this step (console only) */
+                    published_by?: string | null;
+                    /** @enum {string} */
+                    status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                }[];
+            }[];
+            components: {
+                /** Format: date-time */
+                checked_at: string | null;
+                /** @enum {string} */
+                key: "app" | "search" | "files" | "email" | "payments" | "fiscal";
+                /** @enum {string} */
+                status: "operational" | "degraded" | "down" | "maintenance" | "unknown";
+            }[];
+            /** Format: date-time */
+            generated_at: string;
+            /** @enum {string} */
+            status: "operational" | "degraded" | "partial_outage" | "major_outage" | "maintenance" | "unknown";
+            upcoming: {
+                components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                /** @enum {string|null} */
+                en_source: "auto" | "edited" | null;
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                impact: "none" | "minor" | "major" | "critical";
+                /** @enum {string} */
+                kind: "incident" | "maintenance";
+                locale: string | null;
+                /** @description Who published the incident (console only) */
+                published_by?: string | null;
+                /** Format: date-time */
+                resolved_at: string | null;
+                /** Format: date-time */
+                scheduled_for: string | null;
+                /** Format: date-time */
+                scheduled_until: string | null;
+                /** Format: date-time */
+                started_at: string;
+                /** @enum {string} */
+                status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                title: string;
+                title_en: string | null;
+                updates: {
+                    body: string;
+                    body_en: string | null;
+                    /** Format: date-time */
+                    created_at: string;
+                    /** @enum {string|null} */
+                    en_source: "auto" | "edited" | null;
+                    /** Format: uuid */
+                    id: string;
+                    locale: string | null;
+                    /** @description Who published this step (console only) */
+                    published_by?: string | null;
+                    /** @enum {string} */
+                    status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                }[];
+            }[];
+        };
+        /** StatusProbeState */
+        StatusProbeState: {
+            /** Format: date-time */
+            changed_at: string;
+            /** Format: date-time */
+            checked_at: string;
+            key: string;
+            reason: string | null;
+            /** @enum {string} */
+            status: "operational" | "degraded" | "down";
+        };
+        /** StatusSubscribe */
+        StatusSubscribe: {
+            /** Format: email */
+            email: string;
+            locale?: string;
+        };
+        /** StatusToken */
+        StatusToken: {
+            token: string;
+        };
+        /** StatusTranslate */
+        StatusTranslate: {
+            body: string;
+            title?: string;
+        };
+        /** StatusTranslation */
+        StatusTranslation: {
+            body: string;
+            /** @description The detected language of the text */
+            locale: string | null;
+            title: string | null;
         };
         /** StructuredSection */
         StructuredSection: {
@@ -44487,6 +48220,38 @@ export interface components {
                 [key: string]: unknown;
             };
         };
+        /** VisitBadges */
+        VisitBadges: {
+            badges: ("first_visit" | "first_in_class_type" | "guest" | "trial" | "brought_by_member" | "came_via_event" | "came_via_referral")[];
+            /**
+             * VisitVia
+             * @description How a first-time visitor came (referral attribution)
+             */
+            via: {
+                by_nickname?: string | null;
+                /** Format: uuid */
+                by_user_id?: string | null;
+                channel?: string | null;
+                /** Format: uuid */
+                event_id?: string | null;
+                /** @enum {string} */
+                kind: "event" | "referral";
+            } | null;
+        };
+        /**
+         * VisitVia
+         * @description How a first-time visitor came (referral attribution)
+         */
+        VisitVia: {
+            by_nickname?: string | null;
+            /** Format: uuid */
+            by_user_id?: string | null;
+            channel?: string | null;
+            /** Format: uuid */
+            event_id?: string | null;
+            /** @enum {string} */
+            kind: "event" | "referral";
+        } | null;
         /** VoiceLogAvailability */
         VoiceLogAvailability: {
             available: boolean;
@@ -45178,6 +48943,27 @@ export interface components {
                 type?: string | null;
             } | null;
         };
+        /** WorkoutAsPerformed */
+        WorkoutAsPerformed: {
+            /** @description The WOD now reads differently, or no longer exists */
+            changed: boolean;
+            /** @description Null for results from before snapshots (ADR-357) */
+            snapshot: {
+                /** @description The WOD as it read then (title, type, text, sections, plans, body) */
+                content: {
+                    [key: string]: unknown;
+                };
+                content_hash: string;
+                format_version: number;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                taken_at: string;
+                title?: string | null;
+                /** Format: uuid */
+                workout_id: string;
+            } | null;
+        };
         /** WorkoutAuthoringSettings */
         WorkoutAuthoringSettings: {
             /** @description Off: no assistant; workouts are written in text sections with a timer each */
@@ -45718,6 +49504,157 @@ export interface components {
             taxonomy_version: number;
             unmatched_exercises: number;
         };
+        /** WorkoutLeaderboard */
+        WorkoutLeaderboard: {
+            /** PaleeBenchmark */
+            benchmark?: {
+                group: string;
+                key: string;
+                lower_is_better: boolean;
+                /** @enum {string} */
+                unit: "kg" | "reps" | "mins_secs";
+            } | null;
+            filters: {
+                age_group?: string | null;
+                buddies: boolean;
+                /** Format: date */
+                date: string;
+                division?: string | null;
+                /** Format: uuid */
+                location_id?: string | null;
+                scale?: string | null;
+                /** @enum {string} */
+                scope: "box" | "branch" | "palee";
+                /** @enum {string} */
+                window: "day" | "week" | "month" | "year" | "all";
+            };
+            me: {
+                avatar_url?: string | null;
+                /** @description The person's box, on the Palee-wide board only (ADR-394) */
+                box_name?: string | null;
+                me: boolean;
+                nickname?: string | null;
+                /** @description Share of the other results of the slice this one beat (0-100) */
+                percentile: number | null;
+                rank: number | null;
+                scale_level_slug?: string | null;
+                /** @description «Top X%»: share of results at this place or better, rounded up */
+                top_percent: number | null;
+                unit?: string | null;
+                /**
+                 * Format: uuid
+                 * @description Null on the Palee-wide board for everyone but the viewer (ADR-394)
+                 */
+                user_id: string | null;
+                value?: string | null;
+            } | null;
+            /** @description Whether the viewer opted in; without it no comparison is shown */
+            opted_in: boolean;
+            options: {
+                age_groups: string[];
+                divisions: string[];
+                scales: {
+                    label: string;
+                    slug: string;
+                }[];
+                scopes: string[];
+                windows: string[];
+            };
+            /**
+             * @description The viewer's answer about the Palee-wide board; null when not asked yet or when the WOD is not a benchmark (ADR-394)
+             * @enum {string|null}
+             */
+            palee_consent?: "share" | "see_only" | null;
+            profile?: {
+                birth_year?: number | null;
+                division?: string | null;
+            } | null;
+            rows: {
+                avatar_url?: string | null;
+                /** @description The person's box, on the Palee-wide board only (ADR-394) */
+                box_name?: string | null;
+                me: boolean;
+                nickname?: string | null;
+                /** @description Share of the other results of the slice this one beat (0-100) */
+                percentile: number | null;
+                rank: number | null;
+                scale_level_slug?: string | null;
+                /** @description «Top X%»: share of results at this place or better, rounded up */
+                top_percent: number | null;
+                unit?: string | null;
+                /**
+                 * Format: uuid
+                 * @description Null on the Palee-wide board for everyone but the viewer (ADR-394)
+                 */
+                user_id: string | null;
+                value?: string | null;
+            }[];
+            section?: {
+                [key: string]: unknown;
+            } | null;
+            total: number;
+            workout: {
+                /** Format: uuid */
+                id: string;
+                title?: string | null;
+            };
+        };
+        /** WorkoutLeaderboardRow */
+        WorkoutLeaderboardRow: {
+            avatar_url?: string | null;
+            /** @description The person's box, on the Palee-wide board only (ADR-394) */
+            box_name?: string | null;
+            me: boolean;
+            nickname?: string | null;
+            /** @description Share of the other results of the slice this one beat (0-100) */
+            percentile: number | null;
+            rank: number | null;
+            scale_level_slug?: string | null;
+            /** @description «Top X%»: share of results at this place or better, rounded up */
+            top_percent: number | null;
+            unit?: string | null;
+            /**
+             * Format: uuid
+             * @description Null on the Palee-wide board for everyone but the viewer (ADR-394)
+             */
+            user_id: string | null;
+            value?: string | null;
+        };
+        /** WorkoutSnapshot */
+        WorkoutSnapshot: {
+            /** @description The WOD as it read then (title, type, text, sections, plans, body) */
+            content: {
+                [key: string]: unknown;
+            };
+            content_hash: string;
+            format_version: number;
+            /** Format: uuid */
+            id: string;
+            /** Format: date-time */
+            taken_at: string;
+            title?: string | null;
+            /** Format: uuid */
+            workout_id: string;
+        };
+        /** WorkoutSnapshotResponse */
+        WorkoutSnapshotResponse: {
+            /** WorkoutSnapshot */
+            snapshot: {
+                /** @description The WOD as it read then (title, type, text, sections, plans, body) */
+                content: {
+                    [key: string]: unknown;
+                };
+                content_hash: string;
+                format_version: number;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                taken_at: string;
+                title?: string | null;
+                /** Format: uuid */
+                workout_id: string;
+            };
+        };
     };
     responses: never;
     parameters: never;
@@ -46221,6 +50158,10 @@ export interface operations {
                                          * @description Shared by every week of a weekly event
                                          */
                                         series_id?: string | null;
+                                        /** @description ADR-385: the organiser's SMS switch for this event */
+                                        sms_enabled: boolean;
+                                        /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                        sms_offered: boolean;
                                         /** @description Null: no limit */
                                         spots_left?: number | null;
                                         /** Format: date-time */
@@ -46442,6 +50383,10 @@ export interface operations {
                                              * @description Shared by every week of a weekly event
                                              */
                                             series_id?: string | null;
+                                            /** @description ADR-385: the organiser's SMS switch for this event */
+                                            sms_enabled: boolean;
+                                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                            sms_offered: boolean;
                                             /** @description Null: no limit */
                                             spots_left?: number | null;
                                             /** Format: date-time */
@@ -46775,6 +50720,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -47068,6 +51017,10 @@ export interface operations {
                                      * @description Shared by every week of a weekly event
                                      */
                                     series_id?: string | null;
+                                    /** @description ADR-385: the organiser's SMS switch for this event */
+                                    sms_enabled: boolean;
+                                    /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                    sms_offered: boolean;
                                     /** @description Null: no limit */
                                     spots_left?: number | null;
                                     /** Format: date-time */
@@ -50194,6 +54147,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -50439,6 +54396,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -53819,6 +57780,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -55774,6 +59739,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -55844,6 +59813,8 @@ export interface operations {
                      * @description «Επανάληψη κάθε εβδομάδα» until this date (box time zone), at most 26 weeks
                      */
                     repeat_until?: string;
+                    /** @description ADR-385: the reminder and changes also go by SMS to those who asked at «Θα έρθω» (default on) */
+                    sms_enabled?: boolean;
                     /** Format: date-time */
                     starts_at: string;
                     /** @description ADR-179: an IANA zone for an event held away from its gym; null keeps the gym's */
@@ -56021,6 +59992,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -56383,6 +60358,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -56636,6 +60615,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -57064,6 +61047,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -57377,6 +61364,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -57690,6 +61681,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -60156,6 +64151,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -60231,6 +64230,8 @@ export interface operations {
                      * @description «Επανάληψη κάθε εβδομάδα» until this date (box time zone), at most 26 weeks
                      */
                     repeat_until?: string;
+                    /** @description ADR-385: the reminder and changes also go by SMS to those who asked at «Θα έρθω» (default on) */
+                    sms_enabled?: boolean;
                     /** Format: date-time */
                     starts_at: string;
                     /** @description ADR-179: an IANA zone for an event held away from its gym; null keeps the gym's */
@@ -60408,6 +64409,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -60602,6 +64607,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -60665,6 +64674,8 @@ export interface operations {
                      * @enum {string}
                      */
                     scope?: "this" | "following";
+                    /** @description ADR-385: the reminder and changes also go by SMS to those who asked at «Θα έρθω» (default on) */
+                    sms_enabled?: boolean;
                     /** Format: date-time */
                     starts_at?: string;
                     /** @description ADR-179: an IANA zone for an event held away from its gym; null keeps the gym's */
@@ -60836,6 +64847,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -61036,6 +65051,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -61100,6 +65119,12 @@ export interface operations {
                     going: boolean;
                     /** @description From a member's guest pass link */
                     invite_token?: string;
+                    /** @description Language of the SMS (el, en) */
+                    locale?: string;
+                    /** @description Mobile number for `sms_consent` */
+                    phone?: string;
+                    /** @description The person agrees to SMS about this event (reminder, changes) from its organiser; needs `phone`. Recorded as a service SMS consent with the organiser. */
+                    sms_consent?: boolean;
                 };
             };
         };
@@ -61266,6 +65291,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -61277,6 +65306,41 @@ export interface operations {
                             title: string;
                             waitlist_count: number;
                         };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.CommunityEventController.sms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Event SMS */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description The organiser sends SMS (a connection with SMS switched on) */
+                        connected: boolean;
+                        currency: string;
+                        /** @description This event's SMS switch */
+                        enabled: boolean;
+                        going: number;
+                        /** @description The price of one event SMS (one part, the organiser's country) */
+                        per_message_cents: number;
+                        /** @description Going and agreed to SMS: «12 από 40 θα πάρουν SMS» */
+                        recipients: number;
+                        /** @description What this event's SMS cost so far */
+                        spent_cents: number;
                     };
                 };
             };
@@ -61531,6 +65595,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -61811,6 +65879,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -62131,6 +66203,93 @@ export interface operations {
                         }[];
                         /** @enum {string} */
                         surface: "around_me" | "box_schedule" | "feed" | "club" | "journal" | "vault" | "progress" | "partners" | "box_workouts" | "box_videos" | "box_appointments" | "events" | "find_clubs" | "my_posts" | "reviews";
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.FitnessProfileController.show": {
+        parameters: {
+            query?: {
+                /** @description Standards to read the PRs with (neutral mean when absent) */
+                division?: "women" | "men";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Fitness profile */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        algorithm: {
+                            id: string;
+                            version: number;
+                        };
+                        benchmarks_known: number;
+                        /** @enum {string|null} */
+                        division: "women" | "men" | null;
+                        domains: {
+                            /** @enum {string|null} */
+                            confidence: "low" | "medium" | "high" | null;
+                            /** @enum {string} */
+                            domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+                            reasons: {
+                                age_days: number;
+                                anchors: {
+                                    points: number;
+                                    value: number;
+                                }[];
+                                /** Format: date */
+                                beaten_on: string;
+                                benchmark: string;
+                                /** @enum {string} */
+                                domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+                                /** @description 1RM estimated from a multi-rep set */
+                                estimated: boolean;
+                                /** @description The PR as the person named it */
+                                name: string;
+                                points: number;
+                                stale: boolean;
+                                /** @enum {string} */
+                                unit: "kg" | "reps" | "mins_secs";
+                                /** @description kg (1RM), reps or seconds */
+                                value: number;
+                            }[];
+                            score: number | null;
+                            stale: boolean;
+                        }[];
+                        focus: ({
+                            /** @enum {string} */
+                            domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+                            /** @enum {string} */
+                            kind: "weakest_domain" | "undertrained_quality" | "stale_benchmark" | "untested_domain";
+                        } & {
+                            [key: string]: unknown;
+                        })[];
+                        injury_caution: boolean;
+                        neutral_standards: boolean;
+                        overall: {
+                            domains_scored: number;
+                            reason: string;
+                            score: number;
+                        } | null;
+                    };
+                };
+            };
+            /** @description Unknown division */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
                     };
                 };
             };
@@ -64117,6 +68276,102 @@ export interface operations {
                         club_id: string;
                         /** @enum {string} */
                         notify_level: "all" | "announcements" | "none";
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PaleeLeaderboardConsentController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Answer */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description share: others see nickname, box and score; see_only: only you see your place; null: not answered or withdrawn
+                         * @enum {string|null}
+                         */
+                        choice: "share" | "see_only" | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PaleeLeaderboardConsentController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    choice: "share" | "see_only";
+                };
+            };
+        };
+        responses: {
+            /** @description Answer */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description share: others see nickname, box and score; see_only: only you see your place; null: not answered or withdrawn
+                         * @enum {string|null}
+                         */
+                        choice: "share" | "see_only" | null;
+                    };
+                };
+            };
+            /** @description Unknown choice */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PaleeLeaderboardConsentController.delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Answer */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description share: others see nickname, box and score; see_only: only you see your place; null: not answered or withdrawn
+                         * @enum {string|null}
+                         */
+                        choice: "share" | "see_only" | null;
                     };
                 };
             };
@@ -69462,7 +73717,7 @@ export interface operations {
                              * @enum {string}
                              */
                             category: "bookings" | "messages" | "community" | "coach" | "partners" | "journal" | "staff" | "account";
-                            /** @description Whether the category reaches the person on each channel it has: `in_app` (the bell), `push` (browser and app push; off while `in_app` is off), `email` (no category yet). */
+                            /** @description Whether the category reaches the person on each channel it has: `in_app` (the bell), `push` (browser and app push; off while `in_app` is off), `email` (only `bookings`: the booking email with its calendar invite, ADR-392; independent of `in_app`). */
                             channels: {
                                 email?: boolean;
                                 in_app?: boolean;
@@ -69513,7 +73768,7 @@ export interface operations {
                              * @enum {string}
                              */
                             category: "bookings" | "messages" | "community" | "coach" | "partners" | "journal" | "staff" | "account";
-                            /** @description Whether the category reaches the person on each channel it has: `in_app` (the bell), `push` (browser and app push; off while `in_app` is off), `email` (no category yet). */
+                            /** @description Whether the category reaches the person on each channel it has: `in_app` (the bell), `push` (browser and app push; off while `in_app` is off), `email` (only `bookings`: the booking email with its calendar invite, ADR-392; independent of `in_app`). */
                             channels: {
                                 email?: boolean;
                                 in_app?: boolean;
@@ -70217,6 +74472,207 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminAutomationController.index": {
+        parameters: {
+            query?: {
+                /** @description Language of the default texts (default `el`) */
+                locale?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Recipes */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        channels: string[];
+                        placeholders: string[];
+                        recipes: {
+                            audience: ("member" | "lead")[];
+                            body: string | null;
+                            channels: string[];
+                            default_body: string;
+                            default_channels: string[];
+                            default_delay_minutes: number;
+                            default_subject: string;
+                            delay_minutes: number;
+                            enabled: boolean;
+                            /** @enum {string} */
+                            key: "welcome" | "trial_follow_up" | "missed_classes" | "renewal_reminder" | "birthday" | "win_back";
+                            /** @enum {string} */
+                            purpose: "service" | "marketing";
+                            settings: {
+                                [key: string]: unknown;
+                            };
+                            stats: {
+                                [key: string]: number;
+                            };
+                            subject: string | null;
+                            /** @description A domain event name, or `daily` */
+                            trigger: string;
+                            /** Format: date-time */
+                            updated_at: string | null;
+                        }[];
+                        stats_days: number;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminAutomationController.deliveries": {
+        parameters: {
+            query?: {
+                recipe?: string;
+                status?: string;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Messages */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        deliveries: {
+                            attempts: number;
+                            channel: string | null;
+                            /** Format: date-time */
+                            due_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            recipe: string;
+                            recipient: {
+                                /** @enum {string} */
+                                kind: "member" | "lead";
+                                /** Format: uuid */
+                                lead_id: string | null;
+                                name: string | null;
+                                /** Format: uuid */
+                                user_id: string | null;
+                            };
+                            /** Format: date-time */
+                            sent_at: string | null;
+                            skip_reason: string | null;
+                            /** @enum {string} */
+                            status: "pending" | "sending" | "sent" | "skipped" | "failed" | "cancelled";
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminAutomationController.update": {
+        parameters: {
+            query?: {
+                /** @description Language of the default texts (default `el`) */
+                locale?: string;
+            };
+            header?: never;
+            path: {
+                recipe: "welcome" | "trial_follow_up" | "missed_classes" | "renewal_reminder" | "birthday" | "win_back";
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    body?: string | null;
+                    channels?: string[];
+                    delay_minutes?: number | null;
+                    enabled?: boolean;
+                    settings?: {
+                        [key: string]: unknown;
+                    };
+                    subject?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Recipe */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        recipe: {
+                            audience: ("member" | "lead")[];
+                            body: string | null;
+                            channels: string[];
+                            default_body: string;
+                            default_channels: string[];
+                            default_delay_minutes: number;
+                            default_subject: string;
+                            delay_minutes: number;
+                            enabled: boolean;
+                            /** @enum {string} */
+                            key: "welcome" | "trial_follow_up" | "missed_classes" | "renewal_reminder" | "birthday" | "win_back";
+                            /** @enum {string} */
+                            purpose: "service" | "marketing";
+                            settings: {
+                                [key: string]: unknown;
+                            };
+                            stats: {
+                                [key: string]: number;
+                            };
+                            subject: string | null;
+                            /** @description A domain event name, or `daily` */
+                            trigger: string;
+                            /** Format: date-time */
+                            updated_at: string | null;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminAutomationController.preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                recipe: "welcome" | "trial_follow_up" | "missed_classes" | "renewal_reminder" | "birthday" | "win_back";
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    body?: string;
+                    first_name?: string;
+                    locale?: string;
+                    subject?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Preview */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        body: string;
+                        recipe: string;
+                        subject: string;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminScheduleController.approve_booking": {
         parameters: {
             query?: never;
@@ -70359,6 +74815,130 @@ export interface operations {
                         code?: string;
                         error?: string;
                     };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminBoxReviewsController.index": {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reviews */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        average: number | null;
+                        count: number;
+                        /**
+                         * GoogleListing
+                         * @description The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms
+                         */
+                        google: {
+                            count: number | null;
+                            /** Format: date-time */
+                            fetched_at: string;
+                            maps_uri: string | null;
+                            name: string | null;
+                            rating: number | null;
+                            write_review_url: string | null;
+                        } | null;
+                        has_more: boolean;
+                        reviews: {
+                            /** @description First name only; null for people who hide themselves */
+                            author_name: string | null;
+                            body: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            /** Format: date-time */
+                            edited_at: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            rating: number;
+                            /** BoxReviewReply */
+                            reply: {
+                                body: string;
+                                /** Format: date-time */
+                                replied_at: string;
+                            } | null;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminBoxReviewsController.reply": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    body: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Review */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** BoxReview */
+                        review: {
+                            /** @description First name only; null for people who hide themselves */
+                            author_name: string | null;
+                            body: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            /** Format: date-time */
+                            edited_at: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            rating: number;
+                            /** BoxReviewReply */
+                            reply: {
+                                body: string;
+                                /** Format: date-time */
+                                replied_at: string;
+                            } | null;
+                        };
+                    };
+                };
+            };
+            /** @description No such review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Invalid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
                 };
             };
         };
@@ -71516,6 +76096,1443 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminChannelClassNoticesController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Sending only: the same key never sends twice */
+                    idempotency_key?: string;
+                    /** @enum {string} */
+                    kind: "cancelled" | "changed" | "free";
+                    /** @description Language of the app notice */
+                    locale?: string;
+                    /** Format: uuid */
+                    slot_id: string;
+                    /** @description The staff's own words; required for `free` */
+                    text?: string;
+                    /** @description `free` only: send now, even in quiet hours */
+                    urgent?: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Sent */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        budget: {
+                            cap_cents: number;
+                            currency: string;
+                            spent_cents: number;
+                        } | null;
+                        currency: string;
+                        estimated_cost_cents: number;
+                        in_app: number;
+                        /** @enum {string} */
+                        kind: "cancelled" | "changed" | "free";
+                        participants: number;
+                        /** @description The first SMS: its text, parts and when it leaves */
+                        sample: {
+                            body: string;
+                            held_for_quiet_hours: boolean;
+                            /** Format: date-time */
+                            release_at: string;
+                            segments: number;
+                        } | null;
+                        /** Format: uuid */
+                        slot_id: string;
+                        sms: number;
+                        /** @description The box's own reason no SMS can go (`channels_demo_mode`, `channels_not_connected`, `channel_budget_missing`, `channel_budget_exceeded`…) */
+                        sms_blocked: string | null;
+                        unreachable: number;
+                        /** @description Why, by error code (`channel_consent_missing`…) */
+                        unreachable_reasons: {
+                            [key: string]: number;
+                        };
+                        urgent: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelClassNoticesController.preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Sending only: the same key never sends twice */
+                    idempotency_key?: string;
+                    /** @enum {string} */
+                    kind: "cancelled" | "changed" | "free";
+                    /** @description Language of the app notice */
+                    locale?: string;
+                    /** Format: uuid */
+                    slot_id: string;
+                    /** @description The staff's own words; required for `free` */
+                    text?: string;
+                    /** @description `free` only: send now, even in quiet hours */
+                    urgent?: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Preview */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        budget: {
+                            cap_cents: number;
+                            currency: string;
+                            spent_cents: number;
+                        } | null;
+                        currency: string;
+                        estimated_cost_cents: number;
+                        in_app: number;
+                        /** @enum {string} */
+                        kind: "cancelled" | "changed" | "free";
+                        participants: number;
+                        /** @description The first SMS: its text, parts and when it leaves */
+                        sample: {
+                            body: string;
+                            held_for_quiet_hours: boolean;
+                            /** Format: date-time */
+                            release_at: string;
+                            segments: number;
+                        } | null;
+                        /** Format: uuid */
+                        slot_id: string;
+                        sms: number;
+                        /** @description The box's own reason no SMS can go (`channels_demo_mode`, `channels_not_connected`, `channel_budget_missing`, `channel_budget_exceeded`…) */
+                        sms_blocked: string | null;
+                        unreachable: number;
+                        /** @description Why, by error code (`channel_consent_missing`…) */
+                        unreachable_reasons: {
+                            [key: string]: number;
+                        };
+                        urgent: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelContactsController.index": {
+        parameters: {
+            query?: {
+                /** @description Comma-separated ids */
+                user_ids?: string;
+                /** @description Comma-separated ids */
+                lead_ids?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Contacts */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        contacts: ({
+                            consents: {
+                                /** @enum {string} */
+                                channel: "sms" | "viber" | "whatsapp";
+                                granted: boolean;
+                                /** Format: date-time */
+                                granted_at?: string | null;
+                                /** @enum {string} */
+                                purpose: "service" | "marketing";
+                                source?: string | null;
+                                text_version?: string | null;
+                                /** Format: date-time */
+                                withdrawn_at?: string | null;
+                            }[];
+                            country?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id?: string | null;
+                            locale: string;
+                            /** Format: date-time */
+                            opted_out_at?: string | null;
+                            /** @description Masked for staff; full for the person */
+                            phone: string;
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                        } | null)[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelContactsController.save": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    lead_id?: string;
+                    /** @enum {string} */
+                    locale?: "el" | "en" | "de" | "fr" | "it" | "es" | "nl" | "pt-PT" | "bg" | "ru" | "ar" | "he";
+                    phone?: string;
+                    /** Format: uuid */
+                    user_id?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Contact */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        contact: {
+                            consents: {
+                                /** @enum {string} */
+                                channel: "sms" | "viber" | "whatsapp";
+                                granted: boolean;
+                                /** Format: date-time */
+                                granted_at?: string | null;
+                                /** @enum {string} */
+                                purpose: "service" | "marketing";
+                                source?: string | null;
+                                text_version?: string | null;
+                                /** Format: date-time */
+                                withdrawn_at?: string | null;
+                            }[];
+                            country?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id?: string | null;
+                            locale: string;
+                            /** Format: date-time */
+                            opted_out_at?: string | null;
+                            /** @description Masked for staff; full for the person */
+                            phone: string;
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelContactsController.lookup": {
+        parameters: {
+            query?: {
+                user_id?: string;
+                lead_id?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Contact */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        contact: {
+                            consents: {
+                                /** @enum {string} */
+                                channel: "sms" | "viber" | "whatsapp";
+                                granted: boolean;
+                                /** Format: date-time */
+                                granted_at?: string | null;
+                                /** @enum {string} */
+                                purpose: "service" | "marketing";
+                                source?: string | null;
+                                text_version?: string | null;
+                                /** Format: date-time */
+                                withdrawn_at?: string | null;
+                            }[];
+                            country?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id?: string | null;
+                            locale: string;
+                            /** Format: date-time */
+                            opted_out_at?: string | null;
+                            /** @description Masked for staff; full for the person */
+                            phone: string;
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelContactsController.delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelContactsController.consent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    channel: "sms" | "viber" | "whatsapp";
+                    granted: boolean;
+                    /** @enum {string} */
+                    purpose: "service" | "marketing";
+                    /** @enum {string} */
+                    source?: "staff" | "person" | "form" | "import";
+                    text_version?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Contact */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        contact: {
+                            consents: {
+                                /** @enum {string} */
+                                channel: "sms" | "viber" | "whatsapp";
+                                granted: boolean;
+                                /** Format: date-time */
+                                granted_at?: string | null;
+                                /** @enum {string} */
+                                purpose: "service" | "marketing";
+                                source?: string | null;
+                                text_version?: string | null;
+                                /** Format: date-time */
+                                withdrawn_at?: string | null;
+                            }[];
+                            country?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id?: string | null;
+                            locale: string;
+                            /** Format: date-time */
+                            opted_out_at?: string | null;
+                            /** @description Masked for staff; full for the person */
+                            phone: string;
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelEmailController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Email provider */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description The box's own SMTP provider; null when Palee sends the box's email (the default). The password is never returned (`has_secret`). */
+                        connection: {
+                            /** Format: date-time */
+                            checked_at?: string | null;
+                            enabled: boolean;
+                            error_code?: string | null;
+                            /** Format: email */
+                            from_address: string;
+                            from_name?: string | null;
+                            has_secret: boolean;
+                            host: string;
+                            in_use: boolean;
+                            port: number;
+                            reply_to?: string | null;
+                            /**
+                             * @description Mail goes through it only when `enabled` and `active` (`in_use`)
+                             * @enum {string}
+                             */
+                            status: "unchecked" | "active" | "invalid";
+                            /** @enum {string} */
+                            tls_mode: "starttls" | "tls";
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            username: string;
+                        } | null;
+                        /** @description The DNS records the guide reminds the box of; `key` is a message key (`email_dns.*`) the screen translates */
+                        dns_guidance: {
+                            domain: string | null;
+                            steps: {
+                                host: string | null;
+                                key: string;
+                                record: string | null;
+                            }[];
+                        };
+                        ports: number[];
+                        tls_modes: string[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelEmailController.save": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    enabled?: boolean;
+                    from_address?: string;
+                    from_name?: string | null;
+                    host?: string;
+                    /** @enum {integer} */
+                    port?: 25 | 465 | 587 | 2525;
+                    reply_to?: string | null;
+                    /**
+                     * Format: password
+                     * @description The SMTP password; kept when not sent, never returned
+                     */
+                    secret?: string;
+                    /** @enum {string} */
+                    tls_mode?: "starttls" | "tls";
+                    username?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Email provider */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description The box's own SMTP provider; null when Palee sends the box's email (the default). The password is never returned (`has_secret`). */
+                        connection: {
+                            /** Format: date-time */
+                            checked_at?: string | null;
+                            enabled: boolean;
+                            error_code?: string | null;
+                            /** Format: email */
+                            from_address: string;
+                            from_name?: string | null;
+                            has_secret: boolean;
+                            host: string;
+                            in_use: boolean;
+                            port: number;
+                            reply_to?: string | null;
+                            /**
+                             * @description Mail goes through it only when `enabled` and `active` (`in_use`)
+                             * @enum {string}
+                             */
+                            status: "unchecked" | "active" | "invalid";
+                            /** @enum {string} */
+                            tls_mode: "starttls" | "tls";
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            username: string;
+                        } | null;
+                        /** @description The DNS records the guide reminds the box of; `key` is a message key (`email_dns.*`) the screen translates */
+                        dns_guidance: {
+                            domain: string | null;
+                            steps: {
+                                host: string | null;
+                                key: string;
+                                record: string | null;
+                            }[];
+                        };
+                        ports: number[];
+                        tls_modes: string[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelEmailController.delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelEmailController.check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Check */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        check: {
+                            error_code: string | null;
+                            ok: boolean;
+                        };
+                        /** @description The box's own SMTP provider; null when Palee sends the box's email (the default). The password is never returned (`has_secret`). */
+                        connection: {
+                            /** Format: date-time */
+                            checked_at?: string | null;
+                            enabled: boolean;
+                            error_code?: string | null;
+                            /** Format: email */
+                            from_address: string;
+                            from_name?: string | null;
+                            has_secret: boolean;
+                            host: string;
+                            in_use: boolean;
+                            port: number;
+                            reply_to?: string | null;
+                            /**
+                             * @description Mail goes through it only when `enabled` and `active` (`in_use`)
+                             * @enum {string}
+                             */
+                            status: "unchecked" | "active" | "invalid";
+                            /** @enum {string} */
+                            tls_mode: "starttls" | "tls";
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            username: string;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelMessagesController.index": {
+        parameters: {
+            query?: {
+                status?: string;
+                channel?: string;
+                contact_id?: string;
+                source_ref?: string;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Messages */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        messages: {
+                            account_mode?: string;
+                            attempts?: number;
+                            body: string;
+                            /** @enum {string} */
+                            channel: "sms" | "viber" | "whatsapp";
+                            /** Format: uuid */
+                            contact_id?: string;
+                            cost_cents?: number | null;
+                            /** Format: uuid */
+                            created_by_id?: string | null;
+                            currency?: string;
+                            /** Format: date-time */
+                            delivered_at?: string | null;
+                            error_code?: string | null;
+                            estimated_cost_cents?: number;
+                            events?: {
+                                error_code?: string | null;
+                                kind: string;
+                                /** Format: date-time */
+                                occurred_at: string;
+                                provider_status?: string | null;
+                                status: string;
+                            }[];
+                            /** Format: date-time */
+                            failed_at?: string | null;
+                            hold_reason?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            inserted_at?: string | null;
+                            locale?: string;
+                            /** Format: date-time */
+                            next_attempt_at?: string | null;
+                            provider?: string;
+                            /** @enum {string} */
+                            purpose?: "service" | "marketing";
+                            segments?: number;
+                            /** Format: date-time */
+                            sent_at?: string | null;
+                            source?: string;
+                            source_ref?: string | null;
+                            /** @enum {string} */
+                            status: "queued" | "sending" | "sent" | "delivered" | "failed" | "cancelled";
+                            template_key?: string;
+                            /** @description Masked number */
+                            to: string;
+                            urgent?: boolean;
+                        }[];
+                        total: number;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelMessagesController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    channels?: ("sms" | "viber" | "whatsapp")[];
+                    idempotency_key?: string;
+                    /** Format: uuid */
+                    lead_id?: string;
+                    /** @enum {string} */
+                    purpose?: "service" | "marketing";
+                    source_ref?: string;
+                    /** @example box_message */
+                    template_key: string;
+                    urgent?: boolean;
+                    /** Format: uuid */
+                    user_id?: string;
+                    variables?: {
+                        [key: string]: string;
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description Queued */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        channel: "sms" | "viber" | "whatsapp";
+                        currency?: string;
+                        estimated_cost_cents?: number;
+                        hold_reason?: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: date-time */
+                        next_attempt_at?: string | null;
+                        /** @enum {string} */
+                        purpose?: "service" | "marketing";
+                        /** Format: date-time */
+                        release_at?: string;
+                        segments?: number;
+                        source?: string;
+                        source_ref?: string | null;
+                        status: string;
+                        template_key?: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelMessagesController.preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    channels?: ("sms" | "viber" | "whatsapp")[];
+                    idempotency_key?: string;
+                    /** Format: uuid */
+                    lead_id?: string;
+                    /** @enum {string} */
+                    purpose?: "service" | "marketing";
+                    source_ref?: string;
+                    /** @example box_message */
+                    template_key: string;
+                    urgent?: boolean;
+                    /** Format: uuid */
+                    user_id?: string;
+                    variables?: {
+                        [key: string]: string;
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description Preview */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        body: string;
+                        budget: {
+                            cap_cents: number;
+                            currency: string;
+                            spent_cents: number;
+                        };
+                        /** @enum {string} */
+                        channel: "sms" | "viber" | "whatsapp";
+                        contact: {
+                            consents: {
+                                /** @enum {string} */
+                                channel: "sms" | "viber" | "whatsapp";
+                                granted: boolean;
+                                /** Format: date-time */
+                                granted_at?: string | null;
+                                /** @enum {string} */
+                                purpose: "service" | "marketing";
+                                source?: string | null;
+                                text_version?: string | null;
+                                /** Format: date-time */
+                                withdrawn_at?: string | null;
+                            }[];
+                            country?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id?: string | null;
+                            locale: string;
+                            /** Format: date-time */
+                            opted_out_at?: string | null;
+                            /** @description Masked for staff; full for the person */
+                            phone: string;
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                        } | null;
+                        currency?: string;
+                        /** @description gsm7 or ucs2 (SMS only) */
+                        encoding?: string | null;
+                        /** @description The box's price: the provider's estimate plus Palee's margin on Palee's account (ADR-369) */
+                        estimated_cost_cents: number;
+                        held_for_quiet_hours: boolean;
+                        locale?: string;
+                        /** @enum {string} */
+                        purpose?: "service" | "marketing";
+                        /** Format: date-time */
+                        release_at: string;
+                        replies_possible?: boolean;
+                        segments: number;
+                        template_key?: string;
+                        urgent?: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelMessagesController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Message */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        account_mode?: string;
+                        attempts?: number;
+                        body: string;
+                        /** @enum {string} */
+                        channel: "sms" | "viber" | "whatsapp";
+                        /** Format: uuid */
+                        contact_id?: string;
+                        cost_cents?: number | null;
+                        /** Format: uuid */
+                        created_by_id?: string | null;
+                        currency?: string;
+                        /** Format: date-time */
+                        delivered_at?: string | null;
+                        error_code?: string | null;
+                        estimated_cost_cents?: number;
+                        events?: {
+                            error_code?: string | null;
+                            kind: string;
+                            /** Format: date-time */
+                            occurred_at: string;
+                            provider_status?: string | null;
+                            status: string;
+                        }[];
+                        /** Format: date-time */
+                        failed_at?: string | null;
+                        hold_reason?: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: date-time */
+                        inserted_at?: string | null;
+                        locale?: string;
+                        /** Format: date-time */
+                        next_attempt_at?: string | null;
+                        provider?: string;
+                        /** @enum {string} */
+                        purpose?: "service" | "marketing";
+                        segments?: number;
+                        /** Format: date-time */
+                        sent_at?: string | null;
+                        source?: string;
+                        source_ref?: string | null;
+                        /** @enum {string} */
+                        status: "queued" | "sending" | "sent" | "delivered" | "failed" | "cancelled";
+                        template_key?: string;
+                        /** @description Masked number */
+                        to: string;
+                        urgent?: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelMessagesController.cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Message */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        account_mode?: string;
+                        attempts?: number;
+                        body: string;
+                        /** @enum {string} */
+                        channel: "sms" | "viber" | "whatsapp";
+                        /** Format: uuid */
+                        contact_id?: string;
+                        cost_cents?: number | null;
+                        /** Format: uuid */
+                        created_by_id?: string | null;
+                        currency?: string;
+                        /** Format: date-time */
+                        delivered_at?: string | null;
+                        error_code?: string | null;
+                        estimated_cost_cents?: number;
+                        events?: {
+                            error_code?: string | null;
+                            kind: string;
+                            /** Format: date-time */
+                            occurred_at: string;
+                            provider_status?: string | null;
+                            status: string;
+                        }[];
+                        /** Format: date-time */
+                        failed_at?: string | null;
+                        hold_reason?: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: date-time */
+                        inserted_at?: string | null;
+                        locale?: string;
+                        /** Format: date-time */
+                        next_attempt_at?: string | null;
+                        provider?: string;
+                        /** @enum {string} */
+                        purpose?: "service" | "marketing";
+                        segments?: number;
+                        /** Format: date-time */
+                        sent_at?: string | null;
+                        source?: string;
+                        source_ref?: string | null;
+                        /** @enum {string} */
+                        status: "queued" | "sending" | "sent" | "delivered" | "failed" | "cancelled";
+                        template_key?: string;
+                        /** @description Masked number */
+                        to: string;
+                        urgent?: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelMessagesController.retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Message */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        account_mode?: string;
+                        attempts?: number;
+                        body: string;
+                        /** @enum {string} */
+                        channel: "sms" | "viber" | "whatsapp";
+                        /** Format: uuid */
+                        contact_id?: string;
+                        cost_cents?: number | null;
+                        /** Format: uuid */
+                        created_by_id?: string | null;
+                        currency?: string;
+                        /** Format: date-time */
+                        delivered_at?: string | null;
+                        error_code?: string | null;
+                        estimated_cost_cents?: number;
+                        events?: {
+                            error_code?: string | null;
+                            kind: string;
+                            /** Format: date-time */
+                            occurred_at: string;
+                            provider_status?: string | null;
+                            status: string;
+                        }[];
+                        /** Format: date-time */
+                        failed_at?: string | null;
+                        hold_reason?: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: date-time */
+                        inserted_at?: string | null;
+                        locale?: string;
+                        /** Format: date-time */
+                        next_attempt_at?: string | null;
+                        provider?: string;
+                        /** @enum {string} */
+                        purpose?: "service" | "marketing";
+                        segments?: number;
+                        /** Format: date-time */
+                        sent_at?: string | null;
+                        source?: string;
+                        source_ref?: string | null;
+                        /** @enum {string} */
+                        status: "queued" | "sending" | "sent" | "delivered" | "failed" | "cancelled";
+                        template_key?: string;
+                        /** @description Masked number */
+                        to: string;
+                        urgent?: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelSettingsController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description The box's provider; the secret is never returned (`has_secret`). */
+                        connection: {
+                            account_id?: string | null;
+                            /** @enum {string} */
+                            account_mode: "palee" | "own";
+                            base_url?: string | null;
+                            channel_order: ("sms" | "viber" | "whatsapp")[];
+                            channels: ("sms" | "viber" | "whatsapp")[];
+                            /** Format: date-time */
+                            checked_at?: string | null;
+                            currency?: string;
+                            default_country: string;
+                            error_code?: string | null;
+                            has_secret: boolean;
+                            last_error?: string | null;
+                            /** @description The cap the box typed; null until it does, and then nothing is sent (ADR-390) */
+                            monthly_budget_cents: number | null;
+                            provider: string;
+                            /** @example 09:00 */
+                            quiet_end?: string | null;
+                            /** @example 21:00 */
+                            quiet_start?: string | null;
+                            sms_sender?: string | null;
+                            /** @enum {string} */
+                            status: "active" | "invalid";
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            viber_sender?: string | null;
+                            /** @description The box's own URL for the provider's receipts and replies */
+                            webhook_url?: string | null;
+                            whatsapp_sender?: string | null;
+                        } | null;
+                        providers: {
+                            account_modes: string[];
+                            channels: ("sms" | "viber" | "whatsapp")[];
+                            provider: string;
+                        }[];
+                        /** @description Spend of one month on the box's clock against the cap (cents). */
+                        usage: {
+                            account_mode?: string | null;
+                            by_channel: {
+                                [key: string]: {
+                                    cents: number;
+                                    count: number;
+                                };
+                            };
+                            /** @description ADR-385: spend by who sent (`automation`, `staff`, `system`) */
+                            by_source: {
+                                [key: string]: {
+                                    cents: number;
+                                    count: number;
+                                };
+                            };
+                            /** @description ADR-385: every message of the month by state, charged or not */
+                            by_status: {
+                                [key: string]: number;
+                            };
+                            cap_cents?: number | null;
+                            currency: string;
+                            /** Format: date-time */
+                            from: string;
+                            messages: number;
+                            /** @description ADR-369: what Palee bills the box for the month (messages sent on Palee's account, at the box's price) */
+                            palee_charge_cents: number;
+                            /** @description ADR-385: SMS parts of the counted messages */
+                            segments: number;
+                            spent_cents: number;
+                            /** Format: date-time */
+                            to: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelSettingsController.save": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    account_id?: string | null;
+                    /** @enum {string} */
+                    account_mode?: "palee" | "own";
+                    base_url?: string | null;
+                    channel_order?: ("sms" | "viber" | "whatsapp")[];
+                    channels?: ("sms" | "viber" | "whatsapp")[];
+                    default_country?: string;
+                    /** @description The box's own monthly cap in cents; required once a channel is on (no default, ADR-390) */
+                    monthly_budget_cents?: number | null;
+                    /** @enum {string} */
+                    provider: "sandbox" | "brevo";
+                    quiet_end?: string | null;
+                    quiet_start?: string | null;
+                    rotate_webhook?: boolean;
+                    /**
+                     * Format: password
+                     * @description The box's own API key (`own`); kept when not sent
+                     */
+                    secret?: string;
+                    sms_sender?: string | null;
+                    viber_sender?: string | null;
+                    whatsapp_sender?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Connection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        check: {
+                            details: {
+                                [key: string]: unknown;
+                            };
+                            error_code?: string | null;
+                            ok: boolean;
+                        };
+                        /** @description The box's provider; the secret is never returned (`has_secret`). */
+                        connection: {
+                            account_id?: string | null;
+                            /** @enum {string} */
+                            account_mode: "palee" | "own";
+                            base_url?: string | null;
+                            channel_order: ("sms" | "viber" | "whatsapp")[];
+                            channels: ("sms" | "viber" | "whatsapp")[];
+                            /** Format: date-time */
+                            checked_at?: string | null;
+                            currency?: string;
+                            default_country: string;
+                            error_code?: string | null;
+                            has_secret: boolean;
+                            last_error?: string | null;
+                            /** @description The cap the box typed; null until it does, and then nothing is sent (ADR-390) */
+                            monthly_budget_cents: number | null;
+                            provider: string;
+                            /** @example 09:00 */
+                            quiet_end?: string | null;
+                            /** @example 21:00 */
+                            quiet_start?: string | null;
+                            sms_sender?: string | null;
+                            /** @enum {string} */
+                            status: "active" | "invalid";
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            viber_sender?: string | null;
+                            /** @description The box's own URL for the provider's receipts and replies */
+                            webhook_url?: string | null;
+                            whatsapp_sender?: string | null;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelSettingsController.check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Connection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        check: {
+                            details: {
+                                [key: string]: unknown;
+                            };
+                            error_code?: string | null;
+                            ok: boolean;
+                        };
+                        /** @description The box's provider; the secret is never returned (`has_secret`). */
+                        connection: {
+                            account_id?: string | null;
+                            /** @enum {string} */
+                            account_mode: "palee" | "own";
+                            base_url?: string | null;
+                            channel_order: ("sms" | "viber" | "whatsapp")[];
+                            channels: ("sms" | "viber" | "whatsapp")[];
+                            /** Format: date-time */
+                            checked_at?: string | null;
+                            currency?: string;
+                            default_country: string;
+                            error_code?: string | null;
+                            has_secret: boolean;
+                            last_error?: string | null;
+                            /** @description The cap the box typed; null until it does, and then nothing is sent (ADR-390) */
+                            monthly_budget_cents: number | null;
+                            provider: string;
+                            /** @example 09:00 */
+                            quiet_end?: string | null;
+                            /** @example 21:00 */
+                            quiet_start?: string | null;
+                            sms_sender?: string | null;
+                            /** @enum {string} */
+                            status: "active" | "invalid";
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            viber_sender?: string | null;
+                            /** @description The box's own URL for the provider's receipts and replies */
+                            webhook_url?: string | null;
+                            whatsapp_sender?: string | null;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelSettingsController.templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Templates */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        templates: {
+                            builtin: boolean;
+                            custom: {
+                                /** @enum {string} */
+                                approval_status: "none" | "pending" | "approved" | "rejected";
+                                body: string;
+                                /** @enum {string} */
+                                channel: "any" | "whatsapp";
+                                locale: string;
+                                provider_template_id?: string | null;
+                                /** Format: date-time */
+                                updated_at?: string | null;
+                                variable_names: string[];
+                            }[];
+                            defaults: {
+                                [key: string]: string;
+                            };
+                            key: string;
+                            purpose?: string | null;
+                            variables: string[];
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelSettingsController.save_template": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                key: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    approval_status?: "none" | "pending" | "approved" | "rejected";
+                    body: string;
+                    /** @enum {string} */
+                    channel?: "any" | "whatsapp";
+                    /** @enum {string} */
+                    locale: "el" | "en" | "de" | "fr" | "it" | "es" | "nl" | "pt-PT" | "bg" | "ru" | "ar" | "he";
+                    provider_template_id?: string | null;
+                    variable_names?: string[];
+                };
+            };
+        };
+        responses: {
+            /** @description Template */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        approval_status: "none" | "pending" | "approved" | "rejected";
+                        body: string;
+                        /** @enum {string} */
+                        channel: "any" | "whatsapp";
+                        locale: string;
+                        provider_template_id?: string | null;
+                        /** Format: date-time */
+                        updated_at?: string | null;
+                        variable_names: string[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelSettingsController.delete_template": {
+        parameters: {
+            query: {
+                locale: string;
+                channel?: "any" | "whatsapp";
+            };
+            header?: never;
+            path: {
+                key: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "PaleeWeb.AdminChannelSettingsController.usage": {
+        parameters: {
+            query?: {
+                /** @description YYYY-MM; this month when left out */
+                month?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Usage */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        account_mode?: string | null;
+                        by_channel: {
+                            [key: string]: {
+                                cents: number;
+                                count: number;
+                            };
+                        };
+                        /** @description ADR-385: spend by who sent (`automation`, `staff`, `system`) */
+                        by_source: {
+                            [key: string]: {
+                                cents: number;
+                                count: number;
+                            };
+                        };
+                        /** @description ADR-385: every message of the month by state, charged or not */
+                        by_status: {
+                            [key: string]: number;
+                        };
+                        cap_cents?: number | null;
+                        currency: string;
+                        /** Format: date-time */
+                        from: string;
+                        messages: number;
+                        /** @description ADR-369: what Palee bills the box for the month (messages sent on Palee's account, at the box's price) */
+                        palee_charge_cents: number;
+                        /** @description ADR-385: SMS parts of the counted messages */
+                        segments: number;
+                        spent_cents: number;
+                        /** Format: date-time */
+                        to: string;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminCheckInController.door": {
         parameters: {
             query?: never;
@@ -72071,6 +78088,24 @@ export interface operations {
                             unlimited?: boolean;
                         } | null;
                         problems: ("frozen" | "package_expired" | "unpaid" | "no_spots" | "nothing_to_check_in")[];
+                        /** VisitBadges */
+                        visit?: {
+                            badges: ("first_visit" | "first_in_class_type" | "guest" | "trial" | "brought_by_member" | "came_via_event" | "came_via_referral")[];
+                            /**
+                             * VisitVia
+                             * @description How a first-time visitor came (referral attribution)
+                             */
+                            via: {
+                                by_nickname?: string | null;
+                                /** Format: uuid */
+                                by_user_id?: string | null;
+                                channel?: string | null;
+                                /** Format: uuid */
+                                event_id?: string | null;
+                                /** @enum {string} */
+                                kind: "event" | "referral";
+                            } | null;
+                        };
                         warnings?: "payment_due"[];
                     };
                 };
@@ -72229,6 +78264,24 @@ export interface operations {
                             unlimited?: boolean;
                         } | null;
                         problems: ("frozen" | "package_expired" | "unpaid" | "no_spots" | "nothing_to_check_in")[];
+                        /** VisitBadges */
+                        visit?: {
+                            badges: ("first_visit" | "first_in_class_type" | "guest" | "trial" | "brought_by_member" | "came_via_event" | "came_via_referral")[];
+                            /**
+                             * VisitVia
+                             * @description How a first-time visitor came (referral attribution)
+                             */
+                            via: {
+                                by_nickname?: string | null;
+                                /** Format: uuid */
+                                by_user_id?: string | null;
+                                channel?: string | null;
+                                /** Format: uuid */
+                                event_id?: string | null;
+                                /** @enum {string} */
+                                kind: "event" | "referral";
+                            } | null;
+                        };
                         warnings?: "payment_due"[];
                     };
                 };
@@ -72713,6 +78766,2051 @@ export interface operations {
                             /** Format: date-time */
                             updated_at?: string;
                         };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.items": {
+        parameters: {
+            query?: {
+                kind?: "overtime" | "allowance";
+                include_archived?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Items */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /**
+                             * @description Whether the amount is before (gross) or after (net) the person's taxes
+                             * @enum {string}
+                             */
+                            amount_basis: "gross" | "net";
+                            amount_cents: number;
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            currency: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "overtime" | "allowance";
+                            name: string;
+                            roles: ("owner" | "admin" | "head_coach" | "coach" | "front_desk" | "accountant" | "janitor")[];
+                            /** @enum {string} */
+                            unit: "per_period" | "per_occurrence" | "per_hour";
+                            weekly_threshold?: number | null;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.create_item": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                     * @enum {string}
+                     */
+                    amount_basis?: "gross" | "net";
+                    amount_cents: number;
+                    currency?: string;
+                    /** @enum {string} */
+                    kind: "overtime" | "allowance";
+                    name: string;
+                    roles: ("owner" | "admin" | "head_coach" | "coach" | "front_desk" | "accountant" | "janitor")[];
+                    /**
+                     * @description overtime: per_hour; allowance: per_period or per_occurrence
+                     * @enum {string}
+                     */
+                    unit: "per_period" | "per_occurrence" | "per_hour";
+                    /** @description Overtime: hours a week (Monday to Sunday) before overtime; required */
+                    weekly_threshold?: number | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Item */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        item: {
+                            /**
+                             * @description Whether the amount is before (gross) or after (net) the person's taxes
+                             * @enum {string}
+                             */
+                            amount_basis: "gross" | "net";
+                            amount_cents: number;
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            currency: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "overtime" | "allowance";
+                            name: string;
+                            roles: ("owner" | "admin" | "head_coach" | "coach" | "front_desk" | "accountant" | "janitor")[];
+                            /** @enum {string} */
+                            unit: "per_period" | "per_occurrence" | "per_hour";
+                            weekly_threshold?: number | null;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.update_item": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                     * @enum {string}
+                     */
+                    amount_basis?: "gross" | "net";
+                    amount_cents?: number;
+                    currency?: string;
+                    /** @enum {string} */
+                    kind?: "overtime" | "allowance";
+                    name?: string;
+                    roles?: ("owner" | "admin" | "head_coach" | "coach" | "front_desk" | "accountant" | "janitor")[];
+                    /**
+                     * @description overtime: per_hour; allowance: per_period or per_occurrence
+                     * @enum {string}
+                     */
+                    unit?: "per_period" | "per_occurrence" | "per_hour";
+                    /** @description Overtime: hours a week (Monday to Sunday) before overtime; required */
+                    weekly_threshold?: number | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Item */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        item: {
+                            /**
+                             * @description Whether the amount is before (gross) or after (net) the person's taxes
+                             * @enum {string}
+                             */
+                            amount_basis: "gross" | "net";
+                            amount_cents: number;
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            currency: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "overtime" | "allowance";
+                            name: string;
+                            roles: ("owner" | "admin" | "head_coach" | "coach" | "front_desk" | "accountant" | "janitor")[];
+                            /** @enum {string} */
+                            unit: "per_period" | "per_occurrence" | "per_hour";
+                            weekly_threshold?: number | null;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.archive_item": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Item */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        item: {
+                            /**
+                             * @description Whether the amount is before (gross) or after (net) the person's taxes
+                             * @enum {string}
+                             */
+                            amount_basis: "gross" | "net";
+                            amount_cents: number;
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            currency: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "overtime" | "allowance";
+                            name: string;
+                            roles: ("owner" | "admin" | "head_coach" | "coach" | "front_desk" | "accountant" | "janitor")[];
+                            /** @enum {string} */
+                            unit: "per_period" | "per_occurrence" | "per_hour";
+                            weekly_threshold?: number | null;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyCoachPayController.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Statements */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        statements: {
+                            coach_name?: string | null;
+                            /** Format: uuid */
+                            coach_user_id: string;
+                            gross_cents: number;
+                            groups: {
+                                /**
+                                 * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                 * @enum {string}
+                                 */
+                                amount_basis: "gross" | "net";
+                                amount_cents: number;
+                                base_cents?: number | null;
+                                key: string;
+                                /** @enum {string} */
+                                kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                line_count: number;
+                                /** Format: uuid */
+                                pay_item_id?: string | null;
+                                quantity: number;
+                                quantity_divisor?: number | null;
+                                /** Format: uuid */
+                                rule_id?: string | null;
+                                /** @description The rule's or pay item's terms when the statement was calculated */
+                                terms?: Record<string, never> | null;
+                                unit_cents?: number | null;
+                            }[];
+                            /** Format: uuid */
+                            id: string;
+                            line_count: number;
+                            lines: {
+                                /**
+                                 * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                 * @enum {string}
+                                 */
+                                amount_basis: "gross" | "net";
+                                amount_cents: number;
+                                base_cents?: number | null;
+                                /** Format: uuid */
+                                created_by_id?: string | null;
+                                description: string;
+                                /** @description True for a net line (the default is gross): show it marked */
+                                deviates_from_default: boolean;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: date-time */
+                                inserted_at?: string | null;
+                                /** @enum {string} */
+                                kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                note?: string | null;
+                                /** Format: date */
+                                occurred_on: string;
+                                /** Format: uuid */
+                                pay_item_id?: string | null;
+                                percent_bps?: number | null;
+                                quantity: number;
+                                quantity_divisor?: number | null;
+                                /** Format: uuid */
+                                rule_id?: string | null;
+                                /** Format: uuid */
+                                source_id?: string | null;
+                                /** @enum {string} */
+                                source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual" | "rule" | "pay_item";
+                                unit_cents?: number | null;
+                            }[];
+                            net_cents: number;
+                            net_line_count: number;
+                            period?: Record<string, never> | null;
+                            /** @description Every line summed whatever its basis; show gross_cents and net_cents */
+                            total_cents: number;
+                        }[];
+                        totals: {
+                            currency: string;
+                            gross_cents: number;
+                            net_cents: number;
+                            statement_count: number;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyCoachPayController.payslip": {
+        parameters: {
+            query?: {
+                /** @description el en de fr it nl es pt-PT ru bg */
+                language?: string;
+            };
+            header?: never;
+            path: {
+                period_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description PDF */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": string;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.person_statements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Statements */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        statements: {
+                            coach_name?: string | null;
+                            /** Format: uuid */
+                            coach_user_id: string;
+                            gross_cents: number;
+                            groups: {
+                                /**
+                                 * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                 * @enum {string}
+                                 */
+                                amount_basis: "gross" | "net";
+                                amount_cents: number;
+                                base_cents?: number | null;
+                                key: string;
+                                /** @enum {string} */
+                                kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                line_count: number;
+                                /** Format: uuid */
+                                pay_item_id?: string | null;
+                                quantity: number;
+                                quantity_divisor?: number | null;
+                                /** Format: uuid */
+                                rule_id?: string | null;
+                                /** @description The rule's or pay item's terms when the statement was calculated */
+                                terms?: Record<string, never> | null;
+                                unit_cents?: number | null;
+                            }[];
+                            /** Format: uuid */
+                            id: string;
+                            line_count: number;
+                            lines: {
+                                /**
+                                 * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                 * @enum {string}
+                                 */
+                                amount_basis: "gross" | "net";
+                                amount_cents: number;
+                                base_cents?: number | null;
+                                /** Format: uuid */
+                                created_by_id?: string | null;
+                                description: string;
+                                /** @description True for a net line (the default is gross): show it marked */
+                                deviates_from_default: boolean;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: date-time */
+                                inserted_at?: string | null;
+                                /** @enum {string} */
+                                kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                note?: string | null;
+                                /** Format: date */
+                                occurred_on: string;
+                                /** Format: uuid */
+                                pay_item_id?: string | null;
+                                percent_bps?: number | null;
+                                quantity: number;
+                                quantity_divisor?: number | null;
+                                /** Format: uuid */
+                                rule_id?: string | null;
+                                /** Format: uuid */
+                                source_id?: string | null;
+                                /** @enum {string} */
+                                source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual" | "rule" | "pay_item";
+                                unit_cents?: number | null;
+                            }[];
+                            net_cents: number;
+                            net_line_count: number;
+                            period?: Record<string, never> | null;
+                            /** @description Every line summed whatever its basis; show gross_cents and net_cents */
+                            total_cents: number;
+                        }[];
+                        totals: {
+                            currency: string;
+                            gross_cents: number;
+                            net_cents: number;
+                            statement_count: number;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.periods": {
+        parameters: {
+            query?: {
+                status?: "draft" | "approved" | "exported";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Periods */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        periods: {
+                            /** Format: date-time */
+                            approved_at?: string | null;
+                            /** Format: uuid */
+                            approved_by_id?: string | null;
+                            /** Format: date-time */
+                            calculated_at?: string | null;
+                            currency: string;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: date-time */
+                            exported_at?: string | null;
+                            gross_cents: number;
+                            /** Format: uuid */
+                            id: string;
+                            net_cents: number;
+                            reopen_reason?: string | null;
+                            /** Format: date */
+                            starts_on: string;
+                            statements?: {
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                coach_user_id: string;
+                                gross_cents: number;
+                                groups: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    key: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    line_count: number;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** @description The rule's or pay item's terms when the statement was calculated */
+                                    terms?: Record<string, never> | null;
+                                    unit_cents?: number | null;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                line_count: number;
+                                lines: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    /** Format: uuid */
+                                    created_by_id?: string | null;
+                                    description: string;
+                                    /** @description True for a net line (the default is gross): show it marked */
+                                    deviates_from_default: boolean;
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** Format: date-time */
+                                    inserted_at?: string | null;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    note?: string | null;
+                                    /** Format: date */
+                                    occurred_on: string;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    percent_bps?: number | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** Format: uuid */
+                                    source_id?: string | null;
+                                    /** @enum {string} */
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual" | "rule" | "pay_item";
+                                    unit_cents?: number | null;
+                                }[];
+                                net_cents: number;
+                                net_line_count: number;
+                                period?: Record<string, never> | null;
+                                /** @description Every line summed whatever its basis; show gross_cents and net_cents */
+                                total_cents: number;
+                            }[];
+                            /** @enum {string} */
+                            status: "draft" | "approved" | "exported";
+                            total_cents: number;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.create_period": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: date */
+                    ends_on: string;
+                    /** Format: date */
+                    starts_on: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Period */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        period: {
+                            /** Format: date-time */
+                            approved_at?: string | null;
+                            /** Format: uuid */
+                            approved_by_id?: string | null;
+                            /** Format: date-time */
+                            calculated_at?: string | null;
+                            currency: string;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: date-time */
+                            exported_at?: string | null;
+                            gross_cents: number;
+                            /** Format: uuid */
+                            id: string;
+                            net_cents: number;
+                            reopen_reason?: string | null;
+                            /** Format: date */
+                            starts_on: string;
+                            statements?: {
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                coach_user_id: string;
+                                gross_cents: number;
+                                groups: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    key: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    line_count: number;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** @description The rule's or pay item's terms when the statement was calculated */
+                                    terms?: Record<string, never> | null;
+                                    unit_cents?: number | null;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                line_count: number;
+                                lines: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    /** Format: uuid */
+                                    created_by_id?: string | null;
+                                    description: string;
+                                    /** @description True for a net line (the default is gross): show it marked */
+                                    deviates_from_default: boolean;
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** Format: date-time */
+                                    inserted_at?: string | null;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    note?: string | null;
+                                    /** Format: date */
+                                    occurred_on: string;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    percent_bps?: number | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** Format: uuid */
+                                    source_id?: string | null;
+                                    /** @enum {string} */
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual" | "rule" | "pay_item";
+                                    unit_cents?: number | null;
+                                }[];
+                                net_cents: number;
+                                net_line_count: number;
+                                period?: Record<string, never> | null;
+                                /** @description Every line summed whatever its basis; show gross_cents and net_cents */
+                                total_cents: number;
+                            }[];
+                            /** @enum {string} */
+                            status: "draft" | "approved" | "exported";
+                            total_cents: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.period": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Period */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        period: {
+                            /** Format: date-time */
+                            approved_at?: string | null;
+                            /** Format: uuid */
+                            approved_by_id?: string | null;
+                            /** Format: date-time */
+                            calculated_at?: string | null;
+                            currency: string;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: date-time */
+                            exported_at?: string | null;
+                            gross_cents: number;
+                            /** Format: uuid */
+                            id: string;
+                            net_cents: number;
+                            reopen_reason?: string | null;
+                            /** Format: date */
+                            starts_on: string;
+                            statements?: {
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                coach_user_id: string;
+                                gross_cents: number;
+                                groups: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    key: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    line_count: number;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** @description The rule's or pay item's terms when the statement was calculated */
+                                    terms?: Record<string, never> | null;
+                                    unit_cents?: number | null;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                line_count: number;
+                                lines: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    /** Format: uuid */
+                                    created_by_id?: string | null;
+                                    description: string;
+                                    /** @description True for a net line (the default is gross): show it marked */
+                                    deviates_from_default: boolean;
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** Format: date-time */
+                                    inserted_at?: string | null;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    note?: string | null;
+                                    /** Format: date */
+                                    occurred_on: string;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    percent_bps?: number | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** Format: uuid */
+                                    source_id?: string | null;
+                                    /** @enum {string} */
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual" | "rule" | "pay_item";
+                                    unit_cents?: number | null;
+                                }[];
+                                net_cents: number;
+                                net_line_count: number;
+                                period?: Record<string, never> | null;
+                                /** @description Every line summed whatever its basis; show gross_cents and net_cents */
+                                total_cents: number;
+                            }[];
+                            /** @enum {string} */
+                            status: "draft" | "approved" | "exported";
+                            total_cents: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.add_adjustment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                     * @enum {string}
+                     */
+                    amount_basis?: "gross" | "net";
+                    amount_cents: number;
+                    /** Format: uuid */
+                    coach_user_id: string;
+                    description?: string;
+                    /**
+                     * @description adjustment (default): any non-zero amount with a description; ad_hoc and non_taxable_reimbursement: a positive amount with a required note
+                     * @enum {string}
+                     */
+                    kind?: "adjustment" | "ad_hoc" | "non_taxable_reimbursement";
+                    note?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Period */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        period: {
+                            /** Format: date-time */
+                            approved_at?: string | null;
+                            /** Format: uuid */
+                            approved_by_id?: string | null;
+                            /** Format: date-time */
+                            calculated_at?: string | null;
+                            currency: string;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: date-time */
+                            exported_at?: string | null;
+                            gross_cents: number;
+                            /** Format: uuid */
+                            id: string;
+                            net_cents: number;
+                            reopen_reason?: string | null;
+                            /** Format: date */
+                            starts_on: string;
+                            statements?: {
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                coach_user_id: string;
+                                gross_cents: number;
+                                groups: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    key: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    line_count: number;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** @description The rule's or pay item's terms when the statement was calculated */
+                                    terms?: Record<string, never> | null;
+                                    unit_cents?: number | null;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                line_count: number;
+                                lines: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    /** Format: uuid */
+                                    created_by_id?: string | null;
+                                    description: string;
+                                    /** @description True for a net line (the default is gross): show it marked */
+                                    deviates_from_default: boolean;
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** Format: date-time */
+                                    inserted_at?: string | null;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    note?: string | null;
+                                    /** Format: date */
+                                    occurred_on: string;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    percent_bps?: number | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** Format: uuid */
+                                    source_id?: string | null;
+                                    /** @enum {string} */
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual" | "rule" | "pay_item";
+                                    unit_cents?: number | null;
+                                }[];
+                                net_cents: number;
+                                net_line_count: number;
+                                period?: Record<string, never> | null;
+                                /** @description Every line summed whatever its basis; show gross_cents and net_cents */
+                                total_cents: number;
+                            }[];
+                            /** @enum {string} */
+                            status: "draft" | "approved" | "exported";
+                            total_cents: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.delete_adjustment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                line_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Period */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        period: {
+                            /** Format: date-time */
+                            approved_at?: string | null;
+                            /** Format: uuid */
+                            approved_by_id?: string | null;
+                            /** Format: date-time */
+                            calculated_at?: string | null;
+                            currency: string;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: date-time */
+                            exported_at?: string | null;
+                            gross_cents: number;
+                            /** Format: uuid */
+                            id: string;
+                            net_cents: number;
+                            reopen_reason?: string | null;
+                            /** Format: date */
+                            starts_on: string;
+                            statements?: {
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                coach_user_id: string;
+                                gross_cents: number;
+                                groups: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    key: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    line_count: number;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** @description The rule's or pay item's terms when the statement was calculated */
+                                    terms?: Record<string, never> | null;
+                                    unit_cents?: number | null;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                line_count: number;
+                                lines: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    /** Format: uuid */
+                                    created_by_id?: string | null;
+                                    description: string;
+                                    /** @description True for a net line (the default is gross): show it marked */
+                                    deviates_from_default: boolean;
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** Format: date-time */
+                                    inserted_at?: string | null;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    note?: string | null;
+                                    /** Format: date */
+                                    occurred_on: string;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    percent_bps?: number | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** Format: uuid */
+                                    source_id?: string | null;
+                                    /** @enum {string} */
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual" | "rule" | "pay_item";
+                                    unit_cents?: number | null;
+                                }[];
+                                net_cents: number;
+                                net_line_count: number;
+                                period?: Record<string, never> | null;
+                                /** @description Every line summed whatever its basis; show gross_cents and net_cents */
+                                total_cents: number;
+                            }[];
+                            /** @enum {string} */
+                            status: "draft" | "approved" | "exported";
+                            total_cents: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Period */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        period: {
+                            /** Format: date-time */
+                            approved_at?: string | null;
+                            /** Format: uuid */
+                            approved_by_id?: string | null;
+                            /** Format: date-time */
+                            calculated_at?: string | null;
+                            currency: string;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: date-time */
+                            exported_at?: string | null;
+                            gross_cents: number;
+                            /** Format: uuid */
+                            id: string;
+                            net_cents: number;
+                            reopen_reason?: string | null;
+                            /** Format: date */
+                            starts_on: string;
+                            statements?: {
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                coach_user_id: string;
+                                gross_cents: number;
+                                groups: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    key: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    line_count: number;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** @description The rule's or pay item's terms when the statement was calculated */
+                                    terms?: Record<string, never> | null;
+                                    unit_cents?: number | null;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                line_count: number;
+                                lines: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    /** Format: uuid */
+                                    created_by_id?: string | null;
+                                    description: string;
+                                    /** @description True for a net line (the default is gross): show it marked */
+                                    deviates_from_default: boolean;
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** Format: date-time */
+                                    inserted_at?: string | null;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    note?: string | null;
+                                    /** Format: date */
+                                    occurred_on: string;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    percent_bps?: number | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** Format: uuid */
+                                    source_id?: string | null;
+                                    /** @enum {string} */
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual" | "rule" | "pay_item";
+                                    unit_cents?: number | null;
+                                }[];
+                                net_cents: number;
+                                net_line_count: number;
+                                period?: Record<string, never> | null;
+                                /** @description Every line summed whatever its basis; show gross_cents and net_cents */
+                                total_cents: number;
+                            }[];
+                            /** @enum {string} */
+                            status: "draft" | "approved" | "exported";
+                            total_cents: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.calculate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Period */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        period: {
+                            /** Format: date-time */
+                            approved_at?: string | null;
+                            /** Format: uuid */
+                            approved_by_id?: string | null;
+                            /** Format: date-time */
+                            calculated_at?: string | null;
+                            currency: string;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: date-time */
+                            exported_at?: string | null;
+                            gross_cents: number;
+                            /** Format: uuid */
+                            id: string;
+                            net_cents: number;
+                            reopen_reason?: string | null;
+                            /** Format: date */
+                            starts_on: string;
+                            statements?: {
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                coach_user_id: string;
+                                gross_cents: number;
+                                groups: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    key: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    line_count: number;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** @description The rule's or pay item's terms when the statement was calculated */
+                                    terms?: Record<string, never> | null;
+                                    unit_cents?: number | null;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                line_count: number;
+                                lines: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    /** Format: uuid */
+                                    created_by_id?: string | null;
+                                    description: string;
+                                    /** @description True for a net line (the default is gross): show it marked */
+                                    deviates_from_default: boolean;
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** Format: date-time */
+                                    inserted_at?: string | null;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    note?: string | null;
+                                    /** Format: date */
+                                    occurred_on: string;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    percent_bps?: number | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** Format: uuid */
+                                    source_id?: string | null;
+                                    /** @enum {string} */
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual" | "rule" | "pay_item";
+                                    unit_cents?: number | null;
+                                }[];
+                                net_cents: number;
+                                net_line_count: number;
+                                period?: Record<string, never> | null;
+                                /** @description Every line summed whatever its basis; show gross_cents and net_cents */
+                                total_cents: number;
+                            }[];
+                            /** @enum {string} */
+                            status: "draft" | "approved" | "exported";
+                            total_cents: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description CSV */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/csv": string;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.set_line_basis": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                line_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                     * @enum {string}
+                     */
+                    amount_basis: "gross" | "net";
+                };
+            };
+        };
+        responses: {
+            /** @description Period */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        period: {
+                            /** Format: date-time */
+                            approved_at?: string | null;
+                            /** Format: uuid */
+                            approved_by_id?: string | null;
+                            /** Format: date-time */
+                            calculated_at?: string | null;
+                            currency: string;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: date-time */
+                            exported_at?: string | null;
+                            gross_cents: number;
+                            /** Format: uuid */
+                            id: string;
+                            net_cents: number;
+                            reopen_reason?: string | null;
+                            /** Format: date */
+                            starts_on: string;
+                            statements?: {
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                coach_user_id: string;
+                                gross_cents: number;
+                                groups: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    key: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    line_count: number;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** @description The rule's or pay item's terms when the statement was calculated */
+                                    terms?: Record<string, never> | null;
+                                    unit_cents?: number | null;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                line_count: number;
+                                lines: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    /** Format: uuid */
+                                    created_by_id?: string | null;
+                                    description: string;
+                                    /** @description True for a net line (the default is gross): show it marked */
+                                    deviates_from_default: boolean;
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** Format: date-time */
+                                    inserted_at?: string | null;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    note?: string | null;
+                                    /** Format: date */
+                                    occurred_on: string;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    percent_bps?: number | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** Format: uuid */
+                                    source_id?: string | null;
+                                    /** @enum {string} */
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual" | "rule" | "pay_item";
+                                    unit_cents?: number | null;
+                                }[];
+                                net_cents: number;
+                                net_line_count: number;
+                                period?: Record<string, never> | null;
+                                /** @description Every line summed whatever its basis; show gross_cents and net_cents */
+                                total_cents: number;
+                            }[];
+                            /** @enum {string} */
+                            status: "draft" | "approved" | "exported";
+                            total_cents: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.add_pay_item_line": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                     * @enum {string}
+                     */
+                    amount_basis?: "gross" | "net";
+                    note?: string | null;
+                    /** Format: uuid */
+                    pay_item_id: string;
+                    quantity?: number;
+                    /** Format: uuid */
+                    user_id: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Period */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        period: {
+                            /** Format: date-time */
+                            approved_at?: string | null;
+                            /** Format: uuid */
+                            approved_by_id?: string | null;
+                            /** Format: date-time */
+                            calculated_at?: string | null;
+                            currency: string;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: date-time */
+                            exported_at?: string | null;
+                            gross_cents: number;
+                            /** Format: uuid */
+                            id: string;
+                            net_cents: number;
+                            reopen_reason?: string | null;
+                            /** Format: date */
+                            starts_on: string;
+                            statements?: {
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                coach_user_id: string;
+                                gross_cents: number;
+                                groups: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    key: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    line_count: number;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** @description The rule's or pay item's terms when the statement was calculated */
+                                    terms?: Record<string, never> | null;
+                                    unit_cents?: number | null;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                line_count: number;
+                                lines: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    /** Format: uuid */
+                                    created_by_id?: string | null;
+                                    description: string;
+                                    /** @description True for a net line (the default is gross): show it marked */
+                                    deviates_from_default: boolean;
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** Format: date-time */
+                                    inserted_at?: string | null;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    note?: string | null;
+                                    /** Format: date */
+                                    occurred_on: string;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    percent_bps?: number | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** Format: uuid */
+                                    source_id?: string | null;
+                                    /** @enum {string} */
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual" | "rule" | "pay_item";
+                                    unit_cents?: number | null;
+                                }[];
+                                net_cents: number;
+                                net_line_count: number;
+                                period?: Record<string, never> | null;
+                                /** @description Every line summed whatever its basis; show gross_cents and net_cents */
+                                total_cents: number;
+                            }[];
+                            /** @enum {string} */
+                            status: "draft" | "approved" | "exported";
+                            total_cents: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.reopen": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    reason: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Period */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        period: {
+                            /** Format: date-time */
+                            approved_at?: string | null;
+                            /** Format: uuid */
+                            approved_by_id?: string | null;
+                            /** Format: date-time */
+                            calculated_at?: string | null;
+                            currency: string;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: date-time */
+                            exported_at?: string | null;
+                            gross_cents: number;
+                            /** Format: uuid */
+                            id: string;
+                            net_cents: number;
+                            reopen_reason?: string | null;
+                            /** Format: date */
+                            starts_on: string;
+                            statements?: {
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                coach_user_id: string;
+                                gross_cents: number;
+                                groups: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    key: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    line_count: number;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** @description The rule's or pay item's terms when the statement was calculated */
+                                    terms?: Record<string, never> | null;
+                                    unit_cents?: number | null;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                line_count: number;
+                                lines: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    /** Format: uuid */
+                                    created_by_id?: string | null;
+                                    description: string;
+                                    /** @description True for a net line (the default is gross): show it marked */
+                                    deviates_from_default: boolean;
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** Format: date-time */
+                                    inserted_at?: string | null;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    note?: string | null;
+                                    /** Format: date */
+                                    occurred_on: string;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    percent_bps?: number | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** Format: uuid */
+                                    source_id?: string | null;
+                                    /** @enum {string} */
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual" | "rule" | "pay_item";
+                                    unit_cents?: number | null;
+                                }[];
+                                net_cents: number;
+                                net_line_count: number;
+                                period?: Record<string, never> | null;
+                                /** @description Every line summed whatever its basis; show gross_cents and net_cents */
+                                total_cents: number;
+                            }[];
+                            /** @enum {string} */
+                            status: "draft" | "approved" | "exported";
+                            total_cents: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.payslip": {
+        parameters: {
+            query?: {
+                /** @description el en de fr it nl es pt-PT ru bg (default: the business's document language) */
+                language?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description PDF */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": string;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.rules": {
+        parameters: {
+            query?: {
+                coach_user_id?: string;
+                include_archived?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Rules */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        rules: {
+                            /**
+                             * @description Whether the amount is before (gross) or after (net) the person's taxes
+                             * @enum {string}
+                             */
+                            amount_basis: "gross" | "net";
+                            amount_cents?: number | null;
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            class_type_ids: string[];
+                            coach_name?: string | null;
+                            /** Format: uuid */
+                            coach_user_id: string;
+                            count_statuses: ("attended" | "late_cancel" | "no_show")[];
+                            currency: string;
+                            /** Format: date */
+                            ends_on?: string | null;
+                            /** @enum {string|null} */
+                            frequency?: "monthly" | "weekly" | "daily" | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed";
+                            max_attendees?: number | null;
+                            min_attendees: number;
+                            note?: string | null;
+                            percent_bps?: number | null;
+                            /** @enum {string|null} */
+                            sales_scope?: "personal_training" | "sold_by" | "own_clients" | "box_all" | null;
+                            /** Format: date */
+                            starts_on: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.create_rule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                     * @enum {string}
+                     */
+                    amount_basis?: "gross" | "net";
+                    amount_cents?: number | null;
+                    class_type_ids?: string[];
+                    /** Format: uuid */
+                    coach_user_id: string;
+                    count_statuses?: ("attended" | "late_cancel" | "no_show")[];
+                    currency?: string;
+                    /** Format: date */
+                    ends_on?: string | null;
+                    /** @enum {string|null} */
+                    frequency?: "monthly" | "weekly" | "daily" | null;
+                    /** @enum {string} */
+                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed";
+                    max_attendees?: number | null;
+                    min_attendees?: number;
+                    note?: string | null;
+                    percent_bps?: number | null;
+                    /** @enum {string|null} */
+                    sales_scope?: "personal_training" | "sold_by" | "own_clients" | "box_all" | null;
+                    /** Format: date */
+                    starts_on: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Rule */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        rule: {
+                            /**
+                             * @description Whether the amount is before (gross) or after (net) the person's taxes
+                             * @enum {string}
+                             */
+                            amount_basis: "gross" | "net";
+                            amount_cents?: number | null;
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            class_type_ids: string[];
+                            coach_name?: string | null;
+                            /** Format: uuid */
+                            coach_user_id: string;
+                            count_statuses: ("attended" | "late_cancel" | "no_show")[];
+                            currency: string;
+                            /** Format: date */
+                            ends_on?: string | null;
+                            /** @enum {string|null} */
+                            frequency?: "monthly" | "weekly" | "daily" | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed";
+                            max_attendees?: number | null;
+                            min_attendees: number;
+                            note?: string | null;
+                            percent_bps?: number | null;
+                            /** @enum {string|null} */
+                            sales_scope?: "personal_training" | "sold_by" | "own_clients" | "box_all" | null;
+                            /** Format: date */
+                            starts_on: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.update_rule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                     * @enum {string}
+                     */
+                    amount_basis?: "gross" | "net";
+                    amount_cents?: number | null;
+                    class_type_ids?: string[];
+                    /** Format: uuid */
+                    coach_user_id?: string;
+                    count_statuses?: ("attended" | "late_cancel" | "no_show")[];
+                    currency?: string;
+                    /** Format: date */
+                    ends_on?: string | null;
+                    /** @enum {string|null} */
+                    frequency?: "monthly" | "weekly" | "daily" | null;
+                    /** @enum {string} */
+                    kind?: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed";
+                    max_attendees?: number | null;
+                    min_attendees?: number;
+                    note?: string | null;
+                    percent_bps?: number | null;
+                    /** @enum {string|null} */
+                    sales_scope?: "personal_training" | "sold_by" | "own_clients" | "box_all" | null;
+                    /** Format: date */
+                    starts_on?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Rule */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        rule: {
+                            /**
+                             * @description Whether the amount is before (gross) or after (net) the person's taxes
+                             * @enum {string}
+                             */
+                            amount_basis: "gross" | "net";
+                            amount_cents?: number | null;
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            class_type_ids: string[];
+                            coach_name?: string | null;
+                            /** Format: uuid */
+                            coach_user_id: string;
+                            count_statuses: ("attended" | "late_cancel" | "no_show")[];
+                            currency: string;
+                            /** Format: date */
+                            ends_on?: string | null;
+                            /** @enum {string|null} */
+                            frequency?: "monthly" | "weekly" | "daily" | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed";
+                            max_attendees?: number | null;
+                            min_attendees: number;
+                            note?: string | null;
+                            percent_bps?: number | null;
+                            /** @enum {string|null} */
+                            sales_scope?: "personal_training" | "sold_by" | "own_clients" | "box_all" | null;
+                            /** Format: date */
+                            starts_on: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.archive_rule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Rule */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        rule: {
+                            /**
+                             * @description Whether the amount is before (gross) or after (net) the person's taxes
+                             * @enum {string}
+                             */
+                            amount_basis: "gross" | "net";
+                            amount_cents?: number | null;
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            class_type_ids: string[];
+                            coach_name?: string | null;
+                            /** Format: uuid */
+                            coach_user_id: string;
+                            count_statuses: ("attended" | "late_cancel" | "no_show")[];
+                            currency: string;
+                            /** Format: date */
+                            ends_on?: string | null;
+                            /** @enum {string|null} */
+                            frequency?: "monthly" | "weekly" | "daily" | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed";
+                            max_attendees?: number | null;
+                            min_attendees: number;
+                            note?: string | null;
+                            percent_bps?: number | null;
+                            /** @enum {string|null} */
+                            sales_scope?: "personal_training" | "sold_by" | "own_clients" | "box_all" | null;
+                            /** Format: date */
+                            starts_on: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.summary": {
+        parameters: {
+            query?: {
+                from?: string;
+                to?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Summary */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        periods: {
+                            currency: string;
+                            /** Format: date */
+                            ends_on: string;
+                            gross_cents: number;
+                            /** Format: uuid */
+                            id: string;
+                            net_cents: number;
+                            /** Format: date */
+                            starts_on: string;
+                            statements: {
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                coach_user_id: string;
+                                gross_cents: number;
+                                line_count: number;
+                                net_cents: number;
+                                total_cents?: number;
+                            }[];
+                            /** @enum {string} */
+                            status: "draft" | "approved" | "exported";
+                            total_cents?: number;
+                        }[];
                     };
                 };
             };
@@ -73668,6 +81766,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -73754,6 +81856,8 @@ export interface operations {
                      * @description «Επανάληψη κάθε εβδομάδα» until this date (box time zone), at most 26 weeks
                      */
                     repeat_until?: string;
+                    /** @description ADR-385: the reminder and changes also go by SMS to those who asked at «Θα έρθω» (default on) */
+                    sms_enabled?: boolean;
                     /** Format: date-time */
                     starts_at: string;
                     /** @description ADR-179: an IANA zone for an event held away from its gym; null keeps the gym's */
@@ -74105,6 +82209,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -74493,6 +82601,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -74580,6 +82692,8 @@ export interface operations {
                      * @enum {string}
                      */
                     scope?: "this" | "following";
+                    /** @description ADR-385: the reminder and changes also go by SMS to those who asked at «Θα έρθω» (default on) */
+                    sms_enabled?: boolean;
                     /** Format: date-time */
                     starts_at?: string;
                     /** @description ADR-179: an IANA zone for an event held away from its gym; null keeps the gym's */
@@ -74925,6 +83039,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -75313,6 +83431,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -75707,6 +83829,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -76102,6 +84228,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -76497,6 +84627,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -76895,6 +85029,10 @@ export interface operations {
                              * @description Shared by every week of a weekly event
                              */
                             series_id?: string | null;
+                            /** @description ADR-385: the organiser's SMS switch for this event */
+                            sms_enabled: boolean;
+                            /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                            sms_offered: boolean;
                             /** @description Null: no limit */
                             spots_left?: number | null;
                             /** Format: date-time */
@@ -77474,6 +85612,102 @@ export interface operations {
                         };
                         /** @enum {string} */
                         member_groups: "none" | "approval" | "free";
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminDataExportController.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Exports */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        exports: {
+                            /** Format: date-time */
+                            completed_at: string | null;
+                            /** Format: date-time */
+                            expires_at: string | null;
+                            file: {
+                                bytes: number;
+                                download_url: string | null;
+                                name: string;
+                                sha256: string;
+                            } | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** @description ADR-367: ZIP parts with the box's stored files (photos, PDFs) */
+                            parts: {
+                                bytes: number;
+                                download_url: string | null;
+                                files: number;
+                                name: string;
+                                sha256: string;
+                            }[];
+                            record_count: number | null;
+                            /** Format: date-time */
+                            requested_at: string;
+                            /** @enum {string} */
+                            status: "pending" | "ready" | "failed" | "expired";
+                            table_count: number | null;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminDataExportController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Export */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: date-time */
+                        completed_at: string | null;
+                        /** Format: date-time */
+                        expires_at: string | null;
+                        file: {
+                            bytes: number;
+                            download_url: string | null;
+                            name: string;
+                            sha256: string;
+                        } | null;
+                        /** Format: uuid */
+                        id: string;
+                        /** @description ADR-367: ZIP parts with the box's stored files (photos, PDFs) */
+                        parts: {
+                            bytes: number;
+                            download_url: string | null;
+                            files: number;
+                            name: string;
+                            sha256: string;
+                        }[];
+                        record_count: number | null;
+                        /** Format: date-time */
+                        requested_at: string;
+                        /** @enum {string} */
+                        status: "pending" | "ready" | "failed" | "expired";
+                        table_count: number | null;
                     };
                 };
             };
@@ -80839,6 +89073,12 @@ export interface operations {
             content: {
                 "application/json": {
                     amount_cents: number;
+                    card?: {
+                        commercial?: boolean | null;
+                        country?: string | null;
+                        /** @enum {string|null} */
+                        funding?: "credit" | "debit" | "prepaid" | null;
+                    } | null;
                     /** @enum {string|null} */
                     charge_category?: "product" | "personal_training" | "event" | "other" | null;
                     currency?: string | null;
@@ -80853,6 +89093,7 @@ export interface operations {
                     paid_on?: string | null;
                     /** @enum {string} */
                     payment_method: "cash" | "card_manual" | "bank_transfer" | "other";
+                    surcharge_cents?: number | null;
                 };
             };
         };
@@ -81261,7 +89502,9 @@ export interface operations {
                     /** @description Entitlement catalog v2 field values keyed by catalog field key (ADR-096) */
                     fields?: {
                         "booking.cancellation_cutoff_hours"?: number | null;
+                        "booking.daily_limit"?: number | null;
                         "booking.no_show_penalty_waived"?: boolean;
+                        "booking.open_bookings_limit"?: number | null;
                         "booking.waitlist_priority"?: string;
                         "booking.window_days"?: number | null;
                         "content.advanced_analytics"?: boolean;
@@ -81340,6 +89583,7 @@ export interface operations {
                         "terms.allow_minor_beneficiaries"?: boolean;
                         "terms.auto_renew"?: boolean;
                         "terms.beneficiaries"?: number;
+                        "terms.buyers"?: string;
                         "terms.compatible_package_ids"?: "all" | string[];
                         /** Format: uuid */
                         "terms.conversion_package_id"?: string | null;
@@ -81347,9 +89591,11 @@ export interface operations {
                         "terms.enrollment_domain"?: string | null;
                         "terms.expiry_reminder_days"?: number;
                         "terms.joining_fee_cents"?: number;
+                        "terms.max_purchases_per_person"?: number | null;
                         "terms.minimum_commitment_months"?: number;
                         "terms.new_members_only"?: boolean;
                         "terms.once_per_person"?: boolean;
+                        "terms.prerequisite_package_ids"?: string[];
                         "terms.quota_sharing"?: string;
                         "terms.seat_billing"?: string;
                         "terms.seats"?: number;
@@ -81458,7 +89704,9 @@ export interface operations {
                     /** @description Entitlement catalog v2 field values keyed by catalog field key (ADR-096) */
                     fields?: {
                         "booking.cancellation_cutoff_hours"?: number | null;
+                        "booking.daily_limit"?: number | null;
                         "booking.no_show_penalty_waived"?: boolean;
+                        "booking.open_bookings_limit"?: number | null;
                         "booking.waitlist_priority"?: string;
                         "booking.window_days"?: number | null;
                         "content.advanced_analytics"?: boolean;
@@ -81537,6 +89785,7 @@ export interface operations {
                         "terms.allow_minor_beneficiaries"?: boolean;
                         "terms.auto_renew"?: boolean;
                         "terms.beneficiaries"?: number;
+                        "terms.buyers"?: string;
                         "terms.compatible_package_ids"?: "all" | string[];
                         /** Format: uuid */
                         "terms.conversion_package_id"?: string | null;
@@ -81544,9 +89793,11 @@ export interface operations {
                         "terms.enrollment_domain"?: string | null;
                         "terms.expiry_reminder_days"?: number;
                         "terms.joining_fee_cents"?: number;
+                        "terms.max_purchases_per_person"?: number | null;
                         "terms.minimum_commitment_months"?: number;
                         "terms.new_members_only"?: boolean;
                         "terms.once_per_person"?: boolean;
+                        "terms.prerequisite_package_ids"?: string[];
                         "terms.quota_sharing"?: string;
                         "terms.seat_billing"?: string;
                         "terms.seats"?: number;
@@ -86878,6 +95129,1549 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminLeadController.index": {
+        parameters: {
+            query?: {
+                /** @description A stage, several separated by commas, or `open` */
+                stage?: string;
+                /** @description `me` or a staff profile id */
+                owner?: string;
+                source?: string;
+                /** @description Name, email or phone contains */
+                q?: string;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Leads */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Leads per stage */
+                        counts: {
+                            [key: string]: number;
+                        };
+                        leads: {
+                            campaign: string | null;
+                            consent: {
+                                /** Format: date-time */
+                                contact_at: string | null;
+                                /** Format: date-time */
+                                marketing_at: string | null;
+                                /** Format: date-time */
+                                marketing_opted_out_at: string | null;
+                                text_version: string | null;
+                            };
+                            /** Format: date-time */
+                            converted_at: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            email: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            interests: string[];
+                            /** Format: date-time */
+                            last_contacted_at: string | null;
+                            locale: string | null;
+                            /** @enum {string|null} */
+                            lost_reason: "price" | "schedule" | "location" | "no_answer" | "chose_other" | "not_interested" | "other" | null;
+                            message: string | null;
+                            name: string;
+                            next_task: {
+                                assignee: {
+                                    avatar_url?: string | null;
+                                    display_name?: string | null;
+                                    handle?: string | null;
+                                    /** Format: uuid */
+                                    user_id: string;
+                                } | null;
+                                /** Format: date-time */
+                                done_at: string | null;
+                                /** Format: date-time */
+                                due_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                lead_id: string;
+                                lead_name?: string | null;
+                                title: string;
+                            } | null;
+                            owner: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            phone: string | null;
+                            /** @enum {string} */
+                            source: "website_form" | "form" | "join_link" | "manual" | "csv" | "walk_in" | "referral" | "event" | "around_me" | "trial" | "prospect_assistant";
+                            /** @enum {string} */
+                            stage: "new" | "trial" | "offer" | "converted" | "lost";
+                            /** Format: date-time */
+                            stage_changed_at: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminLeadController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    campaign?: string;
+                    email?: string;
+                    interests?: string[];
+                    locale?: string;
+                    /** @description The person said yes to marketing messages (their own words) */
+                    marketing_consent?: boolean;
+                    message?: string;
+                    name: string;
+                    /** Format: uuid */
+                    owner_id?: string;
+                    phone?: string;
+                    /** @enum {string} */
+                    source?: "manual" | "walk_in" | "referral" | "event";
+                };
+            };
+        };
+        responses: {
+            /** @description Lead with tasks and history */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        events: {
+                            actor: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            at: string;
+                            data: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "created" | "enquired_again" | "stage_changed" | "owner_changed" | "note" | "contacted" | "task_added" | "task_done" | "message_sent" | "converted" | "marketing_opted_out" | "details_changed";
+                        }[];
+                        lead: {
+                            campaign: string | null;
+                            consent: {
+                                /** Format: date-time */
+                                contact_at: string | null;
+                                /** Format: date-time */
+                                marketing_at: string | null;
+                                /** Format: date-time */
+                                marketing_opted_out_at: string | null;
+                                text_version: string | null;
+                            };
+                            /** Format: date-time */
+                            converted_at: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            email: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            interests: string[];
+                            /** Format: date-time */
+                            last_contacted_at: string | null;
+                            locale: string | null;
+                            /** @enum {string|null} */
+                            lost_reason: "price" | "schedule" | "location" | "no_answer" | "chose_other" | "not_interested" | "other" | null;
+                            message: string | null;
+                            name: string;
+                            next_task: {
+                                assignee: {
+                                    avatar_url?: string | null;
+                                    display_name?: string | null;
+                                    handle?: string | null;
+                                    /** Format: uuid */
+                                    user_id: string;
+                                } | null;
+                                /** Format: date-time */
+                                done_at: string | null;
+                                /** Format: date-time */
+                                due_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                lead_id: string;
+                                lead_name?: string | null;
+                                title: string;
+                            } | null;
+                            owner: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            phone: string | null;
+                            /** @enum {string} */
+                            source: "website_form" | "form" | "join_link" | "manual" | "csv" | "walk_in" | "referral" | "event" | "around_me" | "trial" | "prospect_assistant";
+                            /** @enum {string} */
+                            stage: "new" | "trial" | "offer" | "converted" | "lost";
+                            /** Format: date-time */
+                            stage_changed_at: string;
+                        };
+                        tasks: {
+                            assignee: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            done_at: string | null;
+                            /** Format: date-time */
+                            due_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id: string;
+                            lead_name?: string | null;
+                            title: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminLeadController.import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description The file's text (UTF-8) */
+                    csv: string;
+                    dry_run?: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Import result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        created: number;
+                        dry_run: boolean;
+                        existing: number;
+                        invalid: number;
+                        rows: {
+                            errors: {
+                                [key: string]: unknown;
+                            };
+                            /** @enum {string} */
+                            result: "created" | "existing" | "invalid" | "valid";
+                            row: number;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminLeadController.tasks": {
+        parameters: {
+            query?: {
+                mine?: boolean;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Tasks */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        tasks: {
+                            assignee: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            done_at: string | null;
+                            /** Format: date-time */
+                            due_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id: string;
+                            lead_name?: string | null;
+                            title: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminLeadController.complete_task": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                task_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Lead with tasks and history */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        events: {
+                            actor: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            at: string;
+                            data: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "created" | "enquired_again" | "stage_changed" | "owner_changed" | "note" | "contacted" | "task_added" | "task_done" | "message_sent" | "converted" | "marketing_opted_out" | "details_changed";
+                        }[];
+                        lead: {
+                            campaign: string | null;
+                            consent: {
+                                /** Format: date-time */
+                                contact_at: string | null;
+                                /** Format: date-time */
+                                marketing_at: string | null;
+                                /** Format: date-time */
+                                marketing_opted_out_at: string | null;
+                                text_version: string | null;
+                            };
+                            /** Format: date-time */
+                            converted_at: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            email: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            interests: string[];
+                            /** Format: date-time */
+                            last_contacted_at: string | null;
+                            locale: string | null;
+                            /** @enum {string|null} */
+                            lost_reason: "price" | "schedule" | "location" | "no_answer" | "chose_other" | "not_interested" | "other" | null;
+                            message: string | null;
+                            name: string;
+                            next_task: {
+                                assignee: {
+                                    avatar_url?: string | null;
+                                    display_name?: string | null;
+                                    handle?: string | null;
+                                    /** Format: uuid */
+                                    user_id: string;
+                                } | null;
+                                /** Format: date-time */
+                                done_at: string | null;
+                                /** Format: date-time */
+                                due_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                lead_id: string;
+                                lead_name?: string | null;
+                                title: string;
+                            } | null;
+                            owner: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            phone: string | null;
+                            /** @enum {string} */
+                            source: "website_form" | "form" | "join_link" | "manual" | "csv" | "walk_in" | "referral" | "event" | "around_me" | "trial" | "prospect_assistant";
+                            /** @enum {string} */
+                            stage: "new" | "trial" | "offer" | "converted" | "lost";
+                            /** Format: date-time */
+                            stage_changed_at: string;
+                        };
+                        tasks: {
+                            assignee: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            done_at: string | null;
+                            /** Format: date-time */
+                            due_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id: string;
+                            lead_name?: string | null;
+                            title: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminLeadController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Lead with tasks and history */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        events: {
+                            actor: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            at: string;
+                            data: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "created" | "enquired_again" | "stage_changed" | "owner_changed" | "note" | "contacted" | "task_added" | "task_done" | "message_sent" | "converted" | "marketing_opted_out" | "details_changed";
+                        }[];
+                        lead: {
+                            campaign: string | null;
+                            consent: {
+                                /** Format: date-time */
+                                contact_at: string | null;
+                                /** Format: date-time */
+                                marketing_at: string | null;
+                                /** Format: date-time */
+                                marketing_opted_out_at: string | null;
+                                text_version: string | null;
+                            };
+                            /** Format: date-time */
+                            converted_at: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            email: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            interests: string[];
+                            /** Format: date-time */
+                            last_contacted_at: string | null;
+                            locale: string | null;
+                            /** @enum {string|null} */
+                            lost_reason: "price" | "schedule" | "location" | "no_answer" | "chose_other" | "not_interested" | "other" | null;
+                            message: string | null;
+                            name: string;
+                            next_task: {
+                                assignee: {
+                                    avatar_url?: string | null;
+                                    display_name?: string | null;
+                                    handle?: string | null;
+                                    /** Format: uuid */
+                                    user_id: string;
+                                } | null;
+                                /** Format: date-time */
+                                done_at: string | null;
+                                /** Format: date-time */
+                                due_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                lead_id: string;
+                                lead_name?: string | null;
+                                title: string;
+                            } | null;
+                            owner: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            phone: string | null;
+                            /** @enum {string} */
+                            source: "website_form" | "form" | "join_link" | "manual" | "csv" | "walk_in" | "referral" | "event" | "around_me" | "trial" | "prospect_assistant";
+                            /** @enum {string} */
+                            stage: "new" | "trial" | "offer" | "converted" | "lost";
+                            /** Format: date-time */
+                            stage_changed_at: string;
+                        };
+                        tasks: {
+                            assignee: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            done_at: string | null;
+                            /** Format: date-time */
+                            due_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id: string;
+                            lead_name?: string | null;
+                            title: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminLeadController.delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Erased */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "PaleeWeb.AdminLeadController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    email?: string | null;
+                    interests?: string[];
+                    message?: string | null;
+                    name?: string;
+                    /** Format: uuid */
+                    owner_id?: string | null;
+                    phone?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Lead with tasks and history */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        events: {
+                            actor: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            at: string;
+                            data: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "created" | "enquired_again" | "stage_changed" | "owner_changed" | "note" | "contacted" | "task_added" | "task_done" | "message_sent" | "converted" | "marketing_opted_out" | "details_changed";
+                        }[];
+                        lead: {
+                            campaign: string | null;
+                            consent: {
+                                /** Format: date-time */
+                                contact_at: string | null;
+                                /** Format: date-time */
+                                marketing_at: string | null;
+                                /** Format: date-time */
+                                marketing_opted_out_at: string | null;
+                                text_version: string | null;
+                            };
+                            /** Format: date-time */
+                            converted_at: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            email: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            interests: string[];
+                            /** Format: date-time */
+                            last_contacted_at: string | null;
+                            locale: string | null;
+                            /** @enum {string|null} */
+                            lost_reason: "price" | "schedule" | "location" | "no_answer" | "chose_other" | "not_interested" | "other" | null;
+                            message: string | null;
+                            name: string;
+                            next_task: {
+                                assignee: {
+                                    avatar_url?: string | null;
+                                    display_name?: string | null;
+                                    handle?: string | null;
+                                    /** Format: uuid */
+                                    user_id: string;
+                                } | null;
+                                /** Format: date-time */
+                                done_at: string | null;
+                                /** Format: date-time */
+                                due_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                lead_id: string;
+                                lead_name?: string | null;
+                                title: string;
+                            } | null;
+                            owner: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            phone: string | null;
+                            /** @enum {string} */
+                            source: "website_form" | "form" | "join_link" | "manual" | "csv" | "walk_in" | "referral" | "event" | "around_me" | "trial" | "prospect_assistant";
+                            /** @enum {string} */
+                            stage: "new" | "trial" | "offer" | "converted" | "lost";
+                            /** Format: date-time */
+                            stage_changed_at: string;
+                        };
+                        tasks: {
+                            assignee: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            done_at: string | null;
+                            /** Format: date-time */
+                            due_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id: string;
+                            lead_name?: string | null;
+                            title: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminLeadController.contacted": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    channel?: "phone" | "email" | "message" | "in_person";
+                };
+            };
+        };
+        responses: {
+            /** @description Lead with tasks and history */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        events: {
+                            actor: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            at: string;
+                            data: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "created" | "enquired_again" | "stage_changed" | "owner_changed" | "note" | "contacted" | "task_added" | "task_done" | "message_sent" | "converted" | "marketing_opted_out" | "details_changed";
+                        }[];
+                        lead: {
+                            campaign: string | null;
+                            consent: {
+                                /** Format: date-time */
+                                contact_at: string | null;
+                                /** Format: date-time */
+                                marketing_at: string | null;
+                                /** Format: date-time */
+                                marketing_opted_out_at: string | null;
+                                text_version: string | null;
+                            };
+                            /** Format: date-time */
+                            converted_at: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            email: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            interests: string[];
+                            /** Format: date-time */
+                            last_contacted_at: string | null;
+                            locale: string | null;
+                            /** @enum {string|null} */
+                            lost_reason: "price" | "schedule" | "location" | "no_answer" | "chose_other" | "not_interested" | "other" | null;
+                            message: string | null;
+                            name: string;
+                            next_task: {
+                                assignee: {
+                                    avatar_url?: string | null;
+                                    display_name?: string | null;
+                                    handle?: string | null;
+                                    /** Format: uuid */
+                                    user_id: string;
+                                } | null;
+                                /** Format: date-time */
+                                done_at: string | null;
+                                /** Format: date-time */
+                                due_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                lead_id: string;
+                                lead_name?: string | null;
+                                title: string;
+                            } | null;
+                            owner: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            phone: string | null;
+                            /** @enum {string} */
+                            source: "website_form" | "form" | "join_link" | "manual" | "csv" | "walk_in" | "referral" | "event" | "around_me" | "trial" | "prospect_assistant";
+                            /** @enum {string} */
+                            stage: "new" | "trial" | "offer" | "converted" | "lost";
+                            /** Format: date-time */
+                            stage_changed_at: string;
+                        };
+                        tasks: {
+                            assignee: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            done_at: string | null;
+                            /** Format: date-time */
+                            due_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id: string;
+                            lead_name?: string | null;
+                            title: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminLeadController.convert": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    user_id: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Lead with tasks and history */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        events: {
+                            actor: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            at: string;
+                            data: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "created" | "enquired_again" | "stage_changed" | "owner_changed" | "note" | "contacted" | "task_added" | "task_done" | "message_sent" | "converted" | "marketing_opted_out" | "details_changed";
+                        }[];
+                        lead: {
+                            campaign: string | null;
+                            consent: {
+                                /** Format: date-time */
+                                contact_at: string | null;
+                                /** Format: date-time */
+                                marketing_at: string | null;
+                                /** Format: date-time */
+                                marketing_opted_out_at: string | null;
+                                text_version: string | null;
+                            };
+                            /** Format: date-time */
+                            converted_at: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            email: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            interests: string[];
+                            /** Format: date-time */
+                            last_contacted_at: string | null;
+                            locale: string | null;
+                            /** @enum {string|null} */
+                            lost_reason: "price" | "schedule" | "location" | "no_answer" | "chose_other" | "not_interested" | "other" | null;
+                            message: string | null;
+                            name: string;
+                            next_task: {
+                                assignee: {
+                                    avatar_url?: string | null;
+                                    display_name?: string | null;
+                                    handle?: string | null;
+                                    /** Format: uuid */
+                                    user_id: string;
+                                } | null;
+                                /** Format: date-time */
+                                done_at: string | null;
+                                /** Format: date-time */
+                                due_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                lead_id: string;
+                                lead_name?: string | null;
+                                title: string;
+                            } | null;
+                            owner: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            phone: string | null;
+                            /** @enum {string} */
+                            source: "website_form" | "form" | "join_link" | "manual" | "csv" | "walk_in" | "referral" | "event" | "around_me" | "trial" | "prospect_assistant";
+                            /** @enum {string} */
+                            stage: "new" | "trial" | "offer" | "converted" | "lost";
+                            /** Format: date-time */
+                            stage_changed_at: string;
+                        };
+                        tasks: {
+                            assignee: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            done_at: string | null;
+                            /** Format: date-time */
+                            due_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id: string;
+                            lead_name?: string | null;
+                            title: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminLeadController.move": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    lost_reason?: "price" | "schedule" | "location" | "no_answer" | "chose_other" | "not_interested" | "other";
+                    /** @enum {string} */
+                    stage: "new" | "trial" | "offer" | "lost";
+                };
+            };
+        };
+        responses: {
+            /** @description Lead with tasks and history */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        events: {
+                            actor: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            at: string;
+                            data: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "created" | "enquired_again" | "stage_changed" | "owner_changed" | "note" | "contacted" | "task_added" | "task_done" | "message_sent" | "converted" | "marketing_opted_out" | "details_changed";
+                        }[];
+                        lead: {
+                            campaign: string | null;
+                            consent: {
+                                /** Format: date-time */
+                                contact_at: string | null;
+                                /** Format: date-time */
+                                marketing_at: string | null;
+                                /** Format: date-time */
+                                marketing_opted_out_at: string | null;
+                                text_version: string | null;
+                            };
+                            /** Format: date-time */
+                            converted_at: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            email: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            interests: string[];
+                            /** Format: date-time */
+                            last_contacted_at: string | null;
+                            locale: string | null;
+                            /** @enum {string|null} */
+                            lost_reason: "price" | "schedule" | "location" | "no_answer" | "chose_other" | "not_interested" | "other" | null;
+                            message: string | null;
+                            name: string;
+                            next_task: {
+                                assignee: {
+                                    avatar_url?: string | null;
+                                    display_name?: string | null;
+                                    handle?: string | null;
+                                    /** Format: uuid */
+                                    user_id: string;
+                                } | null;
+                                /** Format: date-time */
+                                done_at: string | null;
+                                /** Format: date-time */
+                                due_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                lead_id: string;
+                                lead_name?: string | null;
+                                title: string;
+                            } | null;
+                            owner: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            phone: string | null;
+                            /** @enum {string} */
+                            source: "website_form" | "form" | "join_link" | "manual" | "csv" | "walk_in" | "referral" | "event" | "around_me" | "trial" | "prospect_assistant";
+                            /** @enum {string} */
+                            stage: "new" | "trial" | "offer" | "converted" | "lost";
+                            /** Format: date-time */
+                            stage_changed_at: string;
+                        };
+                        tasks: {
+                            assignee: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            done_at: string | null;
+                            /** Format: date-time */
+                            due_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id: string;
+                            lead_name?: string | null;
+                            title: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminLeadController.note": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    text: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Lead with tasks and history */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        events: {
+                            actor: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            at: string;
+                            data: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "created" | "enquired_again" | "stage_changed" | "owner_changed" | "note" | "contacted" | "task_added" | "task_done" | "message_sent" | "converted" | "marketing_opted_out" | "details_changed";
+                        }[];
+                        lead: {
+                            campaign: string | null;
+                            consent: {
+                                /** Format: date-time */
+                                contact_at: string | null;
+                                /** Format: date-time */
+                                marketing_at: string | null;
+                                /** Format: date-time */
+                                marketing_opted_out_at: string | null;
+                                text_version: string | null;
+                            };
+                            /** Format: date-time */
+                            converted_at: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            email: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            interests: string[];
+                            /** Format: date-time */
+                            last_contacted_at: string | null;
+                            locale: string | null;
+                            /** @enum {string|null} */
+                            lost_reason: "price" | "schedule" | "location" | "no_answer" | "chose_other" | "not_interested" | "other" | null;
+                            message: string | null;
+                            name: string;
+                            next_task: {
+                                assignee: {
+                                    avatar_url?: string | null;
+                                    display_name?: string | null;
+                                    handle?: string | null;
+                                    /** Format: uuid */
+                                    user_id: string;
+                                } | null;
+                                /** Format: date-time */
+                                done_at: string | null;
+                                /** Format: date-time */
+                                due_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                lead_id: string;
+                                lead_name?: string | null;
+                                title: string;
+                            } | null;
+                            owner: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            phone: string | null;
+                            /** @enum {string} */
+                            source: "website_form" | "form" | "join_link" | "manual" | "csv" | "walk_in" | "referral" | "event" | "around_me" | "trial" | "prospect_assistant";
+                            /** @enum {string} */
+                            stage: "new" | "trial" | "offer" | "converted" | "lost";
+                            /** Format: date-time */
+                            stage_changed_at: string;
+                        };
+                        tasks: {
+                            assignee: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            done_at: string | null;
+                            /** Format: date-time */
+                            due_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id: string;
+                            lead_name?: string | null;
+                            title: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminLeadController.opt_out": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Lead with tasks and history */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        events: {
+                            actor: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            at: string;
+                            data: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "created" | "enquired_again" | "stage_changed" | "owner_changed" | "note" | "contacted" | "task_added" | "task_done" | "message_sent" | "converted" | "marketing_opted_out" | "details_changed";
+                        }[];
+                        lead: {
+                            campaign: string | null;
+                            consent: {
+                                /** Format: date-time */
+                                contact_at: string | null;
+                                /** Format: date-time */
+                                marketing_at: string | null;
+                                /** Format: date-time */
+                                marketing_opted_out_at: string | null;
+                                text_version: string | null;
+                            };
+                            /** Format: date-time */
+                            converted_at: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            email: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            interests: string[];
+                            /** Format: date-time */
+                            last_contacted_at: string | null;
+                            locale: string | null;
+                            /** @enum {string|null} */
+                            lost_reason: "price" | "schedule" | "location" | "no_answer" | "chose_other" | "not_interested" | "other" | null;
+                            message: string | null;
+                            name: string;
+                            next_task: {
+                                assignee: {
+                                    avatar_url?: string | null;
+                                    display_name?: string | null;
+                                    handle?: string | null;
+                                    /** Format: uuid */
+                                    user_id: string;
+                                } | null;
+                                /** Format: date-time */
+                                done_at: string | null;
+                                /** Format: date-time */
+                                due_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                lead_id: string;
+                                lead_name?: string | null;
+                                title: string;
+                            } | null;
+                            owner: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            phone: string | null;
+                            /** @enum {string} */
+                            source: "website_form" | "form" | "join_link" | "manual" | "csv" | "walk_in" | "referral" | "event" | "around_me" | "trial" | "prospect_assistant";
+                            /** @enum {string} */
+                            stage: "new" | "trial" | "offer" | "converted" | "lost";
+                            /** Format: date-time */
+                            stage_changed_at: string;
+                        };
+                        tasks: {
+                            assignee: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            done_at: string | null;
+                            /** Format: date-time */
+                            due_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id: string;
+                            lead_name?: string | null;
+                            title: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminLeadController.add_task": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    assignee_id?: string;
+                    /** Format: date-time */
+                    due_at: string;
+                    title: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Lead with tasks and history */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        events: {
+                            actor: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            at: string;
+                            data: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "created" | "enquired_again" | "stage_changed" | "owner_changed" | "note" | "contacted" | "task_added" | "task_done" | "message_sent" | "converted" | "marketing_opted_out" | "details_changed";
+                        }[];
+                        lead: {
+                            campaign: string | null;
+                            consent: {
+                                /** Format: date-time */
+                                contact_at: string | null;
+                                /** Format: date-time */
+                                marketing_at: string | null;
+                                /** Format: date-time */
+                                marketing_opted_out_at: string | null;
+                                text_version: string | null;
+                            };
+                            /** Format: date-time */
+                            converted_at: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            email: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            interests: string[];
+                            /** Format: date-time */
+                            last_contacted_at: string | null;
+                            locale: string | null;
+                            /** @enum {string|null} */
+                            lost_reason: "price" | "schedule" | "location" | "no_answer" | "chose_other" | "not_interested" | "other" | null;
+                            message: string | null;
+                            name: string;
+                            next_task: {
+                                assignee: {
+                                    avatar_url?: string | null;
+                                    display_name?: string | null;
+                                    handle?: string | null;
+                                    /** Format: uuid */
+                                    user_id: string;
+                                } | null;
+                                /** Format: date-time */
+                                done_at: string | null;
+                                /** Format: date-time */
+                                due_at: string;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                lead_id: string;
+                                lead_name?: string | null;
+                                title: string;
+                            } | null;
+                            owner: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            phone: string | null;
+                            /** @enum {string} */
+                            source: "website_form" | "form" | "join_link" | "manual" | "csv" | "walk_in" | "referral" | "event" | "around_me" | "trial" | "prospect_assistant";
+                            /** @enum {string} */
+                            stage: "new" | "trial" | "offer" | "converted" | "lost";
+                            /** Format: date-time */
+                            stage_changed_at: string;
+                        };
+                        tasks: {
+                            assignee: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            done_at: string | null;
+                            /** Format: date-time */
+                            due_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id: string;
+                            lead_name?: string | null;
+                            title: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminFacilityController.index_locations": {
         parameters: {
             query?: never;
@@ -87155,6 +96949,301 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminMemberRiskController.index": {
+        parameters: {
+            query?: {
+                level?: "high" | "medium" | "all";
+                include_snoozed?: boolean;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Members at risk */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: date-time */
+                        computed_at: string | null;
+                        counts: {
+                            [key: string]: number;
+                        };
+                        members: {
+                            /** Format: date-time */
+                            computed_at: string;
+                            /** Format: date-time */
+                            contacted_at: string | null;
+                            contacted_by: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** @enum {string} */
+                            level: "low" | "medium" | "high";
+                            /** Format: date-time */
+                            level_since: string;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            reasons: {
+                                /** @enum {string} */
+                                code: "attendance_drop" | "absent" | "no_first_visit" | "no_upcoming_bookings" | "package_ending" | "payment_overdue" | "many_cancellations" | "new_member_slow_start";
+                                facts: {
+                                    [key: string]: unknown;
+                                };
+                                points: number;
+                            }[];
+                            score: number;
+                            /** Format: date */
+                            snoozed_until: string | null;
+                            /** @enum {string} */
+                            suggested_action: "personal_message" | "renewal_offer" | "payment_follow_up" | "check_in_call" | "none";
+                            /** Format: uuid */
+                            user_id: string;
+                            /** Format: date-time */
+                            win_back_queued_at: string | null;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminMemberRiskController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Member at risk with the staff action log */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        actions: {
+                            actor: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            at: string;
+                            /** @enum {string|null} */
+                            channel: "phone" | "email" | "message" | "in_person" | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "contacted" | "snoozed" | "unsnoozed";
+                            /** Format: date */
+                            snoozed_until: string | null;
+                        }[];
+                        member: {
+                            /** Format: date-time */
+                            computed_at: string;
+                            /** Format: date-time */
+                            contacted_at: string | null;
+                            contacted_by: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** @enum {string} */
+                            level: "low" | "medium" | "high";
+                            /** Format: date-time */
+                            level_since: string;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            reasons: {
+                                /** @enum {string} */
+                                code: "attendance_drop" | "absent" | "no_first_visit" | "no_upcoming_bookings" | "package_ending" | "payment_overdue" | "many_cancellations" | "new_member_slow_start";
+                                facts: {
+                                    [key: string]: unknown;
+                                };
+                                points: number;
+                            }[];
+                            score: number;
+                            /** Format: date */
+                            snoozed_until: string | null;
+                            /** @enum {string} */
+                            suggested_action: "personal_message" | "renewal_offer" | "payment_follow_up" | "check_in_call" | "none";
+                            /** Format: uuid */
+                            user_id: string;
+                            /** Format: date-time */
+                            win_back_queued_at: string | null;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminMemberRiskController.contacted": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    channel?: "phone" | "email" | "message" | "in_person";
+                };
+            };
+        };
+        responses: {
+            /** @description Member at risk */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        member: {
+                            /** Format: date-time */
+                            computed_at: string;
+                            /** Format: date-time */
+                            contacted_at: string | null;
+                            contacted_by: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** @enum {string} */
+                            level: "low" | "medium" | "high";
+                            /** Format: date-time */
+                            level_since: string;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            reasons: {
+                                /** @enum {string} */
+                                code: "attendance_drop" | "absent" | "no_first_visit" | "no_upcoming_bookings" | "package_ending" | "payment_overdue" | "many_cancellations" | "new_member_slow_start";
+                                facts: {
+                                    [key: string]: unknown;
+                                };
+                                points: number;
+                            }[];
+                            score: number;
+                            /** Format: date */
+                            snoozed_until: string | null;
+                            /** @enum {string} */
+                            suggested_action: "personal_message" | "renewal_offer" | "payment_follow_up" | "check_in_call" | "none";
+                            /** Format: uuid */
+                            user_id: string;
+                            /** Format: date-time */
+                            win_back_queued_at: string | null;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminMemberRiskController.snooze": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    days: number;
+                };
+            };
+        };
+        responses: {
+            /** @description Member at risk */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        member: {
+                            /** Format: date-time */
+                            computed_at: string;
+                            /** Format: date-time */
+                            contacted_at: string | null;
+                            contacted_by: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** @enum {string} */
+                            level: "low" | "medium" | "high";
+                            /** Format: date-time */
+                            level_since: string;
+                            person: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            reasons: {
+                                /** @enum {string} */
+                                code: "attendance_drop" | "absent" | "no_first_visit" | "no_upcoming_bookings" | "package_ending" | "payment_overdue" | "many_cancellations" | "new_member_slow_start";
+                                facts: {
+                                    [key: string]: unknown;
+                                };
+                                points: number;
+                            }[];
+                            score: number;
+                            /** Format: date */
+                            snoozed_until: string | null;
+                            /** @enum {string} */
+                            suggested_action: "personal_message" | "renewal_offer" | "payment_follow_up" | "check_in_call" | "none";
+                            /** Format: uuid */
+                            user_id: string;
+                            /** Format: date-time */
+                            win_back_queued_at: string | null;
+                        };
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminOnboardingController.show": {
         parameters: {
             query?: never;
@@ -87360,6 +97449,8 @@ export interface operations {
                             status: "scheduled" | "awaiting_payer" | "processing" | "succeeded" | "failed" | "cancelled" | "expired";
                             /** Format: date-time */
                             succeeded_at?: string | null;
+                            /** @description ADR-340: the card surcharge charged on top of `amount_cents` */
+                            surcharge_cents?: number | null;
                             /** Format: uuid */
                             user_id?: string | null;
                         }[];
@@ -87809,6 +97900,8 @@ export interface operations {
                             status: "scheduled" | "awaiting_payer" | "processing" | "succeeded" | "failed" | "cancelled" | "expired";
                             /** Format: date-time */
                             succeeded_at?: string | null;
+                            /** @description ADR-340: the card surcharge charged on top of `amount_cents` */
+                            surcharge_cents?: number | null;
                             /** Format: uuid */
                             user_id?: string | null;
                         } & {
@@ -88021,6 +98114,150 @@ export interface operations {
                             /** Format: uuid */
                             user_id: string;
                         }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCardSurchargeController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Card surcharge */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Whether the law allows any surcharge here */
+                        allowed: boolean;
+                        country_code: string | null;
+                        law: {
+                            at_cost: boolean;
+                            cap_bps: number | null;
+                            regime: string;
+                            region_required: boolean;
+                            /** @enum {string} */
+                            rule: "eea_non_consumer" | "commercial_only" | "credit_only" | "any" | "none";
+                            sources: string[];
+                        };
+                        saved: boolean;
+                        settings: {
+                            at_cost_confirmed: boolean;
+                            channels: ("online" | "terminal" | "desk")[];
+                            enabled: boolean;
+                            fixed_cents: number;
+                            percent_bps: number;
+                            region_code: string | null;
+                        };
+                        /** Format: date-time */
+                        updated_at?: string | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCardSurchargeController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    at_cost_confirmed?: boolean;
+                    channels?: ("online" | "terminal" | "desk")[];
+                    enabled?: boolean;
+                    fixed_cents?: number;
+                    percent_bps?: number;
+                    region_code?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Card surcharge */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Whether the law allows any surcharge here */
+                        allowed: boolean;
+                        country_code: string | null;
+                        law: {
+                            at_cost: boolean;
+                            cap_bps: number | null;
+                            regime: string;
+                            region_required: boolean;
+                            /** @enum {string} */
+                            rule: "eea_non_consumer" | "commercial_only" | "credit_only" | "any" | "none";
+                            sources: string[];
+                        };
+                        saved: boolean;
+                        settings: {
+                            at_cost_confirmed: boolean;
+                            channels: ("online" | "terminal" | "desk")[];
+                            enabled: boolean;
+                            fixed_cents: number;
+                            percent_bps: number;
+                            region_code: string | null;
+                        };
+                        /** Format: date-time */
+                        updated_at?: string | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCardSurchargeController.quote": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    amount_cents: number;
+                    /** @description What the law reads about a card: credit or debit, issuing country, commercial. Unknown values count against a surcharge. */
+                    card?: {
+                        commercial?: boolean | null;
+                        country?: string | null;
+                        /** @enum {string|null} */
+                        funding?: "credit" | "debit" | "prepaid" | null;
+                    } | null;
+                    /** @enum {string} */
+                    channel: "online" | "desk";
+                };
+            };
+        };
+        responses: {
+            /** @description Quote */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        applies: boolean;
+                        fixed_cents: number;
+                        percent_bps: number;
+                        /** @enum {string|null} */
+                        reason: "off" | "channel_off" | "not_allowed_here" | "card_unknown" | "card_not_surchargeable" | "zero" | null;
+                        /** @enum {string} */
+                        rule: "eea_non_consumer" | "commercial_only" | "credit_only" | "any" | "none";
+                        surcharge_cents: number;
+                        total_cents: number;
                     };
                 };
             };
@@ -88825,6 +99062,8 @@ export interface operations {
                             status: "scheduled" | "awaiting_payer" | "processing" | "succeeded" | "failed" | "cancelled" | "expired";
                             /** Format: date-time */
                             succeeded_at?: string | null;
+                            /** @description ADR-340: the card surcharge charged on top of `amount_cents` */
+                            surcharge_cents?: number | null;
                             /** Format: uuid */
                             user_id?: string | null;
                         } & {
@@ -88908,6 +99147,8 @@ export interface operations {
                             status: "scheduled" | "awaiting_payer" | "processing" | "succeeded" | "failed" | "cancelled" | "expired";
                             /** Format: date-time */
                             succeeded_at?: string | null;
+                            /** @description ADR-340: the card surcharge charged on top of `amount_cents` */
+                            surcharge_cents?: number | null;
                             /** Format: uuid */
                             user_id?: string | null;
                         };
@@ -88974,6 +99215,8 @@ export interface operations {
                             status: "scheduled" | "awaiting_payer" | "processing" | "succeeded" | "failed" | "cancelled" | "expired";
                             /** Format: date-time */
                             succeeded_at?: string | null;
+                            /** @description ADR-340: the card surcharge charged on top of `amount_cents` */
+                            surcharge_cents?: number | null;
                             /** Format: uuid */
                             user_id?: string | null;
                         };
@@ -89087,6 +99330,8 @@ export interface operations {
                             status: "scheduled" | "awaiting_payer" | "processing" | "succeeded" | "failed" | "cancelled" | "expired";
                             /** Format: date-time */
                             succeeded_at?: string | null;
+                            /** @description ADR-340: the card surcharge charged on top of `amount_cents` */
+                            surcharge_cents?: number | null;
                             /** Format: uuid */
                             user_id?: string | null;
                         };
@@ -89153,6 +99398,8 @@ export interface operations {
                             status: "scheduled" | "awaiting_payer" | "processing" | "succeeded" | "failed" | "cancelled" | "expired";
                             /** Format: date-time */
                             succeeded_at?: string | null;
+                            /** @description ADR-340: the card surcharge charged on top of `amount_cents` */
+                            surcharge_cents?: number | null;
                             /** Format: uuid */
                             user_id?: string | null;
                         };
@@ -91888,6 +102135,195 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminReviewAsksController.places": {
+        parameters: {
+            query: {
+                q: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Matches */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        places: {
+                            address: string | null;
+                            name: string | null;
+                            place_id: string;
+                            rating: number | null;
+                            rating_count: number | null;
+                        }[];
+                    };
+                };
+            };
+            /** @description Too short */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Places unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminReviewAsksController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * GoogleListing
+                         * @description The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms
+                         */
+                        google: {
+                            count: number | null;
+                            /** Format: date-time */
+                            fetched_at: string;
+                            maps_uri: string | null;
+                            name: string | null;
+                            rating: number | null;
+                            write_review_url: string | null;
+                        } | null;
+                        /** ReviewAskSettings */
+                        settings: {
+                            enabled: boolean;
+                            google_place_id: string | null;
+                            google_review_url: string | null;
+                            lock_version: number;
+                            milestones: number[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminReviewAsksController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    enabled?: boolean;
+                    google_place_id?: string | null;
+                    lock_version: number;
+                    milestones?: number[];
+                };
+            };
+        };
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * GoogleListing
+                         * @description The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms
+                         */
+                        google: {
+                            count: number | null;
+                            /** Format: date-time */
+                            fetched_at: string;
+                            maps_uri: string | null;
+                            name: string | null;
+                            rating: number | null;
+                            write_review_url: string | null;
+                        } | null;
+                        /** ReviewAskSettings */
+                        settings: {
+                            enabled: boolean;
+                            google_place_id: string | null;
+                            google_review_url: string | null;
+                            lock_version: number;
+                            milestones: number[];
+                        };
+                    };
+                };
+            };
+            /** @description Saved meanwhile */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Invalid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminReviewAsksController.summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Summary */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        counts: {
+                            asked: number;
+                            dismissed: number;
+                            later: number;
+                            opened: number;
+                            opted_out: number;
+                            unanswered: number;
+                        };
+                        days: number;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminReviewController.index": {
         parameters: {
             query?: {
@@ -92242,6 +102678,15 @@ export interface operations {
                         } & {
                             [key: string]: unknown;
                         })[];
+                        /** @description ADR-357: the assignment tag of every gym day of the range */
+                        days: {
+                            classes: number;
+                            /** Format: date */
+                            date: string;
+                            /** @enum {string} */
+                            tag: "none" | "not_assigned" | "mixed" | "all_assigned";
+                            with_wod: number;
+                        }[];
                     };
                 };
             };
@@ -92825,6 +103270,80 @@ export interface operations {
                         slots: {
                             [key: string]: unknown;
                         }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminVisitBadgesController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Badges */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        people: {
+                            badges: ("first_visit" | "first_in_class_type" | "guest" | "trial" | "brought_by_member" | "came_via_event" | "came_via_referral")[];
+                            /** Format: uuid */
+                            booking_id: string;
+                            brought_by: {
+                                nickname?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            guest_name: string | null;
+                            /** Format: uuid */
+                            user_id: string;
+                            /**
+                             * VisitVia
+                             * @description How a first-time visitor came (referral attribution)
+                             */
+                            via: {
+                                by_nickname?: string | null;
+                                /** Format: uuid */
+                                by_user_id?: string | null;
+                                channel?: string | null;
+                                /** Format: uuid */
+                                event_id?: string | null;
+                                /** @enum {string} */
+                                kind: "event" | "referral";
+                            } | null;
+                        }[];
+                        /** Format: uuid */
+                        slot_id: string;
+                    };
+                };
+            };
+            /** @description Not one of your branches */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description No such class */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
                     };
                 };
             };
@@ -95151,6 +105670,512 @@ export interface operations {
                             time_zone: string;
                             /** Format: date */
                             to: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Site */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        domains: {
+                            /** Format: date-time */
+                            active_at: string | null;
+                            /** Format: date-time */
+                            checked_at: string | null;
+                            dns_records: {
+                                name: string;
+                                /** @enum {string} */
+                                type: "TXT" | "CNAME" | "A";
+                                value: string;
+                            }[];
+                            host: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string|null} */
+                            last_error: "dns_txt_missing" | "dns_not_pointing" | "tls_not_ready" | "tls_failed" | null;
+                            /** Format: date-time */
+                            next_check_at: string | null;
+                            primary: boolean;
+                            /** @enum {string} */
+                            status: "pending_dns" | "pending_tls" | "active" | "broken" | "expired";
+                            /** Format: date-time */
+                            verified_at: string | null;
+                        }[];
+                        section_keys: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                        /** SiteSettings */
+                        settings: {
+                            about_en: string | null;
+                            banner_version: number;
+                            conversions_api_enabled: boolean;
+                            faq: {
+                                answer: string;
+                                /** @description Optional English text (ADR-388) */
+                                answer_en?: string;
+                                question: string;
+                                /** @description Optional English text (ADR-388) */
+                                question_en?: string;
+                            }[];
+                            forms_enabled: boolean;
+                            ga4_measurement_id: string | null;
+                            gtm_container_id: string | null;
+                            /** @description A token is saved; the token itself is never returned */
+                            has_conversions_api_token: boolean;
+                            hidden_sections: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                            lock_version: number;
+                            meta_pixel_id: string | null;
+                            public_schedule: boolean;
+                            /** @description «WOD της ημέρας» on the site (ADR-388) */
+                            public_wod: boolean;
+                            section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    about_en?: string | null;
+                    conversions_api_enabled?: boolean;
+                    /** @description Meta Conversions API access token (write-only; empty removes it) */
+                    conversions_api_token?: string | null;
+                    faq?: {
+                        answer: string;
+                        /** @description Optional English text (ADR-388) */
+                        answer_en?: string;
+                        question: string;
+                        /** @description Optional English text (ADR-388) */
+                        question_en?: string;
+                    }[];
+                    forms_enabled?: boolean;
+                    ga4_measurement_id?: string | null;
+                    gtm_container_id?: string | null;
+                    hidden_sections?: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                    lock_version: number;
+                    meta_pixel_id?: string | null;
+                    public_schedule?: boolean;
+                    public_wod?: boolean;
+                    section_order?: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                };
+            };
+        };
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** SiteSettings */
+                        settings: {
+                            about_en: string | null;
+                            banner_version: number;
+                            conversions_api_enabled: boolean;
+                            faq: {
+                                answer: string;
+                                /** @description Optional English text (ADR-388) */
+                                answer_en?: string;
+                                question: string;
+                                /** @description Optional English text (ADR-388) */
+                                question_en?: string;
+                            }[];
+                            forms_enabled: boolean;
+                            ga4_measurement_id: string | null;
+                            gtm_container_id: string | null;
+                            /** @description A token is saved; the token itself is never returned */
+                            has_conversions_api_token: boolean;
+                            hidden_sections: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                            lock_version: number;
+                            meta_pixel_id: string | null;
+                            public_schedule: boolean;
+                            /** @description «WOD της ημέρας» on the site (ADR-388) */
+                            public_wod: boolean;
+                            section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                        };
+                    };
+                };
+            };
+            /** @description Saved meanwhile */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.domains": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Domains */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        domains: {
+                            /** Format: date-time */
+                            active_at: string | null;
+                            /** Format: date-time */
+                            checked_at: string | null;
+                            dns_records: {
+                                name: string;
+                                /** @enum {string} */
+                                type: "TXT" | "CNAME" | "A";
+                                value: string;
+                            }[];
+                            host: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string|null} */
+                            last_error: "dns_txt_missing" | "dns_not_pointing" | "tls_not_ready" | "tls_failed" | null;
+                            /** Format: date-time */
+                            next_check_at: string | null;
+                            primary: boolean;
+                            /** @enum {string} */
+                            status: "pending_dns" | "pending_tls" | "active" | "broken" | "expired";
+                            /** Format: date-time */
+                            verified_at: string | null;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.add_domain": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    host: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Domain */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** SiteDomain */
+                        domain: {
+                            /** Format: date-time */
+                            active_at: string | null;
+                            /** Format: date-time */
+                            checked_at: string | null;
+                            dns_records: {
+                                name: string;
+                                /** @enum {string} */
+                                type: "TXT" | "CNAME" | "A";
+                                value: string;
+                            }[];
+                            host: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string|null} */
+                            last_error: "dns_txt_missing" | "dns_not_pointing" | "tls_not_ready" | "tls_failed" | null;
+                            /** Format: date-time */
+                            next_check_at: string | null;
+                            primary: boolean;
+                            /** @enum {string} */
+                            status: "pending_dns" | "pending_tls" | "active" | "broken" | "expired";
+                            /** Format: date-time */
+                            verified_at: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description Error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.remove_domain": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.check_domain": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Domain */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** SiteDomain */
+                        domain: {
+                            /** Format: date-time */
+                            active_at: string | null;
+                            /** Format: date-time */
+                            checked_at: string | null;
+                            dns_records: {
+                                name: string;
+                                /** @enum {string} */
+                                type: "TXT" | "CNAME" | "A";
+                                value: string;
+                            }[];
+                            host: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string|null} */
+                            last_error: "dns_txt_missing" | "dns_not_pointing" | "tls_not_ready" | "tls_failed" | null;
+                            /** Format: date-time */
+                            next_check_at: string | null;
+                            primary: boolean;
+                            /** @enum {string} */
+                            status: "pending_dns" | "pending_tls" | "active" | "broken" | "expired";
+                            /** Format: date-time */
+                            verified_at: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description Error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.send_instructions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: email */
+                    email: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Sent */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        sent_to: string;
+                    };
+                };
+            };
+            /** @description Error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.make_primary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Domain */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** SiteDomain */
+                        domain: {
+                            /** Format: date-time */
+                            active_at: string | null;
+                            /** Format: date-time */
+                            checked_at: string | null;
+                            dns_records: {
+                                name: string;
+                                /** @enum {string} */
+                                type: "TXT" | "CNAME" | "A";
+                                value: string;
+                            }[];
+                            host: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string|null} */
+                            last_error: "dns_txt_missing" | "dns_not_pointing" | "tls_not_ready" | "tls_failed" | null;
+                            /** Format: date-time */
+                            next_check_at: string | null;
+                            primary: boolean;
+                            /** @enum {string} */
+                            status: "pending_dns" | "pending_tls" | "active" | "broken" | "expired";
+                            /** Format: date-time */
+                            verified_at: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description Error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminSiteController.summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Summary */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        consents: {
+                            accept_all: number;
+                            custom: number;
+                            reject_all: number;
+                            withdraw: number;
+                        };
+                        days: number;
+                        submissions: {
+                            delivered: number;
+                            failed: number;
+                            total: number;
+                            waiting: number;
                         };
                     };
                 };
@@ -98061,6 +109086,35 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminWorkoutController.benchmarks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Benchmarks */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        benchmarks: {
+                            /** @enum {string} */
+                            group: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+                            key: string;
+                            lower_is_better: boolean;
+                            /** @enum {string} */
+                            unit: "kg" | "reps" | "mins_secs";
+                        }[];
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminWorkoutChoiceController.search": {
         parameters: {
             query?: {
@@ -98586,6 +109640,7 @@ export interface operations {
                                 slug?: string;
                                 sort_order?: number;
                             } | null)[];
+                            benchmark_key?: string | null;
                             /** WorkoutBody */
                             body?: {
                                 /** @description The editor's rich text (TipTap/ProseMirror JSON): marks such as bold, italic, underline, strike, textStyle colour and highlight; nodes such as headings, lists and quotes */
@@ -99937,6 +110992,64 @@ export interface operations {
                     "application/json": {
                         error: string;
                     };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminWorkoutController.update_benchmark": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description A key of the benchmark catalog; null clears the tag */
+                    benchmark_key: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Benchmark */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        benchmark: {
+                            /** @enum {string} */
+                            group: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+                            key: string;
+                            lower_is_better: boolean;
+                            /** @enum {string} */
+                            unit: "kg" | "reps" | "mins_secs";
+                        } | null;
+                        /** Format: uuid */
+                        id: string;
+                    };
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Unknown benchmark */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
                 };
             };
         };
@@ -102522,6 +113635,7 @@ export interface operations {
                                 slug?: string;
                                 sort_order?: number;
                             } | null)[];
+                            benchmark_key?: string | null;
                             /** WorkoutBody */
                             body?: {
                                 /** @description The editor's rich text (TipTap/ProseMirror JSON): marks such as bold, italic, underline, strike, textStyle colour and highlight; nodes such as headings, lists and quotes */
@@ -104162,6 +115276,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.BookingCalendarController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description iCalendar invite */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/calendar": string;
+                };
+            };
+            /** @description No such booking of yours */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
                 };
             };
         };
@@ -105930,6 +117077,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -106358,6 +117509,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -106671,6 +117826,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -106984,6 +118143,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -108536,6 +119699,363 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.MyAutomationPreferencesController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Preferences */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        birthday: {
+                            day: number;
+                            month: number;
+                        } | null;
+                        opted_out: boolean;
+                        opted_out_recipes: string[];
+                        recipes: {
+                            key: string;
+                            purpose: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyAutomationPreferencesController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Day and month only, never the year; null stops sharing it */
+                    birthday?: {
+                        day: number;
+                        month: number;
+                    } | null;
+                    opted_out?: boolean;
+                    opted_out_recipes?: ("welcome" | "trial_follow_up" | "missed_classes" | "renewal_reminder" | "birthday" | "win_back")[];
+                };
+            };
+        };
+        responses: {
+            /** @description Preferences */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        birthday: {
+                            day: number;
+                            month: number;
+                        } | null;
+                        opted_out: boolean;
+                        opted_out_recipes: string[];
+                        recipes: {
+                            key: string;
+                            purpose: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyBoxReviewsController.save": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    body?: string | null;
+                    locale?: string | null;
+                    rating: number;
+                };
+            };
+        };
+        responses: {
+            /** @description Review */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** BoxReview */
+                        review: {
+                            /** @description First name only; null for people who hide themselves */
+                            author_name: string | null;
+                            body: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            /** Format: date-time */
+                            edited_at: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            rating: number;
+                            /** BoxReviewReply */
+                            reply: {
+                                body: string;
+                                /** Format: date-time */
+                                replied_at: string;
+                            } | null;
+                        };
+                    };
+                };
+            };
+            /** @description Never checked in here */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Invalid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyBoxReviewsController.delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "PaleeWeb.MyBoxReviewsController.index": {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reviews */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        average: number | null;
+                        /** @description Checked in at least once */
+                        can_review: boolean;
+                        count: number;
+                        /**
+                         * GoogleListing
+                         * @description The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms
+                         */
+                        google: {
+                            count: number | null;
+                            /** Format: date-time */
+                            fetched_at: string;
+                            maps_uri: string | null;
+                            name: string | null;
+                            rating: number | null;
+                            write_review_url: string | null;
+                        } | null;
+                        has_more: boolean;
+                        /** MyBoxReview */
+                        mine: {
+                            /** @description First name only; null for people who hide themselves */
+                            author_name: string | null;
+                            body: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            /** Format: date-time */
+                            edited_at: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            rating: number;
+                            /** BoxReviewReply */
+                            reply: {
+                                body: string;
+                                /** Format: date-time */
+                                replied_at: string;
+                            } | null;
+                        } | null;
+                        reviews: {
+                            /** @description First name only; null for people who hide themselves */
+                            author_name: string | null;
+                            body: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            /** Format: date-time */
+                            edited_at: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            rating: number;
+                            /** BoxReviewReply */
+                            reply: {
+                                body: string;
+                                /** Format: date-time */
+                                replied_at: string;
+                            } | null;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyChannelsController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description My channels */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Channels the box uses */
+                        channels: ("sms" | "viber" | "whatsapp")[];
+                        contact: {
+                            consents: {
+                                /** @enum {string} */
+                                channel: "sms" | "viber" | "whatsapp";
+                                granted: boolean;
+                                /** Format: date-time */
+                                granted_at?: string | null;
+                                /** @enum {string} */
+                                purpose: "service" | "marketing";
+                                source?: string | null;
+                                text_version?: string | null;
+                                /** Format: date-time */
+                                withdrawn_at?: string | null;
+                            }[];
+                            country?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id?: string | null;
+                            locale: string;
+                            /** Format: date-time */
+                            opted_out_at?: string | null;
+                            /** @description Masked for staff; full for the person */
+                            phone: string;
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyChannelsController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    consents?: {
+                        /** @enum {string} */
+                        channel: "sms" | "viber" | "whatsapp";
+                        granted: boolean;
+                        /** @enum {string} */
+                        purpose: "service" | "marketing";
+                    }[];
+                    /** @enum {string} */
+                    locale?: "el" | "en" | "de" | "fr" | "it" | "es" | "nl" | "pt-PT" | "bg" | "ru" | "ar" | "he";
+                    phone?: string;
+                    text_version?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description My channels */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Channels the box uses */
+                        channels: ("sms" | "viber" | "whatsapp")[];
+                        contact: {
+                            consents: {
+                                /** @enum {string} */
+                                channel: "sms" | "viber" | "whatsapp";
+                                granted: boolean;
+                                /** Format: date-time */
+                                granted_at?: string | null;
+                                /** @enum {string} */
+                                purpose: "service" | "marketing";
+                                source?: string | null;
+                                text_version?: string | null;
+                                /** Format: date-time */
+                                withdrawn_at?: string | null;
+                            }[];
+                            country?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            lead_id?: string | null;
+                            locale: string;
+                            /** Format: date-time */
+                            opted_out_at?: string | null;
+                            /** @description Masked for staff; full for the person */
+                            phone: string;
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.MyCheckInController.code": {
         parameters: {
             query?: never;
@@ -109200,6 +120720,58 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.WorkoutSnapshotController.execution": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description As performed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description The WOD now reads differently, or no longer exists */
+                        changed: boolean;
+                        /** @description Null for results from before snapshots (ADR-357) */
+                        snapshot: {
+                            /** @description The WOD as it read then (title, type, text, sections, plans, body) */
+                            content: {
+                                [key: string]: unknown;
+                            };
+                            content_hash: string;
+                            format_version: number;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            taken_at: string;
+                            title?: string | null;
+                            /** Format: uuid */
+                            workout_id: string;
+                        } | null;
+                    };
+                };
+            };
+            /** @description No such run, or not yours */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.MyFinanceController.index": {
         parameters: {
             query?: never;
@@ -109842,6 +121414,8 @@ export interface operations {
                             status: "scheduled" | "awaiting_payer" | "processing" | "succeeded" | "failed" | "cancelled" | "expired";
                             /** Format: date-time */
                             succeeded_at?: string | null;
+                            /** @description ADR-340: the card surcharge charged on top of `amount_cents` */
+                            surcharge_cents?: number | null;
                             /** Format: uuid */
                             user_id?: string | null;
                         };
@@ -109877,6 +121451,97 @@ export interface operations {
                         currency: string;
                         /** @description The provider members pay through, or null when online payment is off */
                         provider: string | null;
+                        surcharge?: {
+                            applies: boolean;
+                            fixed_cents: number;
+                            percent_bps: number;
+                            /** @enum {string|null} */
+                            reason: "off" | "channel_off" | "not_allowed_here" | "card_unknown" | "card_not_surchargeable" | "zero" | null;
+                            /** @enum {string} */
+                            rule: "eea_non_consumer" | "commercial_only" | "credit_only" | "any" | "none";
+                            surcharge_cents: number;
+                            total_cents: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.WorkoutLeaderboardController.profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Profile */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        birth_year: number | null;
+                        /** @enum {string|null} */
+                        division: "women" | "men" | null;
+                        opted_in: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.WorkoutLeaderboardController.update_profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    birth_year?: number | null;
+                    /** @enum {string|null} */
+                    division?: "women" | "men" | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Profile */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        birth_year: number | null;
+                        /** @enum {string|null} */
+                        division: "women" | "men" | null;
+                        opted_in: boolean;
+                    };
+                };
+            };
+            /** @description Not opted in to leaderboards */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Invalid values */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
                     };
                 };
             };
@@ -110252,6 +121917,8 @@ export interface operations {
                             status: "scheduled" | "awaiting_payer" | "processing" | "succeeded" | "failed" | "cancelled" | "expired";
                             /** Format: date-time */
                             succeeded_at?: string | null;
+                            /** @description ADR-340: the card surcharge charged on top of `amount_cents` */
+                            surcharge_cents?: number | null;
                             /** Format: uuid */
                             user_id?: string | null;
                         };
@@ -110285,6 +121952,8 @@ export interface operations {
                         available: boolean;
                         consent_text: string;
                         consent_version: string;
+                        /** @enum {string|null} */
+                        eligibility?: "package_staff_only" | "package_already_used" | "package_purchase_limit_reached" | "package_new_members_only" | "package_prerequisite_missing" | "package_active_members_only" | null;
                         package: {
                             base_price_cents: number;
                             billing_period: string;
@@ -110302,6 +121971,17 @@ export interface operations {
                         /** @description The provider members pay through, or null when online payment is off */
                         provider: string | null;
                         start_now_text: string | null;
+                        surcharge?: {
+                            applies: boolean;
+                            fixed_cents: number;
+                            percent_bps: number;
+                            /** @enum {string|null} */
+                            reason: "off" | "channel_off" | "not_allowed_here" | "card_unknown" | "card_not_surchargeable" | "zero" | null;
+                            /** @enum {string} */
+                            rule: "eea_non_consumer" | "commercial_only" | "credit_only" | "any" | "none";
+                            surcharge_cents: number;
+                            total_cents: number;
+                        } | null;
                         withdrawal_days: number | null;
                     };
                 };
@@ -110426,6 +122106,11 @@ export interface operations {
                         payment_methods: {
                             autopay: boolean;
                             brand?: string | null;
+                            /**
+                             * @description ADR-340: what the provider told; decides a lawful card surcharge
+                             * @enum {string|null}
+                             */
+                            card_funding?: "credit" | "debit" | "prepaid" | null;
                             consent_version?: string | null;
                             /** Format: date-time */
                             consented_at?: string | null;
@@ -110466,6 +122151,11 @@ export interface operations {
                         payment_method: {
                             autopay: boolean;
                             brand?: string | null;
+                            /**
+                             * @description ADR-340: what the provider told; decides a lawful card surcharge
+                             * @enum {string|null}
+                             */
+                            card_funding?: "credit" | "debit" | "prepaid" | null;
                             consent_version?: string | null;
                             /** Format: date-time */
                             consented_at?: string | null;
@@ -110512,6 +122202,11 @@ export interface operations {
                         payment_method: {
                             autopay: boolean;
                             brand?: string | null;
+                            /**
+                             * @description ADR-340: what the provider told; decides a lawful card surcharge
+                             * @enum {string|null}
+                             */
+                            card_funding?: "credit" | "debit" | "prepaid" | null;
                             consent_version?: string | null;
                             /** Format: date-time */
                             consented_at?: string | null;
@@ -110596,6 +122291,8 @@ export interface operations {
                             status: "scheduled" | "awaiting_payer" | "processing" | "succeeded" | "failed" | "cancelled" | "expired";
                             /** Format: date-time */
                             succeeded_at?: string | null;
+                            /** @description ADR-340: the card surcharge charged on top of `amount_cents` */
+                            surcharge_cents?: number | null;
                             /** Format: uuid */
                             user_id?: string | null;
                         };
@@ -110669,9 +122366,44 @@ export interface operations {
                             status: "scheduled" | "awaiting_payer" | "processing" | "succeeded" | "failed" | "cancelled" | "expired";
                             /** Format: date-time */
                             succeeded_at?: string | null;
+                            /** @description ADR-340: the card surcharge charged on top of `amount_cents` */
+                            surcharge_cents?: number | null;
                             /** Format: uuid */
                             user_id?: string | null;
                         };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyPaymentsController.surcharge_quote": {
+        parameters: {
+            query: {
+                amount_cents: number;
+                payment_method_id?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Quote */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        applies: boolean;
+                        fixed_cents: number;
+                        percent_bps: number;
+                        /** @enum {string|null} */
+                        reason: "off" | "channel_off" | "not_allowed_here" | "card_unknown" | "card_not_surchargeable" | "zero" | null;
+                        /** @enum {string} */
+                        rule: "eea_non_consumer" | "commercial_only" | "credit_only" | "any" | "none";
+                        surcharge_cents: number;
+                        total_cents: number;
                     };
                 };
             };
@@ -110735,6 +122467,8 @@ export interface operations {
                             status: "scheduled" | "awaiting_payer" | "processing" | "succeeded" | "failed" | "cancelled" | "expired";
                             /** Format: date-time */
                             succeeded_at?: string | null;
+                            /** @description ADR-340: the card surcharge charged on top of `amount_cents` */
+                            surcharge_cents?: number | null;
                             /** Format: uuid */
                             user_id?: string | null;
                         };
@@ -111185,6 +122919,147 @@ export interface operations {
             };
             /** @description Not found */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyReviewAskController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ask */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** ReviewAsk */
+                        ask: {
+                            actions: ("opened" | "later" | "dismissed")[];
+                            google_review_url: string | null;
+                            /** @description The member already wrote an in-app review (ADR-386) */
+                            has_review: boolean;
+                            /** Format: uuid */
+                            id: string;
+                            milestone: number;
+                            /** Format: date-time */
+                            shown_at: string;
+                            /** @enum {string} */
+                            status: "shown" | "opened" | "later" | "dismissed";
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyReviewAskController.opt_out": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Opted out */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        opted_out: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyReviewAskController.opt_in": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Opted in */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        opted_out: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyReviewAskController.respond": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    action: "opened" | "later" | "dismissed";
+                };
+            };
+        };
+        responses: {
+            /** @description Ask */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** ReviewAsk */
+                        ask: {
+                            actions: ("opened" | "later" | "dismissed")[];
+                            google_review_url: string | null;
+                            /** @description The member already wrote an in-app review (ADR-386) */
+                            has_review: boolean;
+                            /** Format: uuid */
+                            id: string;
+                            milestone: number;
+                            /** Format: date-time */
+                            shown_at: string;
+                            /** @enum {string} */
+                            status: "shown" | "opened" | "later" | "dismissed";
+                        } | null;
+                    };
+                };
+            };
+            /** @description No such ask */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Already answered */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -112372,6 +124247,8 @@ export interface operations {
                             status: "scheduled" | "awaiting_payer" | "processing" | "succeeded" | "failed" | "cancelled" | "expired";
                             /** Format: date-time */
                             succeeded_at?: string | null;
+                            /** @description ADR-340: the card surcharge charged on top of `amount_cents` */
+                            surcharge_cents?: number | null;
                             /** Format: uuid */
                             user_id?: string | null;
                         };
@@ -113689,6 +125566,58 @@ export interface operations {
                 };
                 content: {
                     "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.WorkoutSnapshotController.training_log": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description As performed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description The WOD now reads differently, or no longer exists */
+                        changed: boolean;
+                        /** @description Null for results from before snapshots (ADR-357) */
+                        snapshot: {
+                            /** @description The WOD as it read then (title, type, text, sections, plans, body) */
+                            content: {
+                                [key: string]: unknown;
+                            };
+                            content_hash: string;
+                            format_version: number;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            taken_at: string;
+                            title?: string | null;
+                            /** Format: uuid */
+                            workout_id: string;
+                        } | null;
+                    };
+                };
+            };
+            /** @description No such score, or not yours */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
                 };
             };
         };
@@ -116020,6 +127949,11 @@ export interface operations {
                 content: {
                     "application/json": {
                         notes: {
+                            /**
+                             * @description ADR-359: private coach note (ADR-101) or a note every staff member reads
+                             * @enum {string}
+                             */
+                            audience?: "private" | "staff";
                             body: string;
                             /** Format: uuid */
                             client_user_id: string;
@@ -116054,6 +127988,11 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    /**
+                     * @default private
+                     * @enum {string}
+                     */
+                    audience?: "private" | "staff";
                     body: string;
                     /** Format: uuid */
                     subject_id?: string;
@@ -116072,6 +128011,11 @@ export interface operations {
                     "application/json": {
                         /** CoachNote */
                         note: {
+                            /**
+                             * @description ADR-359: private coach note (ADR-101) or a note every staff member reads
+                             * @enum {string}
+                             */
+                            audience?: "private" | "staff";
                             body: string;
                             /** Format: uuid */
                             client_user_id: string;
@@ -116669,6 +128613,11 @@ export interface operations {
                     "application/json": {
                         /** CoachNote */
                         note: {
+                            /**
+                             * @description ADR-359: private coach note (ADR-101) or a note every staff member reads
+                             * @enum {string}
+                             */
+                            audience?: "private" | "staff";
                             body: string;
                             /** Format: uuid */
                             client_user_id: string;
@@ -120935,6 +132884,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -122798,6 +134751,56 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.WorkoutSnapshotController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Snapshot */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** WorkoutSnapshot */
+                        snapshot: {
+                            /** @description The WOD as it read then (title, type, text, sections, plans, body) */
+                            content: {
+                                [key: string]: unknown;
+                            };
+                            content_hash: string;
+                            format_version: number;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            taken_at: string;
+                            title?: string | null;
+                            /** Format: uuid */
+                            workout_id: string;
+                        };
+                    };
+                };
+            };
+            /** @description No such snapshot, or not yours */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.WorkoutController.show": {
         parameters: {
             query?: never;
@@ -122828,6 +134831,7 @@ export interface operations {
                                 slug?: string;
                                 sort_order?: number;
                             } | null)[];
+                            benchmark_key?: string | null;
                             /** WorkoutBody */
                             body?: {
                                 /** @description The editor's rich text (TipTap/ProseMirror JSON): marks such as bold, italic, underline, strike, textStyle colour and highlight; nodes such as headings, lists and quotes */
@@ -124203,6 +136207,171 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.WorkoutLeaderboardController.show": {
+        parameters: {
+            query?: {
+                /** @description Only this division */
+                division?: "women" | "men";
+                /** @description Only this age group (age reached during the year) */
+                age_group?: "under_18" | "18_34" | "35_39" | "40_44" | "45_49" | "50_54" | "55_59" | "60_64" | "65_plus";
+                /** @description Only this scale level slug */
+                scale?: string;
+                /** @description Whole box, one branch, or every box (palee: only a benchmark WOD, ADR-394) */
+                scope?: "box" | "branch" | "palee";
+                /** @description The branch, with scope=branch */
+                location_id?: string;
+                /** @description Time window around `date` (default day) */
+                window?: "day" | "week" | "month" | "year" | "all";
+                /** @description Gym date (default today) */
+                date?: string;
+                /** @description Only the viewer and their buddies */
+                buddies?: boolean;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Leaderboard */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** PaleeBenchmark */
+                        benchmark?: {
+                            group: string;
+                            key: string;
+                            lower_is_better: boolean;
+                            /** @enum {string} */
+                            unit: "kg" | "reps" | "mins_secs";
+                        } | null;
+                        filters: {
+                            age_group?: string | null;
+                            buddies: boolean;
+                            /** Format: date */
+                            date: string;
+                            division?: string | null;
+                            /** Format: uuid */
+                            location_id?: string | null;
+                            scale?: string | null;
+                            /** @enum {string} */
+                            scope: "box" | "branch" | "palee";
+                            /** @enum {string} */
+                            window: "day" | "week" | "month" | "year" | "all";
+                        };
+                        me: {
+                            avatar_url?: string | null;
+                            /** @description The person's box, on the Palee-wide board only (ADR-394) */
+                            box_name?: string | null;
+                            me: boolean;
+                            nickname?: string | null;
+                            /** @description Share of the other results of the slice this one beat (0-100) */
+                            percentile: number | null;
+                            rank: number | null;
+                            scale_level_slug?: string | null;
+                            /** @description «Top X%»: share of results at this place or better, rounded up */
+                            top_percent: number | null;
+                            unit?: string | null;
+                            /**
+                             * Format: uuid
+                             * @description Null on the Palee-wide board for everyone but the viewer (ADR-394)
+                             */
+                            user_id: string | null;
+                            value?: string | null;
+                        } | null;
+                        /** @description Whether the viewer opted in; without it no comparison is shown */
+                        opted_in: boolean;
+                        options: {
+                            age_groups: string[];
+                            divisions: string[];
+                            scales: {
+                                label: string;
+                                slug: string;
+                            }[];
+                            scopes: string[];
+                            windows: string[];
+                        };
+                        /**
+                         * @description The viewer's answer about the Palee-wide board; null when not asked yet or when the WOD is not a benchmark (ADR-394)
+                         * @enum {string|null}
+                         */
+                        palee_consent?: "share" | "see_only" | null;
+                        profile?: {
+                            birth_year?: number | null;
+                            division?: string | null;
+                        } | null;
+                        rows: {
+                            avatar_url?: string | null;
+                            /** @description The person's box, on the Palee-wide board only (ADR-394) */
+                            box_name?: string | null;
+                            me: boolean;
+                            nickname?: string | null;
+                            /** @description Share of the other results of the slice this one beat (0-100) */
+                            percentile: number | null;
+                            rank: number | null;
+                            scale_level_slug?: string | null;
+                            /** @description «Top X%»: share of results at this place or better, rounded up */
+                            top_percent: number | null;
+                            unit?: string | null;
+                            /**
+                             * Format: uuid
+                             * @description Null on the Palee-wide board for everyone but the viewer (ADR-394)
+                             */
+                            user_id: string | null;
+                            value?: string | null;
+                        }[];
+                        section?: {
+                            [key: string]: unknown;
+                        } | null;
+                        total: number;
+                        workout: {
+                            /** Format: uuid */
+                            id: string;
+                            title?: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description No such WOD */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description scope=palee before answering the Palee-wide question */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description A filter does not read */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.WorkoutController.scales": {
         parameters: {
             query?: never;
@@ -124233,6 +136402,7 @@ export interface operations {
                                 slug?: string;
                                 sort_order?: number;
                             } | null)[];
+                            benchmark_key?: string | null;
                             /** WorkoutBody */
                             body?: {
                                 /** @description The editor's rich text (TipTap/ProseMirror JSON): marks such as bold, italic, underline, strike, textStyle colour and highlight; nodes such as headings, lists and quotes */
@@ -125550,6 +137720,7 @@ export interface operations {
                                 slug?: string;
                                 sort_order?: number;
                             } | null)[];
+                            benchmark_key?: string | null;
                             /** WorkoutBody */
                             body?: {
                                 /** @description The editor's rich text (TipTap/ProseMirror JSON): marks such as bold, italic, underline, strike, textStyle colour and highlight; nodes such as headings, lists and quotes */
@@ -127535,6 +139706,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -127841,6 +140016,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -128291,6 +140470,75 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.PlatformChannelMarginsController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Margins */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Basis points per channel (2500 = 25 %) */
+                        margins_bps: {
+                            sms: number;
+                            viber: number;
+                            whatsapp: number;
+                        };
+                        /** Format: date-time */
+                        updated_at: string | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PlatformChannelMarginsController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Basis points per channel (2500 = 25 %) */
+                    margins_bps: {
+                        sms?: number;
+                        viber?: number;
+                        whatsapp?: number;
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description Margins */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Basis points per channel (2500 = 25 %) */
+                        margins_bps: {
+                            sms: number;
+                            viber: number;
+                            whatsapp: number;
+                        };
+                        /** Format: date-time */
+                        updated_at: string | null;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.PlatformOrganizationPurgeController.index": {
         parameters: {
             query?: never;
@@ -128630,6 +140878,50 @@ export interface operations {
                             [key: string]: string;
                         };
                         upload_url: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PlatformChannelMarginsController.charges": {
+        parameters: {
+            query?: {
+                /** @description YYYY-MM on the box's clock; this month when left out */
+                month?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Charge */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        by_channel: {
+                            [key: string]: {
+                                charge_cents: number;
+                                count: number;
+                                provider_cost_cents: number;
+                            };
+                        };
+                        charge_cents: number;
+                        currency: string;
+                        /** Format: date-time */
+                        from: string;
+                        margin_cents: number;
+                        messages: number;
+                        /** @example 2026-11 */
+                        month: string;
+                        provider_cost_cents: number;
+                        /** Format: date-time */
+                        to: string;
                     };
                 };
             };
@@ -130858,6 +143150,391 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.PlatformSiteDomainsController.index": {
+        parameters: {
+            query?: {
+                status?: "pending_dns" | "pending_tls" | "active" | "broken" | "expired";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Domains */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        cname_target: string;
+                        domains: {
+                            host: string;
+                            slug: string;
+                            /** @enum {string} */
+                            status: "pending_dns" | "pending_tls" | "active" | "broken" | "expired";
+                            /** Format: date-time */
+                            updated_at: string | null;
+                            /** Format: date-time */
+                            verified_at: string | null;
+                        }[];
+                    };
+                };
+            };
+            /** @description Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.PlatformStatusController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Console */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        incidents: {
+                            components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                            /** @enum {string|null} */
+                            en_source: "auto" | "edited" | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            impact: "none" | "minor" | "major" | "critical";
+                            /** @enum {string} */
+                            kind: "incident" | "maintenance";
+                            locale: string | null;
+                            /** @description Who published the incident (console only) */
+                            published_by?: string | null;
+                            /** Format: date-time */
+                            resolved_at: string | null;
+                            /** Format: date-time */
+                            scheduled_for: string | null;
+                            /** Format: date-time */
+                            scheduled_until: string | null;
+                            /** Format: date-time */
+                            started_at: string;
+                            /** @enum {string} */
+                            status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                            title: string;
+                            title_en: string | null;
+                            updates: {
+                                body: string;
+                                body_en: string | null;
+                                /** Format: date-time */
+                                created_at: string;
+                                /** @enum {string|null} */
+                                en_source: "auto" | "edited" | null;
+                                /** Format: uuid */
+                                id: string;
+                                locale: string | null;
+                                /** @description Who published this step (console only) */
+                                published_by?: string | null;
+                                /** @enum {string} */
+                                status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                            }[];
+                        }[];
+                        probes: {
+                            /** Format: date-time */
+                            changed_at: string;
+                            /** Format: date-time */
+                            checked_at: string;
+                            key: string;
+                            reason: string | null;
+                            /** @enum {string} */
+                            status: "operational" | "degraded" | "down";
+                        }[];
+                        subscribers: {
+                            confirmed: number;
+                            waiting: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PlatformStatusController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description A new incident or planned maintenance with its first note */
+        requestBody: {
+            content: {
+                "application/json": {
+                    body: string;
+                    body_en?: string;
+                    components?: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                    /** @enum {string} */
+                    en_source?: "auto" | "edited";
+                    /** @enum {string} */
+                    impact?: "none" | "minor" | "major" | "critical";
+                    /** @enum {string} */
+                    kind?: "incident" | "maintenance";
+                    locale?: string;
+                    notify?: boolean;
+                    /** Format: date-time */
+                    scheduled_for?: string;
+                    /** Format: date-time */
+                    scheduled_until?: string;
+                    /** @enum {string} */
+                    status?: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                    title: string;
+                    title_en?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Incident */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                        /** @enum {string|null} */
+                        en_source: "auto" | "edited" | null;
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        impact: "none" | "minor" | "major" | "critical";
+                        /** @enum {string} */
+                        kind: "incident" | "maintenance";
+                        locale: string | null;
+                        /** @description Who published the incident (console only) */
+                        published_by?: string | null;
+                        /** Format: date-time */
+                        resolved_at: string | null;
+                        /** Format: date-time */
+                        scheduled_for: string | null;
+                        /** Format: date-time */
+                        scheduled_until: string | null;
+                        /** Format: date-time */
+                        started_at: string;
+                        /** @enum {string} */
+                        status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                        title: string;
+                        title_en: string | null;
+                        updates: {
+                            body: string;
+                            body_en: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            /** @enum {string|null} */
+                            en_source: "auto" | "edited" | null;
+                            /** Format: uuid */
+                            id: string;
+                            locale: string | null;
+                            /** @description Who published this step (console only) */
+                            published_by?: string | null;
+                            /** @enum {string} */
+                            status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PlatformStatusController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description A correction (no note, no email) */
+        requestBody: {
+            content: {
+                "application/json": {
+                    components?: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                    /** @enum {string} */
+                    impact?: "none" | "minor" | "major" | "critical";
+                    title?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Incident */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                        /** @enum {string|null} */
+                        en_source: "auto" | "edited" | null;
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        impact: "none" | "minor" | "major" | "critical";
+                        /** @enum {string} */
+                        kind: "incident" | "maintenance";
+                        locale: string | null;
+                        /** @description Who published the incident (console only) */
+                        published_by?: string | null;
+                        /** Format: date-time */
+                        resolved_at: string | null;
+                        /** Format: date-time */
+                        scheduled_for: string | null;
+                        /** Format: date-time */
+                        scheduled_until: string | null;
+                        /** Format: date-time */
+                        started_at: string;
+                        /** @enum {string} */
+                        status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                        title: string;
+                        title_en: string | null;
+                        updates: {
+                            body: string;
+                            body_en: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            /** @enum {string|null} */
+                            en_source: "auto" | "edited" | null;
+                            /** Format: uuid */
+                            id: string;
+                            locale: string | null;
+                            /** @description Who published this step (console only) */
+                            published_by?: string | null;
+                            /** @enum {string} */
+                            status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PlatformStatusController.add_update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        /** @description A new step in the timeline */
+        requestBody: {
+            content: {
+                "application/json": {
+                    body: string;
+                    body_en?: string;
+                    /** @enum {string} */
+                    en_source?: "auto" | "edited";
+                    locale?: string;
+                    notify?: boolean;
+                    /** @enum {string} */
+                    status?: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                };
+            };
+        };
+        responses: {
+            /** @description Incident */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                        /** @enum {string|null} */
+                        en_source: "auto" | "edited" | null;
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        impact: "none" | "minor" | "major" | "critical";
+                        /** @enum {string} */
+                        kind: "incident" | "maintenance";
+                        locale: string | null;
+                        /** @description Who published the incident (console only) */
+                        published_by?: string | null;
+                        /** Format: date-time */
+                        resolved_at: string | null;
+                        /** Format: date-time */
+                        scheduled_for: string | null;
+                        /** Format: date-time */
+                        scheduled_until: string | null;
+                        /** Format: date-time */
+                        started_at: string;
+                        /** @enum {string} */
+                        status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                        title: string;
+                        title_en: string | null;
+                        updates: {
+                            body: string;
+                            body_en: string | null;
+                            /** Format: date-time */
+                            created_at: string;
+                            /** @enum {string|null} */
+                            en_source: "auto" | "edited" | null;
+                            /** Format: uuid */
+                            id: string;
+                            locale: string | null;
+                            /** @description Who published this step (console only) */
+                            published_by?: string | null;
+                            /** @enum {string} */
+                            status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PlatformStatusController.translate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The title and note to preview in English */
+        requestBody: {
+            content: {
+                "application/json": {
+                    body: string;
+                    title?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Translation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        body: string;
+                        /** @description The detected language of the text */
+                        locale: string | null;
+                        title: string | null;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.PlatformPlanController.subscriptions": {
         parameters: {
             query?: never;
@@ -131518,6 +144195,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -131946,6 +144627,10 @@ export interface operations {
                                  * @description Shared by every week of a weekly event
                                  */
                                 series_id?: string | null;
+                                /** @description ADR-385: the organiser's SMS switch for this event */
+                                sms_enabled: boolean;
+                                /** @description ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on) */
+                                sms_offered: boolean;
                                 /** @description Null: no limit */
                                 spots_left?: number | null;
                                 /** Format: date-time */
@@ -132599,6 +145284,68 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.PublicLeadController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    campaign?: string;
+                    /** @description ADR-345: the consent the person gave on the form. `contact` is required; `marketing` is the separate yes to marketing messages */
+                    consent: {
+                        contact: boolean;
+                        marketing?: boolean;
+                        text_hash?: string;
+                        text_version?: string;
+                    };
+                    email?: string;
+                    /** @description When the form opened (ISO 8601 or unix seconds), for the spam check */
+                    form_started_at?: string;
+                    interests?: string[];
+                    /** @enum {string} */
+                    kind?: "trial" | "contact";
+                    locale?: string;
+                    message?: string;
+                    name: string;
+                    phone?: string;
+                    preferred_time?: string;
+                    /** @enum {string} */
+                    source?: "form" | "join_link";
+                    /** @description Spam trap: a hidden field people never fill. Leave empty. */
+                    website?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Received */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        status: "received";
+                    };
+                };
+            };
+            /** @description No box with this slug */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
     "PaleeWeb.PublicBoxController.packages": {
         parameters: {
             query?: never;
@@ -132640,6 +145387,78 @@ export interface operations {
                 };
             };
             /** @description No published box with this slug */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicSmsUnsubscribeController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Unsubscribe link */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        box_name: string;
+                        /** @enum {string} */
+                        locale: "el" | "en" | "de" | "fr" | "it" | "es" | "nl" | "pt-PT" | "bg" | "ru" | "ar" | "he";
+                        withdrawn: boolean;
+                    };
+                };
+            };
+            /** @description Unknown link */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicSmsUnsubscribeController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Unsubscribed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        box_name: string;
+                        /** @enum {string} */
+                        locale: "el" | "en" | "de" | "fr" | "it" | "es" | "nl" | "pt-PT" | "bg" | "ru" | "ar" | "he";
+                        withdrawn: boolean;
+                    };
+                };
+            };
+            /** @description Unknown link */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -132944,6 +145763,700 @@ export interface operations {
                 };
                 content: {
                     "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicSiteController.by_host": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                host: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Site */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        host: string;
+                        primary: boolean;
+                        primary_host: string | null;
+                        slug: string;
+                    };
+                };
+            };
+            /** @description No published box */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicSiteController.domain_status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Status */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        box_name: string;
+                        /** Format: date-time */
+                        checked_at: string | null;
+                        dns_records: Record<string, never>[];
+                        host: string;
+                        last_error: string | null;
+                        status: string;
+                    };
+                };
+            };
+            /** @description No published box */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicSiteController.tls_allowed": {
+        parameters: {
+            query: {
+                domain: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Allowed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description No published box */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicSiteController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The box's slug or one of its former slugs */
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Site */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        about_en: string | null;
+                        canonical_url: string;
+                        events: {
+                            currency: string;
+                            /** Format: date-time */
+                            ends_at: string;
+                            /** Format: uuid */
+                            id: string;
+                            place_name: string | null;
+                            price_cents: number;
+                            /** Format: date-time */
+                            starts_at: string;
+                            time_zone: string | null;
+                            title: string;
+                        }[];
+                        faq: {
+                            answer: string;
+                            /** @description Optional English text (ADR-388) */
+                            answer_en?: string;
+                            question: string;
+                            /** @description Optional English text (ADR-388) */
+                            question_en?: string;
+                        }[];
+                        forms: {
+                            contact: boolean;
+                            kinds: ("trial" | "contact")[];
+                            trial: boolean;
+                        };
+                        /** @description The box's language (ADR-388) */
+                        language: string;
+                        /** @description The site's languages: the box's own and English */
+                        languages: string[];
+                        /** SiteReviews */
+                        reviews: {
+                            /**
+                             * GoogleListing
+                             * @description The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms
+                             */
+                            google: {
+                                count: number | null;
+                                /** Format: date-time */
+                                fetched_at: string;
+                                maps_uri: string | null;
+                                name: string | null;
+                                rating: number | null;
+                                write_review_url: string | null;
+                            } | null;
+                            google_reviews_url: string | null;
+                            /** SitePaleeReviews */
+                            palee: {
+                                average: number | null;
+                                count: number;
+                                latest: {
+                                    /** @description First name only; null for people who hide themselves */
+                                    author_name: string | null;
+                                    body: string | null;
+                                    /** Format: date-time */
+                                    created_at: string;
+                                    /** Format: date-time */
+                                    edited_at: string | null;
+                                    /** Format: uuid */
+                                    id: string;
+                                    rating: number;
+                                    /** BoxReviewReply */
+                                    reply: {
+                                        body: string;
+                                        /** Format: date-time */
+                                        replied_at: string;
+                                    } | null;
+                                }[];
+                            } | null;
+                        };
+                        sections: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
+                        slug: string;
+                        time_zone: string;
+                        /** @description The next 7 days' classes when the owner shows the timetable (no spots or people) */
+                        timetable: {
+                            /** Format: uuid */
+                            class_type_id: string | null;
+                            duration_minutes: number;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            location_id: string | null;
+                            name: string;
+                            /** Format: date-time */
+                            scheduled_at: string;
+                        }[];
+                        tracking: {
+                            banner_version: number;
+                            categories: ("necessary" | "analytics" | "marketing")[];
+                            consent_required: boolean;
+                            /**
+                             * SiteTags
+                             * @description Public tag ids; none loads before the visitor's consent (ADR-354)
+                             */
+                            tags: {
+                                ga4_measurement_id: string | null;
+                                gtm_container_id: string | null;
+                                meta_pixel_id: string | null;
+                            };
+                            validity_days: number;
+                        };
+                        wod: {
+                            body: string | null;
+                            /** Format: date */
+                            date: string;
+                            /** Format: uuid */
+                            id: string;
+                            title: string;
+                            type: string | null;
+                        }[];
+                    };
+                };
+            };
+            /** @description No published box */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicSiteController.consent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The box's slug or one of its former slugs */
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    action: "accept_all" | "reject_all" | "custom" | "withdraw";
+                    analytics?: boolean;
+                    banner_version: number;
+                    marketing?: boolean;
+                    /** Format: uuid */
+                    visitor_id: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Recorded */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        allowed_tags: ("ga4_measurement_id" | "meta_pixel_id" | "gtm_container_id")[];
+                        analytics: boolean;
+                        banner_version: number;
+                        /** Format: date-time */
+                        expires_at: string;
+                        marketing: boolean;
+                    };
+                };
+            };
+            /** @description No published box */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicSiteController.submit_form": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The box's slug or one of its former slugs */
+                slug: string;
+                kind: "trial" | "contact";
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    attribution?: {
+                        landing_path?: string;
+                        referrer_host?: string;
+                        utm_campaign?: string;
+                        utm_content?: string;
+                        utm_medium?: string;
+                        utm_source?: string;
+                        utm_term?: string;
+                    };
+                    /** Format: uuid */
+                    class_type_id?: string | null;
+                    consent_text_hash?: string | null;
+                    consent_text_version?: string | null;
+                    /** @description Time spent on the form */
+                    elapsed_ms?: number | null;
+                    email?: string | null;
+                    /**
+                     * Format: uuid
+                     * @description The browser Pixel's eventID for the same Lead, so Meta counts the Conversions API event once
+                     */
+                    event_id?: string | null;
+                    locale?: string | null;
+                    /** @description Separate, unticked opt-in to marketing follow-ups */
+                    marketing_opt_in?: boolean;
+                    message?: string | null;
+                    name: string;
+                    phone?: string | null;
+                    preferred_time?: string | null;
+                    /** @description Must be true */
+                    privacy_ack: boolean;
+                    /** Format: uuid */
+                    visitor_id?: string | null;
+                    /** @description Honeypot: leave empty */
+                    website?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Received */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        status: "received";
+                    };
+                };
+            };
+            /** @description No published box */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicStatusController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Status */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        active: {
+                            components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                            /** @enum {string|null} */
+                            en_source: "auto" | "edited" | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            impact: "none" | "minor" | "major" | "critical";
+                            /** @enum {string} */
+                            kind: "incident" | "maintenance";
+                            locale: string | null;
+                            /** @description Who published the incident (console only) */
+                            published_by?: string | null;
+                            /** Format: date-time */
+                            resolved_at: string | null;
+                            /** Format: date-time */
+                            scheduled_for: string | null;
+                            /** Format: date-time */
+                            scheduled_until: string | null;
+                            /** Format: date-time */
+                            started_at: string;
+                            /** @enum {string} */
+                            status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                            title: string;
+                            title_en: string | null;
+                            updates: {
+                                body: string;
+                                body_en: string | null;
+                                /** Format: date-time */
+                                created_at: string;
+                                /** @enum {string|null} */
+                                en_source: "auto" | "edited" | null;
+                                /** Format: uuid */
+                                id: string;
+                                locale: string | null;
+                                /** @description Who published this step (console only) */
+                                published_by?: string | null;
+                                /** @enum {string} */
+                                status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                            }[];
+                        }[];
+                        components: {
+                            /** Format: date-time */
+                            checked_at: string | null;
+                            /** @enum {string} */
+                            key: "app" | "search" | "files" | "email" | "payments" | "fiscal";
+                            /** @enum {string} */
+                            status: "operational" | "degraded" | "down" | "maintenance" | "unknown";
+                        }[];
+                        /** Format: date-time */
+                        generated_at: string;
+                        /** @enum {string} */
+                        status: "operational" | "degraded" | "partial_outage" | "major_outage" | "maintenance" | "unknown";
+                        upcoming: {
+                            components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                            /** @enum {string|null} */
+                            en_source: "auto" | "edited" | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            impact: "none" | "minor" | "major" | "critical";
+                            /** @enum {string} */
+                            kind: "incident" | "maintenance";
+                            locale: string | null;
+                            /** @description Who published the incident (console only) */
+                            published_by?: string | null;
+                            /** Format: date-time */
+                            resolved_at: string | null;
+                            /** Format: date-time */
+                            scheduled_for: string | null;
+                            /** Format: date-time */
+                            scheduled_until: string | null;
+                            /** Format: date-time */
+                            started_at: string;
+                            /** @enum {string} */
+                            status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                            title: string;
+                            title_en: string | null;
+                            updates: {
+                                body: string;
+                                body_en: string | null;
+                                /** Format: date-time */
+                                created_at: string;
+                                /** @enum {string|null} */
+                                en_source: "auto" | "edited" | null;
+                                /** Format: uuid */
+                                id: string;
+                                locale: string | null;
+                                /** @description Who published this step (console only) */
+                                published_by?: string | null;
+                                /** @enum {string} */
+                                status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                            }[];
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicStatusController.history": {
+        parameters: {
+            query?: {
+                days?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description History */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        components: {
+                            days: {
+                                /** Format: date */
+                                date: string;
+                                /** @enum {string} */
+                                status: "operational" | "degraded" | "down" | "no_data";
+                                uptime_percent: number | null;
+                            }[];
+                            /** @enum {string} */
+                            key: "app" | "search" | "files" | "email" | "payments" | "fiscal";
+                            uptime_percent: number | null;
+                        }[];
+                        days: number;
+                        /** Format: date */
+                        from: string;
+                        /** Format: date-time */
+                        generated_at: string;
+                        incidents: {
+                            components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                            /** @enum {string|null} */
+                            en_source: "auto" | "edited" | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            impact: "none" | "minor" | "major" | "critical";
+                            /** @enum {string} */
+                            kind: "incident" | "maintenance";
+                            locale: string | null;
+                            /** @description Who published the incident (console only) */
+                            published_by?: string | null;
+                            /** Format: date-time */
+                            resolved_at: string | null;
+                            /** Format: date-time */
+                            scheduled_for: string | null;
+                            /** Format: date-time */
+                            scheduled_until: string | null;
+                            /** Format: date-time */
+                            started_at: string;
+                            /** @enum {string} */
+                            status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                            title: string;
+                            title_en: string | null;
+                            updates: {
+                                body: string;
+                                body_en: string | null;
+                                /** Format: date-time */
+                                created_at: string;
+                                /** @enum {string|null} */
+                                en_source: "auto" | "edited" | null;
+                                /** Format: uuid */
+                                id: string;
+                                locale: string | null;
+                                /** @description Who published this step (console only) */
+                                published_by?: string | null;
+                                /** @enum {string} */
+                                status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
+                            }[];
+                        }[];
+                        /** Format: date */
+                        to: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicStatusController.subscribe": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The address that wants status emails */
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: email */
+                    email: string;
+                    locale?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Accepted */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        status: "accepted" | "confirmed" | "removed";
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicStatusController.confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The token from the email */
+        requestBody: {
+            content: {
+                "application/json": {
+                    token: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Confirmed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        status: "accepted" | "confirmed" | "removed";
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicStatusController.unsubscribe": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The token from the email */
+        requestBody: {
+            content: {
+                "application/json": {
+                    token: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Removed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        status: "accepted" | "confirmed" | "removed";
+                    };
                 };
             };
         };

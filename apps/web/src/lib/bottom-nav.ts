@@ -54,6 +54,10 @@ export const BOTTOM_NAV_HIDDEN_ROUTES: ReadonlyArray<{ id: string; pattern: RegE
   { id: "auth", pattern: /^\/(?:login|register|forgot-password|reset-password|verify-email|confirm-email-change|revert-email-change|sign-out-everywhere|set-admin|activate-business|join|invite|account-deletion)(?:\/|$)/ },
   // The vendor console has its own navigation.
   { id: "platform", pattern: /^\/platform(?:\/|$)/ },
+  // The public status page (ADR-366) looks the same signed in or not.
+  { id: "statusPage", pattern: /^\/status(?:\/|$)/ },
+  // The unsubscribe link of a marketing SMS (ADR-390): one public card.
+  { id: "smsUnsubscribe", pattern: /^\/u\/[^/]+\/?$/ },
 ];
 
 function relativePath(pathname: string) {

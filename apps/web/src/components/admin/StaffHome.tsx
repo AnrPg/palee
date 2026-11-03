@@ -1,5 +1,6 @@
 "use client";
 
+import { MyPayCard } from "@/components/admin/coach-pay/MyPay";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -10,6 +11,7 @@ import { fetchPRDossierMembers } from "@/api/admin-users";
 import { filterDossierMembers } from "@/components/admin/users/admin-user-profile";
 import { fetchCleaningAreas, fetchCoachingRelationships, fetchMyClientStats, startCoachingRelationship } from "@/api/roles";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
+import { AtRiskTodayCard } from "@/components/admin/at-risk/AtRiskTodayCard";
 import {
   ActionTiles,
   AvatarChips,
@@ -50,6 +52,9 @@ import { can } from "@/lib/role-navigation";
 
 type Membership = ReturnType<typeof useSelectedMembershipRole>["membership"];
 
+// Who may read their own pay statements (the API's `@own_pay`).
+const OWN_PAY = ["run_classes", "manage_appointments", "check_in", "take_payments", "view_finance_reports", "record_cleaning"];
+
 const RELATIONSHIPS_KEY = ["staff", "coaching-relationships"] as const;
 
 export function StaffHome() {
@@ -70,6 +75,8 @@ export function StaffHome() {
       <>
         {can(membership, "report_inventory") ? <InventoryShortcut /> : null}
         <CleaningLog />
+        {/* ADR-382 (W1 s6): «Οι αμοιβές μου», once there is a statement. */}
+        {OWN_PAY.some((capability) => can(membership, capability)) ? <MyPayCard /> : null}
       </>
     );
   }
@@ -91,8 +98,12 @@ export function StaffHome() {
       {/* ADR-272: «Είσπραξη» with Tap to Pay, on a staff phone only. */}
       {has("take_payments") ? <CollectEntry /> : null}
       {frontDesk ? <FrontDeskCard membership={membership} /> : null}
+      {/* ADR-347 (W2 p4): members at risk nobody has reached yet. */}
+      {has("view_members_at_risk") ? <AtRiskTodayCard /> : null}
       {accountant ? <AccountsCard membership={membership} /> : null}
       {frontDesk && (has("review_cleaning") || has("record_cleaning")) ? <CleaningStatus /> : null}
+      {/* ADR-382 (W1 s6): «Οι αμοιβές μου», once there is a statement. */}
+      {OWN_PAY.some(has) ? <MyPayCard /> : null}
     </AdminDashboard>
   );
 }

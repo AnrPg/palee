@@ -415,6 +415,20 @@ const API_ERROR_KEYS: Record<string, string> = {
   package_type_change_requires_copy: "apiErrorPackageTypeChangeRequiresCopy",
   package_already_used: "apiErrorPackageAlreadyUsed",
   package_new_members_only: "apiErrorPackageNewMembersOnly",
+  // ADR-342: purchase and booking rules per package.
+  package_staff_only: "apiErrorPackageStaffOnly",
+  package_purchase_limit_reached: "apiErrorPackagePurchaseLimitReached",
+  package_prerequisite_missing: "apiErrorPackagePrerequisiteMissing",
+  package_active_members_only: "apiErrorPackageActiveMembersOnly",
+  booking_daily_limit_reached: "mbErrBookingDailyLimitReached",
+  booking_open_limit_reached: "mbErrBookingOpenLimitReached",
+  // ADR-340, ADR-341
+  card_surcharge_not_allowed: "apiErrorCardSurchargeNotAllowed",
+  coach_pay_period_overlaps: "apiErrorCoachPayPeriodOverlaps",
+  coach_pay_period_locked: "apiErrorCoachPayPeriodLocked",
+  coach_pay_period_exported: "apiErrorCoachPayPeriodExported",
+  coach_pay_period_not_approved: "apiErrorCoachPayPeriodNotApproved",
+  coach_pay_rule_archived: "apiErrorCoachPayRuleArchived",
   package_not_renewable: "apiErrorPackageNotRenewable",
   // ADR-220: renewal choice and leaving the box.
   renewal_turned_off: "apiErrorRenewalTurnedOff",

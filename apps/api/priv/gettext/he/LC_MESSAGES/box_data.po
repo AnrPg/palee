@@ -1,0 +1,17 @@
+msgid ""
+msgstr ""
+"Language: he\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "The box's data is ready to download"
+msgstr "נתוני הבוקס מוכנים להורדה"
+
+msgid "The copy of %{box}'s data you asked for is ready: members, packages, payments, classes, workouts, documents, photos and PDFs."
+msgstr "העותק של נתוני %{box} שביקשת מוכן: חברים, חבילות, תשלומים, שיעורים, אימונים, מסמכים, תמונות וקובצי PDF."
+
+msgid "Download it from Settings › Business while you are signed in. It is kept for %{days} days."
+msgstr "אפשר להוריד אותו מהגדרות › עסק כשאתה מחובר. הוא נשמר %{days} ימים."
+
+msgid "Open Settings"
+msgstr "פתיחת ההגדרות"

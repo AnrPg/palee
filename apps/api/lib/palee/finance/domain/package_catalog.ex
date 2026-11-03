@@ -27,6 +27,23 @@ defmodule Palee.Finance.Domain.PackageCatalog do
     %{key: "terms.once_per_person", section: "terms", kind: :boolean, phase: :a},
     %{key: "terms.new_members_only", section: "terms", kind: :boolean, phase: :a},
     %{key: "terms.conversion_package_id", section: "terms", kind: :uuid_or_null, phase: :a},
+    # CP-A8 (ADR-342): who may buy, how often, and what they must hold first.
+    %{
+      key: "terms.buyers",
+      section: "terms",
+      kind: :enum,
+      phase: :b,
+      options: ["anyone", "active_members", "staff_only"]
+    },
+    %{
+      key: "terms.max_purchases_per_person",
+      section: "terms",
+      kind: :integer_or_null,
+      phase: :b,
+      min: 1,
+      max: 100
+    },
+    %{key: "terms.prerequisite_package_ids", section: "terms", kind: :id_list, phase: :b},
     %{
       key: "terms.minimum_commitment_months",
       section: "terms",
@@ -139,6 +156,23 @@ defmodule Palee.Finance.Domain.PackageCatalog do
       max: 168
     },
     %{key: "booking.no_show_penalty_waived", section: "booking", kind: :boolean, phase: :b},
+    # CP-A8 (ADR-342): booking limits of the package (nil: no limit).
+    %{
+      key: "booking.daily_limit",
+      section: "booking",
+      kind: :integer_or_null,
+      phase: :b,
+      min: 1,
+      max: 20
+    },
+    %{
+      key: "booking.open_bookings_limit",
+      section: "booking",
+      kind: :integer_or_null,
+      phase: :b,
+      min: 1,
+      max: 100
+    },
     # Personal training
     %{key: "personal_training.included", section: "personal_training", kind: :boolean, phase: :c},
     %{key: "personal_training.sessions", section: "personal_training", kind: :quota, phase: :c},
@@ -256,11 +290,20 @@ defmodule Palee.Finance.Domain.PackageCatalog do
   @fields_by_key Map.new(@fields, &{&1.key, &1})
   @sections ~w[terms group_classes booking personal_training online_coaching content facility perks]
 
+  # ADR-383: fields that left the catalog. Packages saved before keep the
+  # key in their stored fields; it is dropped when they are read or saved
+  # again, never refused.
+  @removed_keys ["booking.weekly_limit"]
+
   def fields, do: @fields
   def keys, do: Enum.map(@fields, & &1.key)
   def sections, do: @sections
   def quota_periods, do: @quota_periods
   def implemented_phases, do: @implemented_phases
+
+  @doc "The fields without the keys that left the catalog (ADR-383)."
+  def drop_removed(fields) when is_map(fields), do: Map.drop(fields, @removed_keys)
+  def drop_removed(fields), do: fields
 
   def fetch(key) when is_binary(key) do
     case Map.fetch(@fields_by_key, key) do
@@ -287,6 +330,28 @@ defmodule Palee.Finance.Domain.PackageCatalog do
     do: within(spec, value)
 
   def cast(%{kind: :gym_default_integer}, nil), do: {:ok, nil}
+
+  # ADR-342: a limit that may be absent (nil: no limit).
+  def cast(%{kind: :integer_or_null}, nil), do: {:ok, nil}
+
+  def cast(%{kind: :integer_or_null} = spec, value) when is_integer(value),
+    do: within(spec, value)
+
+  # ADR-342: a list of ids that may be empty (no prerequisite).
+  def cast(%{kind: :id_list}, values) when is_list(values) do
+    values
+    |> Enum.reduce_while({:ok, []}, fn value, {:ok, acc} ->
+      case is_binary(value) && cast_uuid(value) do
+        {:ok, uuid} -> {:cont, {:ok, [uuid | acc]}}
+        _ -> {:halt, {:error, :invalid_id}}
+      end
+    end)
+    |> case do
+      {:ok, ids} when length(ids) <= 20 -> {:ok, ids |> Enum.uniq() |> Enum.sort()}
+      {:ok, _ids} -> {:error, :out_of_range}
+      error -> error
+    end
+  end
 
   def cast(%{kind: :gym_default_integer} = spec, value) when is_integer(value),
     do: within(spec, value)

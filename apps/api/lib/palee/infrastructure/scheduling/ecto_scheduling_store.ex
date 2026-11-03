@@ -861,6 +861,71 @@ defmodule Palee.Infrastructure.Scheduling.EctoSchedulingStore do
       })
 
   @impl true
+  def member_booking_times(%{organization_id: organization_id}, user_id, %DateTime{} = from) do
+    from_naive = from |> DateTime.truncate(:second)
+
+    Booking
+    |> join(:inner, [booking], slot in ScheduledClass, on: slot.id == booking.scheduled_class_id)
+    |> where(
+      [booking, slot],
+      booking.organization_id == ^organization_id and booking.user_id == ^user_id and
+        booking.status in [:pending, :approved] and is_nil(booking.guest_name) and
+        slot.scheduled_at >= ^from_naive and is_nil(slot.cancelled_at)
+    )
+    |> select([_booking, slot], slot.scheduled_at)
+    |> Repo.all()
+    |> Enum.map(&as_utc/1)
+  end
+
+  @impl true
+  def coach_classes(%{organization_id: organization_id}, %DateTime{} = from, %DateTime{} = to) do
+    from_at = DateTime.truncate(from, :second)
+    to_at = DateTime.truncate(to, :second)
+
+    classes =
+      ScheduledClass
+      |> where(
+        [slot],
+        slot.organization_id == ^organization_id and not is_nil(slot.coach_user_id) and
+          is_nil(slot.cancelled_at) and slot.scheduled_at >= ^from_at and
+          slot.scheduled_at < ^to_at
+      )
+      |> select([slot], %{
+        class_id: slot.id,
+        coach_user_id: slot.coach_user_id,
+        class_type_id: slot.class_type_id,
+        name: slot.name,
+        scheduled_at: slot.scheduled_at,
+        duration_minutes: slot.duration_minutes
+      })
+      |> Repo.all()
+
+    ids = Enum.map(classes, & &1.class_id)
+
+    counts =
+      ClassAttendanceRecord
+      |> where(
+        [record],
+        record.organization_id == ^organization_id and record.scheduled_class_id in ^ids
+      )
+      |> group_by([record], [record.scheduled_class_id, record.status])
+      |> select([record], {record.scheduled_class_id, record.status, count(record.id)})
+      |> Repo.all()
+      |> Enum.reduce(%{}, fn {class_id, status, count}, acc ->
+        Map.update(acc, class_id, %{status => count}, &Map.put(&1, status, count))
+      end)
+
+    Enum.map(classes, fn class ->
+      class
+      |> Map.update!(:scheduled_at, &as_utc/1)
+      |> Map.put(:attendance, Map.get(counts, class.class_id, %{}))
+    end)
+  end
+
+  defp as_utc(%DateTime{} = at), do: at
+  defp as_utc(%NaiveDateTime{} = at), do: DateTime.from_naive!(at, "Etc/UTC")
+
+  @impl true
   def get_booking_by_client_operation(
         %{organization_id: organization_id},
         user_id,

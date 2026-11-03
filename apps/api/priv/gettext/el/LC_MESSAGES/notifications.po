@@ -805,3 +805,21 @@ msgstr "%{nickname} έγραψε στο %{box}"
 
 msgid "%{nickname} sent the box a message."
 msgstr "%{nickname} έστειλε μήνυμα στο box."
+
+msgid "Question from the website"
+msgstr "Ερώτηση από την ιστοσελίδα"
+
+msgid "Trial request from the website"
+msgstr "Αίτημα δοκιμαστικού από την ιστοσελίδα"
+
+msgid "%{name} wrote through the box's website. Answer or call them."
+msgstr "Ο/Η %{name} έγραψε από την ιστοσελίδα του box. Απάντησε ή τηλεφώνησε."
+
+msgid "The WOD changed"
+msgstr "Το WOD άλλαξε"
+
+msgid "%{title} changed after you did it. See it as it was in your Journal."
+msgstr "Το «%{title}» άλλαξε αφού το έκανες. Δες το όπως ήταν στο Journal σου."
+
+msgid "A WOD you did changed. See it as it was in your Journal."
+msgstr "Ένα WOD που έκανες άλλαξε. Δες το όπως ήταν στο Journal σου."

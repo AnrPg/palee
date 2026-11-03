@@ -1,5 +1,6 @@
 "use client";
 
+import { EventSmsCard } from "@/components/channels/EventSmsCard";
 import Link from "next/link";
 import { createContext, useContext, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -230,6 +231,11 @@ function StaffEventView({ event }: { event: StaffEvent }) {
           ))}
         </dl>
       </Panel>
+
+      {/* W3 screen 6 B + C (ADR-385): who gets SMS, their cost, and this event's switch. */}
+      {manage && !event.cancelled && !over ? (
+        <EventSmsCard eventId={event.id} onSwitch={async (enabled) => applied(await updateStaffEvent(token, event.id, { sms_enabled: enabled }, scope.slug))} />
+      ) : null}
 
       {manage && !event.cancelled && !over && (event.audience ?? (event.channel_id ? "group" : "club")) !== "group" ? (
         <CohostsPanel event={event} />

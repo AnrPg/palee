@@ -14,7 +14,8 @@ defmodule Palee.Payments.SavedMethod do
 
   @fields ~w(account_id user_id provider token token_digest brand last4 exp_month exp_year status
              autopay consent_version consent_text_hash consented_at consent_ip consent_user_agent
-             max_amount_cents currency revoked_at revoked_by_id)a
+             max_amount_cents currency revoked_at revoked_by_id card_funding card_country
+             card_commercial)a
 
   schema "payment_methods" do
     field :organization_id, :binary_id, read_after_writes: true
@@ -38,6 +39,10 @@ defmodule Palee.Payments.SavedMethod do
     field :currency, :string
     field :revoked_at, :utc_datetime_usec
     field :revoked_by_id, :binary_id
+    # ADR-340: what the provider told about the card, for a lawful surcharge.
+    field :card_funding, :string
+    field :card_country, :string
+    field :card_commercial, :boolean
 
     timestamps(type: :utc_datetime_usec)
   end

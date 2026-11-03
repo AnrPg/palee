@@ -320,6 +320,43 @@ defmodule PaleeWeb.FallbackController do
     })
   end
 
+  # ADR-348..351: SMS, Viber and WhatsApp from the box.
+  @channel_errors %{
+    channels_not_connected: {:conflict, "Connect an SMS provider in the box's settings first"},
+    channels_demo_mode:
+      {:conflict, "A box in demo mode sends no SMS. Messages go out once the box is activated"},
+    channels_connection_invalid:
+      {:conflict, "The SMS provider refused the box's credentials. Check them in the settings"},
+    channel_person_required: {:unprocessable_entity, "Choose a member or a lead"},
+    channel_contact_missing: {:unprocessable_entity, "Add the person's mobile number first"},
+    channel_not_enabled: {:conflict, "This channel is not switched on for the box"},
+    channel_consent_missing:
+      {:conflict, "The person has not agreed to receive these messages on this channel"},
+    channel_opted_out: {:conflict, "The person replied STOP; they receive no more messages"},
+    whatsapp_template_missing:
+      {:conflict, "WhatsApp needs a template approved by Meta for this message and language"},
+    channel_template_missing: {:unprocessable_entity, "There is no such message template"},
+    channel_budget_exceeded:
+      {:conflict, "This month's message budget is used up. Raise it in the settings"},
+    channel_budget_missing:
+      {:conflict,
+       "Type the box's monthly SMS cap in the settings first; nothing is sent without one"},
+    not_cancellable: {:conflict, "Only a message that has not left yet can be stopped"},
+    channel_not_retryable: {:conflict, "Only a failed message can be sent again"},
+    invalid_month: {:unprocessable_entity, "Choose a month as YYYY-MM"},
+    # ADR-368: the box's own SMTP email provider.
+    email_connection_missing:
+      {:not_found, "The box has no email provider of its own; Palee sends its email"}
+  }
+
+  def call(conn, {:error, reason}) when is_map_key(@channel_errors, reason) do
+    {status, message} = Map.fetch!(@channel_errors, reason)
+
+    conn
+    |> put_status(status)
+    |> json(%{code: to_string(reason), error: message})
+  end
+
   def call(conn, {:error, reason}) when is_map_key(@fiscal_errors, reason) do
     {status, message} = Map.fetch!(@fiscal_errors, reason)
 
@@ -384,6 +421,19 @@ defmodule PaleeWeb.FallbackController do
     withdrawal_period_over: {:conflict, "The 14 days to withdraw have passed"},
     withdrawal_not_available: {:conflict, "This payment cannot be withdrawn from"},
     already_withdrawn: {:conflict, "You have already withdrawn from this package"},
+    # ADR-344/345: leads.
+    lead_converted: {:conflict, "This lead already became a box member"},
+    use_convert: {:unprocessable_entity, "Use «Έγινε μέλος» to convert a lead"},
+    same_stage: {:conflict, "The lead is already at this stage"},
+    invalid_stage: {:unprocessable_entity, "Unknown stage"},
+    invalid_lost_reason: {:unprocessable_entity, "Say why the lead was lost"},
+    lead_task_done: {:conflict, "This task is already done"},
+    lead_person_not_in_box: {:unprocessable_entity, "This person is not a member of the box"},
+    lead_capture_conflict: {:conflict, "This enquiry is being saved; try again"},
+    missing_name_column: {:unprocessable_entity, "The file has no name column"},
+    too_many_rows: {:unprocessable_entity, "The file has too many rows"},
+    # ADR-346: automations.
+    unknown_recipe: {:not_found, "Unknown recipe"},
     # ADR-291: packages waiting to be paid at the front desk.
     package_request_closed: {:conflict, "This request is no longer waiting for payment"},
     package_request_exists: {:conflict, "You have already asked for this package"},
@@ -452,6 +502,64 @@ defmodule PaleeWeb.FallbackController do
     conn
     |> put_status(status)
     |> json(%{code: to_string(reason), error: message})
+  end
+
+  # ADR-352..355: the box's website and Google review asks.
+  @box_site_errors %{
+    invalid_hostname: {:unprocessable_entity, "Enter a domain such as www.mybox.gr"},
+    platform_hostname: {:unprocessable_entity, "Use your own domain, not a Palee address"},
+    host_taken: {:conflict, "This domain is already used by a box website"},
+    too_many_domains: {:conflict, "A website can have up to 2 domains"},
+    site_domain_not_found: {:not_found, "Domain not found"},
+    invalid_site_domain_status: {:unprocessable_entity, "Unknown domain state"},
+    site_forms_closed: {:conflict, "This box does not take requests on its website"},
+    unknown_form: {:not_found, "Form not found"},
+    review_ask_not_found: {:not_found, "Review ask not found"},
+    review_ask_answered: {:conflict, "This ask was already answered"},
+    invalid_review_action: {:unprocessable_entity, "Choose opened, later or dismissed"},
+    settings_changed_meanwhile:
+      {:conflict, "Someone saved these settings meanwhile; reload and try again"},
+    # ADR-386..388: in-app reviews, the Google listing, domain instructions.
+    review_needs_check_in: {:forbidden, "Only people who checked in at this box can review it"},
+    box_review_not_found: {:not_found, "Review not found"},
+    invalid_place_query: {:unprocessable_entity, "Type at least 3 letters of the box's name"},
+    places_unavailable: {:service_unavailable, "Google search is unavailable; use the Place ID"}
+  }
+
+  def call(conn, {:error, reason}) when is_map_key(@box_site_errors, reason) do
+    {status, message} = Map.fetch!(@box_site_errors, reason)
+
+    conn
+    |> put_status(status)
+    |> json(%{code: to_string(reason), error: message})
+  end
+
+  # ADR-356..359: v3.1 training and floor.
+  @training_floor_errors %{
+    leaderboard_not_opted_in:
+      {:conflict, "Join the box's leaderboards first, then choose your division"},
+    workout_snapshot_not_found: {:not_found, "This version of the WOD was not found"},
+    invalid_day_range: {:unprocessable_entity, "Choose up to 62 days, the end after the start"},
+    booking_not_found: {:not_found, "Booking not found"},
+    invalid_note_audience: {:unprocessable_entity, "Choose who reads the note"}
+  }
+
+  def call(conn, {:error, reason}) when is_map_key(@training_floor_errors, reason) do
+    {status, message} = Map.fetch!(@training_floor_errors, reason)
+
+    conn
+    |> put_status(status)
+    |> json(%{code: to_string(reason), error: message})
+  end
+
+  def call(conn, {:error, {:invalid_leaderboard_filter, field}}) when is_atom(field) do
+    conn
+    |> put_status(:unprocessable_entity)
+    |> json(%{
+      code: "invalid_leaderboard_filter",
+      field: to_string(field),
+      error: "This leaderboard filter does not read"
+    })
   end
 
   # ADR-253: box screens.
@@ -2607,6 +2715,27 @@ defmodule PaleeWeb.FallbackController do
     |> json(%{code: "folder_not_found", error: "The chosen library folder does not exist"})
   end
 
+  def call(conn, {:error, :invalid_workout_benchmark}) do
+    conn
+    |> put_status(:unprocessable_entity)
+    |> json(%{code: "invalid_workout_benchmark", error: "Choose a benchmark from the list"})
+  end
+
+  def call(conn, {:error, :palee_leaderboard_consent_required}) do
+    conn
+    |> put_status(:conflict)
+    |> json(%{
+      code: "palee_leaderboard_consent_required",
+      error: "Answer whether your score goes on the Palee-wide board first"
+    })
+  end
+
+  def call(conn, {:error, :invalid_palee_leaderboard_choice}) do
+    conn
+    |> put_status(:unprocessable_entity)
+    |> json(%{code: "invalid_palee_leaderboard_choice", error: "Choose share or see_only"})
+  end
+
   def call(conn, {:error, :invalid_workout_icon}) do
     conn
     |> put_status(:unprocessable_entity)
@@ -2799,6 +2928,38 @@ defmodule PaleeWeb.FallbackController do
     # ADR-196: a PR on the profile is for followers or private.
     invalid_profile_audience: {:unprocessable_entity, "Use followers or private"}
   }
+
+  # ADR-364: the status page (incidents, maintenance, subscriptions) and
+  # ADR-365: the box's own data export.
+  @status_errors %{
+    invalid_status_kind: {:unprocessable_entity, "Choose incident or maintenance"},
+    invalid_status_title: {:unprocessable_entity, "A title has 3 to 140 characters"},
+    invalid_status_impact: {:unprocessable_entity, "Choose none, minor, major or critical"},
+    unknown_status_component: {:unprocessable_entity, "Choose components of the status page"},
+    invalid_maintenance_window:
+      {:unprocessable_entity, "A maintenance needs a start before its end"},
+    invalid_status_transition:
+      {:unprocessable_entity, "This status does not fit an incident or maintenance"},
+    invalid_status_note: {:unprocessable_entity, "Write a note of 1 to 2000 characters"},
+    status_incident_closed: {:conflict, "This incident is already closed"},
+    status_incident_not_found: {:not_found, "No incident matches"},
+    invalid_status_translation:
+      {:unprocessable_entity, "An English title has 3 to 140 characters and a note 1 to 2000"},
+    status_translation_unavailable:
+      {:service_unavailable, "The translation is not available; publish without it"},
+    status_subscription_not_found: {:not_found, "This link has expired or was already used"},
+    invalid_status_email: {:unprocessable_entity, "Enter a valid email address"},
+    box_export_too_soon: {:conflict, "One export of the box's data a day; try again tomorrow"},
+    box_export_not_found: {:not_found, "No export matches"}
+  }
+
+  def call(conn, {:error, reason}) when is_map_key(@status_errors, reason) do
+    {status, message} = Map.fetch!(@status_errors, reason)
+
+    conn
+    |> put_status(status)
+    |> json(%{code: Atom.to_string(reason), error: message})
+  end
 
   def call(conn, {:error, reason}) when is_map_key(@journal_errors, reason) do
     {status, message} = Map.fetch!(@journal_errors, reason)
@@ -3098,6 +3259,24 @@ defmodule PaleeWeb.FallbackController do
 
   # ADR-097 Phase B: booking rules, perks, freezes and facility.
   @phase_b_errors %{
+    # ADR-341 (CP-A6): coach pay periods.
+    coach_pay_period_overlaps: {:conflict, "This pay period overlaps another one"},
+    coach_pay_period_locked: {:conflict, "This pay period is approved; reopen it to change it"},
+    coach_pay_period_exported: {:conflict, "This pay period was handed to the accountant"},
+    coach_pay_period_not_approved: {:conflict, "Approve the pay period first"},
+    coach_pay_rule_archived: {:conflict, "This pay rule has stopped"},
+    # ADR-382: the catalogue of overtime and allowances.
+    coach_pay_item_archived: {:conflict, "This pay item has stopped"},
+    # ADR-342 (CP-A8): purchase and booking rules of a package.
+    package_staff_only: {:forbidden, "Only the box's staff can give this package"},
+    package_purchase_limit_reached:
+      {:conflict, "You have bought this package as many times as it allows"},
+    package_prerequisite_missing:
+      {:conflict, "This package needs another package of the box first"},
+    package_active_members_only:
+      {:conflict, "This package is for members with an active package"},
+    booking_daily_limit_reached: {:conflict, "Your package allows no more classes that day"},
+    booking_open_limit_reached: {:conflict, "Your package allows no more upcoming bookings"},
     finance_membership_frozen: {:forbidden, "The membership is frozen"},
     finance_time_window_not_included: {:forbidden, "This time is outside the package's hours"},
     finance_location_not_included: {:forbidden, "This location is not included in the package"},
@@ -3416,6 +3595,17 @@ defmodule PaleeWeb.FallbackController do
   def call(conn, {:error, reason, details}) when is_map_key(@phase_b_errors, reason) do
     {status, message} = Map.fetch!(@phase_b_errors, reason)
     package_contract_error(conn, status, to_string(reason), message, details)
+  end
+
+  # ADR-340: the law of the box's country forbids this card surcharge.
+  def call(conn, {:error, :card_surcharge_not_allowed, details}) do
+    package_contract_error(
+      conn,
+      :unprocessable_entity,
+      "card_surcharge_not_allowed",
+      "The law here does not allow this card surcharge",
+      details
+    )
   end
 
   def call(conn, {:error, :booking_window_closed, details}) do

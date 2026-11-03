@@ -63,6 +63,8 @@ defmodule Mix.Tasks.Palee.Architecture do
     scheduling/scheduling_store
     workouts/workout_store
     workouts/goal_store
+    workouts/workout_snapshot_store
+    scheduling/visit_facts_store
     messaging/thread_store
     feedback/feedback_store
     analytics/analytics_store
@@ -125,13 +127,25 @@ defmodule Mix.Tasks.Palee.Architecture do
     fiscal/einvoice_store
     fiscal/till_signature_store
     payments/payment_store
+    channels/channel_store
     finance/package_request_store
+    leads/lead_store
+    automations/automation_store
+    automations/audience_reader
+    retention/risk_store
+    retention/signal_reader
+
+    coach_pay/coach_pay_store
     box_screens/box_screen_store
     documents/document_store
     setup/recipe_application_store
     imports/import_store
     personal_data/export_store
     personal_data/record_source
+    box_site/box_site_store
+    review_asks/review_ask_store
+
+    box_data/export_store
   )
 
   defp tenant_scope_violations do

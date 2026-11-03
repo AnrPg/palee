@@ -43,6 +43,30 @@ defmodule Palee.Gamification.Ports.GamificationStore do
               {:ok, map()} | {:error, Ecto.Changeset.t()}
 
   @callback leaderboard_opted_in_user_ids([Ecto.UUID.t()]) :: [Ecto.UUID.t()]
+  @doc "ADR-356: the opted-in people of `user_ids` with their division and birth year."
+  @callback leaderboard_profiles([Ecto.UUID.t()]) :: %{
+              Ecto.UUID.t() => %{division: String.t() | nil, birth_year: integer() | nil}
+            }
+  @doc "ADR-356: sets the division and birth year of an opted-in person."
+  @callback put_leaderboard_profile(Ecto.UUID.t(), map()) ::
+              {:ok, map()} | {:error, :not_opted_in | Ecto.Changeset.t()}
+  @doc "ADR-394: the person's Palee-wide answer (`share`, `see_only`) or nil."
+  @callback get_palee_leaderboard_consent(Ecto.UUID.t()) :: String.t() | nil
+  @callback put_palee_leaderboard_consent(Ecto.UUID.t(), String.t()) ::
+              {:ok, String.t()} | {:error, Ecto.Changeset.t()}
+  @callback delete_palee_leaderboard_consent(Ecto.UUID.t()) :: :ok
+  @doc """
+  ADR-394: the results of one benchmark across every box, through the
+  `palee_benchmark_results` SECURITY DEFINER function: only people who
+  chose `share`, plus the caller's own.
+  """
+  @callback palee_benchmark_results(String.t(), DateTime.t(), DateTime.t(), integer()) :: [
+              map()
+            ]
+  @doc "ADR-394: the scored sections of those benchmark WODs, by WOD id."
+  @callback palee_benchmark_workout_sections(String.t(), [Ecto.UUID.t()]) :: %{
+              Ecto.UUID.t() => map()
+            }
   @callback get_training_goal(user_id :: Ecto.UUID.t(), kind :: String.t()) :: map() | nil
   @callback put_training_goal(params :: map()) :: {:ok, map()} | {:error, Ecto.Changeset.t()}
 end

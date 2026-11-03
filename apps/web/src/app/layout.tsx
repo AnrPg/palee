@@ -15,8 +15,10 @@ import { ServiceWorkerBootstrap } from "@/components/service-worker-bootstrap";
 import { PersonalThemeBridge, ThemeProvider } from "@/components/theme-provider";
 import { TopNav } from "@/components/TopNav";
 import { EmailVerificationBanner } from "@/components/auth/EmailVerificationBanner";
+import { ServiceStatusStrip } from "@/components/status/ServiceStatusStrip";
 import { BottomNav } from "@/components/nav/BottomNav";
 import { ScreenPreloader } from "@/components/nav/ScreenPreloader";
+import { AppOpenTracker } from "@/components/nav/AppOpenTracker";
 import { OnboardingHost } from "@/components/onboarding/Onboarding";
 import { DemoModeHost } from "@/components/business/DemoModeHost";
 import { GuideOffer } from "@/components/guides/GuideOffer";
@@ -150,9 +152,12 @@ export default async function RootLayout({
                   <TopNav />
                   {/* ADR-213: the quiet "confirm your email" line. */}
                   <EmailVerificationBanner />
+                  {/* ADR-366: an active incident, for the people it affects. */}
+                  <ServiceStatusStrip />
                   {children}
                   <BottomNav />
                   <ScreenPreloader />
+                  <AppOpenTracker />
                   <OnboardingHost />
                   <DemoModeHost />
                   <Suspense fallback={null}>

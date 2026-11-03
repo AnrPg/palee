@@ -169,7 +169,9 @@ defmodule Palee.Finance.Domain.EntitlementPlan do
   defp validate_v2_fields(fields) do
     alias Palee.Finance.Domain.PackageCatalog
 
-    Enum.reduce_while(fields, {:ok, %{}}, fn {key, value}, {:ok, acc} ->
+    fields
+    |> PackageCatalog.drop_removed()
+    |> Enum.reduce_while({:ok, %{}}, fn {key, value}, {:ok, acc} ->
       with {:ok, spec} <- PackageCatalog.fetch(key),
            {:ok, cast} <- PackageCatalog.cast(spec, value) do
         {:cont, {:ok, Map.put(acc, key, cast)}}
@@ -218,6 +220,9 @@ defmodule Palee.Finance.Domain.EntitlementPlan do
       cancellation_cutoff_hours: fields["booking.cancellation_cutoff_hours"],
       waitlist_priority: fields["booking.waitlist_priority"] || "normal",
       no_show_penalty_waived: fields["booking.no_show_penalty_waived"] == true,
+      # ADR-342: booking limits of the package (nil: no limit).
+      daily_booking_limit: fields["booking.daily_limit"],
+      open_bookings_limit: fields["booking.open_bookings_limit"],
       rollover_max: fields["group_classes.rollover_max"] || 0,
       freeze_days_per_year: fields["perks.freeze_days_per_year"] || 0,
       member_discount_percent: fields["perks.member_discount_percent"] || 0,
@@ -314,7 +319,7 @@ defmodule Palee.Finance.Domain.EntitlementPlan do
 
   @term_keys ~w[
     booking_window_days cancellation_cutoff_hours waitlist_priority no_show_penalty_waived
-    rollover_max freeze_days_per_year member_discount_percent member_discount_scope
+    daily_booking_limit open_bookings_limit rollover_max freeze_days_per_year member_discount_percent member_discount_scope
     minimum_commitment_months joining_fee_cents validity_starts expiry_reminder_days validity
     auto_renew response_sla_hours pt_format pt_group_size pt_session_minutes pt_coach_id
     compatible_package_ids beneficiaries quota_sharing allow_minor_beneficiaries seats

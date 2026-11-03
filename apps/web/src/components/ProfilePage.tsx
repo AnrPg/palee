@@ -24,6 +24,7 @@ import { BusinessAccountSettings } from "@/components/business/BusinessAccountSe
 import { AvatarEditorModal } from "@/components/profile/AvatarEditorModal";
 import { CollapsibleSection } from "@/components/profile/CollapsibleSection";
 import { NotificationSettings } from "@/components/notifications/NotificationSettings";
+import { AutomaticMessagesSettings } from "@/components/settings/AutomaticMessagesSettings";
 import { AroundAreaSetting } from "@/components/around/AroundSettings";
 import { JournalSettingsSections } from "@/components/providers/JournalSettings";
 import { isSupportedAvatarSource } from "@/components/profile/avatar-crop";
@@ -246,6 +247,9 @@ export function ProfilePage() {
 
         {/* ADR-199: per-category notifications and push on this device. */}
         <NotificationSettings />
+
+        {/* ADR-346 (W2 p5): the box's automatic messages, one switch and the birthday. */}
+        <AutomaticMessagesSettings />
 
         <CollapsibleSection id="around-area" title={tAround("areaTitle")} description={tAround("areaSettingHint")} defaultOpen>
           <AroundAreaSetting />

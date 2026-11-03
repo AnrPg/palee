@@ -42,6 +42,8 @@ defmodule Palee.PersonalData.Domain.Catalog do
 
   defp memberships, do: {:in, "membership_id", "memberships", "id", @me}
 
+  defp channel_contacts, do: {:in, "contact_id", "channel_contacts", "id", @me}
+
   defp fiscal_documents do
     {:any,
      [
@@ -108,6 +110,10 @@ defmodule Palee.PersonalData.Domain.Catalog do
       account("training", "training_goals", @me),
       account("training", "injury_reports", @me),
       tenant("training", "nutrition_plans", @me),
+      # ADR-356: the leaderboard opt-in with its division and birth year.
+      tenant("training", "leaderboard_opt_ins", @me),
+      # ADR-394: the answer about the Palee-wide benchmark board.
+      account("training", "palee_leaderboard_consents", @me),
       tenant("training", "reviews", @me),
 
       # -- wellness and body -----------------------------------------------------
@@ -136,11 +142,28 @@ defmodule Palee.PersonalData.Domain.Catalog do
       account("messages", "support_requests", @me),
       account("messages", "support_replies", @me, drop: ~w(buddy_user_id)),
       tenant("messages", "messaging_messages", {:eq, "sender_id"}),
+      # ADR-344..347: how the person came to the box (their lead and its
+      # history), the box's automatic messages to them and their choices
+      # about them, and the box's latest «Σε κίνδυνο» score with its reasons.
+      tenant("messages", "leads", @me, drop: ~w(owner_id)),
+      tenant("messages", "lead_events", {:in, "lead_id", "leads", "id", @me}, drop: ~w(actor_id)),
+      tenant("messages", "automation_deliveries", @me),
+      tenant("messages", "automation_member_preferences", @me),
+      tenant("messages", "retention_risks", @me),
+      # ADR-384: what the box's staff did about it (who is left out).
+      tenant("messages", "retention_risk_actions", @me, drop: ~w(actor_id)),
       tenant("messages", "communication_messages", {:eq, "sender_id"},
         drop: ~w(recipient_id recipient_role_snapshot)
       ),
       # ADR-280: Partners rows are the person's own (account-level).
       account("messages", "partner_messages", {:eq, "author_id"}),
+
+      # ADR-348..350: the person's number, consents and the SMS the box sent them.
+      tenant("messages", "channel_contacts", @me, drop: ~w(lead_id)),
+      tenant("messages", "channel_consents", channel_contacts()),
+      tenant("messages", "channel_messages", channel_contacts(),
+        drop: ~w(idempotency_key provider_message_id claimed_at source_ref)
+      ),
 
       # -- community -------------------------------------------------------------
       account("community", "community_profile_posts", @me),
@@ -160,6 +183,12 @@ defmodule Palee.PersonalData.Domain.Catalog do
       tenant("community", "community_posts", {:eq, "author_id"}),
       tenant("community", "community_post_comments", {:eq, "author_id"}),
       tenant("community", "community_post_reactions", @me),
+      # ADR-355: Google review asks shown to the person and their opt-out.
+      tenant("community", "review_asks", @me),
+      tenant("community", "review_ask_opt_outs", @me),
+      # ADR-386: the person's in-app reviews of a box, with the box's reply
+      # (not who on staff wrote it).
+      tenant("community", "box_reviews", @me, drop: ~w(replied_by_id)),
       # ADR-280 verification: the outcome and the person's own request; the
       # phone and selfie never leave, nor who else is named.
       account("community", "partner_verifications", @me, drop: ~w(source_organization_id)),
@@ -189,6 +218,16 @@ defmodule Palee.PersonalData.Domain.Catalog do
       tenant("payments", "shop_orders", @me),
       tenant("payments", "perk_claims", @me),
       tenant("payments", "wallet_passes", @me, drop: ~w(serial)),
+      # ADR-341: a coach's own pay rules and statements (the sources of
+      # commission lines are other people's payments: left out).
+      tenant("payments", "coach_pay_rules", {:eq, "coach_user_id"}),
+      tenant("payments", "coach_pay_statements", {:eq, "coach_user_id"}),
+      tenant(
+        "payments",
+        "coach_pay_lines",
+        {:in, "statement_id", "coach_pay_statements", "id", {:eq, "coach_user_id"}},
+        drop: ~w(source_id)
+      ),
 
       # -- fiscal documents addressed to the person ------------------------------
       tenant("fiscal_documents", "fiscal_documents", fiscal_documents(),

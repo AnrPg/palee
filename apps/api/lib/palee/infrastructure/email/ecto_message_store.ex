@@ -97,6 +97,8 @@ defmodule Palee.Infrastructure.Email.EctoMessageStore do
   def count_sent_since(%DateTime{} = since) do
     Message
     |> where([m], m.status == "sent" and m.sent_at >= ^since)
+    # ADR-368: mail a box sent through its own SMTP is not Palee's quota.
+    |> where([m], is_nil(m.sent_via) or m.sent_via != "own")
     |> Repo.aggregate(:count)
   end
 

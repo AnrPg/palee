@@ -1,6 +1,18 @@
 defmodule Palee.Scheduling.Ports.SchedulingStore do
   alias Palee.Organizations.TenantContext
 
+  @doc """
+  ADR-342: when the member's live bookings (pending or approved, not a
+  guest's, not waitlisted) take place, for classes at or after `from`.
+  """
+  @callback member_booking_times(TenantContext.t(), Ecto.UUID.t(), DateTime.t()) :: [
+              DateTime.t()
+            ]
+  @doc """
+  ADR-341: classes that took place in `[from, to)` with their coach and the
+  attendance marks by status, for coach pay. Cancelled classes are left out.
+  """
+  @callback coach_classes(TenantContext.t(), DateTime.t(), DateTime.t()) :: [map()]
   @callback create_class_type(TenantContext.t(), map()) ::
               {:ok, map()} | {:error, Ecto.Changeset.t()}
   @callback update_class_type(TenantContext.t(), Ecto.UUID.t(), map()) ::

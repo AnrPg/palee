@@ -149,9 +149,10 @@ defmodule Palee.Finance.Domain.PackageContract do
   defp base_fields(_type_key, preset, _existing), do: preset
 
   defp cast_fields(fields) when is_map(fields) do
-    Enum.reduce_while(fields, {:ok, %{}}, fn {key, value}, {:ok, acc} ->
-      key = to_string(key)
-
+    fields
+    |> Map.new(fn {key, value} -> {to_string(key), value} end)
+    |> PackageCatalog.drop_removed()
+    |> Enum.reduce_while({:ok, %{}}, fn {key, value}, {:ok, acc} ->
       with {:ok, spec} <- PackageCatalog.fetch(key),
            {:ok, cast} <- cast_field(spec, value) do
         {:cont, {:ok, Map.put(acc, key, cast)}}

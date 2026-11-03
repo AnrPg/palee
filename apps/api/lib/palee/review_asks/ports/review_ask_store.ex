@@ -1,0 +1,32 @@
+defmodule Palee.ReviewAsks.Ports.ReviewAskStore do
+  @moduledoc "Persistence of review asks (ADR-355); every callback takes the tenant context first."
+
+  @type context :: map()
+  @type id :: Ecto.UUID.t()
+
+  @callback get_settings(context()) :: map() | nil
+  @callback save_settings(context(), map(), lock_version :: non_neg_integer()) ::
+              {:ok, map()} | {:error, :stale | term()}
+  @callback list_asks(context(), user_id :: id()) :: [map()]
+  @callback insert_ask(context(), map()) :: {:ok, map()} | {:error, :already_asked | term()}
+  @callback get_ask(context(), id(), user_id :: id()) :: map() | nil
+  @callback update_ask(context(), id(), map()) :: {:ok, map()} | {:error, term()}
+  @callback opted_out?(context(), user_id :: id()) :: boolean()
+  @callback opt_out(context(), user_id :: id(), DateTime.t()) :: :ok
+  @callback opt_in(context(), user_id :: id()) :: :ok
+  @callback summary(context(), since :: DateTime.t()) :: %{atom() => non_neg_integer()}
+
+  # ADR-386: in-app reviews.
+  @callback get_review(context(), user_id :: id()) :: map() | nil
+  @callback get_review_by_id(context(), id()) :: map() | nil
+  @callback save_review(context(), user_id :: id(), map()) :: {:ok, map()} | {:error, term()}
+  @callback delete_review(context(), user_id :: id()) :: :ok
+  @callback list_reviews(context(), %{limit: pos_integer(), offset: non_neg_integer()}) :: [map()]
+  @callback review_stats(context()) :: %{count: non_neg_integer(), sum: non_neg_integer()}
+  @callback reply_review(context(), id(), map()) :: {:ok, map()} | {:error, term()}
+
+  # ADR-387: the Google listing snapshot.
+  @callback get_place_snapshot(context()) :: map() | nil
+  @callback save_place_snapshot(context(), map()) :: {:ok, map()} | {:error, term()}
+  @callback place_due_organizations(DateTime.t()) :: [id()]
+end

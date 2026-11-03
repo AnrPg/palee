@@ -96,7 +96,7 @@ defmodule Palee.TenantData.Domain.RetentionReviewTest do
              Enum.find_index(order, &(&1 == "notifications"))
   end
 
-  test "only finance, its shop source documents, fiscal records and online payments retain in full; analytics retains anonymized events" do
+  test "only finance, its shop source documents, fiscal records, online payments and coach pay retain in full; analytics retains anonymized events" do
     by_context = Map.new(TenantDataContexts.policies(), &{&1.context, &1})
 
     assert by_context["finance"].disposition == :retain
@@ -126,8 +126,20 @@ defmodule Palee.TenantData.Domain.RetentionReviewTest do
     assert by_context["documents"].retain_years == 5
     refute "health_certificates" in by_context["documents"].retained_tables
 
+    # ADR-341: coach pay statements are payroll records, kept like accounting.
+    assert by_context["coach_pay"].disposition == :retain
+    assert by_context["coach_pay"].retain_years == by_context["finance"].retain_years
+
     assert by_context
-           |> Map.drop(["finance", "shop", "fiscal", "payments", "documents", "analytics"])
+           |> Map.drop([
+             "finance",
+             "shop",
+             "fiscal",
+             "payments",
+             "documents",
+             "analytics",
+             "coach_pay"
+           ])
            |> Map.values()
            |> Enum.all?(&(&1.disposition == :purge))
   end

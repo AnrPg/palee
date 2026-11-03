@@ -13,6 +13,7 @@ import { CameraError, scannerSource, type StopScanner } from "./scanner";
 import { SPARK_GO_STYLE } from "@/lib/spark";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { clockFormat } from "@/lib/clock";
+import { VisitBadgeChips } from "@/components/schedule/VisitBadges";
 
 const AUTO_KEY = "palee:desk-auto-check-in";
 const SAME_CODE_MS = 4_000;
@@ -295,6 +296,12 @@ function DeskResultCard({
         <div className="min-w-0">
           <p className="truncate text-lg font-extrabold" style={{ color: "var(--text)" }}>{name}</p>
           <p className="text-xs" style={{ color: "var(--dim)" }}>{t(["deskMethod", result.method ?? "member_qr"].join("_"))}</p>
+          {/* ADR-359 (ANR mockup e1): «Πρώτη επίσκεψη», «Επισκέπτης», how they came. */}
+          {result.visit ? (
+            <div className="mt-1">
+              <VisitBadgeChips badges={result.visit.badges} via={result.visit.via} />
+            </div>
+          ) : null}
         </div>
       </div>
 

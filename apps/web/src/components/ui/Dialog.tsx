@@ -64,7 +64,8 @@ const LAYER: Record<DialogLayer, string> = {
  *   does not scroll.
  *
  * Pass `onSubmit` to make the panel a <form>: footer buttons with
- * type="submit" then submit it and Enter works in every field.
+ * type="submit" then submit it and Enter works in every field. The browser's
+ * own submit (a GET that reloads the page) never runs.
  */
 export function Dialog({
   onClose,
@@ -185,7 +186,14 @@ export function Dialog({
       tabIndex={-1}
       data-testid={testId}
       data-guide={guide}
-      onSubmit={onSubmit}
+      onSubmit={
+        onSubmit
+          ? (event: FormEvent<HTMLFormElement>) => {
+              event.preventDefault();
+              onSubmit(event);
+            }
+          : undefined
+      }
       onClick={(event) => event.stopPropagation()}
       className={`relative flex min-h-0 w-full flex-col outline-none ${/\boverflow-/.test(panelClassName) ? "" : "overflow-hidden"} ${
         // A bare drawer covers the whole screen: keep its own header below the notch.

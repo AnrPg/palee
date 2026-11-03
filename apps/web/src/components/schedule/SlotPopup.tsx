@@ -7,6 +7,7 @@
 import {useUiTranslations} from "@/i18n/ui";
 import { localizeError } from "@/i18n/presentation";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 
 import { ApiError } from "@/api/client";
@@ -38,6 +39,7 @@ import {
 } from "@/components/wellbeing/InjuryWarnings";
 import { warningLevelFor, warningLevelsByUser } from "@/lib/injury-warnings";
 import { AdminSlotRoster } from "@/components/schedule/AdminSlotRoster";
+import { fetchClassVisitBadges, visitBadgesKey } from "@/api/training-floor";
 import { FeltSummaryCard } from "@/components/wod-goals/FeltSummaryCard";
 import { GuestBookingPanel } from "@/components/schedule/GuestBookingPanel";
 import { ClassVariationDialog } from "@/components/schedule/ClassVariationDialog";
@@ -57,6 +59,7 @@ import { ClassRoomDialog } from "@/components/spaces/ClassRoomDialog";
 import { Dialog } from "@/components/ui/Dialog";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { MoreMenu } from "@/components/ui/MoreMenu";
+import { ClassNoticeDialog } from "@/components/channels/ClassNoticeDialog";
 
 // ADR-179: on the gym's clock (`zone`), its city added when the viewer's differs.
 function formatDateTime(locale: string, isoString: string, zone: string | null) {
@@ -125,7 +128,10 @@ export function SlotPopup({
   const i18n = useUiTranslations();
   const t = useTranslations("Schedule");
   const spaceT = useTranslations("Spaces");
+  const tSms = useTranslations("Sms");
   const [roomOpen, setRoomOpen] = useState(false);
+  // W3 screen 4 Γ (ADR-385): «Ενημέρωση συμμετεχόντων», the app first, SMS for the rest.
+  const [noticeOpen, setNoticeOpen] = useState(false);
   const rulesT = useTranslations("BookingRules");
   const locale = useLocale();
   const organizationSlug = useOrganizationSlug();
@@ -161,6 +167,15 @@ export function SlotPopup({
     isAdmin && Boolean(slot.workout) && hasBookedMembers,
   );
   const injuryLevels = warningLevelsByUser(slotInjuryWarnings.data?.athletes ?? []);
+  // ADR-359 (ANR mockup e1 B): who is new in this class. A role without the
+  // right (403) simply sees no badges.
+  const visitBadges = useQuery({
+    queryKey: visitBadgesKey(slot.id),
+    queryFn: () => fetchClassVisitBadges(accessToken, slot.id),
+    enabled: isAdmin && hasBookedMembers && Boolean(accessToken),
+    retry: false,
+    staleTime: 60_000,
+  });
   const bookingNames = new Map(
     slot.bookings.map((booking) => [booking.user_id, booking.user_nickname ?? booking.user_id]),
   );
@@ -413,6 +428,7 @@ export function SlotPopup({
                 items={[
                   ...(onDuplicate ? [{ label: t("duplicateClass"), onSelect: onDuplicate }] : []),
                   ...(slot.cancelled_at ? [] : [{ label: i18n("addToCalendar4f05cd6"), onSelect: addToCalendar }]),
+                  ...(hasBookedMembers && !isPast ? [{ label: tSms("noticeTitle"), onSelect: () => setNoticeOpen(true) }] : []),
                   ...stateActions
                     .filter((action) => action !== "restore" && action !== "resume" && action !== "delete")
                     .map((action) => ({
@@ -946,10 +962,13 @@ export function SlotPopup({
                 ) : null
               }
               badgeFor={(booking) => <InjuryWarningBadge level={warningLevelFor(injuryLevels, booking.user_id)} />}
+              visits={visitBadges.data?.people}
             />
           ) : null}
         </div>
       </Dialog>
+
+      {noticeOpen && isAdmin ? <ClassNoticeDialog slotId={slot.id} cancelled={Boolean(slot.cancelled_at)} onClose={() => setNoticeOpen(false)} /> : null}
 
       {editWorkoutOpen && slot.workout && isAdmin ? (
         <WorkoutEditModal

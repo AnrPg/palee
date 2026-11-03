@@ -803,3 +803,21 @@ msgstr ""
 
 msgid "%{nickname} sent the box a message."
 msgstr ""
+
+msgid "Question from the website"
+msgstr ""
+
+msgid "Trial request from the website"
+msgstr ""
+
+msgid "%{name} wrote through the box's website. Answer or call them."
+msgstr ""
+
+msgid "The WOD changed"
+msgstr ""
+
+msgid "%{title} changed after you did it. See it as it was in your Journal."
+msgstr ""
+
+msgid "A WOD you did changed. See it as it was in your Journal."
+msgstr ""

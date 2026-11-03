@@ -125,6 +125,7 @@ describe("feedHasPosts", () => {
   it("is false while loading and for an empty feed", () => {
     expect(feedHasPosts(undefined)).toBe(false);
     expect(feedHasPosts({ pages: [page([])] })).toBe(false);
+    expect(feedHasPosts({ pages: [{} as ReturnType<typeof page>] })).toBe(false);
   });
 
   it("is true with a post or a pinned post", () => {

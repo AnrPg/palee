@@ -104,6 +104,19 @@ describe("Dialog", () => {
     fireEvent.click(screen.getByRole("button", { name: "Save" }));
     expect(onSubmit).toHaveBeenCalledTimes(1);
   });
+
+  it("never lets the browser submit the form itself (no page reload)", () => {
+    const onSubmit = vi.fn();
+    render(
+      <Dialog onClose={() => {}} title="Form" closeLabel="Close" onSubmit={onSubmit} footer={<button type="submit">Send</button>}>
+        <input aria-label="Name" />
+      </Dialog>,
+    );
+    const event = new Event("submit", { bubbles: true, cancelable: true });
+    screen.getByRole("button", { name: "Send" }).closest("form")!.dispatchEvent(event);
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+    expect(event.defaultPrevented).toBe(true);
+  });
 });
 
 function Menu({ onDialogClose }: { onDialogClose: () => void }) {

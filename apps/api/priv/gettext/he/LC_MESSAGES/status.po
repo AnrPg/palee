@@ -1,0 +1,56 @@
+msgid ""
+msgstr ""
+"Language: he\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Confirm your Palee status emails"
+msgstr "אשרו את הודעות הסטטוס של Palee"
+
+msgid "Confirm"
+msgstr "אישור"
+
+msgid "Someone asked to get an email when Palee has an incident or planned maintenance. Confirm and we will write to this address only then."
+msgstr "מישהו ביקש לקבל אימייל כש-Palee חווה תקלה או תחזוקה מתוכננת. אשרו ונכתוב לכתובת הזו רק אז."
+
+msgid "If it wasn't you, ignore this email: nothing will be sent."
+msgstr "אם זה לא הייתם אתם, התעלמו מהאימייל הזה: שום דבר לא יישלח."
+
+msgid "Open the status page"
+msgstr "פתיחת דף הסטטוס"
+
+msgid "Stop these emails"
+msgstr "הפסקת האימיילים האלה"
+
+msgid "Status"
+msgstr "סטטוס"
+
+msgid "You get these emails because you asked for them on the status page."
+msgstr "אתם מקבלים את האימיילים האלה כי ביקשתם אותם בדף הסטטוס."
+
+msgid "When"
+msgstr "מתי"
+
+msgid "Investigating"
+msgstr "בבדיקה"
+
+msgid "Identified"
+msgstr "הסיבה זוהתה"
+
+msgid "Monitoring"
+msgstr "במעקב"
+
+msgid "Resolved"
+msgstr "נפתר"
+
+msgid "Scheduled maintenance"
+msgstr "תחזוקה מתוכננת"
+
+msgid "Maintenance in progress"
+msgstr "תחזוקה מתבצעת"
+
+msgid "Maintenance completed"
+msgstr "התחזוקה הסתיימה"
+
+msgid "You get this email because this address was entered on the Palee status page."
+msgstr "קיבלתם את האימייל הזה כי הכתובת הוזנה בדף הסטטוס של Palee."

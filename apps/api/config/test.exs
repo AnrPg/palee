@@ -123,7 +123,29 @@ config :palee, :stripe_connect, %{
 }
 
 config :palee, :payments_http, req_options: [plug: {Req.Test, Palee.PaymentsHttp}]
+# ADR-348: stubbed messaging providers.
+config :palee, :channels_http, req_options: [plug: {Req.Test, Palee.ChannelsHttp}]
+
+# ADR-368: the box's own SMTP provider never leaves the test process.
+config :palee, :channel_email_transport, Palee.Infrastructure.Channels.SandboxEmailTransport
 # ADR-250/251/266: fiskaly calls go to a test plug.
 config :palee, :fiscal_http, req_options: [plug: {Req.Test, Palee.FiscalHttp}]
 # ADR-273: myDATA (saving a test or production connection checks it) too.
 config :palee, :mydata, req_options: [plug: {Req.Test, Palee.FiscalHttp}, retry: false]
+
+# ADR-352..354: sandbox DNS, TLS, leads and conversions in tests.
+config :palee, :box_site_lead_intake, Palee.Infrastructure.BoxSite.SandboxLeadIntake
+config :palee, :box_site_dns, Palee.Infrastructure.BoxSite.SandboxDomainDns
+config :palee, :box_site_tls_probe, Palee.Infrastructure.BoxSite.SandboxTlsProbe
+config :palee, :box_site_conversions_api, Palee.Infrastructure.BoxSite.SandboxConversionsApi
+# ADR-387: no Places API calls in tests.
+config :palee, :google_places, Palee.Infrastructure.ReviewAsks.SandboxPlaces
+config :palee, :box_site_http, req_options: [plug: {Req.Test, Palee.BoxSiteHttp}]
+config :palee, :google_places_api, req_options: [plug: {Req.Test, Palee.GooglePlacesHttp}]
+
+# ADR-364: the status page probes with the sandbox; LiveProbe tests plug Req.Test.
+config :palee, :status_probe, Palee.Infrastructure.Status.SandboxProbe
+config :palee, :status_http, req_options: [plug: {Req.Test, Palee.StatusHttp}]
+
+# ADR-366: no model calls for status page translations outside production.
+config :palee, :status_translator, Palee.Infrastructure.Status.SandboxTranslator

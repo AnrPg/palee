@@ -133,6 +133,16 @@ defmodule Palee.Finance.Ports.FinanceStore do
   @callback cancel_freeze(binary(), binary(), map()) :: {:ok, map()} | {:error, term()}
   @callback list_freezes(binary()) :: [map()]
   @callback booking_terms(binary(), Date.t()) :: map()
+  @doc """
+  ADR-341: money received and given back between two dates (inclusive),
+  each with who it is attributed to: the package's personal-training coach
+  (`pt_coach_id`) and the staff member who recorded it (`sold_by_id`).
+  Card surcharges are left out (a card fee, not a sale).
+  """
+  @callback coach_sales(Date.t(), Date.t()) :: [map()]
+  @doc "ADR-342: whether the person may take the package now (`:member` or `:staff`)."
+  @callback purchase_eligibility(binary(), binary(), :member | :staff, Date.t()) ::
+              :ok | {:error, atom()}
   @callback allowance_terms(binary(), atom(), Date.t()) :: map() | nil
   # ADR-098 payment models
   @callback list_beneficiaries(binary()) :: [map()]

@@ -28,11 +28,20 @@ config :palee, Oban,
     {Oban.Plugins.Cron,
      crontab: [
        {"*/15 * * * *", Palee.Workers.RefreshLeaderboardJob},
+       # ADR-352/353: custom domain checks and the website form outbox.
+       {"*/5 * * * *", Palee.Workers.BoxSiteJob},
+       # ADR-387: refresh due Google listings (each box once a day).
+       {"17 * * * *", Palee.Workers.GooglePlacesJob},
        {"*/15 * * * *", Palee.Workers.RefreshFinanceAggregatesJob},
        {"*/15 * * * *", Palee.Workers.RefreshCoachingAggregatesJob},
        {"0 2 * * *", Palee.Workers.MarkOverdueInvoicesJob},
        {"9 * * * *", Palee.Workers.SubscriptionChargesJob},
        {"21 * * * *", Palee.Workers.LapsePackageRequestsJob},
+       # ADR-346: automatic messages (outbox every 5 minutes, daily recipes hourly).
+       {"*/5 * * * *", Palee.Workers.DispatchAutomationsJob},
+       {"7 * * * *", Palee.Workers.DailyAutomationsJob},
+       # ADR-347: «Σε κίνδυνο», scored once a day before the boxes open.
+       {"30 3 * * *", Palee.Workers.RefreshMemberRisksJob},
        {"17 * * * *", Palee.Workers.ReconcileEntitlementReservationsJob},
        {"0 9 * * *", Palee.Workers.PaymentReminderJob},
        {"41 * * * *", Palee.Workers.ExecutionAbandonmentSweepJob},
@@ -73,6 +82,8 @@ config :palee, Oban,
        {"*/5 * * * *", Palee.Workers.TransmitFiscalDocumentsJob},
        # ADR-250/251: Peppol sends and delivery polls; TSE/RKSV signatures.
        {"*/5 * * * *", Palee.Workers.SendEInvoicesJob},
+       # ADR-348: SMS/Viber/WhatsApp retries and messages held for quiet hours.
+       {"*/2 * * * *", Palee.Workers.DeliverChannelMessagesJob},
        {"*/2 * * * *", Palee.Workers.SignTillReceiptsJob},
        # ADR-273: «Δοκιμή σύνδεσης» of fiscal connections that are due (every 3 months, sooner after a failure).
        {"43 * * * *", Palee.Workers.CheckFiscalConnectionsJob},
@@ -82,7 +93,10 @@ config :palee, Oban,
        # ADR-252: reminders before a client's health certificate expires.
        {"45 8 * * *", Palee.Workers.HealthCertificateRemindersJob},
        # ADR-280 verification: unreviewed selfies after 7 days, SMS codes after a day.
-       {"5 4 * * *", Palee.Workers.PartnerVerificationRetention}
+       {"5 4 * * *", Palee.Workers.PartnerVerificationRetention},
+       # ADR-364: the status page probes every component each minute; a daily sweep.
+       {"* * * * *", Palee.Workers.StatusProbeJob},
+       {"33 3 * * *", Palee.Workers.StatusProbeJob, args: %{"sweep" => true}}
      ]}
   ],
   queues: [
@@ -99,8 +113,12 @@ config :palee, Oban,
     fiscal: 2,
     # ADR-246: provider calls for online payments.
     payments: 2,
+    # ADR-348: SMS, Viber and WhatsApp provider calls.
+    channels: 2,
     # ADR-254: CSV imports, one at a time per node (each row its own transaction).
-    imports: 1
+    imports: 1,
+    # ADR-352/353: domain checks, lead hand-off and conversions.
+    box_site: 2
   ]
 
 config :palee, Palee.Infrastructure.Auth.Guardian,
@@ -130,6 +148,26 @@ config :palee, :start_oban, true
 config :palee, :execution_abandonment_hours, 6
 config :palee, :redis_url, System.get_env("REDIS_URL", "redis://localhost:6379")
 config :palee, :readiness_checker, Palee.Infrastructure.Readiness.Live
+
+# ADR-364: the public status page. Payments and fiscal are probed by reaching
+# the providers' APIs (no credentials are sent; any answer below 500 counts).
+# ADR-365: the box's own data export.
+config :palee, :box_data_export_store, Palee.Infrastructure.BoxData.EctoExportStore
+
+config :palee, :status_store, Palee.Infrastructure.Status.EctoStatusStore
+config :palee, :status_probe, Palee.Infrastructure.Status.LiveProbe
+config :palee, :status_clock, Palee.Infrastructure.Status.SystemClock
+# ADR-366: incidents written in any language get an English version.
+config :palee, :status_translator, Palee.Infrastructure.Status.GeminiTranslator
+config :palee, :status_http, req_options: []
+config :palee, :status_page_url, nil
+
+config :palee, :status_probe_targets, [
+  %{component: "payments", name: "stripe", url: "https://api.stripe.com/v1"},
+  %{component: "payments", name: "viva", url: "https://api.vivapayments.com"},
+  %{component: "fiscal", name: "mydata", url: "https://mydatapi.aade.gr/myDATA"}
+]
+
 config :palee, :identity_user_store, Palee.Infrastructure.Identity.EctoUserStore
 config :palee, :password_reset_store, Palee.Infrastructure.Identity.EctoPasswordResetStore
 config :palee, :login_device_store, Palee.Infrastructure.Identity.EctoLoginDeviceStore
@@ -241,6 +279,30 @@ config :palee, :fiscal_cash_register_security, %{
 
 # ADR-246/247: online payments through the business's own provider account.
 config :palee, :payment_store, Palee.Infrastructure.Payments.EctoPaymentStore
+
+# ADR-348/349: SMS (Viber and WhatsApp later). Every provider sits behind
+# `Channels.Ports.MessagingChannel`; the sandbox sends nothing. Product
+# owner, 2026-10-31: Brevo SMS through Palee's own Brevo account by default
+# (`channel_managed_accounts`, runtime), a box's own Brevo key as an option.
+config :palee, :channel_store, Palee.Infrastructure.Channels.EctoChannelStore
+
+config :palee, :channel_providers, %{
+  "sandbox" => Palee.Infrastructure.Channels.SandboxChannel,
+  "brevo" => Palee.Infrastructure.Channels.BrevoChannel
+}
+
+config :palee, :channel_managed_accounts, %{}
+# nil: `Channels.Domain.CostPolicy.default_prices/0`.
+config :palee, :channel_prices, nil
+config :palee, :channels_webhook_key, "dev-only-channels-webhook-key"
+config :palee, :channels_http, []
+
+# ADR-368: a box's own email provider over SMTP (the advanced option; Palee
+# sends the box's email by default). The box's own messages (templates with
+# `origin: :box`) go through it when connected and checked. Dev and test use
+# the sandbox transport, which sends nothing.
+config :palee, :channel_email_transport, Palee.Infrastructure.Channels.SmtpEmailTransport
+config :palee, :email_box_sender, Palee.Application.Channels.BoxEmailSender
 config :palee, :payment_fulfilment, Palee.Application.Payments.FinanceFulfilment
 config :palee, :payment_notifier, Palee.Application.Payments.FailureNotices
 
@@ -343,31 +405,87 @@ config :palee, :domain_event_handlers, %{
   membership_activated: [
     Palee.Application.TrialReactions,
     Palee.Application.EventReactions,
-    Palee.Application.ReferralReactions
+    Palee.Application.ReferralReactions,
+    Palee.Application.Leads.LeadReactions,
+    Palee.Application.Automations.AutomationReactions
   ],
   attendance_recorded: [
     Palee.Application.TrialReactions,
     Palee.Application.ReferralReactions,
     Palee.Application.WalletReactions,
-    Palee.Application.BoxScreenReactions
+    Palee.Application.BoxScreenReactions,
+    Palee.Application.Leads.LeadReactions,
+    Palee.Application.Automations.AutomationReactions
   ],
+  # ADR-344/346/347: leads moved by staff, members whose risk became high.
+  lead_moved: [Palee.Application.Automations.AutomationReactions],
+  member_at_risk: [Palee.Application.Automations.AutomationReactions],
   # ADR-156: the invite funnel follows events, trials, joining and paying.
   event_attendance_recorded: [Palee.Application.ReferralReactions],
   membership_payment_recorded: [Palee.Application.ReferralReactions],
   booking_cancelled: [
     Palee.Application.TrialReactions,
     Palee.Application.WalletReactions,
-    Palee.Application.BoxScreenReactions
+    Palee.Application.BoxScreenReactions,
+    Palee.Application.BookingInviteEmails
   ],
-  booking_made: [Palee.Application.WalletReactions, Palee.Application.BoxScreenReactions],
+  booking_made: [
+    Palee.Application.WalletReactions,
+    Palee.Application.BoxScreenReactions,
+    Palee.Application.BookingInviteEmails
+  ],
+  # ADR-392: the booking email with its calendar invite.
+  booking_confirmed: [Palee.Application.BookingInviteEmails],
+  class_moved: [Palee.Application.BookingInviteEmails],
   class_cancelled: [Palee.Application.TrialReactions, Palee.Application.BoxScreenReactions],
   # ADR-253: box screens refresh their leaderboards.
   workout_result_recorded: [Palee.Application.BoxScreenReactions]
 }
 
+# ADR-344/345: leads («Ενδιαφερόμενοι»).
+config :palee, :lead_store, Palee.Infrastructure.Leads.EctoLeadStore
+config :palee, :leads_clock, Palee.Infrastructure.Leads.SystemClock
+
+# ADR-346: automations from ready recipes. Channels by name; SMS goes through
+# the box's text-message channel (ADR-351).
+config :palee, :automation_store, Palee.Infrastructure.Automations.EctoAutomationStore
+config :palee, :automation_audience, Palee.Infrastructure.Automations.EctoAudience
+config :palee, :automations_clock, Palee.Infrastructure.Automations.SystemClock
+
+config :palee, :automation_channels, %{
+  "email" => Palee.Infrastructure.Automations.EmailChannel,
+  "in_app" => Palee.Infrastructure.Automations.InAppChannel,
+  "sms" => Palee.Application.Channels.AutomationSmsChannel
+}
+
+# ADR-347: members at risk.
+config :palee, :retention_risk_store, Palee.Infrastructure.Retention.EctoRiskStore
+config :palee, :retention_signal_reader, Palee.Infrastructure.Retention.EctoSignalReader
+config :palee, :retention_clock, Palee.Infrastructure.Retention.SystemClock
+
 # ADR-253: box screens (store and the clock they run on).
 config :palee, :box_screen_store, Palee.Infrastructure.BoxScreens.EctoBoxScreenStore
 config :palee, :box_screen_clock, Palee.Infrastructure.BoxScreens.SystemClock
+
+# ADR-352..354: the box's website. Form submissions become leads (ADR-345).
+config :palee, :box_site_store, Palee.Infrastructure.BoxSite.EctoBoxSiteStore
+config :palee, :box_site_clock, Palee.Infrastructure.BoxSite.SystemClock
+config :palee, :box_site_lead_intake, Palee.Infrastructure.Leads.BoxSiteIntake
+config :palee, :box_site_dns, Palee.Infrastructure.BoxSite.InetDomainDns
+config :palee, :box_site_tls_probe, Palee.Infrastructure.BoxSite.HttpTlsProbe
+config :palee, :box_site_conversions_api, Palee.Infrastructure.BoxSite.MetaConversionsApi
+
+config :palee, :box_site,
+  cname_target: "sites.palee.app",
+  a_records: [],
+  refused_suffixes: ["palee.app", "4kq.net", "localhost", "localdomain", "invalid", "local"]
+
+# ADR-355: Google review asks.
+config :palee, :review_ask_store, Palee.Infrastructure.ReviewAsks.EctoReviewAskStore
+config :palee, :review_signals, Palee.Infrastructure.ReviewAsks.EctoReviewSignals
+config :palee, :review_ask_clock, Palee.Infrastructure.ReviewAsks.SystemClock
+# ADR-387: the box's Google listing (Places API with Palee's server key).
+config :palee, :google_places, Palee.Infrastructure.ReviewAsks.GooglePlaces
 
 config :palee,
        :saved_filter_store,
@@ -428,6 +546,10 @@ config :palee,
 
 config :palee, :finance_store, Palee.Infrastructure.Finance.EctoFinanceStore
 config :palee, :package_request_store, Palee.Infrastructure.Finance.EctoPackageRequestStore
+# ADR-341: coach pay and commissions.
+config :palee, :coach_pay_store, Palee.Infrastructure.CoachPay.EctoCoachPayStore
+config :palee, :coach_pay_work_source, Palee.Application.CoachPay.WorkSource
+config :palee, :coach_pay_clock, Palee.Infrastructure.CoachPay.SystemClock
 
 # ADR-192: the shop's report read model.
 config :palee, :shop_report_store, Palee.Infrastructure.Shop.EctoShopReportStore
@@ -437,6 +559,8 @@ config :palee,
        Palee.Infrastructure.Finance.EctoFinanceAccountingStore
 
 config :palee, :workout_store, Palee.Infrastructure.Workouts.EctoWorkoutStore
+# ADR-357: WODs as they were when assigned or performed.
+config :palee, :workout_snapshot_store, Palee.Infrastructure.Workouts.EctoWorkoutSnapshotStore
 
 config :palee,
        :workout_goal_store,
@@ -456,6 +580,8 @@ config :palee,
 
 # ADR-230: day WODs and their inheritance by the day's classes.
 config :palee, :day_workout_store, Palee.Infrastructure.Scheduling.EctoDayWorkoutStore
+# ADR-359: earlier visits and referrals behind the visit badges.
+config :palee, :visit_facts_store, Palee.Infrastructure.Scheduling.EctoVisitFactsStore
 
 config :palee, :pr_store, Palee.Infrastructure.Pantheon.EctoPRStore
 config :palee, :journal_store, Palee.Infrastructure.Journal.EctoJournalStore

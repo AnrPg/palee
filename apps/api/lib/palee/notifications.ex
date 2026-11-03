@@ -17,6 +17,7 @@ defmodule Palee.Notifications do
   alias Palee.Notifications.NativePush
   alias Palee.Notifications.NativePushTokenStore
   alias Palee.Notifications.PushConfig
+  alias Palee.Notifications.Queries.DeliversNotification
   alias Palee.Notifications.Queries.ListNativePushTokens
   alias Palee.Notifications.Queries.GetUnreadCount
   alias Palee.Notifications.Queries.ListInboxPage
@@ -195,6 +196,13 @@ defmodule Palee.Notifications do
 
   def notification_categories, do: NotificationCategories.category_ids()
 
+  @doc """
+  ADR-392: whether the person wants `category` on `channel`, e.g. the
+  booking email with its calendar invite (`"bookings"`, `"email"`).
+  """
+  def channel_enabled?(user_id, category, channel) when is_binary(user_id),
+    do: DeliversNotification.category(user_id, category, channel)
+
   # ADR-277: the platform console's view of browser alerts. Callers are the
   # vendor pipeline; the device figures answer only to an active vendor.
   def platform_push_status(vendor_user_id),
@@ -213,6 +221,14 @@ defmodule Palee.Notifications do
       |> SavePushSubscription.call()
     end)
   end
+
+  @doc """
+  ADR-385: whether the app can reach the person: a web push subscription or
+  a phone's push token. «Ενημέρωση συμμετεχόντων» sends an SMS only to
+  people without one.
+  """
+  def reachable_in_app?(user_id) when is_binary(user_id),
+    do: get_push_subscriptions(user_id) != [] or list_native_push_tokens(user_id) != []
 
   def get_push_subscriptions(user_id),
     do:
@@ -266,6 +282,19 @@ defmodule Palee.Notifications do
     do: enqueue_message_to_member(:coaching_message, payload)
 
   def process_event("box_message", payload), do: enqueue_message_to_member(:box_message, payload)
+
+  # ADR-346: a box's automatic message (welcome, birthday...) in the bell.
+  def process_event("box_automation", payload),
+    do:
+      deliver_notification(field(payload, :user_id), :box_automation, %{
+        organization_id: field(payload, :organization_id),
+        title: field(payload, :title),
+        body: field(payload, :body),
+        url: field(payload, :url) || "/",
+        recipe: field(payload, :recipe),
+        dedupe_key: field(payload, :dedupe_key)
+      })
+
   def process_event("challenge_completed", payload), do: enqueue_challenge_completed(payload)
 
   # ADR-142: follows of people.
@@ -659,6 +688,34 @@ defmodule Palee.Notifications do
       end
     end)
   end
+
+  # ADR-393: a WOD the person already performed was edited; the use case
+  # names each recipient and the run or score their Journal opens on.
+  def process_event("logged_workout_changed", payload),
+    do:
+      enqueue_simple(:logged_workout_changed, payload, %{
+        organization_id: field(payload, :organization_id),
+        workout_id: field(payload, :workout_id),
+        workout_title: field(payload, :workout_title),
+        holder: field(payload, :holder),
+        holder_id: field(payload, :holder_id),
+        dedupe_key: field(payload, :dedupe_key),
+        url: field(payload, :url)
+      })
+
+  # ADR-388: a trial request or question from the box's website. The use
+  # case names each recipient (the lead's owner, else whoever handles
+  # «Ενδιαφερόμενοι»).
+  def process_event("site_request", payload),
+    do:
+      enqueue_simple(:site_request, payload, %{
+        organization_id: field(payload, :organization_id),
+        lead_id: field(payload, :lead_id),
+        kind: field(payload, :kind),
+        person_name: field(payload, :person_name),
+        dedupe_key: "site_request:#{field(payload, :submission_id)}:#{field(payload, :user_id)}",
+        url: "/admin/leads?lead=#{field(payload, :lead_id)}"
+      })
 
   # ADR-220: a member is leaving the box. The staff who manage billing hear
   # the last day and the reason, once per leave.

@@ -79,6 +79,14 @@ defmodule Palee.Workouts do
   # the caller happened to have open.
   defdelegate get_workout(context, id), to: GetWorkout, as: :by_id
   defdelegate get_workout_for_admin(context, id), to: GetAdminWorkout, as: :by_id
+  # ADR-357 (CP-D3): the content to freeze when a WOD is assigned or performed.
+  defdelegate build_snapshot(workout), to: Palee.Workouts.Domain.WorkoutSnapshot, as: :build
+  defdelegate snapshot_hash(content), to: Palee.Workouts.Domain.WorkoutSnapshot, as: :hash
+
+  defdelegate snapshot_same?(snapshot, workout),
+    to: Palee.Workouts.Domain.WorkoutSnapshot,
+    as: :same?
+
   def exercise_exists?(context, id), do: WorkoutStore.exercise_exists?(context, id)
 
   defdelegate list_assigned_workouts_for_admin(context, start_date, end_date),
@@ -211,6 +219,17 @@ defmodule Palee.Workouts do
 
   def set_workout_icon(context, id, icon, icon_source),
     do: WorkoutStore.set_workout_icon(context, id, icon, icon_source)
+
+  # ADR-394: the benchmarks a coach can tag a WOD with, and the tag itself.
+  defdelegate benchmarks(), to: Palee.Workouts.Domain.WorkoutBenchmarks, as: :all
+  defdelegate benchmark(key), to: Palee.Workouts.Domain.WorkoutBenchmarks, as: :get
+
+  defdelegate normalize_benchmark_key(key),
+    to: Palee.Workouts.Domain.WorkoutBenchmarks,
+    as: :normalize
+
+  def set_workout_benchmark(context, id, benchmark_key),
+    do: WorkoutStore.set_workout_benchmark(context, id, benchmark_key)
 
   def find_filed_copy(context, source_id, folder_id),
     do: WorkoutStore.find_filed_copy(context, source_id, folder_id)

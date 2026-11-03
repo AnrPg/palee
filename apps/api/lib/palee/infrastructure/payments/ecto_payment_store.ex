@@ -5,7 +5,7 @@ defmodule Palee.Infrastructure.Payments.EctoPaymentStore do
 
   import Ecto.Query
 
-  alias Palee.Payments.{Account, Intent, Refund, SavedMethod, WebhookEvent}
+  alias Palee.Payments.{Account, Intent, Refund, SavedMethod, SurchargeSetting, WebhookEvent}
   alias Palee.Payments.Domain.IntentPolicy
   alias Palee.Repo
 
@@ -282,6 +282,30 @@ defmodule Palee.Infrastructure.Payments.EctoPaymentStore do
     |> case do
       {1, [intent]} -> {:ok, plain(intent)}
       {0, _rows} -> {:error, :refund_exceeds_payment}
+    end
+  end
+
+  # ── Card surcharge settings (ADR-340) ──────────────────────────────────
+
+  @impl true
+  def get_surcharge_settings(%{organization_id: organization_id}) do
+    SurchargeSetting
+    |> where([s], s.organization_id == ^organization_id)
+    |> Repo.one()
+    |> plain()
+  end
+
+  @impl true
+  def save_surcharge_settings(%{organization_id: organization_id}, attrs) do
+    SurchargeSetting
+    |> where([s], s.organization_id == ^organization_id)
+    |> Repo.one()
+    |> Kernel.||(%SurchargeSetting{organization_id: organization_id})
+    |> SurchargeSetting.changeset(attrs)
+    |> Repo.insert_or_update()
+    |> case do
+      {:ok, setting} -> {:ok, plain(setting)}
+      error -> error
     end
   end
 

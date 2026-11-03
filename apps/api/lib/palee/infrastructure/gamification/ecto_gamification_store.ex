@@ -7,6 +7,7 @@ defmodule Palee.Infrastructure.Gamification.EctoGamificationStore do
     ChallengeLeaderboardOptIn,
     GamificationSetting,
     LeaderboardOptIn,
+    PaleeLeaderboardConsent,
     SeasonalChallenge,
     TrainingGoal,
     UserAchievement,
@@ -350,6 +351,126 @@ defmodule Palee.Infrastructure.Gamification.EctoGamificationStore do
     |> distinct(true)
     |> Repo.all()
   end
+
+  @impl true
+  def leaderboard_profiles([]), do: %{}
+
+  def leaderboard_profiles(user_ids) do
+    LeaderboardOptIn
+    |> scoped_to_tenant()
+    |> where([opt_in], opt_in.user_id in ^user_ids)
+    |> select([opt_in], {opt_in.user_id, opt_in.division, opt_in.birth_year})
+    |> Repo.all()
+    |> Map.new(fn {user_id, division, birth_year} ->
+      {user_id, %{division: division, birth_year: birth_year}}
+    end)
+  end
+
+  @impl true
+  def put_leaderboard_profile(user_id, params) do
+    case LeaderboardOptIn |> scoped_to_tenant() |> Repo.get_by(user_id: user_id) do
+      nil ->
+        {:error, :not_opted_in}
+
+      %LeaderboardOptIn{} = opt_in ->
+        opt_in
+        |> LeaderboardOptIn.profile_changeset(params)
+        |> Repo.update()
+        |> case do
+          {:ok, saved} -> {:ok, %{division: saved.division, birth_year: saved.birth_year}}
+          error -> error
+        end
+    end
+  end
+
+  # -- ADR-394: the Palee-wide board -----------------------------------------
+
+  @impl true
+  def get_palee_leaderboard_consent(user_id) do
+    PaleeLeaderboardConsent
+    |> where([consent], consent.user_id == ^user_id)
+    |> select([consent], consent.choice)
+    |> Repo.one()
+  end
+
+  @impl true
+  def put_palee_leaderboard_consent(user_id, choice) do
+    %PaleeLeaderboardConsent{}
+    |> PaleeLeaderboardConsent.changeset(%{user_id: user_id, choice: choice})
+    |> Repo.insert(
+      on_conflict: {:replace, [:choice, :updated_at]},
+      conflict_target: :user_id
+    )
+    |> case do
+      {:ok, saved} -> {:ok, saved.choice}
+      error -> error
+    end
+  end
+
+  @impl true
+  def delete_palee_leaderboard_consent(user_id) do
+    PaleeLeaderboardConsent
+    |> where([consent], consent.user_id == ^user_id)
+    |> Repo.delete_all()
+
+    :ok
+  end
+
+  @palee_results_query """
+  SELECT person_ref, is_viewer, nickname, box_name, workout_id, scale_level_slug, division,
+         age_group, section_scores
+  FROM palee_benchmark_results($1::text, $2::timestamp, $3::timestamp, $4::integer)
+  """
+
+  @impl true
+  def palee_benchmark_results(key, %DateTime{} = from, %DateTime{} = to, year) do
+    %{rows: rows} =
+      Repo.query!(@palee_results_query, [key, naive_utc(from), naive_utc(to), year])
+
+    Enum.map(rows, fn [ref, viewer?, nickname, box, workout_id, scale, division, age, scores] ->
+      %{
+        person_ref: ref,
+        viewer?: viewer?,
+        nickname: nickname,
+        box_name: box,
+        workout_id: Ecto.UUID.load!(workout_id),
+        scale_level_slug: scale,
+        division: division,
+        age_group: age,
+        section_scores: scores || []
+      }
+    end)
+  end
+
+  @palee_sections_query """
+  SELECT workout_id, authoring_mode, sections
+  FROM palee_benchmark_workout_sections($1::text, $2::uuid[])
+  """
+
+  @impl true
+  def palee_benchmark_workout_sections(_key, []), do: %{}
+
+  def palee_benchmark_workout_sections(key, workout_ids) do
+    ids = workout_ids |> Enum.uniq() |> Enum.map(&Ecto.UUID.dump!/1)
+    %{rows: rows} = Repo.query!(@palee_sections_query, [key, ids])
+
+    Map.new(rows, fn [workout_id, authoring_mode, sections] ->
+      {Ecto.UUID.load!(workout_id),
+       %{authoring_mode: authoring_mode, sections: Enum.map(sections || [], &section/1)}}
+    end)
+  end
+
+  defp section(row) do
+    %{
+      id: row["id"],
+      order: row["order"],
+      name: row["name"],
+      scoreable: row["scoreable"] == true,
+      score_config: row["score_config"]
+    }
+  end
+
+  defp naive_utc(at), do: at |> DateTime.shift_zone!("Etc/UTC") |> DateTime.to_naive()
 
   @impl true
   def leaderboard_opted_in?(user_id) do

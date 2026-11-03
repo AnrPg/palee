@@ -11,6 +11,16 @@ defmodule PaleeWeb.RouteCapabilities do
 
   alias PaleeWeb, as: W
 
+  # ADR-382: what any staff role holds, for reading one's own pay.
+  @own_pay [
+    :run_classes,
+    :manage_appointments,
+    :check_in,
+    :take_payments,
+    :view_finance_reports,
+    :record_cleaning
+  ]
+
   @controller_defaults %{
     W.AdminWorkoutController => [:manage_workouts],
     # ADR-252: templates, versions, requirement, settings and audit.
@@ -20,6 +30,8 @@ defmodule PaleeWeb.RouteCapabilities do
     W.AdminWorkoutChoiceController => [:manage_schedule, :manage_workouts],
     # ADR-230: the day's WOD, like linking a WOD to one class.
     W.AdminDayWorkoutController => [:manage_schedule, :manage_workouts],
+    # ADR-359: whoever runs classes or the desk sees who is new.
+    W.AdminVisitBadgesController => [:run_classes, :check_in, :manage_schedule],
     W.AdminWorkoutDslController => [:manage_workouts],
     W.AdminWorkoutFolderController => [:manage_workouts],
     W.AdminWorkoutGoalsController => [:manage_workouts],
@@ -37,14 +49,30 @@ defmodule PaleeWeb.RouteCapabilities do
     W.AppointmentsController => [:manage_appointments],
     W.StaffController => [:manage_coaching, :manage_appointments, :manage_schedule],
     W.PaymentModelsController => [:manage_billing],
+    # ADR-348..351: the provider, budget and wording are settings; numbers,
+    # consents and sending belong to whoever messages from the box.
+    W.AdminChannelSettingsController => [:manage_settings],
+    # ADR-368: the box's own SMTP email provider.
+    W.AdminChannelEmailController => [:manage_settings],
+    W.AdminChannelContactsController => [:message_from_box],
+    W.AdminChannelMessagesController => [:message_from_box],
+    W.AdminChannelClassNoticesController => [:message_from_box],
     W.CoachingRelationshipsController => [:assign_coaches, :manage_coaching],
     W.RoleAccessController => [:manage_settings],
     W.InventoryController => [:manage_inventory],
     W.ShopController => [:manage_shop],
     W.OwnerOrganizationController => [:manage_organization_lifecycle],
+    # ADR-365: a copy of all the box's data is for owners.
+    W.AdminDataExportController => [:manage_organization_lifecycle],
     W.AdminWorkoutTimerPreviewController => [:manage_workouts],
     W.AdminBrandingController => [:manage_settings],
     W.AdminPublicProfileController => [:manage_settings],
+    # ADR-352..354: the website, its domains and tags.
+    W.AdminSiteController => [:manage_settings],
+    # ADR-355: Google review asks (settings and counts only).
+    W.AdminReviewAsksController => [:manage_settings],
+    # ADR-386: replying to reviews speaks as the box (like the box inbox).
+    W.AdminBoxReviewsController => [:message_from_box],
     W.HomeLocationController => [:manage_memberships],
     W.AdminWorkoutFreeTextController => [:manage_workouts],
     W.AdminOnboardingController => [:manage_settings],
@@ -63,7 +91,13 @@ defmodule PaleeWeb.RouteCapabilities do
     # ADR-253: box screens (TVs on the wall), their codes and overrides.
     W.AdminBoxScreenController => [:manage_settings, :manage_locations],
     # ADR-254: CSV imports (owners and admins hold manage_settings).
-    W.AdminImportController => [:manage_settings]
+    W.AdminImportController => [:manage_settings],
+    # ADR-344/345: «Ενδιαφερόμενοι».
+    W.AdminLeadController => [:manage_leads],
+    # ADR-346: the ready recipes (owners and admins).
+    W.AdminAutomationController => [:manage_automations],
+    # ADR-347: «Σε κίνδυνο».
+    W.AdminMemberRiskController => [:view_members_at_risk]
   }
 
   @actions %{
@@ -300,6 +334,43 @@ defmodule PaleeWeb.RouteCapabilities do
     {W.AdminDeskBuyersController, :options} => [:take_payments],
     {W.AdminDeskBuyersController, :make_guest} => [:take_payments],
     {W.AdminTipsController, :index} => [:view_finance_reports, :manage_billing],
+    # ADR-341: coach pay and commissions (pay is billing staff's business).
+    {W.AdminCoachPayController, :rules} => [:view_finance_reports, :manage_billing],
+    {W.AdminCoachPayController, :create_rule} => [:manage_billing],
+    {W.AdminCoachPayController, :update_rule} => [:manage_billing],
+    {W.AdminCoachPayController, :archive_rule} => [:manage_billing],
+    {W.AdminCoachPayController, :periods} => [:view_finance_reports, :manage_billing],
+    {W.AdminCoachPayController, :create_period} => [:manage_billing],
+    {W.AdminCoachPayController, :period} => [:view_finance_reports, :manage_billing],
+    {W.AdminCoachPayController, :calculate} => [:manage_billing],
+    {W.AdminCoachPayController, :add_adjustment} => [:manage_billing],
+    {W.AdminCoachPayController, :delete_adjustment} => [:manage_billing],
+    {W.AdminCoachPayController, :approve} => [:manage_billing],
+    {W.AdminCoachPayController, :reopen} => [:manage_billing],
+    {W.AdminCoachPayController, :export} => [:view_finance_reports, :manage_billing],
+    # ADR-382: lines by hand, gross/net, the PDF, a person's statements and
+    # Finance's summary; the catalogue of overtime and allowances is a setting.
+    {W.AdminCoachPayController, :add_pay_item_line} => [:manage_billing],
+    {W.AdminCoachPayController, :set_line_basis} => [:manage_billing],
+    {W.AdminCoachPayController, :payslip} => [:view_finance_reports, :manage_billing],
+    {W.AdminCoachPayController, :person_statements} => [:view_finance_reports, :manage_billing],
+    {W.AdminCoachPayController, :summary} => [:view_finance_reports, :manage_billing],
+    {W.AdminCoachPayController, :items} => [
+      :manage_settings,
+      :view_finance_reports,
+      :manage_billing
+    ],
+    {W.AdminCoachPayController, :create_item} => [:manage_settings],
+    {W.AdminCoachPayController, :update_item} => [:manage_settings],
+    {W.AdminCoachPayController, :archive_item} => [:manage_settings],
+    # A staff member's own statements: every staff role may be paid (ADR-382);
+    # the service only ever reads the caller's own.
+    {W.MyCoachPayController, :index} => @own_pay,
+    {W.MyCoachPayController, :payslip} => @own_pay,
+    # ADR-340: the card surcharge.
+    {W.AdminCardSurchargeController, :show} => [:view_finance_reports, :manage_billing],
+    {W.AdminCardSurchargeController, :update} => [:manage_billing],
+    {W.AdminCardSurchargeController, :quote} => [:take_payments, :manage_billing],
     # ADR-252: documents are box rules (manage_settings: which are
     # mandatory, their text, the booking gate); asking clients to sign and
     # reading who signed is membership work too, and front desk work
@@ -472,10 +543,13 @@ defmodule PaleeWeb.RouteCapabilities do
     {W.TrainingDepthController, :client} => [:view_client_training],
 
     # Private coach notes (ADR-101)
-    {W.CoachNotesController, :index} => [:write_coach_notes, :read_coach_notes],
-    {W.CoachNotesController, :create} => [:write_coach_notes],
-    {W.CoachNotesController, :update} => [:write_coach_notes],
-    {W.CoachNotesController, :delete} => [:write_coach_notes],
+    # ADR-359 (CP-E5): staff notes are read and written by anyone who sees
+    # the member in the directory (front desk included); the service keeps
+    # private notes to ADR-101's readers and edits to the author.
+    {W.CoachNotesController, :index} => [:write_coach_notes, :read_coach_notes, :view_directory],
+    {W.CoachNotesController, :create} => [:write_coach_notes, :view_directory],
+    {W.CoachNotesController, :update} => [:write_coach_notes, :view_directory],
+    {W.CoachNotesController, :delete} => [:write_coach_notes, :view_directory],
     {W.CoachNotesController, :reads} => [:write_coach_notes],
     {W.CoachNotesController, :visibility} => [:write_coach_notes],
 

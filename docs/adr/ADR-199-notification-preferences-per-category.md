@@ -91,3 +91,8 @@ the wellness and buddy jobs), so a check per sender would miss some.
 ## Implementation Notes
 - Migration `20261219100000_create_notification_preferences`.
 - `Notification.types/0` is now public, so the map can be tested.
+
+## Amendment (ADR-392, 2026-11-03)
+`bookings` now offers `email`: the booking email with its calendar invite. It is on by default and
+does not depend on the bell; Ρυθμίσεις shows it as one switch under the bookings row, not a column.
+

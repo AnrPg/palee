@@ -43,6 +43,25 @@ export type DayWorkoutPreview = {
   started: DayWorkoutClass[];
 };
 
+/**
+ * ADR-357: the tag of each gym day from `from` to `to` (inclusive, at most
+ * 62 days): whether none, some or all of its live classes have their WOD.
+ */
+export type DayAssignmentTag = {
+  date: string;
+  tag: "none" | "not_assigned" | "mixed" | "all_assigned";
+  classes: number;
+  with_wod: number;
+};
+
+export async function fetchDayAssignmentTags(token: string, from: string, to: string) {
+  const response = await apiRequest<{ day_workouts: DayWorkout[]; days: DayAssignmentTag[] }>(
+    `/admin/schedule/day-workouts?from=${from}&to=${to}`,
+    { token },
+  );
+  return response.days;
+}
+
 export async function previewDayWorkout(token: string, request: DayWorkoutRequest) {
   return apiRequest<DayWorkoutPreview>("/admin/schedule/day-workouts/preview", {
     method: "POST",

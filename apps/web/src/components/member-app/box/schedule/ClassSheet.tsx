@@ -29,7 +29,8 @@ import { MyInjuryWarningsPanel } from "@/components/wellbeing/InjuryWarnings";
 import { WodGoalsStrip } from "@/components/wod-goals/WodGoalsStrip";
 import { localizeError } from "@/i18n/presentation";
 import { useUiTranslations } from "@/i18n/ui";
-import { downloadIcsEvent } from "@/lib/ics";
+import { fetchBookingInvite } from "@/api/training-floor";
+import { downloadIcsEvent, saveIcs } from "@/lib/ics";
 import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
 import { dateKeyInZone, formatInZone, zonedText } from "@/lib/zoned-time";
 import { YourTime } from "@/components/zoned-time";
@@ -138,6 +139,27 @@ export function ClassSheet({
     } finally {
       setActionBusy(false);
     }
+  }
+
+  // ADR-359: a booking of mine comes from the server with the feed's UID, so
+  // it never shows twice and a later cancellation removes it; anything else
+  // (a class I have not booked) is a plain one-off event.
+  async function addToCalendar() {
+    const booking = slot.current_user_booking;
+    if (booking && organizationSlug && accessToken) {
+      try {
+        saveIcs(await fetchBookingInvite(accessToken, organizationSlug, booking.id), slot.name);
+        return;
+      } catch {
+        // Offline or refused: fall back to the one-off event below.
+      }
+    }
+    downloadIcsEvent({
+      title: slot.name,
+      date: slot.scheduled_at.slice(0, 10),
+      datetime: slot.scheduled_at,
+      durationMinutes: slot.duration_minutes,
+    });
   }
 
   function withdraw() {
@@ -276,14 +298,7 @@ export function ClassSheet({
         slot.cancelled_at ? undefined : (
           <button
             type="button"
-            onClick={() =>
-              downloadIcsEvent({
-                title: slot.name,
-                date: slot.scheduled_at.slice(0, 10),
-                datetime: slot.scheduled_at,
-                durationMinutes: slot.duration_minutes,
-              })
-            }
+            onClick={() => void addToCalendar()}
             aria-label={i18n("addToCalendar33cead7")}
             className="grid h-10 w-10 place-items-center rounded-full"
             style={{ background: "var(--panel-raised)", color: "var(--text-soft)" }}

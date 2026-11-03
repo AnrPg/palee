@@ -60,3 +60,9 @@ msgstr "Evenement: %{title}"
 
 msgid "You're going to this event."
 msgstr "Je gaat naar dit evenement."
+
+msgid "Waitlisted"
+msgstr "Op de wachtlijst"
+
+msgid "This class or your booking was cancelled."
+msgstr "Deze les of je boeking is geannuleerd."

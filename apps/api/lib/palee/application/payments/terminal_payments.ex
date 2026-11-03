@@ -15,6 +15,7 @@ defmodule Palee.Application.Payments.TerminalPayments do
 
   alias Palee.Application.Fiscal.{FiscalDocumentRendering, FiscalReporting, ReceiptLinks}
   alias Palee.Application.{GoLive, UpdateFinanceMember}
+  alias Palee.Application.Payments.CardSurcharges
   alias Palee.{Finance, Fiscal, Identity, Organizations}
   alias Palee.Payments.Terminal
   alias Palee.Shop
@@ -51,7 +52,10 @@ defmodule Palee.Application.Payments.TerminalPayments do
                amount_cents: params[:amount_cents],
                currency: purpose.currency,
                description: purpose.description,
-               metadata: Map.merge(purpose[:metadata] || %{}, started_on(params)),
+               metadata:
+                 (purpose[:metadata] || %{})
+                 |> Map.merge(started_on(params))
+                 |> Map.merge(surcharge_choice(context)),
                idempotency_key: params[:idempotency_key],
                created_by_id: Map.get(context, :user_id)
              },
@@ -59,6 +63,12 @@ defmodule Palee.Application.Payments.TerminalPayments do
            ) do
       {:ok, decorate(context, payment)}
     end
+  end
+
+  # ADR-340: the owner's «no card surcharge» (or a country that forbids it)
+  # asks the terminal app to skip its own.
+  defp surcharge_choice(context) do
+    if CardSurcharges.terminal_skip?(context), do: %{"skip_surcharge" => true}, else: %{}
   end
 
   # ADR-272: where the payment started, for its tip (a phone by default:

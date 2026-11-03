@@ -226,7 +226,8 @@ test.describe("Buddy για στήριξη", () => {
     await common(page, { buddies: () => overview({ buddies: [link("link-1", "Eleni")] }) });
     await wellnessPage(page);
     await page.route("**/api/me/support-requests", (route) =>
-      route.request().method() === "POST" ? route.fulfill(json({ support_request: current })) : route.fallback(),
+      // The five-second window starts when the request is sent, not when the test starts.
+      route.request().method() === "POST" ? route.fulfill(json({ support_request: (current = supportRequest()) })) : route.fallback(),
     );
     await page.route("**/api/me/support-requests/req-1", (route) => route.fulfill(json({ support_request: current })));
     await page.route("**/api/me/support-requests/req-1/undo", (route) => {

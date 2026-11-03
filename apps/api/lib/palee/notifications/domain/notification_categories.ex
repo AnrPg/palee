@@ -7,9 +7,10 @@ defmodule Palee.Notifications.Domain.NotificationCategories do
   Categories are what a person switches in Εγώ › Ρυθμίσεις › Ειδοποιήσεις;
   channels are how a notification reaches them: `in_app` (the bell) and
   `push` (browser and store-app push). A push is made from the bell row, so
-  a push is delivered only while the category's bell is on too. `email` is a
-  known channel no category offers yet: the only emails sent today go to
-  people outside the app (owner invitations, corporate invoices).
+  a push is delivered only while the category's bell is on too. `email`
+  (ADR-392) is offered by `bookings` only: the booking email with its
+  calendar invite («Email κράτησης με ημερολόγιο»). It does not depend on the
+  bell; it is on unless the person turned it off.
 
   A stored choice overrides the default; with none stored every channel is
   on, which is how notifications behaved before preferences existed. Locked
@@ -23,7 +24,8 @@ defmodule Palee.Notifications.Domain.NotificationCategories do
   @categories [
     %{
       id: "bookings",
-      channels: ~w(in_app push),
+      # ADR-392: `email` is the booking email with its calendar invite.
+      channels: ~w(in_app push email),
       locked: false,
       audience: "everyone",
       types: ~w(
@@ -40,7 +42,7 @@ defmodule Palee.Notifications.Domain.NotificationCategories do
       audience: "everyone",
       types: ~w(
         chat_message person_message message_request box_message box_inbox_message coaching_message
-        athlete_message
+        athlete_message box_automation
       )
     },
     %{
@@ -65,7 +67,8 @@ defmodule Palee.Notifications.Domain.NotificationCategories do
       locked: false,
       audience: "everyone",
       types: ~w(
-        workout_note workout_changed workout_deleted workout_rejected workout_moved
+        workout_note workout_changed logged_workout_changed workout_deleted workout_rejected
+        workout_moved
         workout_assigned workout_assignment_requested workout_completed review_submitted
         form_review_submitted form_review_completed coaching_reply_overdue
         nutrition_plan_updated coach_client_assigned coach_note_viewed coach_wellness_summary
@@ -102,6 +105,7 @@ defmodule Palee.Notifications.Domain.NotificationCategories do
         community_group_proposed community_report_created referral_review
         inventory_repair_needed inventory_stock_low inventory_digest cleaning_point_not_cleaned
         shop_stock_low shop_order_placed payment_needs_attention fiscal_connection_failed
+        site_request
       )
     },
     %{
@@ -158,6 +162,19 @@ defmodule Palee.Notifications.Domain.NotificationCategories do
     case category_for(type) do
       nil -> true
       id -> resolved(@by_id[id], choices) |> Map.get(channel, true)
+    end
+  end
+
+  @doc """
+  Whether a whole category reaches the person on `channel` (ADR-392: the
+  booking email is not a notification type, so it asks by category). A
+  channel the category does not offer is off.
+  """
+  @spec channel_on?([choice()], category_id(), channel()) :: boolean()
+  def channel_on?(choices, category_id, channel) do
+    case Map.fetch(@by_id, category_id) do
+      {:ok, category} -> category |> resolved(choices) |> Map.get(channel, false)
+      :error -> false
     end
   end
 

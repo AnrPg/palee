@@ -1,9 +1,10 @@
 "use client";
 
+import { AfterBookingSmsAsk } from "@/components/channels/AfterBookingSmsAsk";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { documentsRequired, type DocumentsRequired } from "@/api/documents";
 import { fetchMyEntitlement } from "@/api/my-finance";
@@ -19,9 +20,11 @@ import { useUiTranslations } from "@/i18n/ui";
 import { useSelectedMembershipRole } from "@/lib/membership-role";
 import { OFFLINE_COMMAND_OUTBOX_EVENT } from "@/lib/offline-command-outbox";
 import { organizationTopic, subscribeToTopic } from "@/lib/realtime";
+import { shouldOfferCalendar } from "@/lib/once-asked";
 import { addDaysToKey, dateKeyInZone, formatInZone, startOfDayInZone } from "@/lib/zoned-time";
 
 import { ClassRow } from "./ClassRow";
+import { CalendarOfferSheet } from "./CalendarOfferSheet";
 import { ClassSheet } from "./ClassSheet";
 import { MONTH_GRID_DAYS, MonthGrid, monthGridStart, shiftMonth, type DayCount } from "./MonthGrid";
 import {
@@ -58,8 +61,9 @@ export function MemberSchedule({ initialOpenSlotId = null }: { initialOpenSlotId
   const t = useTranslations("BoxSchedule");
   const i18n = useUiTranslations();
   const locale = useLocale();
-  const { tokens } = useSession();
+  const { tokens, currentUser } = useSession();
   const token = tokens?.access_token ?? null;
+  const queryClient = useQueryClient();
   const { membership } = useSelectedMembershipRole();
   const organizationId = membership?.organization.id ?? null;
   // ADR-179: days and times are the gym's own, wherever the member is.
@@ -77,6 +81,8 @@ export function MemberSchedule({ initialOpenSlotId = null }: { initialOpenSlotId
   const [actionError, setActionError] = useState<string | null>(null);
   // Mockup s4 B: booking without a package offers to pay for the visit.
   const [payFor, setPayFor] = useState<ScheduleSlot | null>(null);
+  // ADR-359 (ANR mockup e4 A): the calendar offer, once, after a booking.
+  const [calendarOffer, setCalendarOffer] = useState(false);
   const sales = useBoxSales(membership?.organization.slug);
   const offer = bookingOffer(sales.packages);
   // ADR-252: what the booking gate asks for, shown in the class sheet.
@@ -232,6 +238,8 @@ export function MemberSchedule({ initialOpenSlotId = null }: { initialOpenSlotId
     },
   ];
 
+  const [askSms, setAskSms] = useState(false);
+
   async function book(slot: ScheduleSlot) {
     setBusy(true);
     setActionError(null);
@@ -241,7 +249,10 @@ export function MemberSchedule({ initialOpenSlotId = null }: { initialOpenSlotId
       setNotice(outcome.status === "queued" ? i18n("outboxQueuedNotice") : null);
       setOpenSlotId(null);
       setDocumentsGate(null);
+      // W3 screen 2 B: once, after the booking, ask about SMS for cancellations.
+      setAskSms(true);
       if (outcome.status === "delivered") reload();
+      if (outcome.status === "delivered" && (await shouldOfferCalendar(queryClient, token, currentUser?.id))) setCalendarOffer(true);
     } catch (error) {
       const gate = documentsRequired(error);
       if (gate) {
@@ -406,6 +417,13 @@ export function MemberSchedule({ initialOpenSlotId = null }: { initialOpenSlotId
           }}
         />
       ) : null}
+
+      {calendarOffer && currentUser?.id ? (
+        <CalendarOfferSheet userId={currentUser.id} onClose={() => setCalendarOffer(false)} />
+      ) : null}
+
+      {/* One question at a time: the calendar offer first, then the SMS question. */}
+      {askSms && !calendarOffer && membership ? <AfterBookingSmsAsk slug={membership.organization.slug} onDone={() => setAskSms(false)} /> : null}
 
       {payFor && membership ? (
         <BuyPackageSheet

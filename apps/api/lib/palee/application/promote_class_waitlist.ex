@@ -86,6 +86,16 @@ defmodule Palee.Application.PromoteClassWaitlist do
     })
 
     ScheduleRealtime.broadcast("booking_waitlist_promoted", booking)
+
+    # ADR-392: a place from the waiting list is a confirmed seat.
+    Palee.DomainEvents.publish(:booking_confirmed, %{
+      organization_id: slot.organization_id,
+      scheduled_class_id: slot.id,
+      booking_id: booking.id,
+      user_id: booking.user_id,
+      at: DateTime.utc_now()
+    })
+
     :ok
   rescue
     error ->

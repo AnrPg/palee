@@ -124,7 +124,13 @@ defmodule Palee.Notifications.Notification do
     :partner_vouch_request,
     :partner_vouched,
     :partner_verification_decided,
-    :partner_sponsor_penalty
+    :partner_sponsor_penalty,
+    # ADR-346: an automatic message of a box's recipe.
+    :box_automation,
+    # ADR-388: a trial request or question from the box's website.
+    :site_request,
+    # ADR-393: a WOD the person already performed was edited.
+    :logged_workout_changed
   ]
 
   schema "notifications" do

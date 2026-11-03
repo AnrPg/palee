@@ -34,6 +34,7 @@ defmodule Palee.Application.CommunityEvents do
     EventInvites,
     EventNotices,
     EventPresenter,
+    EventSms,
     GoLive,
     KeyDerivation,
     PublicBox,
@@ -155,7 +156,9 @@ defmodule Palee.Application.CommunityEvents do
   def rsvp(%{user_id: user_id} = context, event_id, params) do
     now = DateTime.utc_now()
 
-    with {:ok, event, clubs, invite} <- locate(context, event_id, params[:invite_token]) do
+    with {:ok, event, clubs, invite} <- locate(context, event_id, params[:invite_token]),
+         # The number and «yes» to SMS go first, so a wrong number changes nothing.
+         :ok <- if(params[:going], do: EventSms.record_consent(event, user_id, params), else: :ok) do
       gym = gym(event.organization_id, context)
 
       invited_by = invite && invite.inviter_id != user_id && invite.inviter_id
@@ -303,6 +306,21 @@ defmodule Palee.Application.CommunityEvents do
          {:ok, updated} <- manage_update(manager, event, params) do
       [shown] = present(context, [updated], clubs)
       {:ok, shown}
+    end
+  end
+
+  @doc """
+  ADR-385: the organiser's SMS view of an event («12 από 40 θα πάρουν SMS»,
+  its cost). Only for whoever runs events there.
+  """
+  def sms(context, event_id) do
+    with {:ok, event, _clubs, _invite} <- locate(context, event_id, nil),
+         {:ok, manager} <- manager_context(context, event.organization_id),
+         :ok <- own_event(manager, event) do
+      {:ok, EventSms.summary(event)}
+    else
+      {:error, :forbidden} -> {:error, :not_found}
+      error -> error
     end
   end
 

@@ -10,6 +10,9 @@ defmodule Palee.Email.Templates do
 
   @templates %{
     account_deletion_confirm: Palee.Email.Templates.AccountDeletionConfirm,
+    booking_invite: Palee.Email.Templates.BookingInvite,
+    box_automation: Palee.Email.Templates.BoxAutomation,
+    box_data_export_ready: Palee.Email.Templates.BoxDataExportReady,
     business_activation_link: Palee.Email.Templates.BusinessActivationLink,
     corporate_invoice_issued: Palee.Email.Templates.CorporateInvoiceIssued,
     corporate_invoice_reminder: Palee.Email.Templates.CorporateInvoiceReminder,
@@ -33,6 +36,9 @@ defmodule Palee.Email.Templates do
     security_signed_out_everywhere: Palee.Email.Templates.SecuritySignedOutEverywhere,
     share_link: Palee.Email.Templates.ShareLink,
     signup_attempt_existing: Palee.Email.Templates.SignupAttemptExisting,
+    site_domain_instructions: Palee.Email.Templates.SiteDomainInstructions,
+    status_subscription_confirm: Palee.Email.Templates.StatusSubscriptionConfirm,
+    status_update: Palee.Email.Templates.StatusUpdate,
     verify_email: Palee.Email.Templates.VerifyEmail
   }
 

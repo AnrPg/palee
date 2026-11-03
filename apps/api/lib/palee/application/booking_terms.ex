@@ -5,7 +5,7 @@ defmodule Palee.Application.BookingTerms do
   """
 
   alias Palee.{Finance, Organizations, Scheduling}
-  alias Palee.Scheduling.Domain.BookingPolicy
+  alias Palee.Scheduling.Domain.{BookingLimits, BookingPolicy}
 
   def for_slot(context, user_id, slot) do
     date = Organizations.local_date(context, slot.scheduled_at)
@@ -54,7 +54,10 @@ defmodule Palee.Application.BookingTerms do
           settings[:default_cancellation_cutoff_minutes]
         ),
       waitlist_priority: BookingPolicy.waitlist_priority(terms[:waitlist_priority]),
-      no_show_penalty_waived: terms[:no_show_penalty_waived] == true
+      no_show_penalty_waived: terms[:no_show_penalty_waived] == true,
+      # ADR-342: package booking limits (no gym default: a package rule only).
+      daily_booking_limit: terms[:daily_booking_limit],
+      open_bookings_limit: terms[:open_bookings_limit]
     }
   end
 
@@ -64,6 +67,28 @@ defmodule Palee.Application.BookingTerms do
 
   defp finance_terms(nil, user_id, date), do: Finance.booking_terms(user_id, date)
   defp finance_terms(context, user_id, date), do: Finance.booking_terms(context, user_id, date)
+
+  @doc """
+  ADR-342: whether the member's package lets them book one more class at
+  `slot`: its daily, weekly and open-bookings limits.
+  """
+  def check_limits(context, user_id, slot, %DateTime{} = now) do
+    terms = for_slot(context, user_id, slot)
+
+    if BookingLimits.any?(terms) do
+      zone = zone(context)
+      from = BookingLimits.counted_from(slot.scheduled_at, now, zone)
+      booked = Scheduling.member_booking_times(context, user_id, from)
+      BookingLimits.check(terms, slot.scheduled_at, booked, now, zone)
+    else
+      :ok
+    end
+  end
+
+  defp zone(%{organization_id: id}) when is_binary(id),
+    do: Organizations.organization_timezone(id)
+
+  defp zone(_context), do: "Etc/UTC"
 
   defp settings(nil), do: %{}
   defp settings(context), do: Scheduling.get_settings(context)

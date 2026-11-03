@@ -1,0 +1,56 @@
+msgid ""
+msgstr ""
+"Language: el\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Confirm your Palee status emails"
+msgstr "Επιβεβαίωσε τα email κατάστασης του Palee"
+
+msgid "Confirm"
+msgstr "Επιβεβαίωση"
+
+msgid "Someone asked to get an email when Palee has an incident or planned maintenance. Confirm and we will write to this address only then."
+msgstr "Κάποιος ζήτησε να λαμβάνει email όταν το Palee έχει πρόβλημα ή προγραμματισμένη συντήρηση. Επιβεβαίωσε και θα γράφουμε σε αυτή τη διεύθυνση μόνο τότε."
+
+msgid "If it wasn't you, ignore this email: nothing will be sent."
+msgstr "Αν δεν ήσουν εσύ, αγνόησε αυτό το email: δεν θα σταλεί τίποτα."
+
+msgid "Open the status page"
+msgstr "Άνοιγμα σελίδας κατάστασης"
+
+msgid "Stop these emails"
+msgstr "Διακοπή αυτών των email"
+
+msgid "Status"
+msgstr "Κατάσταση"
+
+msgid "You get these emails because you asked for them on the status page."
+msgstr "Λαμβάνεις αυτά τα email επειδή τα ζήτησες στη σελίδα κατάστασης."
+
+msgid "When"
+msgstr "Πότε"
+
+msgid "Investigating"
+msgstr "Διερευνάται"
+
+msgid "Identified"
+msgstr "Εντοπίστηκε"
+
+msgid "Monitoring"
+msgstr "Παρακολουθείται"
+
+msgid "Resolved"
+msgstr "Επιλύθηκε"
+
+msgid "Scheduled maintenance"
+msgstr "Προγραμματισμένη συντήρηση"
+
+msgid "Maintenance in progress"
+msgstr "Συντήρηση σε εξέλιξη"
+
+msgid "Maintenance completed"
+msgstr "Η συντήρηση ολοκληρώθηκε"
+
+msgid "You get this email because this address was entered on the Palee status page."
+msgstr "Λαμβάνεις αυτό το email επειδή αυτή η διεύθυνση γράφτηκε στη σελίδα κατάστασης του Palee."

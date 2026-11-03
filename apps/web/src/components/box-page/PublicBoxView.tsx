@@ -6,13 +6,19 @@ import { useRouter } from "next/navigation";
 import { useRef, useState, useSyncExternalStore } from "react";
 import { useTranslations } from "next-intl";
 
+import type { PublicSite } from "@/api/box-site";
 import type { PublicBoxPage } from "@/api/social";
+import { SiteConsentProvider } from "@/components/box-site/SiteConsent";
+import { SiteLanguageSwitch } from "@/components/box-site/SiteLanguageSwitch";
+import { SiteRequestSheet } from "@/components/box-site/SiteRequestSheet";
+import { SiteSections } from "@/components/box-site/SiteSections";
 import { useMyClubs } from "@/components/community/use-community";
 import { BOTTOM_NAV_SPACE, useBottomTabBarVisible } from "@/components/nav/BottomNav";
 import { useSession } from "@/components/session-provider";
 import { FollowButton } from "@/components/social/FollowButton";
 import { TrialButton } from "@/components/trials/TrialButton";
 import { mapsUrl, readApple, serverApple, subscribeNever } from "@/lib/maps";
+import { siteBasePath, type SiteLanguage } from "@/lib/public-site";
 
 import { AboutTab, OpeningHours } from "./AboutTab";
 import { BoxEvents } from "./BoxEvents";
@@ -49,7 +55,28 @@ const serverHash = () => "";
  * sticky card on the right with the actions, the map, the address and the
  * week's hours; the map opens in Google or Apple Maps.
  */
-export function PublicBoxView({ page }: { page: PublicBoxPage }) {
+export function PublicBoxView({
+  page,
+  site = null,
+  standalone = false,
+  language = "box",
+}: {
+  page: PublicBoxPage;
+  /** ADR-388: the box's website, when the owner switched it on; its sections become «Σχετικά». */
+  site?: PublicSite | null;
+  /** On the box's own domain: the website alone, without the app's tabs and back button. */
+  standalone?: boolean;
+  language?: SiteLanguage;
+}) {
+  if (!site) return <BoxView page={page} site={null} standalone={false} language="box" />;
+  return (
+    <SiteConsentProvider slug={page.box.slug} site={site}>
+      <BoxView page={page} site={site} standalone={standalone} language={language} />
+    </SiteConsentProvider>
+  );
+}
+
+function BoxView({ page, site, standalone, language }: { page: PublicBoxPage; site: PublicSite | null; standalone: boolean; language: SiteLanguage }) {
   const t = useTranslations("BoxPage");
   const router = useRouter();
   const { status, tokens } = useSession();
@@ -60,6 +87,8 @@ export function PublicBoxView({ page }: { page: PublicBoxPage }) {
   const tabsRef = useRef<HTMLDivElement>(null);
   const [viewer, setViewer] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
+  const [request, setRequest] = useState<"trial" | "contact" | null>(null);
+  const basePath = siteBasePath(page.box.slug, standalone);
 
   const signedIn = status === "authenticated" && Boolean(tokens?.access_token);
   const club = clubs.data?.find((entry) => entry.kind === "gym" && entry.organization_id === page.box.organization_id) ?? null;
@@ -78,7 +107,7 @@ export function PublicBoxView({ page }: { page: PublicBoxPage }) {
   }
 
   async function share() {
-    const url = window.location.origin + `/b/${page.box.slug}`;
+    const url = window.location.origin + (standalone ? "/" : `/b/${page.box.slug}`);
     if (navigator.share) {
       try {
         await navigator.share({ title: page.box.name, url });
@@ -101,9 +130,21 @@ export function PublicBoxView({ page }: { page: PublicBoxPage }) {
     else router.push("/");
   }
 
-  const actions = (
-    <Actions page={page} token={signedIn ? tokens!.access_token : null} loading={status === "loading" || (signedIn && clubs.isPending)} clubId={club?.id ?? null} />
+  const siteTrial = site?.forms.trial ? () => setRequest("trial") : null;
+  const actions = standalone ? (
+    <SiteActions site={site!} onRequest={setRequest} />
+  ) : (
+    <Actions
+      page={page}
+      token={signedIn ? tokens!.access_token : null}
+      loading={status === "loading" || (signedIn && clubs.isPending)}
+      clubId={club?.id ?? null}
+      onGuestTrial={siteTrial}
+    />
   );
+  const sections = site ? (
+    <SiteSections page={page} site={site} language={language} basePath={basePath} onOpenPhoto={setViewer} onRequest={setRequest} />
+  ) : null;
   const roundButtonClass = "grid h-10 w-10 place-items-center rounded-full";
 
   return (
@@ -120,10 +161,15 @@ export function PublicBoxView({ page }: { page: PublicBoxPage }) {
             </button>
           ) : null}
           <div className="absolute inset-x-0 top-0 mx-auto flex max-w-[75rem] justify-between p-3 pt-[max(0.75rem,env(safe-area-inset-top))] lg:px-6 lg:pt-6">
-            <button type="button" onClick={back} aria-label={t("back")} className={`${roundButtonClass} rtl:rotate-180`} style={{ background: "var(--media-control)", color: "var(--on-media)" }}>
-              <Icon name="chevron-left" />
-            </button>
+            {standalone ? (
+              <span />
+            ) : (
+              <button type="button" onClick={back} aria-label={t("back")} className={`${roundButtonClass} rtl:rotate-180`} style={{ background: "var(--media-control)", color: "var(--on-media)" }}>
+                <Icon name="chevron-left" />
+              </button>
+            )}
             <span className="flex gap-2">
+              {site && (standalone || status === "guest") ? <SiteLanguageSwitch slug={page.box.slug} boxLanguage={site.language} language={language} basePath={basePath} /> : null}
               {photos.length > 1 ? (
                 <button type="button" onClick={() => setViewer(0)} aria-label={t("openPhotos")} className={roundButtonClass} style={{ background: "var(--media-control)", color: "var(--on-media)" }}>
                   <Icon name="images" />
@@ -145,7 +191,7 @@ export function PublicBoxView({ page }: { page: PublicBoxPage }) {
         </div>
       </header>
 
-      {signedIn && !club && !clubs.isPending ? (
+      {!standalone && signedIn && !club && !clubs.isPending ? (
         <div className="mx-auto max-w-[75rem] lg:mt-6 lg:px-6">
           <GuestBanner token={tokens!.access_token} box={page.box} />
         </div>
@@ -153,6 +199,10 @@ export function PublicBoxView({ page }: { page: PublicBoxPage }) {
 
       <div className="mx-auto max-w-[75rem] lg:mt-8 lg:grid lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start lg:gap-10 lg:px-6">
         <main className="min-w-0">
+          {standalone ? (
+            <section className="px-4 pb-8 pt-5 lg:px-0">{sections}</section>
+          ) : (
+          <>
           <div
             ref={tabsRef}
             role="tablist"
@@ -184,12 +234,14 @@ export function PublicBoxView({ page }: { page: PublicBoxPage }) {
           </div>
 
           <section id="box-tabpanel" role="tabpanel" aria-labelledby={`box-tab-${tab}`} className="px-4 pb-8 pt-5 lg:px-0">
-            {tab === "about" ? <AboutTab page={page} onOpenPhoto={setViewer} /> : null}
+            {tab === "about" ? sections ?? <AboutTab page={page} onOpenPhoto={setViewer} /> : null}
             {tab !== "about" && status === "guest" ? <LockedTab slug={page.box.slug} tab={tab} /> : null}
             {tab === "schedule" && signedIn ? <VisitorSchedule page={page} token={tokens!.access_token} member={Boolean(club)} /> : null}
             {tab === "events" && signedIn ? <BoxEvents slug={page.box.slug} token={tokens!.access_token} /> : null}
             {tab === "posts" && signedIn ? <BoxPosts slug={page.box.slug} token={tokens!.access_token} /> : null}
           </section>
+          </>
+          )}
         </main>
 
         <aside className="hidden lg:sticky lg:top-6 lg:block">
@@ -251,6 +303,7 @@ export function PublicBoxView({ page }: { page: PublicBoxPage }) {
       </div>
 
       {viewer !== null && photos.length > 0 ? <PhotoViewer photos={photos} start={viewer} onClose={() => setViewer(null)} /> : null}
+      {request ? <SiteRequestSheet slug={page.box.slug} kind={request} privacyHref={`${basePath}/privacy${language === "en" ? "?lang=en" : ""}`} onClose={() => setRequest(null)} /> : null}
     </div>
   );
 }
@@ -287,15 +340,19 @@ function Actions({
   token,
   loading,
   clubId,
+  onGuestTrial,
 }: {
   page: PublicBoxPage;
   token: string | null;
   loading: boolean;
   clubId: string | null;
+  /** ADR-388: a signed-out visitor asks through the website's request form instead of signing in first. */
+  onGuestTrial: (() => void) | null;
 }) {
   const signedIn = Boolean(token);
   const t = useTranslations("BoxPage");
   const tSocial = useTranslations("Social");
+  const tTrials = useTranslations("Trials");
   if (loading) return <div className="h-11 animate-pulse rounded-2xl" style={{ background: "var(--panel-raised)" }} />;
   const chat = boxChatHref(page.box.slug);
   const message = (
@@ -335,8 +392,57 @@ function Actions({
           </Link>
         )}
       </div>
-      <TrialButton page={page} token={token} />
+      {!signedIn && onGuestTrial ? (
+        <button
+          type="button"
+          onClick={onGuestTrial}
+          className="flex min-h-11 flex-1 items-center justify-center rounded-2xl px-3 text-sm font-bold"
+          style={{ border: "1px solid var(--border)", color: "var(--text)" }}
+          data-testid="box-page-site-trial"
+        >
+          {tTrials("ask")}
+        </button>
+      ) : (
+        <TrialButton page={page} token={token} />
+      )}
       {message}
+    </div>
+  );
+}
+
+/**
+ * The box's own domain (ANR s3 A): «Κλείσε δοκιμαστικό» is the page's one
+ * filled button; the message icon opens «Ρώτησε κάτι». Both open the request
+ * sheet: a request becomes a lead, never a booking.
+ */
+function SiteActions({ site, onRequest }: { site: PublicSite; onRequest: (kind: "trial" | "contact") => void }) {
+  const t = useTranslations("BoxSite");
+  return (
+    <div className="flex items-start gap-2">
+      {site.forms.trial ? (
+        <button
+          type="button"
+          onClick={() => onRequest("trial")}
+          className="flex min-h-11 flex-1 items-center justify-center rounded-2xl px-3 text-sm font-bold"
+          style={{ background: "var(--primary)", color: "var(--primary-contrast)" }}
+          data-testid="site-book-trial"
+        >
+          {t("bookTrial")}
+        </button>
+      ) : null}
+      {site.forms.contact ? (
+        <button
+          type="button"
+          onClick={() => onRequest("contact")}
+          aria-label={t("askSomething")}
+          title={t("askSomething")}
+          className={`grid min-h-11 min-w-11 place-items-center rounded-2xl ${site.forms.trial ? "shrink-0" : "flex-1"}`}
+          style={{ background: "var(--panel-raised)", border: "1px solid var(--border)", color: "var(--text)" }}
+          data-testid="site-ask"
+        >
+          <Icon name="message-circle" size={18} />
+        </button>
+      ) : null}
     </div>
   );
 }

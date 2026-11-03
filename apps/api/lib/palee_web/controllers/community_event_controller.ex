@@ -123,6 +123,18 @@ defmodule PaleeWeb.CommunityEventController do
   def update(conn, %{id: id}),
     do: reply(conn, CommunityEvents.update(conn.assigns.user_context, id, conn.body_params))
 
+  operation(:sms,
+    summary: "ADR-385: the organiser's SMS view of an event: who will get SMS and its cost",
+    parameters: [@id],
+    responses: [ok: {"Event SMS", "application/json", S.sms_summary()}]
+  )
+
+  def sms(conn, %{id: id}) do
+    with {:ok, summary} <- CommunityEvents.sms(conn.assigns.user_context, id) do
+      json(conn, summary)
+    end
+  end
+
   operation(:cancel,
     summary: "Cancel an event (staff and coaches): this one or this and following",
     parameters: [@id],

@@ -3,6 +3,7 @@ defmodule Palee.Application.PublishWorkout do
 
   alias Palee.Application.{
     BroadcastUserSync,
+    LoggedWorkoutChangeNotice,
     SuggestWorkoutIcon,
     TenantStaffRecipients,
     TrackAnalyticsEvent
@@ -25,7 +26,18 @@ defmodule Palee.Application.PublishWorkout do
          :ok <- apply_substitution(context, substitute_for, workout.id) do
       Workouts.delete_superseded_drafts(context, id, workout.created_by_id)
       SuggestWorkoutIcon.enqueue(context, workout.id)
-      maybe_notify(is_republish, substitute_for, assignment_targets, booking_targets, workout)
+      # ADR-393: the people who already performed it, once per save; they
+      # hear it from that notice, not a second time below.
+      performed = performed_notice(substitute_for, context, workout.id)
+
+      maybe_notify(
+        is_republish,
+        substitute_for,
+        without(assignment_targets, performed),
+        without(booking_targets, performed),
+        workout
+      )
+
       broadcast_admin_workout_refresh(context, workout.id)
 
       track_publish(
@@ -51,6 +63,18 @@ defmodule Palee.Application.PublishWorkout do
   end
 
   def call(_context, _id, _params), do: {:error, :organization_context_required}
+
+  # A substitution publishes a new WOD for one assignment or class: nobody
+  # performed that one yet, and the old WOD keeps its content.
+  defp performed_notice(nil, context, workout_id),
+    do: LoggedWorkoutChangeNotice.notify(context, workout_id)
+
+  defp performed_notice(_substitute_for, _context, _workout_id), do: []
+
+  defp without(targets, []), do: targets
+
+  defp without(targets, user_ids),
+    do: Enum.reject(targets, &(Map.get(&1, :user_id) in user_ids))
 
   # ADR-270: a legacy editor's save never silently drops a structured plan.
   defp keep_plan(context, id, params),

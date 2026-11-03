@@ -96,13 +96,28 @@ defmodule PaleeWeb.Router do
     plug(PaleeWeb.Plugs.RateLimit, max: 600, interval: 60_000, bucket: "public-box")
   end
 
+  # ADR-353: website forms; a person sends one, a bot many.
+  pipeline :public_site_form_rate_limited do
+    plug(PaleeWeb.Plugs.RateLimit, max: 10, interval: 60_000, bucket: "public-site-form")
+  end
+
   pipeline :public_invite_rate_limited do
     plug(PaleeWeb.Plugs.RateLimit, max: 60, interval: 60_000, bucket: "buddy-invite")
   end
 
   # ADR-156: invite pages; 32^8 codes behind a tight budget make guessing moot.
+  # ADR-345: the public «Ενδιαφέρομαι» form; a person sends one or two.
+  pipeline :public_lead_rate_limited do
+    plug(PaleeWeb.Plugs.RateLimit, max: 5, interval: 600_000, bucket: "public-lead")
+  end
+
   pipeline :public_referral_rate_limited do
     plug(PaleeWeb.Plugs.RateLimit, max: 120, interval: 60_000, bucket: "public-referral")
+  end
+
+  # ADR-364: sign-ups to status emails send an email, so few per client.
+  pipeline :public_status_write_rate_limited do
+    plug(PaleeWeb.Plugs.RateLimit, max: 10, interval: 60_000, bucket: "public-status")
   end
 
   # ADR-191: a partner's counter opens a perk QR's link; the signed,
@@ -325,6 +340,31 @@ defmodule PaleeWeb.Router do
     get("/:slug/packages", PublicBoxController, :packages)
   end
 
+  # ADR-345: an enquiry from the box's form or a join link (no account).
+  scope "/api/public/boxes", PaleeWeb do
+    pipe_through([:api, :public_lead_rate_limited])
+
+    post("/:slug/leads", PublicLeadController, :create)
+  end
+
+  # ADR-352..354: the box's website, its custom hosts and consent log.
+  scope "/api/public/sites", PaleeWeb do
+    pipe_through([:api, :public_box_rate_limited])
+
+    get("/tls-allowed", PublicSiteController, :tls_allowed)
+    get("/by-host/:host", PublicSiteController, :by_host)
+    # ADR-388: the page behind «Στείλε τις οδηγίες».
+    get("/domain-status/:token", PublicSiteController, :domain_status)
+    get("/:slug", PublicSiteController, :show)
+    post("/:slug/consents", PublicSiteController, :consent)
+  end
+
+  scope "/api/public/sites", PaleeWeb do
+    pipe_through([:api, :public_site_form_rate_limited])
+
+    post("/:slug/forms/:kind", PublicSiteController, :submit_form)
+  end
+
   # ADR-272: a walk-in's receipt behind the QR on the staff phone.
   scope "/api/public/receipts", PaleeWeb do
     pipe_through([:api, :public_box_rate_limited])
@@ -337,6 +377,30 @@ defmodule PaleeWeb.Router do
     pipe_through([:api, :public_box_rate_limited])
 
     get("/", PlatformPlanController, :index_public)
+  end
+
+  # ADR-390: the short unsubscribe link of a marketing SMS (no sign-in).
+  scope "/api/public/channels/unsubscribe", PaleeWeb do
+    pipe_through([:api, :email_unsubscribe])
+
+    get("/:token", PublicSmsUnsubscribeController, :show)
+    post("/:token", PublicSmsUnsubscribeController, :create)
+  end
+
+  # ADR-364 (CP-G4): the public status page data and email subscriptions.
+  scope "/api/public/status", PaleeWeb do
+    pipe_through([:api, :public_box_rate_limited])
+
+    get("/", PublicStatusController, :show)
+    get("/history", PublicStatusController, :history)
+  end
+
+  scope "/api/public/status/subscriptions", PaleeWeb do
+    pipe_through([:api, :public_status_write_rate_limited])
+
+    post("/", PublicStatusController, :subscribe)
+    post("/confirm", PublicStatusController, :confirm)
+    post("/unsubscribe", PublicStatusController, :unsubscribe)
   end
 
   scope "/api/public/perk-verifications", PaleeWeb do
@@ -410,6 +474,13 @@ defmodule PaleeWeb.Router do
     pipe_through([:payment_provider_webhook])
 
     post("/:organization_id/:token", PeppolWebhookController, :create)
+  end
+
+  # ADR-348: the messaging provider's receipts and replies (one secret URL per box).
+  scope "/api/webhooks/channels", PaleeWeb do
+    pipe_through([:payment_provider_webhook])
+
+    post("/:organization_id/:token", ChannelWebhookController, :create)
   end
 
   scope "/api/email/unsubscribe", PaleeWeb do
@@ -570,11 +641,30 @@ defmodule PaleeWeb.Router do
     ])
 
     get("/finance", MyFinanceController, :index)
+    # ADR-346: my choices about the box's automatic messages.
+    get("/automatic-messages", MyAutomationPreferencesController, :show)
+    put("/automatic-messages", MyAutomationPreferencesController, :update)
+
+    # ADR-350: my number and consents for the box's SMS messages.
+    get("/channels", MyChannelsController, :show)
+    put("/channels", MyChannelsController, :update)
+
+    # ADR-355: a Google review ask at a good moment.
+    get("/review-ask", MyReviewAskController, :show)
+    post("/review-asks/:id/respond", MyReviewAskController, :respond)
+    put("/review-asks/opt-out", MyReviewAskController, :opt_out)
+    delete("/review-asks/opt-out", MyReviewAskController, :opt_in)
+    # ADR-386: the box's in-app reviews.
+    get("/box-reviews", MyBoxReviewsController, :index)
+    put("/box-review", MyBoxReviewsController, :save)
+    delete("/box-review", MyBoxReviewsController, :delete)
     # ADR-246/247: paying invoices online and saved cards.
     get("/invoices/:id/payment-terms", MyPaymentsController, :terms)
     post("/invoices/:id/pay", MyPaymentsController, :pay)
     post("/payments/return", MyPaymentsController, :returned)
     post("/payments/sandbox/complete", MyPaymentsController, :sandbox_complete)
+    # ADR-340: the card surcharge shown before paying.
+    get("/payments/surcharge-quote", MyPaymentsController, :surcharge_quote)
     get("/payments/:id", MyPaymentsController, :show)
     get("/payment-methods", MyPaymentsController, :methods)
     delete("/payment-methods/:id", MyPaymentsController, :revoke_method)
@@ -809,6 +899,17 @@ defmodule PaleeWeb.Router do
     post("/check-ins", ScheduleController, :check_in)
     get("/workouts/:id", WorkoutController, :show)
     get("/workouts/:id/scales", WorkoutController, :scales)
+    # ADR-356 (CP-D2): filtered WOD leaderboards with percentiles.
+    get("/workouts/:id/leaderboard", WorkoutLeaderboardController, :show)
+    get("/me/leaderboard-profile", WorkoutLeaderboardController, :profile)
+    put("/me/leaderboard-profile", WorkoutLeaderboardController, :update_profile)
+    # ADR-357 (CP-D3): the WOD as it was when assigned or performed.
+    get("/workout-snapshots/:id", WorkoutSnapshotController, :show)
+    # ADR-389: «όπως ήταν» for one's own run or score, when the WOD changed since.
+    get("/me/executions/:id/workout-snapshot", WorkoutSnapshotController, :execution)
+    get("/me/training-log/entries/:id/workout-snapshot", WorkoutSnapshotController, :training_log)
+    # ADR-359 (CP-E4): one booking as an .ics invite.
+    get("/bookings/:id/calendar.ics", BookingCalendarController, :show)
   end
 
   scope "/api/org/:organization_slug", PaleeWeb do
@@ -1061,6 +1162,42 @@ defmodule PaleeWeb.Router do
     post("/appointments/:id/cancel", AppointmentsController, :cancel)
   end
 
+  # ADR-344..347: leads, automations from ready recipes, members at risk.
+  scope "/api/org/:organization_slug/admin", PaleeWeb do
+    pipe_through([
+      :api,
+      :authenticated,
+      :authenticated_rate_limited,
+      :admin_only,
+      :tenant_write_rate_limited
+    ])
+
+    get("/leads", AdminLeadController, :index)
+    post("/leads", AdminLeadController, :create)
+    get("/leads/tasks", AdminLeadController, :tasks)
+    post("/leads/import", AdminLeadController, :import)
+    post("/leads/tasks/:task_id/done", AdminLeadController, :complete_task)
+    get("/leads/:id", AdminLeadController, :show)
+    patch("/leads/:id", AdminLeadController, :update)
+    delete("/leads/:id", AdminLeadController, :delete)
+    post("/leads/:id/move", AdminLeadController, :move)
+    post("/leads/:id/notes", AdminLeadController, :note)
+    post("/leads/:id/contacted", AdminLeadController, :contacted)
+    post("/leads/:id/tasks", AdminLeadController, :add_task)
+    post("/leads/:id/convert", AdminLeadController, :convert)
+    post("/leads/:id/opt-out", AdminLeadController, :opt_out)
+
+    get("/automations", AdminAutomationController, :index)
+    get("/automations/messages", AdminAutomationController, :deliveries)
+    patch("/automations/:recipe", AdminAutomationController, :update)
+    post("/automations/:recipe/preview", AdminAutomationController, :preview)
+
+    get("/members-at-risk", AdminMemberRiskController, :index)
+    get("/members-at-risk/:user_id", AdminMemberRiskController, :show)
+    post("/members-at-risk/:user_id/contacted", AdminMemberRiskController, :contacted)
+    post("/members-at-risk/:user_id/snooze", AdminMemberRiskController, :snooze)
+  end
+
   # ADR-253: box screens, their pairing codes and overrides.
   scope "/api/org/:organization_slug/admin", PaleeWeb do
     pipe_through([
@@ -1180,6 +1317,9 @@ defmodule PaleeWeb.Router do
     get("/workouts/dsl/manual", AdminWorkoutDslController, :manual)
     get("/workouts/:id/dsl", AdminWorkoutDslController, :show_authoring)
     post("/workouts/:id/dsl/publish", AdminWorkoutDslController, :publish)
+    # ADR-394: the benchmark catalog and a WOD's benchmark tag.
+    get("/workouts/benchmarks", AdminWorkoutController, :benchmarks)
+    put("/workouts/:id/benchmark", AdminWorkoutController, :update_benchmark)
     get("/workouts/:id", AdminWorkoutController, :show)
     get("/workouts/:id/goals", AdminWorkoutGoalsController, :show)
     put("/workouts/:id/goals", AdminWorkoutGoalsController, :update)
@@ -1203,6 +1343,9 @@ defmodule PaleeWeb.Router do
     get("/settings", AdminSettingsController, :show)
     get("/onboarding", AdminOnboardingController, :show)
     get("/plan", AdminPlanController, :show)
+    # ADR-365 (CP-G5): the box's own data export, for owners.
+    get("/data-exports", AdminDataExportController, :index)
+    post("/data-exports", AdminDataExportController, :create)
     patch("/onboarding", AdminOnboardingController, :update)
     patch("/settings", AdminSettingsController, :update)
     put("/settings/time-zone", AdminSettingsController, :update_time_zone)
@@ -1311,6 +1454,25 @@ defmodule PaleeWeb.Router do
       :cohost_trial_offer
     )
 
+    # ADR-352..354: the box's website and custom domains.
+    get("/site", AdminSiteController, :show)
+    put("/site", AdminSiteController, :update)
+    get("/site/summary", AdminSiteController, :summary)
+    get("/site/domains", AdminSiteController, :domains)
+    post("/site/domains", AdminSiteController, :add_domain)
+    post("/site/domains/:id/check", AdminSiteController, :check_domain)
+    put("/site/domains/:id/primary", AdminSiteController, :make_primary)
+    delete("/site/domains/:id", AdminSiteController, :remove_domain)
+    post("/site/domains/:id/instructions", AdminSiteController, :send_instructions)
+    # ADR-355: Google review asks.
+    get("/review-asks/settings", AdminReviewAsksController, :show)
+    put("/review-asks/settings", AdminReviewAsksController, :update)
+    get("/review-asks/summary", AdminReviewAsksController, :summary)
+    # ADR-387: find the box's Google listing by name.
+    get("/review-asks/places", AdminReviewAsksController, :places)
+    # ADR-386: the box's in-app reviews; staff reply, never delete.
+    get("/box-reviews", AdminBoxReviewsController, :index)
+    put("/box-reviews/:id/reply", AdminBoxReviewsController, :reply)
     get("/public-profile", AdminPublicProfileController, :show)
     put("/public-profile", AdminPublicProfileController, :update)
     post("/public-profile/publish", AdminPublicProfileController, :publish)
@@ -1332,6 +1494,8 @@ defmodule PaleeWeb.Router do
     put("/schedule/day-workouts", AdminDayWorkoutController, :put)
     delete("/schedule/day-workouts/:id", AdminDayWorkoutController, :delete)
     post("/schedule/slots/:id/state", AdminScheduleController, :change_state)
+    # ADR-359 (CP-E1): first visit, guest and how they came.
+    get("/schedule/slots/:id/visit-badges", AdminVisitBadgesController, :show)
     delete("/schedule/slots/:id", AdminScheduleController, :delete_slot)
 
     get(
@@ -1377,6 +1541,33 @@ defmodule PaleeWeb.Router do
     get("/fiscal/exports/formats", AdminFiscalTaxController, :export_formats)
     put("/fiscal/exports/settings/:format", AdminFiscalTaxController, :save_export_settings)
     get("/fiscal/exports/:format", AdminFiscalTaxController, :export)
+    # ADR-348..351: SMS (Viber, WhatsApp later) from the box to members and leads.
+    get("/channels/settings", AdminChannelSettingsController, :show)
+    put("/channels/settings", AdminChannelSettingsController, :save)
+    post("/channels/settings/check", AdminChannelSettingsController, :check)
+    get("/channels/usage", AdminChannelSettingsController, :usage)
+    # ADR-368: the box's own email provider over SMTP (advanced option).
+    get("/channels/email", AdminChannelEmailController, :show)
+    put("/channels/email", AdminChannelEmailController, :save)
+    delete("/channels/email", AdminChannelEmailController, :delete)
+    post("/channels/email/check", AdminChannelEmailController, :check)
+    get("/channels/templates", AdminChannelSettingsController, :templates)
+    put("/channels/templates/:key", AdminChannelSettingsController, :save_template)
+    delete("/channels/templates/:key", AdminChannelSettingsController, :delete_template)
+    get("/channels/contacts", AdminChannelContactsController, :index)
+    get("/channels/contacts/lookup", AdminChannelContactsController, :lookup)
+    put("/channels/contacts", AdminChannelContactsController, :save)
+    put("/channels/contacts/:id/consents", AdminChannelContactsController, :consent)
+    delete("/channels/contacts/:id", AdminChannelContactsController, :delete)
+    get("/channels/messages", AdminChannelMessagesController, :index)
+    post("/channels/messages/preview", AdminChannelMessagesController, :preview)
+    post("/channels/messages", AdminChannelMessagesController, :create)
+    get("/channels/messages/:id", AdminChannelMessagesController, :show)
+    post("/channels/messages/:id/retry", AdminChannelMessagesController, :retry)
+    post("/channels/messages/:id/cancel", AdminChannelMessagesController, :cancel)
+    # ADR-385: «Ενημέρωση συμμετεχόντων» of a class, the app first.
+    post("/channels/class-notices/preview", AdminChannelClassNoticesController, :preview)
+    post("/channels/class-notices", AdminChannelClassNoticesController, :create)
     # ADR-243: reporting to the tax authority (myDATA).
     get("/fiscal/authority-connection", AdminFiscalReportingController, :connection)
     put("/fiscal/authority-connection", AdminFiscalReportingController, :save_connection)
@@ -1428,6 +1619,50 @@ defmodule PaleeWeb.Router do
     post("/fiscal/till-signatures/:id/retry", AdminFiscalTillSigningController, :retry)
 
     # ADR-246/247: online payments through the business's provider account.
+    # ADR-341: coach pay and commissions.
+    get("/coach-pay/rules", AdminCoachPayController, :rules)
+    post("/coach-pay/rules", AdminCoachPayController, :create_rule)
+    patch("/coach-pay/rules/:id", AdminCoachPayController, :update_rule)
+    post("/coach-pay/rules/:id/archive", AdminCoachPayController, :archive_rule)
+    get("/coach-pay/periods", AdminCoachPayController, :periods)
+    post("/coach-pay/periods", AdminCoachPayController, :create_period)
+    get("/coach-pay/periods/:id", AdminCoachPayController, :period)
+    post("/coach-pay/periods/:id/calculate", AdminCoachPayController, :calculate)
+    post("/coach-pay/periods/:id/adjustments", AdminCoachPayController, :add_adjustment)
+
+    delete(
+      "/coach-pay/periods/:id/adjustments/:line_id",
+      AdminCoachPayController,
+      :delete_adjustment
+    )
+
+    post("/coach-pay/periods/:id/approve", AdminCoachPayController, :approve)
+    post("/coach-pay/periods/:id/reopen", AdminCoachPayController, :reopen)
+    get("/coach-pay/periods/:id/export", AdminCoachPayController, :export)
+    # ADR-341/382: a staff member's own approved pay statements and their PDF
+    # (capability-checked, so every staff role that may be paid reaches them).
+    get("/coach-pay/mine", MyCoachPayController, :index)
+    get("/coach-pay/mine/:period_id/pdf", MyCoachPayController, :payslip)
+    # ADR-382: pay items, lines by hand, gross/net, PDF, profile and summary.
+    post("/coach-pay/periods/:id/pay-items", AdminCoachPayController, :add_pay_item_line)
+    patch("/coach-pay/periods/:id/lines/:line_id", AdminCoachPayController, :set_line_basis)
+
+    get(
+      "/coach-pay/periods/:id/statements/:user_id/pdf",
+      AdminCoachPayController,
+      :payslip
+    )
+
+    get("/coach-pay/people/:user_id/statements", AdminCoachPayController, :person_statements)
+    get("/coach-pay/summary", AdminCoachPayController, :summary)
+    get("/coach-pay/items", AdminCoachPayController, :items)
+    post("/coach-pay/items", AdminCoachPayController, :create_item)
+    patch("/coach-pay/items/:id", AdminCoachPayController, :update_item)
+    post("/coach-pay/items/:id/archive", AdminCoachPayController, :archive_item)
+    # ADR-340: the card surcharge passed on to the person paying.
+    get("/payments/surcharge", AdminCardSurchargeController, :show)
+    put("/payments/surcharge", AdminCardSurchargeController, :update)
+    post("/payments/surcharge/quote", AdminCardSurchargeController, :quote)
     get("/payments/account", AdminPaymentsController, :account)
     put("/payments/account", AdminPaymentsController, :save_account)
     put("/payments/account/options", AdminPaymentsController, :save_options)
@@ -1727,12 +1962,18 @@ defmodule PaleeWeb.Router do
     ])
 
     get("/tag-suggestions", PlatformTagSuggestionController, :index)
+    # ADR-352 §6: custom domains of box websites waiting for an Ingress.
+    get("/site-domains", PlatformSiteDomainsController, :index)
     # ADR-218 / ADR-277: browser alerts for the installation (keys made by the server).
     get("/push-settings", PlatformPushSettingsController, :show)
     patch("/push-settings", PlatformPushSettingsController, :update)
     post("/push-settings/rotate", PlatformPushSettingsController, :rotate)
     # ADR-187: the password reset security log.
     get("/password-reset-log", PasswordRecoveryController, :log)
+    # ADR-369: Palee's margin on Palee-managed messages and a box's monthly charge.
+    get("/channel-margins", PlatformChannelMarginsController, :show)
+    put("/channel-margins", PlatformChannelMarginsController, :update)
+    get("/organizations/:id/channel-charges", PlatformChannelMarginsController, :charges)
     # ADR-170: platform plans, prices and each organization's plan.
     get("/plans", PlatformPlanController, :index)
     post("/plans", PlatformPlanController, :create)
@@ -1809,6 +2050,13 @@ defmodule PaleeWeb.Router do
       :remove_logo
     )
 
+    # ADR-364: the status page (incidents, maintenance, probes, subscribers).
+    get("/status", PlatformStatusController, :show)
+    post("/status/incidents", PlatformStatusController, :create)
+    patch("/status/incidents/:id", PlatformStatusController, :update)
+    post("/status/incidents/:id/updates", PlatformStatusController, :add_update)
+    # ADR-366: the English preview of a new incident or step.
+    post("/status/translations", PlatformStatusController, :translate)
     # ADR-117 reviewed tenant export/purge workflow.
     get("/organization-purges", PlatformOrganizationPurgeController, :index)
     post("/organizations/:id/purge", PlatformOrganizationPurgeController, :create)
@@ -2060,6 +2308,12 @@ defmodule PaleeWeb.Router do
     get("/me/progress", AccountTrainingController, :progress)
     # ADR-165: coverage summary, qualities radar and training load.
     get("/me/progress/depth", TrainingDepthController, :show)
+    # ADR-358 (CP-D6): fitness score per domain and what to work on.
+    get("/me/fitness-profile", FitnessProfileController, :show)
+    # ADR-394: the answer about the Palee-wide benchmark board.
+    get("/me/palee-leaderboard", PaleeLeaderboardConsentController, :show)
+    put("/me/palee-leaderboard", PaleeLeaderboardConsentController, :update)
+    delete("/me/palee-leaderboard", PaleeLeaderboardConsentController, :delete)
     # ADR-166: the Πρόοδος insights slot.
     get("/me/insights", InsightsController, :show)
     post("/me/insights/restore", InsightsController, :restore)
@@ -2107,6 +2361,7 @@ defmodule PaleeWeb.Router do
     get("/me/events/:id", CommunityEventController, :show)
     patch("/me/events/:id", CommunityEventController, :update)
     post("/me/events/:id/cancel", CommunityEventController, :cancel)
+    get("/me/events/:id/sms", CommunityEventController, :sms)
     put("/me/events/:id/rsvp", CommunityEventController, :rsvp)
     post("/me/events/:id/invites", CommunityEventController, :invite)
     # ADR-185: «Διοργάνωση ως» and the event page's view count.

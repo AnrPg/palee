@@ -47,6 +47,69 @@ defmodule Palee.Gamification do
   def leaderboard_opted_in_user_ids(user_ids),
     do: Palee.Gamification.GamificationStore.leaderboard_opted_in_user_ids(user_ids)
 
+  # ADR-356 (CP-D2): WOD leaderboard filters and percentiles.
+  def leaderboard_profiles(user_ids),
+    do: Palee.Gamification.GamificationStore.leaderboard_profiles(user_ids)
+
+  def put_leaderboard_profile(user_id, params),
+    do: Palee.Gamification.GamificationStore.put_leaderboard_profile(user_id, params)
+
+  # ADR-394: the Palee-wide board of a benchmark WOD. Each call runs in the
+  # caller's session (`with_tenant_context/2`): the consent row is the
+  # person's own (RLS on `app.user_id`) and the cross-box reads go through
+  # the two SECURITY DEFINER functions only.
+  def palee_leaderboard_consent(user_id),
+    do: GamificationStore.get_palee_leaderboard_consent(user_id)
+
+  def put_palee_leaderboard_consent(user_id, choice),
+    do: GamificationStore.put_palee_leaderboard_consent(user_id, choice)
+
+  def withdraw_palee_leaderboard_consent(user_id),
+    do: GamificationStore.delete_palee_leaderboard_consent(user_id)
+
+  def palee_leaderboard_choices, do: Palee.Gamification.PaleeLeaderboardConsent.choices()
+
+  def palee_benchmark_results(key, from, to, year),
+    do: GamificationStore.palee_benchmark_results(key, from, to, year)
+
+  def palee_benchmark_workout_sections(key, workout_ids),
+    do: GamificationStore.palee_benchmark_workout_sections(key, workout_ids)
+
+  defdelegate palee_leaderboard_keep?(filters, row),
+    to: Palee.Gamification.Domain.LeaderboardFilters,
+    as: :keep_palee?
+
+  defdelegate parse_leaderboard_filters(params),
+    to: Palee.Gamification.Domain.LeaderboardFilters,
+    as: :parse
+
+  defdelegate leaderboard_filter_keep?(filters, person, year),
+    to: Palee.Gamification.Domain.LeaderboardFilters,
+    as: :keep?
+
+  defdelegate leaderboard_window(window, date),
+    to: Palee.Gamification.Domain.LeaderboardFilters,
+    as: :window
+
+  defdelegate present_leaderboard_filters(filters),
+    to: Palee.Gamification.Domain.LeaderboardFilters,
+    as: :present
+
+  def leaderboard_filter_options do
+    alias Palee.Gamification.Domain.LeaderboardFilters
+
+    %{
+      divisions: LeaderboardFilters.divisions(),
+      age_groups: LeaderboardFilters.age_groups(),
+      scopes: LeaderboardFilters.scopes(),
+      windows: LeaderboardFilters.windows()
+    }
+  end
+
+  defdelegate annotate_percentiles(rows),
+    to: Palee.Gamification.Domain.ScorePercentile,
+    as: :annotate
+
   defdelegate refresh_leaderboard(), to: RefreshLeaderboard, as: :call
   defdelegate get_training_quote(date, subject_id), to: GetTrainingQuote, as: :for_subject
   defdelegate increment_advancement(user_id, occurred_at), to: IncrementAdvancement, as: :call

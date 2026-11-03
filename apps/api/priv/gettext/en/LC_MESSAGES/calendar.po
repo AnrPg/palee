@@ -60,3 +60,9 @@ msgstr "Event: %{title}"
 
 msgid "You're going to this event."
 msgstr "You're going to this event."
+
+msgid "Waitlisted"
+msgstr "Waitlisted"
+
+msgid "This class or your booking was cancelled."
+msgstr "This class or your booking was cancelled."

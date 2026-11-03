@@ -11,12 +11,14 @@ defmodule Palee.Payments.Ports.TerminalGateway do
   alias Palee.Payments.Ports.Gateway
 
   @type sale :: %{
-          reference: String.t(),
-          amount_cents: pos_integer(),
-          currency: String.t(),
-          description: String.t(),
-          app_id: String.t(),
-          callback: String.t()
+          required(:reference) => String.t(),
+          required(:amount_cents) => pos_integer(),
+          required(:currency) => String.t(),
+          required(:description) => String.t(),
+          required(:app_id) => String.t(),
+          required(:callback) => String.t(),
+          # ADR-340: ask the provider not to add its card surcharge.
+          optional(:skip_surcharge) => boolean()
         }
 
   @type app_request :: %{

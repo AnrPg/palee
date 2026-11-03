@@ -66,6 +66,19 @@ defmodule Palee.Infrastructure.Coaching.EctoRelationshipStore do
     |> Repo.all()
   end
 
+  @impl true
+  def between(%{organization_id: organization_id}, %DateTime{} = from, %DateTime{} = to) do
+    Relationship
+    |> where(
+      [r],
+      r.organization_id == ^organization_id and r.started_at < ^to and
+        (is_nil(r.ended_at) or r.ended_at >= ^from)
+    )
+    |> order_by([r], asc: r.started_at)
+    |> Repo.all()
+    |> Enum.map(&normalize/1)
+  end
+
   defp active_query(organization_id) do
     Relationship
     |> where([r], r.organization_id == ^organization_id and is_nil(r.ended_at))

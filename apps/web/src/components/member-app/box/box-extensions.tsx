@@ -6,7 +6,9 @@ import type { OrganizationMembership } from "@/api/organizations";
 import type { ProviderKind } from "@/api/settings";
 import { SquadsBoxSection } from "@/components/community/squads/SquadsSection";
 import { CoachClientsBoxExtension } from "@/components/member-app/box/CoachClients";
+import { BoxReviewsSection } from "@/components/reviews/BoxReviewsSection";
 import { ShopBoxCard } from "@/components/shop/ShopBoxCard";
+import { BoxSmsCard } from "@/components/channels/MySmsSettings";
 
 export type BoxExtensionProps = {
   membership: OrganizationMembership;
@@ -37,6 +39,10 @@ export const BOX_EXTENSIONS: BoxExtension[] = [
   { id: "squads", kinds: ["gym", "coach"], Component: SquadsBoxExtension },
   // ADR-198: «Πελάτες μου», only for someone who coaches at this provider.
   { id: "coach-clients", kinds: ["gym", "coach"], Component: CoachClientsBoxExtension },
+  // W3 screen 2 A (ADR-350): Ειδοποιήσεις, the mobile and SMS switches, only where the box sends SMS.
+  { id: "sms", kinds: ["gym", "coach"], Component: BoxSmsCard },
+  // ADR-386: «Κριτικές», the members' reviews and Google's rating apart.
+  { id: "reviews", kinds: ["gym"], Component: BoxReviewsSection },
 ];
 
 export function boxExtensionsFor(kind: ProviderKind, extensions: BoxExtension[] = BOX_EXTENSIONS) {

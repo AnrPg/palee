@@ -252,6 +252,11 @@ defmodule PaleeWeb.Schemas.Payments do
         purpose_type: %Schema{type: :string},
         purpose_id: @uuid,
         amount_cents: @int,
+        surcharge_cents: %{
+          @int
+          | nullable: true,
+            description: "ADR-340: the card surcharge charged on top of `amount_cents`"
+        },
         currency: %Schema{type: :string},
         description: %Schema{type: :string},
         status: %Schema{
@@ -381,7 +386,13 @@ defmodule PaleeWeb.Schemas.Payments do
         max_amount_cents: @int,
         currency: %Schema{type: :string},
         consented_at: @time,
-        consent_version: @text
+        consent_version: @text,
+        card_funding: %Schema{
+          type: :string,
+          nullable: true,
+          enum: ["credit", "debit", "prepaid"],
+          description: "ADR-340: what the provider told; decides a lawful card surcharge"
+        }
       },
       required: [:autopay, :currency, :id, :max_amount_cents, :provider, :status]
     }
@@ -400,7 +411,8 @@ defmodule PaleeWeb.Schemas.Payments do
           description: "The provider members pay through, or null when online payment is off"
         },
         consent_text: %Schema{type: :string},
-        consent_version: %Schema{type: :string}
+        consent_version: %Schema{type: :string},
+        surcharge: PaleeWeb.Schemas.CardSurcharges.quote()
       },
       required: [
         :amount_cents,
@@ -524,7 +536,22 @@ defmodule PaleeWeb.Schemas.Payments do
         withdrawal_days: %{@int | nullable: true},
         start_now_text: @text,
         consent_text: %Schema{type: :string},
-        consent_version: %Schema{type: :string}
+        consent_version: %Schema{type: :string},
+        # ADR-340/342: the card surcharge shown before paying, and why this
+        # member may not buy the package (null: they may).
+        surcharge: %{PaleeWeb.Schemas.CardSurcharges.quote() | nullable: true},
+        eligibility: %Schema{
+          type: :string,
+          nullable: true,
+          enum: [
+            "package_staff_only",
+            "package_already_used",
+            "package_purchase_limit_reached",
+            "package_new_members_only",
+            "package_prerequisite_missing",
+            "package_active_members_only"
+          ]
+        }
       },
       required: [
         :available,

@@ -1,0 +1,21 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "DNS records for %{host}"
+msgstr ""
+
+msgid "See if the records are found"
+msgstr ""
+
+msgid "%{box} wants its website to open at %{host}. Whoever manages the domain can do it in a few minutes."
+msgstr ""
+
+msgid "Add these records at the domain's provider (DNS settings):"
+msgstr ""
+
+msgid "We check every few minutes. When the records are found, the site gets its certificate (https) by itself."
+msgstr ""
+
+msgid "You get this email because %{box} sent you its domain instructions."
+msgstr ""

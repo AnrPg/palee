@@ -12,7 +12,7 @@ defmodule Palee.Email.Templates.FiscalDocument do
   Strings: the `emails` gettext domain.
   """
 
-  use Palee.Email.Template, category: :transactional
+  use Palee.Email.Template, category: :transactional, origin: :box
 
   # Staff may resend a document, but one address never gets a flood.
   @impl true

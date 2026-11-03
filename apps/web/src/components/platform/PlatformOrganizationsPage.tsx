@@ -92,6 +92,7 @@ export function PlatformOrganizationsPage() {
   const slugCopy = platformOrganizationSlugCopy(locale);
   const tResets = useTranslations("passwordResets");
   const tPush = useTranslations("PlatformPush");
+  const tStatus = useTranslations("PlatformStatus");
   const tBusiness = useTranslations("Business");
   const tPartners = useTranslations("PlatformPartners");
   const { tokens } = useSession();
@@ -311,6 +312,12 @@ export function PlatformOrganizationsPage() {
             className="border border-[var(--border)] px-4 py-3 text-sm font-semibold text-[var(--text-soft)]"
           >
             {tPush("title")}
+          </Link>
+          <Link
+            href="/platform/status"
+            className="border border-[var(--border)] px-4 py-3 text-sm font-semibold text-[var(--text-soft)]"
+          >
+            {tStatus("title")}
           </Link>
           <Link
             href="/platform/password-resets"

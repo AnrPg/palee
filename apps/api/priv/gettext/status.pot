@@ -1,0 +1,54 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Confirm your Palee status emails"
+msgstr ""
+
+msgid "Confirm"
+msgstr ""
+
+msgid "Someone asked to get an email when Palee has an incident or planned maintenance. Confirm and we will write to this address only then."
+msgstr ""
+
+msgid "If it wasn't you, ignore this email: nothing will be sent."
+msgstr ""
+
+msgid "Open the status page"
+msgstr ""
+
+msgid "Stop these emails"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "You get these emails because you asked for them on the status page."
+msgstr ""
+
+msgid "When"
+msgstr ""
+
+msgid "Investigating"
+msgstr ""
+
+msgid "Identified"
+msgstr ""
+
+msgid "Monitoring"
+msgstr ""
+
+msgid "Resolved"
+msgstr ""
+
+msgid "Scheduled maintenance"
+msgstr ""
+
+msgid "Maintenance in progress"
+msgstr ""
+
+msgid "Maintenance completed"
+msgstr ""
+
+msgid "You get this email because this address was entered on the Palee status page."
+msgstr ""

@@ -30,10 +30,13 @@ import { useSession } from "@/components/session-provider";
 import { ClassTypeSettings } from "@/components/admin/ClassTypeSettings";
 import { LocationSettings } from "@/components/admin/LocationSettings";
 import { PublicPageLink } from "@/components/admin/public-page/PublicPageLink";
+import { ReviewsSettingsLink } from "@/components/box-site/ReviewsSettings";
+import { WebsiteSettingsLink } from "@/components/box-site/WebsiteSettings";
 import { TrialsLink } from "@/components/admin/trials/TrialsLink";
 import { CommunitySettingsLink } from "@/components/admin/community/CommunitySettings";
 import { CheckInSettingsLink } from "@/components/check-in/CheckInSettings";
 import { FiscalIdentityLink } from "@/components/fiscal/FiscalIdentityLink";
+import { SmsConnectionSettings } from "@/components/channels/SmsConnectionSettings";
 import { SpacesSettingsLink } from "@/components/spaces/SpacesSettings";
 import { BoxScreensSettingsLink } from "@/components/box-screen/BoxScreensSettings";
 import { RoleAccessSettings } from "@/components/admin/RoleAccessSettings";
@@ -56,6 +59,8 @@ import { Dialog } from "@/components/ui/Dialog";
 import { Popover } from "@/components/ui/Popover";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { OnlinePaymentsSettings } from "@/components/admin/payments/OnlinePaymentsSettings";
+import { PayItemsCatalog } from "@/components/admin/coach-pay/PayItemsCatalog";
+import { CardSurchargeSettings } from "@/components/admin/payments/CardSurchargeSettings";
 import { useSettingLevels, type SettingLevels } from "@/components/settings/AdvancedSettings";
 import { AdvancedSettingsCard } from "@/components/settings/AdvancedSettingsCard";
 
@@ -191,9 +196,29 @@ function CollapsibleSection({
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(defaultOpen);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // A link to /admin/settings#<id> (e.g. the box data email's
+  // «#organization») opens this section and brings it into view, also when
+  // the hash changes on the same page.
+  useEffect(() => {
+    function openFromHash() {
+      if (window.location.hash !== `#${id}`) return;
+      setOpen(true);
+      window.requestAnimationFrame(() => sectionRef.current?.scrollIntoView({ block: "start", behavior: "smooth" }));
+    }
+    openFromHash();
+    window.addEventListener("hashchange", openFromHash);
+    return () => window.removeEventListener("hashchange", openFromHash);
+  }, [id]);
 
   return (
-    <section id={id} className="overflow-hidden rounded-[2.4rem]" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
+    <section
+      ref={sectionRef}
+      id={id}
+      className="scroll-mt-24 overflow-hidden rounded-[2.4rem]"
+      style={{ background: "var(--panel)", border: "1px solid var(--border)" }}
+    >
       <button
         className="flex w-full items-center justify-between gap-4 p-8 text-start"
         type="button"
@@ -1173,6 +1198,8 @@ function PlanSection({ token }: { token: string }) {
 export function AdminSettingsHub() {
   const i18n = useUiTranslations();
   const paymentsT = useTranslations("OnlinePayments");
+  const smsT = useTranslations("Sms");
+  const coachPayT = useTranslations("CoachPay");
   const adv = useTranslations("AdvancedSettings");
   const { tokens, currentUser } = useSession();
   const token = tokens?.access_token;
@@ -1258,6 +1285,24 @@ export function AdminSettingsHub() {
                 <Suspense>
                   <OnlinePaymentsSettings token={token} />
                 </Suspense>
+                {/* ADR-340 (mockup W1 s1 B): the card surcharge, next to the provider it applies to. */}
+                <div className="mt-4">
+                  <CardSurchargeSettings token={token} />
+                </div>
+              </CollapsibleSection>
+            ) : null}
+
+            {/* ADR-382 (W1 s4): the overtime and allowances catalogue; also in Οικονομικά › Αμοιβές coaches. */}
+            {can(membership, "manage_settings") ? (
+              <CollapsibleSection id="coach-pay-items" title={coachPayT("viewItems")} description={coachPayT("itemsDescription")} defaultOpen={false}>
+                <PayItemsCatalog canEdit />
+              </CollapsibleSection>
+            ) : null}
+
+            {/* W3 screen 1 A (ADR-348/349): Ρυθμίσεις › Συνδέσεις › Μηνύματα SMS. */}
+            {can(membership, "manage_settings") ? (
+              <CollapsibleSection id="connections" title={smsT("connectionsTitle")} description={smsT("connectionsDescription")} defaultOpen={false}>
+                <SmsConnectionSettings token={token} />
               </CollapsibleSection>
             ) : null}
 
@@ -1294,6 +1339,12 @@ export function AdminSettingsHub() {
             <CollapsibleSection id="public-page" title={i18n("admPublicPageTitle")} description={i18n("admPublicPageDescription")}>
               <PublicPageLink />
               <div className="mt-3">
+                <WebsiteSettingsLink />
+              </div>
+              <div className="mt-3">
+                <ReviewsSettingsLink />
+              </div>
+              <div className="mt-3">
                 <TrialsLink />
               </div>
             </CollapsibleSection>
@@ -1328,7 +1379,12 @@ export function AdminSettingsHub() {
                 description={i18n("orgSettingsDescription")}
                 defaultOpen={false}
               >
-                <OrganizationOwnerSettings token={token} slug={selectedOrganizationSlug} currentUserId={currentUser?.id} />
+                <OrganizationOwnerSettings
+                  token={token}
+                  slug={selectedOrganizationSlug}
+                  currentUserId={currentUser?.id}
+                  currentUserEmail={currentUser?.email}
+                />
               </CollapsibleSection>
             ) : null}
 

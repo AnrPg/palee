@@ -79,6 +79,9 @@ config :palee, :geocoder_governor,
 config :palee, :geonames,
   base_url: System.get_env("GEONAMES_BASE_URL", "https://download.geonames.org/export/dump")
 
+# ADR-387: Palee's own Places API server key (never shown to boxes or logged).
+config :palee, :google_places_api, api_key: System.get_env("GOOGLE_PLACES_API_KEY")
+
 config :palee, :gemini,
   req_options: gemini_req_options,
   api_key: System.get_env("GEMINI_API_KEY"),
@@ -91,7 +94,9 @@ config :palee, :gemini,
   # ADR-157: alt text suggestions (vision).
   vision_model: System.get_env("GEMINI_VISION_MODEL", "gemini-2.5-flash-lite"),
   # ADR-175: voice logging speech to text (audio in, transcript out).
-  transcribe_model: System.get_env("GEMINI_TRANSCRIBE_MODEL", "gemini-2.5-flash")
+  transcribe_model: System.get_env("GEMINI_TRANSCRIBE_MODEL", "gemini-2.5-flash"),
+  # ADR-366: status page incidents into English.
+  translate_model: System.get_env("GEMINI_TRANSLATE_MODEL", "gemini-2.5-flash-lite")
 
 # ADR-174: AI scaling suggestions call the Claude API with each gym's own key
 # (set in the gym's AI settings); only the default model is configured here.
@@ -383,6 +388,35 @@ if config_env() == :prod do
       config :palee, :sms_sender, Palee.Infrastructure.Sms.UnavailableSmsSender
   end
 
+  # ADR-348/349: SMS through Brevo. The webhook URLs' tokens are keyed with
+  # CHANNELS_WEBHOOK_KEY (else the secret key base). Palee's own Brevo
+  # account (the email one, BREVO_API_KEY) sends for boxes on the managed
+  # mode; CHANNELS_BREVO_CREDIT_CENTS turns SMS credits into cents.
+  config :palee,
+         :channels_webhook_key,
+         System.get_env("CHANNELS_WEBHOOK_KEY") || secret_key_base
+
+  config :palee,
+         :channel_managed_accounts,
+         %{
+           "brevo" => [
+             secret: System.get_env("CHANNELS_BREVO_API_KEY") || System.get_env("BREVO_API_KEY"),
+             sms_sender: System.get_env("CHANNELS_BREVO_SMS_SENDER") || "Palee"
+           ]
+         }
+         |> Map.filter(fn {_provider, account} ->
+           is_binary(account[:secret]) and account[:secret] != ""
+         end)
+
+  case System.get_env("CHANNELS_BREVO_CREDIT_CENTS") do
+    cents when is_binary(cents) and cents != "" ->
+      {credit_cents, ""} = Float.parse(cents)
+      config :palee, Palee.Infrastructure.Channels.BrevoChannel, credit_cents: credit_cents
+
+    _unset ->
+      :ok
+  end
+
   # ADR-212: the SMTP key's expiry date (YYYY-MM-DD). A daily check alerts
   # vendors from 30 days before; mail stops when the key expires.
   smtp_key_expires_on =
@@ -435,4 +469,16 @@ if config_env() == :prod do
     ],
     check_origin: ["https://#{host}", "http://#{host}"],
     secret_key_base: secret_key_base
+end
+
+# ADR-352 §5: where custom hosts of box websites must point.
+if config_env() == :prod do
+  config :palee, :box_site,
+    cname_target: System.get_env("BOX_SITE_CNAME_TARGET", "sites.palee.app"),
+    a_records:
+      "BOX_SITE_A_RECORDS"
+      |> System.get_env("")
+      |> String.split(",", trim: true)
+      |> Enum.map(&String.trim/1),
+    refused_suffixes: ["palee.app", "4kq.net", "localhost", "localdomain", "invalid", "local"]
 end

@@ -14,6 +14,7 @@ import {
   type NotificationPreferenceList,
 } from "@/api/notifications";
 import { CollapsibleSection } from "@/components/profile/CollapsibleSection";
+import { applyChange, emailSwitch } from "@/components/notifications/notification-preferences";
 import { PushDeviceCard } from "@/components/notifications/PushDeviceCard";
 import { useSession } from "@/components/session-provider";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
@@ -21,6 +22,7 @@ import { useOrganizationMemberships } from "@/lib/membership-role";
 import { hasStaffRole } from "@/lib/role-navigation";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 
+// The columns; the booking email (ADR-392) is its own switch under its row.
 const CHANNELS: NotificationChannel[] = ["in_app", "push"];
 
 /**
@@ -107,15 +109,6 @@ export function NotificationSettings() {
   );
 }
 
-function applyChange(
-  channels: NotificationPreference["channels"],
-  change: Partial<Record<NotificationChannel, boolean>>,
-): NotificationPreference["channels"] {
-  const next = { ...channels, ...change };
-  // A push is made from the bell's notification, so it needs the bell (ADR-199).
-  return next.in_app === false ? { ...next, push: false } : next;
-}
-
 function CategoryRow({
   row,
   pending,
@@ -127,51 +120,65 @@ function CategoryRow({
 }) {
   const t = useTranslations("NotificationSettings");
   const title = t(`category.${row.category}.title`);
+  const email = emailSwitch(row);
 
   return (
-    <div
-      data-category={row.category}
-      className="flex items-center justify-between gap-3 py-3"
-      style={{ borderTop: "1px solid var(--border)" }}
-    >
-      <div className="min-w-0">
-        <p className="text-sm font-semibold" style={{ color: "var(--text)" }}>{title}</p>
-        <p className="mt-0.5 text-xs leading-5" style={{ color: "var(--muted)" }}>
-          {t(`category.${row.category}.hint`)}
-          {row.category === "community" ? (
-            <>
-              {" "}
-              <Link href="/me/clubs" className="font-semibold underline" style={{ color: "var(--text-soft)" }}>
-                {t("perClub")}
-              </Link>
-            </>
-          ) : null}
-        </p>
-      </div>
-      {row.locked ? (
-        <span className="shrink-0 rounded-full px-3 py-1 text-xs font-semibold" style={{ background: "var(--panel-muted)", color: "var(--muted)", border: "1px solid var(--border)" }}>
-          {t("locked")}
-        </span>
-      ) : (
-        <div className="flex shrink-0 gap-3">
-          {CHANNELS.map((channel) => {
-            const offered = channel in row.channels;
-            const on = Boolean(row.channels[channel]);
-            const needsBell = channel === "push" && row.channels.in_app === false;
-            return offered ? (
-              <Switch
-                key={channel}
-                on={on}
-                disabled={pending || needsBell}
-                label={`${title} · ${t(`channel.${channel}`)}`}
-                onChange={(next) => onChange(channel, next)}
-              />
-            ) : (
-              <span key={channel} className="w-12" aria-hidden="true" />
-            );
-          })}
+    <div data-category={row.category} style={{ borderTop: "1px solid var(--border)" }}>
+      <div className="flex items-center justify-between gap-3 py-3">
+        <div className="min-w-0">
+          <p className="text-sm font-semibold" style={{ color: "var(--text)" }}>{title}</p>
+          <p className="mt-0.5 text-xs leading-5" style={{ color: "var(--muted)" }}>
+            {t(`category.${row.category}.hint`)}
+            {row.category === "community" ? (
+              <>
+                {" "}
+                <Link href="/me/clubs" className="font-semibold underline" style={{ color: "var(--text-soft)" }}>
+                  {t("perClub")}
+                </Link>
+              </>
+            ) : null}
+          </p>
         </div>
-      )}
+        {row.locked ? (
+          <span className="shrink-0 rounded-full px-3 py-1 text-xs font-semibold" style={{ background: "var(--panel-muted)", color: "var(--muted)", border: "1px solid var(--border)" }}>
+            {t("locked")}
+          </span>
+        ) : (
+          <div className="flex shrink-0 gap-3">
+            {CHANNELS.map((channel) => {
+              const offered = channel in row.channels;
+              const on = Boolean(row.channels[channel]);
+              const needsBell = channel === "push" && row.channels.in_app === false;
+              return offered ? (
+                <Switch
+                  key={channel}
+                  on={on}
+                  disabled={pending || needsBell}
+                  label={`${title} · ${t(`channel.${channel}`)}`}
+                  onChange={(next) => onChange(channel, next)}
+                />
+              ) : (
+                <span key={channel} className="w-12" aria-hidden="true" />
+              );
+            })}
+          </div>
+        )}
+      </div>
+      {email ? (
+        // ADR-392: «Email κράτησης με ημερολόγιο», one switch, on by default.
+        <div className="flex items-center justify-between gap-3 pb-3 ps-3" data-testid="booking-email-switch">
+          <div className="min-w-0">
+            <p className="text-sm font-semibold" style={{ color: "var(--text)" }}>{t("bookingEmail.title")}</p>
+            <p className="mt-0.5 text-xs leading-5" style={{ color: "var(--muted)" }}>{t("bookingEmail.hint")}</p>
+          </div>
+          <Switch
+            on={email.on}
+            disabled={pending}
+            label={t("bookingEmail.title")}
+            onChange={(next) => onChange("email", next)}
+          />
+        </div>
+      ) : null}
     </div>
   );
 }

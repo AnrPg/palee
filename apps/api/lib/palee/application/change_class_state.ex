@@ -143,6 +143,8 @@ defmodule Palee.Application.ChangeClassState do
         user_id: booking.user_id,
         kind: Map.get(booking, :kind) || "member",
         by: :staff,
+        previous_status: Map.get(booking, :status),
+        guest_name: Map.get(booking, :guest_name),
         at: now
       })
     end)

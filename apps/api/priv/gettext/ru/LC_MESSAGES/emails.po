@@ -225,3 +225,63 @@ msgstr "Итого"
 
 msgid "Keep it for your records. For questions about it, contact the business."
 msgstr "Сохраните его для своих записей. По вопросам о нём обращайтесь в компанию."
+
+msgid "Booked: %{class}, %{when}"
+msgstr "Запись: %{class}, %{when}"
+
+msgid "Class changed: %{class}, %{when}"
+msgstr "Занятие изменено: %{class}, %{when}"
+
+msgid "Cancelled: %{class}, %{when}"
+msgstr "Отменено: %{class}, %{when}"
+
+msgid "Your place in %{class} at «%{business}» is booked."
+msgstr "Ваше место на занятии %{class} в «%{business}» забронировано."
+
+msgid "%{class} at «%{business}» changed. Your place is kept."
+msgstr "Занятие %{class} в «%{business}» изменилось. Ваше место сохранено."
+
+msgid "Your place in %{class} at «%{business}» is cancelled."
+msgstr "Ваше место на занятии %{class} в «%{business}» отменено."
+
+msgid "Class"
+msgstr "Занятие"
+
+msgid "Where"
+msgstr "Где"
+
+msgid "The attached invite adds the class to your calendar, or updates it."
+msgstr "Приложенное приглашение добавит занятие в ваш календарь или обновит его."
+
+msgid "The attached invite removes the class from your calendar."
+msgstr "Приложенное приглашение удалит занятие из вашего календаря."
+
+msgid "Open in the app"
+msgstr "Открыть в приложении"
+
+msgid "You can turn these emails off in Settings › Notifications."
+msgstr "Эти письма можно отключить в разделе Настройки › Уведомления."
+
+msgid "%{weekday} %{date_time}"
+msgstr "%{weekday}, %{date_time}"
+
+msgid "Monday"
+msgstr "понедельник"
+
+msgid "Tuesday"
+msgstr "вторник"
+
+msgid "Wednesday"
+msgstr "среда"
+
+msgid "Thursday"
+msgstr "четверг"
+
+msgid "Friday"
+msgstr "пятница"
+
+msgid "Saturday"
+msgstr "суббота"
+
+msgid "Sunday"
+msgstr "воскресенье"

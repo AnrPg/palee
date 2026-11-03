@@ -71,7 +71,13 @@ defmodule Palee.Organizations.Domain.AccessPolicy do
     sell_shop: :all,
     moderate_community: :all,
     manage_community: :all,
-    manage_events: :all
+    manage_events: :all,
+    # ADR-344: «Ενδιαφερόμενοι» (leads, their tasks and history).
+    manage_leads: :all,
+    # ADR-346: switching the ready recipes on and their texts (box-wide).
+    manage_automations: :all,
+    # ADR-347: «Σε κίνδυνο», who may leave and why.
+    view_members_at_risk: :all
   }
 
   @owner Map.merge(@admin, %{
@@ -133,7 +139,10 @@ defmodule Palee.Organizations.Domain.AccessPolicy do
     # sees clients' health certificates; uploading or deleting one stays
     # `manage_health_certificates`, which a box may grant.
     request_signatures: :all,
-    view_health_certificates: :all
+    view_health_certificates: :all,
+    # ADR-344/347: the desk answers enquiries and calls members who stopped coming.
+    manage_leads: :all,
+    view_members_at_risk: :all
   }
 
   @accountant %{

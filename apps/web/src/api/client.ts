@@ -123,6 +123,8 @@ const TENANT_SCOPED_PREFIXES = [
   "/landing",
   "/locations",
   "/me/appointments",
+  // ADR-346: the member's «Αυτόματα μηνύματα» of their box.
+  "/me/automatic-messages",
   "/me/corporate-enrollment",
   "/me/documents",
   "/me/entitlement",
@@ -137,6 +139,12 @@ const TENANT_SCOPED_PREFIXES = [
   "/me/nutrition-plan",
   "/me/progress",
   "/me/reviews",
+  // ADR-355: Google review asks of the member's box.
+  "/me/review-ask",
+  "/me/review-asks",
+  // ADR-386: the box's in-app reviews.
+  "/me/box-review",
+  "/me/box-reviews",
   "/me/search/users",
   "/me/seasons",
   "/me/threads",

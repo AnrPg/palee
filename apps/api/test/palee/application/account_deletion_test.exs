@@ -240,10 +240,23 @@ defmodule Palee.Application.AccountDeletionTest do
         [Ecto.UUID.dump!(account.id), Ecto.UUID.dump!(organization.id)]
       )
 
+      # ADR-394: they had put their score on the Palee-wide board.
+      Palee.Repo.query!(
+        "INSERT INTO palee_leaderboard_consents (user_id, choice, inserted_at, updated_at) VALUES ($1, 'share', now(), now())",
+        [Ecto.UUID.dump!(account.id)]
+      )
+
       {:ok, _} = AccountDeletion.request(account, %{scope: "login", password: @password}, @now)
       {_message, token} = confirmation_token(account.email)
       {:ok, %{scheduled_for: at}} = AccountDeletion.confirm(token, @now)
       assert AccountDeletion.execute_due(at) == 1
+
+      # The kept profile leaves every Palee-wide board.
+      assert %{rows: [[0]]} =
+               Palee.Repo.query!(
+                 "SELECT count(*) FROM palee_leaderboard_consents WHERE user_id = $1",
+                 [Ecto.UUID.dump!(account.id)]
+               )
 
       kept = Identity.find_by_id(account.id)
       assert kept.handle =~ ~r/^deleted\.[0-9a-f]{10}$/

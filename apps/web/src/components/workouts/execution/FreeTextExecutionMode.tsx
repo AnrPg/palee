@@ -404,6 +404,7 @@ export function FreeTextExecutionMode() {
         freeText
         textSections={sections}
         feltExecutionId={runExecutionId ?? executionId}
+        videoExecutionId={runExecutionId ?? executionId}
         isSaving={isSavingCompletion}
         feedback={completionFeedback}
         onConfirm={confirmFinish}

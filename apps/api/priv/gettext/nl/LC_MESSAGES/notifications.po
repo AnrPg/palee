@@ -805,3 +805,21 @@ msgstr "%{nickname} schreef naar %{box}"
 
 msgid "%{nickname} sent the box a message."
 msgstr "%{nickname} stuurde de box een bericht."
+
+msgid "Question from the website"
+msgstr "Vraag via de website"
+
+msgid "Trial request from the website"
+msgstr "Aanvraag proefles via de website"
+
+msgid "%{name} wrote through the box's website. Answer or call them."
+msgstr "%{name} schreef via de website van de box. Antwoord of bel."
+
+msgid "The WOD changed"
+msgstr "De WOD is gewijzigd"
+
+msgid "%{title} changed after you did it. See it as it was in your Journal."
+msgstr "‘%{title}’ is gewijzigd nadat je hem deed. Bekijk hem zoals hij was in je Logboek."
+
+msgid "A WOD you did changed. See it as it was in your Journal."
+msgstr "Een WOD die je deed is gewijzigd. Bekijk hem zoals hij was in je Logboek."

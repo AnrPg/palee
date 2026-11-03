@@ -225,3 +225,63 @@ msgstr "Total"
 
 msgid "Keep it for your records. For questions about it, contact the business."
 msgstr "Guárdalo para tus registros. Si tienes preguntas, ponte en contacto con el negocio."
+
+msgid "Booked: %{class}, %{when}"
+msgstr "Reservado: %{class}, %{when}"
+
+msgid "Class changed: %{class}, %{when}"
+msgstr "Clase modificada: %{class}, %{when}"
+
+msgid "Cancelled: %{class}, %{when}"
+msgstr "Cancelado: %{class}, %{when}"
+
+msgid "Your place in %{class} at «%{business}» is booked."
+msgstr "Tu plaza en %{class} en «%{business}» está reservada."
+
+msgid "%{class} at «%{business}» changed. Your place is kept."
+msgstr "%{class} en «%{business}» ha cambiado. Conservas tu plaza."
+
+msgid "Your place in %{class} at «%{business}» is cancelled."
+msgstr "Tu plaza en %{class} en «%{business}» se ha cancelado."
+
+msgid "Class"
+msgstr "Clase"
+
+msgid "Where"
+msgstr "Dónde"
+
+msgid "The attached invite adds the class to your calendar, or updates it."
+msgstr "La invitación adjunta añade la clase a tu calendario o la actualiza."
+
+msgid "The attached invite removes the class from your calendar."
+msgstr "La invitación adjunta quita la clase de tu calendario."
+
+msgid "Open in the app"
+msgstr "Abrir en la app"
+
+msgid "You can turn these emails off in Settings › Notifications."
+msgstr "Puedes desactivar estos correos en Ajustes › Notificaciones."
+
+msgid "%{weekday} %{date_time}"
+msgstr "%{weekday} %{date_time}"
+
+msgid "Monday"
+msgstr "lunes"
+
+msgid "Tuesday"
+msgstr "martes"
+
+msgid "Wednesday"
+msgstr "miércoles"
+
+msgid "Thursday"
+msgstr "jueves"
+
+msgid "Friday"
+msgstr "viernes"
+
+msgid "Saturday"
+msgstr "sábado"
+
+msgid "Sunday"
+msgstr "domingo"

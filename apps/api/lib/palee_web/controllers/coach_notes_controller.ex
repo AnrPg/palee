@@ -45,7 +45,8 @@ defmodule PaleeWeb.CoachNotesController do
              conn.assigns.tenant_context,
              user_id,
              conn.body_params.body,
-             subject(conn.body_params)
+             subject(conn.body_params),
+             Map.get(conn.body_params, :audience, "private")
            ) do
       conn |> put_status(:created) |> json(%{note: note})
     end

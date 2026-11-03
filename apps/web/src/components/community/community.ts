@@ -98,7 +98,7 @@ export function defaultChannelId(clubs: CommunityClub[], clubId?: string | null)
 
 /** True once a loaded feed holds at least one post, pinned or not. */
 export function feedHasPosts(feed: { pages: CommunityFeedPage[] } | undefined): boolean {
-  return (feed?.pages ?? []).some((page) => page.posts.length > 0 || (page.pinned ?? []).length > 0);
+  return (feed?.pages ?? []).some((page) => (page.posts ?? []).length > 0 || (page.pinned ?? []).length > 0);
 }
 
 /** Drops pinned posts from the page list so a pinned post shows once. */

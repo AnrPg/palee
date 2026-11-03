@@ -155,6 +155,30 @@ defmodule Palee.Application.TenantObjectStorage do
     end
   end
 
+  @doc """
+  ADR-367: every object the box stores (documents, branding, media), each
+  tagged with its `source` and logical `bucket`, for the box's data export.
+  """
+  def list_box_files(organization_id) when is_binary(organization_id) do
+    with {:ok, documents} <- list_tenant_objects(organization_id),
+         {:ok, branding} <- list_branding_objects(organization_id),
+         {:ok, media} <- MediaStorage.list_tenant(organization_id) do
+      {:ok,
+       Enum.map(documents, &Map.merge(&1, %{source: :documents, bucket: :documents})) ++
+         Enum.map(branding, &Map.merge(&1, %{source: :branding, bucket: :branding})) ++
+         Enum.map(media, &Map.put(&1, :source, :media))}
+    end
+  end
+
+  @doc "ADR-367: copies one of the box's objects to a local file; keys outside the box are refused."
+  def download_box_file(organization_id, bucket, key, path)
+      when is_binary(organization_id) and is_binary(key) and
+             bucket in [:documents, :branding, :media_public, :media_private] do
+    if String.starts_with?(key, tenant_prefix(organization_id)),
+      do: impl().download_object(bucket, key, path),
+      else: {:error, :document_key_forbidden}
+  end
+
   @doc "Deletes everything under one tenant-relative prefix (e.g. a cancelled export)."
   def delete_tenant_objects_under(organization_id, relative_prefix)
       when is_binary(organization_id) and is_binary(relative_prefix) and relative_prefix != "" do

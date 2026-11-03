@@ -3,6 +3,14 @@ import { describe, expect, it } from "vitest";
 import { notificationTargetUrl } from "./notification-links";
 
 describe("notificationTargetUrl", () => {
+  it("opens the Journal on the run or score whose WOD changed (ADR-393)", () => {
+    for (const role of ["member", "coach", null]) {
+      expect(
+        notificationTargetUrl({ type: "logged_workout_changed", payload: { holder_id: "e-1", url: "/journal?entry=e-1" } }, role),
+      ).toBe("/journal?entry=e-1");
+    }
+  });
+
   it("opens a person's message in its conversation and a message request in Requests (ADR-193)", () => {
     for (const role of ["member", "admin", null]) {
       expect(

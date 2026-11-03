@@ -8,6 +8,7 @@ import Link from "next/link";
 import { WOD_KEY, type CommunityClub, type WodLeaderboardEntry } from "@/api/community";
 import { builtInChannel, channelName, clubInitials } from "@/components/community/community";
 import { useWodToday } from "@/components/community/use-community";
+import { WodLeaderboard } from "@/components/community/WodLeaderboard";
 import { HubCard } from "@/components/member-app/HubParts";
 import { useSession } from "@/components/session-provider";
 import { TrainingLogDialog, type TrainingLogDialogState } from "@/components/training-log/TrainingLog";
@@ -19,6 +20,8 @@ import { formatClock } from "@/lib/clock";
  * WOD, its classes, and the leaderboard of members who opted in, with the
  * member's own row and «Καταχώρησε το σκορ σου» until they log it. Shown
  * only when there is a workout today (ANR 2026-10-24, vision §4.2).
+ * For people who opted in, the list takes the ADR-356 filters and the
+ * percentile (`WodLeaderboard`, ANR mockup d2 A).
  */
 export function WodCard({ club, showOrigin = true }: { club: CommunityClub; showOrigin?: boolean }) {
   const t = useTranslations("Community");
@@ -36,6 +39,7 @@ export function WodCard({ club, showOrigin = true }: { club: CommunityClub; show
   function closeLog() {
     setLogDialog({ mode: "closed" });
     void queryClient.invalidateQueries({ queryKey: WOD_KEY });
+    void queryClient.invalidateQueries({ queryKey: ["training-floor", "leaderboard"] });
   }
 
   if (!data?.workout) return null;
@@ -60,19 +64,26 @@ export function WodCard({ club, showOrigin = true }: { club: CommunityClub; show
             {[...data.classes.map((entry) => time(entry.scheduled_at)), t("wodScoreCount", { count: data.leaderboard.length })].join(" · ")}
           </p>
         </div>
-        {data.score ? (
-          <ol className="flex flex-col gap-1" aria-label={t("wodLeaderboard")}>
-            {data.leaderboard.map((row) => (
-              <LeaderboardRow key={row.user_id} row={row} />
-            ))}
-            {!mine ? (
-              <li className="flex items-center gap-3 rounded-xl px-2 py-1.5" style={{ background: "var(--panel-raised)" }}>
-                <span className="w-5 text-center font-mono text-sm" style={{ color: "var(--dim)" }}>–</span>
-                <b className="grow text-sm" style={{ color: "var(--text)" }}>{t("wodYou")}</b>
-                <span className="text-xs" style={{ color: "var(--dim)" }}>{t("wodNoScore")}</span>
-              </li>
-            ) : null}
-          </ol>
+        {data.score && club.organization_slug ? (
+          <WodLeaderboard
+            slug={club.organization_slug}
+            workoutId={data.workout.id}
+            date={data.date}
+            fallback={
+              <ol className="flex flex-col gap-1" aria-label={t("wodLeaderboard")}>
+                {data.leaderboard.map((row) => (
+                  <LeaderboardRow key={row.user_id} row={row} />
+                ))}
+                {!mine ? (
+                  <li className="flex items-center gap-3 rounded-xl px-2 py-1.5" style={{ background: "var(--panel-raised)" }}>
+                    <span className="w-5 text-center font-mono text-sm" style={{ color: "var(--dim)" }}>–</span>
+                    <b className="grow text-sm" style={{ color: "var(--text)" }}>{t("wodYou")}</b>
+                    <span className="text-xs" style={{ color: "var(--dim)" }}>{t("wodNoScore")}</span>
+                  </li>
+                ) : null}
+              </ol>
+            }
+          />
         ) : null}
         {mine && !mine.opted_in ? (
           <p className="text-xs" style={{ color: "var(--dim)" }}>

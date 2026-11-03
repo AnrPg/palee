@@ -106,8 +106,28 @@ defmodule PaleeWeb.AdminDayWorkoutController do
         {"Day WODs", "application/json",
          %Schema{
            type: :object,
-           properties: %{day_workouts: %Schema{type: :array, items: @day_workout_schema}},
-           required: [:day_workouts]
+           properties: %{
+             day_workouts: %Schema{type: :array, items: @day_workout_schema},
+             days: %Schema{
+               type: :array,
+               description: "ADR-357: the assignment tag of every gym day of the range",
+               items: %Schema{
+                 title: "DayAssignmentTag",
+                 type: :object,
+                 properties: %{
+                   date: %Schema{type: :string, format: :date},
+                   tag: %Schema{
+                     type: :string,
+                     enum: ~w(none not_assigned mixed all_assigned)
+                   },
+                   classes: %Schema{type: :integer},
+                   with_wod: %Schema{type: :integer}
+                 },
+                 required: [:classes, :date, :tag, :with_wod]
+               }
+             }
+           },
+           required: [:day_workouts, :days]
          }}
     ]
   )
@@ -191,7 +211,12 @@ defmodule PaleeWeb.AdminDayWorkoutController do
     with {:ok, from} <- date(params, :from),
          {:ok, to} <- date(params, :to),
          :ok <- valid_range(from, to) do
-      json(conn, %{day_workouts: DayWorkouts.list(conn.assigns.tenant_context, from, to)})
+      context = conn.assigns.tenant_context
+
+      json(conn, %{
+        day_workouts: DayWorkouts.list(context, from, to),
+        days: DayWorkouts.assignment_tags(context, from, to)
+      })
     end
   end
 

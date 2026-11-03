@@ -195,6 +195,15 @@ defmodule Palee.Execution do
     to: Palee.Execution.Domain.ScoreRanking,
     as: :rank
 
+  # ADR-394: comparing one benchmark's results scored in different boxes.
+  defdelegate score_lower_is_better?(score_type),
+    to: Palee.Execution.Domain.ScoreRanking,
+    as: :lower_is_better?
+
+  defdelegate score_sort_value(score, score_type),
+    to: Palee.Execution.Domain.ScoreRanking,
+    as: :sort_value
+
   defdelegate list_training_log_completions_for_user(user_id),
     to: GetTrainingLogEntries,
     as: :completion_records_for_user

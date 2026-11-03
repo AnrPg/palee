@@ -840,6 +840,126 @@ defmodule PaleeWeb.CommunityEventsControllerTest do
       assert "community_event_cancelled" in types(ctx.member)
     end
 
+    test "an attendee who agreed to SMS at «Θα έρθω» gets the reminder and changes by SMS",
+         ctx do
+      {:ok, owner_context} = Organizations.resolve_tenant_context(ctx.owner, ctx.slug)
+
+      {:ok, _connection} =
+        Palee.Channels.save_connection(
+          owner_context,
+          %{provider: "sandbox", channels: ["sms"], monthly_budget_cents: 2000},
+          ctx.owner.id
+        )
+
+      event = new_event(ctx, %{starts_at: at(100), ends_at: at(160)})
+
+      # A wrong number changes nothing: no place, no consent.
+      assert rsvp(ctx, ctx.member, event, true, %{sms_consent: true, phone: "12"})
+             |> json_response(422)
+
+      refute Repo.get_by(Palee.Channels.Contact, user_id: ctx.member.id)
+
+      rsvp(ctx, ctx.member, event, true, %{sms_consent: true, phone: "6912345678"})
+      |> event_json()
+
+      rsvp(ctx, ctx.other, event, true) |> event_json()
+
+      contact = Repo.get_by!(Palee.Channels.Contact, user_id: ctx.member.id)
+      assert contact.organization_id == ctx.organization.id
+      refute Repo.get_by(Palee.Channels.Contact, user_id: ctx.other.id)
+
+      context = %{organization_id: ctx.organization.id}
+      EventReminders.sweep(context, DateTime.utc_now())
+      EventReminders.sweep(context, DateTime.utc_now())
+
+      ctx.as.(ctx.coach)
+      |> send_json(:patch, "#{ctx.staff}/#{event["id"]}", %{place_name: "Πεδίον του Άρεως"})
+      |> json_response(200)
+
+      keys =
+        from(message in Palee.Channels.Message,
+          where: message.contact_id == ^contact.id,
+          select: message.template_key
+        )
+        |> Repo.all()
+        |> Enum.sort()
+
+      assert keys == ["event_changed", "event_reminder"]
+
+      assert Repo.aggregate(
+               from(message in Palee.Channels.Message,
+                 where: message.organization_id == ^ctx.organization.id
+               ),
+               :count
+             ) == 2
+    end
+
+    test "ADR-385: the event SMS switch, sms_offered and the organiser's summary", ctx do
+      {:ok, owner_context} = Organizations.resolve_tenant_context(ctx.owner, ctx.slug)
+      event = new_event(ctx, %{starts_at: at(100), ends_at: at(160)})
+
+      # No connection yet: «Θα έρθω» does not ask.
+      assert %{"sms_offered" => false, "sms_enabled" => true} =
+               ctx.as.(ctx.member) |> get("/api/me/events/#{event["id"]}") |> event_json()
+
+      {:ok, _connection} =
+        Palee.Channels.save_connection(
+          owner_context,
+          %{provider: "sandbox", channels: ["sms"], monthly_budget_cents: 2000},
+          ctx.owner.id
+        )
+
+      assert %{"sms_offered" => true} =
+               ctx.as.(ctx.member)
+               |> recycle()
+               |> get("/api/me/events/#{event["id"]}")
+               |> event_json()
+
+      rsvp(ctx, ctx.member, event, true, %{sms_consent: true, phone: "6912345678"})
+      |> event_json()
+
+      rsvp(ctx, ctx.other, event, true) |> event_json()
+
+      assert %{
+               "enabled" => true,
+               "connected" => true,
+               "going" => 2,
+               "recipients" => 1,
+               "spent_cents" => 0,
+               "per_message_cents" => per_message,
+               "currency" => "EUR"
+             } =
+               ctx.as.(ctx.coach)
+               |> recycle()
+               |> get("/api/me/events/#{event["id"]}/sms")
+               |> json_response(200)
+
+      assert per_message > 0
+
+      # A member who does not run events sees nothing.
+      assert ctx.as.(ctx.member)
+             |> recycle()
+             |> get("/api/me/events/#{event["id"]}/sms")
+             |> json_response(404)
+
+      # Switched off: the change goes by push only, and «Θα έρθω» stops asking.
+      assert %{"sms_enabled" => false, "sms_offered" => false} =
+               ctx.as.(ctx.coach)
+               |> send_json(:patch, "#{ctx.staff}/#{event["id"]}", %{sms_enabled: false})
+               |> event_json()
+
+      ctx.as.(ctx.coach)
+      |> send_json(:patch, "#{ctx.staff}/#{event["id"]}", %{place_name: "Πεδίον του Άρεως"})
+      |> json_response(200)
+
+      assert Repo.aggregate(
+               from(message in Palee.Channels.Message,
+                 where: message.organization_id == ^ctx.organization.id
+               ),
+               :count
+             ) == 0
+    end
+
     test "the reminder goes once, two hours before", ctx do
       event = new_event(ctx, %{starts_at: at(100), ends_at: at(160)})
       rsvp(ctx, ctx.member, event, true) |> event_json()

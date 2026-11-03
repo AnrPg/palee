@@ -12,6 +12,7 @@ import { useUiLocale } from "@/i18n/use-ui-locale";
 
 import { money, usePayLabel } from "./PackageCheckout";
 import { ChoiceLabel, ChoiceRow, PayButton, usePayError, useStartCheckout } from "./PayParts";
+import { payableCents, surchargeShown, SurchargeTotal } from "./SurchargeTotal";
 
 /**
  * Paying an open invoice online (ADR-246/247), in the same «Πριν πληρώσεις»
@@ -80,13 +81,16 @@ export function InvoicePaySheet({
             </ChoiceRow>
             <ChoiceRow checked={autopay === false} onSelect={() => setAutopay(false)} title={t("onlyThisTime")} testId="pay-auto-no" />
           </div>
+          {surchargeShown(data.surcharge) ? (
+            <SurchargeTotal label={label} amountCents={data.amount_cents} currency={data.currency} surcharge={data.surcharge} />
+          ) : null}
           {!data.available ? <ErrorNotice>{t("errorUnavailable")}</ErrorNotice> : null}
           <PayButton
             disabled={!data.available || autopay === null || pay.isPending}
             onClick={() => pay.mutate()}
             testId="pay-submit"
           >
-            {payLabel(data.amount_cents, data.currency, data.provider)}
+            {payLabel(payableCents(data.amount_cents, data.surcharge), data.currency, data.provider)}
           </PayButton>
           {pay.isError ? <ErrorNotice variant="field">{payError(pay.error)}</ErrorNotice> : null}
         </div>

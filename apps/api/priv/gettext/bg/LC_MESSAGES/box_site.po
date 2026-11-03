@@ -1,0 +1,23 @@
+msgid ""
+msgstr ""
+"Language: bg\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "DNS records for %{host}"
+msgstr "DNS записи за %{host}"
+
+msgid "See if the records are found"
+msgstr "Провери дали записите са открити"
+
+msgid "%{box} wants its website to open at %{host}. Whoever manages the domain can do it in a few minutes."
+msgstr "%{box} иска сайтът му да се отваря на %{host}. Който управлява домейна, може да го направи за няколко минути."
+
+msgid "Add these records at the domain's provider (DNS settings):"
+msgstr "Добави тези записи при доставчика на домейна (DNS настройки):"
+
+msgid "We check every few minutes. When the records are found, the site gets its certificate (https) by itself."
+msgstr "Проверяваме на всеки няколко минути. Щом записите бъдат открити, сайтът сам получава сертификат (https)."
+
+msgid "You get this email because %{box} sent you its domain instructions."
+msgstr "Получаваш този имейл, защото %{box} ти изпрати инструкциите за своя домейн."

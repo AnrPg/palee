@@ -23,6 +23,8 @@ defmodule Palee.Execution.TrainingLogEntry do
     field(:source_type, :string)
     field(:source_reference_id, :binary_id)
     field(:master_workout_id, :binary_id)
+    # ADR-357: the WOD as it was when assigned or performed.
+    field(:workout_snapshot_id, :binary_id)
     field(:booking_id, :binary_id)
     field(:title, :string)
     field(:workout_type, :string)

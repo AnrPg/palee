@@ -50,11 +50,15 @@ export function downloadIcsEvent(event: IcsEvent): void {
     .filter(Boolean)
     .join("\r\n");
 
-  const blob = new Blob([lines], { type: "text/calendar;charset=utf-8" });
+  saveIcs(new Blob([lines], { type: "text/calendar;charset=utf-8" }), event.title);
+}
+
+/** Hands an .ics file to the device (the calendar app opens it). */
+export function saveIcs(blob: Blob, title: string): void {
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
   anchor.href = url;
-  anchor.download = `${event.title.replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").toLowerCase()}.ics`;
+  anchor.download = `${title.replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").toLowerCase() || "palee"}.ics`;
   document.body.appendChild(anchor);
   anchor.click();
   document.body.removeChild(anchor);

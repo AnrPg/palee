@@ -225,3 +225,63 @@ msgstr "Totaal"
 
 msgid "Keep it for your records. For questions about it, contact the business."
 msgstr "Bewaar het voor je administratie. Neem bij vragen contact op met het bedrijf."
+
+msgid "Booked: %{class}, %{when}"
+msgstr "Geboekt: %{class}, %{when}"
+
+msgid "Class changed: %{class}, %{when}"
+msgstr "Les gewijzigd: %{class}, %{when}"
+
+msgid "Cancelled: %{class}, %{when}"
+msgstr "Geannuleerd: %{class}, %{when}"
+
+msgid "Your place in %{class} at «%{business}» is booked."
+msgstr "Je plek in %{class} bij ‘%{business}’ is geboekt."
+
+msgid "%{class} at «%{business}» changed. Your place is kept."
+msgstr "%{class} bij ‘%{business}’ is gewijzigd. Je plek blijft."
+
+msgid "Your place in %{class} at «%{business}» is cancelled."
+msgstr "Je plek in %{class} bij ‘%{business}’ is geannuleerd."
+
+msgid "Class"
+msgstr "Les"
+
+msgid "Where"
+msgstr "Waar"
+
+msgid "The attached invite adds the class to your calendar, or updates it."
+msgstr "De bijgevoegde uitnodiging zet de les in je agenda of werkt hem bij."
+
+msgid "The attached invite removes the class from your calendar."
+msgstr "De bijgevoegde uitnodiging haalt de les uit je agenda."
+
+msgid "Open in the app"
+msgstr "Openen in de app"
+
+msgid "You can turn these emails off in Settings › Notifications."
+msgstr "Je kunt deze e-mails uitzetten via Instellingen › Meldingen."
+
+msgid "%{weekday} %{date_time}"
+msgstr "%{weekday} %{date_time}"
+
+msgid "Monday"
+msgstr "maandag"
+
+msgid "Tuesday"
+msgstr "dinsdag"
+
+msgid "Wednesday"
+msgstr "woensdag"
+
+msgid "Thursday"
+msgstr "donderdag"
+
+msgid "Friday"
+msgstr "vrijdag"
+
+msgid "Saturday"
+msgstr "zaterdag"
+
+msgid "Sunday"
+msgstr "zondag"

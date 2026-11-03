@@ -225,3 +225,63 @@ msgstr "Σύνολο"
 
 msgid "Keep it for your records. For questions about it, contact the business."
 msgstr "Κράτησέ το στο αρχείο σου. Για απορίες σχετικά με αυτό, επικοινώνησε με την επιχείρηση."
+
+msgid "Booked: %{class}, %{when}"
+msgstr "Κράτηση: %{class}, %{when}"
+
+msgid "Class changed: %{class}, %{when}"
+msgstr "Άλλαξε το τμήμα: %{class}, %{when}"
+
+msgid "Cancelled: %{class}, %{when}"
+msgstr "Ακυρώθηκε: %{class}, %{when}"
+
+msgid "Your place in %{class} at «%{business}» is booked."
+msgstr "Η θέση σου στο %{class} στο «%{business}» κλείστηκε."
+
+msgid "%{class} at «%{business}» changed. Your place is kept."
+msgstr "Το %{class} στο «%{business}» άλλαξε. Η θέση σου μένει."
+
+msgid "Your place in %{class} at «%{business}» is cancelled."
+msgstr "Η θέση σου στο %{class} στο «%{business}» ακυρώθηκε."
+
+msgid "Class"
+msgstr "Τμήμα"
+
+msgid "Where"
+msgstr "Πού"
+
+msgid "The attached invite adds the class to your calendar, or updates it."
+msgstr "Η πρόσκληση στο συνημμένο βάζει το τμήμα στο ημερολόγιό σου ή το ενημερώνει."
+
+msgid "The attached invite removes the class from your calendar."
+msgstr "Η πρόσκληση στο συνημμένο βγάζει το τμήμα από το ημερολόγιό σου."
+
+msgid "Open in the app"
+msgstr "Άνοιγμα στην εφαρμογή"
+
+msgid "You can turn these emails off in Settings › Notifications."
+msgstr "Μπορείς να σταματήσεις αυτά τα email στις Ρυθμίσεις › Ειδοποιήσεις."
+
+msgid "%{weekday} %{date_time}"
+msgstr "%{weekday} %{date_time}"
+
+msgid "Monday"
+msgstr "Δευτέρα"
+
+msgid "Tuesday"
+msgstr "Τρίτη"
+
+msgid "Wednesday"
+msgstr "Τετάρτη"
+
+msgid "Thursday"
+msgstr "Πέμπτη"
+
+msgid "Friday"
+msgstr "Παρασκευή"
+
+msgid "Saturday"
+msgstr "Σάββατο"
+
+msgid "Sunday"
+msgstr "Κυριακή"

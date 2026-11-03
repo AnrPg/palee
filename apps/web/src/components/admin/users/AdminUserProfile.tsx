@@ -60,6 +60,8 @@ import { allowanceLabel, localizeError, semanticLabel } from "@/i18n/presentatio
 import { MemberRolesEditor } from "@/components/admin/users/MemberRolesEditor";
 import { CoachAssignmentPanel } from "@/components/admin/users/CoachAssignmentPanel";
 import { BoxMessagePanel } from "@/components/admin/users/BoxMessagePanel";
+import { PAY_ROLES } from "@/components/admin/coach-pay/coach-pay";
+import { StaffPayCard } from "@/components/admin/coach-pay/StaffPayCard";
 import { MemberDocumentsPanel } from "@/components/documents/staff/MemberDocumentsPanel";
 import { CoachNotesPanel, type CoachNoteSubjectOption } from "@/components/admin/users/CoachNotesPanel";
 import { ClientTrainingGoalPanel } from "@/components/training-goal/ClientTrainingGoalPanel";
@@ -89,6 +91,7 @@ import { DateInput } from "@/components/ui/DateInput";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { BackLink } from "@/components/ui/BackLink";
 import { displayRoles, rolesOf } from "@/lib/users-directory";
+import { ClientSmsPanel } from "@/components/channels/ClientSmsPanel";
 
 function Panel({ id, title, children }: { id: string; title: string; children: React.ReactNode; href?: string; hrefLabel?: string }) {
   const i18n = useUiTranslations();
@@ -591,9 +594,11 @@ function PRDossier({ member, prs }: { member: AdminUserPRMember; prs: AdminUserP
 
 export function AdminUserProfile({ userId }: { userId: string }) {
   const i18n = useUiTranslations();
+  const tFloor = useTranslations("TrainingFloor");
   const tPrSharing = useTranslations("PrSharing");
   const tDepth = useTranslations("Depth");
   const tGoal = useTranslations("TrainingGoal");
+  const tSms = useTranslations("Sms");
   const { tokens, currentUser } = useSession();
   const token = tokens?.access_token;
   const organizationSlug = useOrganizationSlug();
@@ -696,8 +701,11 @@ export function AdminUserProfile({ userId }: { userId: string }) {
   const clientRole = boxRoles.includes("athlete") ? "athlete" : boxRoles.includes("member") ? "member" : null;
   // ADR-100/101: coaches and private coach notes belong to client profiles.
   const isClient = clientRole !== null;
+  const isStaffPerson = boxRoles.some((role) => (PAY_ROLES as string[]).includes(role));
   if (isClient) sections.add("schedule");
   const showCoachNotes = isClient && (can(actor, "write_coach_notes") || can(actor, "read_coach_notes"));
+  // ADR-359 (ANR mockup e5 A): the front desk reads and writes notes for the staff.
+  const showNotes = showCoachNotes || (isClient && can(actor, "view_directory"));
   const showCoaches = isClient && (can(actor, "assign_coaches") || can(actor, "manage_coaching"));
   const showBoxMessage = isClient && can(actor, "message_from_box");
   const trains = isClient;
@@ -708,7 +716,7 @@ export function AdminUserProfile({ userId }: { userId: string }) {
   if (showCoaches) tabSections.add("coaching_relationships");
   // ADR-229: a coach (or full-scope staff) may set the client's weekly goal.
   if (isClient && can(actor, "manage_coaching")) tabSections.add("training_goal");
-  if (showCoachNotes) tabSections.add("coach_notes");
+  if (showNotes) tabSections.add("coach_notes");
   if (showBoxMessage) tabSections.add("box_message");
   // ADR-158: a client's coach sees the body snapshots the member shared.
   const showBody = isClient && actorCoaches && can(actor, "view_health");
@@ -838,9 +846,19 @@ export function AdminUserProfile({ userId }: { userId: string }) {
           {/* ADR-252: the client's documents, signatures and health certificate. */}
           {isClient && tab === "overview" ? <MemberDocumentsPanel userId={userId} name={profile.identity.nickname} /> : null}
 
+          {/* ADR-382 (W1 s4): a staff member's pay rules and statements; the card checks who may see them. */}
+          {isStaffPerson && tab === "overview" ? <StaffPayCard userId={userId} name={profile.identity.nickname} /> : null}
+
           {inTab("box_message") ? (
             <Panel id="box_message" title={i18n("bmTitle")}>
               <BoxMessagePanel userId={userId} />
+            </Panel>
+          ) : null}
+
+          {/* W3 screen 2 C (ADR-350): the client's mobile and SMS consents, recorded at the desk. */}
+          {isClient && inTab("box_message") ? (
+            <Panel id="client_sms" title={tSms("cardTitle")}>
+              <ClientSmsPanel userId={userId} />
             </Panel>
           ) : null}
 
@@ -905,7 +923,11 @@ export function AdminUserProfile({ userId }: { userId: string }) {
 
           {token && inTab("coaching_relationships") ? <Panel id="coaching_relationships" title={i18n("rhCoaches")}><CoachAssignmentPanel userId={userId} /></Panel> : null}
 
-          {token && inTab("coach_notes") ? <Panel id="coach_notes" title={i18n("rhCoachNotes")}><CoachNotesPanel userId={userId} subjects={[...trainingSubjects, ...wellbeingSubjects]} /></Panel> : null}
+          {token && inTab("coach_notes") ? (
+            <Panel id="coach_notes" title={showCoachNotes ? i18n("rhCoachNotes") : tFloor("notesStaffTitle")}>
+              <CoachNotesPanel userId={userId} subjects={showCoachNotes ? [...trainingSubjects, ...wellbeingSubjects] : []} />
+            </Panel>
+          ) : null}
 
 
           {inTab("messages") ? <Panel id="messages" title={i18n("chat2ced57f")} href="/messages"><p>{i18n("conversationSummary", { threads: messages.data?.summary.thread_count ?? 0, unread: messages.data?.summary.unread_thread_count ?? 0 })}</p><div className="mt-3 grid gap-3">{messages.data?.threads.length ? messages.data.threads.slice(0, 6).map((thread) => <GenericRecordCard key={thread.id} title={<SemanticLabel value={thread.context_type} />} meta={`${i18n("messageCount", { count: thread.message_count })} · ${date(thread.latest_message?.inserted_at)}`} detail={<p>{thread.latest_message?.body ?? i18n("emptyThreadfee51b1")}</p>} href="/messages" />) : <Empty>{i18n("noConversationsRecordedd525265")}</Empty>}</div></Panel> : null}

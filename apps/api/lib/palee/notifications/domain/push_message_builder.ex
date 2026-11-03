@@ -171,6 +171,15 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
     }
   end
 
+  # ADR-346: the recipe's text, already written in the reader's language.
+  def build("box_automation", payload, localize) do
+    %{
+      title: payload["title"] || localize.("Message from the box", %{}),
+      body: payload["body"] || localize.("Your box sent you a message.", %{}),
+      url: payload["url"] || "/"
+    }
+  end
+
   def build("follow_requested", payload, localize) do
     %{
       title: localize.("Follow request", %{}),
@@ -901,6 +910,41 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
       title: localize.("A glass of water?", %{}),
       body: localize.("The afternoon is a good moment to catch up on water.", %{}),
       url: payload["url"] || "/journal/wellbeing"
+    }
+  end
+
+  # ADR-393: a WOD the person already performed was edited.
+  def build("logged_workout_changed", payload, localize) do
+    body =
+      case payload["workout_title"] do
+        title when is_binary(title) and title != "" ->
+          localize.("%{title} changed after you did it. See it as it was in your Journal.", %{
+            title: title
+          })
+
+        _untitled ->
+          localize.("A WOD you did changed. See it as it was in your Journal.", %{})
+      end
+
+    %{
+      title: localize.("The WOD changed", %{}),
+      body: body,
+      url: payload["url"] || "/journal"
+    }
+  end
+
+  # ADR-388: a request from the box's website reached «Ενδιαφερόμενοι».
+  def build("site_request", payload, localize) do
+    bindings = %{name: payload["person_name"] || "-"}
+
+    %{
+      title:
+        if(payload["kind"] == "contact",
+          do: localize.("Question from the website", %{}),
+          else: localize.("Trial request from the website", %{})
+        ),
+      body: localize.("%{name} wrote through the box's website. Answer or call them.", bindings),
+      url: payload["url"] || "/admin/leads"
     }
   end
 

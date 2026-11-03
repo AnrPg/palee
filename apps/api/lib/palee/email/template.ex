@@ -22,7 +22,9 @@ defmodule Palee.Email.Template do
       end
 
   and one line in `Palee.Email.Templates`. `use` brings `Layout` (aliased),
-  `t/3` (the `emails` gettext domain) and a `category/0` from the option.
+  `t/3` (the `emails` gettext domain), a `category/0` from the option and an
+  `origin/0` (`origin: :box` for the box's own messages, ADR-368; else
+  `:platform`).
   `throttle/0` is optional: the category's default applies without it.
   """
 
@@ -37,6 +39,15 @@ defmodule Palee.Email.Template do
   @callback text(assigns(), locale()) :: String.t()
   @callback html(assigns(), locale()) :: String.t()
 
+  @doc """
+  ADR-368: who the email is from. `:box` – the box's own message to its
+  people (an automation, a receipt, an invoice): sent through the box's own
+  SMTP provider when it has one connected and checked. `:platform` (the
+  default) – Palee's own mail (verification, password reset, security
+  notices, invitations to Palee accounts): always Palee's mailer.
+  """
+  @callback origin() :: :box | :platform
+
   @doc "How often this kind may go to one address (`SendingPolicy.throttle/3`)."
   @callback throttle() :: SendingPolicy.throttle()
 
@@ -44,6 +55,11 @@ defmodule Palee.Email.Template do
 
   defmacro __using__(opts) do
     category = Keyword.fetch!(opts, :category)
+    origin = Keyword.get(opts, :origin, :platform)
+
+    unless origin in [:box, :platform] do
+      raise ArgumentError, "unknown email origin #{inspect(origin)}"
+    end
 
     unless category in SendingPolicy.categories() do
       raise ArgumentError, "unknown email category #{inspect(category)}"
@@ -56,6 +72,9 @@ defmodule Palee.Email.Template do
 
       @impl Palee.Email.Template
       def category, do: unquote(category)
+
+      @impl Palee.Email.Template
+      def origin, do: unquote(origin)
 
       # Public so it is never pruned when a template uses only one arity
       # (a pruned local listed in nowarn_unused_function breaks dialyzer).

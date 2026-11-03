@@ -805,3 +805,21 @@ msgstr "%{nickname} hat %{box} geschrieben"
 
 msgid "%{nickname} sent the box a message."
 msgstr "%{nickname} hat der Box geschrieben."
+
+msgid "Question from the website"
+msgstr "Frage über die Website"
+
+msgid "Trial request from the website"
+msgstr "Probetraining-Anfrage über die Website"
+
+msgid "%{name} wrote through the box's website. Answer or call them."
+msgstr "%{name} hat über die Website des Box geschrieben. Antworte oder ruf an."
+
+msgid "The WOD changed"
+msgstr "Das WOD wurde geändert"
+
+msgid "%{title} changed after you did it. See it as it was in your Journal."
+msgstr "„%{title}“ wurde geändert, nachdem du es gemacht hast. Sieh es dir im Tagebuch so an, wie es war."
+
+msgid "A WOD you did changed. See it as it was in your Journal."
+msgstr "Ein WOD, das du gemacht hast, wurde geändert. Sieh es dir im Tagebuch so an, wie es war."

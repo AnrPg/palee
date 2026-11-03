@@ -47,7 +47,8 @@ export { adminHref } from "@/lib/organization-slug";
 
 // The public box page draws its own header over the cover (ADR-142).
 // ADR-253: "/tv" is the box screen on a TV, with no one signed in.
-const CANVAS_PATHS = ["/login", "/b", "/tv"];
+// ADR-366: the public status page keeps its public layout for signed-in people too.
+const CANVAS_PATHS = ["/login", "/b", "/tv", "/status"];
 // Screens that fill the whole display (ADR-155): the door kiosk and the printed poster.
 const CANVAS_PATTERNS = [/^\/admin\/check-in\/(?:door|poster)\/[^/]+\/?$/];
 

@@ -51,6 +51,14 @@ defmodule Palee.Coaching do
 
   def list_client_ids(context, coach_id), do: RelationshipStore.client_ids(context, coach_id)
 
+  @doc """
+  ADR-382: coaching relationships that held at any time in `[from, to)`,
+  ended ones included (`started_at`, `ended_at`), for coach pay's
+  commission on a coach's own clients.
+  """
+  def relationships_between(context, %DateTime{} = from, %DateTime{} = to),
+    do: RelationshipStore.between(context, from, to)
+
   # Private coach notes (ADR-101).
   def create_note(context, attrs), do: NoteStore.create(context, attrs)
   def note_subject_kinds, do: Palee.Coaching.Note.subject_kinds()

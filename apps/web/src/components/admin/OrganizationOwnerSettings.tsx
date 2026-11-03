@@ -11,13 +11,27 @@ import { useUiTranslations } from "@/i18n/ui";
 import { rememberSelectedOrganization } from "@/lib/organization-slug";
 import { Select } from "@/components/ui/Select";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
+import { BOX_DATA_EXPORT_ANCHOR, BoxDataExportCard } from "@/components/admin/BoxDataExportCard";
 
 const field = "w-full rounded-2xl px-4 py-3 text-sm";
 const fieldStyle = { background: "var(--panel-muted)", border: "1px solid var(--border)", color: "var(--text)" };
 const button = "rounded-full px-4 py-2 text-sm font-semibold disabled:opacity-50";
 
-/** The owner's gym actions: new gym, hand over ownership, archive (ADR-099). */
-export function OrganizationOwnerSettings({ token, slug, currentUserId }: { token: string; slug: string | null; currentUserId?: string }) {
+/**
+ * The owner's gym actions: new gym, hand over ownership, download the box's
+ * data (ADR-365/367), archive (ADR-099).
+ */
+export function OrganizationOwnerSettings({
+  token,
+  slug,
+  currentUserId,
+  currentUserEmail,
+}: {
+  token: string;
+  slug: string | null;
+  currentUserId?: string;
+  currentUserEmail?: string | null;
+}) {
   const i18n = useUiTranslations();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -85,6 +99,8 @@ export function OrganizationOwnerSettings({ token, slug, currentUserId }: { toke
         {transfer.isError ? <ErrorNotice>{localizeError(transfer.error, i18n)}</ErrorNotice> : null}
       </form>
 
+      <BoxDataExportCard token={token} slug={slug} email={currentUserEmail} />
+
       <form
         className="space-y-3 rounded-2xl p-4"
         style={{ border: "1px solid color-mix(in srgb, var(--danger) 40%, transparent)" }}
@@ -94,7 +110,13 @@ export function OrganizationOwnerSettings({ token, slug, currentUserId }: { toke
         }}
       >
         <h3 className="text-sm font-semibold" style={{ color: "var(--danger)" }}>{i18n("orgArchiveTitle")}</h3>
-        <p className="text-xs" style={{ color: "var(--dim)" }}>{i18n("orgArchiveHelp", { slug: slug ?? "" })}</p>
+        <p className="text-xs" style={{ color: "var(--dim)" }}>
+          {i18n("orgArchiveHelp", { slug: slug ?? "" })}{" "}
+          {/* W7 screen 3: the closing card points to the data download above it. */}
+          <a href={`#${BOX_DATA_EXPORT_ANCHOR}`} className="font-semibold" style={{ color: "var(--primary)" }}>
+            {i18n("orgArchiveExportLink")}
+          </a>
+        </p>
         <input className={field} style={fieldStyle} value={confirm} onChange={(event) => setConfirm(event.target.value)} aria-label={i18n("orgArchiveConfirmLabel")} placeholder={slug ?? ""} />
         <button type="submit" className={button} disabled={confirm.trim() !== slug || archive.isPending} style={{ background: "var(--danger)", color: "var(--danger-contrast)" }}>
           {i18n("orgArchiveAction")}

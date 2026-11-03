@@ -40,6 +40,8 @@ defmodule Palee.Workouts.MasterWorkout do
     field :free_text_document, :map
     field :icon, :string
     field :icon_source, :string
+    # ADR-394: the benchmark a coach tagged the WOD with (`WorkoutBenchmarks`).
+    field :benchmark_key, :string
 
     has_many :sections, WorkoutSection, preload_order: [asc: :order]
     belongs_to :folder, WorkoutFolder
