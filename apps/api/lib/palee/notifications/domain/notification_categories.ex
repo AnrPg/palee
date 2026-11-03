@@ -67,7 +67,8 @@ defmodule Palee.Notifications.Domain.NotificationCategories do
       locked: false,
       audience: "everyone",
       types: ~w(
-        workout_note workout_changed workout_deleted workout_rejected workout_moved
+        workout_note workout_changed logged_workout_changed workout_deleted workout_rejected
+        workout_moved
         workout_assigned workout_assignment_requested workout_completed review_submitted
         form_review_submitted form_review_completed coaching_reply_overdue
         nutrition_plan_updated coach_client_assigned coach_note_viewed coach_wellness_summary

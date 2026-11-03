@@ -689,6 +689,20 @@ defmodule Palee.Notifications do
     end)
   end
 
+  # ADR-393: a WOD the person already performed was edited; the use case
+  # names each recipient and the run or score their Journal opens on.
+  def process_event("logged_workout_changed", payload),
+    do:
+      enqueue_simple(:logged_workout_changed, payload, %{
+        organization_id: field(payload, :organization_id),
+        workout_id: field(payload, :workout_id),
+        workout_title: field(payload, :workout_title),
+        holder: field(payload, :holder),
+        holder_id: field(payload, :holder_id),
+        dedupe_key: field(payload, :dedupe_key),
+        url: field(payload, :url)
+      })
+
   # ADR-388: a trial request or question from the box's website. The use
   # case names each recipient (the lead's owner, else whoever handles
   # «Ενδιαφερόμενοι»).

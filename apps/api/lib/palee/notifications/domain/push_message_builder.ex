@@ -913,6 +913,26 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
     }
   end
 
+  # ADR-393: a WOD the person already performed was edited.
+  def build("logged_workout_changed", payload, localize) do
+    body =
+      case payload["workout_title"] do
+        title when is_binary(title) and title != "" ->
+          localize.("%{title} changed after you did it. See it as it was in your Journal.", %{
+            title: title
+          })
+
+        _untitled ->
+          localize.("A WOD you did changed. See it as it was in your Journal.", %{})
+      end
+
+    %{
+      title: localize.("The WOD changed", %{}),
+      body: body,
+      url: payload["url"] || "/journal"
+    }
+  end
+
   # ADR-388: a request from the box's website reached «Ενδιαφερόμενοι».
   def build("site_request", payload, localize) do
     bindings = %{name: payload["person_name"] || "-"}
