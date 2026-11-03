@@ -54,6 +54,31 @@ defmodule Palee.Gamification do
   def put_leaderboard_profile(user_id, params),
     do: Palee.Gamification.GamificationStore.put_leaderboard_profile(user_id, params)
 
+  # ADR-394: the Palee-wide board of a benchmark WOD. Each call runs in the
+  # caller's session (`with_tenant_context/2`): the consent row is the
+  # person's own (RLS on `app.user_id`) and the cross-box reads go through
+  # the two SECURITY DEFINER functions only.
+  def palee_leaderboard_consent(user_id),
+    do: GamificationStore.get_palee_leaderboard_consent(user_id)
+
+  def put_palee_leaderboard_consent(user_id, choice),
+    do: GamificationStore.put_palee_leaderboard_consent(user_id, choice)
+
+  def withdraw_palee_leaderboard_consent(user_id),
+    do: GamificationStore.delete_palee_leaderboard_consent(user_id)
+
+  def palee_leaderboard_choices, do: Palee.Gamification.PaleeLeaderboardConsent.choices()
+
+  def palee_benchmark_results(key, from, to, year),
+    do: GamificationStore.palee_benchmark_results(key, from, to, year)
+
+  def palee_benchmark_workout_sections(key, workout_ids),
+    do: GamificationStore.palee_benchmark_workout_sections(key, workout_ids)
+
+  defdelegate palee_leaderboard_keep?(filters, row),
+    to: Palee.Gamification.Domain.LeaderboardFilters,
+    as: :keep_palee?
+
   defdelegate parse_leaderboard_filters(params),
     to: Palee.Gamification.Domain.LeaderboardFilters,
     as: :parse

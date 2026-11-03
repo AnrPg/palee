@@ -28,9 +28,19 @@ defmodule PaleeWeb.Schemas.TrainingFloor do
       type: :object,
       properties: %{
         rank: @maybe_integer,
-        user_id: @uuid,
+        user_id: %Schema{
+          type: :string,
+          format: :uuid,
+          nullable: true,
+          description: "Null on the Palee-wide board for everyone but the viewer (ADR-394)"
+        },
         nickname: @maybe_string,
         avatar_url: @maybe_string,
+        box_name: %Schema{
+          type: :string,
+          nullable: true,
+          description: "The person's box, on the Palee-wide board only (ADR-394)"
+        },
         scale_level_slug: @maybe_string,
         value: @maybe_string,
         unit: @maybe_string,
@@ -85,6 +95,15 @@ defmodule PaleeWeb.Schemas.TrainingFloor do
           required: [:id]
         },
         section: %Schema{type: :object, nullable: true, additionalProperties: true},
+        benchmark: palee_benchmark(),
+        palee_consent: %Schema{
+          type: :string,
+          enum: ["share", "see_only", nil],
+          nullable: true,
+          description:
+            "The viewer's answer about the Palee-wide board; null when not asked yet " <>
+              "or when the WOD is not a benchmark (ADR-394)"
+        },
         opted_in: %Schema{
           type: :boolean,
           description: "Whether the viewer opted in; without it no comparison is shown"
@@ -100,7 +119,7 @@ defmodule PaleeWeb.Schemas.TrainingFloor do
             division: @maybe_string,
             age_group: @maybe_string,
             scale: @maybe_string,
-            scope: %Schema{type: :string, enum: ~w(box branch)},
+            scope: %Schema{type: :string, enum: ~w(box branch palee)},
             location_id: @maybe_uuid,
             window: %Schema{type: :string, enum: ~w(day week month year all)},
             date: @date,
@@ -131,6 +150,51 @@ defmodule PaleeWeb.Schemas.TrainingFloor do
         me: %Schema{allOf: [leaderboard_row()], nullable: true}
       },
       required: [:filters, :me, :opted_in, :options, :rows, :total, :workout]
+    }
+  end
+
+  @doc "ADR-394: the benchmark a coach tagged the WOD with, or null."
+  def palee_benchmark do
+    %Schema{
+      title: "PaleeBenchmark",
+      type: :object,
+      nullable: true,
+      properties: %{
+        key: %Schema{type: :string},
+        group: %Schema{type: :string},
+        unit: %Schema{type: :string, enum: ["kg", "reps", "mins_secs"]},
+        lower_is_better: %Schema{type: :boolean}
+      },
+      required: [:group, :key, :lower_is_better, :unit]
+    }
+  end
+
+  @doc "ADR-394: the person's answer about the Palee-wide board."
+  def palee_leaderboard_consent do
+    %Schema{
+      title: "PaleeLeaderboardConsent",
+      type: :object,
+      properties: %{
+        choice: %Schema{
+          type: :string,
+          enum: ["share", "see_only", nil],
+          nullable: true,
+          description:
+            "share: others see nickname, box and score; see_only: only you see your place; " <>
+              "null: not answered or withdrawn"
+        }
+      },
+      required: [:choice]
+    }
+  end
+
+  def palee_leaderboard_consent_request do
+    %Schema{
+      title: "PaleeLeaderboardConsentRequest",
+      type: :object,
+      properties: %{choice: %Schema{type: :string, enum: ["share", "see_only"]}},
+      required: [:choice],
+      additionalProperties: false
     }
   end
 

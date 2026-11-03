@@ -47,8 +47,8 @@ defmodule PaleeWeb.WorkoutLeaderboardController do
       scope: [
         in: :query,
         required: false,
-        description: "Whole box or one branch",
-        schema: %Schema{type: :string, enum: ~w(box branch)}
+        description: "Whole box, one branch, or every box (palee: only a benchmark WOD, ADR-394)",
+        schema: %Schema{type: :string, enum: ~w(box branch palee)}
       ],
       location_id: [
         in: :query,
@@ -78,6 +78,8 @@ defmodule PaleeWeb.WorkoutLeaderboardController do
     responses: [
       ok: {"Leaderboard", "application/json", S.workout_leaderboard()},
       not_found: {"No such WOD", "application/json", S.error()},
+      conflict:
+        {"scope=palee before answering the Palee-wide question", "application/json", S.error()},
       unprocessable_entity: {"A filter does not read", "application/json", S.error()}
     ]
   )

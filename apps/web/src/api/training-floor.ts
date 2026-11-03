@@ -29,6 +29,8 @@ export type ClassVisitBadges = Json<Op["PaleeWeb.AdminVisitBadgesController.show
 export type ClassVisitPerson = ClassVisitBadges["people"][number];
 export type VisitBadge = ClassVisitPerson["badges"][number];
 export type VisitVia = NonNullable<ClassVisitPerson["via"]>;
+export type PaleeConsent = Json<Op["PaleeWeb.PaleeLeaderboardConsentController.show"]["responses"][200]>;
+export type PaleeChoice = NonNullable<PaleeConsent["choice"]>;
 
 const org = (slug: string) => `/org/${encodeURIComponent(slug)}`;
 
@@ -39,6 +41,7 @@ export const asPerformedKey = (slug: string, kind: "execution" | "training_log",
   ["training-floor", "as-performed", slug, kind, id] as const;
 export const fitnessProfileKey = (division: Division | null) => ["training-floor", "fitness-profile", division] as const;
 export const visitBadgesKey = (slotId: string) => ["training-floor", "visit-badges", slotId] as const;
+export const paleeConsentKey = ["training-floor", "palee-consent"] as const;
 
 /** ADR-356: the query string of a filtered leaderboard, without empty filters. */
 export function leaderboardSearch(query: LeaderboardQuery) {
@@ -79,6 +82,20 @@ export function fetchWorkoutAsPerformed(token: string, slug: string, kind: "exec
 export function fetchFitnessProfile(token: string, division: Division | null) {
   const query = division ? `?division=${division}` : "";
   return apiRequest<FitnessProfile>(`/me/fitness-profile${query}`, { token, scope: "account" });
+}
+
+/** ADR-394: my answer about the Palee-wide benchmark board (account level). */
+export function fetchPaleeConsent(token: string) {
+  return apiRequest<PaleeConsent>("/me/palee-leaderboard", { token, scope: "account" });
+}
+
+export function putPaleeConsent(token: string, choice: PaleeChoice) {
+  return apiRequest<PaleeConsent>("/me/palee-leaderboard", { method: "PUT", token, scope: "account", body: { choice } });
+}
+
+/** Withdraw: off every Palee-wide board at once; the next tap asks again. */
+export function withdrawPaleeConsent(token: string) {
+  return apiRequest<PaleeConsent>("/me/palee-leaderboard", { method: "DELETE", token, scope: "account" });
 }
 
 /** ADR-359: who is new in one class (the selected box). */

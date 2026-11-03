@@ -56489,6 +56489,72 @@
         "title": "PRTimelineEntry",
         "type": "object"
       },
+      "PaleeBenchmark": {
+        "nullable": true,
+        "properties": {
+          "group": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "lower_is_better": {
+            "type": "boolean"
+          },
+          "unit": {
+            "enum": [
+              "kg",
+              "reps",
+              "mins_secs"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "group",
+          "key",
+          "lower_is_better",
+          "unit"
+        ],
+        "title": "PaleeBenchmark",
+        "type": "object"
+      },
+      "PaleeLeaderboardConsent": {
+        "properties": {
+          "choice": {
+            "description": "share: others see nickname, box and score; see_only: only you see your place; null: not answered or withdrawn",
+            "enum": [
+              "share",
+              "see_only",
+              null
+            ],
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "choice"
+        ],
+        "title": "PaleeLeaderboardConsent",
+        "type": "object"
+      },
+      "PaleeLeaderboardConsentRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "choice": {
+            "enum": [
+              "share",
+              "see_only"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "choice"
+        ],
+        "title": "PaleeLeaderboardConsentRequest",
+        "type": "object"
+      },
       "PartnerBadge": {
         "properties": {
           "box_name": {
@@ -101322,6 +101388,36 @@
       },
       "WorkoutLeaderboard": {
         "properties": {
+          "benchmark": {
+            "nullable": true,
+            "properties": {
+              "group": {
+                "type": "string"
+              },
+              "key": {
+                "type": "string"
+              },
+              "lower_is_better": {
+                "type": "boolean"
+              },
+              "unit": {
+                "enum": [
+                  "kg",
+                  "reps",
+                  "mins_secs"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "group",
+              "key",
+              "lower_is_better",
+              "unit"
+            ],
+            "title": "PaleeBenchmark",
+            "type": "object"
+          },
           "filters": {
             "properties": {
               "age_group": {
@@ -101351,7 +101447,8 @@
               "scope": {
                 "enum": [
                   "box",
-                  "branch"
+                  "branch",
+                  "palee"
                 ],
                 "type": "string"
               },
@@ -101379,6 +101476,11 @@
               {
                 "properties": {
                   "avatar_url": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "box_name": {
+                    "description": "The person's box, on the Palee-wide board only (ADR-394)",
                     "nullable": true,
                     "type": "string"
                   },
@@ -101412,7 +101514,9 @@
                     "type": "string"
                   },
                   "user_id": {
+                    "description": "Null on the Palee-wide board for everyone but the viewer (ADR-394)",
                     "format": "uuid",
+                    "nullable": true,
                     "type": "string"
                   },
                   "value": {
@@ -101491,6 +101595,16 @@
             ],
             "type": "object"
           },
+          "palee_consent": {
+            "description": "The viewer's answer about the Palee-wide board; null when not asked yet or when the WOD is not a benchmark (ADR-394)",
+            "enum": [
+              "share",
+              "see_only",
+              null
+            ],
+            "nullable": true,
+            "type": "string"
+          },
           "profile": {
             "nullable": true,
             "properties": {
@@ -101509,6 +101623,11 @@
             "items": {
               "properties": {
                 "avatar_url": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "box_name": {
+                  "description": "The person's box, on the Palee-wide board only (ADR-394)",
                   "nullable": true,
                   "type": "string"
                 },
@@ -101542,7 +101661,9 @@
                   "type": "string"
                 },
                 "user_id": {
+                  "description": "Null on the Palee-wide board for everyone but the viewer (ADR-394)",
                   "format": "uuid",
+                  "nullable": true,
                   "type": "string"
                 },
                 "value": {
@@ -101605,6 +101726,11 @@
             "nullable": true,
             "type": "string"
           },
+          "box_name": {
+            "description": "The person's box, on the Palee-wide board only (ADR-394)",
+            "nullable": true,
+            "type": "string"
+          },
           "me": {
             "type": "boolean"
           },
@@ -101635,7 +101761,9 @@
             "type": "string"
           },
           "user_id": {
+            "description": "Null on the Palee-wide board for everyone but the viewer (ADR-394)",
             "format": "uuid",
+            "nullable": true,
             "type": "string"
           },
           "value": {
@@ -150855,6 +150983,169 @@
         "summary": "How much you hear from an open club",
         "tags": [
           "Community"
+        ]
+      }
+    },
+    "/api/me/palee-leaderboard": {
+      "delete": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PaleeLeaderboardConsentController.delete",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "choice": {
+                      "description": "share: others see nickname, box and score; see_only: only you see your place; null: not answered or withdrawn",
+                      "enum": [
+                        "share",
+                        "see_only",
+                        null
+                      ],
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "choice"
+                  ],
+                  "title": "PaleeLeaderboardConsent",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Answer"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Withdraw: leave every Palee-wide board at once",
+        "tags": [
+          "Leaderboards"
+        ]
+      },
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PaleeLeaderboardConsentController.show",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "choice": {
+                      "description": "share: others see nickname, box and score; see_only: only you see your place; null: not answered or withdrawn",
+                      "enum": [
+                        "share",
+                        "see_only",
+                        null
+                      ],
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "choice"
+                  ],
+                  "title": "PaleeLeaderboardConsent",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Answer"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Your answer about the Palee-wide benchmark board",
+        "tags": [
+          "Leaderboards"
+        ]
+      },
+      "put": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PaleeLeaderboardConsentController.update",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "choice": {
+                    "enum": [
+                      "share",
+                      "see_only"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "choice"
+                ],
+                "title": "PaleeLeaderboardConsentRequest",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "choice": {
+                      "description": "share: others see nickname, box and score; see_only: only you see your place; null: not answered or withdrawn",
+                      "enum": [
+                        "share",
+                        "see_only",
+                        null
+                      ],
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "choice"
+                  ],
+                  "title": "PaleeLeaderboardConsent",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Answer"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unknown choice"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Put your score on the Palee-wide board (share) or only see your place (see_only)",
+        "tags": [
+          "Leaderboards"
         ]
       }
     },
@@ -262920,6 +263211,78 @@
         ]
       }
     },
+    "/api/org/{organization_slug}/admin/workouts/benchmarks": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminWorkoutController.benchmarks",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "benchmarks": {
+                      "items": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "group": {
+                            "enum": [
+                              "strength",
+                              "power",
+                              "gymnastics",
+                              "monostructural",
+                              "metcon"
+                            ],
+                            "type": "string"
+                          },
+                          "key": {
+                            "type": "string"
+                          },
+                          "lower_is_better": {
+                            "type": "boolean"
+                          },
+                          "unit": {
+                            "enum": [
+                              "kg",
+                              "reps",
+                              "mins_secs"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "group",
+                          "key",
+                          "lower_is_better",
+                          "unit"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "benchmarks"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Benchmarks"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The benchmarks a coach can tag a WOD with (ADR-394)",
+        "tags": [
+          "Admin Workouts"
+        ]
+      }
+    },
     "/api/org/{organization_slug}/admin/workouts/choices": {
       "get": {
         "callbacks": {},
@@ -264378,6 +264741,10 @@
                             "type": "object"
                           },
                           "type": "array"
+                        },
+                        "benchmark_key": {
+                          "nullable": true,
+                          "type": "string"
                         },
                         "body": {
                           "discriminator": {
@@ -269553,6 +269920,133 @@
           }
         ],
         "summary": "Get an admin workout draft or published workout",
+        "tags": [
+          "Admin Workouts"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/workouts/{id}/benchmark": {
+      "put": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminWorkoutController.update_benchmark",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "benchmark_key": {
+                    "description": "A key of the benchmark catalog; null clears the tag",
+                    "maxLength": 40,
+                    "nullable": true,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "benchmark_key"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "benchmark": {
+                      "additionalProperties": false,
+                      "nullable": true,
+                      "properties": {
+                        "group": {
+                          "enum": [
+                            "strength",
+                            "power",
+                            "gymnastics",
+                            "monostructural",
+                            "metcon"
+                          ],
+                          "type": "string"
+                        },
+                        "key": {
+                          "type": "string"
+                        },
+                        "lower_is_better": {
+                          "type": "boolean"
+                        },
+                        "unit": {
+                          "enum": [
+                            "kg",
+                            "reps",
+                            "mins_secs"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "group",
+                        "key",
+                        "lower_is_better",
+                        "unit"
+                      ],
+                      "type": "object"
+                    },
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "benchmark",
+                    "id"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Benchmark"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Not found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unknown benchmark"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Tag a WOD as a known benchmark for the Palee-wide board, or clear the tag",
         "tags": [
           "Admin Workouts"
         ]
@@ -278892,6 +279386,10 @@
                             "type": "object"
                           },
                           "type": "array"
+                        },
+                        "benchmark_key": {
+                          "nullable": true,
+                          "type": "string"
                         },
                         "body": {
                           "discriminator": {
@@ -337378,6 +337876,10 @@
                           },
                           "type": "array"
                         },
+                        "benchmark_key": {
+                          "nullable": true,
+                          "type": "string"
+                        },
                         "body": {
                           "discriminator": {
                             "propertyName": "kind"
@@ -342749,14 +343251,15 @@
             }
           },
           {
-            "description": "Whole box or one branch",
+            "description": "Whole box, one branch, or every box (palee: only a benchmark WOD, ADR-394)",
             "in": "query",
             "name": "scope",
             "required": false,
             "schema": {
               "enum": [
                 "box",
-                "branch"
+                "branch",
+                "palee"
               ],
               "type": "string"
             }
@@ -342813,6 +343316,36 @@
               "application/json": {
                 "schema": {
                   "properties": {
+                    "benchmark": {
+                      "nullable": true,
+                      "properties": {
+                        "group": {
+                          "type": "string"
+                        },
+                        "key": {
+                          "type": "string"
+                        },
+                        "lower_is_better": {
+                          "type": "boolean"
+                        },
+                        "unit": {
+                          "enum": [
+                            "kg",
+                            "reps",
+                            "mins_secs"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "group",
+                        "key",
+                        "lower_is_better",
+                        "unit"
+                      ],
+                      "title": "PaleeBenchmark",
+                      "type": "object"
+                    },
                     "filters": {
                       "properties": {
                         "age_group": {
@@ -342842,7 +343375,8 @@
                         "scope": {
                           "enum": [
                             "box",
-                            "branch"
+                            "branch",
+                            "palee"
                           ],
                           "type": "string"
                         },
@@ -342870,6 +343404,11 @@
                         {
                           "properties": {
                             "avatar_url": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "box_name": {
+                              "description": "The person's box, on the Palee-wide board only (ADR-394)",
                               "nullable": true,
                               "type": "string"
                             },
@@ -342903,7 +343442,9 @@
                               "type": "string"
                             },
                             "user_id": {
+                              "description": "Null on the Palee-wide board for everyone but the viewer (ADR-394)",
                               "format": "uuid",
+                              "nullable": true,
                               "type": "string"
                             },
                             "value": {
@@ -342982,6 +343523,16 @@
                       ],
                       "type": "object"
                     },
+                    "palee_consent": {
+                      "description": "The viewer's answer about the Palee-wide board; null when not asked yet or when the WOD is not a benchmark (ADR-394)",
+                      "enum": [
+                        "share",
+                        "see_only",
+                        null
+                      ],
+                      "nullable": true,
+                      "type": "string"
+                    },
                     "profile": {
                       "nullable": true,
                       "properties": {
@@ -343000,6 +343551,11 @@
                       "items": {
                         "properties": {
                           "avatar_url": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "box_name": {
+                            "description": "The person's box, on the Palee-wide board only (ADR-394)",
                             "nullable": true,
                             "type": "string"
                           },
@@ -343033,7 +343589,9 @@
                             "type": "string"
                           },
                           "user_id": {
+                            "description": "Null on the Palee-wide board for everyone but the viewer (ADR-394)",
                             "format": "uuid",
+                            "nullable": true,
                             "type": "string"
                           },
                           "value": {
@@ -343104,6 +343662,17 @@
               }
             },
             "description": "No such WOD"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "scope=palee before answering the Palee-wide question"
           },
           "422": {
             "content": {
@@ -343191,6 +343760,10 @@
                               "type": "object"
                             },
                             "type": "array"
+                          },
+                          "benchmark_key": {
+                            "nullable": true,
+                            "type": "string"
                           },
                           "body": {
                             "discriminator": {
@@ -348372,6 +348945,10 @@
                             "type": "object"
                           },
                           "type": "array"
+                        },
+                        "benchmark_key": {
+                          "nullable": true,
+                          "type": "string"
                         },
                         "body": {
                           "discriminator": {

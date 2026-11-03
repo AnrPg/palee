@@ -11,6 +11,7 @@ import { BlockedPeople, PartnerVisibilitySetting } from "@/components/partners/P
 import { BackToMe } from "@/components/member-app/me/BackToMe";
 import { InjurySharingSetting } from "@/components/member-app/wellbeing/InjurySharing";
 import { LeaderboardSetting } from "@/components/member-app/me/LeaderboardSetting";
+import { PaleeLeaderboardSetting } from "@/components/member-app/me/PaleeLeaderboardSetting";
 import { CommunityOptIns, EntryDefaultsSetting, ProfilePrsSetting } from "@/components/member-app/me/SharingSections";
 import { PRSharingSettings } from "@/components/pantheon/PRSharingSettings";
 import { CollapsibleSection } from "@/components/profile/CollapsibleSection";
@@ -74,6 +75,8 @@ export function SharingPage() {
                 <LeaderboardSetting />
               </div>
             ) : null}
+            {/* ADR-394: separate from the box's own leaderboard. */}
+            <PaleeLeaderboardSetting />
             <CommunityOptIns />
             <div id="partners" className="space-y-2">
               <p className="text-sm font-semibold" style={{ color: "var(--text)" }}>{tPartners("settingsTitle")}</p>

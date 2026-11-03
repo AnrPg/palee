@@ -2715,6 +2715,27 @@ defmodule PaleeWeb.FallbackController do
     |> json(%{code: "folder_not_found", error: "The chosen library folder does not exist"})
   end
 
+  def call(conn, {:error, :invalid_workout_benchmark}) do
+    conn
+    |> put_status(:unprocessable_entity)
+    |> json(%{code: "invalid_workout_benchmark", error: "Choose a benchmark from the list"})
+  end
+
+  def call(conn, {:error, :palee_leaderboard_consent_required}) do
+    conn
+    |> put_status(:conflict)
+    |> json(%{
+      code: "palee_leaderboard_consent_required",
+      error: "Answer whether your score goes on the Palee-wide board first"
+    })
+  end
+
+  def call(conn, {:error, :invalid_palee_leaderboard_choice}) do
+    conn
+    |> put_status(:unprocessable_entity)
+    |> json(%{code: "invalid_palee_leaderboard_choice", error: "Choose share or see_only"})
+  end
+
   def call(conn, {:error, :invalid_workout_icon}) do
     conn
     |> put_status(:unprocessable_entity)

@@ -83,6 +83,34 @@ describe("leaderboard filters (ADR-356, mockup d2 A)", () => {
     expect(advancedActive(branch)).toBe(true);
   });
 
+  it("ADR-394: a benchmark WOD offers «Το box μου» and «Όλο το Palee» instead of «Όλοι»", () => {
+    const own = { division: "women" as const, birthYear: 1989, year: 2026, scale: { slug: "rx", label: "RX" } };
+    const chips = leaderboardChips(DEFAULT_LEADERBOARD_FILTERS, own, { benchmark: true });
+    expect(chips.map((chip) => chip.kind)).toEqual(["scope", "scope", "division", "age", "scale"]);
+    expect(chips.slice(0, 2)).toEqual([
+      { kind: "scope", value: "box", on: true },
+      { kind: "scope", value: "palee", on: false },
+    ]);
+    // Other WODs keep their chips.
+    expect(leaderboardChips(DEFAULT_LEADERBOARD_FILTERS, own, { benchmark: false })[0]).toEqual({ kind: "all", on: true });
+  });
+
+  it("ADR-394: «Όλο το Palee» reads every result of the benchmark; back to the box is today again", () => {
+    const withBuddies = { ...DEFAULT_LEADERBOARD_FILTERS, buddies: true, division: "women" as const };
+    const palee = toggleChip(withBuddies, { kind: "scope", value: "palee", on: false });
+    expect(palee).toMatchObject({ scope: "palee", window: "all", buddies: false, division: "women" });
+    expect(toggleChip(palee, { kind: "scope", value: "palee", on: true })).toBe(palee);
+    expect(advancedActive(palee)).toBe(false);
+    expect(advancedActive({ ...palee, window: "year" })).toBe(true);
+    expect(leaderboardQuery(palee, { date: "2026-11-03", homeLocationId: "loc-1" })).toEqual({
+      date: "2026-11-03",
+      window: "all",
+      division: "women",
+      scope: "palee",
+    });
+    expect(toggleChip(palee, { kind: "scope", value: "box", on: false })).toMatchObject({ scope: "box", window: "day" });
+  });
+
   it("offers birth years from 14 to 90 years old, newest first", () => {
     const years = birthYearOptions(2026);
     expect(years[0]).toBe(2012);

@@ -43,6 +43,35 @@ defmodule Palee.Gamification.Domain.LeaderboardFiltersTest do
     end
   end
 
+  describe "ADR-394: the Palee-wide scope" do
+    test "reads scope=palee, never with buddies" do
+      assert {:ok, %LeaderboardFilters{scope: "palee", location_id: nil}} =
+               LeaderboardFilters.parse(%{"scope" => "palee", "location_id" => "loc"})
+
+      assert {:error, {:invalid_leaderboard_filter, :buddies}} =
+               LeaderboardFilters.parse(%{"scope" => "palee", "buddies" => "true"})
+
+      assert "palee" in LeaderboardFilters.scopes()
+    end
+
+    test "keep_palee?/2 filters on the row's division, age group and scale" do
+      {:ok, filters} = LeaderboardFilters.parse(%{"scope" => "palee"})
+      row = %{division: "women", age_group: "35_39", scale_level_slug: "rx"}
+
+      assert LeaderboardFilters.keep_palee?(filters, row)
+      assert LeaderboardFilters.keep_palee?(filters, %{})
+      assert LeaderboardFilters.keep_palee?(%{filters | division: "women"}, row)
+      refute LeaderboardFilters.keep_palee?(%{filters | division: "men"}, row)
+
+      refute LeaderboardFilters.keep_palee?(%{filters | division: "women"}, %{row | division: nil})
+
+      assert LeaderboardFilters.keep_palee?(%{filters | age_group: "35_39"}, row)
+      refute LeaderboardFilters.keep_palee?(%{filters | age_group: "40_44"}, row)
+      assert LeaderboardFilters.keep_palee?(%{filters | scale: "rx"}, row)
+      refute LeaderboardFilters.keep_palee?(%{filters | scale: "scaled"}, row)
+    end
+  end
+
   describe "age groups" do
     test "use the age reached during the year" do
       assert LeaderboardFilters.age_group(2010, 2026) == "under_18"

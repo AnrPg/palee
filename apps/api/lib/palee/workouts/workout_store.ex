@@ -97,6 +97,9 @@ defmodule Palee.Workouts.WorkoutStore do
   def set_workout_icon(context, id, icon, icon_source),
     do: within_tenant(context, fn -> set_workout_icon(id, icon, icon_source) end)
 
+  def set_workout_benchmark(context, id, benchmark_key),
+    do: within_tenant(context, fn -> set_workout_benchmark(id, benchmark_key) end)
+
   def find_filed_copy(context, source_id, folder_id),
     do: within_tenant(context, fn -> find_filed_copy(source_id, folder_id) end)
 
@@ -184,6 +187,9 @@ defmodule Palee.Workouts.WorkoutStore do
 
   def set_workout_icon(id, icon, icon_source),
     do: adapter().set_workout_icon(id, icon, icon_source)
+
+  def set_workout_benchmark(id, benchmark_key),
+    do: adapter().set_workout_benchmark(id, benchmark_key)
 
   def find_filed_copy(source_id, folder_id), do: adapter().find_filed_copy(source_id, folder_id)
 

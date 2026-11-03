@@ -7,8 +7,9 @@ defmodule Palee.Gamification.Domain.LeaderboardFilters do
     * `age_group` – masters-style groups from the birth year, by the age
       reached during the year of the result (`age_in/2`);
     * `scale` – a scale level slug of the box (`rx`, `scaled`, …);
-    * `scope` – `box` (every branch) or `branch` (people whose home branch
-      is `location_id`);
+    * `scope` – `box` (every branch), `branch` (people whose home branch
+      is `location_id`) or `palee` (ADR-394: every box, for a WOD tagged
+      as a benchmark, only people who agreed to the Palee-wide board);
     * `window` – `day`, `week`, `month`, `year` or `all`, anchored on a gym
       date (`window/3`);
     * `buddies` – only the viewer and their buddies.
@@ -19,7 +20,7 @@ defmodule Palee.Gamification.Domain.LeaderboardFilters do
 
   @divisions ~w(women men)
   @age_groups ~w(under_18 18_34 35_39 40_44 45_49 50_54 55_59 60_64 65_plus)
-  @scopes ~w(box branch)
+  @scopes ~w(box branch palee)
   @windows ~w(day week month year all)
 
   @enforce_keys [:window, :scope]
@@ -71,7 +72,8 @@ defmodule Palee.Gamification.Domain.LeaderboardFilters do
          {:ok, buddies} <- boolean(param(params, :buddies)),
          {:ok, scale} <- scale(param(params, :scale)),
          location_id = blank_to_nil(param(params, :location_id)),
-         :ok <- branch_needs_location(scope, location_id) do
+         :ok <- branch_needs_location(scope, location_id),
+         :ok <- palee_without_buddies(scope, buddies) do
       {:ok,
        %__MODULE__{
          division: division,
@@ -96,6 +98,18 @@ defmodule Palee.Gamification.Domain.LeaderboardFilters do
       scale?(filters.scale, Map.get(person, :scale_level_slug)) and
       branch?(filters, Map.get(person, :home_location_id)) and
       (not filters.buddies or Map.get(person, :buddy?, false))
+  end
+
+  @doc """
+  ADR-394: whether a Palee-wide row passes the division, age group and scale
+  filters. The row carries its `division` and `age_group` as the person's
+  box told them (the age group already reckoned for the board's year).
+  """
+  @spec keep_palee?(t(), map()) :: boolean()
+  def keep_palee?(%__MODULE__{} = filters, row) do
+    division?(filters.division, Map.get(row, :division)) and
+      (is_nil(filters.age_group) or filters.age_group == Map.get(row, :age_group)) and
+      scale?(filters.scale, Map.get(row, :scale_level_slug))
   end
 
   @doc "The age a person born in `birth_year` reaches during `year`."
@@ -210,6 +224,10 @@ defmodule Palee.Gamification.Domain.LeaderboardFilters do
   defp boolean(value) when value in [true, "true", "1"], do: {:ok, true}
   defp boolean(value) when value in [nil, false, "", "false", "0"], do: {:ok, false}
   defp boolean(_value), do: invalid(:buddies)
+
+  # Buddies are people of one's own box; the Palee-wide board has none.
+  defp palee_without_buddies("palee", true), do: invalid(:buddies)
+  defp palee_without_buddies(_scope, _buddies), do: :ok
 
   defp branch_needs_location("branch", nil), do: invalid(:location_id)
   defp branch_needs_location(_scope, _location_id), do: :ok

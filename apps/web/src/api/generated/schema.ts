@@ -3427,6 +3427,25 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/me/palee-leaderboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Your answer about the Palee-wide benchmark board */
+        get: operations["PaleeWeb.PaleeLeaderboardConsentController.show"];
+        /** Put your score on the Palee-wide board (share) or only see your place (see_only) */
+        put: operations["PaleeWeb.PaleeLeaderboardConsentController.update"];
+        post?: never;
+        /** Withdraw: leave every Palee-wide board at once */
+        delete: operations["PaleeWeb.PaleeLeaderboardConsentController.delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me/partners": {
         parameters: {
             query?: never;
@@ -12086,6 +12105,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/workouts/benchmarks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The benchmarks a coach can tag a WOD with (ADR-394) */
+        get: operations["PaleeWeb.AdminWorkoutController.benchmarks"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/workouts/choices": {
         parameters: {
             query?: never;
@@ -12201,6 +12237,23 @@ export interface paths {
         post?: never;
         /** Hard delete a workout and dependent records */
         delete: operations["PaleeWeb.AdminWorkoutController.delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/workouts/{id}/benchmark": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Tag a WOD as a known benchmark for the Palee-wide board, or clear the tag */
+        put: operations["PaleeWeb.AdminWorkoutController.update_benchmark"];
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -36131,6 +36184,27 @@ export interface components {
             score: number;
             unit: string;
         };
+        /** PaleeBenchmark */
+        PaleeBenchmark: {
+            group: string;
+            key: string;
+            lower_is_better: boolean;
+            /** @enum {string} */
+            unit: "kg" | "reps" | "mins_secs";
+        } | null;
+        /** PaleeLeaderboardConsent */
+        PaleeLeaderboardConsent: {
+            /**
+             * @description share: others see nickname, box and score; see_only: only you see your place; null: not answered or withdrawn
+             * @enum {string|null}
+             */
+            choice: "share" | "see_only" | null;
+        };
+        /** PaleeLeaderboardConsentRequest */
+        PaleeLeaderboardConsentRequest: {
+            /** @enum {string} */
+            choice: "share" | "see_only";
+        };
         /** PartnerBadge */
         PartnerBadge: {
             /** @description Set for `box` only: the box of an active membership */
@@ -49432,6 +49506,14 @@ export interface components {
         };
         /** WorkoutLeaderboard */
         WorkoutLeaderboard: {
+            /** PaleeBenchmark */
+            benchmark?: {
+                group: string;
+                key: string;
+                lower_is_better: boolean;
+                /** @enum {string} */
+                unit: "kg" | "reps" | "mins_secs";
+            } | null;
             filters: {
                 age_group?: string | null;
                 buddies: boolean;
@@ -49442,12 +49524,14 @@ export interface components {
                 location_id?: string | null;
                 scale?: string | null;
                 /** @enum {string} */
-                scope: "box" | "branch";
+                scope: "box" | "branch" | "palee";
                 /** @enum {string} */
                 window: "day" | "week" | "month" | "year" | "all";
             };
             me: {
                 avatar_url?: string | null;
+                /** @description The person's box, on the Palee-wide board only (ADR-394) */
+                box_name?: string | null;
                 me: boolean;
                 nickname?: string | null;
                 /** @description Share of the other results of the slice this one beat (0-100) */
@@ -49457,8 +49541,11 @@ export interface components {
                 /** @description «Top X%»: share of results at this place or better, rounded up */
                 top_percent: number | null;
                 unit?: string | null;
-                /** Format: uuid */
-                user_id: string;
+                /**
+                 * Format: uuid
+                 * @description Null on the Palee-wide board for everyone but the viewer (ADR-394)
+                 */
+                user_id: string | null;
                 value?: string | null;
             } | null;
             /** @description Whether the viewer opted in; without it no comparison is shown */
@@ -49473,12 +49560,19 @@ export interface components {
                 scopes: string[];
                 windows: string[];
             };
+            /**
+             * @description The viewer's answer about the Palee-wide board; null when not asked yet or when the WOD is not a benchmark (ADR-394)
+             * @enum {string|null}
+             */
+            palee_consent?: "share" | "see_only" | null;
             profile?: {
                 birth_year?: number | null;
                 division?: string | null;
             } | null;
             rows: {
                 avatar_url?: string | null;
+                /** @description The person's box, on the Palee-wide board only (ADR-394) */
+                box_name?: string | null;
                 me: boolean;
                 nickname?: string | null;
                 /** @description Share of the other results of the slice this one beat (0-100) */
@@ -49488,8 +49582,11 @@ export interface components {
                 /** @description «Top X%»: share of results at this place or better, rounded up */
                 top_percent: number | null;
                 unit?: string | null;
-                /** Format: uuid */
-                user_id: string;
+                /**
+                 * Format: uuid
+                 * @description Null on the Palee-wide board for everyone but the viewer (ADR-394)
+                 */
+                user_id: string | null;
                 value?: string | null;
             }[];
             section?: {
@@ -49505,6 +49602,8 @@ export interface components {
         /** WorkoutLeaderboardRow */
         WorkoutLeaderboardRow: {
             avatar_url?: string | null;
+            /** @description The person's box, on the Palee-wide board only (ADR-394) */
+            box_name?: string | null;
             me: boolean;
             nickname?: string | null;
             /** @description Share of the other results of the slice this one beat (0-100) */
@@ -49514,8 +49613,11 @@ export interface components {
             /** @description «Top X%»: share of results at this place or better, rounded up */
             top_percent: number | null;
             unit?: string | null;
-            /** Format: uuid */
-            user_id: string;
+            /**
+             * Format: uuid
+             * @description Null on the Palee-wide board for everyone but the viewer (ADR-394)
+             */
+            user_id: string | null;
             value?: string | null;
         };
         /** WorkoutSnapshot */
@@ -68174,6 +68276,102 @@ export interface operations {
                         club_id: string;
                         /** @enum {string} */
                         notify_level: "all" | "announcements" | "none";
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PaleeLeaderboardConsentController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Answer */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description share: others see nickname, box and score; see_only: only you see your place; null: not answered or withdrawn
+                         * @enum {string|null}
+                         */
+                        choice: "share" | "see_only" | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PaleeLeaderboardConsentController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    choice: "share" | "see_only";
+                };
+            };
+        };
+        responses: {
+            /** @description Answer */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description share: others see nickname, box and score; see_only: only you see your place; null: not answered or withdrawn
+                         * @enum {string|null}
+                         */
+                        choice: "share" | "see_only" | null;
+                    };
+                };
+            };
+            /** @description Unknown choice */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PaleeLeaderboardConsentController.delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Answer */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description share: others see nickname, box and score; see_only: only you see your place; null: not answered or withdrawn
+                         * @enum {string|null}
+                         */
+                        choice: "share" | "see_only" | null;
                     };
                 };
             };
@@ -108888,6 +109086,35 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminWorkoutController.benchmarks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Benchmarks */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        benchmarks: {
+                            /** @enum {string} */
+                            group: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+                            key: string;
+                            lower_is_better: boolean;
+                            /** @enum {string} */
+                            unit: "kg" | "reps" | "mins_secs";
+                        }[];
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminWorkoutChoiceController.search": {
         parameters: {
             query?: {
@@ -109413,6 +109640,7 @@ export interface operations {
                                 slug?: string;
                                 sort_order?: number;
                             } | null)[];
+                            benchmark_key?: string | null;
                             /** WorkoutBody */
                             body?: {
                                 /** @description The editor's rich text (TipTap/ProseMirror JSON): marks such as bold, italic, underline, strike, textStyle colour and highlight; nodes such as headings, lists and quotes */
@@ -110764,6 +110992,64 @@ export interface operations {
                     "application/json": {
                         error: string;
                     };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminWorkoutController.update_benchmark": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description A key of the benchmark catalog; null clears the tag */
+                    benchmark_key: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Benchmark */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        benchmark: {
+                            /** @enum {string} */
+                            group: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
+                            key: string;
+                            lower_is_better: boolean;
+                            /** @enum {string} */
+                            unit: "kg" | "reps" | "mins_secs";
+                        } | null;
+                        /** Format: uuid */
+                        id: string;
+                    };
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Unknown benchmark */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
                 };
             };
         };
@@ -113349,6 +113635,7 @@ export interface operations {
                                 slug?: string;
                                 sort_order?: number;
                             } | null)[];
+                            benchmark_key?: string | null;
                             /** WorkoutBody */
                             body?: {
                                 /** @description The editor's rich text (TipTap/ProseMirror JSON): marks such as bold, italic, underline, strike, textStyle colour and highlight; nodes such as headings, lists and quotes */
@@ -134544,6 +134831,7 @@ export interface operations {
                                 slug?: string;
                                 sort_order?: number;
                             } | null)[];
+                            benchmark_key?: string | null;
                             /** WorkoutBody */
                             body?: {
                                 /** @description The editor's rich text (TipTap/ProseMirror JSON): marks such as bold, italic, underline, strike, textStyle colour and highlight; nodes such as headings, lists and quotes */
@@ -135928,8 +136216,8 @@ export interface operations {
                 age_group?: "under_18" | "18_34" | "35_39" | "40_44" | "45_49" | "50_54" | "55_59" | "60_64" | "65_plus";
                 /** @description Only this scale level slug */
                 scale?: string;
-                /** @description Whole box or one branch */
-                scope?: "box" | "branch";
+                /** @description Whole box, one branch, or every box (palee: only a benchmark WOD, ADR-394) */
+                scope?: "box" | "branch" | "palee";
                 /** @description The branch, with scope=branch */
                 location_id?: string;
                 /** @description Time window around `date` (default day) */
@@ -135954,6 +136242,14 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** PaleeBenchmark */
+                        benchmark?: {
+                            group: string;
+                            key: string;
+                            lower_is_better: boolean;
+                            /** @enum {string} */
+                            unit: "kg" | "reps" | "mins_secs";
+                        } | null;
                         filters: {
                             age_group?: string | null;
                             buddies: boolean;
@@ -135964,12 +136260,14 @@ export interface operations {
                             location_id?: string | null;
                             scale?: string | null;
                             /** @enum {string} */
-                            scope: "box" | "branch";
+                            scope: "box" | "branch" | "palee";
                             /** @enum {string} */
                             window: "day" | "week" | "month" | "year" | "all";
                         };
                         me: {
                             avatar_url?: string | null;
+                            /** @description The person's box, on the Palee-wide board only (ADR-394) */
+                            box_name?: string | null;
                             me: boolean;
                             nickname?: string | null;
                             /** @description Share of the other results of the slice this one beat (0-100) */
@@ -135979,8 +136277,11 @@ export interface operations {
                             /** @description «Top X%»: share of results at this place or better, rounded up */
                             top_percent: number | null;
                             unit?: string | null;
-                            /** Format: uuid */
-                            user_id: string;
+                            /**
+                             * Format: uuid
+                             * @description Null on the Palee-wide board for everyone but the viewer (ADR-394)
+                             */
+                            user_id: string | null;
                             value?: string | null;
                         } | null;
                         /** @description Whether the viewer opted in; without it no comparison is shown */
@@ -135995,12 +136296,19 @@ export interface operations {
                             scopes: string[];
                             windows: string[];
                         };
+                        /**
+                         * @description The viewer's answer about the Palee-wide board; null when not asked yet or when the WOD is not a benchmark (ADR-394)
+                         * @enum {string|null}
+                         */
+                        palee_consent?: "share" | "see_only" | null;
                         profile?: {
                             birth_year?: number | null;
                             division?: string | null;
                         } | null;
                         rows: {
                             avatar_url?: string | null;
+                            /** @description The person's box, on the Palee-wide board only (ADR-394) */
+                            box_name?: string | null;
                             me: boolean;
                             nickname?: string | null;
                             /** @description Share of the other results of the slice this one beat (0-100) */
@@ -136010,8 +136318,11 @@ export interface operations {
                             /** @description «Top X%»: share of results at this place or better, rounded up */
                             top_percent: number | null;
                             unit?: string | null;
-                            /** Format: uuid */
-                            user_id: string;
+                            /**
+                             * Format: uuid
+                             * @description Null on the Palee-wide board for everyone but the viewer (ADR-394)
+                             */
+                            user_id: string | null;
                             value?: string | null;
                         }[];
                         section?: {
@@ -136028,6 +136339,17 @@ export interface operations {
             };
             /** @description No such WOD */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description scope=palee before answering the Palee-wide question */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -136080,6 +136402,7 @@ export interface operations {
                                 slug?: string;
                                 sort_order?: number;
                             } | null)[];
+                            benchmark_key?: string | null;
                             /** WorkoutBody */
                             body?: {
                                 /** @description The editor's rich text (TipTap/ProseMirror JSON): marks such as bold, italic, underline, strike, textStyle colour and highlight; nodes such as headings, lists and quotes */
@@ -137397,6 +137720,7 @@ export interface operations {
                                 slug?: string;
                                 sort_order?: number;
                             } | null)[];
+                            benchmark_key?: string | null;
                             /** WorkoutBody */
                             body?: {
                                 /** @description The editor's rich text (TipTap/ProseMirror JSON): marks such as bold, italic, underline, strike, textStyle colour and highlight; nodes such as headings, lists and quotes */

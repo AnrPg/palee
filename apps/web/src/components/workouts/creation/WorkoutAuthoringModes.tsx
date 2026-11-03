@@ -17,6 +17,7 @@ import { QuickTextWorkoutEditor } from "./QuickTextWorkoutEditor";
 import { SectionedWorkoutEditor } from "./SectionedWorkoutEditor";
 import { textOfWorkout } from "./structured-plan-authoring";
 import { StructuredPlanWorkoutEditor, type PlanEditorHandle } from "./StructuredPlanWorkoutEditor";
+import { WorkoutBenchmarkPicker } from "./WorkoutBenchmarkPicker";
 import { WorkoutCreationCanvas } from "./WorkoutCreationCanvas";
 
 /** `plan`: the structured WOD editor (ADR-270); `structured`: the legacy canvas. */
@@ -353,6 +354,11 @@ export function WorkoutAuthoringModes({ embedded = false, initialDraftId = null,
           )
         )}
       </div>
+      {draftId && draftQuery.data ? (
+        <div className="mx-auto w-full max-w-4xl px-4 pb-6 sm:px-6">
+          <WorkoutBenchmarkPicker key={draftId} workoutId={draftId} initialKey={draftQuery.data.benchmark_key ?? null} />
+        </div>
+      ) : null}
     </div>
   );
 }

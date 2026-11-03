@@ -629,7 +629,7 @@ and the box members who may be leaving. A lead is never called a «μέλος» 
 | English website | Αγγλική ιστοσελίδα | `/b/<slug>/en`, `about_en`, FAQ `question_en`/`answer_en` | The website in English, with the owner's optional English texts; the EL/EN switch remembers the choice. | App language. |
 | Send the instructions | Στείλε τις οδηγίες | `POST /admin/site/domains/:id/instructions` | Emails the DNS records and a status link to whoever runs the box's domain. | |
 
-### 4.23 Training and floor (ADR-356..359)
+### 4.23 Training and floor (ADR-356..359, ADR-394)
 
 Leaderboard filters, WOD snapshots, the fitness profile, visit badges, calendar invites and staff notes
 (v3.1, CP-D2/D3/D6/E1/E4/E5).
@@ -656,6 +656,10 @@ Leaderboard filters, WOD snapshots, the fitness profile, visit badges, calendar 
 | New today | Νέοι σήμερα | `first_visit` or `trial` badge | The card on top of a class roster with the people to welcome: a first visit or a trial seat (ADR-389). | First visit (one badge). |
 | As performed | Όπως ήταν | `GET /me/executions/:id/workout-snapshot` | Under a run or score in the Journal, only when the WOD changed since: «Το WOD άλλαξε από τότε», with the WOD as it read then (ADR-389). | Today's WOD. |
 | Standards | Κλίμακα | `division` of `GET /me/fitness-profile` | Which anchors the fitness profile reads: «Ουδέτερη» (default, the mean of both), «Γυναίκες», «Άνδρες». Under «Προχωρημένα», kept on the device. | Scale level («Επίπεδο»). |
+| My box | Το box μου | `scope=box` | ADR-394: the scope chip that ranks a benchmark WOD among the box's own people, shown next to «Όλο το Palee». | Branch («Παράρτημα», scope `branch`). |
+| All of Palee | Όλο το Palee | `scope=palee` | ADR-394: the scope chip that ranks a WOD the coach tagged as a benchmark among people of every box who said yes. Rows show nickname, box and score only. Shown only on benchmark WODs, never on other days. | The box's own board («Το box μου»); Γύρω μου (discovery). |
+| Benchmark | Benchmark | `master_workouts.benchmark_key` | A well-known WOD or max lift (Fran, Grace, Murph, back squat…) the coach picks from a list when writing the WOD, under «Προχωρημένα». Never guessed from the title. 33 in all: the 23 of the fitness profile plus Annie, Jackie, Elizabeth, Nancy, Kelly, Angie, Barbara, Amanda, Murph and DT. | Fitness profile benchmark (the 23 anchored ones, ADR-358); PR. |
+| On the Palee board / Only see my place | Στον πίνακα του Palee / Μόνο να βλέπω τη θέση μου | `palee_leaderboard_consents.choice` (`share`, `see_only`) | The person's answer, asked once on the first tap of «Όλο το Palee» («Ναι, να μπει» / «Μόνο να βλέπω τη θέση μου») and kept as a switch in «Κοινοποίηση και ορατότητα». `see_only`: they see the board and their own place, nobody sees them. Separate from the box's leaderboard opt-in. | Leaderboard opt-in of the box («Πίνακες κατάταξης»). |
 
 ### 4.24 Service status (ADR-364)
 

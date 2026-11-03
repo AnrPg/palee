@@ -93,6 +93,25 @@ defmodule Palee.Gamification.GamificationStore do
     do: adapter().put_leaderboard_profile(user_id, params)
 
   @impl true
+  def get_palee_leaderboard_consent(user_id), do: adapter().get_palee_leaderboard_consent(user_id)
+
+  @impl true
+  def put_palee_leaderboard_consent(user_id, choice),
+    do: adapter().put_palee_leaderboard_consent(user_id, choice)
+
+  @impl true
+  def delete_palee_leaderboard_consent(user_id),
+    do: adapter().delete_palee_leaderboard_consent(user_id)
+
+  @impl true
+  def palee_benchmark_results(key, from, to, year),
+    do: adapter().palee_benchmark_results(key, from, to, year)
+
+  @impl true
+  def palee_benchmark_workout_sections(key, workout_ids),
+    do: adapter().palee_benchmark_workout_sections(key, workout_ids)
+
+  @impl true
   def get_leaderboard(period, limit), do: adapter().get_leaderboard(period, limit)
 
   @impl true
