@@ -14666,6 +14666,7 @@
     "setStatus": "Imposta stato",
     "chooseStatus": "Scegli uno stato",
     "automatic": "Automatico: {value}",
+    "statusReasonHint": "Lo stato viene calcolato automaticamente da abbonamento e pagamenti. Scrivi perché lo cambi, così il resto del team conosce il motivo. Il motivo resta nella cronologia.",
     "reasonOptional": "Motivo (facoltativo)",
     "save": "Salva",
     "saving": "Salvataggio…",

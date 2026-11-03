@@ -158,6 +158,9 @@ export function MemberStatusCell({
             </option>
           ))}
         </Select>
+        <p className="text-xs" data-status-reason-hint style={{ color: "var(--dim)" }}>
+          {t("statusReasonHint")}
+        </p>
         <input
           aria-label={t("reasonOptional")}
           placeholder={t("reasonOptional")}

@@ -321,6 +321,7 @@ test.describe("finance ledger", () => {
     await row.getByRole("button", { name: "Set status" }).click();
     const editor = page.getByRole("dialog", { name: "Set status" });
     await expect(editor).toContainText("Automatic: Unpaid");
+    await expect(editor).toContainText("Write why you are changing it, so the rest of the team knows the reason.");
     await chooseOption(page, editor.getByRole("combobox", { name: "Set status" }), "active");
     await editor.getByRole("textbox", { name: "Reason (optional)" }).fill("Pays on Friday");
     await editor.getByRole("button", { name: "Save" }).click();

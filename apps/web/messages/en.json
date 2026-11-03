@@ -14666,6 +14666,7 @@
     "setStatus": "Set status",
     "chooseStatus": "Choose a status",
     "automatic": "Automatic: {value}",
+    "statusReasonHint": "The status is worked out automatically from the subscription and payments. Write why you are changing it, so the rest of the team knows the reason. The reason stays in the history.",
     "reasonOptional": "Reason (optional)",
     "save": "Save",
     "saving": "Saving…",
