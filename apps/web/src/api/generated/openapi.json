@@ -17807,6 +17807,84 @@
         "title": "BoxReview",
         "type": "object"
       },
+      "BoxReviewModeration": {
+        "description": "Null while the review is up; the statement of reasons when it is not",
+        "nullable": true,
+        "properties": {
+          "after_report": {
+            "description": "Decided after a report",
+            "type": "boolean"
+          },
+          "automated": {
+            "description": "Always false: a person decided",
+            "type": "boolean"
+          },
+          "decided_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "ground": {
+            "nullable": true,
+            "type": "string"
+          },
+          "legal_basis": {
+            "description": "The law (illegal content) or Palee's terms",
+            "enum": [
+              "law",
+              "terms"
+            ],
+            "nullable": true,
+            "type": "string"
+          },
+          "moderated_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "outcome": {
+            "enum": [
+              "hide",
+              "remove"
+            ],
+            "nullable": true,
+            "type": "string"
+          },
+          "redress": {
+            "items": {
+              "enum": [
+                "ask_palee_again",
+                "court"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "statement": {
+            "nullable": true,
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "hidden",
+              "removed"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "after_report",
+          "automated",
+          "decided_at",
+          "ground",
+          "legal_basis",
+          "moderated_at",
+          "outcome",
+          "redress",
+          "statement",
+          "status"
+        ],
+        "title": "BoxReviewModeration",
+        "type": "object"
+      },
       "BoxReviewReply": {
         "nullable": true,
         "properties": {
@@ -17837,6 +17915,53 @@
           "body"
         ],
         "title": "BoxReviewReplyRequest",
+        "type": "object"
+      },
+      "BoxReviewReportRequest": {
+        "properties": {
+          "note": {
+            "description": "Required for illegal and other",
+            "maxLength": 500,
+            "nullable": true,
+            "type": "string"
+          },
+          "reason": {
+            "enum": [
+              "offensive",
+              "personal_data",
+              "not_genuine",
+              "spam",
+              "illegal",
+              "other"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "title": "BoxReviewReportRequest",
+        "type": "object"
+      },
+      "BoxReviewReportResponse": {
+        "description": "The review stays up until the Palee team decides",
+        "properties": {
+          "review_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "open"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "review_id",
+          "status"
+        ],
+        "title": "BoxReviewReportResponse",
         "type": "object"
       },
       "BoxReviewRequest": {
@@ -41721,6 +41846,30 @@
         "title": "CravingResponse",
         "type": "object"
       },
+      "CurrentReviewText": {
+        "nullable": true,
+        "properties": {
+          "body": {
+            "nullable": true,
+            "type": "string"
+          },
+          "edited_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "rating": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "body",
+          "edited_at",
+          "rating"
+        ],
+        "title": "CurrentReviewText",
+        "type": "object"
+      },
       "DailyStatLatest": {
         "nullable": true,
         "properties": {
@@ -53366,6 +53515,84 @@
             "format": "uuid",
             "type": "string"
           },
+          "moderation": {
+            "description": "Null while the review is up; the statement of reasons when it is not",
+            "nullable": true,
+            "properties": {
+              "after_report": {
+                "description": "Decided after a report",
+                "type": "boolean"
+              },
+              "automated": {
+                "description": "Always false: a person decided",
+                "type": "boolean"
+              },
+              "decided_at": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "ground": {
+                "nullable": true,
+                "type": "string"
+              },
+              "legal_basis": {
+                "description": "The law (illegal content) or Palee's terms",
+                "enum": [
+                  "law",
+                  "terms"
+                ],
+                "nullable": true,
+                "type": "string"
+              },
+              "moderated_at": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "outcome": {
+                "enum": [
+                  "hide",
+                  "remove"
+                ],
+                "nullable": true,
+                "type": "string"
+              },
+              "redress": {
+                "items": {
+                  "enum": [
+                    "ask_palee_again",
+                    "court"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "statement": {
+                "nullable": true,
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "hidden",
+                  "removed"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "after_report",
+              "automated",
+              "decided_at",
+              "ground",
+              "legal_basis",
+              "moderated_at",
+              "outcome",
+              "redress",
+              "statement",
+              "status"
+            ],
+            "title": "BoxReviewModeration",
+            "type": "object"
+          },
           "rating": {
             "maximum": 5,
             "minimum": 1,
@@ -53396,6 +53623,7 @@
           "created_at",
           "edited_at",
           "id",
+          "moderation",
           "rating",
           "reply"
         ],
@@ -53483,6 +53711,84 @@
                 "format": "uuid",
                 "type": "string"
               },
+              "moderation": {
+                "description": "Null while the review is up; the statement of reasons when it is not",
+                "nullable": true,
+                "properties": {
+                  "after_report": {
+                    "description": "Decided after a report",
+                    "type": "boolean"
+                  },
+                  "automated": {
+                    "description": "Always false: a person decided",
+                    "type": "boolean"
+                  },
+                  "decided_at": {
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  "ground": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "legal_basis": {
+                    "description": "The law (illegal content) or Palee's terms",
+                    "enum": [
+                      "law",
+                      "terms"
+                    ],
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "moderated_at": {
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  "outcome": {
+                    "enum": [
+                      "hide",
+                      "remove"
+                    ],
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "redress": {
+                    "items": {
+                      "enum": [
+                        "ask_palee_again",
+                        "court"
+                      ],
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "statement": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "status": {
+                    "enum": [
+                      "hidden",
+                      "removed"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "after_report",
+                  "automated",
+                  "decided_at",
+                  "ground",
+                  "legal_basis",
+                  "moderated_at",
+                  "outcome",
+                  "redress",
+                  "statement",
+                  "status"
+                ],
+                "title": "BoxReviewModeration",
+                "type": "object"
+              },
               "rating": {
                 "maximum": 5,
                 "minimum": 1,
@@ -53513,11 +53819,20 @@
               "created_at",
               "edited_at",
               "id",
+              "moderation",
               "rating",
               "reply"
             ],
             "title": "MyBoxReview",
             "type": "object"
+          },
+          "reported_ids": {
+            "description": "Reviews I reported that the Palee team has not decided yet (ADR-397)",
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "type": "array"
           },
           "reviews": {
             "items": {
@@ -53590,6 +53905,7 @@
           "google",
           "has_more",
           "mine",
+          "reported_ids",
           "reviews"
         ],
         "title": "MyBoxReviewsResponse",
@@ -69991,6 +70307,521 @@
         "title": "PlatformPlans",
         "type": "object"
       },
+      "PlatformReviewDecision": {
+        "properties": {
+          "decided_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "decided_by": {
+            "nullable": true,
+            "type": "string"
+          },
+          "ground": {
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "organization": {
+            "properties": {
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "name": {
+                "nullable": true,
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name"
+            ],
+            "title": "ReviewReportOrganization",
+            "type": "object"
+          },
+          "outcome": {
+            "enum": [
+              "keep",
+              "hide",
+              "remove"
+            ],
+            "type": "string"
+          },
+          "reports_count": {
+            "type": "integer"
+          },
+          "review_id": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "statement": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "decided_at",
+          "decided_by",
+          "ground",
+          "id",
+          "organization",
+          "outcome",
+          "reports_count",
+          "review_id",
+          "statement"
+        ],
+        "title": "PlatformReviewDecision",
+        "type": "object"
+      },
+      "PlatformReviewDecisionRequest": {
+        "properties": {
+          "ground": {
+            "description": "no_violation for keep; a report reason for hide and remove",
+            "enum": [
+              "no_violation",
+              "offensive",
+              "personal_data",
+              "not_genuine",
+              "spam",
+              "illegal",
+              "other"
+            ],
+            "nullable": true,
+            "type": "string"
+          },
+          "outcome": {
+            "enum": [
+              "keep",
+              "hide",
+              "remove"
+            ],
+            "type": "string"
+          },
+          "statement": {
+            "description": "What the author reads; required for hide and remove",
+            "maxLength": 1000,
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "outcome"
+        ],
+        "title": "PlatformReviewDecisionRequest",
+        "type": "object"
+      },
+      "PlatformReviewDecisionResponse": {
+        "properties": {
+          "ground": {
+            "type": "string"
+          },
+          "outcome": {
+            "type": "string"
+          },
+          "resolved": {
+            "description": "Open reports this decision closed",
+            "type": "integer"
+          },
+          "review_id": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "ground",
+          "outcome",
+          "resolved",
+          "review_id"
+        ],
+        "title": "PlatformReviewDecisionResponse",
+        "type": "object"
+      },
+      "PlatformReviewReportItem": {
+        "properties": {
+          "author_name": {
+            "nullable": true,
+            "type": "string"
+          },
+          "box_reported": {
+            "description": "The box itself reported it",
+            "type": "boolean"
+          },
+          "current": {
+            "nullable": true,
+            "properties": {
+              "body": {
+                "nullable": true,
+                "type": "string"
+              },
+              "edited_at": {
+                "format": "date-time",
+                "nullable": true,
+                "type": "string"
+              },
+              "rating": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "body",
+              "edited_at",
+              "rating"
+            ],
+            "title": "CurrentReviewText",
+            "type": "object"
+          },
+          "first_reported_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "notes": {
+            "items": {
+              "properties": {
+                "at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "note": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "role": {
+                  "enum": [
+                    "member",
+                    "box"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "at",
+                "note",
+                "reason",
+                "role"
+              ],
+              "title": "ReviewReportNote",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "organization": {
+            "properties": {
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "name": {
+                "nullable": true,
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name"
+            ],
+            "title": "ReviewReportOrganization",
+            "type": "object"
+          },
+          "reasons": {
+            "items": {
+              "properties": {
+                "count": {
+                  "type": "integer"
+                },
+                "reason": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "count",
+                "reason"
+              ],
+              "title": "ReviewReportReasonCount",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "reported": {
+            "description": "The review as the latest report saw it",
+            "properties": {
+              "body": {
+                "nullable": true,
+                "type": "string"
+              },
+              "rating": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "body",
+              "rating"
+            ],
+            "title": "ReportedReviewText",
+            "type": "object"
+          },
+          "reports_count": {
+            "type": "integer"
+          },
+          "review_id": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "author_name",
+          "box_reported",
+          "current",
+          "first_reported_at",
+          "notes",
+          "organization",
+          "reasons",
+          "reported",
+          "reports_count",
+          "review_id"
+        ],
+        "title": "PlatformReviewReportItem",
+        "type": "object"
+      },
+      "PlatformReviewReportsResponse": {
+        "properties": {
+          "decisions": {
+            "items": {
+              "properties": {
+                "decided_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "decided_by": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "ground": {
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "organization": {
+                  "properties": {
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "name": {
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name"
+                  ],
+                  "title": "ReviewReportOrganization",
+                  "type": "object"
+                },
+                "outcome": {
+                  "enum": [
+                    "keep",
+                    "hide",
+                    "remove"
+                  ],
+                  "type": "string"
+                },
+                "reports_count": {
+                  "type": "integer"
+                },
+                "review_id": {
+                  "format": "uuid",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "statement": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "decided_at",
+                "decided_by",
+                "ground",
+                "id",
+                "organization",
+                "outcome",
+                "reports_count",
+                "review_id",
+                "statement"
+              ],
+              "title": "PlatformReviewDecision",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "items": {
+            "items": {
+              "properties": {
+                "author_name": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "box_reported": {
+                  "description": "The box itself reported it",
+                  "type": "boolean"
+                },
+                "current": {
+                  "nullable": true,
+                  "properties": {
+                    "body": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "edited_at": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "rating": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "body",
+                    "edited_at",
+                    "rating"
+                  ],
+                  "title": "CurrentReviewText",
+                  "type": "object"
+                },
+                "first_reported_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "notes": {
+                  "items": {
+                    "properties": {
+                      "at": {
+                        "format": "date-time",
+                        "type": "string"
+                      },
+                      "note": {
+                        "type": "string"
+                      },
+                      "reason": {
+                        "type": "string"
+                      },
+                      "role": {
+                        "enum": [
+                          "member",
+                          "box"
+                        ],
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "at",
+                      "note",
+                      "reason",
+                      "role"
+                    ],
+                    "title": "ReviewReportNote",
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "organization": {
+                  "properties": {
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "name": {
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name"
+                  ],
+                  "title": "ReviewReportOrganization",
+                  "type": "object"
+                },
+                "reasons": {
+                  "items": {
+                    "properties": {
+                      "count": {
+                        "type": "integer"
+                      },
+                      "reason": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "count",
+                      "reason"
+                    ],
+                    "title": "ReviewReportReasonCount",
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "reported": {
+                  "description": "The review as the latest report saw it",
+                  "properties": {
+                    "body": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "rating": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "body",
+                    "rating"
+                  ],
+                  "title": "ReportedReviewText",
+                  "type": "object"
+                },
+                "reports_count": {
+                  "type": "integer"
+                },
+                "review_id": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "author_name",
+                "box_reported",
+                "current",
+                "first_reported_at",
+                "notes",
+                "organization",
+                "reasons",
+                "reported",
+                "reports_count",
+                "review_id"
+              ],
+              "title": "PlatformReviewReportItem",
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "decisions",
+          "items"
+        ],
+        "title": "PlatformReviewReportsResponse",
+        "type": "object"
+      },
       "PostAttachmentPreview": {
         "properties": {
           "attachment": {
@@ -75750,6 +76581,24 @@
         "title": "RememberFilterRequest",
         "type": "object"
       },
+      "ReportedReviewText": {
+        "description": "The review as the latest report saw it",
+        "properties": {
+          "body": {
+            "nullable": true,
+            "type": "string"
+          },
+          "rating": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "body",
+          "rating"
+        ],
+        "title": "ReportedReviewText",
+        "type": "object"
+      },
       "RevenueStreamTotal": {
         "properties": {
           "currency": {
@@ -76180,6 +77029,69 @@
           "days"
         ],
         "title": "ReviewAskSummaryResponse",
+        "type": "object"
+      },
+      "ReviewReportNote": {
+        "properties": {
+          "at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "member",
+              "box"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "at",
+          "note",
+          "reason",
+          "role"
+        ],
+        "title": "ReviewReportNote",
+        "type": "object"
+      },
+      "ReviewReportOrganization": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "name": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "ReviewReportOrganization",
+        "type": "object"
+      },
+      "ReviewReportReasonCount": {
+        "properties": {
+          "count": {
+            "type": "integer"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "count",
+          "reason"
+        ],
+        "title": "ReviewReportReasonCount",
         "type": "object"
       },
       "SaveFilterRequest": {
@@ -168434,6 +169346,125 @@
           }
         ],
         "summary": "Reply to a review as the box (or edit the reply)",
+        "tags": [
+          "Box reviews"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/box-reviews/{id}/report": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminBoxReviewsController.report",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "note": {
+                    "description": "Required for illegal and other",
+                    "maxLength": 500,
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "reason": {
+                    "enum": [
+                      "offensive",
+                      "personal_data",
+                      "not_genuine",
+                      "spam",
+                      "illegal",
+                      "other"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "reason"
+                ],
+                "title": "BoxReviewReportRequest",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "The review stays up until the Palee team decides",
+                  "properties": {
+                    "review_id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "status": {
+                      "enum": [
+                        "open"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "review_id",
+                    "status"
+                  ],
+                  "title": "BoxReviewReportResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Reported"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No such review"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Invalid or my own review"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Too many reports today"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Report a review as the box to the Palee team; the box can never hide a review itself",
         "tags": [
           "Box reviews"
         ]
@@ -297455,6 +298486,84 @@
                           "format": "uuid",
                           "type": "string"
                         },
+                        "moderation": {
+                          "description": "Null while the review is up; the statement of reasons when it is not",
+                          "nullable": true,
+                          "properties": {
+                            "after_report": {
+                              "description": "Decided after a report",
+                              "type": "boolean"
+                            },
+                            "automated": {
+                              "description": "Always false: a person decided",
+                              "type": "boolean"
+                            },
+                            "decided_at": {
+                              "format": "date-time",
+                              "type": "string"
+                            },
+                            "ground": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "legal_basis": {
+                              "description": "The law (illegal content) or Palee's terms",
+                              "enum": [
+                                "law",
+                                "terms"
+                              ],
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "moderated_at": {
+                              "format": "date-time",
+                              "type": "string"
+                            },
+                            "outcome": {
+                              "enum": [
+                                "hide",
+                                "remove"
+                              ],
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "redress": {
+                              "items": {
+                                "enum": [
+                                  "ask_palee_again",
+                                  "court"
+                                ],
+                                "type": "string"
+                              },
+                              "type": "array"
+                            },
+                            "statement": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "status": {
+                              "enum": [
+                                "hidden",
+                                "removed"
+                              ],
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "after_report",
+                            "automated",
+                            "decided_at",
+                            "ground",
+                            "legal_basis",
+                            "moderated_at",
+                            "outcome",
+                            "redress",
+                            "statement",
+                            "status"
+                          ],
+                          "title": "BoxReviewModeration",
+                          "type": "object"
+                        },
                         "rating": {
                           "maximum": 5,
                           "minimum": 1,
@@ -297485,11 +298594,20 @@
                         "created_at",
                         "edited_at",
                         "id",
+                        "moderation",
                         "rating",
                         "reply"
                       ],
                       "title": "MyBoxReview",
                       "type": "object"
+                    },
+                    "reported_ids": {
+                      "description": "Reviews I reported that the Palee team has not decided yet (ADR-397)",
+                      "items": {
+                        "format": "uuid",
+                        "type": "string"
+                      },
+                      "type": "array"
                     },
                     "reviews": {
                       "items": {
@@ -297562,6 +298680,7 @@
                     "google",
                     "has_more",
                     "mine",
+                    "reported_ids",
                     "reviews"
                   ],
                   "title": "MyBoxReviewsResponse",
@@ -297578,6 +298697,125 @@
           }
         ],
         "summary": "The box's reviews (newest first), the average, mine and whether I may write one",
+        "tags": [
+          "Box reviews"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/me/box-reviews/{id}/report": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.MyBoxReviewsController.report",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "note": {
+                    "description": "Required for illegal and other",
+                    "maxLength": 500,
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "reason": {
+                    "enum": [
+                      "offensive",
+                      "personal_data",
+                      "not_genuine",
+                      "spam",
+                      "illegal",
+                      "other"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "reason"
+                ],
+                "title": "BoxReviewReportRequest",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "The review stays up until the Palee team decides",
+                  "properties": {
+                    "review_id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "status": {
+                      "enum": [
+                        "open"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "review_id",
+                    "status"
+                  ],
+                  "title": "BoxReviewReportResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Reported"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No such review"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Invalid or my own review"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Too many reports today"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Report a review of my box to the Palee team (it stays up until they decide)",
         "tags": [
           "Box reviews"
         ]
@@ -365301,6 +366539,414 @@
         "summary": "Replace the key pair; every device subscribes again on its next visit",
         "tags": [
           "Platform"
+        ]
+      }
+    },
+    "/api/platform/review-reports": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformReviewReportController.index",
+        "parameters": [
+          {
+            "description": "Default open",
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "enum": [
+                "open",
+                "decided"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "decisions": {
+                      "items": {
+                        "properties": {
+                          "decided_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "decided_by": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "ground": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "organization": {
+                            "properties": {
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "name": {
+                                "nullable": true,
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name"
+                            ],
+                            "title": "ReviewReportOrganization",
+                            "type": "object"
+                          },
+                          "outcome": {
+                            "enum": [
+                              "keep",
+                              "hide",
+                              "remove"
+                            ],
+                            "type": "string"
+                          },
+                          "reports_count": {
+                            "type": "integer"
+                          },
+                          "review_id": {
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "statement": {
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "decided_at",
+                          "decided_by",
+                          "ground",
+                          "id",
+                          "organization",
+                          "outcome",
+                          "reports_count",
+                          "review_id",
+                          "statement"
+                        ],
+                        "title": "PlatformReviewDecision",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "items": {
+                      "items": {
+                        "properties": {
+                          "author_name": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "box_reported": {
+                            "description": "The box itself reported it",
+                            "type": "boolean"
+                          },
+                          "current": {
+                            "nullable": true,
+                            "properties": {
+                              "body": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "edited_at": {
+                                "format": "date-time",
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "rating": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "body",
+                              "edited_at",
+                              "rating"
+                            ],
+                            "title": "CurrentReviewText",
+                            "type": "object"
+                          },
+                          "first_reported_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "notes": {
+                            "items": {
+                              "properties": {
+                                "at": {
+                                  "format": "date-time",
+                                  "type": "string"
+                                },
+                                "note": {
+                                  "type": "string"
+                                },
+                                "reason": {
+                                  "type": "string"
+                                },
+                                "role": {
+                                  "enum": [
+                                    "member",
+                                    "box"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "at",
+                                "note",
+                                "reason",
+                                "role"
+                              ],
+                              "title": "ReviewReportNote",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "organization": {
+                            "properties": {
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "name": {
+                                "nullable": true,
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name"
+                            ],
+                            "title": "ReviewReportOrganization",
+                            "type": "object"
+                          },
+                          "reasons": {
+                            "items": {
+                              "properties": {
+                                "count": {
+                                  "type": "integer"
+                                },
+                                "reason": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "count",
+                                "reason"
+                              ],
+                              "title": "ReviewReportReasonCount",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "reported": {
+                            "description": "The review as the latest report saw it",
+                            "properties": {
+                              "body": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "rating": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "body",
+                              "rating"
+                            ],
+                            "title": "ReportedReviewText",
+                            "type": "object"
+                          },
+                          "reports_count": {
+                            "type": "integer"
+                          },
+                          "review_id": {
+                            "format": "uuid",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "author_name",
+                          "box_reported",
+                          "current",
+                          "first_reported_at",
+                          "notes",
+                          "organization",
+                          "reasons",
+                          "reported",
+                          "reports_count",
+                          "review_id"
+                        ],
+                        "title": "PlatformReviewReportItem",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "decisions",
+                    "items"
+                  ],
+                  "title": "PlatformReviewReportsResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Queue"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Reported reviews (open, oldest first) or the latest decisions (vendors)",
+        "tags": [
+          "Platform review reports"
+        ]
+      }
+    },
+    "/api/platform/review-reports/{review_id}/decision": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformReviewReportController.decide",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "review_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "ground": {
+                    "description": "no_violation for keep; a report reason for hide and remove",
+                    "enum": [
+                      "no_violation",
+                      "offensive",
+                      "personal_data",
+                      "not_genuine",
+                      "spam",
+                      "illegal",
+                      "other"
+                    ],
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "outcome": {
+                    "enum": [
+                      "keep",
+                      "hide",
+                      "remove"
+                    ],
+                    "type": "string"
+                  },
+                  "statement": {
+                    "description": "What the author reads; required for hide and remove",
+                    "maxLength": 1000,
+                    "nullable": true,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "outcome"
+                ],
+                "title": "PlatformReviewDecisionRequest",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "ground": {
+                      "type": "string"
+                    },
+                    "outcome": {
+                      "type": "string"
+                    },
+                    "resolved": {
+                      "description": "Open reports this decision closed",
+                      "type": "integer"
+                    },
+                    "review_id": {
+                      "format": "uuid",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "ground",
+                    "outcome",
+                    "resolved",
+                    "review_id"
+                  ],
+                  "title": "PlatformReviewDecisionResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Decision"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No such review"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No open reports"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Invalid"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Keep, hide or remove a reported review, for every open report on it (vendors)",
+        "tags": [
+          "Platform review reports"
         ]
       }
     },
