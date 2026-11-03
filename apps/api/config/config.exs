@@ -646,6 +646,23 @@ config :palee, :open_food_facts,
   receive_timeout: 3_000,
   req_options: []
 
+# ADR-421 addendum: products members chose to share go to Open Food Facts
+# through its write API, with Palee's own account (OFF_USER_ID, OFF_PASSWORD
+# in runtime.exs); without it the shares wait in the outbox and only Palee's
+# cache has them.
+config :palee, :food_contributor, Palee.Infrastructure.Nutrition.OpenFoodFactsContributor
+
+config :palee, :open_food_facts_contributions,
+  base_url: "https://world.openfoodfacts.org",
+  user_id: nil,
+  password: nil,
+  app_name: "Palee",
+  app_version: "3.2",
+  uuid_salt: nil,
+  user_agent: "Palee/3.2 (https://palee.app; support@palee.app)",
+  receive_timeout: 10_000,
+  req_options: []
+
 # The key comes from USDA_FDC_API_KEY (runtime.exs); without one the source is skipped.
 config :palee, :usda_food_data_central,
   base_url: "https://api.nal.usda.gov/fdc",

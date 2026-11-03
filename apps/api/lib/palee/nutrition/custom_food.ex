@@ -2,7 +2,9 @@ defmodule Palee.Nutrition.CustomFood do
   @moduledoc """
   «Δικό μου τρόφιμο» (ADR-376): a food the person wrote down themselves,
   with or without a barcode (the manual fallback when a scan finds
-  nothing). Theirs only; never sent to Open Food Facts.
+  nothing). Theirs only; a product with a barcode reaches other members and
+  Open Food Facts only when the person explicitly shares it (`shared_at`,
+  ADR-421 addendum), and then without anything about them.
   """
 
   use Ecto.Schema
@@ -22,6 +24,7 @@ defmodule Palee.Nutrition.CustomFood do
     field(:portion_hint, :string)
     field(:nutrients, :map, default: %{})
     field(:note, :string)
+    field(:shared_at, :utc_datetime_usec)
 
     timestamps(type: :utc_datetime_usec)
   end
@@ -30,7 +33,7 @@ defmodule Palee.Nutrition.CustomFood do
 
   def changeset(food \\ %__MODULE__{}, attrs) do
     food
-    |> cast(attrs, [:user_id | @fields])
+    |> cast(attrs, [:user_id, :shared_at | @fields])
     |> validate_required([:user_id, :name])
     |> update_change(:name, &String.trim/1)
     |> validate_length(:name, min: 1, max: 120)

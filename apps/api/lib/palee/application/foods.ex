@@ -12,6 +12,13 @@ defmodule Palee.Application.Foods do
   found nothing is counted per barcode and country (no person) so the team
   sees the gaps. Other members' own foods are never used: they are theirs.
 
+  Own foods stay private unless the person ticks «Μοιράσου το» for a product
+  with a barcode (ADR-421 addendum): then the product alone (barcode, name,
+  brand, portion, nutrition per 100 g; nothing about them) goes into the
+  public cache as `palee_members`, unless a public source or an earlier
+  share already has it, and is queued for Open Food Facts. Who shared is kept
+  for abuse handling only.
+
   What the person sees follows `NutrientDisclosure`: never energy, macros
   only with a coach's plan that sets them and `hide_macros` off. The
   feature is optional and only offered where meals are (vision §4.10).
@@ -20,13 +27,15 @@ defmodule Palee.Application.Foods do
 
   alias Palee.Application.Clock
   alias Palee.{Nutrition, Places, Wellness}
-  alias Palee.Nutrition.{FoodDatabase, FoodLabelReader, FoodStore}
+  alias Palee.Nutrition.{FoodContributor, FoodDatabase, FoodLabelReader, FoodStore}
+  alias Palee.Nutrition.Domain.FoodSharePolicy
   alias Palee.Organizations.PlatformContext
 
   @default_language "el"
   @label_content_types ~w(image/jpeg image/png image/webp)
   @max_label_bytes 4 * 1_024 * 1_024
   @misses_limit 200
+  @shares_per_run 10
 
   def barcode(%{user_id: user_id} = context, raw, language \\ @default_language) do
     case Nutrition.parse_barcode(raw) do
@@ -128,8 +137,11 @@ defmodule Palee.Application.Foods do
           other
       end
 
+    # The row as it is now: a member may have shared the product meanwhile.
+    current = FoodStore.get_cached(row.barcode) || row
+
     {:ok, saved} =
-      FoodStore.finish(row.barcode, Nutrition.food_after_lookup(outcome, row, now), now)
+      FoodStore.finish(row.barcode, Nutrition.food_after_lookup(outcome, current, now), now)
 
     saved
   end
@@ -273,24 +285,95 @@ defmodule Palee.Application.Foods do
   end
 
   def create(%{user_id: user_id} = context, params) do
-    with {:ok, attrs} <- custom_attrs(params) do
-      FoodStore.with_context(context, fn ->
-        case FoodStore.insert_custom_food(Map.put(attrs, :user_id, user_id)) do
-          {:ok, food} -> {:ok, present_custom(food, macros_visible?(context, user_id))}
-          error -> error
-        end
-      end)
+    with {:ok, attrs} <- custom_attrs(params),
+         {:ok, share?} <- share_choice(params, attrs[:barcode]),
+         {:ok, food} <-
+           FoodStore.with_context(context, fn ->
+             FoodStore.insert_custom_food(Map.put(attrs, :user_id, user_id))
+           end) do
+      {:ok,
+       food |> maybe_share(share?, context) |> present_custom(macros_visible?(context, user_id))}
     end
   end
 
   def update(%{user_id: user_id} = context, id, params) do
-    with {:ok, attrs} <- custom_attrs(params) do
-      FoodStore.with_context(context, fn ->
-        with %{} = food <- FoodStore.get_custom_food(id, user_id) || {:error, :not_found},
-             {:ok, food} <- FoodStore.update_custom_food(food, attrs) do
-          {:ok, present_custom(food, macros_visible?(context, user_id))}
-        end
+    with {:ok, attrs} <- custom_attrs(params),
+         %{} = food <-
+           FoodStore.with_context(context, fn -> FoodStore.get_custom_food(id, user_id) end) ||
+             {:error, :not_found},
+         {:ok, share?} <- share_choice(params, Map.get(attrs, :barcode, food.barcode)),
+         {:ok, food} <-
+           FoodStore.with_context(context, fn -> FoodStore.update_custom_food(food, attrs) end) do
+      {:ok,
+       food |> maybe_share(share?, context) |> present_custom(macros_visible?(context, user_id))}
+    end
+  end
+
+  # «Μοιράσου το» (ADR-421 addendum): only when asked, only for a product
+  # barcode (a shop's own code belongs to no product).
+  defp share_choice(params, barcode) do
+    case params |> params_map() |> Map.get("share") do
+      share when share in [true, "true"] ->
+        in_store? = match?({:in_store, _code}, barcode && Nutrition.parse_barcode(barcode))
+
+        if FoodSharePolicy.shareable_barcode?(barcode, in_store?),
+          do: {:ok, true},
+          else: {:error, :share_needs_barcode}
+
+      _not_asked ->
+        {:ok, false}
+    end
+  end
+
+  defp maybe_share(food, false, _context), do: food
+  defp maybe_share(%{shared_at: %DateTime{}} = food, true, _context), do: food
+
+  defp maybe_share(food, true, %{user_id: user_id} = context) do
+    now = Clock.now()
+    language = context |> Map.get(:account) |> locale() |> FoodSharePolicy.language()
+    share = FoodSharePolicy.share_attrs(food, user_id, language, now)
+
+    case FoodStore.share_product(share, FoodSharePolicy.cache_attrs(share, now)) do
+      :shared ->
+        {:ok, food} =
+          FoodStore.with_context(context, fn ->
+            FoodStore.update_custom_food(food, %{shared_at: now})
+          end)
+
+        food
+
+      :exists ->
+        food
+    end
+  end
+
+  defp locale(%{preferred_locale: locale}), do: locale
+  defp locale(_account), do: nil
+
+  @doc """
+  The Open Food Facts outbox (ADR-421 addendum): sends due shares when a
+  Palee account for Open Food Facts is configured; without one they wait.
+  Returns how many were handled.
+  """
+  def process_shares(limit \\ @shares_per_run) do
+    if FoodContributor.configured?() do
+      now = Clock.now()
+      shares = FoodStore.claim_shares(now, limit)
+
+      Enum.each(shares, fn share ->
+        outcome = FoodContributor.contribute(share)
+
+        :ok =
+          FoodStore.finish_share(
+            share.barcode,
+            FoodSharePolicy.after_contribution(outcome, share, now),
+            now
+          )
       end)
+
+      {:ok, length(shares)}
+    else
+      {:ok, 0}
     end
   end
 
@@ -347,6 +430,7 @@ defmodule Palee.Application.Foods do
       image_url: nil,
       portion_hint: food.portion_hint,
       note: food.note,
+      shared_at: food.shared_at,
       nutrients: Nutrition.visible_nutrients(food.nutrients, visible?)
     }
   end

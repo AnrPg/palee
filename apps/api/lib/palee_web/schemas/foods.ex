@@ -42,6 +42,13 @@ defmodule PaleeWeb.Schemas.Foods do
         image_url: @maybe_string,
         portion_hint: @portion,
         note: @maybe_string,
+        shared_at: %Schema{
+          type: :string,
+          format: :"date-time",
+          nullable: true,
+          description:
+            "Own foods only: when the person shared the product with everyone (ADR-421 addendum)"
+        },
         nutrients: nutrients()
       },
       required: [:name, :nutrients, :portion_hint]
@@ -55,7 +62,8 @@ defmodule PaleeWeb.Schemas.Foods do
       nullable: true,
       description:
         "Shown with every product from a public source: Open Food Facts (ODbL 1.0), " <>
-          "USDA FoodData Central (CC0) or a licensed product list (its own licence)",
+          "USDA FoodData Central (CC0), a licensed product list (its own licence) or " <>
+          "Palee members (ODbL 1.0)",
       properties: %{
         source: %Schema{type: :string},
         licence: %Schema{type: :string},
@@ -81,8 +89,9 @@ defmodule PaleeWeb.Schemas.Foods do
         },
         source: %Schema{
           type: :string,
-          enum: ~w(open_food_facts usda_fdc catalogue custom),
-          nullable: true
+          enum: ~w(open_food_facts usda_fdc catalogue palee_members custom),
+          nullable: true,
+          description: "`palee_members`: a product members shared (ADR-421 addendum)"
         },
         reason: %Schema{
           type: :string,
@@ -185,6 +194,13 @@ defmodule PaleeWeb.Schemas.Foods do
           type: :object,
           nullable: true,
           additionalProperties: %Schema{type: :number, minimum: 0, maximum: 100}
+        },
+        share: %Schema{
+          type: :boolean,
+          description:
+            "«Μοιράσου το» (ADR-421 addendum): share the product (barcode, name, brand, " <>
+              "portion, nutrition per 100 g; nothing about the person) with all Palee members " <>
+              "and Open Food Facts. Only for a product barcode; never by default"
         }
       }
     }

@@ -104,6 +104,19 @@ if config_env() != :test do
   config :palee, :usda_food_data_central, api_key: System.get_env("USDA_FDC_API_KEY")
 end
 
+# ADR-421 addendum: Palee's Open Food Facts account (the user name, not the
+# email) for the products members share; unset, nothing is sent to Open Food
+# Facts. OFF_WRITE_BASE_URL=https://world.openfoodfacts.net to try staging.
+# OFF_APP_UUID_SALT keeps the per-member pseudonym (`app_uuid`) stable when
+# the endpoint secret is rotated.
+if config_env() != :test do
+  config :palee, :open_food_facts_contributions,
+    base_url: System.get_env("OFF_WRITE_BASE_URL", "https://world.openfoodfacts.org"),
+    user_id: System.get_env("OFF_USER_ID"),
+    password: System.get_env("OFF_PASSWORD"),
+    uuid_salt: System.get_env("OFF_APP_UUID_SALT")
+end
+
 # ADR-174: AI scaling suggestions call the Claude API with each gym's own key
 # (set in the gym's AI settings); only the default model is configured here.
 config :palee, :anthropic,

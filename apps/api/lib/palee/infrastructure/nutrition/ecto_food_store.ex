@@ -5,8 +5,8 @@ defmodule Palee.Infrastructure.Nutrition.EctoFoodStore do
 
   import Ecto.Query
 
-  alias Palee.Nutrition.{BarcodeMiss, CachedFood, CustomFood}
-  alias Palee.Nutrition.Domain.FoodCachePolicy
+  alias Palee.Nutrition.{BarcodeMiss, CachedFood, CustomFood, FoodShare}
+  alias Palee.Nutrition.Domain.{FoodCachePolicy, FoodSharePolicy}
   alias Palee.Repo
 
   @cache_fields ~w(status source name brand quantity serving_size image_url categories nutrients
@@ -108,6 +108,76 @@ defmodule Palee.Infrastructure.Nutrition.EctoFoodStore do
     |> order_by([m], desc: m.scans, desc: m.last_seen_on, asc: m.barcode)
     |> limit(^limit)
     |> Repo.all()
+  end
+
+  # ADR-421 addendum: a members' row replaces only a row where no source has
+  # the product (nothing found, or a lookup with nothing yet); a found
+  # product, a stale one being refreshed and an earlier share all stay.
+  @share_cache_fields ~w(status source name brand quantity serving_size image_url categories
+                         nutrients portion_hint attribution attempts next_attempt_at claimed_at
+                         fetched_at last_error updated_at)a
+
+  @impl true
+  def share_product(share, cache) do
+    {:ok, result} =
+      Repo.transaction(fn ->
+        {count, _rows} =
+          Repo.insert_all(CachedFood, [cache],
+            on_conflict:
+              from(f in CachedFood,
+                where: f.status != "found" and (f.status == "not_found" or is_nil(f.name)),
+                update: [set: ^Enum.map(@share_cache_fields, &{&1, Map.fetch!(cache, &1)})]
+              ),
+            conflict_target: [:barcode]
+          )
+
+        if count == 1 do
+          Repo.insert_all(FoodShare, [share], on_conflict: :nothing, conflict_target: [:barcode])
+          :shared
+        else
+          :exists
+        end
+      end)
+
+    result
+  end
+
+  @impl true
+  def claim_shares(now, limit) do
+    stale = DateTime.add(now, -FoodSharePolicy.claim_timeout_seconds(), :second)
+
+    candidates =
+      FoodShare
+      |> where(
+        [s],
+        s.off_status == "queued" and
+          ((is_nil(s.off_claimed_at) and s.off_next_attempt_at <= ^now) or
+             s.off_claimed_at < ^stale)
+      )
+      |> order_by([s], asc: s.off_next_attempt_at)
+      |> limit(^limit)
+      |> lock("FOR UPDATE SKIP LOCKED")
+      |> select([s], s.barcode)
+
+    {_count, rows} =
+      FoodShare
+      |> where([s], s.barcode in subquery(candidates))
+      |> select([s], s)
+      |> Repo.update_all(set: [off_claimed_at: now, updated_at: now], inc: [off_attempts: 1])
+
+    rows
+  end
+
+  @impl true
+  def finish_share(barcode, changes, now) do
+    set =
+      changes
+      |> Map.take(~w(off_status off_next_attempt_at off_claimed_at off_sent_at off_last_error)a)
+      |> Map.put(:updated_at, now)
+      |> Enum.to_list()
+
+    FoodShare |> where([s], s.barcode == ^barcode) |> Repo.update_all(set: set)
+    :ok
   end
 
   @impl true
