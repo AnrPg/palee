@@ -10,8 +10,8 @@ defmodule Palee.Application.Access.DoorSettings do
   provider's own notifications (a Shelly action, a Kisi webhook).
   """
 
-  alias Palee.Access
-  alias Palee.Application.PublicURL
+  alias Palee.{Access, Identity}
+  alias Palee.Application.{CheckInActions, PublicURL}
 
   def catalog,
     do: %{
@@ -96,7 +96,30 @@ defmodule Palee.Application.Access.DoorSettings do
       }
       |> Map.reject(fn {_key, value} -> is_nil(value) end)
 
-    Access.list_events(context, filters)
+    context
+    |> Access.list_events(filters)
+    |> Map.update!(:events, &with_names(context, &1))
+  end
+
+  # The log names people and doors (W10 screen 6 A): who entered or was
+  # refused, who opened from the desk, and which door.
+  defp with_names(context, events) do
+    people =
+      events
+      |> Enum.flat_map(&[&1.user_id, &1.actor_id])
+      |> Enum.reject(&is_nil/1)
+      |> Enum.uniq()
+      |> Identity.list_by_ids()
+      |> Map.new(&{&1.id, CheckInActions.display_name(&1)})
+
+    doors = context |> Access.list_doors(%{}) |> Map.new(&{&1.id, &1.name})
+
+    Enum.map(events, fn event ->
+      event
+      |> Map.put(:person_name, Map.get(people, event.user_id))
+      |> Map.put(:actor_name, Map.get(people, event.actor_id))
+      |> Map.put(:door_name, Map.get(doors, event.door_controller_id))
+    end)
   end
 
   defp attrs(params) do
