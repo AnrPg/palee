@@ -148,6 +148,8 @@ defmodule Palee.PersonalData.Domain.Catalog do
       tenant("messages", "automation_deliveries", @me),
       tenant("messages", "automation_member_preferences", @me),
       tenant("messages", "retention_risks", @me),
+      # ADR-384: what the box's staff did about it (who is left out).
+      tenant("messages", "retention_risk_actions", @me, drop: ~w(actor_id)),
       tenant("messages", "communication_messages", {:eq, "sender_id"},
         drop: ~w(recipient_id recipient_role_snapshot)
       ),

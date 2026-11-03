@@ -228894,6 +228894,78 @@
               "application/json": {
                 "schema": {
                   "properties": {
+                    "actions": {
+                      "items": {
+                        "properties": {
+                          "actor": {
+                            "nullable": true,
+                            "properties": {
+                              "avatar_url": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "display_name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "handle": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "user_id": {
+                                "format": "uuid",
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "user_id"
+                            ],
+                            "type": "object"
+                          },
+                          "at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "channel": {
+                            "enum": [
+                              "phone",
+                              "email",
+                              "message",
+                              "in_person"
+                            ],
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "kind": {
+                            "enum": [
+                              "contacted",
+                              "snoozed",
+                              "unsnoozed"
+                            ],
+                            "type": "string"
+                          },
+                          "snoozed_until": {
+                            "format": "date",
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "actor",
+                          "at",
+                          "channel",
+                          "id",
+                          "kind",
+                          "snoozed_until"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
                     "member": {
                       "properties": {
                         "computed_at": {
@@ -229048,13 +229120,14 @@
                     }
                   },
                   "required": [
+                    "actions",
                     "member"
                   ],
                   "type": "object"
                 }
               }
             },
-            "description": "Member at risk"
+            "description": "Member at risk with the staff action log"
           }
         },
         "security": [
@@ -229062,7 +229135,7 @@
             "bearerAuth": []
           }
         ],
-        "summary": "One box member's risk with its reasons",
+        "summary": "One box member's risk with its reasons and what staff did (who and when, ADR-384)",
         "tags": [
           "Admin Members at risk"
         ]

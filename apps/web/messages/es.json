@@ -103,7 +103,8 @@
     "socialApp": "Social",
     "shop": "Tienda",
     "switchProfile": "Cambiar de perfil",
-    "spaces": "Espacios"
+    "spaces": "Espacios",
+    "leads": "Interesados"
   },
   "Profile": {
     "eyebrow": "Perfil",
@@ -5241,7 +5242,8 @@
       "open": "Abrir perfil",
       "roles": "Roles"
     },
-    "importLink": "Importar"
+    "importLink": "Importar",
+    "atRiskLink": "En riesgo"
   },
   "Onboarding": {
     "popupEyebrow": "Configuración sin terminar",
@@ -15747,5 +15749,338 @@
     "myPayEyebrow": "{period} · {status}",
     "myPayNote": "Un estado de pago interno del box, no una nómina. Si tienes dudas, pregunta al box.",
     "earlierPeriods": "Periodos anteriores"
+  },
+  "Leads": {
+    "withCount": "{label} ({count})",
+    "cardMeta": "{source} · {when}",
+    "due": {
+      "later": "{title} · {when}",
+      "late": "Con retraso: {title}",
+      "today": "{title} · hoy {when}"
+    },
+    "taskWhenWho": "{when} · {name}",
+    "byWhoWhen": "{name} · {when}",
+    "byPaleeWhen": "Palee · {when}",
+    "email": "Email",
+    "emailLabel": "Email",
+    "channel": {
+      "email": "Email",
+      "phone": "Teléfono",
+      "message": "Mensaje",
+      "in_person": "En persona"
+    },
+    "source": {
+      "event": "Event",
+      "website_form": "Sitio web",
+      "form": "Formulario del box",
+      "join_link": "Enlace de alta",
+      "manual": "Teléfono o mensaje",
+      "csv": "Importación",
+      "walk_in": "Vino al box",
+      "referral": "Recomendación",
+      "around_me": "Cerca de mí",
+      "trial": "Solicitud de prueba",
+      "prospect_assistant": "Asistente de Palee"
+    },
+    "title": "Interesados",
+    "import": "Importar",
+    "newLead": "Nuevo interesado",
+    "viewLabel": "Interesados por etapa",
+    "stageLabel": "Etapa",
+    "column": {
+      "open": "Abiertos",
+      "new": "Nuevos",
+      "trial": "Prueba",
+      "offer": "Oferta",
+      "converted": "Se hizo socio",
+      "lost": "Perdido"
+    },
+    "stage": {
+      "new": "Nuevo",
+      "trial": "Prueba",
+      "offer": "Oferta",
+      "converted": "Se hizo socio",
+      "lost": "Perdido"
+    },
+    "empty": {
+      "new": "No hay nuevos interesados. Las consultas de la página del box llegan aquí.",
+      "trial": "Nadie está en prueba.",
+      "offer": "No hay ofertas abiertas.",
+      "converted": "Nadie todavía. Quien se hace socio se queda aquí con su historial.",
+      "lost": "Nadie aquí."
+    },
+    "loading": "Cargando…",
+    "ownerShort": "Responsable: {name}",
+    "noOwner": "Sin responsable",
+    "noNextStep": "Sin próxima acción",
+    "convertedOn": "Socio desde {when}",
+    "lostReason": {
+      "price": "Precio",
+      "schedule": "Horario",
+      "location": "Ubicación",
+      "no_answer": "No respondió",
+      "chose_other": "Eligió otro",
+      "not_interested": "No le interesa",
+      "other": "Otro"
+    },
+    "formNote": "El formulario de la página de tu box y los enlaces de alta traen aquí a los nuevos interesados solos.",
+    "copyLink": "Copiar el enlace de la página del box",
+    "linkCopied": "Enlace copiado",
+    "leadTitle": "Interesado",
+    "more": "Más acciones",
+    "optOut": "No más novedades ni ofertas",
+    "reopen": "Reabrir",
+    "call": "Llamar",
+    "contacted": "Contactado",
+    "note": "Nota",
+    "nextStep": "Próxima acción",
+    "channelLabel": "Cómo",
+    "saveContacted": "Registrar el contacto",
+    "addNote": "Añadir la nota",
+    "taskTitle": "Qué",
+    "taskPlaceholder": "p. ej. Llamar el jueves",
+    "taskDue": "Cuándo",
+    "addNextStep": "Añadir la acción",
+    "converted": "Se hizo socio",
+    "lost": "Perdido",
+    "convertWho": "¿Qué socio del box es?",
+    "convertNoMatch": "Ningún socio del box con este nombre.",
+    "convertHint": "En cuanto empiece un paquete con este email, ocurre solo. El historial se queda.",
+    "convertSubmit": "Vincular con el socio",
+    "lostWhy": "¿Por qué se perdió?",
+    "lostSubmit": "Marcar como perdido",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "close": "Cerrar",
+    "phone": "Móvil",
+    "message": "Mensaje",
+    "interest": "Le interesa",
+    "interestOption": {
+      "trial": "Entrenamiento de prueba",
+      "prices": "Precios",
+      "other": "Otro"
+    },
+    "marketing": "Novedades y ofertas",
+    "yes": "Sí",
+    "no": "No",
+    "owner": "Responsable",
+    "nextSteps": "{count, plural, one {# próxima acción} other {# próximas acciones}}",
+    "taskDone": "Hecho",
+    "history": "Historial",
+    "event": {
+      "created": "Llegó por: {source}",
+      "enquired_again": "Volvió a preguntar: {source}",
+      "stage_changed": "Etapa: {stage}",
+      "lost": "Perdido: {reason}",
+      "contacted": "Contactado: {channel}",
+      "note": "Nota: {text}",
+      "task_added": "Próxima acción: {title}",
+      "task_done": "Hecho: {title}",
+      "message_sent": "Mensaje automático enviado: {recipe}",
+      "owner_changed": "Cambió el responsable",
+      "converted": "Se hizo socio",
+      "marketing_opted_out": "No quiere más novedades ni ofertas",
+      "details_changed": "Cambiaron los datos"
+    },
+    "recipe": {
+      "welcome": "Bienvenida",
+      "trial_follow_up": "Después de la prueba",
+      "missed_classes": "Te echamos de menos",
+      "renewal_reminder": "Recordatorio de renovación",
+      "birthday": "Cumpleaños",
+      "win_back": "Recuperar"
+    },
+    "error": {
+      "lead_converted": "Este interesado ya se hizo socio.",
+      "lead_task_done": "Esta acción ya está hecha.",
+      "lead_person_not_in_box": "Esta persona no es socia del box.",
+      "lead_capture_conflict": "Se está guardando. Inténtalo de nuevo en un momento."
+    },
+    "field": {
+      "required": "Rellena este campo.",
+      "noteRequired": "Escribe primero la nota.",
+      "contactRequired": "Añade un móvil o un email.",
+      "emailInvalid": "Este email no parece correcto.",
+      "pickMember": "Elige al socio de la lista.",
+      "pickReason": "Elige un motivo."
+    },
+    "name": "Nombre",
+    "sourceLabel": "De dónde vino",
+    "marketingConsent": "Quiere recibir novedades y ofertas",
+    "marketingConsentHint": "Solo si lo dijo la propia persona. Sin esto, solo respondemos a su consulta.",
+    "advanced": "Avanzado",
+    "campaign": "Campaña",
+    "campaignPlaceholder": "p. ej. folleto de septiembre",
+    "importTitle": "Importar desde un archivo",
+    "importPick": "Elige un archivo CSV",
+    "importColumns": "Columnas: Nombre, Email, Teléfono, Nota (griego o inglés). Hasta {max} filas.",
+    "importChecking": "Revisando el archivo…",
+    "importCheckTitle": "Revisión antes de importar",
+    "importCheck": "{ready, plural, one {# fila lista} other {# filas listas}} · {invalid, plural, =0 {sin errores} one {# fila con errores se omite} other {# filas con errores se omiten}}",
+    "importInvalidRows": "Filas con errores: {rows}",
+    "importRun": "{count, plural, =0 {Importar} one {Importar # interesado} other {Importar # interesados}}",
+    "importDone": "{created, plural, one {# nuevo} other {# nuevos}} · {existing, plural, one {# actualizado} other {# actualizados}} · {invalid, plural, one {# omitido} other {# omitidos}}"
+  },
+  "AtRisk": {
+    "withCount": "{label} ({count})",
+    "byWhoWhen": "{name} · {when}",
+    "channel": {
+      "email": "Email",
+      "phone": "Teléfono",
+      "message": "Mensaje",
+      "in_person": "En persona"
+    },
+    "title": "En riesgo",
+    "backToMembers": "Volver",
+    "levelLabel": "Nivel de riesgo",
+    "all": "Todos",
+    "level": {
+      "high": "Alto",
+      "medium": "Medio",
+      "low": "Bajo"
+    },
+    "intro": "Se actualiza cada noche a partir de entrenamientos, reservas y pagos. Los socios nunca lo ven.",
+    "empty": "Ahora mismo nadie está en riesgo.",
+    "winBackNote": "Recuperar: cuando alguien pasa a Alto, el mensaje automático «Recuperar» sale solo si lo tienes activado.",
+    "automationsLink": "Automatizaciones",
+    "unknownMember": "Socio del box",
+    "reason": {
+      "attendance_drop": "Viene {now, number} veces por semana últimamente, normalmente {usual, number}",
+      "absent": "{days, plural, one {No viene desde hace # día} other {No viene desde hace # días}}",
+      "no_first_visit": "{days, plural, one {Se apuntó hace # día y aún no ha venido} other {Se apuntó hace # días y aún no ha venido}}",
+      "no_upcoming_bookings": "{days, plural, one {Ninguna reserva para el próximo # día} other {Ninguna reserva para los próximos # días}}",
+      "package_ending": "{days, plural, =0 {El paquete termina hoy} one {El paquete termina en # día} other {El paquete termina en # días}}",
+      "payment_overdue": "{count, plural, one {# factura vencida} other {# facturas vencidas}}",
+      "many_cancellations": "{count, plural, one {# cancelación reciente} other {# cancelaciones recientes}}",
+      "new_member_slow_start": "Socio nuevo: {visits, plural, one {# visita} other {# visitas}} en {days} días"
+    },
+    "action": {
+      "personal_message": "Envía un mensaje personal",
+      "renewal_offer": "Propón una renovación",
+      "payment_follow_up": "Recuerda el pago",
+      "check_in_call": "Haz una llamada"
+    },
+    "contacted": "Contactado",
+    "contactedBy": "Contactado · {name} · {when}",
+    "contactedAt": "Contactado · {when}",
+    "later": "Más tarde",
+    "laterDays": "{days, plural, one {En # día} other {En # días}}",
+    "todayTitle": "{count, plural, one {# socio necesita un mensaje} other {# socios necesitan un mensaje}}",
+    "todayAll": "Todos en riesgo",
+    "loading": "Cargando…",
+    "why": "Por qué",
+    "since": "En este nivel desde {when}",
+    "history": "Historial de acciones",
+    "historyEmpty": "Nadie ha hecho nada todavía.",
+    "log": {
+      "contacted": "Contactado: {channel}",
+      "snoozed": "Más tarde: vuelve a la lista el {until}",
+      "unsnoozed": "De vuelta en la lista"
+    },
+    "formerStaff": "Antiguo miembro del equipo",
+    "openProfile": "Abrir el perfil"
+  },
+  "Automations": {
+    "sentLine": "{recipe} · {when}",
+    "channel": {
+      "email": "Email",
+      "sms": "SMS",
+      "in_app": "Notificación"
+    },
+    "title": "Automatizaciones",
+    "hubDescription": "Mensajes listos que Palee envía por el box: bienvenida, después de la prueba, renovación y más.",
+    "intro": "Mensajes listos que Palee envía por el box. Nunca entre las 21:00 y las 09:00; quien no los quiera los desactiva en sus ajustes.",
+    "sent": "Mensajes enviados",
+    "loading": "Cargando…",
+    "recipe": {
+      "welcome": "Bienvenida",
+      "trial_follow_up": "Después de la prueba",
+      "missed_classes": "Te echamos de menos",
+      "renewal_reminder": "Recordatorio de renovación",
+      "birthday": "Cumpleaños",
+      "win_back": "Recuperar"
+    },
+    "when": {
+      "welcome": "Cuando alguien se hace socio del box",
+      "trial_follow_up": "Después de su primer entrenamiento de prueba",
+      "missed_classes": "{days, plural, one {Cuando lleva # día sin entrenar} other {Cuando lleva # días sin entrenar}}",
+      "renewal_reminder": "{days, plural, one {# día antes de que termine el paquete} other {# días antes de que termine el paquete}}",
+      "birthday": "En su cumpleaños, si lo compartió",
+      "win_back": "Cuando alguien pasa a «En riesgo»"
+    },
+    "sentCount": "{days} días: {count, plural, one {# enviado} other {# enviados}}",
+    "switchLabel": "{name}: activado o no",
+    "resetText": "Restaurar el texto",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "enabled": "Activado",
+    "setting": {
+      "missed_classes": "Días sin entrenar",
+      "renewal_reminder": "Días antes de que termine el paquete"
+    },
+    "field": {
+      "between": "De {min} a {max}.",
+      "channels": "Elige al menos una vía.",
+      "required": "Rellena este campo."
+    },
+    "how": "Cómo",
+    "channelsHint": "En el orden elegido: si la primera vía no llega a la persona, se usa la siguiente.",
+    "subject": "Asunto",
+    "body": "Texto",
+    "placeholders": "Puedes usar {list}. Si lo dejas tal cual, cada persona lo recibe en su idioma.",
+    "preview": "Vista previa",
+    "advanced": "Avanzado",
+    "delay": "Espera antes de enviar (minutos)",
+    "quietHours": "Horas de silencio: 21:00–09:00 según la hora del box.",
+    "sentEmpty": "Todavía no hay mensajes automáticos.",
+    "status": {
+      "pending": "En espera",
+      "sending": "Enviando",
+      "sent": "Enviado",
+      "skipped": "No enviado",
+      "failed": "Falló",
+      "cancelled": "Cancelado"
+    }
+  },
+  "AutoMessages": {
+    "title": "Mensajes automáticos",
+    "description": "Mensajes que tu box envía solo: bienvenida, recordatorios, felicitaciones.",
+    "descriptionBox": "Mensajes que {box} envía solo: bienvenida, recordatorios, felicitaciones.",
+    "loading": "Cargando…",
+    "allLabel": "Quiero mensajes automáticos",
+    "allHint": "Los importantes (pagos, cancelaciones) llegan siempre.",
+    "birthday": "Cumpleaños",
+    "birthdayHint": "Si quieres felicitaciones del box, dinos el día y el mes. Sin el año.",
+    "day": "Día",
+    "month": "Mes",
+    "birthdayClear": "No compartirlo",
+    "advanced": "Avanzado · por mensaje"
+  },
+  "LeadEnquiry": {
+    "title": "Me interesa",
+    "cardText": "¿Quieres probar {box} o preguntar algo? Deja tus datos y te responderán.",
+    "name": "Nombre",
+    "nameRequired": "Escribe tu nombre.",
+    "contact": "Móvil o email",
+    "contactRequired": "Añade un móvil o un email.",
+    "contactInvalid": "No parece un móvil ni un email.",
+    "interest": "Qué te interesa",
+    "interestOption": {
+      "trial": "Entrenamiento de prueba",
+      "prices": "Precios",
+      "other": "Otro"
+    },
+    "message": "Mensaje",
+    "optional": "opcional",
+    "consentContact": "El box puede contactarme sobre esta consulta",
+    "privacy": "Mira cómo usamos tus datos.",
+    "consentRequired": "Márcalo para que el box pueda responderte.",
+    "consentMarketing": "Quiero recibir novedades y ofertas del box",
+    "consentMarketingHint": "Opcional. Puedes dejarlo cuando quieras.",
+    "send": "Enviar",
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "sentTitle": "¡Recibido!",
+    "sentBody": "{box} te responderá pronto, normalmente el mismo día."
   }
 }

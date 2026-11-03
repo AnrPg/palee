@@ -9413,7 +9413,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** One box member's risk with its reasons */
+        /** One box member's risk with its reasons and what staff did (who and when, ADR-384) */
         get: operations["PaleeWeb.AdminMemberRiskController.show"];
         put?: never;
         post?: never;
@@ -96124,13 +96124,32 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Member at risk */
+            /** @description Member at risk with the staff action log */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        actions: {
+                            actor: {
+                                avatar_url?: string | null;
+                                display_name?: string | null;
+                                handle?: string | null;
+                                /** Format: uuid */
+                                user_id: string;
+                            } | null;
+                            /** Format: date-time */
+                            at: string;
+                            /** @enum {string|null} */
+                            channel: "phone" | "email" | "message" | "in_person" | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "contacted" | "snoozed" | "unsnoozed";
+                            /** Format: date */
+                            snoozed_until: string | null;
+                        }[];
                         member: {
                             /** Format: date-time */
                             computed_at: string;

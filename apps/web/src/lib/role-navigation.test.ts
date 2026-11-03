@@ -40,6 +40,20 @@ describe("staffNavItems", () => {
     expect(ids({ ...ADMIN, moderate_community: "all", manage_community: "all" })).toEqual(["home", "coaching", "finance", "users"]);
   });
 
+  it("puts Ενδιαφερόμενοι next to Finance for whoever answers enquiries (ADR-344)", () => {
+    expect(ids({ ...ADMIN, manage_leads: "all" })).toEqual(["home", "coaching", "finance", "leads", "users"]);
+    expect(ids({ ...DESK, manage_leads: "all" }, ["front_desk"])).toEqual([
+      "home",
+      "checkIn",
+      "classes",
+      "finance",
+      "leads",
+      "clients",
+      "inventory",
+    ]);
+    expect(ids(COACH, ["coach"])).not.toContain("leads");
+  });
+
   it("gives janitors only the cleaning log", () => {
     expect(ids(JANITOR, ["janitor"])).toEqual(["cleaning"]);
   });

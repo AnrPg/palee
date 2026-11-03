@@ -103,7 +103,8 @@
     "socialApp": "اجتماعي",
     "shop": "المتجر",
     "switchProfile": "تبديل الملف الشخصي",
-    "spaces": "المساحات"
+    "spaces": "المساحات",
+    "leads": "المهتمون"
   },
   "Profile": {
     "eyebrow": "الملف الشخصي",
@@ -5241,7 +5242,8 @@
       "open": "فتح الملف",
       "roles": "الأدوار"
     },
-    "importLink": "استيراد"
+    "importLink": "استيراد",
+    "atRiskLink": "معرّضون للخطر"
   },
   "Onboarding": {
     "popupEyebrow": "لم يكتمل الإعداد",
@@ -15747,5 +15749,338 @@
     "myPayEyebrow": "{period} · {status}",
     "myPayNote": "كشف أجر داخلي من المكان، وليس كشف رواتب. للاستفسار، اسأل المكان.",
     "earlierPeriods": "الفترات السابقة"
+  },
+  "Leads": {
+    "withCount": "{label} ({count})",
+    "cardMeta": "{source} · {when}",
+    "due": {
+      "later": "{title} · {when}",
+      "late": "متأخر: {title}",
+      "today": "{title} · اليوم {when}"
+    },
+    "taskWhenWho": "{when} · {name}",
+    "byWhoWhen": "{name} · {when}",
+    "byPaleeWhen": "Palee · {when}",
+    "email": "Email",
+    "emailLabel": "Email",
+    "channel": {
+      "email": "Email",
+      "phone": "هاتف",
+      "message": "رسالة",
+      "in_person": "شخصيًا"
+    },
+    "source": {
+      "event": "Event",
+      "website_form": "الموقع",
+      "form": "نموذج البوكس",
+      "join_link": "رابط الانضمام",
+      "manual": "هاتف أو رسالة",
+      "csv": "استيراد",
+      "walk_in": "زار البوكس",
+      "referral": "توصية",
+      "around_me": "بالقرب مني",
+      "trial": "طلب تمرين تجريبي",
+      "prospect_assistant": "مساعد Palee"
+    },
+    "title": "المهتمون",
+    "import": "استيراد",
+    "newLead": "مهتم جديد",
+    "viewLabel": "المهتمون حسب المرحلة",
+    "stageLabel": "المرحلة",
+    "column": {
+      "open": "مفتوحون",
+      "new": "جدد",
+      "trial": "تمرين تجريبي",
+      "offer": "عرض",
+      "converted": "أصبح عضوًا",
+      "lost": "خسرناه"
+    },
+    "stage": {
+      "new": "جديد",
+      "trial": "تمرين تجريبي",
+      "offer": "عرض",
+      "converted": "أصبح عضوًا",
+      "lost": "خسرناه"
+    },
+    "empty": {
+      "new": "لا يوجد مهتمون جدد. الطلبات من صفحة البوكس تصل إلى هنا.",
+      "trial": "لا أحد في تمرين تجريبي.",
+      "offer": "لا توجد عروض مفتوحة.",
+      "converted": "لا أحد بعد. من يصبح عضوًا يبقى هنا مع سجله.",
+      "lost": "لا أحد هنا."
+    },
+    "loading": "جارٍ التحميل…",
+    "ownerShort": "المسؤول: {name}",
+    "noOwner": "بلا مسؤول",
+    "noNextStep": "لا توجد خطوة تالية",
+    "convertedOn": "عضو منذ {when}",
+    "lostReason": {
+      "price": "السعر",
+      "schedule": "المواعيد",
+      "location": "الموقع الجغرافي",
+      "no_answer": "لم يرد",
+      "chose_other": "اختار غيرنا",
+      "not_interested": "غير مهتم",
+      "other": "سبب آخر"
+    },
+    "formNote": "النموذج في صفحة البوكس وروابط الانضمام تجلب المهتمين الجدد إلى هنا تلقائيًا.",
+    "copyLink": "نسخ رابط صفحة البوكس",
+    "linkCopied": "تم نسخ الرابط",
+    "leadTitle": "مهتم",
+    "more": "إجراءات أخرى",
+    "optOut": "إيقاف الأخبار والعروض",
+    "reopen": "إعادة الفتح",
+    "call": "اتصال",
+    "contacted": "تواصلت",
+    "note": "ملاحظة",
+    "nextStep": "الخطوة التالية",
+    "channelLabel": "كيف",
+    "saveContacted": "تسجيل التواصل",
+    "addNote": "إضافة الملاحظة",
+    "taskTitle": "ماذا",
+    "taskPlaceholder": "مثلًا: اتصال يوم الخميس",
+    "taskDue": "متى",
+    "addNextStep": "إضافة الخطوة",
+    "converted": "أصبح عضوًا",
+    "lost": "خسرناه",
+    "convertWho": "من هو من أعضاء البوكس؟",
+    "convertNoMatch": "لا يوجد عضو في البوكس بهذا الاسم.",
+    "convertHint": "بمجرد بدء باقة لهذا البريد يحدث ذلك تلقائيًا. يبقى السجل.",
+    "convertSubmit": "ربط بالعضو",
+    "lostWhy": "لماذا خسرناه؟",
+    "lostSubmit": "وضع علامة خسرناه",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "close": "إغلاق",
+    "phone": "الجوال",
+    "message": "رسالة",
+    "interest": "مهتم بـ",
+    "interestOption": {
+      "trial": "تمرين تجريبي",
+      "prices": "الأسعار",
+      "other": "شيء آخر"
+    },
+    "marketing": "الأخبار والعروض",
+    "yes": "نعم",
+    "no": "لا",
+    "owner": "المسؤول",
+    "nextSteps": "{count, plural, one {خطوة تالية واحدة} two {خطوتان تاليتان} few {# خطوات تالية} many {# خطوة تالية} other {# خطوة تالية}}",
+    "taskDone": "تم",
+    "history": "السجل",
+    "event": {
+      "created": "جاء من: {source}",
+      "enquired_again": "سأل مرة أخرى: {source}",
+      "stage_changed": "المرحلة: {stage}",
+      "lost": "خسرناه: {reason}",
+      "contacted": "تواصلت: {channel}",
+      "note": "ملاحظة: {text}",
+      "task_added": "الخطوة التالية: {title}",
+      "task_done": "تم: {title}",
+      "message_sent": "أُرسلت رسالة تلقائية: {recipe}",
+      "owner_changed": "تغيّر المسؤول",
+      "converted": "أصبح عضوًا",
+      "marketing_opted_out": "لم يعد يريد الأخبار والعروض",
+      "details_changed": "تغيّرت البيانات"
+    },
+    "recipe": {
+      "welcome": "ترحيب",
+      "trial_follow_up": "بعد التمرين التجريبي",
+      "missed_classes": "اشتقنا إليك",
+      "renewal_reminder": "تذكير بالتجديد",
+      "birthday": "عيد ميلاد",
+      "win_back": "استعادة"
+    },
+    "error": {
+      "lead_converted": "هذا المهتم أصبح عضوًا بالفعل.",
+      "lead_task_done": "هذه الخطوة تمت بالفعل.",
+      "lead_person_not_in_box": "هذا الشخص ليس عضوًا في البوكس.",
+      "lead_capture_conflict": "جارٍ الحفظ. حاول مرة أخرى بعد قليل."
+    },
+    "field": {
+      "required": "املأ هذا الحقل.",
+      "noteRequired": "اكتب الملاحظة أولًا.",
+      "contactRequired": "أضف رقم جوال أو بريدًا إلكترونيًا.",
+      "emailInvalid": "يبدو أن هذا البريد غير صحيح.",
+      "pickMember": "اختر العضو من القائمة.",
+      "pickReason": "اختر سببًا."
+    },
+    "name": "الاسم",
+    "sourceLabel": "من أين جاء",
+    "marketingConsent": "يريد تلقي الأخبار والعروض",
+    "marketingConsentHint": "فقط إذا قال الشخص ذلك بنفسه. بدونه نرد على طلبه فقط.",
+    "advanced": "متقدم",
+    "campaign": "الحملة",
+    "campaignPlaceholder": "مثلًا: منشور سبتمبر",
+    "importTitle": "استيراد من ملف",
+    "importPick": "اختر ملف CSV",
+    "importColumns": "الأعمدة: الاسم، البريد، الهاتف، ملاحظة (باليونانية أو الإنجليزية). حتى {max} صف.",
+    "importChecking": "جارٍ فحص الملف…",
+    "importCheckTitle": "فحص قبل الاستيراد",
+    "importCheck": "{ready, plural, one {صف واحد جاهز} two {صفان جاهزان} few {# أسطر جاهزة} many {# صفًا جاهزًا} other {# صف جاهز}} · {invalid, plural, =0 {لا توجد أخطاء} one {صف واحد به أخطاء سيُتخطى} two {صفان بهما أخطاء سيُتخطيان} few {# أسطر بها أخطاء ستُتخطى} many {# صفًا به أخطاء سيُتخطى} other {# صف به أخطاء سيُتخطى}}",
+    "importInvalidRows": "أسطر بها أخطاء: {rows}",
+    "importRun": "{count, plural, =0 {استيراد} one {استيراد مهتم واحد} two {استيراد مهتمَّين} few {استيراد # مهتمين} many {استيراد # مهتمًا} other {استيراد # مهتم}}",
+    "importDone": "{created, plural, one {# جديد} two {# جديدان} few {# جدد} many {# جديدًا} other {# جديد}} · {existing, plural, one {# محدَّث} two {# محدَّثان} few {# محدَّثة} many {# محدَّثًا} other {# محدَّث}} · {invalid, plural, one {# متخطى} two {# متخطيان} few {# متخطاة} many {# متخطى} other {# متخطى}}"
+  },
+  "AtRisk": {
+    "withCount": "{label} ({count})",
+    "byWhoWhen": "{name} · {when}",
+    "channel": {
+      "email": "Email",
+      "phone": "هاتف",
+      "message": "رسالة",
+      "in_person": "شخصيًا"
+    },
+    "title": "معرّضون للخطر",
+    "backToMembers": "رجوع",
+    "levelLabel": "مستوى الخطر",
+    "all": "الكل",
+    "level": {
+      "high": "مرتفع",
+      "medium": "متوسط",
+      "low": "منخفض"
+    },
+    "intro": "يُحدَّث كل ليلة من التمارين والحجوزات والمدفوعات. الأعضاء لا يرونه أبدًا.",
+    "empty": "لا أحد معرّض للخطر حاليًا.",
+    "winBackNote": "استعادة: عندما يصل شخص إلى مرتفع، تُرسل الرسالة التلقائية «استعادة» فقط إذا فعّلتها.",
+    "automationsLink": "الأتمتة",
+    "unknownMember": "عضو في البوكس",
+    "reason": {
+      "attendance_drop": "يأتي مؤخرًا {now, number} مرات في الأسبوع، وعادةً {usual, number}",
+      "absent": "{days, plural, one {لم يأتِ منذ يوم} two {لم يأتِ منذ يومين} few {لم يأتِ منذ # أيام} many {لم يأتِ منذ # يومًا} other {لم يأتِ منذ # يوم}}",
+      "no_first_visit": "{days, plural, one {سجّل قبل يوم ولم يأتِ بعد} two {سجّل قبل يومين ولم يأتِ بعد} few {سجّل قبل # أيام ولم يأتِ بعد} many {سجّل قبل # يومًا ولم يأتِ بعد} other {سجّل قبل # يوم ولم يأتِ بعد}}",
+      "no_upcoming_bookings": "{days, plural, one {لا حجز لليوم القادم} two {لا حجز ليومين قادمين} few {لا حجز لـ# أيام قادمة} many {لا حجز لـ# يومًا قادمًا} other {لا حجز لـ# يوم قادم}}",
+      "package_ending": "{days, plural, =0 {تنتهي الباقة اليوم} one {تنتهي الباقة بعد يوم} two {تنتهي الباقة بعد يومين} few {تنتهي الباقة بعد # أيام} many {تنتهي الباقة بعد # يومًا} other {تنتهي الباقة بعد # يوم}}",
+      "payment_overdue": "{count, plural, one {فاتورة متأخرة واحدة} two {فاتورتان متأخرتان} few {# فواتير متأخرة} many {# فاتورة متأخرة} other {# فاتورة متأخرة}}",
+      "many_cancellations": "{count, plural, one {إلغاء واحد مؤخرًا} two {إلغاءان مؤخرًا} few {# إلغاءات مؤخرًا} many {# إلغاءً مؤخرًا} other {# إلغاء مؤخرًا}}",
+      "new_member_slow_start": "عضو جديد: {visits, plural, one {زيارة واحدة} two {زيارتان} few {# زيارات} many {# زيارة} other {# زيارة}} خلال {days} يومًا"
+    },
+    "action": {
+      "personal_message": "أرسل رسالة شخصية",
+      "renewal_offer": "اقترح التجديد",
+      "payment_follow_up": "ذكّر بالدفع",
+      "check_in_call": "اتصل للاطمئنان"
+    },
+    "contacted": "تواصلت",
+    "contactedBy": "تواصلت · {name} · {when}",
+    "contactedAt": "تواصلت · {when}",
+    "later": "لاحقًا",
+    "laterDays": "{days, plural, one {بعد يوم} two {بعد يومين} few {بعد # أيام} many {بعد # يومًا} other {بعد # يوم}}",
+    "todayTitle": "{count, plural, one {عضو واحد يحتاج إلى رسالة} two {عضوان يحتاجان إلى رسالة} few {# أعضاء يحتاجون إلى رسالة} many {# عضوًا يحتاجون إلى رسالة} other {# عضو يحتاجون إلى رسالة}}",
+    "todayAll": "كل المعرّضين للخطر",
+    "loading": "جارٍ التحميل…",
+    "why": "لماذا",
+    "since": "في هذا المستوى منذ {when}",
+    "history": "سجل الإجراءات",
+    "historyEmpty": "لم يفعل أحد شيئًا بعد.",
+    "log": {
+      "contacted": "تواصلت: {channel}",
+      "snoozed": "لاحقًا: يعود إلى القائمة في {until}",
+      "unsnoozed": "عاد إلى القائمة"
+    },
+    "formerStaff": "موظف سابق",
+    "openProfile": "فتح الملف الشخصي"
+  },
+  "Automations": {
+    "sentLine": "{recipe} · {when}",
+    "channel": {
+      "email": "Email",
+      "sms": "SMS",
+      "in_app": "إشعار"
+    },
+    "title": "الأتمتة",
+    "hubDescription": "رسائل جاهزة يرسلها Palee باسم البوكس: الترحيب، بعد التمرين التجريبي، التجديد وغيرها.",
+    "intro": "رسائل جاهزة يرسلها Palee باسم البوكس. أبدًا بين 21:00 و09:00؛ ومن لا يريدها يوقفها من إعداداته.",
+    "sent": "الرسائل المرسلة",
+    "loading": "جارٍ التحميل…",
+    "recipe": {
+      "welcome": "ترحيب",
+      "trial_follow_up": "بعد التمرين التجريبي",
+      "missed_classes": "اشتقنا إليك",
+      "renewal_reminder": "تذكير بالتجديد",
+      "birthday": "عيد ميلاد",
+      "win_back": "استعادة"
+    },
+    "when": {
+      "welcome": "عندما يصبح شخص ما عضوًا في البوكس",
+      "trial_follow_up": "بعد أول تمرين تجريبي",
+      "missed_classes": "{days, plural, one {بعد يوم بلا تمرين} two {بعد يومين بلا تمرين} few {بعد # أيام بلا تمرين} many {بعد # يومًا بلا تمرين} other {بعد # يوم بلا تمرين}}",
+      "renewal_reminder": "{days, plural, one {قبل يوم من نهاية الباقة} two {قبل يومين من نهاية الباقة} few {قبل # أيام من نهاية الباقة} many {قبل # يومًا من نهاية الباقة} other {قبل # يوم من نهاية الباقة}}",
+      "birthday": "في عيد الميلاد، إن تمت مشاركته",
+      "win_back": "عندما يصبح شخص ما «معرّضًا للخطر»"
+    },
+    "sentCount": "خلال {days} يومًا: {count, plural, one {رسالة واحدة} two {رسالتان} few {# رسائل} many {# رسالة} other {# رسالة}}",
+    "switchLabel": "{name}: مفعّل أم لا",
+    "resetText": "استعادة النص",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "enabled": "مفعّل",
+    "setting": {
+      "missed_classes": "أيام بلا تمرين",
+      "renewal_reminder": "أيام قبل نهاية الباقة"
+    },
+    "field": {
+      "between": "من {min} إلى {max}.",
+      "channels": "اختر طريقة واحدة على الأقل.",
+      "required": "املأ هذا الحقل."
+    },
+    "how": "كيف",
+    "channelsHint": "بالترتيب المختار: إن لم تصل الأولى إلى الشخص تُستخدم التالية.",
+    "subject": "الموضوع",
+    "body": "النص",
+    "placeholders": "يمكنك استخدام {list}. إن تركته كما هو يصل لكل شخص بلغته.",
+    "preview": "معاينة",
+    "advanced": "متقدم",
+    "delay": "الانتظار قبل الإرسال (دقائق)",
+    "quietHours": "ساعات الهدوء: 21:00–09:00 حسب توقيت البوكس.",
+    "sentEmpty": "لا توجد رسائل تلقائية بعد.",
+    "status": {
+      "pending": "قيد الانتظار",
+      "sending": "جارٍ الإرسال",
+      "sent": "أُرسلت",
+      "skipped": "لم تُرسل",
+      "failed": "فشلت",
+      "cancelled": "أُلغيت"
+    }
+  },
+  "AutoMessages": {
+    "title": "الرسائل التلقائية",
+    "description": "رسائل يرسلها البوكس تلقائيًا: ترحيب، تذكيرات، تهانٍ.",
+    "descriptionBox": "رسائل يرسلها {box} تلقائيًا: ترحيب، تذكيرات، تهانٍ.",
+    "loading": "جارٍ التحميل…",
+    "allLabel": "أريد الرسائل التلقائية",
+    "allHint": "الرسائل المهمة (المدفوعات، الإلغاءات) تصل دائمًا.",
+    "birthday": "عيد الميلاد",
+    "birthdayHint": "إن أردت تهنئة من البوكس، أخبرنا باليوم والشهر. بدون السنة.",
+    "day": "اليوم",
+    "month": "الشهر",
+    "birthdayClear": "لا أريد مشاركته",
+    "advanced": "متقدم · لكل رسالة"
+  },
+  "LeadEnquiry": {
+    "title": "أنا مهتم",
+    "cardText": "تريد تجربة {box} أو السؤال عن شيء؟ اترك بياناتك وسيردون عليك.",
+    "name": "الاسم",
+    "nameRequired": "اكتب اسمك.",
+    "contact": "الجوال أو البريد الإلكتروني",
+    "contactRequired": "أضف رقم جوال أو بريدًا إلكترونيًا.",
+    "contactInvalid": "هذا لا يبدو رقم جوال ولا بريدًا إلكترونيًا.",
+    "interest": "ما الذي يهمك",
+    "interestOption": {
+      "trial": "تمرين تجريبي",
+      "prices": "الأسعار",
+      "other": "شيء آخر"
+    },
+    "message": "رسالة",
+    "optional": "اختياري",
+    "consentContact": "يمكن للبوكس التواصل معي بخصوص هذا الطلب",
+    "privacy": "كيف نستخدم بياناتك.",
+    "consentRequired": "ضع علامة هنا ليتمكن البوكس من الرد عليك.",
+    "consentMarketing": "أريد أخبار البوكس وعروضه",
+    "consentMarketingHint": "اختياري. يمكنك التوقف في أي وقت.",
+    "send": "إرسال",
+    "cancel": "إلغاء",
+    "close": "إغلاق",
+    "sentTitle": "تم الاستلام!",
+    "sentBody": "سيرد عليك {box} قريبًا، عادةً في اليوم نفسه."
   }
 }

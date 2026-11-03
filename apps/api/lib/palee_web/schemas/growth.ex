@@ -547,6 +547,37 @@ defmodule PaleeWeb.Schemas.Growth do
     }
   end
 
+  @doc "ADR-384: one thing staff did about a member at risk, with who and when."
+  def risk_action do
+    %Schema{
+      type: :object,
+      properties: %{
+        id: @uuid,
+        kind: %Schema{type: :string, enum: Palee.Retention.action_kinds()},
+        channel: %Schema{
+          type: :string,
+          nullable: true,
+          enum: Palee.Application.Retention.MembersAtRisk.contact_channels()
+        },
+        snoozed_until: %Schema{type: :string, format: :date, nullable: true},
+        at: %Schema{type: :string, format: :"date-time"},
+        actor: person()
+      },
+      required: [:actor, :at, :channel, :id, :kind, :snoozed_until]
+    }
+  end
+
+  def risk_detail do
+    %Schema{
+      type: :object,
+      properties: %{
+        member: risk(),
+        actions: %Schema{type: :array, items: risk_action()}
+      },
+      required: [:actions, :member]
+    }
+  end
+
   def risk_contacted_body,
     do: %Schema{
       type: :object,

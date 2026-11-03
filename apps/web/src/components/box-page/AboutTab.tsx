@@ -1,5 +1,6 @@
 "use client";
 
+import { EnquiryCard } from "@/components/leads/LeadEnquiryForm";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useMemo, useState } from "react";
@@ -224,6 +225,9 @@ export function AboutTab({ page, onOpenPhoto }: { page: PublicBoxPage; onOpenPho
           <Locations locations={page.locations} />
         </Section>
       ) : null}
+
+      {/* ADR-345 (W2 p6): an enquiry from a visitor without an account becomes a lead. */}
+      <EnquiryCard slug={page.box.slug} boxName={page.box.name} />
     </div>
   );
 }

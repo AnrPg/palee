@@ -152,6 +152,17 @@ export function AdminUsersDirectory() {
                 </Link>
               ) : null}
               {documentsAccess.any ? <DocumentsLink /> : null}
+              {/* ADR-347 (W2 p4): Μέλη › «Σε κίνδυνο». */}
+              {can(membership, "view_members_at_risk") ? (
+                <Link
+                  href={adminHref("/admin/users/at-risk", organizationSlug)}
+                  className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold"
+                  style={{ background: "var(--panel)", border: "1px solid var(--border)", color: "var(--text-soft)" }}
+                  data-testid="users-at-risk-link"
+                >
+                  {t("atRiskLink")}
+                </Link>
+              ) : null}
               <InviteClientsButton />
             </>
           }

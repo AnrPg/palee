@@ -6,7 +6,7 @@ defmodule Palee.Infrastructure.Retention.EctoRiskStore do
   import Ecto.Query
 
   alias Palee.Repo
-  alias Palee.Retention.Risk
+  alias Palee.Retention.{Risk, RiskAction}
 
   @impl true
   def all(context), do: context |> scoped() |> Repo.all() |> Map.new(&{&1.user_id, &1})
@@ -28,6 +28,12 @@ defmodule Palee.Infrastructure.Retention.EctoRiskStore do
 
   @impl true
   def delete_except(context, user_ids) do
+    # ADR-384: a former box member's action log goes with their risk.
+    context
+    |> scoped_actions()
+    |> where([a], a.user_id not in ^user_ids)
+    |> Repo.delete_all()
+
     {count, _rows} =
       context |> scoped() |> where([r], r.user_id not in ^user_ids) |> Repo.delete_all()
 
@@ -61,6 +67,34 @@ defmodule Palee.Infrastructure.Retention.EctoRiskStore do
     |> Repo.all()
     |> Map.new()
   end
+
+  @impl true
+  def add_action(_context, user_id, attrs) do
+    %RiskAction{}
+    |> RiskAction.changeset(Map.put(attrs, :user_id, user_id))
+    |> Repo.insert()
+  end
+
+  @impl true
+  def actions(context, user_id, limit) do
+    case Ecto.UUID.cast(user_id) do
+      {:ok, id} ->
+        context
+        |> scoped_actions()
+        |> where([a], a.user_id == ^id)
+        |> order_by([a], desc: a.at, desc: a.id)
+        |> limit(^(limit |> min(100) |> max(1)))
+        |> Repo.all()
+
+      :error ->
+        []
+    end
+  end
+
+  defp scoped_actions(%{organization_id: organization_id}) when is_binary(organization_id),
+    do: from(a in RiskAction, where: a.organization_id == ^organization_id)
+
+  defp scoped_actions(_context), do: from(a in RiskAction, where: false)
 
   defp scoped(%{organization_id: organization_id}) when is_binary(organization_id),
     do: from(r in Risk, where: r.organization_id == ^organization_id)

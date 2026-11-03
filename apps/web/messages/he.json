@@ -103,7 +103,8 @@
     "socialApp": "חברתי",
     "shop": "חנות",
     "switchProfile": "החלפת פרופיל",
-    "spaces": "חללים"
+    "spaces": "חללים",
+    "leads": "מתעניינים"
   },
   "Profile": {
     "eyebrow": "פרופיל",
@@ -5241,7 +5242,8 @@
       "open": "פתיחת פרופיל",
       "roles": "תפקידים"
     },
-    "importLink": "ייבוא"
+    "importLink": "ייבוא",
+    "atRiskLink": "בסיכון"
   },
   "Onboarding": {
     "popupEyebrow": "ההגדרה לא הושלמה",
@@ -15747,5 +15749,338 @@
     "myPayEyebrow": "{period} · {status}",
     "myPayNote": "דוח שכר פנימי של המקום, לא תלוש רשמי. לשאלות פנה למקום.",
     "earlierPeriods": "תקופות קודמות"
+  },
+  "Leads": {
+    "withCount": "{label} ({count})",
+    "cardMeta": "{source} · {when}",
+    "due": {
+      "later": "{title} · {when}",
+      "late": "באיחור: {title}",
+      "today": "{title} · היום {when}"
+    },
+    "taskWhenWho": "{when} · {name}",
+    "byWhoWhen": "{name} · {when}",
+    "byPaleeWhen": "Palee · {when}",
+    "email": "Email",
+    "emailLabel": "Email",
+    "channel": {
+      "email": "Email",
+      "phone": "טלפון",
+      "message": "הודעה",
+      "in_person": "פנים אל פנים"
+    },
+    "source": {
+      "event": "Event",
+      "website_form": "אתר",
+      "form": "טופס הבוקס",
+      "join_link": "קישור הצטרפות",
+      "manual": "טלפון או הודעה",
+      "csv": "ייבוא",
+      "walk_in": "הגיע לבוקס",
+      "referral": "המלצה",
+      "around_me": "קרוב אליי",
+      "trial": "בקשה לאימון ניסיון",
+      "prospect_assistant": "העוזר של Palee"
+    },
+    "title": "מתעניינים",
+    "import": "ייבוא",
+    "newLead": "מתעניין חדש",
+    "viewLabel": "מתעניינים לפי שלב",
+    "stageLabel": "שלב",
+    "column": {
+      "open": "פתוחים",
+      "new": "חדשים",
+      "trial": "אימון ניסיון",
+      "offer": "הצעה",
+      "converted": "הפך לחבר",
+      "lost": "אבד"
+    },
+    "stage": {
+      "new": "חדש",
+      "trial": "אימון ניסיון",
+      "offer": "הצעה",
+      "converted": "הפך לחבר",
+      "lost": "אבד"
+    },
+    "empty": {
+      "new": "אין מתעניינים חדשים. פניות מדף הבוקס מגיעות לכאן.",
+      "trial": "אף אחד לא באימון ניסיון.",
+      "offer": "אין הצעות פתוחות.",
+      "converted": "עדיין אף אחד. מי שהופך לחבר נשאר כאן עם ההיסטוריה שלו.",
+      "lost": "אין כאן אף אחד."
+    },
+    "loading": "טוען…",
+    "ownerShort": "אחראי: {name}",
+    "noOwner": "ללא אחראי",
+    "noNextStep": "אין צעד הבא",
+    "convertedOn": "חבר מאז {when}",
+    "lostReason": {
+      "price": "מחיר",
+      "schedule": "שעות",
+      "location": "מיקום",
+      "no_answer": "לא ענה",
+      "chose_other": "בחר משהו אחר",
+      "not_interested": "לא מעוניין",
+      "other": "אחר"
+    },
+    "formNote": "הטופס בדף הבוקס שלך וקישורי ההצטרפות מביאים לכאן מתעניינים חדשים מעצמם.",
+    "copyLink": "העתקת הקישור לדף הבוקס",
+    "linkCopied": "הקישור הועתק",
+    "leadTitle": "מתעניין",
+    "more": "פעולות נוספות",
+    "optOut": "בלי חדשות והצעות יותר",
+    "reopen": "פתיחה מחדש",
+    "call": "התקשרות",
+    "contacted": "יצרתי קשר",
+    "note": "הערה",
+    "nextStep": "הצעד הבא",
+    "channelLabel": "איך",
+    "saveContacted": "תיעוד הקשר",
+    "addNote": "הוספת ההערה",
+    "taskTitle": "מה",
+    "taskPlaceholder": "למשל: שיחה ביום חמישי",
+    "taskDue": "מתי",
+    "addNextStep": "הוספת הצעד",
+    "converted": "הפך לחבר",
+    "lost": "אבד",
+    "convertWho": "מי זה מחברי הבוקס?",
+    "convertNoMatch": "אין חבר בבוקס בשם הזה.",
+    "convertHint": "ברגע שמתחילה חבילה לאימייל הזה, זה קורה מעצמו. ההיסטוריה נשארת.",
+    "convertSubmit": "קישור לחבר",
+    "lostWhy": "למה אבד?",
+    "lostSubmit": "סימון כאבד",
+    "cancel": "ביטול",
+    "save": "שמירה",
+    "close": "סגירה",
+    "phone": "נייד",
+    "message": "הודעה",
+    "interest": "מתעניין ב",
+    "interestOption": {
+      "trial": "אימון ניסיון",
+      "prices": "מחירים",
+      "other": "אחר"
+    },
+    "marketing": "חדשות והצעות",
+    "yes": "כן",
+    "no": "לא",
+    "owner": "אחראי",
+    "nextSteps": "{count, plural, one {צעד הבא אחד} two {שני צעדים הבאים} other {# צעדים הבאים}}",
+    "taskDone": "בוצע",
+    "history": "היסטוריה",
+    "event": {
+      "created": "הגיע מ: {source}",
+      "enquired_again": "שאל שוב: {source}",
+      "stage_changed": "שלב: {stage}",
+      "lost": "אבד: {reason}",
+      "contacted": "יצרתי קשר: {channel}",
+      "note": "הערה: {text}",
+      "task_added": "הצעד הבא: {title}",
+      "task_done": "בוצע: {title}",
+      "message_sent": "נשלחה הודעה אוטומטית: {recipe}",
+      "owner_changed": "האחראי השתנה",
+      "converted": "הפך לחבר",
+      "marketing_opted_out": "לא רוצה יותר חדשות והצעות",
+      "details_changed": "הפרטים השתנו"
+    },
+    "recipe": {
+      "welcome": "ברוכים הבאים",
+      "trial_follow_up": "אחרי אימון הניסיון",
+      "missed_classes": "התגעגענו",
+      "renewal_reminder": "תזכורת לחידוש",
+      "birthday": "יום הולדת",
+      "win_back": "החזרה"
+    },
+    "error": {
+      "lead_converted": "המתעניין הזה כבר הפך לחבר.",
+      "lead_task_done": "הצעד הזה כבר בוצע.",
+      "lead_person_not_in_box": "האדם הזה אינו חבר בבוקס.",
+      "lead_capture_conflict": "שומר. נסו שוב בעוד רגע."
+    },
+    "field": {
+      "required": "יש למלא את השדה.",
+      "noteRequired": "קודם כתבו את ההערה.",
+      "contactRequired": "הוסיפו נייד או אימייל.",
+      "emailInvalid": "האימייל הזה לא נראה נכון.",
+      "pickMember": "בחרו את החבר מהרשימה.",
+      "pickReason": "בחרו סיבה."
+    },
+    "name": "שם",
+    "sourceLabel": "מאיפה הגיע",
+    "marketingConsent": "רוצה לקבל חדשות והצעות",
+    "marketingConsentHint": "רק אם האדם אמר זאת בעצמו. בלי זה אנחנו עונים רק לפנייה שלו.",
+    "advanced": "מתקדם",
+    "campaign": "קמפיין",
+    "campaignPlaceholder": "למשל: עלון ספטמבר",
+    "importTitle": "ייבוא מקובץ",
+    "importPick": "בחרו קובץ CSV",
+    "importColumns": "עמודות: שם, אימייל, טלפון, הערה (ביוונית או באנגלית). עד {max} שורות.",
+    "importChecking": "בודק את הקובץ…",
+    "importCheckTitle": "בדיקה לפני הייבוא",
+    "importCheck": "{ready, plural, one {שורה אחת מוכנה} other {# שורות מוכנות}} · {invalid, plural, =0 {אין שגיאות} one {שורה אחת עם שגיאות תדולג} other {# שורות עם שגיאות ידולגו}}",
+    "importInvalidRows": "שורות עם שגיאות: {rows}",
+    "importRun": "{count, plural, =0 {ייבוא} one {ייבוא מתעניין אחד} other {ייבוא # מתעניינים}}",
+    "importDone": "{created, plural, one {# חדש} other {# חדשים}} · {existing, plural, one {# עודכן} other {# עודכנו}} · {invalid, plural, one {# דולג} other {# דולגו}}"
+  },
+  "AtRisk": {
+    "withCount": "{label} ({count})",
+    "byWhoWhen": "{name} · {when}",
+    "channel": {
+      "email": "Email",
+      "phone": "טלפון",
+      "message": "הודעה",
+      "in_person": "פנים אל פנים"
+    },
+    "title": "בסיכון",
+    "backToMembers": "חזרה",
+    "levelLabel": "רמת סיכון",
+    "all": "כולם",
+    "level": {
+      "high": "גבוה",
+      "medium": "בינוני",
+      "low": "נמוך"
+    },
+    "intro": "מתעדכן כל לילה מאימונים, הזמנות ותשלומים. החברים אף פעם לא רואים את זה.",
+    "empty": "כרגע אף אחד לא בסיכון.",
+    "winBackNote": "החזרה: כשמישהו מגיע לגבוה, ההודעה האוטומטית «החזרה» יוצאת רק אם הפעלת אותה.",
+    "automationsLink": "אוטומציות",
+    "unknownMember": "חבר בבוקס",
+    "reason": {
+      "attendance_drop": "מגיע לאחרונה {now, number} פעמים בשבוע, בדרך כלל {usual, number}",
+      "absent": "{days, plural, one {לא הגיע יום אחד} two {לא הגיע יומיים} other {לא הגיע # ימים}}",
+      "no_first_visit": "{days, plural, one {נרשם לפני יום ועוד לא הגיע} two {נרשם לפני יומיים ועוד לא הגיע} other {נרשם לפני # ימים ועוד לא הגיע}}",
+      "no_upcoming_bookings": "{days, plural, one {אין הזמנה ליום הקרוב} two {אין הזמנה ליומיים הקרובים} other {אין הזמנה ל-# הימים הקרובים}}",
+      "package_ending": "{days, plural, =0 {החבילה נגמרת היום} one {החבילה נגמרת בעוד יום} two {החבילה נגמרת בעוד יומיים} other {החבילה נגמרת בעוד # ימים}}",
+      "payment_overdue": "{count, plural, one {חשבונית אחת באיחור} other {# חשבוניות באיחור}}",
+      "many_cancellations": "{count, plural, one {ביטול אחד לאחרונה} other {# ביטולים לאחרונה}}",
+      "new_member_slow_start": "חבר חדש: {visits, plural, one {ביקור אחד} other {# ביקורים}} ב-{days} ימים"
+    },
+    "action": {
+      "personal_message": "שלחו הודעה אישית",
+      "renewal_offer": "הציעו חידוש",
+      "payment_follow_up": "הזכירו את התשלום",
+      "check_in_call": "התקשרו לשאול מה שלומו"
+    },
+    "contacted": "יצרתי קשר",
+    "contactedBy": "יצרתי קשר · {name} · {when}",
+    "contactedAt": "יצרתי קשר · {when}",
+    "later": "אחר כך",
+    "laterDays": "{days, plural, one {בעוד יום} two {בעוד יומיים} other {בעוד # ימים}}",
+    "todayTitle": "{count, plural, one {חבר אחד צריך הודעה} other {# חברים צריכים הודעה}}",
+    "todayAll": "כל מי שבסיכון",
+    "loading": "טוען…",
+    "why": "למה",
+    "since": "ברמה הזו מאז {when}",
+    "history": "היסטוריית פעולות",
+    "historyEmpty": "עדיין אף אחד לא עשה דבר.",
+    "log": {
+      "contacted": "יצרתי קשר: {channel}",
+      "snoozed": "אחר כך: חוזר לרשימה ב-{until}",
+      "unsnoozed": "חזר לרשימה"
+    },
+    "formerStaff": "איש צוות לשעבר",
+    "openProfile": "פתיחת הפרופיל"
+  },
+  "Automations": {
+    "sentLine": "{recipe} · {when}",
+    "channel": {
+      "email": "Email",
+      "sms": "SMS",
+      "in_app": "התראה"
+    },
+    "title": "אוטומציות",
+    "hubDescription": "הודעות מוכנות ש-Palee שולח בשם הבוקס: ברוכים הבאים, אחרי אימון ניסיון, חידוש ועוד.",
+    "intro": "הודעות מוכנות ש-Palee שולח בשם הבוקס. אף פעם לא בין 21:00 ל-09:00; מי שלא רוצה אותן מכבה אותן בהגדרות שלו.",
+    "sent": "הודעות שנשלחו",
+    "loading": "טוען…",
+    "recipe": {
+      "welcome": "ברוכים הבאים",
+      "trial_follow_up": "אחרי אימון הניסיון",
+      "missed_classes": "התגעגענו",
+      "renewal_reminder": "תזכורת לחידוש",
+      "birthday": "יום הולדת",
+      "win_back": "החזרה"
+    },
+    "when": {
+      "welcome": "כשמישהו הופך לחבר בבוקס",
+      "trial_follow_up": "אחרי אימון הניסיון הראשון",
+      "missed_classes": "{days, plural, one {אחרי יום בלי אימון} two {אחרי יומיים בלי אימון} other {אחרי # ימים בלי אימון}}",
+      "renewal_reminder": "{days, plural, one {יום לפני סוף החבילה} two {יומיים לפני סוף החבילה} other {# ימים לפני סוף החבילה}}",
+      "birthday": "ביום ההולדת, אם שותף",
+      "win_back": "כשמישהו נכנס ל«בסיכון»"
+    },
+    "sentCount": "ב-{days} ימים: {count, plural, one {נשלחה אחת} other {נשלחו #}}",
+    "switchLabel": "{name}: פעיל או לא",
+    "resetText": "שחזור הטקסט",
+    "cancel": "ביטול",
+    "save": "שמירה",
+    "enabled": "פעיל",
+    "setting": {
+      "missed_classes": "ימים בלי אימון",
+      "renewal_reminder": "ימים לפני סוף החבילה"
+    },
+    "field": {
+      "between": "מ-{min} עד {max}.",
+      "channels": "בחרו לפחות דרך אחת.",
+      "required": "יש למלא את השדה."
+    },
+    "how": "איך",
+    "channelsHint": "בסדר שנבחר: אם הראשונה לא מגיעה לאדם, משתמשים בבאה.",
+    "subject": "נושא",
+    "body": "טקסט",
+    "placeholders": "אפשר להשתמש ב-{list}. אם משאירים כך, כל אחד מקבל בשפה שלו.",
+    "preview": "תצוגה מקדימה",
+    "advanced": "מתקדם",
+    "delay": "המתנה לפני שליחה (דקות)",
+    "quietHours": "שעות שקט: 21:00–09:00 לפי השעה בבוקס.",
+    "sentEmpty": "עדיין אין הודעות אוטומטיות.",
+    "status": {
+      "pending": "ממתינה",
+      "sending": "נשלחת",
+      "sent": "נשלחה",
+      "skipped": "לא נשלחה",
+      "failed": "נכשלה",
+      "cancelled": "בוטלה"
+    }
+  },
+  "AutoMessages": {
+    "title": "הודעות אוטומטיות",
+    "description": "הודעות שהבוקס שלך שולח מעצמו: ברוכים הבאים, תזכורות, ברכות.",
+    "descriptionBox": "הודעות ש-{box} שולח מעצמו: ברוכים הבאים, תזכורות, ברכות.",
+    "loading": "טוען…",
+    "allLabel": "אני רוצה הודעות אוטומטיות",
+    "allHint": "הודעות חשובות (תשלומים, ביטולים) מגיעות תמיד.",
+    "birthday": "יום הולדת",
+    "birthdayHint": "אם תרצו ברכה מהבוקס, ספרו לנו יום וחודש. בלי שנה.",
+    "day": "יום",
+    "month": "חודש",
+    "birthdayClear": "לא לשתף",
+    "advanced": "מתקדם · לפי הודעה"
+  },
+  "LeadEnquiry": {
+    "title": "אני מתעניין",
+    "cardText": "רוצים לנסות את {box} או לשאול משהו? השאירו פרטים ויחזרו אליכם.",
+    "name": "שם",
+    "nameRequired": "כתבו את שמכם.",
+    "contact": "נייד או אימייל",
+    "contactRequired": "הוסיפו נייד או אימייל.",
+    "contactInvalid": "זה לא נראה כמו נייד או אימייל.",
+    "interest": "מה מעניין אתכם",
+    "interestOption": {
+      "trial": "אימון ניסיון",
+      "prices": "מחירים",
+      "other": "אחר"
+    },
+    "message": "הודעה",
+    "optional": "לא חובה",
+    "consentContact": "הבוקס רשאי ליצור איתי קשר בנוגע לפנייה הזו",
+    "privacy": "כך אנחנו משתמשים בנתונים שלך.",
+    "consentRequired": "סמנו כאן כדי שהבוקס יוכל לענות לכם.",
+    "consentMarketing": "אני רוצה חדשות והצעות מהבוקס",
+    "consentMarketingHint": "לא חובה. אפשר להפסיק בכל עת.",
+    "send": "שליחה",
+    "cancel": "ביטול",
+    "close": "סגירה",
+    "sentTitle": "התקבל!",
+    "sentBody": "{box} יחזרו אליכם בקרוב, בדרך כלל באותו יום."
   }
 }

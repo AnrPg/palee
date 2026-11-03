@@ -103,7 +103,8 @@
     "socialApp": "Social",
     "shop": "Κατάστημα",
     "switchProfile": "Αλλαγή προφίλ",
-    "spaces": "Χώροι"
+    "spaces": "Χώροι",
+    "leads": "Ενδιαφερόμενοι"
   },
   "Profile": {
     "eyebrow": "Λογαριασμός",
@@ -5241,7 +5242,8 @@
       "open": "Άνοιγμα προφίλ",
       "roles": "Ρόλοι"
     },
-    "importLink": "Εισαγωγή"
+    "importLink": "Εισαγωγή",
+    "atRiskLink": "Σε κίνδυνο"
   },
   "Onboarding": {
     "popupEyebrow": "Η ρύθμιση δεν ολοκληρώθηκε",
@@ -15747,5 +15749,338 @@
     "myPayEyebrow": "{period} · {status}",
     "myPayNote": "Εσωτερική κατάσταση αμοιβής του box, όχι μισθοδοσία. Για απορίες, ρώτησε το box.",
     "earlierPeriods": "Προηγούμενες περίοδοι"
+  },
+  "Leads": {
+    "withCount": "{label} ({count})",
+    "cardMeta": "{source} · {when}",
+    "due": {
+      "later": "{title} · {when}",
+      "late": "Καθυστερεί: {title}",
+      "today": "{title} · σήμερα {when}"
+    },
+    "taskWhenWho": "{when} · {name}",
+    "byWhoWhen": "{name} · {when}",
+    "byPaleeWhen": "Palee · {when}",
+    "email": "Email",
+    "emailLabel": "Email",
+    "channel": {
+      "email": "Email",
+      "phone": "Τηλέφωνο",
+      "message": "Μήνυμα",
+      "in_person": "Από κοντά"
+    },
+    "source": {
+      "event": "Event",
+      "website_form": "Ιστοσελίδα",
+      "form": "Φόρμα box",
+      "join_link": "Σύνδεσμος εγγραφής",
+      "manual": "Τηλέφωνο ή μήνυμα",
+      "csv": "Εισαγωγή",
+      "walk_in": "Ήρθε στο box",
+      "referral": "Σύσταση",
+      "around_me": "Γύρω μου",
+      "trial": "Αίτημα δοκιμαστικού",
+      "prospect_assistant": "Βοηθός Palee"
+    },
+    "title": "Ενδιαφερόμενοι",
+    "import": "Εισαγωγή",
+    "newLead": "Νέος ενδιαφερόμενος",
+    "viewLabel": "Ενδιαφερόμενοι ανά στάδιο",
+    "stageLabel": "Στάδιο",
+    "column": {
+      "open": "Ανοιχτοί",
+      "new": "Νέοι",
+      "trial": "Δοκιμή",
+      "offer": "Προσφορά",
+      "converted": "Έγινε μέλος",
+      "lost": "Χάθηκε"
+    },
+    "stage": {
+      "new": "Νέος",
+      "trial": "Δοκιμή",
+      "offer": "Προσφορά",
+      "converted": "Έγινε μέλος",
+      "lost": "Χάθηκε"
+    },
+    "empty": {
+      "new": "Κανένας νέος. Τα αιτήματα από τη σελίδα του box έρχονται εδώ.",
+      "trial": "Κανείς σε δοκιμή.",
+      "offer": "Καμία ανοιχτή προσφορά.",
+      "converted": "Κανείς ακόμα. Όσοι γίνουν μέλη μένουν εδώ με το ιστορικό τους.",
+      "lost": "Κανείς εδώ."
+    },
+    "loading": "Φόρτωση…",
+    "ownerShort": "Υπεύθυνος: {name}",
+    "noOwner": "Χωρίς υπεύθυνο",
+    "noNextStep": "Χωρίς επόμενη ενέργεια",
+    "convertedOn": "Μέλος από {when}",
+    "lostReason": {
+      "price": "Τιμή",
+      "schedule": "Ωράριο",
+      "location": "Τοποθεσία",
+      "no_answer": "Δεν απάντησε",
+      "chose_other": "Επέλεξε άλλο",
+      "not_interested": "Δεν ενδιαφέρεται",
+      "other": "Άλλο"
+    },
+    "formNote": "Η φόρμα στη σελίδα του box και οι σύνδεσμοι εγγραφής φέρνουν εδώ νέους μόνοι τους.",
+    "copyLink": "Αντιγραφή συνδέσμου",
+    "linkCopied": "Ο σύνδεσμος αντιγράφηκε",
+    "leadTitle": "Ενδιαφερόμενος",
+    "more": "Περισσότερα",
+    "optOut": "Όχι άλλα νέα και προσφορές",
+    "reopen": "Άνοιγμα ξανά",
+    "call": "Κλήση",
+    "contacted": "Επικοινώνησα",
+    "note": "Σημείωση",
+    "nextStep": "Επόμενη ενέργεια",
+    "channelLabel": "Πώς",
+    "saveContacted": "Καταγραφή επικοινωνίας",
+    "addNote": "Προσθήκη σημείωσης",
+    "taskTitle": "Τι",
+    "taskPlaceholder": "π.χ. Κλήση την Πέμπτη",
+    "taskDue": "Πότε",
+    "addNextStep": "Προσθήκη ενέργειας",
+    "converted": "Έγινε μέλος",
+    "lost": "Χάθηκε",
+    "convertWho": "Ποιο μέλος του box είναι;",
+    "convertNoMatch": "Κανένα μέλος του box με αυτό το όνομα.",
+    "convertHint": "Μόλις ενεργοποιηθεί πακέτο σε αυτό το email, γίνεται μόνο του. Το ιστορικό μένει.",
+    "convertSubmit": "Σύνδεση με το μέλος",
+    "lostWhy": "Γιατί χάθηκε;",
+    "lostSubmit": "Σήμανση ως «Χάθηκε»",
+    "cancel": "Άκυρο",
+    "save": "Αποθήκευση",
+    "close": "Κλείσιμο",
+    "phone": "Κινητό",
+    "message": "Μήνυμα",
+    "interest": "Ενδιαφέρον",
+    "interestOption": {
+      "trial": "Δοκιμαστική",
+      "prices": "Τιμές",
+      "other": "Άλλο"
+    },
+    "marketing": "Νέα και προσφορές",
+    "yes": "Ναι",
+    "no": "Όχι",
+    "owner": "Υπεύθυνος",
+    "nextSteps": "{count, plural, one {# επόμενη ενέργεια} other {# επόμενες ενέργειες}}",
+    "taskDone": "Έγινε",
+    "history": "Ιστορικό",
+    "event": {
+      "created": "Ήρθε από: {source}",
+      "enquired_again": "Ξαναρώτησε: {source}",
+      "stage_changed": "Στάδιο: {stage}",
+      "lost": "Χάθηκε: {reason}",
+      "contacted": "Επικοινώνησα: {channel}",
+      "note": "Σημείωση: {text}",
+      "task_added": "Επόμενη ενέργεια: {title}",
+      "task_done": "Έγινε: {title}",
+      "message_sent": "Στάλθηκε αυτόματο μήνυμα: {recipe}",
+      "owner_changed": "Άλλαξε ο υπεύθυνος",
+      "converted": "Έγινε μέλος",
+      "marketing_opted_out": "Δεν θέλει άλλα νέα και προσφορές",
+      "details_changed": "Άλλαξαν τα στοιχεία"
+    },
+    "recipe": {
+      "welcome": "Καλωσόρισμα",
+      "trial_follow_up": "Μετά τη δοκιμή",
+      "missed_classes": "Μας έλειψες",
+      "renewal_reminder": "Υπενθύμιση ανανέωσης",
+      "birthday": "Γενέθλια",
+      "win_back": "Επιστροφή"
+    },
+    "error": {
+      "lead_converted": "Αυτός ο ενδιαφερόμενος έγινε ήδη μέλος.",
+      "lead_task_done": "Αυτή η ενέργεια έχει ήδη γίνει.",
+      "lead_person_not_in_box": "Αυτό το άτομο δεν είναι μέλος του box.",
+      "lead_capture_conflict": "Αποθηκεύεται. Δοκίμασε ξανά σε λίγο."
+    },
+    "field": {
+      "required": "Συμπλήρωσέ το.",
+      "noteRequired": "Γράψε πρώτα τη σημείωση.",
+      "contactRequired": "Βάλε κινητό ή email.",
+      "emailInvalid": "Αυτό το email δεν φαίνεται σωστό.",
+      "pickMember": "Διάλεξε το μέλος από τη λίστα.",
+      "pickReason": "Διάλεξε έναν λόγο."
+    },
+    "name": "Όνομα",
+    "sourceLabel": "Από πού ήρθε",
+    "marketingConsent": "Θέλει να λαμβάνει νέα και προσφορές",
+    "marketingConsentHint": "Μόνο αν το είπε ο ίδιος. Χωρίς αυτό απαντάμε μόνο στο αίτημά του.",
+    "advanced": "Προχωρημένα",
+    "campaign": "Καμπάνια",
+    "campaignPlaceholder": "π.χ. φυλλάδιο Σεπτεμβρίου",
+    "importTitle": "Εισαγωγή από αρχείο",
+    "importPick": "Διάλεξε ένα αρχείο CSV",
+    "importColumns": "Στήλες: Όνομα, Email, Τηλέφωνο, Σημείωση (ελληνικά ή αγγλικά). Μέχρι {max} γραμμές.",
+    "importChecking": "Έλεγχος αρχείου…",
+    "importCheckTitle": "Έλεγχος πριν την εισαγωγή",
+    "importCheck": "{ready, plural, one {# γραμμή έτοιμη} other {# γραμμές έτοιμες}} · {invalid, plural, =0 {χωρίς λάθη} one {# γραμμή με λάθος παραλείπεται} other {# γραμμές με λάθος παραλείπονται}}",
+    "importInvalidRows": "Γραμμές με λάθος: {rows}",
+    "importRun": "{count, plural, =0 {Εισαγωγή} one {Εισαγωγή # ενδιαφερόμενου} other {Εισαγωγή # ενδιαφερομένων}}",
+    "importDone": "{created, plural, one {# νέος} other {# νέοι}} · {existing, plural, one {# ενημερώθηκε} other {# ενημερώθηκαν}} · {invalid, plural, one {# παραλείφθηκε} other {# παραλείφθηκαν}}"
+  },
+  "AtRisk": {
+    "withCount": "{label} ({count})",
+    "byWhoWhen": "{name} · {when}",
+    "channel": {
+      "email": "Email",
+      "phone": "Τηλέφωνο",
+      "message": "Μήνυμα",
+      "in_person": "Από κοντά"
+    },
+    "title": "Σε κίνδυνο",
+    "backToMembers": "Πίσω",
+    "levelLabel": "Επίπεδο κινδύνου",
+    "all": "Όλοι",
+    "level": {
+      "high": "Υψηλό",
+      "medium": "Μεσαίο",
+      "low": "Χαμηλό"
+    },
+    "intro": "Ενημερώνεται κάθε βράδυ από τις προπονήσεις, τις κρατήσεις και τις πληρωμές. Τα μέλη δεν το βλέπουν ποτέ.",
+    "empty": "Κανείς σε κίνδυνο αυτή τη στιγμή.",
+    "winBackNote": "Επιστροφή: όταν κάποιος μπαίνει στο Υψηλό, το αυτόματο μήνυμα «Επιστροφή» φεύγει μόνο αν το έχεις ενεργό.",
+    "automationsLink": "Αυτοματισμοί",
+    "unknownMember": "Μέλος του box",
+    "reason": {
+      "attendance_drop": "Έρχεται {now, number} φορές την εβδομάδα τελευταία, συνήθως {usual, number}",
+      "absent": "{days, plural, one {Δεν έχει έρθει # μέρα} other {Δεν έχει έρθει # μέρες}}",
+      "no_first_visit": "{days, plural, one {Γράφτηκε πριν # μέρα και δεν έχει έρθει ακόμα} other {Γράφτηκε πριν # μέρες και δεν έχει έρθει ακόμα}}",
+      "no_upcoming_bookings": "{days, plural, one {Καμία κράτηση για την επόμενη # μέρα} other {Καμία κράτηση για τις επόμενες # μέρες}}",
+      "package_ending": "{days, plural, =0 {Το πακέτο λήγει σήμερα} one {Το πακέτο λήγει σε # μέρα} other {Το πακέτο λήγει σε # μέρες}}",
+      "payment_overdue": "{count, plural, one {# ληξιπρόθεσμο τιμολόγιο} other {# ληξιπρόθεσμα τιμολόγια}}",
+      "many_cancellations": "{count, plural, one {# ακύρωση τελευταία} other {# ακυρώσεις τελευταία}}",
+      "new_member_slow_start": "Νέο μέλος: {visits, plural, one {# επίσκεψη} other {# επισκέψεις}} σε {days} μέρες"
+    },
+    "action": {
+      "personal_message": "Στείλε ένα προσωπικό μήνυμα",
+      "renewal_offer": "Πρότεινε ανανέωση",
+      "payment_follow_up": "Θύμισε την πληρωμή",
+      "check_in_call": "Πάρε ένα τηλέφωνο"
+    },
+    "contacted": "Επικοινώνησα",
+    "contactedBy": "Επικοινώνησα · {name} · {when}",
+    "contactedAt": "Επικοινώνησα · {when}",
+    "later": "Αργότερα",
+    "laterDays": "{days, plural, one {Σε # μέρα} other {Σε # μέρες}}",
+    "todayTitle": "{count, plural, one {# μέλος χρειάζεται ένα μήνυμα} other {# μέλη χρειάζονται ένα μήνυμα}}",
+    "todayAll": "Όλοι σε κίνδυνο",
+    "loading": "Φόρτωση…",
+    "why": "Γιατί",
+    "since": "Σε αυτό το επίπεδο από {when}",
+    "history": "Ιστορικό ενεργειών",
+    "historyEmpty": "Δεν έχει γίνει καμία ενέργεια ακόμα.",
+    "log": {
+      "contacted": "Επικοινώνησα: {channel}",
+      "snoozed": "Αργότερα: ξανά στη λίστα στις {until}",
+      "unsnoozed": "Ξανά στη λίστα"
+    },
+    "formerStaff": "Πρώην μέλος του προσωπικού",
+    "openProfile": "Άνοιγμα προφίλ"
+  },
+  "Automations": {
+    "sentLine": "{recipe} · {when}",
+    "channel": {
+      "email": "Email",
+      "sms": "SMS",
+      "in_app": "Ειδοποίηση"
+    },
+    "title": "Αυτοματισμοί",
+    "hubDescription": "Έτοιμα μηνύματα που στέλνει η Palee για το box: καλωσόρισμα, μετά τη δοκιμή, ανανέωση και άλλα.",
+    "intro": "Έτοιμα μηνύματα που στέλνει η Palee για το box. Ποτέ μετά τις 21:00 ή πριν τις 09:00· όποιος δεν τα θέλει τα κλείνει από τις ρυθμίσεις του.",
+    "sent": "Απεσταλμένα",
+    "loading": "Φόρτωση…",
+    "recipe": {
+      "welcome": "Καλωσόρισμα",
+      "trial_follow_up": "Μετά τη δοκιμή",
+      "missed_classes": "Μας έλειψες",
+      "renewal_reminder": "Υπενθύμιση ανανέωσης",
+      "birthday": "Γενέθλια",
+      "win_back": "Επιστροφή"
+    },
+    "when": {
+      "welcome": "Όταν κάποιος γίνεται μέλος του box",
+      "trial_follow_up": "Μετά την πρώτη δοκιμαστική προπόνηση",
+      "missed_classes": "{days, plural, one {Όταν δεν έρχεται για # μέρα} other {Όταν δεν έρχεται για # μέρες}}",
+      "renewal_reminder": "{days, plural, one {# μέρα πριν λήξει το πακέτο} other {# μέρες πριν λήξει το πακέτο}}",
+      "birthday": "Στα γενέθλια, όσων τα έχουν πει",
+      "win_back": "Όταν κάποιος μπαίνει «Σε κίνδυνο»"
+    },
+    "sentCount": "{days} μέρες: {count, plural, one {στάλθηκε #} other {στάλθηκαν #}}",
+    "switchLabel": "{name}: ενεργό ή όχι",
+    "resetText": "Επαναφορά κειμένου",
+    "cancel": "Άκυρο",
+    "save": "Αποθήκευση",
+    "enabled": "Ενεργό",
+    "setting": {
+      "missed_classes": "Μέρες χωρίς προπόνηση",
+      "renewal_reminder": "Μέρες πριν τη λήξη του πακέτου"
+    },
+    "field": {
+      "between": "Από {min} έως {max}.",
+      "channels": "Διάλεξε τουλάχιστον έναν τρόπο.",
+      "required": "Συμπλήρωσέ το."
+    },
+    "how": "Πώς",
+    "channelsHint": "Με τη σειρά που τα διάλεξες: αν δεν φτάνει με το πρώτο, πάει με το επόμενο.",
+    "subject": "Θέμα",
+    "body": "Κείμενο",
+    "placeholders": "Μπορείς να βάλεις {list}. Αν το αφήσεις όπως είναι, ο καθένας το λαμβάνει στη γλώσσα του.",
+    "preview": "Προεπισκόπηση",
+    "advanced": "Προχωρημένα",
+    "delay": "Αναμονή πριν την αποστολή (λεπτά)",
+    "quietHours": "Ώρες ησυχίας: 21:00–09:00 με την ώρα του box.",
+    "sentEmpty": "Κανένα αυτόματο μήνυμα ακόμα.",
+    "status": {
+      "pending": "Σε αναμονή",
+      "sending": "Αποστέλλεται",
+      "sent": "Στάλθηκε",
+      "skipped": "Δεν στάλθηκε",
+      "failed": "Απέτυχε",
+      "cancelled": "Ακυρώθηκε"
+    }
+  },
+  "AutoMessages": {
+    "title": "Αυτόματα μηνύματα",
+    "description": "Μηνύματα που στέλνει το box σου μόνο του: καλωσόρισμα, υπενθυμίσεις, ευχές.",
+    "descriptionBox": "Μηνύματα που στέλνει το {box} μόνο του: καλωσόρισμα, υπενθυμίσεις, ευχές.",
+    "loading": "Φόρτωση…",
+    "allLabel": "Θέλω αυτόματα μηνύματα",
+    "allHint": "Τα σημαντικά (πληρωμές, ακυρώσεις) έρχονται πάντα.",
+    "birthday": "Γενέθλια",
+    "birthdayHint": "Αν θες ευχές από το box, πες μας μέρα και μήνα. Χωρίς έτος.",
+    "day": "Μέρα",
+    "month": "Μήνας",
+    "birthdayClear": "Να μην το ξέρει το box",
+    "advanced": "Προχωρημένα · ανά μήνυμα"
+  },
+  "LeadEnquiry": {
+    "title": "Ενδιαφέρομαι",
+    "cardText": "Θες να δοκιμάσεις το {box} ή να ρωτήσεις κάτι; Άφησε τα στοιχεία σου και θα σου απαντήσουν.",
+    "name": "Όνομα",
+    "nameRequired": "Γράψε το όνομά σου.",
+    "contact": "Κινητό ή email",
+    "contactRequired": "Βάλε κινητό ή email.",
+    "contactInvalid": "Δεν μοιάζει με κινητό ή email.",
+    "interest": "Τι σε ενδιαφέρει",
+    "interestOption": {
+      "trial": "Δοκιμαστική",
+      "prices": "Τιμές",
+      "other": "Άλλο"
+    },
+    "message": "Μήνυμα",
+    "optional": "προαιρετικό",
+    "consentContact": "Να επικοινωνήσει μαζί μου το box για αυτό το αίτημα",
+    "privacy": "Δες πώς χρησιμοποιούμε τα στοιχεία σου.",
+    "consentRequired": "Τσέκαρέ το για να μπορεί να σου απαντήσει το box.",
+    "consentMarketing": "Θέλω να μαθαίνω νέα και προσφορές του box",
+    "consentMarketingHint": "Προαιρετικό. Το σταματάς όποτε θες.",
+    "send": "Στείλε",
+    "cancel": "Άκυρο",
+    "close": "Κλείσιμο",
+    "sentTitle": "Το λάβαμε!",
+    "sentBody": "Το {box} θα σου απαντήσει σύντομα, συνήθως την ίδια μέρα."
   }
 }

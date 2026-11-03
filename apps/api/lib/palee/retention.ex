@@ -22,11 +22,14 @@ defmodule Palee.Retention do
   defdelegate delete_except(context, user_ids), to: RiskStore
   defdelegate list(context, filters), to: RiskStore
   defdelegate level_counts(context), to: RiskStore
+  defdelegate add_action(context, user_id, attrs), to: RiskStore
+  defdelegate actions(context, user_id, limit), to: RiskStore
   defdelegate signals(context, today, now), to: SignalReader
   defdelegate score(signals), to: RiskScore
   defdelegate levels(), to: RiskScore
   defdelegate reason_codes(), to: RiskScore
   defdelegate actions(), to: RiskScore
+  defdelegate action_kinds(), to: Palee.Retention.RiskAction, as: :kinds
 
   def tenant_data_policy, do: Palee.Retention.Domain.TenantDataPolicy.policy()
 
