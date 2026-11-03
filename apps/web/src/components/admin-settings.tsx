@@ -34,6 +34,7 @@ import { TrialsLink } from "@/components/admin/trials/TrialsLink";
 import { CommunitySettingsLink } from "@/components/admin/community/CommunitySettings";
 import { CheckInSettingsLink } from "@/components/check-in/CheckInSettings";
 import { FiscalIdentityLink } from "@/components/fiscal/FiscalIdentityLink";
+import { SmsConnectionSettings } from "@/components/channels/SmsConnectionSettings";
 import { SpacesSettingsLink } from "@/components/spaces/SpacesSettings";
 import { BoxScreensSettingsLink } from "@/components/box-screen/BoxScreensSettings";
 import { RoleAccessSettings } from "@/components/admin/RoleAccessSettings";
@@ -1173,6 +1174,7 @@ function PlanSection({ token }: { token: string }) {
 export function AdminSettingsHub() {
   const i18n = useUiTranslations();
   const paymentsT = useTranslations("OnlinePayments");
+  const smsT = useTranslations("Sms");
   const adv = useTranslations("AdvancedSettings");
   const { tokens, currentUser } = useSession();
   const token = tokens?.access_token;
@@ -1258,6 +1260,13 @@ export function AdminSettingsHub() {
                 <Suspense>
                   <OnlinePaymentsSettings token={token} />
                 </Suspense>
+              </CollapsibleSection>
+            ) : null}
+
+            {/* W3 screen 1 A (ADR-348/349): Ρυθμίσεις › Συνδέσεις › Μηνύματα SMS. */}
+            {can(membership, "manage_settings") ? (
+              <CollapsibleSection id="connections" title={smsT("connectionsTitle")} description={smsT("connectionsDescription")} defaultOpen={false}>
+                <SmsConnectionSettings token={token} />
               </CollapsibleSection>
             ) : null}
 

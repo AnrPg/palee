@@ -87,6 +87,8 @@ defmodule Palee.Channels do
   defdelegate get_message(context, id), to: Sending, as: :get
   defdelegate list_messages(context, filters), to: Sending, as: :list
   defdelegate usage(context, month, env), to: Sending
+  defdelegate unit_price(context, channel, purpose), to: Sending
+  defdelegate spent_on(context, source_ref), to: Sending
   defdelegate handle_webhook(context, token, request, now), to: Sending
 
   # ADR-117 reviewed tenant export/purge.

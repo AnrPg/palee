@@ -318,6 +318,9 @@ push is not enough.
 | Palee margin | Περιθώριο Palee | `channel_platform_settings.margins_bps` | What Palee adds to the provider's cost of a message it sends on its own account, set per channel by the Palee team (ADR-369). Never shown to the box as a separate number. | Platform plan price; the box's own account (no margin). |
 | Message price | Κόστος μηνύματος | `estimated_cost_cents` | What the box sees and pays for one message: the provider's cost plus the Palee margin on Palee's account, the provider's cost alone on the box's own. | Provider cost (Palee team only). |
 | Monthly message charge | Χρέωση μηνυμάτων μήνα | `palee_charge_cents`, `GET /api/platform/organizations/:id/channel-charges` | What Palee charges the box for the month's messages sent on Palee's account. | Monthly message budget (the cap). |
+| Update participants | Ενημέρωση συμμετεχόντων | `POST /admin/channels/class-notices` | From a class in the schedule, staff tell everyone booked what happened (cancelled, new time, own text): the app notification first, SMS only for those without the app who agreed (ADR-385). | Μήνυμα in Μηνύματα; an automation. |
+| SMS for this event | SMS για αυτό το event | `community_events.sms_enabled` | The organiser's per-event switch: on, those who ticked SMS at «Θα έρθω» get the reminder and changes by SMS; off, only the app (ADR-385). | The box's SMS switch in Ρυθμίσεις › Συνδέσεις. |
+| Connections (settings) | Συνδέσεις | `admin-settings#connections` | The settings section that holds «Μηνύματα SMS» and «Δικός μου πάροχος email» (ADR-385). | Fiscal connections in «Στοιχεία τιμολόγησης». |
 
 ### 4.6a Class booking rules (ADR-226)
 

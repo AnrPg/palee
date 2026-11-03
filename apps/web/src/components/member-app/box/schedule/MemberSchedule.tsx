@@ -1,5 +1,6 @@
 "use client";
 
+import { AfterBookingSmsAsk } from "@/components/channels/AfterBookingSmsAsk";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
@@ -232,6 +233,8 @@ export function MemberSchedule({ initialOpenSlotId = null }: { initialOpenSlotId
     },
   ];
 
+  const [askSms, setAskSms] = useState(false);
+
   async function book(slot: ScheduleSlot) {
     setBusy(true);
     setActionError(null);
@@ -241,6 +244,8 @@ export function MemberSchedule({ initialOpenSlotId = null }: { initialOpenSlotId
       setNotice(outcome.status === "queued" ? i18n("outboxQueuedNotice") : null);
       setOpenSlotId(null);
       setDocumentsGate(null);
+      // W3 screen 2 B: once, after the booking, ask about SMS for cancellations.
+      setAskSms(true);
       if (outcome.status === "delivered") reload();
     } catch (error) {
       const gate = documentsRequired(error);
@@ -406,6 +411,8 @@ export function MemberSchedule({ initialOpenSlotId = null }: { initialOpenSlotId
           }}
         />
       ) : null}
+
+      {askSms && membership ? <AfterBookingSmsAsk slug={membership.organization.slug} onDone={() => setAskSms(false)} /> : null}
 
       {payFor && membership ? (
         <BuyPackageSheet

@@ -67,13 +67,19 @@ defmodule PaleeWeb.Schemas.Channels do
         to: %Schema{type: :string, format: :"date-time"},
         spent_cents: %Schema{type: :integer},
         messages: %Schema{type: :integer},
-        by_channel: %Schema{
+        segments: %Schema{
+          type: :integer,
+          description: "ADR-385: SMS parts of the counted messages"
+        },
+        by_channel: spend_map(),
+        by_source: %Schema{
+          spend_map()
+          | description: "ADR-385: spend by who sent (`automation`, `staff`, `system`)"
+        },
+        by_status: %Schema{
           type: :object,
-          additionalProperties: %Schema{
-            type: :object,
-            properties: %{cents: %Schema{type: :integer}, count: %Schema{type: :integer}},
-            required: [:cents, :count]
-          }
+          description: "ADR-385: every message of the month by state, charged or not",
+          additionalProperties: %Schema{type: :integer}
         },
         cap_cents: %Schema{type: :integer, nullable: true},
         currency: %Schema{type: :string},
@@ -85,7 +91,29 @@ defmodule PaleeWeb.Schemas.Channels do
               "at the box's price)"
         }
       },
-      required: [:by_channel, :currency, :from, :messages, :palee_charge_cents, :spent_cents, :to]
+      required: [
+        :by_channel,
+        :by_source,
+        :by_status,
+        :currency,
+        :from,
+        :messages,
+        :palee_charge_cents,
+        :segments,
+        :spent_cents,
+        :to
+      ]
+    }
+  end
+
+  defp spend_map do
+    %Schema{
+      type: :object,
+      additionalProperties: %Schema{
+        type: :object,
+        properties: %{cents: %Schema{type: :integer}, count: %Schema{type: :integer}},
+        required: [:cents, :count]
+      }
     }
   end
 
@@ -384,6 +412,103 @@ defmodule PaleeWeb.Schemas.Channels do
         :held_for_quiet_hours,
         :release_at,
         :segments
+      ]
+    }
+  end
+
+  @doc "ADR-385: «Ενημέρωση συμμετεχόντων» of a class."
+  def class_notice_body do
+    %Schema{
+      type: :object,
+      additionalProperties: false,
+      properties: %{
+        slot_id: %Schema{type: :string, format: :uuid},
+        kind: %Schema{type: :string, enum: ["cancelled", "changed", "free"]},
+        text: %Schema{
+          type: :string,
+          maxLength: 300,
+          description: "The staff's own words; required for `free`"
+        },
+        urgent: %Schema{
+          type: :boolean,
+          description: "`free` only: send now, even in quiet hours"
+        },
+        locale: %Schema{type: :string, maxLength: 10, description: "Language of the app notice"},
+        idempotency_key: %Schema{
+          type: :string,
+          maxLength: 80,
+          description: "Sending only: the same key never sends twice"
+        }
+      },
+      required: [:kind, :slot_id]
+    }
+  end
+
+  def class_notice do
+    %Schema{
+      type: :object,
+      description:
+        "Who learns of it: in the app (a push device), by SMS (the rest, with consent) " <>
+          "or no way, and what the SMS cost.",
+      properties: %{
+        slot_id: @uuid,
+        kind: %Schema{type: :string, enum: ["cancelled", "changed", "free"]},
+        urgent: %Schema{type: :boolean},
+        participants: %Schema{type: :integer},
+        in_app: %Schema{type: :integer},
+        sms: %Schema{type: :integer},
+        unreachable: %Schema{type: :integer},
+        unreachable_reasons: %Schema{
+          type: :object,
+          description: "Why, by error code (`channel_consent_missing`…)",
+          additionalProperties: %Schema{type: :integer}
+        },
+        estimated_cost_cents: %Schema{type: :integer},
+        currency: %Schema{type: :string},
+        budget: %Schema{
+          type: :object,
+          nullable: true,
+          properties: %{
+            spent_cents: %Schema{type: :integer},
+            cap_cents: %Schema{type: :integer},
+            currency: %Schema{type: :string}
+          },
+          required: [:cap_cents, :currency, :spent_cents]
+        },
+        sample: %Schema{
+          type: :object,
+          nullable: true,
+          description: "The first SMS: its text, parts and when it leaves",
+          properties: %{
+            body: %Schema{type: :string},
+            segments: %Schema{type: :integer},
+            release_at: %Schema{type: :string, format: :"date-time"},
+            held_for_quiet_hours: %Schema{type: :boolean}
+          },
+          required: [:body, :held_for_quiet_hours, :release_at, :segments]
+        },
+        sms_blocked: %Schema{
+          type: :string,
+          nullable: true,
+          description:
+            "The box's own reason no SMS can go (`channels_demo_mode`, " <>
+              "`channels_not_connected`, `channel_budget_exceeded`…)"
+        }
+      },
+      required: [
+        :budget,
+        :currency,
+        :estimated_cost_cents,
+        :in_app,
+        :kind,
+        :participants,
+        :sample,
+        :slot_id,
+        :sms,
+        :sms_blocked,
+        :unreachable,
+        :unreachable_reasons,
+        :urgent
       ]
     }
   end

@@ -12,6 +12,13 @@ import { useUiTranslations } from "@/i18n/ui";
 
 import { dateBlock, eventErrorKey, formatPrice, formatTime, isLateCancel, placeName, rsvpState } from "./events";
 import { useRsvp } from "./use-events";
+import { ApiError } from "@/api/client";
+import { smsLocale } from "@/components/channels/sms";
+
+/** A wrong mobile at «Θα έρθω»: nothing was booked, the reason goes under the field. */
+export function rsvpPhoneInvalid(error: unknown): boolean {
+  return error instanceof ApiError && Boolean(error.payload.errors?.phone);
+}
 
 /** An event API error in words: the events' own copy, else the shared error map. */
 export function useEventError() {
@@ -150,6 +157,8 @@ export function RsvpButton({
   const eventError = useEventError();
   const rsvp = useRsvp(event.id, inviteToken);
   const [confirmLate, setConfirmLate] = useState(false);
+  const [smsTicked, setSmsTicked] = useState(false);
+  const [smsPhone, setSmsPhone] = useState("");
   const state = rsvpState(event);
   const price = formatPrice(event.price_cents, event.currency, locale);
   const pill = "flex min-h-11 items-center justify-center rounded-2xl px-4 text-sm font-bold disabled:opacity-50";
@@ -159,13 +168,19 @@ export function RsvpButton({
     else rsvp.mutate(false);
   }
 
+  // W3 screen 5 A (ADR-385): the SMS box on «Θα έρθω», never ticked by itself;
+  // the number field appears only once it is ticked.
+  const askSms = !compact && event.sms_offered && (state === "join" || state === "join_waitlist");
+  const phoneError = smsTicked && rsvpPhoneInvalid(rsvp.error) ? t("smsPhoneInvalid") : null;
+  const join = () => rsvp.mutate(askSms && smsTicked ? { going: true, sms: { phone: smsPhone.trim(), locale: smsLocale(locale) } } : true);
+
   let control: React.ReactNode;
   if (state === "join" || state === "join_waitlist") {
     control = (
       <button
         type="button"
-        disabled={rsvp.isPending}
-        onClick={() => rsvp.mutate(true)}
+        disabled={rsvp.isPending || (askSms && smsTicked && smsPhone.trim() === "")}
+        onClick={join}
         className={`${pill} ${compact ? "" : "flex-1"}`}
         style={
           state === "join"
@@ -206,8 +221,37 @@ export function RsvpButton({
 
   return (
     <>
+      {askSms ? (
+        <div className="flex w-full flex-col gap-2" data-testid="rsvp-sms">
+          <label className="flex items-start gap-3 text-sm" style={{ color: "var(--text)" }}>
+            <input type="checkbox" className="mt-1 h-4 w-4" checked={smsTicked} onChange={(change) => setSmsTicked(change.target.checked)} />
+            <span>
+              <b>{t("smsAsk")}</b>
+              <span className="block text-xs" style={{ color: "var(--dim)" }}>{t("smsAskHint")}</span>
+            </span>
+          </label>
+          {smsTicked ? (
+            <>
+              <input
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel"
+                aria-label={t("smsPhone")}
+                placeholder="+30 69…"
+                value={smsPhone}
+                aria-invalid={Boolean(phoneError)}
+                aria-describedby={phoneError ? `rsvp-phone-error-${event.id}` : undefined}
+                onChange={(change) => setSmsPhone(change.target.value)}
+                className="rounded-xl px-3 py-2 text-sm"
+                style={{ background: "var(--panel)", color: "var(--text)", border: `1px solid ${phoneError ? "var(--danger)" : "var(--border)"}` }}
+              />
+              {phoneError ? <p id={`rsvp-phone-error-${event.id}`} className="text-xs" style={{ color: "var(--danger-strong)" }}>{phoneError}</p> : null}
+            </>
+          ) : null}
+        </div>
+      ) : null}
       {control}
-      {!compact || rsvp.error ? <ErrorLine message={eventError(rsvp.error)} /> : null}
+      {(!compact || rsvp.error) && !phoneError ? <ErrorLine message={eventError(rsvp.error)} /> : null}
       {confirmLate ? (
         <Sheet
           labelId={["late-cancel", event.id].join("-")}

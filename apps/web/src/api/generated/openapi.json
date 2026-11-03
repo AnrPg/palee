@@ -2823,6 +2823,14 @@
                 "nullable": true,
                 "type": "string"
               },
+              "sms_enabled": {
+                "description": "ADR-385: the organiser's SMS switch for this event",
+                "type": "boolean"
+              },
+              "sms_offered": {
+                "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                "type": "boolean"
+              },
               "spots_left": {
                 "description": "Null: no limit",
                 "nullable": true,
@@ -2871,7 +2879,9 @@
               "host",
               "cohosts",
               "can_rsvp",
-              "can_manage"
+              "can_manage",
+              "sms_enabled",
+              "sms_offered"
             ],
             "title": "CommunityEvent",
             "type": "object"
@@ -3309,6 +3319,14 @@
                       "nullable": true,
                       "type": "string"
                     },
+                    "sms_enabled": {
+                      "description": "ADR-385: the organiser's SMS switch for this event",
+                      "type": "boolean"
+                    },
+                    "sms_offered": {
+                      "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                      "type": "boolean"
+                    },
                     "spots_left": {
                       "description": "Null: no limit",
                       "nullable": true,
@@ -3357,7 +3375,9 @@
                     "host",
                     "cohosts",
                     "can_rsvp",
-                    "can_manage"
+                    "can_manage",
+                    "sms_enabled",
+                    "sms_offered"
                   ],
                   "title": "CommunityEvent",
                   "type": "object"
@@ -4119,6 +4139,14 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "sms_enabled": {
+                          "description": "ADR-385: the organiser's SMS switch for this event",
+                          "type": "boolean"
+                        },
+                        "sms_offered": {
+                          "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                          "type": "boolean"
+                        },
                         "spots_left": {
                           "description": "Null: no limit",
                           "nullable": true,
@@ -4167,7 +4195,9 @@
                         "host",
                         "cohosts",
                         "can_rsvp",
-                        "can_manage"
+                        "can_manage",
+                        "sms_enabled",
+                        "sms_offered"
                       ],
                       "title": "CommunityEvent",
                       "type": "object"
@@ -5022,6 +5052,14 @@
                               "nullable": true,
                               "type": "string"
                             },
+                            "sms_enabled": {
+                              "description": "ADR-385: the organiser's SMS switch for this event",
+                              "type": "boolean"
+                            },
+                            "sms_offered": {
+                              "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                              "type": "boolean"
+                            },
                             "spots_left": {
                               "description": "Null: no limit",
                               "nullable": true,
@@ -5070,7 +5108,9 @@
                             "host",
                             "cohosts",
                             "can_rsvp",
-                            "can_manage"
+                            "can_manage",
+                            "sms_enabled",
+                            "sms_offered"
                           ],
                           "title": "CommunityPostEvent",
                           "type": "object"
@@ -6440,6 +6480,14 @@
                     "nullable": true,
                     "type": "string"
                   },
+                  "sms_enabled": {
+                    "description": "ADR-385: the organiser's SMS switch for this event",
+                    "type": "boolean"
+                  },
+                  "sms_offered": {
+                    "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                    "type": "boolean"
+                  },
                   "spots_left": {
                     "description": "Null: no limit",
                     "nullable": true,
@@ -6488,7 +6536,9 @@
                   "host",
                   "cohosts",
                   "can_rsvp",
-                  "can_manage"
+                  "can_manage",
+                  "sms_enabled",
+                  "sms_offered"
                 ],
                 "title": "CommunityPostEvent",
                 "type": "object"
@@ -7300,6 +7350,14 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "sms_enabled": {
+                          "description": "ADR-385: the organiser's SMS switch for this event",
+                          "type": "boolean"
+                        },
+                        "sms_offered": {
+                          "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                          "type": "boolean"
+                        },
                         "spots_left": {
                           "description": "Null: no limit",
                           "nullable": true,
@@ -7348,7 +7406,9 @@
                         "host",
                         "cohosts",
                         "can_rsvp",
-                        "can_manage"
+                        "can_manage",
+                        "sms_enabled",
+                        "sms_offered"
                       ],
                       "title": "CommunityPostEvent",
                       "type": "object"
@@ -8768,6 +8828,14 @@
                               "nullable": true,
                               "type": "string"
                             },
+                            "sms_enabled": {
+                              "description": "ADR-385: the organiser's SMS switch for this event",
+                              "type": "boolean"
+                            },
+                            "sms_offered": {
+                              "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                              "type": "boolean"
+                            },
                             "spots_left": {
                               "description": "Null: no limit",
                               "nullable": true,
@@ -8816,7 +8884,9 @@
                             "host",
                             "cohosts",
                             "can_rsvp",
-                            "can_manage"
+                            "can_manage",
+                            "sms_enabled",
+                            "sms_offered"
                           ],
                           "title": "CommunityEvent",
                           "type": "object"
@@ -9400,6 +9470,14 @@
                                   "nullable": true,
                                   "type": "string"
                                 },
+                                "sms_enabled": {
+                                  "description": "ADR-385: the organiser's SMS switch for this event",
+                                  "type": "boolean"
+                                },
+                                "sms_offered": {
+                                  "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                                  "type": "boolean"
+                                },
                                 "spots_left": {
                                   "description": "Null: no limit",
                                   "nullable": true,
@@ -9448,7 +9526,9 @@
                                 "host",
                                 "cohosts",
                                 "can_rsvp",
-                                "can_manage"
+                                "can_manage",
+                                "sms_enabled",
+                                "sms_offered"
                               ],
                               "title": "CommunityPostEvent",
                               "type": "object"
@@ -10547,6 +10627,14 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "sms_enabled": {
+                          "description": "ADR-385: the organiser's SMS switch for this event",
+                          "type": "boolean"
+                        },
+                        "sms_offered": {
+                          "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                          "type": "boolean"
+                        },
                         "spots_left": {
                           "description": "Null: no limit",
                           "nullable": true,
@@ -10595,7 +10683,9 @@
                         "host",
                         "cohosts",
                         "can_rsvp",
-                        "can_manage"
+                        "can_manage",
+                        "sms_enabled",
+                        "sms_offered"
                       ],
                       "title": "CommunityEvent",
                       "type": "object"
@@ -11179,6 +11269,14 @@
                               "nullable": true,
                               "type": "string"
                             },
+                            "sms_enabled": {
+                              "description": "ADR-385: the organiser's SMS switch for this event",
+                              "type": "boolean"
+                            },
+                            "sms_offered": {
+                              "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                              "type": "boolean"
+                            },
                             "spots_left": {
                               "description": "Null: no limit",
                               "nullable": true,
@@ -11227,7 +11325,9 @@
                             "host",
                             "cohosts",
                             "can_rsvp",
-                            "can_manage"
+                            "can_manage",
+                            "sms_enabled",
+                            "sms_offered"
                           ],
                           "title": "CommunityPostEvent",
                           "type": "object"
@@ -29059,6 +29159,14 @@
             "nullable": true,
             "type": "string"
           },
+          "sms_enabled": {
+            "description": "ADR-385: the organiser's SMS switch for this event",
+            "type": "boolean"
+          },
+          "sms_offered": {
+            "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+            "type": "boolean"
+          },
           "spots_left": {
             "description": "Null: no limit",
             "nullable": true,
@@ -29107,7 +29215,9 @@
           "host",
           "cohosts",
           "can_rsvp",
-          "can_manage"
+          "can_manage",
+          "sms_enabled",
+          "sms_offered"
         ],
         "title": "CommunityEvent",
         "type": "object"
@@ -31108,6 +31218,14 @@
                 "nullable": true,
                 "type": "string"
               },
+              "sms_enabled": {
+                "description": "ADR-385: the organiser's SMS switch for this event",
+                "type": "boolean"
+              },
+              "sms_offered": {
+                "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                "type": "boolean"
+              },
               "spots_left": {
                 "description": "Null: no limit",
                 "nullable": true,
@@ -31156,7 +31274,9 @@
               "host",
               "cohosts",
               "can_rsvp",
-              "can_manage"
+              "can_manage",
+              "sms_enabled",
+              "sms_offered"
             ],
             "title": "CommunityEvent",
             "type": "object"
@@ -31694,6 +31814,10 @@
             "format": "date",
             "type": "string"
           },
+          "sms_enabled": {
+            "description": "ADR-385: the reminder and changes also go by SMS to those who asked at «Θα έρθω» (default on)",
+            "type": "boolean"
+          },
           "starts_at": {
             "format": "date-time",
             "type": "string"
@@ -32056,6 +32180,10 @@
             "description": "«Επανάληψη κάθε εβδομάδα» until this date (box time zone), at most 26 weeks",
             "format": "date",
             "type": "string"
+          },
+          "sms_enabled": {
+            "description": "ADR-385: the reminder and changes also go by SMS to those who asked at «Θα έρθω» (default on)",
+            "type": "boolean"
           },
           "starts_at": {
             "format": "date-time",
@@ -32497,6 +32625,14 @@
                 "nullable": true,
                 "type": "string"
               },
+              "sms_enabled": {
+                "description": "ADR-385: the organiser's SMS switch for this event",
+                "type": "boolean"
+              },
+              "sms_offered": {
+                "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                "type": "boolean"
+              },
               "spots_left": {
                 "description": "Null: no limit",
                 "nullable": true,
@@ -32545,7 +32681,9 @@
               "host",
               "cohosts",
               "can_rsvp",
-              "can_manage"
+              "can_manage",
+              "sms_enabled",
+              "sms_offered"
             ],
             "title": "CommunityEvent",
             "type": "object"
@@ -32600,6 +32738,47 @@
           "sent"
         ],
         "title": "CommunityEventSentResponse",
+        "type": "object"
+      },
+      "CommunityEventSms": {
+        "properties": {
+          "connected": {
+            "description": "The organiser sends SMS (a connection with SMS switched on)",
+            "type": "boolean"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "enabled": {
+            "description": "This event's SMS switch",
+            "type": "boolean"
+          },
+          "going": {
+            "type": "integer"
+          },
+          "per_message_cents": {
+            "description": "The price of one event SMS (one part, the organiser's country)",
+            "type": "integer"
+          },
+          "recipients": {
+            "description": "Going and agreed to SMS: «12 από 40 θα πάρουν SMS»",
+            "type": "integer"
+          },
+          "spent_cents": {
+            "description": "What this event's SMS cost so far",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "connected",
+          "currency",
+          "enabled",
+          "going",
+          "per_message_cents",
+          "recipients",
+          "spent_cents"
+        ],
+        "title": "CommunityEventSms",
         "type": "object"
       },
       "CommunityEventStats": {
@@ -32764,6 +32943,10 @@
               "following"
             ],
             "type": "string"
+          },
+          "sms_enabled": {
+            "description": "ADR-385: the reminder and changes also go by SMS to those who asked at «Θα έρθω» (default on)",
+            "type": "boolean"
           },
           "starts_at": {
             "format": "date-time",
@@ -33213,6 +33396,14 @@
                   "nullable": true,
                   "type": "string"
                 },
+                "sms_enabled": {
+                  "description": "ADR-385: the organiser's SMS switch for this event",
+                  "type": "boolean"
+                },
+                "sms_offered": {
+                  "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                  "type": "boolean"
+                },
                 "spots_left": {
                   "description": "Null: no limit",
                   "nullable": true,
@@ -33261,7 +33452,9 @@
                 "host",
                 "cohosts",
                 "can_rsvp",
-                "can_manage"
+                "can_manage",
+                "sms_enabled",
+                "sms_offered"
               ],
               "title": "CommunityEvent",
               "type": "object"
@@ -33824,6 +34017,14 @@
                       "nullable": true,
                       "type": "string"
                     },
+                    "sms_enabled": {
+                      "description": "ADR-385: the organiser's SMS switch for this event",
+                      "type": "boolean"
+                    },
+                    "sms_offered": {
+                      "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                      "type": "boolean"
+                    },
                     "spots_left": {
                       "description": "Null: no limit",
                       "nullable": true,
@@ -33872,7 +34073,9 @@
                     "host",
                     "cohosts",
                     "can_rsvp",
-                    "can_manage"
+                    "can_manage",
+                    "sms_enabled",
+                    "sms_offered"
                   ],
                   "title": "CommunityPostEvent",
                   "type": "object"
@@ -34668,6 +34871,14 @@
                       "nullable": true,
                       "type": "string"
                     },
+                    "sms_enabled": {
+                      "description": "ADR-385: the organiser's SMS switch for this event",
+                      "type": "boolean"
+                    },
+                    "sms_offered": {
+                      "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                      "type": "boolean"
+                    },
                     "spots_left": {
                       "description": "Null: no limit",
                       "nullable": true,
@@ -34716,7 +34927,9 @@
                     "host",
                     "cohosts",
                     "can_rsvp",
-                    "can_manage"
+                    "can_manage",
+                    "sms_enabled",
+                    "sms_offered"
                   ],
                   "title": "CommunityPostEvent",
                   "type": "object"
@@ -37179,6 +37392,14 @@
                 "nullable": true,
                 "type": "string"
               },
+              "sms_enabled": {
+                "description": "ADR-385: the organiser's SMS switch for this event",
+                "type": "boolean"
+              },
+              "sms_offered": {
+                "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                "type": "boolean"
+              },
               "spots_left": {
                 "description": "Null: no limit",
                 "nullable": true,
@@ -37227,7 +37448,9 @@
               "host",
               "cohosts",
               "can_rsvp",
-              "can_manage"
+              "can_manage",
+              "sms_enabled",
+              "sms_offered"
             ],
             "title": "CommunityPostEvent",
             "type": "object"
@@ -37944,6 +38167,14 @@
             "nullable": true,
             "type": "string"
           },
+          "sms_enabled": {
+            "description": "ADR-385: the organiser's SMS switch for this event",
+            "type": "boolean"
+          },
+          "sms_offered": {
+            "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+            "type": "boolean"
+          },
           "spots_left": {
             "description": "Null: no limit",
             "nullable": true,
@@ -37992,7 +38223,9 @@
           "host",
           "cohosts",
           "can_rsvp",
-          "can_manage"
+          "can_manage",
+          "sms_enabled",
+          "sms_offered"
         ],
         "title": "CommunityPostEvent",
         "type": "object"
@@ -38577,6 +38810,14 @@
                     "nullable": true,
                     "type": "string"
                   },
+                  "sms_enabled": {
+                    "description": "ADR-385: the organiser's SMS switch for this event",
+                    "type": "boolean"
+                  },
+                  "sms_offered": {
+                    "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                    "type": "boolean"
+                  },
                   "spots_left": {
                     "description": "Null: no limit",
                     "nullable": true,
@@ -38625,7 +38866,9 @@
                   "host",
                   "cohosts",
                   "can_rsvp",
-                  "can_manage"
+                  "can_manage",
+                  "sms_enabled",
+                  "sms_offered"
                 ],
                 "title": "CommunityPostEvent",
                 "type": "object"
@@ -62086,6 +62329,14 @@
                       "nullable": true,
                       "type": "string"
                     },
+                    "sms_enabled": {
+                      "description": "ADR-385: the organiser's SMS switch for this event",
+                      "type": "boolean"
+                    },
+                    "sms_offered": {
+                      "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                      "type": "boolean"
+                    },
                     "spots_left": {
                       "description": "Null: no limit",
                       "nullable": true,
@@ -62134,7 +62385,9 @@
                     "host",
                     "cohosts",
                     "can_rsvp",
-                    "can_manage"
+                    "can_manage",
+                    "sms_enabled",
+                    "sms_offered"
                   ],
                   "title": "CommunityPostEvent",
                   "type": "object"
@@ -71149,6 +71402,14 @@
                       "nullable": true,
                       "type": "string"
                     },
+                    "sms_enabled": {
+                      "description": "ADR-385: the organiser's SMS switch for this event",
+                      "type": "boolean"
+                    },
+                    "sms_offered": {
+                      "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                      "type": "boolean"
+                    },
                     "spots_left": {
                       "description": "Null: no limit",
                       "nullable": true,
@@ -71197,7 +71458,9 @@
                     "host",
                     "cohosts",
                     "can_rsvp",
-                    "can_manage"
+                    "can_manage",
+                    "sms_enabled",
+                    "sms_offered"
                   ],
                   "title": "CommunityPostEvent",
                   "type": "object"
@@ -84482,6 +84745,14 @@
             "nullable": true,
             "type": "string"
           },
+          "sms_enabled": {
+            "description": "ADR-385: the organiser's SMS switch for this event",
+            "type": "boolean"
+          },
+          "sms_offered": {
+            "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+            "type": "boolean"
+          },
           "spots_left": {
             "description": "Null: no limit",
             "nullable": true,
@@ -84602,6 +84873,8 @@
           "cohosts",
           "can_rsvp",
           "can_manage",
+          "sms_enabled",
+          "sms_offered",
           "stats",
           "attendees",
           "trial_offer"
@@ -85561,6 +85834,14 @@
                 "nullable": true,
                 "type": "string"
               },
+              "sms_enabled": {
+                "description": "ADR-385: the organiser's SMS switch for this event",
+                "type": "boolean"
+              },
+              "sms_offered": {
+                "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                "type": "boolean"
+              },
               "spots_left": {
                 "description": "Null: no limit",
                 "nullable": true,
@@ -85681,6 +85962,8 @@
               "cohosts",
               "can_rsvp",
               "can_manage",
+              "sms_enabled",
+              "sms_offered",
               "stats",
               "attendees",
               "trial_offer"
@@ -85805,6 +86088,10 @@
             "description": "«Επανάληψη κάθε εβδομάδα» until this date (box time zone), at most 26 weeks",
             "format": "date",
             "type": "string"
+          },
+          "sms_enabled": {
+            "description": "ADR-385: the reminder and changes also go by SMS to those who asked at «Θα έρθω» (default on)",
+            "type": "boolean"
           },
           "starts_at": {
             "format": "date-time",
@@ -86762,6 +87049,14 @@
                 "nullable": true,
                 "type": "string"
               },
+              "sms_enabled": {
+                "description": "ADR-385: the organiser's SMS switch for this event",
+                "type": "boolean"
+              },
+              "sms_offered": {
+                "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                "type": "boolean"
+              },
               "spots_left": {
                 "description": "Null: no limit",
                 "nullable": true,
@@ -86882,6 +87177,8 @@
               "cohosts",
               "can_rsvp",
               "can_manage",
+              "sms_enabled",
+              "sms_offered",
               "stats",
               "attendees",
               "trial_offer"
@@ -87310,6 +87607,14 @@
             "nullable": true,
             "type": "string"
           },
+          "sms_enabled": {
+            "description": "ADR-385: the organiser's SMS switch for this event",
+            "type": "boolean"
+          },
+          "sms_offered": {
+            "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+            "type": "boolean"
+          },
           "spots_left": {
             "description": "Null: no limit",
             "nullable": true,
@@ -87407,6 +87712,8 @@
           "cohosts",
           "can_rsvp",
           "can_manage",
+          "sms_enabled",
+          "sms_offered",
           "stats"
         ],
         "title": "StaffCommunityEventRow",
@@ -87829,6 +88136,14 @@
                   "nullable": true,
                   "type": "string"
                 },
+                "sms_enabled": {
+                  "description": "ADR-385: the organiser's SMS switch for this event",
+                  "type": "boolean"
+                },
+                "sms_offered": {
+                  "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                  "type": "boolean"
+                },
                 "spots_left": {
                   "description": "Null: no limit",
                   "nullable": true,
@@ -87926,6 +88241,8 @@
                 "cohosts",
                 "can_rsvp",
                 "can_manage",
+                "sms_enabled",
+                "sms_offered",
                 "stats"
               ],
               "title": "StaffCommunityEventRow",
@@ -100975,6 +101292,14 @@
                                         "nullable": true,
                                         "type": "string"
                                       },
+                                      "sms_enabled": {
+                                        "description": "ADR-385: the organiser's SMS switch for this event",
+                                        "type": "boolean"
+                                      },
+                                      "sms_offered": {
+                                        "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                                        "type": "boolean"
+                                      },
                                       "spots_left": {
                                         "description": "Null: no limit",
                                         "nullable": true,
@@ -101023,7 +101348,9 @@
                                       "host",
                                       "cohosts",
                                       "can_rsvp",
-                                      "can_manage"
+                                      "can_manage",
+                                      "sms_enabled",
+                                      "sms_offered"
                                     ],
                                     "title": "CommunityEvent",
                                     "type": "object"
@@ -101607,6 +101934,14 @@
                                             "nullable": true,
                                             "type": "string"
                                           },
+                                          "sms_enabled": {
+                                            "description": "ADR-385: the organiser's SMS switch for this event",
+                                            "type": "boolean"
+                                          },
+                                          "sms_offered": {
+                                            "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                                            "type": "boolean"
+                                          },
                                           "spots_left": {
                                             "description": "Null: no limit",
                                             "nullable": true,
@@ -101655,7 +101990,9 @@
                                           "host",
                                           "cohosts",
                                           "can_rsvp",
-                                          "can_manage"
+                                          "can_manage",
+                                          "sms_enabled",
+                                          "sms_offered"
                                         ],
                                         "title": "CommunityPostEvent",
                                         "type": "object"
@@ -102631,6 +102968,14 @@
                                     "nullable": true,
                                     "type": "string"
                                   },
+                                  "sms_enabled": {
+                                    "description": "ADR-385: the organiser's SMS switch for this event",
+                                    "type": "boolean"
+                                  },
+                                  "sms_offered": {
+                                    "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                                    "type": "boolean"
+                                  },
                                   "spots_left": {
                                     "description": "Null: no limit",
                                     "nullable": true,
@@ -102679,7 +103024,9 @@
                                   "host",
                                   "cohosts",
                                   "can_rsvp",
-                                  "can_manage"
+                                  "can_manage",
+                                  "sms_enabled",
+                                  "sms_offered"
                                 ],
                                 "title": "CommunityEvent",
                                 "type": "object"
@@ -103534,6 +103881,14 @@
                                         "nullable": true,
                                         "type": "string"
                                       },
+                                      "sms_enabled": {
+                                        "description": "ADR-385: the organiser's SMS switch for this event",
+                                        "type": "boolean"
+                                      },
+                                      "sms_offered": {
+                                        "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                                        "type": "boolean"
+                                      },
                                       "spots_left": {
                                         "description": "Null: no limit",
                                         "nullable": true,
@@ -103582,7 +103937,9 @@
                                       "host",
                                       "cohosts",
                                       "can_rsvp",
-                                      "can_manage"
+                                      "can_manage",
+                                      "sms_enabled",
+                                      "sms_offered"
                                     ],
                                     "title": "CommunityPostEvent",
                                     "type": "object"
@@ -110999,6 +111356,14 @@
                             "nullable": true,
                             "type": "string"
                           },
+                          "sms_enabled": {
+                            "description": "ADR-385: the organiser's SMS switch for this event",
+                            "type": "boolean"
+                          },
+                          "sms_offered": {
+                            "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                            "type": "boolean"
+                          },
                           "spots_left": {
                             "description": "Null: no limit",
                             "nullable": true,
@@ -111047,7 +111412,9 @@
                           "host",
                           "cohosts",
                           "can_rsvp",
-                          "can_manage"
+                          "can_manage",
+                          "sms_enabled",
+                          "sms_offered"
                         ],
                         "title": "CommunityEvent",
                         "type": "object"
@@ -111684,6 +112051,14 @@
                                 "nullable": true,
                                 "type": "string"
                               },
+                              "sms_enabled": {
+                                "description": "ADR-385: the organiser's SMS switch for this event",
+                                "type": "boolean"
+                              },
+                              "sms_offered": {
+                                "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                                "type": "boolean"
+                              },
                               "spots_left": {
                                 "description": "Null: no limit",
                                 "nullable": true,
@@ -111732,7 +112107,9 @@
                               "host",
                               "cohosts",
                               "can_rsvp",
-                              "can_manage"
+                              "can_manage",
+                              "sms_enabled",
+                              "sms_offered"
                             ],
                             "title": "CommunityPostEvent",
                             "type": "object"
@@ -120457,6 +120834,14 @@
                               "nullable": true,
                               "type": "string"
                             },
+                            "sms_enabled": {
+                              "description": "ADR-385: the organiser's SMS switch for this event",
+                              "type": "boolean"
+                            },
+                            "sms_offered": {
+                              "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                              "type": "boolean"
+                            },
                             "spots_left": {
                               "description": "Null: no limit",
                               "nullable": true,
@@ -120505,7 +120890,9 @@
                             "host",
                             "cohosts",
                             "can_rsvp",
-                            "can_manage"
+                            "can_manage",
+                            "sms_enabled",
+                            "sms_offered"
                           ],
                           "title": "CommunityPostEvent",
                           "type": "object"
@@ -125800,6 +126187,14 @@
                             "nullable": true,
                             "type": "string"
                           },
+                          "sms_enabled": {
+                            "description": "ADR-385: the organiser's SMS switch for this event",
+                            "type": "boolean"
+                          },
+                          "sms_offered": {
+                            "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                            "type": "boolean"
+                          },
                           "spots_left": {
                             "description": "Null: no limit",
                             "nullable": true,
@@ -125848,7 +126243,9 @@
                           "host",
                           "cohosts",
                           "can_rsvp",
-                          "can_manage"
+                          "can_manage",
+                          "sms_enabled",
+                          "sms_offered"
                         ],
                         "title": "CommunityEvent",
                         "type": "object"
@@ -125996,6 +126393,10 @@
                     "description": "«Επανάληψη κάθε εβδομάδα» until this date (box time zone), at most 26 weeks",
                     "format": "date",
                     "type": "string"
+                  },
+                  "sms_enabled": {
+                    "description": "ADR-385: the reminder and changes also go by SMS to those who asked at «Θα έρθω» (default on)",
+                    "type": "boolean"
                   },
                   "starts_at": {
                     "format": "date-time",
@@ -126466,6 +126867,14 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "sms_enabled": {
+                          "description": "ADR-385: the organiser's SMS switch for this event",
+                          "type": "boolean"
+                        },
+                        "sms_offered": {
+                          "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                          "type": "boolean"
+                        },
                         "spots_left": {
                           "description": "Null: no limit",
                           "nullable": true,
@@ -126514,7 +126923,9 @@
                         "host",
                         "cohosts",
                         "can_rsvp",
-                        "can_manage"
+                        "can_manage",
+                        "sms_enabled",
+                        "sms_offered"
                       ],
                       "title": "CommunityEvent",
                       "type": "object"
@@ -127464,6 +127875,14 @@
                             "nullable": true,
                             "type": "string"
                           },
+                          "sms_enabled": {
+                            "description": "ADR-385: the organiser's SMS switch for this event",
+                            "type": "boolean"
+                          },
+                          "sms_offered": {
+                            "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                            "type": "boolean"
+                          },
                           "spots_left": {
                             "description": "Null: no limit",
                             "nullable": true,
@@ -127512,7 +127931,9 @@
                           "host",
                           "cohosts",
                           "can_rsvp",
-                          "can_manage"
+                          "can_manage",
+                          "sms_enabled",
+                          "sms_offered"
                         ],
                         "title": "CommunityEvent",
                         "type": "object"
@@ -128152,6 +128573,14 @@
                               "nullable": true,
                               "type": "string"
                             },
+                            "sms_enabled": {
+                              "description": "ADR-385: the organiser's SMS switch for this event",
+                              "type": "boolean"
+                            },
+                            "sms_offered": {
+                              "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                              "type": "boolean"
+                            },
                             "spots_left": {
                               "description": "Null: no limit",
                               "nullable": true,
@@ -128200,7 +128629,9 @@
                             "host",
                             "cohosts",
                             "can_rsvp",
-                            "can_manage"
+                            "can_manage",
+                            "sms_enabled",
+                            "sms_offered"
                           ],
                           "title": "CommunityPostEvent",
                           "type": "object"
@@ -129328,6 +129759,14 @@
                               "nullable": true,
                               "type": "string"
                             },
+                            "sms_enabled": {
+                              "description": "ADR-385: the organiser's SMS switch for this event",
+                              "type": "boolean"
+                            },
+                            "sms_offered": {
+                              "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                              "type": "boolean"
+                            },
                             "spots_left": {
                               "description": "Null: no limit",
                               "nullable": true,
@@ -129376,7 +129815,9 @@
                             "host",
                             "cohosts",
                             "can_rsvp",
-                            "can_manage"
+                            "can_manage",
+                            "sms_enabled",
+                            "sms_offered"
                           ],
                           "title": "CommunityPostEvent",
                           "type": "object"
@@ -130232,6 +130673,14 @@
                               "nullable": true,
                               "type": "string"
                             },
+                            "sms_enabled": {
+                              "description": "ADR-385: the organiser's SMS switch for this event",
+                              "type": "boolean"
+                            },
+                            "sms_offered": {
+                              "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                              "type": "boolean"
+                            },
                             "spots_left": {
                               "description": "Null: no limit",
                               "nullable": true,
@@ -130280,7 +130729,9 @@
                             "host",
                             "cohosts",
                             "can_rsvp",
-                            "can_manage"
+                            "can_manage",
+                            "sms_enabled",
+                            "sms_offered"
                           ],
                           "title": "CommunityPostEvent",
                           "type": "object"
@@ -131136,6 +131587,14 @@
                               "nullable": true,
                               "type": "string"
                             },
+                            "sms_enabled": {
+                              "description": "ADR-385: the organiser's SMS switch for this event",
+                              "type": "boolean"
+                            },
+                            "sms_offered": {
+                              "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                              "type": "boolean"
+                            },
                             "spots_left": {
                               "description": "Null: no limit",
                               "nullable": true,
@@ -131184,7 +131643,9 @@
                             "host",
                             "cohosts",
                             "can_rsvp",
-                            "can_manage"
+                            "can_manage",
+                            "sms_enabled",
+                            "sms_offered"
                           ],
                           "title": "CommunityPostEvent",
                           "type": "object"
@@ -137137,6 +137598,14 @@
                             "nullable": true,
                             "type": "string"
                           },
+                          "sms_enabled": {
+                            "description": "ADR-385: the organiser's SMS switch for this event",
+                            "type": "boolean"
+                          },
+                          "sms_offered": {
+                            "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                            "type": "boolean"
+                          },
                           "spots_left": {
                             "description": "Null: no limit",
                             "nullable": true,
@@ -137185,7 +137654,9 @@
                           "host",
                           "cohosts",
                           "can_rsvp",
-                          "can_manage"
+                          "can_manage",
+                          "sms_enabled",
+                          "sms_offered"
                         ],
                         "title": "CommunityEvent",
                         "type": "object"
@@ -137333,6 +137804,10 @@
                     "description": "«Επανάληψη κάθε εβδομάδα» until this date (box time zone), at most 26 weeks",
                     "format": "date",
                     "type": "string"
+                  },
+                  "sms_enabled": {
+                    "description": "ADR-385: the reminder and changes also go by SMS to those who asked at «Θα έρθω» (default on)",
+                    "type": "boolean"
                   },
                   "starts_at": {
                     "format": "date-time",
@@ -137803,6 +138278,14 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "sms_enabled": {
+                          "description": "ADR-385: the organiser's SMS switch for this event",
+                          "type": "boolean"
+                        },
+                        "sms_offered": {
+                          "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                          "type": "boolean"
+                        },
                         "spots_left": {
                           "description": "Null: no limit",
                           "nullable": true,
@@ -137851,7 +138334,9 @@
                         "host",
                         "cohosts",
                         "can_rsvp",
-                        "can_manage"
+                        "can_manage",
+                        "sms_enabled",
+                        "sms_offered"
                       ],
                       "title": "CommunityEvent",
                       "type": "object"
@@ -138329,6 +138814,14 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "sms_enabled": {
+                          "description": "ADR-385: the organiser's SMS switch for this event",
+                          "type": "boolean"
+                        },
+                        "sms_offered": {
+                          "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                          "type": "boolean"
+                        },
                         "spots_left": {
                           "description": "Null: no limit",
                           "nullable": true,
@@ -138377,7 +138870,9 @@
                         "host",
                         "cohosts",
                         "can_rsvp",
-                        "can_manage"
+                        "can_manage",
+                        "sms_enabled",
+                        "sms_offered"
                       ],
                       "title": "CommunityEvent",
                       "type": "object"
@@ -138512,6 +139007,10 @@
                       "following"
                     ],
                     "type": "string"
+                  },
+                  "sms_enabled": {
+                    "description": "ADR-385: the reminder and changes also go by SMS to those who asked at «Θα έρθω» (default on)",
+                    "type": "boolean"
                   },
                   "starts_at": {
                     "format": "date-time",
@@ -138956,6 +139455,14 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "sms_enabled": {
+                          "description": "ADR-385: the organiser's SMS switch for this event",
+                          "type": "boolean"
+                        },
+                        "sms_offered": {
+                          "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                          "type": "boolean"
+                        },
                         "spots_left": {
                           "description": "Null: no limit",
                           "nullable": true,
@@ -139004,7 +139511,9 @@
                         "host",
                         "cohosts",
                         "can_rsvp",
-                        "can_manage"
+                        "can_manage",
+                        "sms_enabled",
+                        "sms_offered"
                       ],
                       "title": "CommunityEvent",
                       "type": "object"
@@ -139493,6 +140002,14 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "sms_enabled": {
+                          "description": "ADR-385: the organiser's SMS switch for this event",
+                          "type": "boolean"
+                        },
+                        "sms_offered": {
+                          "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                          "type": "boolean"
+                        },
                         "spots_left": {
                           "description": "Null: no limit",
                           "nullable": true,
@@ -139541,7 +140058,9 @@
                         "host",
                         "cohosts",
                         "can_rsvp",
-                        "can_manage"
+                        "can_manage",
+                        "sms_enabled",
+                        "sms_offered"
                       ],
                       "title": "CommunityEvent",
                       "type": "object"
@@ -140109,6 +140628,14 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "sms_enabled": {
+                          "description": "ADR-385: the organiser's SMS switch for this event",
+                          "type": "boolean"
+                        },
+                        "sms_offered": {
+                          "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                          "type": "boolean"
+                        },
                         "spots_left": {
                           "description": "Null: no limit",
                           "nullable": true,
@@ -140157,7 +140684,9 @@
                         "host",
                         "cohosts",
                         "can_rsvp",
-                        "can_manage"
+                        "can_manage",
+                        "sms_enabled",
+                        "sms_offered"
                       ],
                       "title": "CommunityEvent",
                       "type": "object"
@@ -140180,6 +140709,82 @@
           }
         ],
         "summary": "«Θα έρθω» (a place, or the waitlist when full) or «Δεν θα έρθω»",
+        "tags": [
+          "Community events"
+        ]
+      }
+    },
+    "/api/me/events/{id}/sms": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.CommunityEventController.sms",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "connected": {
+                      "description": "The organiser sends SMS (a connection with SMS switched on)",
+                      "type": "boolean"
+                    },
+                    "currency": {
+                      "type": "string"
+                    },
+                    "enabled": {
+                      "description": "This event's SMS switch",
+                      "type": "boolean"
+                    },
+                    "going": {
+                      "type": "integer"
+                    },
+                    "per_message_cents": {
+                      "description": "The price of one event SMS (one part, the organiser's country)",
+                      "type": "integer"
+                    },
+                    "recipients": {
+                      "description": "Going and agreed to SMS: «12 από 40 θα πάρουν SMS»",
+                      "type": "integer"
+                    },
+                    "spent_cents": {
+                      "description": "What this event's SMS cost so far",
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "connected",
+                    "currency",
+                    "enabled",
+                    "going",
+                    "per_message_cents",
+                    "recipients",
+                    "spent_cents"
+                  ],
+                  "title": "CommunityEventSms",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Event SMS"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "ADR-385: the organiser's SMS view of an event: who will get SMS and its cost",
         "tags": [
           "Community events"
         ]
@@ -140864,6 +141469,14 @@
                                 "nullable": true,
                                 "type": "string"
                               },
+                              "sms_enabled": {
+                                "description": "ADR-385: the organiser's SMS switch for this event",
+                                "type": "boolean"
+                              },
+                              "sms_offered": {
+                                "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                                "type": "boolean"
+                              },
                               "spots_left": {
                                 "description": "Null: no limit",
                                 "nullable": true,
@@ -140912,7 +141525,9 @@
                               "host",
                               "cohosts",
                               "can_rsvp",
-                              "can_manage"
+                              "can_manage",
+                              "sms_enabled",
+                              "sms_offered"
                             ],
                             "title": "CommunityPostEvent",
                             "type": "object"
@@ -141708,6 +142323,14 @@
                                 "nullable": true,
                                 "type": "string"
                               },
+                              "sms_enabled": {
+                                "description": "ADR-385: the organiser's SMS switch for this event",
+                                "type": "boolean"
+                              },
+                              "sms_offered": {
+                                "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                                "type": "boolean"
+                              },
                               "spots_left": {
                                 "description": "Null: no limit",
                                 "nullable": true,
@@ -141756,7 +142379,9 @@
                               "host",
                               "cohosts",
                               "can_rsvp",
-                              "can_manage"
+                              "can_manage",
+                              "sms_enabled",
+                              "sms_offered"
                             ],
                             "title": "CommunityPostEvent",
                             "type": "object"
@@ -168062,6 +168687,378 @@
         ]
       }
     },
+    "/api/org/{organization_slug}/admin/channels/class-notices": {
+      "post": {
+        "callbacks": {},
+        "description": "`idempotency_key` is required: a repeated press sends nothing twice.",
+        "operationId": "PaleeWeb.AdminChannelClassNoticesController.create",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "idempotency_key": {
+                    "description": "Sending only: the same key never sends twice",
+                    "maxLength": 80,
+                    "type": "string"
+                  },
+                  "kind": {
+                    "enum": [
+                      "cancelled",
+                      "changed",
+                      "free"
+                    ],
+                    "type": "string"
+                  },
+                  "locale": {
+                    "description": "Language of the app notice",
+                    "maxLength": 10,
+                    "type": "string"
+                  },
+                  "slot_id": {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "text": {
+                    "description": "The staff's own words; required for `free`",
+                    "maxLength": 300,
+                    "type": "string"
+                  },
+                  "urgent": {
+                    "description": "`free` only: send now, even in quiet hours",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "slot_id"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Who learns of it: in the app (a push device), by SMS (the rest, with consent) or no way, and what the SMS cost.",
+                  "properties": {
+                    "budget": {
+                      "nullable": true,
+                      "properties": {
+                        "cap_cents": {
+                          "type": "integer"
+                        },
+                        "currency": {
+                          "type": "string"
+                        },
+                        "spent_cents": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "cap_cents",
+                        "currency",
+                        "spent_cents"
+                      ],
+                      "type": "object"
+                    },
+                    "currency": {
+                      "type": "string"
+                    },
+                    "estimated_cost_cents": {
+                      "type": "integer"
+                    },
+                    "in_app": {
+                      "type": "integer"
+                    },
+                    "kind": {
+                      "enum": [
+                        "cancelled",
+                        "changed",
+                        "free"
+                      ],
+                      "type": "string"
+                    },
+                    "participants": {
+                      "type": "integer"
+                    },
+                    "sample": {
+                      "description": "The first SMS: its text, parts and when it leaves",
+                      "nullable": true,
+                      "properties": {
+                        "body": {
+                          "type": "string"
+                        },
+                        "held_for_quiet_hours": {
+                          "type": "boolean"
+                        },
+                        "release_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "segments": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "body",
+                        "held_for_quiet_hours",
+                        "release_at",
+                        "segments"
+                      ],
+                      "type": "object"
+                    },
+                    "slot_id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "sms": {
+                      "type": "integer"
+                    },
+                    "sms_blocked": {
+                      "description": "The box's own reason no SMS can go (`channels_demo_mode`, `channels_not_connected`, `channel_budget_exceeded`…)",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "unreachable": {
+                      "type": "integer"
+                    },
+                    "unreachable_reasons": {
+                      "additionalProperties": {
+                        "type": "integer"
+                      },
+                      "description": "Why, by error code (`channel_consent_missing`…)",
+                      "type": "object"
+                    },
+                    "urgent": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "budget",
+                    "currency",
+                    "estimated_cost_cents",
+                    "in_app",
+                    "kind",
+                    "participants",
+                    "sample",
+                    "slot_id",
+                    "sms",
+                    "sms_blocked",
+                    "unreachable",
+                    "unreachable_reasons",
+                    "urgent"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Sent"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Send a class notice: in the app to those with a device, by SMS to the rest",
+        "tags": [
+          "Channels"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/channels/class-notices/preview": {
+      "post": {
+        "callbacks": {},
+        "description": "Nothing is sent. `channels_demo_mode` and the like come back as `sms_blocked`.",
+        "operationId": "PaleeWeb.AdminChannelClassNoticesController.preview",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "idempotency_key": {
+                    "description": "Sending only: the same key never sends twice",
+                    "maxLength": 80,
+                    "type": "string"
+                  },
+                  "kind": {
+                    "enum": [
+                      "cancelled",
+                      "changed",
+                      "free"
+                    ],
+                    "type": "string"
+                  },
+                  "locale": {
+                    "description": "Language of the app notice",
+                    "maxLength": 10,
+                    "type": "string"
+                  },
+                  "slot_id": {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "text": {
+                    "description": "The staff's own words; required for `free`",
+                    "maxLength": 300,
+                    "type": "string"
+                  },
+                  "urgent": {
+                    "description": "`free` only: send now, even in quiet hours",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "slot_id"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Who learns of it: in the app (a push device), by SMS (the rest, with consent) or no way, and what the SMS cost.",
+                  "properties": {
+                    "budget": {
+                      "nullable": true,
+                      "properties": {
+                        "cap_cents": {
+                          "type": "integer"
+                        },
+                        "currency": {
+                          "type": "string"
+                        },
+                        "spent_cents": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "cap_cents",
+                        "currency",
+                        "spent_cents"
+                      ],
+                      "type": "object"
+                    },
+                    "currency": {
+                      "type": "string"
+                    },
+                    "estimated_cost_cents": {
+                      "type": "integer"
+                    },
+                    "in_app": {
+                      "type": "integer"
+                    },
+                    "kind": {
+                      "enum": [
+                        "cancelled",
+                        "changed",
+                        "free"
+                      ],
+                      "type": "string"
+                    },
+                    "participants": {
+                      "type": "integer"
+                    },
+                    "sample": {
+                      "description": "The first SMS: its text, parts and when it leaves",
+                      "nullable": true,
+                      "properties": {
+                        "body": {
+                          "type": "string"
+                        },
+                        "held_for_quiet_hours": {
+                          "type": "boolean"
+                        },
+                        "release_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "segments": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "body",
+                        "held_for_quiet_hours",
+                        "release_at",
+                        "segments"
+                      ],
+                      "type": "object"
+                    },
+                    "slot_id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "sms": {
+                      "type": "integer"
+                    },
+                    "sms_blocked": {
+                      "description": "The box's own reason no SMS can go (`channels_demo_mode`, `channels_not_connected`, `channel_budget_exceeded`…)",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "unreachable": {
+                      "type": "integer"
+                    },
+                    "unreachable_reasons": {
+                      "additionalProperties": {
+                        "type": "integer"
+                      },
+                      "description": "Why, by error code (`channel_consent_missing`…)",
+                      "type": "object"
+                    },
+                    "urgent": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "budget",
+                    "currency",
+                    "estimated_cost_cents",
+                    "in_app",
+                    "kind",
+                    "participants",
+                    "sample",
+                    "slot_id",
+                    "sms",
+                    "sms_blocked",
+                    "unreachable",
+                    "unreachable_reasons",
+                    "urgent"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Preview"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Who would learn of a class notice, in the app or by SMS, and the SMS cost",
+        "tags": [
+          "Channels"
+        ]
+      }
+    },
     "/api/org/{organization_slug}/admin/channels/contacts": {
       "get": {
         "callbacks": {},
@@ -170752,6 +171749,32 @@
                           },
                           "type": "object"
                         },
+                        "by_source": {
+                          "additionalProperties": {
+                            "properties": {
+                              "cents": {
+                                "type": "integer"
+                              },
+                              "count": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "cents",
+                              "count"
+                            ],
+                            "type": "object"
+                          },
+                          "description": "ADR-385: spend by who sent (`automation`, `staff`, `system`)",
+                          "type": "object"
+                        },
+                        "by_status": {
+                          "additionalProperties": {
+                            "type": "integer"
+                          },
+                          "description": "ADR-385: every message of the month by state, charged or not",
+                          "type": "object"
+                        },
                         "cap_cents": {
                           "nullable": true,
                           "type": "integer"
@@ -170770,6 +171793,10 @@
                           "description": "ADR-369: what Palee bills the box for the month (messages sent on Palee's account, at the box's price)",
                           "type": "integer"
                         },
+                        "segments": {
+                          "description": "ADR-385: SMS parts of the counted messages",
+                          "type": "integer"
+                        },
                         "spent_cents": {
                           "type": "integer"
                         },
@@ -170780,10 +171807,13 @@
                       },
                       "required": [
                         "by_channel",
+                        "by_source",
+                        "by_status",
                         "currency",
                         "from",
                         "messages",
                         "palee_charge_cents",
+                        "segments",
                         "spent_cents",
                         "to"
                       ],
@@ -171642,6 +172672,32 @@
                       },
                       "type": "object"
                     },
+                    "by_source": {
+                      "additionalProperties": {
+                        "properties": {
+                          "cents": {
+                            "type": "integer"
+                          },
+                          "count": {
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "cents",
+                          "count"
+                        ],
+                        "type": "object"
+                      },
+                      "description": "ADR-385: spend by who sent (`automation`, `staff`, `system`)",
+                      "type": "object"
+                    },
+                    "by_status": {
+                      "additionalProperties": {
+                        "type": "integer"
+                      },
+                      "description": "ADR-385: every message of the month by state, charged or not",
+                      "type": "object"
+                    },
                     "cap_cents": {
                       "nullable": true,
                       "type": "integer"
@@ -171660,6 +172716,10 @@
                       "description": "ADR-369: what Palee bills the box for the month (messages sent on Palee's account, at the box's price)",
                       "type": "integer"
                     },
+                    "segments": {
+                      "description": "ADR-385: SMS parts of the counted messages",
+                      "type": "integer"
+                    },
                     "spent_cents": {
                       "type": "integer"
                     },
@@ -171670,10 +172730,13 @@
                   },
                   "required": [
                     "by_channel",
+                    "by_source",
+                    "by_status",
                     "currency",
                     "from",
                     "messages",
                     "palee_charge_cents",
+                    "segments",
                     "spent_cents",
                     "to"
                   ],
@@ -183684,6 +184747,14 @@
                             "nullable": true,
                             "type": "string"
                           },
+                          "sms_enabled": {
+                            "description": "ADR-385: the organiser's SMS switch for this event",
+                            "type": "boolean"
+                          },
+                          "sms_offered": {
+                            "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                            "type": "boolean"
+                          },
                           "spots_left": {
                             "description": "Null: no limit",
                             "nullable": true,
@@ -183781,6 +184852,8 @@
                           "cohosts",
                           "can_rsvp",
                           "can_manage",
+                          "sms_enabled",
+                          "sms_offered",
                           "stats"
                         ],
                         "title": "StaffCommunityEventRow",
@@ -183923,6 +184996,10 @@
                     "description": "«Επανάληψη κάθε εβδομάδα» until this date (box time zone), at most 26 weeks",
                     "format": "date",
                     "type": "string"
+                  },
+                  "sms_enabled": {
+                    "description": "ADR-385: the reminder and changes also go by SMS to those who asked at «Θα έρθω» (default on)",
+                    "type": "boolean"
                   },
                   "starts_at": {
                     "format": "date-time",
@@ -184909,6 +185986,14 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "sms_enabled": {
+                          "description": "ADR-385: the organiser's SMS switch for this event",
+                          "type": "boolean"
+                        },
+                        "sms_offered": {
+                          "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                          "type": "boolean"
+                        },
                         "spots_left": {
                           "description": "Null: no limit",
                           "nullable": true,
@@ -185029,6 +186114,8 @@
                         "cohosts",
                         "can_rsvp",
                         "can_manage",
+                        "sms_enabled",
+                        "sms_offered",
                         "stats",
                         "attendees",
                         "trial_offer"
@@ -186013,6 +187100,14 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "sms_enabled": {
+                          "description": "ADR-385: the organiser's SMS switch for this event",
+                          "type": "boolean"
+                        },
+                        "sms_offered": {
+                          "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                          "type": "boolean"
+                        },
                         "spots_left": {
                           "description": "Null: no limit",
                           "nullable": true,
@@ -186133,6 +187228,8 @@
                         "cohosts",
                         "can_rsvp",
                         "can_manage",
+                        "sms_enabled",
+                        "sms_offered",
                         "stats",
                         "attendees",
                         "trial_offer"
@@ -186270,6 +187367,10 @@
                       "following"
                     ],
                     "type": "string"
+                  },
+                  "sms_enabled": {
+                    "description": "ADR-385: the reminder and changes also go by SMS to those who asked at «Θα έρθω» (default on)",
+                    "type": "boolean"
                   },
                   "starts_at": {
                     "format": "date-time",
@@ -187229,6 +188330,14 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "sms_enabled": {
+                          "description": "ADR-385: the organiser's SMS switch for this event",
+                          "type": "boolean"
+                        },
+                        "sms_offered": {
+                          "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                          "type": "boolean"
+                        },
                         "spots_left": {
                           "description": "Null: no limit",
                           "nullable": true,
@@ -187349,6 +188458,8 @@
                         "cohosts",
                         "can_rsvp",
                         "can_manage",
+                        "sms_enabled",
+                        "sms_offered",
                         "stats",
                         "attendees",
                         "trial_offer"
@@ -188338,6 +189449,14 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "sms_enabled": {
+                          "description": "ADR-385: the organiser's SMS switch for this event",
+                          "type": "boolean"
+                        },
+                        "sms_offered": {
+                          "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                          "type": "boolean"
+                        },
                         "spots_left": {
                           "description": "Null: no limit",
                           "nullable": true,
@@ -188458,6 +189577,8 @@
                         "cohosts",
                         "can_rsvp",
                         "can_manage",
+                        "sms_enabled",
+                        "sms_offered",
                         "stats",
                         "attendees",
                         "trial_offer"
@@ -189466,6 +190587,14 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "sms_enabled": {
+                          "description": "ADR-385: the organiser's SMS switch for this event",
+                          "type": "boolean"
+                        },
+                        "sms_offered": {
+                          "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                          "type": "boolean"
+                        },
                         "spots_left": {
                           "description": "Null: no limit",
                           "nullable": true,
@@ -189586,6 +190715,8 @@
                         "cohosts",
                         "can_rsvp",
                         "can_manage",
+                        "sms_enabled",
+                        "sms_offered",
                         "stats",
                         "attendees",
                         "trial_offer"
@@ -190600,6 +191731,14 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "sms_enabled": {
+                          "description": "ADR-385: the organiser's SMS switch for this event",
+                          "type": "boolean"
+                        },
+                        "sms_offered": {
+                          "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                          "type": "boolean"
+                        },
                         "spots_left": {
                           "description": "Null: no limit",
                           "nullable": true,
@@ -190720,6 +191859,8 @@
                         "cohosts",
                         "can_rsvp",
                         "can_manage",
+                        "sms_enabled",
+                        "sms_offered",
                         "stats",
                         "attendees",
                         "trial_offer"
@@ -191729,6 +192870,14 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "sms_enabled": {
+                          "description": "ADR-385: the organiser's SMS switch for this event",
+                          "type": "boolean"
+                        },
+                        "sms_offered": {
+                          "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                          "type": "boolean"
+                        },
                         "spots_left": {
                           "description": "Null: no limit",
                           "nullable": true,
@@ -191849,6 +192998,8 @@
                         "cohosts",
                         "can_rsvp",
                         "can_manage",
+                        "sms_enabled",
+                        "sms_offered",
                         "stats",
                         "attendees",
                         "trial_offer"
@@ -192855,6 +194006,14 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "sms_enabled": {
+                          "description": "ADR-385: the organiser's SMS switch for this event",
+                          "type": "boolean"
+                        },
+                        "sms_offered": {
+                          "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                          "type": "boolean"
+                        },
                         "spots_left": {
                           "description": "Null: no limit",
                           "nullable": true,
@@ -192975,6 +194134,8 @@
                         "cohosts",
                         "can_rsvp",
                         "can_manage",
+                        "sms_enabled",
+                        "sms_offered",
                         "stats",
                         "attendees",
                         "trial_offer"
@@ -285251,6 +286412,14 @@
                               "nullable": true,
                               "type": "string"
                             },
+                            "sms_enabled": {
+                              "description": "ADR-385: the organiser's SMS switch for this event",
+                              "type": "boolean"
+                            },
+                            "sms_offered": {
+                              "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                              "type": "boolean"
+                            },
                             "spots_left": {
                               "description": "Null: no limit",
                               "nullable": true,
@@ -285299,7 +286468,9 @@
                             "host",
                             "cohosts",
                             "can_rsvp",
-                            "can_manage"
+                            "can_manage",
+                            "sms_enabled",
+                            "sms_offered"
                           ],
                           "title": "CommunityPostEvent",
                           "type": "object"
@@ -286427,6 +287598,14 @@
                               "nullable": true,
                               "type": "string"
                             },
+                            "sms_enabled": {
+                              "description": "ADR-385: the organiser's SMS switch for this event",
+                              "type": "boolean"
+                            },
+                            "sms_offered": {
+                              "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                              "type": "boolean"
+                            },
                             "spots_left": {
                               "description": "Null: no limit",
                               "nullable": true,
@@ -286475,7 +287654,9 @@
                             "host",
                             "cohosts",
                             "can_rsvp",
-                            "can_manage"
+                            "can_manage",
+                            "sms_enabled",
+                            "sms_offered"
                           ],
                           "title": "CommunityPostEvent",
                           "type": "object"
@@ -287331,6 +288512,14 @@
                               "nullable": true,
                               "type": "string"
                             },
+                            "sms_enabled": {
+                              "description": "ADR-385: the organiser's SMS switch for this event",
+                              "type": "boolean"
+                            },
+                            "sms_offered": {
+                              "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                              "type": "boolean"
+                            },
                             "spots_left": {
                               "description": "Null: no limit",
                               "nullable": true,
@@ -287379,7 +288568,9 @@
                             "host",
                             "cohosts",
                             "can_rsvp",
-                            "can_manage"
+                            "can_manage",
+                            "sms_enabled",
+                            "sms_offered"
                           ],
                           "title": "CommunityPostEvent",
                           "type": "object"
@@ -288235,6 +289426,14 @@
                               "nullable": true,
                               "type": "string"
                             },
+                            "sms_enabled": {
+                              "description": "ADR-385: the organiser's SMS switch for this event",
+                              "type": "boolean"
+                            },
+                            "sms_offered": {
+                              "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                              "type": "boolean"
+                            },
                             "spots_left": {
                               "description": "Null: no limit",
                               "nullable": true,
@@ -288283,7 +289482,9 @@
                             "host",
                             "cohosts",
                             "can_rsvp",
-                            "can_manage"
+                            "can_manage",
+                            "sms_enabled",
+                            "sms_offered"
                           ],
                           "title": "CommunityPostEvent",
                           "type": "object"
@@ -327357,6 +328558,14 @@
                               "nullable": true,
                               "type": "string"
                             },
+                            "sms_enabled": {
+                              "description": "ADR-385: the organiser's SMS switch for this event",
+                              "type": "boolean"
+                            },
+                            "sms_offered": {
+                              "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                              "type": "boolean"
+                            },
                             "spots_left": {
                               "description": "Null: no limit",
                               "nullable": true,
@@ -327405,7 +328614,9 @@
                             "host",
                             "cohosts",
                             "can_rsvp",
-                            "can_manage"
+                            "can_manage",
+                            "sms_enabled",
+                            "sms_offered"
                           ],
                           "title": "CommunityPostEvent",
                           "type": "object"
@@ -350554,6 +351765,14 @@
                                 "nullable": true,
                                 "type": "string"
                               },
+                              "sms_enabled": {
+                                "description": "ADR-385: the organiser's SMS switch for this event",
+                                "type": "boolean"
+                              },
+                              "sms_offered": {
+                                "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                                "type": "boolean"
+                              },
                               "spots_left": {
                                 "description": "Null: no limit",
                                 "nullable": true,
@@ -350602,7 +351821,9 @@
                               "host",
                               "cohosts",
                               "can_rsvp",
-                              "can_manage"
+                              "can_manage",
+                              "sms_enabled",
+                              "sms_offered"
                             ],
                             "title": "CommunityPostEvent",
                             "type": "object"
@@ -351454,6 +352675,14 @@
                                 "nullable": true,
                                 "type": "string"
                               },
+                              "sms_enabled": {
+                                "description": "ADR-385: the organiser's SMS switch for this event",
+                                "type": "boolean"
+                              },
+                              "sms_offered": {
+                                "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                                "type": "boolean"
+                              },
                               "spots_left": {
                                 "description": "Null: no limit",
                                 "nullable": true,
@@ -351502,7 +352731,9 @@
                               "host",
                               "cohosts",
                               "can_rsvp",
-                              "can_manage"
+                              "can_manage",
+                              "sms_enabled",
+                              "sms_offered"
                             ],
                             "title": "CommunityPostEvent",
                             "type": "object"
@@ -362528,6 +363759,14 @@
                               "nullable": true,
                               "type": "string"
                             },
+                            "sms_enabled": {
+                              "description": "ADR-385: the organiser's SMS switch for this event",
+                              "type": "boolean"
+                            },
+                            "sms_offered": {
+                              "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                              "type": "boolean"
+                            },
                             "spots_left": {
                               "description": "Null: no limit",
                               "nullable": true,
@@ -362576,7 +363815,9 @@
                             "host",
                             "cohosts",
                             "can_rsvp",
-                            "can_manage"
+                            "can_manage",
+                            "sms_enabled",
+                            "sms_offered"
                           ],
                           "title": "CommunityPostEvent",
                           "type": "object"
@@ -363704,6 +364945,14 @@
                               "nullable": true,
                               "type": "string"
                             },
+                            "sms_enabled": {
+                              "description": "ADR-385: the organiser's SMS switch for this event",
+                              "type": "boolean"
+                            },
+                            "sms_offered": {
+                              "description": "ADR-385: «Θα έρθω» may ask for SMS (the organiser sends SMS and this event's switch is on)",
+                              "type": "boolean"
+                            },
                             "spots_left": {
                               "description": "Null: no limit",
                               "nullable": true,
@@ -363752,7 +365001,9 @@
                             "host",
                             "cohosts",
                             "can_rsvp",
-                            "can_manage"
+                            "can_manage",
+                            "sms_enabled",
+                            "sms_offered"
                           ],
                           "title": "CommunityPostEvent",
                           "type": "object"

@@ -14,6 +14,7 @@ defmodule Palee.Application.EventSms do
   """
 
   alias Palee.Application.Channels.{ChannelContacts, SendThroughChannel}
+  alias Palee.{Channels, Community}
 
   @consent_text "event_rsvp_v1"
 
@@ -50,6 +51,53 @@ defmodule Palee.Application.EventSms do
   @doc "A change to the event, to going attendees."
   def changed(event, attendees, event_when),
     do: each(event, attendees, "event_changed", event_when, "changed:#{stamp(event.updated_at)}")
+
+  @doc """
+  ADR-385: per organisation, whether «Θα έρθω» may ask for SMS: it has a
+  connection with SMS switched on and is not in demo mode. Each event also
+  needs its own switch on (`sms_enabled`).
+  """
+  def offered_by_org(organization_ids) do
+    Map.new(Enum.uniq(organization_ids), fn organization_id ->
+      context = %{organization_id: organization_id}
+      {organization_id, sends_sms?(context)}
+    end)
+  end
+
+  @doc """
+  ADR-385: the organiser's view of one event: its switch, whether the
+  organiser sends SMS, how many going people agreed to them («12 από 40 θα
+  πάρουν SMS»), what this event's SMS cost so far and the price of one.
+  """
+  def summary(event) do
+    context = tenant(event)
+    going = Community.list_attendees(context, [event.id], ["going"])
+    connection = Channels.connection(context)
+
+    %{
+      enabled: event.sms_enabled != false,
+      connected: sends_sms?(context),
+      going: length(going),
+      recipients:
+        Enum.count(going, &Channels.consented?(context, %{user_id: &1.user_id}, "sms", "service")),
+      spent_cents: Channels.spent_on(context, "event:#{event.id}"),
+      per_message_cents: Channels.unit_price(context, "sms", "service"),
+      currency: (connection && connection.currency) || "EUR"
+    }
+  end
+
+  defp sends_sms?(context) do
+    case Channels.connection(context) do
+      %{channels: channels, status: "active"} when is_list(channels) ->
+        "sms" in channels and not SendThroughChannel.env(context, DateTime.utc_now()).demo
+
+      _none ->
+        false
+    end
+  end
+
+  # ADR-385: the organiser switched SMS off for this event: push only.
+  defp each(%{sms_enabled: false}, _attendees, _key, _event_when, _step), do: :ok
 
   defp each(event, attendees, key, event_when, step) do
     Enum.each(attendees, fn attendee ->

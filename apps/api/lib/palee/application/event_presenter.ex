@@ -15,7 +15,7 @@ defmodule Palee.Application.EventPresenter do
   members of a co-host belong to its audience like the host's own.
   """
 
-  alias Palee.Application.{BoxPhotoCovers, CommunityPeople}
+  alias Palee.Application.{BoxPhotoCovers, CommunityPeople, EventSms}
   alias Palee.{Community, Facility, Organizations}
 
   @goers_preview 8
@@ -118,6 +118,7 @@ defmodule Palee.Application.EventPresenter do
     zones = Organizations.timezone_statuses(Map.keys(by_org))
     hosts = hosts(events, by_org, boxes)
     cohosts = cohosts(events, viewer)
+    sms = EventSms.offered_by_org(Map.keys(by_org))
 
     Enum.map(events, fn event ->
       count = Map.get(counts, event.id, %{})
@@ -163,7 +164,9 @@ defmodule Palee.Application.EventPresenter do
         my: my && present_mine(my),
         goers: if(Community.event_show_names?(belongs?), do: Map.get(goers, event.id, [])),
         can_rsvp: Community.event_can_rsvp?(event, belongs?, my && my.status, now),
-        can_manage: manages?(event, viewer)
+        can_manage: manages?(event, viewer),
+        sms_enabled: event.sms_enabled != false,
+        sms_offered: event.sms_enabled != false and Map.get(sms, event.organization_id, false)
       }
     end)
   end

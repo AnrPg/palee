@@ -14,6 +14,7 @@ import {
   fetchClubsEvents,
   fetchMyEvents,
   rsvpEvent,
+  type RsvpSms,
   type CommunityEvent,
   type EventListScope,
 } from "@/api/events";
@@ -79,8 +80,13 @@ export function useRsvp(eventId: string, inviteToken: string | null = null) {
   const { tokens } = useSession();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (going: boolean) => rsvpEvent(tokens!.access_token, eventId, going, inviteToken),
-    onMutate: async (going: boolean) => {
+    // ADR-385: «Θα έρθω» may carry the SMS box and the number.
+    mutationFn: (answer: boolean | { going: true; sms: RsvpSms | null }) =>
+      typeof answer === "boolean"
+        ? rsvpEvent(tokens!.access_token, eventId, answer, inviteToken)
+        : rsvpEvent(tokens!.access_token, eventId, true, inviteToken, answer.sms),
+    onMutate: async (answer: boolean | { going: true; sms: RsvpSms | null }) => {
+      const going = typeof answer === "boolean" ? answer : answer.going;
       await Promise.all(EVENT_CACHES.map((queryKey) => queryClient.cancelQueries({ queryKey })));
       const snapshot = EVENT_CACHES.flatMap((queryKey) => queryClient.getQueriesData({ queryKey }));
       patchEventEverywhere(queryClient, eventId, (event) => optimisticRsvp(event, going));

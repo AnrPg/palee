@@ -69,14 +69,35 @@ export async function fetchEvent(token: string, eventId: string, invite: string 
   return data.event;
 }
 
+/** ADR-385: «Στείλτε μου SMS για υπενθύμιση και αλλαγές» ticked on the «Θα έρθω» sheet. */
+export type RsvpSms = { phone: string; locale: string };
+
 /** «Θα έρθω» (a place, or the waitlist when full) or «Δεν θα έρθω». */
-export async function rsvpEvent(token: string, eventId: string, going: boolean, inviteToken: string | null = null) {
+export async function rsvpEvent(
+  token: string,
+  eventId: string,
+  going: boolean,
+  inviteToken: string | null = null,
+  sms: RsvpSms | null = null,
+) {
   const data = await apiRequest<{ event: CommunityEvent }>(`/me/events/${id(eventId)}/rsvp`, {
     method: "PUT",
     token,
-    body: inviteToken ? { going, invite_token: inviteToken } : { going },
+    body: {
+      going,
+      ...(inviteToken ? { invite_token: inviteToken } : {}),
+      ...(going && sms ? { sms_consent: true, phone: sms.phone, locale: sms.locale } : {}),
+    },
   });
   return data.event;
+}
+
+/** ADR-385: the organiser's SMS view of an event: «12 από 40 θα πάρουν SMS» and its cost. */
+export type EventSmsSummary = components["schemas"]["CommunityEventSms"];
+export const eventSmsKey = (eventId: string) => ["events", "sms", eventId] as const;
+
+export function fetchEventSms(token: string, eventId: string) {
+  return apiRequest<EventSmsSummary>(`/me/events/${id(eventId)}/sms`, { token });
 }
 
 /** A guest pass link for an event the member is going to. */

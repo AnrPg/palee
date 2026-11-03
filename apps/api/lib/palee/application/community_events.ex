@@ -309,6 +309,21 @@ defmodule Palee.Application.CommunityEvents do
     end
   end
 
+  @doc """
+  ADR-385: the organiser's SMS view of an event («12 από 40 θα πάρουν SMS»,
+  its cost). Only for whoever runs events there.
+  """
+  def sms(context, event_id) do
+    with {:ok, event, _clubs, _invite} <- locate(context, event_id, nil),
+         {:ok, manager} <- manager_context(context, event.organization_id),
+         :ok <- own_event(manager, event) do
+      {:ok, EventSms.summary(event)}
+    else
+      {:error, :forbidden} -> {:error, :not_found}
+      error -> error
+    end
+  end
+
   def cancel(context, event_id, params) do
     with {:ok, event, clubs, _invite} <- locate(context, event_id, nil),
          {:ok, manager} <- event_manager(context, event.organization_id),
