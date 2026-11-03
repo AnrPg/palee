@@ -11865,6 +11865,10 @@
         "title": "Cuenta y pagos",
         "hint": "Seguridad, facturas, renovaciones y pedidos"
       }
+    },
+    "bookingEmail": {
+      "title": "Correo de reserva con invitación de calendario",
+      "hint": "Un correo cuando reservas una clase, y cuando cambia o se cancela, con la invitación para tu calendario"
     }
   },
   "Spaces": {
@@ -15364,7 +15368,10 @@
     "notesStaffTitle": "Notas para el equipo",
     "videoSend": "Enviar un vídeo de técnica a tu coach",
     "videoSent": "Enviado. Tu coach lo verá en su cola.",
-    "videoLeft": "{count, plural, one {Te queda # vídeo en tu paquete} other {Te quedan # vídeos en tu paquete}}"
+    "videoLeft": "{count, plural, one {Te queda # vídeo en tu paquete} other {Te quedan # vídeos en tu paquete}}",
+    "notifWodChangedTitle": "El WOD ha cambiado",
+    "notifWodChangedBody": "«{title}» cambió después de que lo hicieras. Míralo como era en tu Diario.",
+    "notifWodChangedBodyUntitled": "Un WOD que hiciste ha cambiado. Míralo como era en tu Diario."
   },
   "ServiceStatus": {
     "metaTitle": "Estado del servicio de Palee",

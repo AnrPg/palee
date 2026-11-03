@@ -314,8 +314,9 @@ defmodule Palee.Application.GetCalendarFeed do
   defp class_type_name(%{class_type: %{name: name}}) when is_binary(name), do: name
   defp class_type_name(_slot), do: "—"
 
-  defp class_name(%{name: name}) when is_binary(name) and name != "Class", do: name
-  defp class_name(slot), do: class_type_name(slot)
+  @doc "The name a class goes by in calendars (its own, else its class type's)."
+  def class_name(%{name: name}) when is_binary(name) and name != "Class", do: name
+  def class_name(slot), do: class_type_name(slot)
 
   defp status_message(:pending), do: "Pending"
   defp status_message(:approved), do: "Approved"

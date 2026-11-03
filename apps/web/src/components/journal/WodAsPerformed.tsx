@@ -2,19 +2,22 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { asPerformedKey, fetchWorkoutAsPerformed } from "@/api/training-floor";
 import { useSession } from "@/components/session-provider";
 import { Dialog } from "@/components/ui/Dialog";
 import { useSelectedMembershipRole } from "@/lib/membership-role";
-import { snapshotLines } from "@/lib/training-floor";
+import { journalEntryFocused, snapshotLines } from "@/lib/training-floor";
 import { formatInZone } from "@/lib/zoned-time";
 
 /**
  * ADR-357/389 (ANR mockup d3 A): under a run or a logged score, only when the
  * WOD has changed since, one quiet line that opens the WOD «όπως ήταν». In the
  * usual case (unchanged WOD, or a result from before snapshots) nothing shows.
+ *
+ * ADR-393: the «Το WOD άλλαξε» notification opens the Journal on the entry
+ * (`?entry=<id>`); that entry's line is brought into view and outlined.
  */
 export function WodAsPerformed({
   organizationId,
@@ -44,6 +47,14 @@ export function WodAsPerformed({
   });
 
   const snapshot = query.data?.changed ? query.data.snapshot : null;
+  const lineRef = useRef<HTMLParagraphElement>(null);
+  useEffect(() => {
+    const line = lineRef.current;
+    if (!snapshot || !line || !journalEntryFocused(window.location.search, id)) return;
+    line.style.outline = "2px solid var(--primary)";
+    line.style.outlineOffset = "4px";
+    line.scrollIntoView({ block: "center", behavior: "smooth" });
+  }, [snapshot, id]);
   if (!snapshot) return null;
   const when = formatInZone(snapshot.taken_at, zone, locale, {
     day: "numeric",
@@ -56,7 +67,12 @@ export function WodAsPerformed({
 
   return (
     <>
-      <p className="mt-2 flex flex-wrap items-center gap-x-2 text-xs" style={{ color: "var(--muted)" }} data-testid={`wod-changed-${id}`}>
+      <p
+        ref={lineRef}
+        className="mt-2 flex flex-wrap items-center gap-x-2 rounded-md text-xs"
+        style={{ color: "var(--muted)" }}
+        data-testid={`wod-changed-${id}`}
+      >
         {t("snapshotChanged")}
         <button type="button" onClick={() => setOpen(true)} className="font-semibold underline" style={{ color: "var(--primary)" }}>
           {t("snapshotOpen", { when })}

@@ -16,7 +16,8 @@ defmodule PaleeWeb.Schemas.NotificationPreferences do
       type: :object,
       description:
         "Whether the category reaches the person on each channel it has: `in_app` (the bell), " <>
-          "`push` (browser and app push; off while `in_app` is off), `email` (no category yet).",
+          "`push` (browser and app push; off while `in_app` is off), `email` (only `bookings`: " <>
+          "the booking email with its calendar invite, ADR-392; independent of `in_app`).",
       properties: channel_flags()
     }
   end

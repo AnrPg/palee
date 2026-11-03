@@ -11865,6 +11865,10 @@
         "title": "Account & payments",
         "hint": "Security, invoices, renewals and orders"
       }
+    },
+    "bookingEmail": {
+      "title": "Booking email with calendar invite",
+      "hint": "One email when you book a class, and when it moves or is cancelled, with the invite for your calendar"
     }
   },
   "Spaces": {
@@ -15364,7 +15368,10 @@
     "notesStaffTitle": "Staff notes",
     "videoSend": "Send a technique video to your coach",
     "videoSent": "Sent. Your coach will see it in their queue.",
-    "videoLeft": "{count, plural, one {# video left in your package} other {# videos left in your package}}"
+    "videoLeft": "{count, plural, one {# video left in your package} other {# videos left in your package}}",
+    "notifWodChangedTitle": "The WOD changed",
+    "notifWodChangedBody": "{title} changed after you did it. See it as it was in your Journal.",
+    "notifWodChangedBodyUntitled": "A WOD you did changed. See it as it was in your Journal."
   },
   "ServiceStatus": {
     "metaTitle": "Palee service status",

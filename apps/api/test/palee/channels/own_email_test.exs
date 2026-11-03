@@ -64,8 +64,9 @@ defmodule Palee.Channels.OwnEmailTest do
       |> Enum.map(&elem(&1, 0))
       |> Enum.sort()
 
+    # ADR-392: the booking email with its calendar invite is the box's own.
     assert box_kinds ==
-             ~w(box_automation corporate_invoice_issued corporate_invoice_reminder fiscal_document)a
+             ~w(booking_invite box_automation corporate_invoice_issued corporate_invoice_reminder fiscal_document)a
 
     for {kind, template} <- Palee.Email.Templates.all(), template.category() != :transactional do
       assert template.origin() == :platform, "#{kind} is platform mail"

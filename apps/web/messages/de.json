@@ -11865,6 +11865,10 @@
         "title": "Konto & Zahlungen",
         "hint": "Sicherheit, Rechnungen, Verlängerungen und Bestellungen"
       }
+    },
+    "bookingEmail": {
+      "title": "Buchungs-E-Mail mit Kalendereinladung",
+      "hint": "Eine E-Mail, wenn du einen Kurs buchst und wenn er sich ändert oder abgesagt wird, mit der Einladung für deinen Kalender"
     }
   },
   "Spaces": {
@@ -15364,7 +15368,10 @@
     "notesStaffTitle": "Notizen fürs Team",
     "videoSend": "Technikvideo an deinen Coach senden",
     "videoSent": "Gesendet. Dein Coach sieht es in seiner Warteschlange.",
-    "videoLeft": "{count, plural, one {Noch # Video in deinem Paket} other {Noch # Videos in deinem Paket}}"
+    "videoLeft": "{count, plural, one {Noch # Video in deinem Paket} other {Noch # Videos in deinem Paket}}",
+    "notifWodChangedTitle": "Das WOD wurde geändert",
+    "notifWodChangedBody": "„{title}“ wurde geändert, nachdem du es gemacht hast. Sieh es dir im Tagebuch so an, wie es war.",
+    "notifWodChangedBodyUntitled": "Ein WOD, das du gemacht hast, wurde geändert. Sieh es dir im Tagebuch so an, wie es war."
   },
   "ServiceStatus": {
     "metaTitle": "Palee Dienststatus",

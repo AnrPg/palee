@@ -15,7 +15,7 @@ defmodule Palee.Email.Commands.EnqueueEmail do
     6. the daily budget: queued now, deferred to the next UTC day, or, for
        security mail past the hard cap, refused (`:over_budget`);
     7. the template renders (with its `:attachments`, ADR-265, at most
-       5 MB of PDF in all); the body is encrypted and the row and its job
+       5 MB of PDF or, ADR-392, calendar invites in all); the body is encrypted and the row and its job
        are inserted in one transaction. Transactional mail gets a one-click
        unsubscribe link (ADR-212): `List-Unsubscribe` and
        `List-Unsubscribe-Post` headers (RFC 8058) and a footer link.
@@ -30,8 +30,9 @@ defmodule Palee.Email.Commands.EnqueueEmail do
   alias Palee.Workers.DeliverEmailJob
 
   @day_seconds 86_400
-  # ADR-265: what may be attached (a fiscal document's PDF), and how much.
-  @attachment_types ~w(application/pdf)
+  # ADR-265: what may be attached (a fiscal document's PDF; ADR-392 a
+  # booking's calendar invite, `text/calendar; method=…`), and how much.
+  @attachment_types ~w(application/pdf text/calendar)
   @max_attachment_bytes 5_000_000
 
   def call(kind, to, assigns, opts) do
@@ -210,7 +211,9 @@ defmodule Palee.Email.Commands.EnqueueEmail do
       Enum.all?(attachments, fn
         %{filename: name, content_type: type, data: data}
         when is_binary(name) and is_binary(type) and is_binary(data) ->
-          type in @attachment_types and name != "" and not String.contains?(name, ["/", "\\"])
+          base_type(type) in @attachment_types and name != "" and
+            not String.contains?(name, ["/", "\\"]) and
+            not String.contains?(type, ["\r", "\n"])
 
         _other ->
           false
@@ -229,6 +232,9 @@ defmodule Palee.Email.Commands.EnqueueEmail do
   end
 
   defp attachments_fit(_attachments), do: {:error, :invalid_attachment}
+
+  # «text/calendar; method=REQUEST; charset=UTF-8» is a calendar.
+  defp base_type(type), do: type |> String.split(";", parts: 2) |> hd() |> String.trim()
 
   defp kind_name(kind) when is_atom(kind), do: Atom.to_string(kind)
   defp kind_name(kind) when is_binary(kind), do: kind

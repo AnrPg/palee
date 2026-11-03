@@ -814,3 +814,12 @@ msgstr "Pedido de aula experimental a partir do site"
 
 msgid "%{name} wrote through the box's website. Answer or call them."
 msgstr "%{name} escreveu através do site da box. Responde ou liga."
+
+msgid "The WOD changed"
+msgstr "O WOD mudou"
+
+msgid "%{title} changed after you did it. See it as it was in your Journal."
+msgstr "«%{title}» mudou depois de o ter feito. Veja-o como era no seu Diário."
+
+msgid "A WOD you did changed. See it as it was in your Journal."
+msgstr "Um WOD que fez mudou. Veja-o como era no seu Diário."

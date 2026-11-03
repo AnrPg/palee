@@ -46,8 +46,9 @@ defmodule Palee.Scheduling.Domain.ICalendar do
   The calendar text. `events` are maps with `uid`, `title`, `description`
   and either `starts_at`/`ends_at`, `starts_on`/`ends_on` (all day) or
   `recurrence` + `starts_at` + `duration_minutes`; optional `status`,
-  `sequence`, `last_modified`, `location`. Options: `method` (`PUBLISH`
-  default, or `CANCEL`), `name` (calendar name).
+  `sequence`, `last_modified`, `location`, and `organizer`/`attendee`
+  (`%{name, email}`, for an emailed invite, ADR-392). Options: `method`
+  (`PUBLISH` default, `REQUEST` or `CANCEL`), `name` (calendar name).
   """
   @spec render([map()], DateTime.t(), keyword()) :: String.t()
   def render(events, %DateTime{} = now, opts \\ []) do
@@ -109,12 +110,38 @@ defmodule Palee.Scheduling.Domain.ICalendar do
 
   defp optional_lines(event) do
     [
+      party("ORGANIZER", Map.get(event, :organizer), []),
+      party("ATTENDEE", Map.get(event, :attendee), [
+        "ROLE=REQ-PARTICIPANT",
+        "PARTSTAT=ACCEPTED",
+        "RSVP=FALSE"
+      ]),
       line("LOCATION", Map.get(event, :location), &escape/1),
       line("STATUS", Map.get(event, :status), & &1),
       line("SEQUENCE", Map.get(event, :sequence), &Integer.to_string/1),
       line("LAST-MODIFIED", Map.get(event, :last_modified), &format_datetime/1)
     ]
   end
+
+  # ADR-392: an emailed invite (METHOD:REQUEST, RFC 5546) names who sends it
+  # and who it is for. The attendee has already accepted (the booking), so
+  # no RSVP is asked. `CN` is a quoted parameter: quotes and control
+  # characters cannot appear in it.
+  defp party(_name, nil, _params), do: nil
+
+  defp party(name, %{email: email} = who, params) when is_binary(email) and email != "" do
+    cn =
+      case Map.get(who, :name) do
+        value when is_binary(value) and value != "" -> ["CN=\"" <> param_text(value) <> "\""]
+        _none -> []
+      end
+
+    Enum.join([name | cn ++ params], ";") <> ":mailto:" <> String.replace(email, ~r/[\s;,]/u, "")
+  end
+
+  defp party(_name, _who, _params), do: nil
+
+  defp param_text(value), do: String.replace(value, ~r/["\x00-\x1F\x7F]/u, "")
 
   defp line(_name, nil, _format), do: nil
   defp line(_name, "", _format), do: nil

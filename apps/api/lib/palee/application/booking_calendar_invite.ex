@@ -23,21 +23,57 @@ defmodule Palee.Application.BookingCalendarInvite do
     with %{} = booking <-
            Scheduling.get_booking(context, booking_id) || {:error, :booking_not_found},
          true <- booking.user_id == user_id || {:error, :booking_not_found},
-         %{} = slot <- booking.scheduled_class || {:error, :booking_not_found},
+         %{} <- booking.scheduled_class || {:error, :booking_not_found},
          %{} = user <- Identity.find_by_id(user_id) || {:error, :booking_not_found} do
-      locale = user.preferred_locale || "en"
-      slot = Map.put(slot, :bookings, [booking])
-      event = GetCalendarFeed.seat_event(slot, user, locale, GetCalendarFeed.locations(context))
-      method = if event.status == "CANCELLED", do: "CANCEL", else: "PUBLISH"
-
-      {:ok,
-       %{
-         filename: "palee-#{Date.to_iso8601(DateTime.to_date(slot.scheduled_at))}.ics",
-         method: method,
-         ics: ICalendar.render([event], now, method: method)
-       }}
+      {:ok, build(context, booking, user, now)}
     end
   end
 
   def call(_context, _booking_id, _now), do: {:error, :organization_context_required}
+
+  @doc """
+  The invite of `booking` (its `scheduled_class` preloaded) for `user`, in
+  the user's locale. Options (ADR-392, the emailed invite): `invite: true`
+  sends `METHOD:REQUEST` instead of `PUBLISH` and names the box as
+  `ORGANIZER` (`organizer: %{name, email}`) and the person as `ATTENDEE`;
+  `sequence` (a function of the derived SEQUENCE) lets the emailed invite
+  keep above the ones already sent; `locations` skips reading the branches
+  again. A cancelled seat or class is
+  always `METHOD:CANCEL`. Answers `%{filename, method, ics, event,
+  derived_sequence}` (the SEQUENCE before `sequence` adjusted it).
+  """
+  def build(context, booking, user, now, opts \\ []) do
+    slot = booking.scheduled_class
+    locale = user.preferred_locale || "en"
+    slot = Map.put(slot, :bookings, [booking])
+    locations = Keyword.get_lazy(opts, :locations, fn -> GetCalendarFeed.locations(context) end)
+    event = GetCalendarFeed.seat_event(slot, user, locale, locations)
+    invite? = Keyword.get(opts, :invite, false)
+
+    method =
+      cond do
+        event.status == "CANCELLED" -> "CANCEL"
+        invite? -> "REQUEST"
+        true -> "PUBLISH"
+      end
+
+    event =
+      if invite?,
+        do:
+          Map.merge(event, %{
+            sequence: Keyword.get(opts, :sequence, & &1).(event.sequence),
+            derived_sequence: event.sequence,
+            organizer: Keyword.get(opts, :organizer),
+            attendee: %{name: Map.get(user, :nickname), email: Map.get(user, :email)}
+          }),
+        else: event
+
+    %{
+      derived_sequence: Map.get(event, :derived_sequence, event.sequence),
+      filename: "palee-#{Date.to_iso8601(DateTime.to_date(slot.scheduled_at))}.ics",
+      method: method,
+      event: event,
+      ics: ICalendar.render([event], now, method: method)
+    }
+  end
 end

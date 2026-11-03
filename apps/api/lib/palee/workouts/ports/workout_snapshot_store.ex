@@ -29,4 +29,19 @@ defmodule Palee.Workouts.Ports.WorkoutSnapshotStore do
   """
   @callback own_snapshot_id(map(), :execution | :training_log, Ecto.UUID.t(), Ecto.UUID.t()) ::
               {:ok, Ecto.UUID.t() | nil} | {:error, :not_found}
+
+  @typedoc "ADR-393: one run or score of a WOD that points at a snapshot."
+  @type performed :: %{
+          user_id: Ecto.UUID.t(),
+          holder: :execution | :training_log,
+          holder_id: Ecto.UUID.t(),
+          content_hash: String.t(),
+          at: DateTime.t() | nil
+        }
+
+  @doc """
+  ADR-393: every finished run and every score still standing (not voided) of
+  the WOD that points at one of its snapshots, with that snapshot's hash.
+  """
+  @callback list_performed(map(), Ecto.UUID.t()) :: [performed()]
 end

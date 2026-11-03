@@ -10,6 +10,7 @@
 
 import {useUiLocale} from "@/i18n/use-ui-locale";
 import {useUiTranslations} from "@/i18n/ui";
+import { loggedWodChangedText } from "@/lib/training-floor";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
@@ -82,6 +83,11 @@ function NotificationCard({
   function deviceText(notification: NotificationRecord, part: "title" | "body") {
     if (notification.type !== "device_sync_error") return null;
     return tDevices(["notif", "sync_error", part].join("_"));
+  }
+  const tTrainingFloor = useTranslations("TrainingFloor");
+  // ADR-393: a WOD the person already logged was edited.
+  function wodChangedText(notification: NotificationRecord, part: "title" | "body") {
+    return loggedWodChangedText(notification.type, notification.payload, part, (key, values) => tTrainingFloor(key, values));
   }
   const tPartners = useTranslations("Partners");
   // ADR-169: a new training partner, and a message from one (who, never what).
@@ -235,6 +241,8 @@ function NotificationCard({
   }
 
   function notificationBody(notification: NotificationRecord) {
+    const wodChanged = wodChangedText(notification, "body");
+    if (wodChanged !== null) return wodChanged;
     const emailKey = emailKeyText(notification, "body");
     if (emailKey !== null) return emailKey;
     const passwordReset = passwordResetText(notification, "body");
@@ -537,6 +545,8 @@ function NotificationCard({
   }
 
   function titleFromPayload(notification: NotificationRecord) {
+    const wodChanged = wodChangedText(notification, "title");
+    if (wodChanged !== null) return wodChanged;
     const emailKey = emailKeyText(notification, "title");
     if (emailKey !== null) return emailKey;
     const passwordReset = passwordResetText(notification, "title");
@@ -759,6 +769,8 @@ const FILTER_TYPES: Record<FilterTab, string[] | null> = {
   workouts: [
     "workout_note",
     "workout_changed",
+    // ADR-393
+    "logged_workout_changed",
     "workout_deleted",
     "workout_rejected",
     "workout_moved",

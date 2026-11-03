@@ -132,7 +132,7 @@ export async function deletePushSubscription(token: string, payload: DeletePushS
 export type NotificationPreference = components["schemas"]["NotificationPreference"];
 export type NotificationPreferenceList = components["schemas"]["NotificationPreferenceList"];
 export type NotificationCategory = NotificationPreference["category"];
-export type NotificationChannel = "in_app" | "push";
+export type NotificationChannel = "in_app" | "push" | "email";
 
 export const notificationPreferencesKey = (userId: string | null | undefined) =>
   ["notification-preferences", userId ?? null] as const;

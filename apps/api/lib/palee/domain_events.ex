@@ -14,7 +14,13 @@ defmodule Palee.DomainEvents do
     * `:membership_activated` - `%{organization_id, user_id, at}`
     * `:attendance_recorded` - `%{organization_id, scheduled_class_id, user_id, booking_id, status, at}`
     * `:booking_made` - `%{organization_id, scheduled_class_id, booking_id, user_id, at}` (ADR-155)
-    * `:booking_cancelled` - `%{organization_id, scheduled_class_id, booking_id, user_id, kind, by, at}`
+    * `:booking_confirmed` - `%{organization_id, scheduled_class_id, booking_id, user_id, at}`: a
+      pending request approved by staff or a waiting-list place promoted (ADR-392)
+    * `:booking_cancelled` - `%{organization_id, scheduled_class_id, booking_id, user_id, kind, by,
+      previous_status, guest_name, at}` (`previous_status` and `guest_name` since ADR-392; the
+      withdrawn row itself is gone)
+    * `:class_moved` - `%{organization_id, scheduled_class_id, at}`: a class got another start,
+      length or branch (ADR-392)
     * `:class_cancelled` - `%{organization_id, scheduled_class_id, at}` (the class is gone)
     * `:event_attendance_recorded` - `%{organization_id, community_event_id, user_id, at}`
       (staff ticked «Ήρθε» at a club event, ADR-156)

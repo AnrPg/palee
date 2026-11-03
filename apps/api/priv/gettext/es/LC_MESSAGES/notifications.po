@@ -814,3 +814,12 @@ msgstr "Solicitud de clase de prueba desde la web"
 
 msgid "%{name} wrote through the box's website. Answer or call them."
 msgstr "%{name} ha escrito desde la web del box. Responde o llama."
+
+msgid "The WOD changed"
+msgstr "El WOD ha cambiado"
+
+msgid "%{title} changed after you did it. See it as it was in your Journal."
+msgstr "«%{title}» cambió después de que lo hicieras. Míralo como era en tu Diario."
+
+msgid "A WOD you did changed. See it as it was in your Journal."
+msgstr "Un WOD que hiciste ha cambiado. Míralo como era en tu Diario."

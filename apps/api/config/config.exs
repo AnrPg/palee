@@ -426,9 +426,17 @@ config :palee, :domain_event_handlers, %{
   booking_cancelled: [
     Palee.Application.TrialReactions,
     Palee.Application.WalletReactions,
-    Palee.Application.BoxScreenReactions
+    Palee.Application.BoxScreenReactions,
+    Palee.Application.BookingInviteEmails
   ],
-  booking_made: [Palee.Application.WalletReactions, Palee.Application.BoxScreenReactions],
+  booking_made: [
+    Palee.Application.WalletReactions,
+    Palee.Application.BoxScreenReactions,
+    Palee.Application.BookingInviteEmails
+  ],
+  # ADR-392: the booking email with its calendar invite.
+  booking_confirmed: [Palee.Application.BookingInviteEmails],
+  class_moved: [Palee.Application.BookingInviteEmails],
   class_cancelled: [Palee.Application.TrialReactions, Palee.Application.BoxScreenReactions],
   # ADR-253: box screens refresh their leaderboards.
   workout_result_recorded: [Palee.Application.BoxScreenReactions]

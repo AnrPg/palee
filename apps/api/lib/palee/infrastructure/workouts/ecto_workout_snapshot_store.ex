@@ -127,6 +127,49 @@ defmodule Palee.Infrastructure.Workouts.EctoWorkoutSnapshotStore do
     end
   end
 
+  @impl true
+  def list_performed(%{organization_id: org}, workout_id) do
+    with {:ok, workout_id} <- Ecto.UUID.cast(workout_id) do
+      runs =
+        from(e in WorkoutExecution,
+          join: s in WorkoutSnapshotRecord,
+          on: s.id == e.workout_snapshot_id and s.organization_id == e.organization_id,
+          where:
+            e.organization_id == ^org and s.master_workout_id == ^workout_id and
+              e.status == :completed,
+          select: %{
+            user_id: e.user_id,
+            holder_id: e.id,
+            content_hash: s.content_hash,
+            at: e.completed_at_utc
+          }
+        )
+        |> Repo.all()
+        |> Enum.map(&Map.put(&1, :holder, :execution))
+
+      scores =
+        from(t in TrainingLogEntry,
+          join: s in WorkoutSnapshotRecord,
+          on: s.id == t.workout_snapshot_id and s.organization_id == t.organization_id,
+          where:
+            t.organization_id == ^org and s.master_workout_id == ^workout_id and
+              is_nil(t.voided_at),
+          select: %{
+            user_id: t.user_id,
+            holder_id: t.id,
+            content_hash: s.content_hash,
+            at: t.performed_at_utc
+          }
+        )
+        |> Repo.all()
+        |> Enum.map(&Map.put(&1, :holder, :training_log))
+
+      runs ++ scores
+    else
+      :error -> []
+    end
+  end
+
   defp holder_query(:assignment, %{organization_id: org}, id),
     do: from(a in AssignedWorkout, where: a.id == ^id and a.organization_id == ^org)
 

@@ -109,4 +109,21 @@ defmodule Palee.Notifications.Domain.PushMessageBuilderTest do
     assert PushMessageBuilder.build("form_review_completed", %{}).url == "/box/coach"
     assert PushMessageBuilder.build("appointment_cancelled", %{}).url == "/box/appointments"
   end
+
+  # ADR-393: a WOD the person already performed was edited.
+  test "builds the WOD-changed notice with its Journal link" do
+    message =
+      PushMessageBuilder.build("logged_workout_changed", %{
+        "workout_title" => "Fran",
+        "url" => "/journal?entry=e1"
+      })
+
+    assert message.title == "The WOD changed"
+    assert message.body == "Fran changed after you did it. See it as it was in your Journal."
+    assert message.url == "/journal?entry=e1"
+
+    untitled = PushMessageBuilder.build("logged_workout_changed", %{})
+    assert untitled.body == "A WOD you did changed. See it as it was in your Journal."
+    assert untitled.url == "/journal"
+  end
 end

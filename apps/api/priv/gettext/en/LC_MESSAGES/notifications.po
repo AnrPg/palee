@@ -814,3 +814,12 @@ msgstr "Trial request from the website"
 
 msgid "%{name} wrote through the box's website. Answer or call them."
 msgstr "%{name} wrote through the box's website. Answer or call them."
+
+msgid "The WOD changed"
+msgstr "The WOD changed"
+
+msgid "%{title} changed after you did it. See it as it was in your Journal."
+msgstr "%{title} changed after you did it. See it as it was in your Journal."
+
+msgid "A WOD you did changed. See it as it was in your Journal."
+msgstr "A WOD you did changed. See it as it was in your Journal."

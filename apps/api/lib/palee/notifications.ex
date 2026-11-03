@@ -17,6 +17,7 @@ defmodule Palee.Notifications do
   alias Palee.Notifications.NativePush
   alias Palee.Notifications.NativePushTokenStore
   alias Palee.Notifications.PushConfig
+  alias Palee.Notifications.Queries.DeliversNotification
   alias Palee.Notifications.Queries.ListNativePushTokens
   alias Palee.Notifications.Queries.GetUnreadCount
   alias Palee.Notifications.Queries.ListInboxPage
@@ -194,6 +195,13 @@ defmodule Palee.Notifications do
   end
 
   def notification_categories, do: NotificationCategories.category_ids()
+
+  @doc """
+  ADR-392: whether the person wants `category` on `channel`, e.g. the
+  booking email with its calendar invite (`"bookings"`, `"email"`).
+  """
+  def channel_enabled?(user_id, category, channel) when is_binary(user_id),
+    do: DeliversNotification.category(user_id, category, channel)
 
   # ADR-277: the platform console's view of browser alerts. Callers are the
   # vendor pipeline; the device figures answer only to an active vendor.
@@ -680,6 +688,20 @@ defmodule Palee.Notifications do
       end
     end)
   end
+
+  # ADR-393: a WOD the person already performed was edited; the use case
+  # names each recipient and the run or score their Journal opens on.
+  def process_event("logged_workout_changed", payload),
+    do:
+      enqueue_simple(:logged_workout_changed, payload, %{
+        organization_id: field(payload, :organization_id),
+        workout_id: field(payload, :workout_id),
+        workout_title: field(payload, :workout_title),
+        holder: field(payload, :holder),
+        holder_id: field(payload, :holder_id),
+        dedupe_key: field(payload, :dedupe_key),
+        url: field(payload, :url)
+      })
 
   # ADR-388: a trial request or question from the box's website. The use
   # case names each recipient (the lead's owner, else whoever handles

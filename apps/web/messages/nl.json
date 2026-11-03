@@ -11865,6 +11865,10 @@
         "title": "Account en betalingen",
         "hint": "Beveiliging, facturen, verlengingen en bestellingen"
       }
+    },
+    "bookingEmail": {
+      "title": "Boekingsmail met agenda-uitnodiging",
+      "hint": "Eén e-mail als je een les boekt, en als die verandert of wordt geannuleerd, met de uitnodiging voor je agenda"
     }
   },
   "Spaces": {
@@ -15364,7 +15368,10 @@
     "notesStaffTitle": "Notities voor het team",
     "videoSend": "Stuur een techniekvideo naar je coach",
     "videoSent": "Verstuurd. Je coach ziet het in zijn wachtrij.",
-    "videoLeft": "{count, plural, one {Nog # video in je pakket} other {Nog # video's in je pakket}}"
+    "videoLeft": "{count, plural, one {Nog # video in je pakket} other {Nog # video's in je pakket}}",
+    "notifWodChangedTitle": "De WOD is gewijzigd",
+    "notifWodChangedBody": "‘{title}’ is gewijzigd nadat je hem deed. Bekijk hem zoals hij was in je Logboek.",
+    "notifWodChangedBodyUntitled": "Een WOD die je deed is gewijzigd. Bekijk hem zoals hij was in je Logboek."
   },
   "ServiceStatus": {
     "metaTitle": "Status van Palee",

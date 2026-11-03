@@ -11865,6 +11865,10 @@
         "title": "Conta e pagamentos",
         "hint": "Segurança, faturas, renovações e encomendas"
       }
+    },
+    "bookingEmail": {
+      "title": "Email de reserva com convite de calendário",
+      "hint": "Um email quando reserva uma aula, e quando muda ou é cancelada, com o convite para o seu calendário"
     }
   },
   "Spaces": {
@@ -15364,7 +15368,10 @@
     "notesStaffTitle": "Notas para a equipa",
     "videoSend": "Enviar um vídeo de técnica ao teu coach",
     "videoSent": "Enviado. O teu coach vai vê-lo na fila dele.",
-    "videoLeft": "{count, plural, one {Resta # vídeo no teu pacote} other {Restam # vídeos no teu pacote}}"
+    "videoLeft": "{count, plural, one {Resta # vídeo no teu pacote} other {Restam # vídeos no teu pacote}}",
+    "notifWodChangedTitle": "O WOD mudou",
+    "notifWodChangedBody": "«{title}» mudou depois de o ter feito. Veja-o como era no seu Diário.",
+    "notifWodChangedBodyUntitled": "Um WOD que fez mudou. Veja-o como era no seu Diário."
   },
   "ServiceStatus": {
     "metaTitle": "Estado do serviço Palee",
