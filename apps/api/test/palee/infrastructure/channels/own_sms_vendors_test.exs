@@ -18,7 +18,7 @@ defmodule Palee.Infrastructure.Channels.OwnSmsVendorsTest do
   }
 
   @id "6c1c3f8e-2b0f-4d8e-9a59-6a1f3d2b7c10"
-  @callback "https://palee.app/api/webhooks/channels/org/tok"
+  @callback_url "https://palee.app/api/webhooks/channels/org/tok"
 
   defp outgoing(overrides \\ %{}) do
     Map.merge(
@@ -29,7 +29,7 @@ defmodule Palee.Infrastructure.Channels.OwnSmsVendorsTest do
         body: "Το μάθημα ακυρώθηκε",
         purpose: "service",
         template: nil,
-        callback_url: @callback
+        callback_url: @callback_url
       },
       overrides
     )
@@ -74,7 +74,7 @@ defmodule Palee.Infrastructure.Channels.OwnSmsVendorsTest do
       form = URI.decode_query(body)
       assert form["To"] == "+306912345678"
       assert form["From"] == "CFAthina"
-      assert form["StatusCallback"] == @callback
+      assert form["StatusCallback"] == @callback_url
     end
 
     test "a Messaging Service picks the sender" do
@@ -121,10 +121,10 @@ defmodule Palee.Infrastructure.Channels.OwnSmsVendorsTest do
         "ErrorCode" => "30003"
       }
 
-      signature = TwilioChannel.signature("tw-token", @callback, params)
+      signature = TwilioChannel.signature("tw-token", @callback_url, params)
 
       request = %{
-        url: @callback,
+        url: @callback_url,
         params: params,
         headers: [{"x-twilio-signature", signature}],
         raw_body: ""
@@ -161,7 +161,7 @@ defmodule Palee.Infrastructure.Channels.OwnSmsVendorsTest do
                  | params: inbound,
                    headers: [
                      {"x-twilio-signature",
-                      TwilioChannel.signature("tw-token", @callback, inbound)}
+                      TwilioChannel.signature("tw-token", @callback_url, inbound)}
                    ]
                })
     end
@@ -185,7 +185,7 @@ defmodule Palee.Infrastructure.Channels.OwnSmsVendorsTest do
       form = URI.decode_query(body)
       assert form["to"] == "306912345678"
       assert form["type"] == "unicode"
-      assert form["callback"] == @callback
+      assert form["callback"] == @callback_url
       assert form["client-ref"] == @id
 
       VonageChannel.send_message(@account, outgoing(%{body: "Class cancelled"}))
@@ -284,7 +284,7 @@ defmodule Palee.Infrastructure.Channels.OwnSmsVendorsTest do
       assert {"authorization", "App ib-key"} in headers
       [message] = Jason.decode!(body)["messages"]
       assert message["destinations"] == [%{"to" => "306912345678", "messageId" => @id}]
-      assert message["webhooks"]["delivery"]["url"] == @callback
+      assert message["webhooks"]["delivery"]["url"] == @callback_url
       assert message["content"]["text"] =~ "ακυρώθηκε"
     end
 
@@ -366,7 +366,7 @@ defmodule Palee.Infrastructure.Channels.OwnSmsVendorsTest do
       payload = Jason.decode!(body)
       assert payload["contacts"] == [%{"phonenumber" => "306912345678"}]
       assert payload["dlr"] == true
-      assert payload["callbackUrl"] == @callback
+      assert payload["callbackUrl"] == @callback_url
       assert payload["option1"] == @id
       assert payload["sms"]["typesms"] == "unicode"
     end
@@ -448,7 +448,7 @@ defmodule Palee.Infrastructure.Channels.OwnSmsVendorsTest do
       payload = Jason.decode!(body)
       assert payload["message"]["dc"] == 2
       assert payload["message"]["sender_id"] == "CFAthina"
-      assert payload["callback_url"] == @callback
+      assert payload["callback_url"] == @callback_url
       assert payload["subscribers"] == [%{"number" => "306912345678", "custom_id" => @id}]
     end
 
