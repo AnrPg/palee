@@ -637,6 +637,7 @@ config :palee, :open_food_facts,
   req_options: []
 
 config :palee, :rank_store, Palee.Infrastructure.Ranks.EctoRankStore
+config :palee, :diploma_signature_store, Palee.Infrastructure.Ranks.EctoSignatureStore
 
 config :palee,
        :class_timer_store,

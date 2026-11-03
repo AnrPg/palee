@@ -227,6 +227,37 @@ defmodule Palee.Application.AccountDeletionTest do
                assert_email_enqueued(kind: :security_account_deleted, to: account.email)
     end
 
+    test "the coach's diploma signature goes with the profile (ADR-377 amendment)" do
+      account = login_with_profiles(["signer"])
+      key = Palee.Ranks.Domain.SignaturePolicy.prefix(account.id) <> "s.png"
+
+      :ok =
+        Palee.TestSupport.MemoryObjectStore.put_object(:media_private, key, "png", "image/png")
+
+      {:ok, _signature} =
+        Palee.Ranks.SignatureStore.replace(
+          :system,
+          account.id,
+          %{
+            object_key: key,
+            content_type: "image/png",
+            byte_size: 3,
+            width: 300,
+            height: 100,
+            sha256: String.duplicate("a", 64)
+          },
+          @now
+        )
+
+      {:ok, _} = AccountDeletion.request(account, %{scope: "login", password: @password}, @now)
+      {_message, token} = confirmation_token(account.email)
+      {:ok, %{scheduled_for: at}} = AccountDeletion.confirm(token, @now)
+      assert AccountDeletion.execute_due(at) == 1
+
+      assert Palee.Ranks.SignatureStore.list(:system, account.id) == []
+      assert Palee.TestSupport.MemoryObjectStore.get(:media_private, key) == :error
+    end
+
     test "a profile a business must keep in its accounts is anonymised, not deleted" do
       account = login_with_profiles(["main"])
       {organization, _owner, _context} = Palee.AnalyticsHelpers.organization_fixture()

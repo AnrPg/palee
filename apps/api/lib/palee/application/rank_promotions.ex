@@ -6,7 +6,14 @@ defmodule Palee.Application.RankPromotions do
   full coaching scope everyone (`manage_coaching`, ADR-100).
   """
 
-  alias Palee.Application.{AuthorizeClientAccess, Clock, RankCertificates, RankStanding}
+  alias Palee.Application.{
+    AuthorizeClientAccess,
+    Clock,
+    DiplomaSignatures,
+    RankCertificates,
+    RankStanding
+  }
+
   alias Palee.Ranks
 
   def client(context, user_id) do
@@ -18,6 +25,8 @@ defmodule Palee.Application.RankPromotions do
   def award(%{organization_id: organization_id} = context, staff_id, user_id, params) do
     with :ok <- AuthorizeClientAccess.call(context, :manage_coaching, user_id) do
       today = Clock.today()
+      # The diploma keeps the coach's signature of today (ADR-377 addendum).
+      signature_id = DiplomaSignatures.current_id(staff_id)
 
       Ranks.with_context(context, fn ->
         with {:ok, ladder} <- fetch_ladder(get(params, "ladder_id")),
@@ -49,7 +58,8 @@ defmodule Palee.Application.RankPromotions do
                  awarded_by_id: staff_id,
                  note: get(params, "note"),
                  skills_checked: skills,
-                 certificate_number: Ranks.certificate_number(id, on)
+                 certificate_number: Ranks.certificate_number(id, on),
+                 signature_id: signature_id
                }) do
           {:ok, RankStanding.present_award(award, Map.new(ladder.ranks, &{&1.id, &1}))}
         end

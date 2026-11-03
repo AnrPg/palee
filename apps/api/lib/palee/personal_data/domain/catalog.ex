@@ -274,7 +274,11 @@ defmodule Palee.PersonalData.Domain.Catalog do
       # -- documents signed, and health certificates -----------------------------
       tenant("signatures", "document_signatures", @me, drop: ~w(evidence_object_key)),
       tenant("signatures", "document_signature_requests", @me),
-      tenant("signatures", "health_certificates", @me, drop: ~w(file_key))
+      tenant("signatures", "health_certificates", @me, drop: ~w(file_key)),
+      # ADR-377 addendum: a coach's diploma signature and its trail (the
+      # images themselves go in the archive's `files/`).
+      account("signatures", "diploma_signatures", @me, drop: ~w(object_key)),
+      account("signatures", "diploma_signature_events", @me)
     ]
   end
 
