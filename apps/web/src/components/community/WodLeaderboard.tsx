@@ -3,7 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { useEffect, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 
 import {
   fetchWorkoutLeaderboard,
@@ -87,11 +87,11 @@ export function WodLeaderboard({
     },
   });
 
-  // The answer was withdrawn elsewhere: back to the box's own board.
-  const paleeFailed = board.isError && filters.scope === "palee";
-  useEffect(() => {
-    if (paleeFailed) setFilters((current) => toggleChip(current, { kind: "scope", value: "box", on: false }));
-  }, [paleeFailed]);
+  // The answer was withdrawn elsewhere: back to the box's own board (state
+  // adjusted while rendering; the box board's key never fails this way).
+  if (board.isError && filters.scope === "palee") {
+    setFilters(toggleChip(filters, { kind: "scope", value: "box", on: false }));
+  }
 
   const data = board.data;
   if (!data || !data.opted_in) return <>{fallback}</>;
@@ -197,7 +197,7 @@ export function WodLeaderboard({
           <SegmentPicker<"box" | "branch">
             ariaLabel={t("lbScope")}
             semantics="radiogroup"
-            value={filters.scope}
+            value={filters.scope === "branch" ? "branch" : "box"}
             onChange={(scope) => setFilters({ ...filters, scope })}
             options={[
               { value: "box", label: t("lbScope_box") },
