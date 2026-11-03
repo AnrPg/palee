@@ -16397,7 +16397,8 @@
       "capiHint": "يرسل الطلبات إلى Meta من الخادم أيضًا، بموافقة الزائر فقط.",
       "capiTokenSaved": "رمز الوصول (محفوظ؛ اكتب رمزًا جديدًا لاستبداله)",
       "capiToken": "رمز الوصول"
-    }
+    },
+    "reportContact": "الإبلاغ عن محتوى: {email}"
   },
   "BoxReviews": {
     "title": "المراجعات",
@@ -16463,6 +16464,47 @@
       "replyTitle": "ردّك",
       "sendReply": "نشر الرد",
       "replyRequired": "اكتب ردّك."
+    },
+    "report": {
+      "menu": "إبلاغ",
+      "menuAsBox": "إبلاغ باسم الصالة",
+      "reviewMenu": "المزيد عن هذه المراجعة",
+      "title": "الإبلاغ عن مراجعة",
+      "hint": "لا يراه إلا فريق Palee. تبقى المراجعة ظاهرة حتى يقرر.",
+      "hintBox": "لا يراه إلا فريق Palee وهو من يقرر. لا يمكن للصالة أبدًا إخفاء مراجعة بنفسها.",
+      "reasonLabel": "السبب",
+      "reasons": {
+        "offensive": "مسيء أو مهين",
+        "personal_data": "بيانات شخصية لشخص ما",
+        "not_genuine": "ليست تجربة حقيقية",
+        "spam": "إعلان أو خارج الموضوع",
+        "illegal": "محتوى غير قانوني",
+        "other": "شيء آخر"
+      },
+      "personalDataHint": "هاتف، عنوان، صحة…",
+      "note": "ما المشكلة؟ (اختياري)",
+      "noteRequiredLabel": "ما المشكلة؟",
+      "notePlaceholder": "مثلًا تذكر مدربًا باسمه وتهينه.",
+      "noteRequired": "اكتب بضع كلمات لنفهم المشكلة.",
+      "reasonRequired": "اختر سببًا.",
+      "send": "أرسل البلاغ",
+      "sending": "جارٍ الإرسال…",
+      "doneTitle": "شكرًا",
+      "doneText": "سيراجعه فريق Palee ويخبرك بقراره. حتى ذلك الحين تبقى المراجعة ظاهرة.",
+      "ok": "حسنًا",
+      "reported": "أبلغت عنها · بانتظار فريق Palee"
+    },
+    "moderation": {
+      "hidden": "أخفاها فريق Palee · {date}",
+      "removed": "أزالها فريق Palee · {date}",
+      "ground": "السبب: {reason} ({basis}).",
+      "basisTerms": "شروط استخدام Palee",
+      "basisLaw": "القانون",
+      "human": "قرر ذلك شخص، بعد بلاغ.",
+      "humanNoReport": "قرر ذلك شخص.",
+      "redress": "لا توافق؟ اكتب إلى {email} أو توجّه إلى المحاكم.",
+      "redressNoEmail": "لا توافق؟ يمكنك التوجّه إلى المحاكم.",
+      "removedText": "أُزيل النص."
     }
   },
   "SmsUnsubscribe": {
@@ -16843,5 +16885,73 @@
       "history": "السجل",
       "historyStripe": "{rank} +{stripes}"
     }
+  },
+  "PlatformReviewReports": {
+    "back": "لوحة المنصة",
+    "title": "بلاغات المراجعات",
+    "subtitle": "مراجعات أعضاء أبلغ عنها أعضاء أو الصالة نفسها. أنتم وحدكم تقررون، وحتى ذلك الحين تبقى المراجعة ظاهرة.",
+    "tabsLabel": "بلاغات المراجعات",
+    "tabs": {
+      "open": "مفتوحة",
+      "decided": "محسومة"
+    },
+    "empty": "لا بلاغات مفتوحة.",
+    "emptyDecided": "لا قرارات بعد.",
+    "forbidden": "لا يرى هذه الصفحة إلا فريق Palee.",
+    "count": "{count, plural, zero {لا بلاغات} one {بلاغ واحد} two {بلاغان} few {# بلاغات} many {# بلاغًا} other {# بلاغ}}",
+    "firstAt": "الأول: {date}",
+    "boxReported": "أبلغت عنها الصالة",
+    "reported": "كما أُبلغ عنها",
+    "changed": "تغيّرت بعد البلاغ. الآن:",
+    "deleted": "حذفها الكاتب.",
+    "role": {
+      "member": "عضو",
+      "box": "الصالة"
+    },
+    "reasons": {
+      "offensive": "مسيء أو مهين",
+      "personal_data": "بيانات شخصية لشخص ما",
+      "not_genuine": "ليست تجربة حقيقية",
+      "spam": "إعلان أو خارج الموضوع",
+      "illegal": "محتوى غير قانوني",
+      "other": "شيء آخر"
+    },
+    "noViolation": "لا مخالفة",
+    "outcome": {
+      "keep": "تبقى",
+      "hide": "إخفاء",
+      "remove": "إزالة",
+      "restore": "إعادة"
+    },
+    "ground": "السبب (يراه الكاتب)",
+    "groundPlaceholder": "اختر سببًا",
+    "basis": {
+      "terms": "شروط استخدام Palee",
+      "law": "القانون"
+    },
+    "statement": "ما نكتبه للكاتب",
+    "statementHint": "يُبلَّغ الكاتب بهذا النص. أما المبلّغون فيعرفون القرار فقط.",
+    "statementRequired": "اكتب ما سيقرؤه الكاتب.",
+    "groundRequired": "اختر سببًا.",
+    "confirm": {
+      "hide": "إخفاء المراجعة",
+      "remove": "إزالة المراجعة"
+    },
+    "cancel": "إلغاء",
+    "done": "تم القرار. {count, plural, zero {لم يُغلق أي بلاغ} one {أُغلق بلاغ واحد} two {أُغلق بلاغان} few {أُغلقت # بلاغات} many {أُغلق # بلاغًا} other {أُغلق # بلاغ}}.",
+    "restored": "عادت المراجعة ظاهرة. أُبلغ الكاتب.",
+    "alreadyDecided": "تغيّر القرار في الأثناء. أعد تحميل الصفحة.",
+    "by": "{name} · {date}",
+    "status": {
+      "visible": "ظاهرة",
+      "hidden": "مخفية",
+      "removed": "مُزالة",
+      "deleted": "محذوفة"
+    },
+    "restore": "إعادة",
+    "restoreTitle": "إعادة المراجعة",
+    "restoreHint": "ستظهر المراجعة للجميع مجددًا. يقرأ الكاتب هذا النص.",
+    "anonymous": "عضو",
+    "noText": "بلا نص"
   }
 }

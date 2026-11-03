@@ -16397,7 +16397,8 @@
       "capiHint": "Invia le richieste a Meta anche dal server, solo con il consenso del visitatore.",
       "capiTokenSaved": "Token di accesso (salvato; scrivine uno nuovo per sostituirlo)",
       "capiToken": "Token di accesso"
-    }
+    },
+    "reportContact": "Segnala contenuti: {email}"
   },
   "BoxReviews": {
     "title": "Recensioni",
@@ -16463,6 +16464,47 @@
       "replyTitle": "La tua risposta",
       "sendReply": "Pubblica risposta",
       "replyRequired": "Scrivi la tua risposta."
+    },
+    "report": {
+      "menu": "Segnala",
+      "menuAsBox": "Segnala come box",
+      "reviewMenu": "Altro su questa recensione",
+      "title": "Segnala recensione",
+      "hint": "La vede solo il team Palee. La recensione resta visibile finché non decide.",
+      "hintBox": "La vede solo il team Palee, che decide. Il box non può mai nascondere una recensione da solo.",
+      "reasonLabel": "Motivo",
+      "reasons": {
+        "offensive": "Offensivo o ingiurioso",
+        "personal_data": "Dati personali di qualcuno",
+        "not_genuine": "Non è un’esperienza reale",
+        "spam": "Pubblicità o fuori tema",
+        "illegal": "Contenuto illegale",
+        "other": "Altro"
+      },
+      "personalDataHint": "Telefono, indirizzo, salute…",
+      "note": "Cosa succede? (facoltativo)",
+      "noteRequiredLabel": "Cosa succede?",
+      "notePlaceholder": "Es. nomina un coach e lo insulta.",
+      "noteRequired": "Scrivi qualche parola per farci capire cosa succede.",
+      "reasonRequired": "Scegli un motivo.",
+      "send": "Invia segnalazione",
+      "sending": "Invio…",
+      "doneTitle": "Grazie",
+      "doneText": "Il team Palee la controllerà e ti dirà cosa decide. Fino ad allora la recensione resta visibile.",
+      "ok": "OK",
+      "reported": "L’hai segnalata · in attesa del team Palee"
+    },
+    "moderation": {
+      "hidden": "Nascosta dal team Palee · {date}",
+      "removed": "Rimossa dal team Palee · {date}",
+      "ground": "Motivo: {reason} ({basis}).",
+      "basisTerms": "termini d’uso di Palee",
+      "basisLaw": "la legge",
+      "human": "Ha deciso una persona, dopo una segnalazione.",
+      "humanNoReport": "Ha deciso una persona.",
+      "redress": "Non sei d’accordo? Scrivi a {email} o rivolgiti al tribunale.",
+      "redressNoEmail": "Non sei d’accordo? Puoi rivolgerti al tribunale.",
+      "removedText": "Il testo è stato rimosso."
     }
   },
   "SmsUnsubscribe": {
@@ -16843,5 +16885,73 @@
       "history": "Cronologia",
       "historyStripe": "{rank} +{stripes}"
     }
+  },
+  "PlatformReviewReports": {
+    "back": "Console della piattaforma",
+    "title": "Recensioni segnalate",
+    "subtitle": "Recensioni di membri segnalate da membri o dal box stesso. Decidete solo voi; fino ad allora la recensione resta visibile.",
+    "tabsLabel": "Recensioni segnalate",
+    "tabs": {
+      "open": "Aperte",
+      "decided": "Decise"
+    },
+    "empty": "Nessuna segnalazione aperta.",
+    "emptyDecided": "Ancora nessuna decisione.",
+    "forbidden": "Solo il team Palee vede questa pagina.",
+    "count": "{count, plural, one {# segnalazione} other {# segnalazioni}}",
+    "firstAt": "prima: {date}",
+    "boxReported": "Segnalata dal box",
+    "reported": "Come segnalata",
+    "changed": "Cambiata dopo la segnalazione. Ora:",
+    "deleted": "L’autore l’ha eliminata.",
+    "role": {
+      "member": "Membro",
+      "box": "Box"
+    },
+    "reasons": {
+      "offensive": "Offensivo o ingiurioso",
+      "personal_data": "Dati personali di qualcuno",
+      "not_genuine": "Non è un’esperienza reale",
+      "spam": "Pubblicità o fuori tema",
+      "illegal": "Contenuto illegale",
+      "other": "Altro"
+    },
+    "noViolation": "Nessuna violazione",
+    "outcome": {
+      "keep": "Resta",
+      "hide": "Nascondi",
+      "remove": "Rimuovi",
+      "restore": "Ripristina"
+    },
+    "ground": "Motivo (lo vede l’autore)",
+    "groundPlaceholder": "Scegli un motivo",
+    "basis": {
+      "terms": "termini d’uso di Palee",
+      "law": "la legge"
+    },
+    "statement": "Cosa scriviamo all’autore",
+    "statementHint": "L’autore riceve questo testo. Chi ha segnalato conosce solo la decisione.",
+    "statementRequired": "Scrivi cosa leggerà l’autore.",
+    "groundRequired": "Scegli un motivo.",
+    "confirm": {
+      "hide": "Nascondi recensione",
+      "remove": "Rimuovi recensione"
+    },
+    "cancel": "Annulla",
+    "done": "Deciso. {count, plural, one {# segnalazione chiusa} other {# segnalazioni chiuse}}.",
+    "restored": "La recensione è di nuovo visibile. L’autore è stato avvisato.",
+    "alreadyDecided": "La decisione è cambiata nel frattempo. Ricarica la pagina.",
+    "by": "{name} · {date}",
+    "status": {
+      "visible": "Visibile",
+      "hidden": "Nascosta",
+      "removed": "Rimossa",
+      "deleted": "Eliminata"
+    },
+    "restore": "Ripristina",
+    "restoreTitle": "Ripristina recensione",
+    "restoreHint": "La recensione tornerà visibile a tutti. L’autore legge questo testo.",
+    "anonymous": "Membro",
+    "noText": "Nessun testo"
   }
 }

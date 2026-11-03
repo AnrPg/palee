@@ -16397,7 +16397,8 @@
       "capiHint": "Sends requests to Meta from the server too, only with the visitor's consent.",
       "capiTokenSaved": "Access token (saved; write a new one to replace it)",
       "capiToken": "Access token"
-    }
+    },
+    "reportContact": "Report content: {email}"
   },
   "BoxReviews": {
     "title": "Reviews",
@@ -16463,6 +16464,47 @@
       "replyTitle": "Your reply",
       "sendReply": "Publish reply",
       "replyRequired": "Write your reply."
+    },
+    "report": {
+      "menu": "Report",
+      "menuAsBox": "Report as the box",
+      "reviewMenu": "More about this review",
+      "title": "Report review",
+      "hint": "Only the Palee team sees it. The review stays up until they decide.",
+      "hintBox": "Only the Palee team sees it and decides. The box can never hide a review on its own.",
+      "reasonLabel": "Reason",
+      "reasons": {
+        "offensive": "Offensive or abusive",
+        "personal_data": "Someone's personal data",
+        "not_genuine": "Not a real experience",
+        "spam": "Advertising or off-topic",
+        "illegal": "Illegal content",
+        "other": "Something else"
+      },
+      "personalDataHint": "Phone, address, health…",
+      "note": "What's wrong? (optional)",
+      "noteRequiredLabel": "What's wrong?",
+      "notePlaceholder": "E.g. it names a coach and insults them.",
+      "noteRequired": "Write a few words so we understand what's wrong.",
+      "reasonRequired": "Choose a reason.",
+      "send": "Send report",
+      "sending": "Sending…",
+      "doneTitle": "Thank you",
+      "doneText": "The Palee team will check it and tell you what they decide. Until then the review stays up.",
+      "ok": "OK",
+      "reported": "You reported it · waiting for the Palee team"
+    },
+    "moderation": {
+      "hidden": "Hidden by the Palee team · {date}",
+      "removed": "Removed by the Palee team · {date}",
+      "ground": "Reason: {reason} ({basis}).",
+      "basisTerms": "Palee's terms of use",
+      "basisLaw": "the law",
+      "human": "A person decided this, after a report.",
+      "humanNoReport": "A person decided this.",
+      "redress": "Disagree? Write to {email} or go to the courts.",
+      "redressNoEmail": "Disagree? You can go to the courts.",
+      "removedText": "The text was removed."
     }
   },
   "SmsUnsubscribe": {
@@ -16843,5 +16885,73 @@
       "history": "History",
       "historyStripe": "{rank} +{stripes}"
     }
+  },
+  "PlatformReviewReports": {
+    "back": "Platform console",
+    "title": "Review reports",
+    "subtitle": "Member reviews reported by members or by the box itself. Only you decide; until then the review stays up.",
+    "tabsLabel": "Review reports",
+    "tabs": {
+      "open": "Open",
+      "decided": "Decided"
+    },
+    "empty": "No open reports.",
+    "emptyDecided": "No decisions yet.",
+    "forbidden": "Only the Palee team sees this page.",
+    "count": "{count, plural, one {# report} other {# reports}}",
+    "firstAt": "first: {date}",
+    "boxReported": "Reported by the box",
+    "reported": "As reported",
+    "changed": "Changed after the report. Now:",
+    "deleted": "The author deleted it.",
+    "role": {
+      "member": "Member",
+      "box": "Box"
+    },
+    "reasons": {
+      "offensive": "Offensive or abusive",
+      "personal_data": "Someone's personal data",
+      "not_genuine": "Not a real experience",
+      "spam": "Advertising or off-topic",
+      "illegal": "Illegal content",
+      "other": "Something else"
+    },
+    "noViolation": "No violation",
+    "outcome": {
+      "keep": "Keep",
+      "hide": "Hide",
+      "remove": "Remove",
+      "restore": "Restore"
+    },
+    "ground": "Reason (the author sees it)",
+    "groundPlaceholder": "Choose a reason",
+    "basis": {
+      "terms": "Palee's terms of use",
+      "law": "the law"
+    },
+    "statement": "What we tell the author",
+    "statementHint": "The author is notified with this text. Reporters only learn the decision.",
+    "statementRequired": "Write what the author will read.",
+    "groundRequired": "Choose a reason.",
+    "confirm": {
+      "hide": "Hide review",
+      "remove": "Remove review"
+    },
+    "cancel": "Cancel",
+    "done": "Decided. {count, plural, one {# report closed} other {# reports closed}}.",
+    "restored": "The review shows again. The author was notified.",
+    "alreadyDecided": "The decision changed meanwhile. Reload the page.",
+    "by": "{name} · {date}",
+    "status": {
+      "visible": "Visible",
+      "hidden": "Hidden",
+      "removed": "Removed",
+      "deleted": "Deleted"
+    },
+    "restore": "Restore",
+    "restoreTitle": "Restore review",
+    "restoreHint": "The review will show to everyone again. The author reads this text.",
+    "anonymous": "Member",
+    "noText": "No text"
   }
 }

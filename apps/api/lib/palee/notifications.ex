@@ -717,6 +717,14 @@ defmodule Palee.Notifications do
         url: "/admin/leads?lead=#{field(payload, :lead_id)}"
       })
 
+  # ADR-397: the Palee team decided on a reported review. The reporter hears
+  # the outcome; the author hears a hide or removal with its reasons.
+  def process_event("box_review_report_decided", payload),
+    do: enqueue_simple(:box_review_report_decided, payload, review_decision_payload(payload))
+
+  def process_event("box_review_moderated", payload),
+    do: enqueue_simple(:box_review_moderated, payload, review_decision_payload(payload))
+
   # ADR-220: a member is leaving the box. The staff who manage billing hear
   # the last day and the reason, once per leave.
   def process_event("member_leaving", payload) do
@@ -1575,6 +1583,17 @@ defmodule Palee.Notifications do
   end
 
   # ADR-097 notifications with a fixed payload shape.
+  defp review_decision_payload(payload) do
+    %{
+      organization_id: field(payload, :organization_id),
+      review_id: field(payload, :review_id),
+      outcome: field(payload, :outcome),
+      ground: field(payload, :ground),
+      dedupe_key: field(payload, :dedupe_key),
+      url: field(payload, :url)
+    }
+  end
+
   defp enqueue_simple(type, payload, notification_payload) do
     user_id = field(payload, :user_id)
 

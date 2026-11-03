@@ -16397,7 +16397,8 @@
       "capiHint": "Envoie aussi les demandes à Meta depuis le serveur, seulement avec l'accord du visiteur.",
       "capiTokenSaved": "Jeton d'accès (enregistré ; écris-en un nouveau pour le remplacer)",
       "capiToken": "Jeton d'accès"
-    }
+    },
+    "reportContact": "Signaler un contenu : {email}"
   },
   "BoxReviews": {
     "title": "Avis",
@@ -16463,6 +16464,47 @@
       "replyTitle": "Ta réponse",
       "sendReply": "Publier la réponse",
       "replyRequired": "Écris ta réponse."
+    },
+    "report": {
+      "menu": "Signaler",
+      "menuAsBox": "Signaler au nom de la box",
+      "reviewMenu": "Plus d’options pour cet avis",
+      "title": "Signaler l’avis",
+      "hint": "Seule l’équipe Palee le voit. L’avis reste en ligne jusqu’à sa décision.",
+      "hintBox": "Seule l’équipe Palee le voit et décide. La box ne peut jamais masquer un avis elle-même.",
+      "reasonLabel": "Motif",
+      "reasons": {
+        "offensive": "Offensant ou injurieux",
+        "personal_data": "Données personnelles de quelqu’un",
+        "not_genuine": "Pas une vraie expérience",
+        "spam": "Publicité ou hors sujet",
+        "illegal": "Contenu illégal",
+        "other": "Autre chose"
+      },
+      "personalDataHint": "Téléphone, adresse, santé…",
+      "note": "Que se passe-t-il ? (facultatif)",
+      "noteRequiredLabel": "Que se passe-t-il ?",
+      "notePlaceholder": "Par ex. il nomme un coach et l’insulte.",
+      "noteRequired": "Écris quelques mots pour qu’on comprenne le problème.",
+      "reasonRequired": "Choisis un motif.",
+      "send": "Envoyer le signalement",
+      "sending": "Envoi…",
+      "doneTitle": "Merci",
+      "doneText": "L’équipe Palee va le vérifier et te dira ce qu’elle décide. D’ici là, l’avis reste en ligne.",
+      "ok": "OK",
+      "reported": "Tu l’as signalé · en attente de l’équipe Palee"
+    },
+    "moderation": {
+      "hidden": "Masqué par l’équipe Palee · {date}",
+      "removed": "Supprimé par l’équipe Palee · {date}",
+      "ground": "Motif : {reason} ({basis}).",
+      "basisTerms": "conditions d’utilisation de Palee",
+      "basisLaw": "la loi",
+      "human": "Une personne a décidé, après un signalement.",
+      "humanNoReport": "Une personne a décidé.",
+      "redress": "Pas d’accord ? Écris à {email} ou saisis les tribunaux.",
+      "redressNoEmail": "Pas d’accord ? Tu peux saisir les tribunaux.",
+      "removedText": "Le texte a été supprimé."
     }
   },
   "SmsUnsubscribe": {
@@ -16843,5 +16885,73 @@
       "history": "Historique",
       "historyStripe": "{rank} +{stripes}"
     }
+  },
+  "PlatformReviewReports": {
+    "back": "Console plateforme",
+    "title": "Avis signalés",
+    "subtitle": "Avis de membres signalés par des membres ou par la box elle-même. Vous seuls décidez ; d’ici là l’avis reste en ligne.",
+    "tabsLabel": "Avis signalés",
+    "tabs": {
+      "open": "Ouverts",
+      "decided": "Décidés"
+    },
+    "empty": "Aucun signalement ouvert.",
+    "emptyDecided": "Aucune décision pour l’instant.",
+    "forbidden": "Seule l’équipe Palee voit cette page.",
+    "count": "{count, plural, one {# signalement} other {# signalements}}",
+    "firstAt": "premier : {date}",
+    "boxReported": "Signalé par la box",
+    "reported": "Tel que signalé",
+    "changed": "Modifié après le signalement. Maintenant :",
+    "deleted": "L’auteur l’a supprimé.",
+    "role": {
+      "member": "Membre",
+      "box": "Box"
+    },
+    "reasons": {
+      "offensive": "Offensant ou injurieux",
+      "personal_data": "Données personnelles de quelqu’un",
+      "not_genuine": "Pas une vraie expérience",
+      "spam": "Publicité ou hors sujet",
+      "illegal": "Contenu illégal",
+      "other": "Autre chose"
+    },
+    "noViolation": "Aucune violation",
+    "outcome": {
+      "keep": "Garder",
+      "hide": "Masquer",
+      "remove": "Supprimer",
+      "restore": "Rétablir"
+    },
+    "ground": "Motif (visible par l’auteur)",
+    "groundPlaceholder": "Choisir un motif",
+    "basis": {
+      "terms": "conditions d’utilisation de Palee",
+      "law": "la loi"
+    },
+    "statement": "Ce que nous écrivons à l’auteur",
+    "statementHint": "L’auteur est prévenu avec ce texte. Les signaleurs n’apprennent que la décision.",
+    "statementRequired": "Écris ce que l’auteur lira.",
+    "groundRequired": "Choisis un motif.",
+    "confirm": {
+      "hide": "Masquer l’avis",
+      "remove": "Supprimer l’avis"
+    },
+    "cancel": "Annuler",
+    "done": "Décidé. {count, plural, one {# signalement clos} other {# signalements clos}}.",
+    "restored": "L’avis est de nouveau visible. L’auteur a été prévenu.",
+    "alreadyDecided": "La décision a changé entre-temps. Recharge la page.",
+    "by": "{name} · {date}",
+    "status": {
+      "visible": "Visible",
+      "hidden": "Masqué",
+      "removed": "Supprimé",
+      "deleted": "Effacé"
+    },
+    "restore": "Rétablir",
+    "restoreTitle": "Rétablir l’avis",
+    "restoreHint": "L’avis sera de nouveau visible par tous. L’auteur lit ce texte.",
+    "anonymous": "Membre",
+    "noText": "Sans texte"
   }
 }

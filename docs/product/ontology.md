@@ -738,6 +738,21 @@ Programmes a box or a coach sells (CP-D4). The prospect assistant of the same wo
 | Ranks (settings) | Βαθμοί | Ρυθμίσεις › Προχωρημένα › Βαθμοί | Where staff keep the box's ladders. Say «Κλίμακα βαθμών» in full where «Κλίμακα» (Standards, §4.23) could also appear. | Standards («Κλίμακα», §4.23). |
 | Withdraw (a rank) | Ανάκληση | `POST /staff/rank-awards/:id/revoke` | Takes back a promotion with a reason; the award stays in the history as withdrawn. Never «διαγραφή». | Delete. |
 | Ready (for the next rank) | Πληροί τις προϋποθέσεις | `progress.ready` | The counted requirements are met; the coach still decides. | Promotion. |
+### 4.29 Review reports (ADR-397)
+
+A member, or the box, reports a box review to the Palee team; only the Palee team decides. Member and platform-console terms.
+
+| English | Ελληνικά | Code | What it is | Not to be confused with |
+|---|---|---|---|---|
+| Review report | Αναφορά κριτικής | `box_review_reports` | A member's or the box's «Αναφορά» on a review of the box, with a reason and an optional note. The review stays up until the Palee team decides. One open per person and review. | Club report (ADR-143, box staff decide); Partners report (ADR-280). |
+| Report reason | Λόγος αναφοράς | `reason`: `offensive`, `personal_data`, `not_genuine`, `spam`, `illegal`, `other` | «Προσβλητικό ή υβριστικό», «Προσωπικά στοιχεία κάποιου», «Δεν είναι πραγματική εμπειρία», «Διαφήμιση ή άσχετο», «Παράνομο περιεχόμενο», «Κάτι άλλο». A note is required for the last two. | Ground of the decision (same codes plus `no_violation`). |
+| Review reports (console) | Αναφορές κριτικών | `/api/platform/review-reports` | The Palee team's queue in the platform console: one row per reported review across every box, oldest first; «Αποφασισμένες» for the decisions. | «Αναφορές Συναθλητών» (Partners). |
+| Keep | Μένει | `outcome: keep` | The review breaks no rule and stays. | |
+| Hide | Απόκρυψη | `outcome: hide`, `box_reviews.moderation: hidden` | Only the author still sees it, with the reasons; out of the average and the website. Reversible. | The box hiding a review (not possible). |
+| Remove | Αφαίρεση | `outcome: remove`, `box_reviews.moderation: removed` | The text and the box's reply are erased; the author sees «Αφαιρέθηκε από την ομάδα Palee» with the reasons. | The author's «Διαγραφή» of their own review. |
+| Restore | Επαναφορά | `outcome: restore` | The Palee team shows a hidden review again from «Αποφασισμένες», with a statement to the author. Only a hidden review; a removed text is gone. | Undoing the author's own «Διαγραφή» (not possible). |
+| Report contact | Αναφορά περιεχομένου | `site.report_contact`, `review_moderation.contact_email` | Palee's moderation address in the box website's footer and in every statement of reasons. | The box's own contact form. |
+| Statement of reasons | Αιτιολόγηση | `box_review_decisions`, `mine.moderation` | What the author reads when the Palee team hid or removed their review: what changed, why (Palee's terms or the law), that a person decided, where to seek redress (the moderation address, the courts). | The box's reply («Απάντηση από …»). |
 
 ## 5. Name clashes found, and proposals
 

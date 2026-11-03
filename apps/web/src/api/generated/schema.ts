@@ -5442,6 +5442,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/box-reviews/{id}/report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Report a review as the box to the Palee team; the box can never hide a review itself */
+        post: operations["PaleeWeb.AdminBoxReviewsController.report"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/box-screens": {
         parameters: {
             query?: never;
@@ -13770,6 +13787,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/me/box-reviews/{id}/report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Report a review of my box to the Palee team (it stays up until they decide) */
+        post: operations["PaleeWeb.MyBoxReviewsController.report"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/me/channels": {
         parameters: {
             query?: never;
@@ -18313,6 +18347,57 @@ export interface paths {
         put?: never;
         /** Replace the key pair; every device subscribes again on its next visit */
         post: operations["PaleeWeb.PlatformPushSettingsController.rotate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/platform/review-reports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Reported reviews (open, oldest first) or the latest decisions (vendors) */
+        get: operations["PaleeWeb.PlatformReviewReportController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/platform/review-reports/{review_id}/decision": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Keep, hide or remove a reported review, for every open report on it (vendors) */
+        post: operations["PaleeWeb.PlatformReviewReportController.decide"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/platform/review-reports/{review_id}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Show a hidden review again, with a statement for its author (vendors) */
+        post: operations["PaleeWeb.PlatformReviewReportController.restore"];
         delete?: never;
         options?: never;
         head?: never;
@@ -25009,6 +25094,34 @@ export interface components {
                 replied_at: string;
             } | null;
         };
+        /**
+         * BoxReviewModeration
+         * @description Null while the review is up; the statement of reasons when it is not
+         */
+        BoxReviewModeration: {
+            /** @description Decided after a report */
+            after_report: boolean;
+            /** @description Always false: a person decided */
+            automated: boolean;
+            /** @description Palee's moderation address, named for redress */
+            contact: string | null;
+            /** Format: date-time */
+            decided_at: string;
+            ground: string | null;
+            /**
+             * @description The law (illegal content) or Palee's terms
+             * @enum {string|null}
+             */
+            legal_basis: "law" | "terms" | null;
+            /** Format: date-time */
+            moderated_at: string;
+            /** @enum {string|null} */
+            outcome: "hide" | "remove" | null;
+            redress: ("contact_palee" | "court")[];
+            statement: string | null;
+            /** @enum {string} */
+            status: "hidden" | "removed";
+        } | null;
         /** BoxReviewReply */
         BoxReviewReply: {
             body: string;
@@ -25018,6 +25131,23 @@ export interface components {
         /** BoxReviewReplyRequest */
         BoxReviewReplyRequest: {
             body: string;
+        };
+        /** BoxReviewReportRequest */
+        BoxReviewReportRequest: {
+            /** @description Required for illegal and other */
+            note?: string | null;
+            /** @enum {string} */
+            reason: "offensive" | "personal_data" | "not_genuine" | "spam" | "illegal" | "other";
+        };
+        /**
+         * BoxReviewReportResponse
+         * @description The review stays up until the Palee team decides
+         */
+        BoxReviewReportResponse: {
+            /** Format: uuid */
+            review_id: string;
+            /** @enum {string} */
+            status: "open";
         };
         /** BoxReviewRequest */
         BoxReviewRequest: {
@@ -32495,6 +32625,13 @@ export interface components {
                 updated_at?: string;
             };
         };
+        /** CurrentReviewText */
+        CurrentReviewText: {
+            body: string | null;
+            /** Format: date-time */
+            edited_at: string | null;
+            rating: number;
+        } | null;
         /** CustomFoodCreateRequest */
         CustomFoodCreateRequest: {
             barcode?: string | null;
@@ -36254,6 +36391,34 @@ export interface components {
             edited_at: string | null;
             /** Format: uuid */
             id: string;
+            /**
+             * BoxReviewModeration
+             * @description Null while the review is up; the statement of reasons when it is not
+             */
+            moderation: {
+                /** @description Decided after a report */
+                after_report: boolean;
+                /** @description Always false: a person decided */
+                automated: boolean;
+                /** @description Palee's moderation address, named for redress */
+                contact: string | null;
+                /** Format: date-time */
+                decided_at: string;
+                ground: string | null;
+                /**
+                 * @description The law (illegal content) or Palee's terms
+                 * @enum {string|null}
+                 */
+                legal_basis: "law" | "terms" | null;
+                /** Format: date-time */
+                moderated_at: string;
+                /** @enum {string|null} */
+                outcome: "hide" | "remove" | null;
+                redress: ("contact_palee" | "court")[];
+                statement: string | null;
+                /** @enum {string} */
+                status: "hidden" | "removed";
+            } | null;
             rating: number;
             /** BoxReviewReply */
             reply: {
@@ -36293,6 +36458,34 @@ export interface components {
                 edited_at: string | null;
                 /** Format: uuid */
                 id: string;
+                /**
+                 * BoxReviewModeration
+                 * @description Null while the review is up; the statement of reasons when it is not
+                 */
+                moderation: {
+                    /** @description Decided after a report */
+                    after_report: boolean;
+                    /** @description Always false: a person decided */
+                    automated: boolean;
+                    /** @description Palee's moderation address, named for redress */
+                    contact: string | null;
+                    /** Format: date-time */
+                    decided_at: string;
+                    ground: string | null;
+                    /**
+                     * @description The law (illegal content) or Palee's terms
+                     * @enum {string|null}
+                     */
+                    legal_basis: "law" | "terms" | null;
+                    /** Format: date-time */
+                    moderated_at: string;
+                    /** @enum {string|null} */
+                    outcome: "hide" | "remove" | null;
+                    redress: ("contact_palee" | "court")[];
+                    statement: string | null;
+                    /** @enum {string} */
+                    status: "hidden" | "removed";
+                } | null;
                 rating: number;
                 /** BoxReviewReply */
                 reply: {
@@ -36301,6 +36494,8 @@ export interface components {
                     replied_at: string;
                 } | null;
             } | null;
+            /** @description Reviews I reported that the Palee team has not decided yet (ADR-397) */
+            reported_ids: string[];
             reviews: {
                 /** @description First name only; null for people who hide themselves */
                 author_name: string | null;
@@ -41167,6 +41362,173 @@ export interface components {
                 trial_days: number;
             }[];
         };
+        /** PlatformReviewDecision */
+        PlatformReviewDecision: {
+            /** Format: date-time */
+            decided_at: string;
+            decided_by: string | null;
+            ground: string;
+            /** Format: uuid */
+            id: string;
+            /** ReviewReportOrganization */
+            organization: {
+                /** Format: uuid */
+                id: string;
+                name: string | null;
+            };
+            /** @enum {string} */
+            outcome: "keep" | "hide" | "remove" | "restore";
+            reports_count: number;
+            /** Format: uuid */
+            review_id: string | null;
+            /**
+             * @description The review now; only a hidden one can be restored
+             * @enum {string}
+             */
+            review_status: "visible" | "hidden" | "removed" | "deleted";
+            statement: string | null;
+        };
+        /** PlatformReviewDecisionRequest */
+        PlatformReviewDecisionRequest: {
+            /**
+             * @description no_violation for keep; a report reason for hide and remove
+             * @enum {string|null}
+             */
+            ground?: "no_violation" | "offensive" | "personal_data" | "not_genuine" | "spam" | "illegal" | "other" | null;
+            /** @enum {string} */
+            outcome: "keep" | "hide" | "remove";
+            /** @description What the author reads; required for hide and remove */
+            statement?: string | null;
+        };
+        /** PlatformReviewDecisionResponse */
+        PlatformReviewDecisionResponse: {
+            ground: string;
+            outcome: string;
+            /** @description Open reports this decision closed */
+            resolved: number;
+            /** Format: uuid */
+            review_id: string;
+        };
+        /** PlatformReviewReportItem */
+        PlatformReviewReportItem: {
+            author_name: string | null;
+            /** @description The box itself reported it */
+            box_reported: boolean;
+            /** CurrentReviewText */
+            current: {
+                body: string | null;
+                /** Format: date-time */
+                edited_at: string | null;
+                rating: number;
+            } | null;
+            /** Format: date-time */
+            first_reported_at: string;
+            notes: {
+                /** Format: date-time */
+                at: string;
+                note: string;
+                reason: string;
+                /** @enum {string} */
+                role: "member" | "box";
+            }[];
+            /** ReviewReportOrganization */
+            organization: {
+                /** Format: uuid */
+                id: string;
+                name: string | null;
+            };
+            reasons: {
+                count: number;
+                reason: string;
+            }[];
+            /**
+             * ReportedReviewText
+             * @description The review as the latest report saw it
+             */
+            reported: {
+                body: string | null;
+                rating: number;
+            };
+            reports_count: number;
+            /** Format: uuid */
+            review_id: string;
+        };
+        /** PlatformReviewReportsResponse */
+        PlatformReviewReportsResponse: {
+            decisions: {
+                /** Format: date-time */
+                decided_at: string;
+                decided_by: string | null;
+                ground: string;
+                /** Format: uuid */
+                id: string;
+                /** ReviewReportOrganization */
+                organization: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string | null;
+                };
+                /** @enum {string} */
+                outcome: "keep" | "hide" | "remove" | "restore";
+                reports_count: number;
+                /** Format: uuid */
+                review_id: string | null;
+                /**
+                 * @description The review now; only a hidden one can be restored
+                 * @enum {string}
+                 */
+                review_status: "visible" | "hidden" | "removed" | "deleted";
+                statement: string | null;
+            }[];
+            items: {
+                author_name: string | null;
+                /** @description The box itself reported it */
+                box_reported: boolean;
+                /** CurrentReviewText */
+                current: {
+                    body: string | null;
+                    /** Format: date-time */
+                    edited_at: string | null;
+                    rating: number;
+                } | null;
+                /** Format: date-time */
+                first_reported_at: string;
+                notes: {
+                    /** Format: date-time */
+                    at: string;
+                    note: string;
+                    reason: string;
+                    /** @enum {string} */
+                    role: "member" | "box";
+                }[];
+                /** ReviewReportOrganization */
+                organization: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string | null;
+                };
+                reasons: {
+                    count: number;
+                    reason: string;
+                }[];
+                /**
+                 * ReportedReviewText
+                 * @description The review as the latest report saw it
+                 */
+                reported: {
+                    body: string | null;
+                    rating: number;
+                };
+                reports_count: number;
+                /** Format: uuid */
+                review_id: string;
+            }[];
+        };
+        /** PlatformReviewRestoreRequest */
+        PlatformReviewRestoreRequest: {
+            /** @description What the author reads */
+            statement: string;
+        };
         /** PostAttachmentPreview */
         PostAttachmentPreview: {
             attachment: {
@@ -42980,6 +43342,8 @@ export interface components {
             language: string;
             /** @description The site's languages: the box's own and English */
             languages: string[];
+            /** @description Palee's address for reporting content on the site (ADR-397, DSA Art. 16) */
+            report_contact: string | null;
             /** SiteReviews */
             reviews: {
                 /**
@@ -44172,6 +44536,14 @@ export interface components {
                 [key: string]: unknown;
             };
         };
+        /**
+         * ReportedReviewText
+         * @description The review as the latest report saw it
+         */
+        ReportedReviewText: {
+            body: string | null;
+            rating: number;
+        };
         /** RevenueStreamTotal */
         RevenueStreamTotal: {
             currency: string;
@@ -44286,6 +44658,26 @@ export interface components {
                 unanswered: number;
             };
             days: number;
+        };
+        /** ReviewReportNote */
+        ReviewReportNote: {
+            /** Format: date-time */
+            at: string;
+            note: string;
+            reason: string;
+            /** @enum {string} */
+            role: "member" | "box";
+        };
+        /** ReviewReportOrganization */
+        ReviewReportOrganization: {
+            /** Format: uuid */
+            id: string;
+            name: string | null;
+        };
+        /** ReviewReportReasonCount */
+        ReviewReportReasonCount: {
+            count: number;
+            reason: string;
         };
         /** SaveFilterRequest */
         SaveFilterRequest: {
@@ -78901,6 +79293,69 @@ export interface operations {
             };
             /** @description Invalid */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminBoxReviewsController.report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Required for illegal and other */
+                    note?: string | null;
+                    /** @enum {string} */
+                    reason: "offensive" | "personal_data" | "not_genuine" | "spam" | "illegal" | "other";
+                };
+            };
+        };
+        responses: {
+            /** @description Reported */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        review_id: string;
+                        /** @enum {string} */
+                        status: "open";
+                    };
+                };
+            };
+            /** @description No such review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Invalid or my own review */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Too many reports today */
+            429: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -125829,6 +126284,34 @@ export interface operations {
                             edited_at: string | null;
                             /** Format: uuid */
                             id: string;
+                            /**
+                             * BoxReviewModeration
+                             * @description Null while the review is up; the statement of reasons when it is not
+                             */
+                            moderation: {
+                                /** @description Decided after a report */
+                                after_report: boolean;
+                                /** @description Always false: a person decided */
+                                automated: boolean;
+                                /** @description Palee's moderation address, named for redress */
+                                contact: string | null;
+                                /** Format: date-time */
+                                decided_at: string;
+                                ground: string | null;
+                                /**
+                                 * @description The law (illegal content) or Palee's terms
+                                 * @enum {string|null}
+                                 */
+                                legal_basis: "law" | "terms" | null;
+                                /** Format: date-time */
+                                moderated_at: string;
+                                /** @enum {string|null} */
+                                outcome: "hide" | "remove" | null;
+                                redress: ("contact_palee" | "court")[];
+                                statement: string | null;
+                                /** @enum {string} */
+                                status: "hidden" | "removed";
+                            } | null;
                             rating: number;
                             /** BoxReviewReply */
                             reply: {
@@ -125837,6 +126320,8 @@ export interface operations {
                                 replied_at: string;
                             } | null;
                         } | null;
+                        /** @description Reviews I reported that the Palee team has not decided yet (ADR-397) */
+                        reported_ids: string[];
                         reviews: {
                             /** @description First name only; null for people who hide themselves */
                             author_name: string | null;
@@ -125856,6 +126341,69 @@ export interface operations {
                             } | null;
                         }[];
                     };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyBoxReviewsController.report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Required for illegal and other */
+                    note?: string | null;
+                    /** @enum {string} */
+                    reason: "offensive" | "personal_data" | "not_genuine" | "spam" | "illegal" | "other";
+                };
+            };
+        };
+        responses: {
+            /** @description Reported */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        review_id: string;
+                        /** @enum {string} */
+                        status: "open";
+                    };
+                };
+            };
+            /** @description No such review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Invalid or my own review */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Too many reports today */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
                 };
             };
         };
@@ -150260,6 +150808,231 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.PlatformReviewReportController.index": {
+        parameters: {
+            query?: {
+                /** @description Default open */
+                status?: "open" | "decided";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Queue */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        decisions: {
+                            /** Format: date-time */
+                            decided_at: string;
+                            decided_by: string | null;
+                            ground: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** ReviewReportOrganization */
+                            organization: {
+                                /** Format: uuid */
+                                id: string;
+                                name: string | null;
+                            };
+                            /** @enum {string} */
+                            outcome: "keep" | "hide" | "remove" | "restore";
+                            reports_count: number;
+                            /** Format: uuid */
+                            review_id: string | null;
+                            /**
+                             * @description The review now; only a hidden one can be restored
+                             * @enum {string}
+                             */
+                            review_status: "visible" | "hidden" | "removed" | "deleted";
+                            statement: string | null;
+                        }[];
+                        items: {
+                            author_name: string | null;
+                            /** @description The box itself reported it */
+                            box_reported: boolean;
+                            /** CurrentReviewText */
+                            current: {
+                                body: string | null;
+                                /** Format: date-time */
+                                edited_at: string | null;
+                                rating: number;
+                            } | null;
+                            /** Format: date-time */
+                            first_reported_at: string;
+                            notes: {
+                                /** Format: date-time */
+                                at: string;
+                                note: string;
+                                reason: string;
+                                /** @enum {string} */
+                                role: "member" | "box";
+                            }[];
+                            /** ReviewReportOrganization */
+                            organization: {
+                                /** Format: uuid */
+                                id: string;
+                                name: string | null;
+                            };
+                            reasons: {
+                                count: number;
+                                reason: string;
+                            }[];
+                            /**
+                             * ReportedReviewText
+                             * @description The review as the latest report saw it
+                             */
+                            reported: {
+                                body: string | null;
+                                rating: number;
+                            };
+                            reports_count: number;
+                            /** Format: uuid */
+                            review_id: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PlatformReviewReportController.decide": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                review_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description no_violation for keep; a report reason for hide and remove
+                     * @enum {string|null}
+                     */
+                    ground?: "no_violation" | "offensive" | "personal_data" | "not_genuine" | "spam" | "illegal" | "other" | null;
+                    /** @enum {string} */
+                    outcome: "keep" | "hide" | "remove";
+                    /** @description What the author reads; required for hide and remove */
+                    statement?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Decision */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        ground: string;
+                        outcome: string;
+                        /** @description Open reports this decision closed */
+                        resolved: number;
+                        /** Format: uuid */
+                        review_id: string;
+                    };
+                };
+            };
+            /** @description No such review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description No open reports */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Invalid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.PlatformReviewReportController.restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                review_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description What the author reads */
+                    statement: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Restored */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        ground: string;
+                        outcome: string;
+                        /** @description Open reports this decision closed */
+                        resolved: number;
+                        /** Format: uuid */
+                        review_id: string;
+                    };
+                };
+            };
+            /** @description No such review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Not hidden */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Invalid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
     "PaleeWeb.PlatformSiteDomainsController.index": {
         parameters: {
             query?: {
@@ -153277,6 +154050,8 @@ export interface operations {
                         language: string;
                         /** @description The site's languages: the box's own and English */
                         languages: string[];
+                        /** @description Palee's address for reporting content on the site (ADR-397, DSA Art. 16) */
+                        report_contact: string | null;
                         /** SiteReviews */
                         reviews: {
                             /**

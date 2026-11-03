@@ -126,4 +126,32 @@ defmodule Palee.Notifications.Domain.PushMessageBuilderTest do
     assert untitled.body == "A WOD you did changed. See it as it was in your Journal."
     assert untitled.url == "/journal"
   end
+
+  # ADR-397: the Palee team's decision on a reported review.
+  test "builds the review report outcome and the author's notice" do
+    kept = PushMessageBuilder.build("box_review_report_decided", %{"outcome" => "keep"})
+    assert kept.title == "Your report was decided"
+    assert kept.body == "The Palee team checked the review you reported and kept it."
+    assert kept.url == "/box"
+
+    hidden =
+      PushMessageBuilder.build("box_review_report_decided", %{
+        "outcome" => "hide",
+        "url" => "/box#reviews"
+      })
+
+    assert hidden.body == "The Palee team hid the review you reported."
+    assert hidden.url == "/box#reviews"
+
+    removed = PushMessageBuilder.build("box_review_moderated", %{"outcome" => "remove"})
+    assert removed.title == "The Palee team removed your review"
+    assert removed.body == "See why and what you can do."
+
+    assert PushMessageBuilder.build("box_review_moderated", %{"outcome" => "hide"}).title ==
+             "The Palee team hid your review"
+
+    restored = PushMessageBuilder.build("box_review_moderated", %{"outcome" => "restore"})
+    assert restored.title == "The Palee team restored your review"
+    assert restored.body == "Your review shows again in the box's reviews."
+  end
 end

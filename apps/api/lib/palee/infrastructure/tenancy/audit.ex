@@ -91,6 +91,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     box_site_ingress_ops
     review_ask_settings review_asks review_ask_opt_outs box_reviews google_place_snapshots
     rank_ladders ranks rank_awards
+    box_review_reports box_review_decisions
   )
 
   @transitional_tenant_tables []

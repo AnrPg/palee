@@ -113,6 +113,17 @@ config :palee, :web_push_server_keys,
   private_key: System.get_env("WEB_PUSH_PRIVATE_KEY"),
   subject: System.get_env("WEB_PUSH_SUBJECT")
 
+# ADR-397: the review moderation address (statements of reasons, the box
+# website's footer) and where the daily summary of open reports goes.
+config :palee, :review_moderation,
+  contact_email: System.get_env("REVIEW_MODERATION_EMAIL", "moderation@palee.app"),
+  team_email:
+    System.get_env(
+      "REVIEW_MODERATION_TEAM_EMAIL",
+      System.get_env("REVIEW_MODERATION_EMAIL", "moderation@palee.app")
+    ),
+  team_locale: System.get_env("REVIEW_MODERATION_TEAM_LOCALE", "el")
+
 minio_endpoint =
   System.get_env("MINIO_ENDPOINT") ||
     if(config_env() == :prod,

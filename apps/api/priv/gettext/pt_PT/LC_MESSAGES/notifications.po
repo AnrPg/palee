@@ -823,3 +823,30 @@ msgstr "«%{title}» mudou depois de o ter feito. Veja-o como era no seu Diário
 
 msgid "A WOD you did changed. See it as it was in your Journal."
 msgstr "Um WOD que fez mudou. Veja-o como era no seu Diário."
+
+msgid "Your report was decided"
+msgstr "A tua denúncia foi analisada"
+
+msgid "The Palee team hid the review you reported."
+msgstr "A equipa Palee ocultou a avaliação que denunciaste."
+
+msgid "The Palee team removed the review you reported."
+msgstr "A equipa Palee removeu a avaliação que denunciaste."
+
+msgid "The Palee team checked the review you reported and kept it."
+msgstr "A equipa Palee verificou a avaliação que denunciaste e manteve-a."
+
+msgid "The Palee team removed your review"
+msgstr "A equipa Palee removeu a tua avaliação"
+
+msgid "The Palee team hid your review"
+msgstr "A equipa Palee ocultou a tua avaliação"
+
+msgid "See why and what you can do."
+msgstr "Vê porquê e o que podes fazer."
+
+msgid "The Palee team restored your review"
+msgstr "A equipa Palee repôs a tua avaliação"
+
+msgid "Your review shows again in the box's reviews."
+msgstr "A tua avaliação volta a aparecer nas avaliações da box."

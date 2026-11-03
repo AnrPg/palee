@@ -823,3 +823,30 @@ msgstr "«%{title}» изменился после того, как вы его 
 
 msgid "A WOD you did changed. See it as it was in your Journal."
 msgstr "WOD, который вы выполнили, изменился. Посмотрите, каким он был, в Дневнике."
+
+msgid "Your report was decided"
+msgstr "По вашей жалобе принято решение"
+
+msgid "The Palee team hid the review you reported."
+msgstr "Команда Palee скрыла отзыв, на который вы пожаловались."
+
+msgid "The Palee team removed the review you reported."
+msgstr "Команда Palee удалила отзыв, на который вы пожаловались."
+
+msgid "The Palee team checked the review you reported and kept it."
+msgstr "Команда Palee проверила отзыв, на который вы пожаловались, и оставила его."
+
+msgid "The Palee team removed your review"
+msgstr "Команда Palee удалила ваш отзыв"
+
+msgid "The Palee team hid your review"
+msgstr "Команда Palee скрыла ваш отзыв"
+
+msgid "See why and what you can do."
+msgstr "Узнайте причину и что можно сделать."
+
+msgid "The Palee team restored your review"
+msgstr "Команда Palee восстановила ваш отзыв"
+
+msgid "Your review shows again in the box's reviews."
+msgstr "Ваш отзыв снова виден среди отзывов о боксе."

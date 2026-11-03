@@ -821,3 +821,30 @@ msgstr ""
 
 msgid "A WOD you did changed. See it as it was in your Journal."
 msgstr ""
+
+msgid "Your report was decided"
+msgstr ""
+
+msgid "The Palee team hid the review you reported."
+msgstr ""
+
+msgid "The Palee team removed the review you reported."
+msgstr ""
+
+msgid "The Palee team checked the review you reported and kept it."
+msgstr ""
+
+msgid "The Palee team removed your review"
+msgstr ""
+
+msgid "The Palee team hid your review"
+msgstr ""
+
+msgid "See why and what you can do."
+msgstr ""
+
+msgid "The Palee team restored your review"
+msgstr ""
+
+msgid "Your review shows again in the box's reviews."
+msgstr ""

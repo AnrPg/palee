@@ -1,0 +1,17 @@
+msgid ""
+msgstr ""
+"Language: ru\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Review reports waiting: %{count}"
+msgstr "Жалобы на отзывы в очереди: %{count}"
+
+msgid "Open the queue"
+msgstr "Открыть очередь"
+
+msgid "%{reviews} reviews with %{reports} reports wait for a decision, the oldest since %{date}. Until you decide, they stay up."
+msgstr "%{reviews} отзывов с %{reports} жалобами ждут решения, самая старая с %{date}. Пока вы не решите, они остаются видимыми."
+
+msgid "You get this email because you moderate box reviews for Palee."
+msgstr "Вы получаете это письмо, потому что модерируете отзывы о боксах для Palee."

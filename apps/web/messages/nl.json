@@ -16397,7 +16397,8 @@
       "capiHint": "Stuurt aanvragen ook vanaf de server naar Meta, alleen met toestemming van de bezoeker.",
       "capiTokenSaved": "Toegangstoken (opgeslagen; schrijf een nieuw om het te vervangen)",
       "capiToken": "Toegangstoken"
-    }
+    },
+    "reportContact": "Inhoud melden: {email}"
   },
   "BoxReviews": {
     "title": "Reviews",
@@ -16463,6 +16464,47 @@
       "replyTitle": "Jouw reactie",
       "sendReply": "Reactie plaatsen",
       "replyRequired": "Schrijf je reactie."
+    },
+    "report": {
+      "menu": "Melden",
+      "menuAsBox": "Melden als box",
+      "reviewMenu": "Meer over deze review",
+      "title": "Review melden",
+      "hint": "Alleen het Palee-team ziet dit. De review blijft staan tot het team beslist.",
+      "hintBox": "Alleen het Palee-team ziet dit en beslist. De box kan een review nooit zelf verbergen.",
+      "reasonLabel": "Reden",
+      "reasons": {
+        "offensive": "Beledigend of kwetsend",
+        "personal_data": "Persoonsgegevens van iemand",
+        "not_genuine": "Geen echte ervaring",
+        "spam": "Reclame of niet ter zake",
+        "illegal": "Illegale inhoud",
+        "other": "Iets anders"
+      },
+      "personalDataHint": "Telefoon, adres, gezondheid…",
+      "note": "Wat is er aan de hand? (optioneel)",
+      "noteRequiredLabel": "Wat is er aan de hand?",
+      "notePlaceholder": "Bijv. de review noemt een coach en beledigt hem.",
+      "noteRequired": "Schrijf een paar woorden zodat we begrijpen wat er mis is.",
+      "reasonRequired": "Kies een reden.",
+      "send": "Melding versturen",
+      "sending": "Versturen…",
+      "doneTitle": "Bedankt",
+      "doneText": "Het Palee-team bekijkt het en laat je weten wat het beslist. Tot dan blijft de review staan.",
+      "ok": "OK",
+      "reported": "Jij hebt dit gemeld · wacht op het Palee-team"
+    },
+    "moderation": {
+      "hidden": "Verborgen door het Palee-team · {date}",
+      "removed": "Verwijderd door het Palee-team · {date}",
+      "ground": "Reden: {reason} ({basis}).",
+      "basisTerms": "gebruiksvoorwaarden van Palee",
+      "basisLaw": "de wet",
+      "human": "Een mens heeft dit beslist, na een melding.",
+      "humanNoReport": "Een mens heeft dit beslist.",
+      "redress": "Niet eens? Schrijf naar {email} of stap naar de rechter.",
+      "redressNoEmail": "Niet eens? Je kunt naar de rechter stappen.",
+      "removedText": "De tekst is verwijderd."
     }
   },
   "SmsUnsubscribe": {
@@ -16843,5 +16885,73 @@
       "history": "Geschiedenis",
       "historyStripe": "{rank} +{stripes}"
     }
+  },
+  "PlatformReviewReports": {
+    "back": "Platformconsole",
+    "title": "Gemelde reviews",
+    "subtitle": "Reviews van leden die leden of de box zelf meldden. Alleen jullie beslissen; tot dan blijft de review staan.",
+    "tabsLabel": "Gemelde reviews",
+    "tabs": {
+      "open": "Open",
+      "decided": "Beslist"
+    },
+    "empty": "Geen open meldingen.",
+    "emptyDecided": "Nog geen beslissingen.",
+    "forbidden": "Alleen het Palee-team ziet deze pagina.",
+    "count": "{count, plural, one {# melding} other {# meldingen}}",
+    "firstAt": "eerste: {date}",
+    "boxReported": "Gemeld door de box",
+    "reported": "Zoals gemeld",
+    "changed": "Gewijzigd na de melding. Nu:",
+    "deleted": "De schrijver heeft hem verwijderd.",
+    "role": {
+      "member": "Lid",
+      "box": "Box"
+    },
+    "reasons": {
+      "offensive": "Beledigend of kwetsend",
+      "personal_data": "Persoonsgegevens van iemand",
+      "not_genuine": "Geen echte ervaring",
+      "spam": "Reclame of niet ter zake",
+      "illegal": "Illegale inhoud",
+      "other": "Iets anders"
+    },
+    "noViolation": "Geen overtreding",
+    "outcome": {
+      "keep": "Blijft",
+      "hide": "Verbergen",
+      "remove": "Verwijderen",
+      "restore": "Terugzetten"
+    },
+    "ground": "Reden (de schrijver ziet die)",
+    "groundPlaceholder": "Kies een reden",
+    "basis": {
+      "terms": "gebruiksvoorwaarden van Palee",
+      "law": "de wet"
+    },
+    "statement": "Wat we de schrijver laten weten",
+    "statementHint": "De schrijver krijgt deze tekst. Melders horen alleen de beslissing.",
+    "statementRequired": "Schrijf wat de schrijver zal lezen.",
+    "groundRequired": "Kies een reden.",
+    "confirm": {
+      "hide": "Review verbergen",
+      "remove": "Review verwijderen"
+    },
+    "cancel": "Annuleren",
+    "done": "Beslist. {count, plural, one {# melding gesloten} other {# meldingen gesloten}}.",
+    "restored": "De review is weer zichtbaar. De schrijver is op de hoogte gebracht.",
+    "alreadyDecided": "De beslissing is intussen veranderd. Laad de pagina opnieuw.",
+    "by": "{name} · {date}",
+    "status": {
+      "visible": "Zichtbaar",
+      "hidden": "Verborgen",
+      "removed": "Verwijderd",
+      "deleted": "Gewist"
+    },
+    "restore": "Terugzetten",
+    "restoreTitle": "Review terugzetten",
+    "restoreHint": "De review is weer voor iedereen zichtbaar. De schrijver leest deze tekst.",
+    "anonymous": "Lid",
+    "noText": "Geen tekst"
   }
 }

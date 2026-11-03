@@ -823,3 +823,30 @@ msgstr "« %{title} » a changé après que vous l'avez fait. Retrouvez-le tel q
 
 msgid "A WOD you did changed. See it as it was in your Journal."
 msgstr "Un WOD que vous avez fait a changé. Retrouvez-le tel qu'il était dans votre Journal."
+
+msgid "Your report was decided"
+msgstr "Ton signalement a été traité"
+
+msgid "The Palee team hid the review you reported."
+msgstr "L’équipe Palee a masqué l’avis que tu as signalé."
+
+msgid "The Palee team removed the review you reported."
+msgstr "L’équipe Palee a supprimé l’avis que tu as signalé."
+
+msgid "The Palee team checked the review you reported and kept it."
+msgstr "L’équipe Palee a vérifié l’avis que tu as signalé et l’a conservé."
+
+msgid "The Palee team removed your review"
+msgstr "L’équipe Palee a supprimé ton avis"
+
+msgid "The Palee team hid your review"
+msgstr "L’équipe Palee a masqué ton avis"
+
+msgid "See why and what you can do."
+msgstr "Découvre pourquoi et ce que tu peux faire."
+
+msgid "The Palee team restored your review"
+msgstr "L’équipe Palee a rétabli ton avis"
+
+msgid "Your review shows again in the box's reviews."
+msgstr "Ton avis est de nouveau visible dans les avis de la box."

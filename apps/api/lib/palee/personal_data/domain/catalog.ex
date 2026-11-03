@@ -200,6 +200,13 @@ defmodule Palee.PersonalData.Domain.Catalog do
       # ADR-386: the person's in-app reviews of a box, with the box's reply
       # (not who on staff wrote it).
       tenant("community", "box_reviews", @me, drop: ~w(replied_by_id)),
+      # ADR-397: the reviews the person reported (not whose review, nor its
+      # text), and the Palee team's decisions on their own reviews with the
+      # statement of reasons (not who decided).
+      tenant("community", "box_review_reports", {:eq, "reporter_id"},
+        drop: ~w(review_author_id review_rating review_body decision_id)
+      ),
+      tenant("community", "box_review_decisions", {:eq, "review_author_id"}),
       # ADR-280 verification: the outcome and the person's own request; the
       # phone and selfie never leave, nor who else is named.
       account("community", "partner_verifications", @me, drop: ~w(source_organization_id)),
