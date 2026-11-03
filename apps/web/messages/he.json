@@ -15302,7 +15302,6 @@
     "fitnessEmpty": "רשמו PR במבחן מוכר (למשל Back squat, Pull-ups או Fran) כדי לראות את הרמה שלכם.",
     "fitnessWhy": "למה?",
     "fitnessReason": "{name} {value} ← {points}",
-    "fitnessEstimated": "1RM משוער",
     "fitnessStale": "בן יותר משנה, נספר כחצי",
     "fitnessLowConfidence": "מעט תוצאות: הציון יתייצב ככל שתרשמו יותר.",
     "fitnessFocusTitle": "על מה לעבוד",

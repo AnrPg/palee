@@ -15302,7 +15302,6 @@
     "fitnessEmpty": "Γράψε ένα PR σε γνωστό τεστ (για παράδειγμα Back squat, Pull-ups ή Fran) για να δεις το επίπεδό σου.",
     "fitnessWhy": "Γιατί;",
     "fitnessReason": "{name} {value} → {points}",
-    "fitnessEstimated": "εκτίμηση 1RM",
     "fitnessStale": "πάνω από χρόνο, μετράει μισό",
     "fitnessLowConfidence": "Λίγα αποτελέσματα: το σκορ σταθεροποιείται όσο γράφεις περισσότερα.",
     "fitnessFocusTitle": "Τι να δουλέψεις",

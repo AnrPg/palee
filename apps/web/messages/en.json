@@ -15302,7 +15302,6 @@
     "fitnessEmpty": "Log a PR in a known test (for example Back squat, Pull-ups or Fran) to see your level.",
     "fitnessWhy": "Why?",
     "fitnessReason": "{name} {value} → {points}",
-    "fitnessEstimated": "estimated 1RM",
     "fitnessStale": "over a year old, counts half",
     "fitnessLowConfidence": "Few results: the score steadies as you log more.",
     "fitnessFocusTitle": "What to work on",

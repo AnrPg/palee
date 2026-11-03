@@ -15302,7 +15302,6 @@
     "fitnessEmpty": "Запиши PR в известен тест (например Back squat, Pull-ups или Fran), за да видиш нивото си.",
     "fitnessWhy": "Защо?",
     "fitnessReason": "{name} {value} → {points}",
-    "fitnessEstimated": "приблизителен 1RM",
     "fitnessStale": "над година, брои се наполовина",
     "fitnessLowConfidence": "Малко резултати: оценката се стабилизира, колкото повече записваш.",
     "fitnessFocusTitle": "Върху какво да работиш",

@@ -15302,7 +15302,6 @@
     "fitnessEmpty": "Regista um PR num teste conhecido (por exemplo Back squat, Pull-ups ou Fran) para veres o teu nível.",
     "fitnessWhy": "Porquê?",
     "fitnessReason": "{name} {value} → {points}",
-    "fitnessEstimated": "1RM estimado",
     "fitnessStale": "com mais de um ano, conta metade",
     "fitnessLowConfidence": "Poucos resultados: a pontuação estabiliza à medida que registas mais.",
     "fitnessFocusTitle": "No que trabalhar",

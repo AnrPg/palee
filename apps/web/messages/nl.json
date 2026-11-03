@@ -15302,7 +15302,6 @@
     "fitnessEmpty": "Log een PR in een bekende test (bijvoorbeeld Back squat, Pull-ups of Fran) om je niveau te zien.",
     "fitnessWhy": "Waarom?",
     "fitnessReason": "{name} {value} → {points}",
-    "fitnessEstimated": "geschatte 1RM",
     "fitnessStale": "ouder dan een jaar, telt half",
     "fitnessLowConfidence": "Weinig resultaten: de score wordt stabieler naarmate je meer logt.",
     "fitnessFocusTitle": "Waar je aan kunt werken",

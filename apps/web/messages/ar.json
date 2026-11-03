@@ -15302,7 +15302,6 @@
     "fitnessEmpty": "سجّل رقمًا قياسيًا في اختبار معروف (مثل Back squat أو Pull-ups أو Fran) لترى مستواك.",
     "fitnessWhy": "لماذا؟",
     "fitnessReason": "{name} {value} ← {points}",
-    "fitnessEstimated": "1RM تقديري",
     "fitnessStale": "أقدم من سنة، يُحتسب نصفه",
     "fitnessLowConfidence": "نتائج قليلة: تستقر الدرجة كلما سجّلت المزيد.",
     "fitnessFocusTitle": "على ماذا تعمل",

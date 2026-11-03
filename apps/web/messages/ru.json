@@ -15302,7 +15302,6 @@
     "fitnessEmpty": "Запиши PR в известном тесте (например, Back squat, Pull-ups или Fran), чтобы увидеть свой уровень.",
     "fitnessWhy": "Почему?",
     "fitnessReason": "{name} {value} → {points}",
-    "fitnessEstimated": "оценка 1RM",
     "fitnessStale": "старше года, считается наполовину",
     "fitnessLowConfidence": "Мало результатов: оценка станет устойчивее, когда запишешь больше.",
     "fitnessFocusTitle": "Над чем поработать",
