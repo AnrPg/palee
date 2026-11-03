@@ -153,9 +153,9 @@ defmodule PaleeWeb.AdminDataExportControllerTest do
       |> Enum.flat_map(fn %{key: key} -> key |> unzip() |> Map.to_list() end)
       |> Map.new()
 
-    assert entries["documents/documents/contract.pdf"] == "%PDF-contract"
-    assert entries["branding/branding/logo.png"] == "logo"
-    assert entries["media/media/p1/photo.jpg"] == "photo"
+    assert entries["documents/contract.pdf"] == "%PDF-contract"
+    assert entries["branding/logo.png"] == "logo"
+    assert entries["media/p1/photo.jpg"] == "photo"
     refute Enum.any?(entries, fn {_name, body} -> body == "%PDF-other" end)
 
     notice = assert_email_enqueued(kind: :box_data_export_ready, to: box.owner.email)
