@@ -46,3 +46,18 @@ and sets the age percentages.
 - Age percentages stay empty until the coach review; filling them is a data change in
   `FitnessBenchmarks`, no migration.
 - Supersedes ADR-358 only where it fixed kg anchors for everyone and showed no change.
+
+## Member card (web)
+- `FitnessProfileCard` takes Πρόοδος's period bar (`filter.range`, the same values as `period`) and
+  keeps it in the query key; `all` shows no change.
+- `display = all`: the change chip («▲ +6», «▼ −3», «ίδιο») sits next to the domain's name, the score
+  alone on the right, a grey tick on the bar at `previous_score`. «Γιατί;» is a list of steps per
+  reading: the PR, the 1RM (Epley, only for a multi-rep set), ÷ body weight (only with
+  `basis = body_weight`), the age band (only with `age_percent`), the anchors on a 0–100 line with a
+  marker, and «Το επόμενο βήμα» (`next`). Anchors are shown by value and points; the card gives them
+  no level names.
+- `progress_only`: each domain with its direction only, no bar or number; `none`: one line with
+  «Αλλαγή», which opens «Προχωρημένα».
+- «Προχωρημένα»: the standards, body weight, birth year (only while `inputs.age_ready`) and
+  «Τι να δείχνει». With `set_by = coach` the card says «Το όρισε ο coach σου» and the picker explains
+  that the member's own choice is kept but cannot show more than the coach's.
