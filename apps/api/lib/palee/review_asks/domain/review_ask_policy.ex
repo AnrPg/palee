@@ -7,7 +7,7 @@ defmodule Palee.ReviewAsks.Domain.ReviewAskPolicy do
   positive reviews"), and nothing is offered in return. Every rule below is
   the same for everyone:
 
-    * asks are on and the box set its Google Place ID;
+    * asks are on;
     * the member did not opt out;
     * an active membership, held for at least #{30} days;
     * an attendance milestone just reached and never asked about (at most
@@ -15,6 +15,11 @@ defmodule Palee.ReviewAsks.Domain.ReviewAskPolicy do
     * attended within the last #{2} days (right after a class);
     * daytime at the box (08:00–21:00 local);
     * no ask in the last #{120} days and fewer than #{3} in all.
+
+  ADR-386 (v3.1): the card also offers the in-app review, so asks no longer
+  need a Google Place ID (the Google button shows only with one), and an ask
+  is shown once: it goes away after the visit it was shown in, with no
+  reminder.
 
   Pure: callers bring the facts, the asks so far and the time.
   """
@@ -27,7 +32,6 @@ defmodule Palee.ReviewAsks.Domain.ReviewAskPolicy do
   @cooldown_days 120
   @max_asks 3
   @day_hours 8..20
-  @reshow_hours 24
   @default_milestones [10, 50, 100]
   @place_id ~r/^[A-Za-z0-9_-]{10,300}$/
 
@@ -41,20 +45,12 @@ defmodule Palee.ReviewAsks.Domain.ReviewAskPolicy do
   end
 
   @doc "Validates an edit (string keys): `{:ok, changes}` or `{:error, {:invalid_fields, errors}}`."
-  def changes(current, params) do
+  def changes(_current, params) do
     {changes, errors} =
       {%{}, %{}}
       |> place_id(params)
       |> enabled(params)
       |> milestones(params)
-
-    place = Map.get(changes, :google_place_id, current.google_place_id)
-    enabled = Map.get(changes, :enabled, current.enabled)
-
-    errors =
-      if enabled and is_nil(place),
-        do: Map.put_new(errors, :google_place_id, "required"),
-        else: errors
 
     if errors == %{}, do: {:ok, changes}, else: {:error, {:invalid_fields, errors}}
   end
@@ -116,23 +112,13 @@ defmodule Palee.ReviewAsks.Domain.ReviewAskPolicy do
     do: "https://www.google.com/maps/place/?q=place_id:" <> URI.encode_www_form(place_id)
 
   @doc """
-  An open ask to show again: one shown in the last #{@reshow_hours} hours and
-  not answered (the app closed before the member chose).
-  """
-  def open_ask(asks, now) do
-    Enum.find(asks, fn ask ->
-      ask.status == "shown" and DateTime.diff(now, ask.shown_at, :second) < @reshow_hours * 3_600
-    end)
-  end
-
-  @doc """
   `{:ask, milestone}` or `{:skip, reason}`. `facts`: `active_membership`,
   `member_since`, `attendance_count`, `last_attended_at`; `asks`: this
   member's asks so far; `local_hour`: the hour at the box now.
   """
   def decide(settings, facts, asks, opted_out?, local_hour, now) do
     cond do
-      not settings.enabled or is_nil(settings.google_place_id) -> {:skip, :off}
+      not settings.enabled -> {:skip, :off}
       opted_out? -> {:skip, :opted_out}
       not facts.active_membership -> {:skip, :no_membership}
       not member_long_enough?(facts.member_since, now) -> {:skip, :new_member}

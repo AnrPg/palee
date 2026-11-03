@@ -138,7 +138,10 @@ config :palee, :box_site_lead_intake, Palee.Infrastructure.BoxSite.SandboxLeadIn
 config :palee, :box_site_dns, Palee.Infrastructure.BoxSite.SandboxDomainDns
 config :palee, :box_site_tls_probe, Palee.Infrastructure.BoxSite.SandboxTlsProbe
 config :palee, :box_site_conversions_api, Palee.Infrastructure.BoxSite.SandboxConversionsApi
+# ADR-387: no Places API calls in tests.
+config :palee, :google_places, Palee.Infrastructure.ReviewAsks.SandboxPlaces
 config :palee, :box_site_http, req_options: [plug: {Req.Test, Palee.BoxSiteHttp}]
+config :palee, :google_places_api, req_options: [plug: {Req.Test, Palee.GooglePlacesHttp}]
 
 # ADR-364: the status page probes with the sandbox; LiveProbe tests plug Req.Test.
 config :palee, :status_probe, Palee.Infrastructure.Status.SandboxProbe

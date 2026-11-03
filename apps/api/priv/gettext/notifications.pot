@@ -803,3 +803,12 @@ msgstr ""
 
 msgid "%{nickname} sent the box a message."
 msgstr ""
+
+msgid "Question from the website"
+msgstr ""
+
+msgid "Trial request from the website"
+msgstr ""
+
+msgid "%{name} wrote through the box's website. Answer or call them."
+msgstr ""

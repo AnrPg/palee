@@ -1148,6 +1148,8 @@
                 "hero",
                 "about",
                 "schedule",
+                "events",
+                "wod",
                 "packages",
                 "coaches",
                 "location",
@@ -1162,6 +1164,11 @@
           },
           "settings": {
             "properties": {
+              "about_en": {
+                "maxLength": 4000,
+                "nullable": true,
+                "type": "string"
+              },
               "banner_version": {
                 "type": "integer"
               },
@@ -1175,7 +1182,17 @@
                       "maxLength": 1000,
                       "type": "string"
                     },
+                    "answer_en": {
+                      "description": "Optional English text (ADR-388)",
+                      "maxLength": 1000,
+                      "type": "string"
+                    },
                     "question": {
+                      "maxLength": 200,
+                      "type": "string"
+                    },
+                    "question_en": {
+                      "description": "Optional English text (ADR-388)",
                       "maxLength": 200,
                       "type": "string"
                     }
@@ -1211,6 +1228,8 @@
                     "hero",
                     "about",
                     "schedule",
+                    "events",
+                    "wod",
                     "packages",
                     "coaches",
                     "location",
@@ -1233,12 +1252,18 @@
               "public_schedule": {
                 "type": "boolean"
               },
+              "public_wod": {
+                "description": "«WOD της ημέρας» on the site (ADR-388)",
+                "type": "boolean"
+              },
               "section_order": {
                 "items": {
                   "enum": [
                     "hero",
                     "about",
                     "schedule",
+                    "events",
+                    "wod",
                     "packages",
                     "coaches",
                     "location",
@@ -1253,6 +1278,7 @@
               }
             },
             "required": [
+              "about_en",
               "banner_version",
               "conversions_api_enabled",
               "faq",
@@ -1264,6 +1290,7 @@
               "lock_version",
               "meta_pixel_id",
               "public_schedule",
+              "public_wod",
               "section_order"
             ],
             "title": "SiteSettings",
@@ -17718,6 +17745,365 @@
           }
         },
         "title": "BoxPublicProfileUpdate",
+        "type": "object"
+      },
+      "BoxReview": {
+        "properties": {
+          "author_name": {
+            "description": "First name only; null for people who hide themselves",
+            "nullable": true,
+            "type": "string"
+          },
+          "body": {
+            "nullable": true,
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "edited_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "rating": {
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "reply": {
+            "nullable": true,
+            "properties": {
+              "body": {
+                "type": "string"
+              },
+              "replied_at": {
+                "format": "date-time",
+                "type": "string"
+              }
+            },
+            "required": [
+              "body",
+              "replied_at"
+            ],
+            "title": "BoxReviewReply",
+            "type": "object"
+          }
+        },
+        "required": [
+          "author_name",
+          "body",
+          "created_at",
+          "edited_at",
+          "id",
+          "rating",
+          "reply"
+        ],
+        "title": "BoxReview",
+        "type": "object"
+      },
+      "BoxReviewReply": {
+        "nullable": true,
+        "properties": {
+          "body": {
+            "type": "string"
+          },
+          "replied_at": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "body",
+          "replied_at"
+        ],
+        "title": "BoxReviewReply",
+        "type": "object"
+      },
+      "BoxReviewReplyRequest": {
+        "properties": {
+          "body": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "title": "BoxReviewReplyRequest",
+        "type": "object"
+      },
+      "BoxReviewRequest": {
+        "properties": {
+          "body": {
+            "maxLength": 2000,
+            "nullable": true,
+            "type": "string"
+          },
+          "locale": {
+            "maxLength": 10,
+            "nullable": true,
+            "type": "string"
+          },
+          "rating": {
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "rating"
+        ],
+        "title": "BoxReviewRequest",
+        "type": "object"
+      },
+      "BoxReviewResponse": {
+        "properties": {
+          "review": {
+            "properties": {
+              "author_name": {
+                "description": "First name only; null for people who hide themselves",
+                "nullable": true,
+                "type": "string"
+              },
+              "body": {
+                "nullable": true,
+                "type": "string"
+              },
+              "created_at": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "edited_at": {
+                "format": "date-time",
+                "nullable": true,
+                "type": "string"
+              },
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "rating": {
+                "maximum": 5,
+                "minimum": 1,
+                "type": "integer"
+              },
+              "reply": {
+                "nullable": true,
+                "properties": {
+                  "body": {
+                    "type": "string"
+                  },
+                  "replied_at": {
+                    "format": "date-time",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "body",
+                  "replied_at"
+                ],
+                "title": "BoxReviewReply",
+                "type": "object"
+              }
+            },
+            "required": [
+              "author_name",
+              "body",
+              "created_at",
+              "edited_at",
+              "id",
+              "rating",
+              "reply"
+            ],
+            "title": "BoxReview",
+            "type": "object"
+          }
+        },
+        "required": [
+          "review"
+        ],
+        "title": "BoxReviewResponse",
+        "type": "object"
+      },
+      "BoxReviewsResponse": {
+        "properties": {
+          "average": {
+            "nullable": true,
+            "type": "number"
+          },
+          "count": {
+            "type": "integer"
+          },
+          "google": {
+            "description": "The box's Google rating and up to five reviews, kept apart (ADR-387)",
+            "nullable": true,
+            "properties": {
+              "count": {
+                "nullable": true,
+                "type": "integer"
+              },
+              "fetched_at": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "maps_uri": {
+                "nullable": true,
+                "type": "string"
+              },
+              "name": {
+                "nullable": true,
+                "type": "string"
+              },
+              "rating": {
+                "nullable": true,
+                "type": "number"
+              },
+              "reviews": {
+                "items": {
+                  "properties": {
+                    "author_name": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "author_photo_uri": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "author_uri": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "published_at": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "rating": {
+                      "nullable": true,
+                      "type": "integer"
+                    },
+                    "relative_time": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "text": {
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "author_name",
+                    "author_photo_uri",
+                    "author_uri",
+                    "published_at",
+                    "rating",
+                    "relative_time",
+                    "text"
+                  ],
+                  "title": "GoogleReview",
+                  "type": "object"
+                },
+                "maxItems": 5,
+                "type": "array"
+              },
+              "write_review_url": {
+                "nullable": true,
+                "type": "string"
+              }
+            },
+            "required": [
+              "count",
+              "fetched_at",
+              "maps_uri",
+              "name",
+              "rating",
+              "reviews",
+              "write_review_url"
+            ],
+            "title": "GoogleListing",
+            "type": "object"
+          },
+          "has_more": {
+            "type": "boolean"
+          },
+          "reviews": {
+            "items": {
+              "properties": {
+                "author_name": {
+                  "description": "First name only; null for people who hide themselves",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "body": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "created_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "edited_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "rating": {
+                  "maximum": 5,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "reply": {
+                  "nullable": true,
+                  "properties": {
+                    "body": {
+                      "type": "string"
+                    },
+                    "replied_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "body",
+                    "replied_at"
+                  ],
+                  "title": "BoxReviewReply",
+                  "type": "object"
+                }
+              },
+              "required": [
+                "author_name",
+                "body",
+                "created_at",
+                "edited_at",
+                "id",
+                "rating",
+                "reply"
+              ],
+              "title": "BoxReview",
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "average",
+          "count",
+          "google",
+          "has_more",
+          "reviews"
+        ],
+        "title": "BoxReviewsResponse",
         "type": "object"
       },
       "BoxScreen": {
@@ -47700,6 +48086,213 @@
         "title": "GoalMuscle",
         "type": "object"
       },
+      "GoogleListing": {
+        "description": "The box's Google rating and up to five reviews, kept apart (ADR-387)",
+        "nullable": true,
+        "properties": {
+          "count": {
+            "nullable": true,
+            "type": "integer"
+          },
+          "fetched_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "maps_uri": {
+            "nullable": true,
+            "type": "string"
+          },
+          "name": {
+            "nullable": true,
+            "type": "string"
+          },
+          "rating": {
+            "nullable": true,
+            "type": "number"
+          },
+          "reviews": {
+            "items": {
+              "properties": {
+                "author_name": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "author_photo_uri": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "author_uri": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "published_at": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "rating": {
+                  "nullable": true,
+                  "type": "integer"
+                },
+                "relative_time": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "text": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "author_name",
+                "author_photo_uri",
+                "author_uri",
+                "published_at",
+                "rating",
+                "relative_time",
+                "text"
+              ],
+              "title": "GoogleReview",
+              "type": "object"
+            },
+            "maxItems": 5,
+            "type": "array"
+          },
+          "write_review_url": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "count",
+          "fetched_at",
+          "maps_uri",
+          "name",
+          "rating",
+          "reviews",
+          "write_review_url"
+        ],
+        "title": "GoogleListing",
+        "type": "object"
+      },
+      "GooglePlaceMatch": {
+        "properties": {
+          "address": {
+            "nullable": true,
+            "type": "string"
+          },
+          "name": {
+            "nullable": true,
+            "type": "string"
+          },
+          "place_id": {
+            "type": "string"
+          },
+          "rating": {
+            "nullable": true,
+            "type": "number"
+          },
+          "rating_count": {
+            "nullable": true,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "address",
+          "name",
+          "place_id",
+          "rating",
+          "rating_count"
+        ],
+        "title": "GooglePlaceMatch",
+        "type": "object"
+      },
+      "GooglePlacesSearchResponse": {
+        "properties": {
+          "places": {
+            "items": {
+              "properties": {
+                "address": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "name": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "place_id": {
+                  "type": "string"
+                },
+                "rating": {
+                  "nullable": true,
+                  "type": "number"
+                },
+                "rating_count": {
+                  "nullable": true,
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "address",
+                "name",
+                "place_id",
+                "rating",
+                "rating_count"
+              ],
+              "title": "GooglePlaceMatch",
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "places"
+        ],
+        "title": "GooglePlacesSearchResponse",
+        "type": "object"
+      },
+      "GoogleReview": {
+        "properties": {
+          "author_name": {
+            "nullable": true,
+            "type": "string"
+          },
+          "author_photo_uri": {
+            "nullable": true,
+            "type": "string"
+          },
+          "author_uri": {
+            "nullable": true,
+            "type": "string"
+          },
+          "published_at": {
+            "nullable": true,
+            "type": "string"
+          },
+          "rating": {
+            "nullable": true,
+            "type": "integer"
+          },
+          "relative_time": {
+            "nullable": true,
+            "type": "string"
+          },
+          "text": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "author_name",
+          "author_photo_uri",
+          "author_uri",
+          "published_at",
+          "rating",
+          "relative_time",
+          "text"
+        ],
+        "title": "GoogleReview",
+        "type": "object"
+      },
       "GuideProgress": {
         "properties": {
           "completed_at": {
@@ -52885,6 +53478,308 @@
           "partial"
         ],
         "title": "MyBillingTransactions",
+        "type": "object"
+      },
+      "MyBoxReview": {
+        "nullable": true,
+        "properties": {
+          "author_name": {
+            "description": "First name only; null for people who hide themselves",
+            "nullable": true,
+            "type": "string"
+          },
+          "body": {
+            "nullable": true,
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "edited_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "rating": {
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "reply": {
+            "nullable": true,
+            "properties": {
+              "body": {
+                "type": "string"
+              },
+              "replied_at": {
+                "format": "date-time",
+                "type": "string"
+              }
+            },
+            "required": [
+              "body",
+              "replied_at"
+            ],
+            "title": "BoxReviewReply",
+            "type": "object"
+          }
+        },
+        "required": [
+          "author_name",
+          "body",
+          "created_at",
+          "edited_at",
+          "id",
+          "rating",
+          "reply"
+        ],
+        "title": "MyBoxReview",
+        "type": "object"
+      },
+      "MyBoxReviewsResponse": {
+        "properties": {
+          "average": {
+            "nullable": true,
+            "type": "number"
+          },
+          "can_review": {
+            "description": "Checked in at least once",
+            "type": "boolean"
+          },
+          "count": {
+            "type": "integer"
+          },
+          "google": {
+            "description": "The box's Google rating and up to five reviews, kept apart (ADR-387)",
+            "nullable": true,
+            "properties": {
+              "count": {
+                "nullable": true,
+                "type": "integer"
+              },
+              "fetched_at": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "maps_uri": {
+                "nullable": true,
+                "type": "string"
+              },
+              "name": {
+                "nullable": true,
+                "type": "string"
+              },
+              "rating": {
+                "nullable": true,
+                "type": "number"
+              },
+              "reviews": {
+                "items": {
+                  "properties": {
+                    "author_name": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "author_photo_uri": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "author_uri": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "published_at": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "rating": {
+                      "nullable": true,
+                      "type": "integer"
+                    },
+                    "relative_time": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "text": {
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "author_name",
+                    "author_photo_uri",
+                    "author_uri",
+                    "published_at",
+                    "rating",
+                    "relative_time",
+                    "text"
+                  ],
+                  "title": "GoogleReview",
+                  "type": "object"
+                },
+                "maxItems": 5,
+                "type": "array"
+              },
+              "write_review_url": {
+                "nullable": true,
+                "type": "string"
+              }
+            },
+            "required": [
+              "count",
+              "fetched_at",
+              "maps_uri",
+              "name",
+              "rating",
+              "reviews",
+              "write_review_url"
+            ],
+            "title": "GoogleListing",
+            "type": "object"
+          },
+          "has_more": {
+            "type": "boolean"
+          },
+          "mine": {
+            "nullable": true,
+            "properties": {
+              "author_name": {
+                "description": "First name only; null for people who hide themselves",
+                "nullable": true,
+                "type": "string"
+              },
+              "body": {
+                "nullable": true,
+                "type": "string"
+              },
+              "created_at": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "edited_at": {
+                "format": "date-time",
+                "nullable": true,
+                "type": "string"
+              },
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "rating": {
+                "maximum": 5,
+                "minimum": 1,
+                "type": "integer"
+              },
+              "reply": {
+                "nullable": true,
+                "properties": {
+                  "body": {
+                    "type": "string"
+                  },
+                  "replied_at": {
+                    "format": "date-time",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "body",
+                  "replied_at"
+                ],
+                "title": "BoxReviewReply",
+                "type": "object"
+              }
+            },
+            "required": [
+              "author_name",
+              "body",
+              "created_at",
+              "edited_at",
+              "id",
+              "rating",
+              "reply"
+            ],
+            "title": "MyBoxReview",
+            "type": "object"
+          },
+          "reviews": {
+            "items": {
+              "properties": {
+                "author_name": {
+                  "description": "First name only; null for people who hide themselves",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "body": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "created_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "edited_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "rating": {
+                  "maximum": 5,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "reply": {
+                  "nullable": true,
+                  "properties": {
+                    "body": {
+                      "type": "string"
+                    },
+                    "replied_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "body",
+                    "replied_at"
+                  ],
+                  "title": "BoxReviewReply",
+                  "type": "object"
+                }
+              },
+              "required": [
+                "author_name",
+                "body",
+                "created_at",
+                "edited_at",
+                "id",
+                "rating",
+                "reply"
+              ],
+              "title": "BoxReview",
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "average",
+          "can_review",
+          "count",
+          "google",
+          "has_more",
+          "mine",
+          "reviews"
+        ],
+        "title": "MyBoxReviewsResponse",
         "type": "object"
       },
       "MyInjuryWarningsAcknowledged": {
@@ -72686,8 +73581,60 @@
       },
       "PublicSiteResponse": {
         "properties": {
+          "about_en": {
+            "nullable": true,
+            "type": "string"
+          },
           "canonical_url": {
             "type": "string"
+          },
+          "events": {
+            "items": {
+              "properties": {
+                "currency": {
+                  "type": "string"
+                },
+                "ends_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "place_name": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "price_cents": {
+                  "type": "integer"
+                },
+                "starts_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "time_zone": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "currency",
+                "ends_at",
+                "id",
+                "place_name",
+                "price_cents",
+                "starts_at",
+                "time_zone",
+                "title"
+              ],
+              "title": "SiteEvent",
+              "type": "object"
+            },
+            "type": "array"
           },
           "faq": {
             "items": {
@@ -72696,7 +73643,17 @@
                   "maxLength": 1000,
                   "type": "string"
                 },
+                "answer_en": {
+                  "description": "Optional English text (ADR-388)",
+                  "maxLength": 1000,
+                  "type": "string"
+                },
                 "question": {
+                  "maxLength": 200,
+                  "type": "string"
+                },
+                "question_en": {
+                  "description": "Optional English text (ADR-388)",
                   "maxLength": 200,
                   "type": "string"
                 }
@@ -72737,16 +73694,200 @@
             ],
             "type": "object"
           },
+          "language": {
+            "description": "The box's language (ADR-388)",
+            "type": "string"
+          },
+          "languages": {
+            "description": "The site's languages: the box's own and English",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
           "reviews": {
             "properties": {
+              "google": {
+                "description": "The box's Google rating and up to five reviews, kept apart (ADR-387)",
+                "nullable": true,
+                "properties": {
+                  "count": {
+                    "nullable": true,
+                    "type": "integer"
+                  },
+                  "fetched_at": {
+                    "format": "date-time",
+                    "type": "string"
+                  },
+                  "maps_uri": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "name": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "rating": {
+                    "nullable": true,
+                    "type": "number"
+                  },
+                  "reviews": {
+                    "items": {
+                      "properties": {
+                        "author_name": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "author_photo_uri": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "author_uri": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "published_at": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "rating": {
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "relative_time": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "text": {
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "author_name",
+                        "author_photo_uri",
+                        "author_uri",
+                        "published_at",
+                        "rating",
+                        "relative_time",
+                        "text"
+                      ],
+                      "title": "GoogleReview",
+                      "type": "object"
+                    },
+                    "maxItems": 5,
+                    "type": "array"
+                  },
+                  "write_review_url": {
+                    "nullable": true,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "count",
+                  "fetched_at",
+                  "maps_uri",
+                  "name",
+                  "rating",
+                  "reviews",
+                  "write_review_url"
+                ],
+                "title": "GoogleListing",
+                "type": "object"
+              },
               "google_reviews_url": {
                 "nullable": true,
                 "type": "string"
+              },
+              "palee": {
+                "nullable": true,
+                "properties": {
+                  "average": {
+                    "nullable": true,
+                    "type": "number"
+                  },
+                  "count": {
+                    "type": "integer"
+                  },
+                  "latest": {
+                    "items": {
+                      "properties": {
+                        "author_name": {
+                          "description": "First name only; null for people who hide themselves",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "body": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "created_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "edited_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "rating": {
+                          "maximum": 5,
+                          "minimum": 1,
+                          "type": "integer"
+                        },
+                        "reply": {
+                          "nullable": true,
+                          "properties": {
+                            "body": {
+                              "type": "string"
+                            },
+                            "replied_at": {
+                              "format": "date-time",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "body",
+                            "replied_at"
+                          ],
+                          "title": "BoxReviewReply",
+                          "type": "object"
+                        }
+                      },
+                      "required": [
+                        "author_name",
+                        "body",
+                        "created_at",
+                        "edited_at",
+                        "id",
+                        "rating",
+                        "reply"
+                      ],
+                      "title": "BoxReview",
+                      "type": "object"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "average",
+                  "count",
+                  "latest"
+                ],
+                "title": "SitePaleeReviews",
+                "type": "object"
               }
             },
             "required": [
-              "google_reviews_url"
+              "google",
+              "google_reviews_url",
+              "palee"
             ],
+            "title": "SiteReviews",
             "type": "object"
           },
           "sections": {
@@ -72755,6 +73896,8 @@
                 "hero",
                 "about",
                 "schedule",
+                "events",
+                "wod",
                 "packages",
                 "coaches",
                 "location",
@@ -72768,6 +73911,9 @@
             "type": "array"
           },
           "slug": {
+            "type": "string"
+          },
+          "time_zone": {
             "type": "string"
           },
           "timetable": {
@@ -72867,17 +74013,58 @@
               "validity_days"
             ],
             "type": "object"
+          },
+          "wod": {
+            "items": {
+              "properties": {
+                "body": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "date": {
+                  "format": "date",
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "type": {
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "body",
+                "date",
+                "id",
+                "title",
+                "type"
+              ],
+              "title": "SiteWod",
+              "type": "object"
+            },
+            "type": "array"
           }
         },
         "required": [
+          "about_en",
           "canonical_url",
+          "events",
           "faq",
           "forms",
+          "language",
+          "languages",
           "reviews",
           "sections",
           "slug",
+          "time_zone",
           "timetable",
-          "tracking"
+          "tracking",
+          "wod"
         ],
         "title": "PublicSiteResponse",
         "type": "object"
@@ -74844,6 +76031,10 @@
             "nullable": true,
             "type": "string"
           },
+          "has_review": {
+            "description": "The member already wrote an in-app review (ADR-386)",
+            "type": "boolean"
+          },
           "id": {
             "format": "uuid",
             "type": "string"
@@ -74868,6 +76059,7 @@
         "required": [
           "actions",
           "google_review_url",
+          "has_review",
           "id",
           "milestone",
           "shown_at",
@@ -74925,6 +76117,10 @@
                 "nullable": true,
                 "type": "string"
               },
+              "has_review": {
+                "description": "The member already wrote an in-app review (ADR-386)",
+                "type": "boolean"
+              },
               "id": {
                 "format": "uuid",
                 "type": "string"
@@ -74949,6 +76145,7 @@
             "required": [
               "actions",
               "google_review_url",
+              "has_review",
               "id",
               "milestone",
               "shown_at",
@@ -74999,6 +76196,94 @@
       },
       "ReviewAskSettingsResponse": {
         "properties": {
+          "google": {
+            "description": "The box's Google rating and up to five reviews, kept apart (ADR-387)",
+            "nullable": true,
+            "properties": {
+              "count": {
+                "nullable": true,
+                "type": "integer"
+              },
+              "fetched_at": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "maps_uri": {
+                "nullable": true,
+                "type": "string"
+              },
+              "name": {
+                "nullable": true,
+                "type": "string"
+              },
+              "rating": {
+                "nullable": true,
+                "type": "number"
+              },
+              "reviews": {
+                "items": {
+                  "properties": {
+                    "author_name": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "author_photo_uri": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "author_uri": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "published_at": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "rating": {
+                      "nullable": true,
+                      "type": "integer"
+                    },
+                    "relative_time": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "text": {
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "author_name",
+                    "author_photo_uri",
+                    "author_uri",
+                    "published_at",
+                    "rating",
+                    "relative_time",
+                    "text"
+                  ],
+                  "title": "GoogleReview",
+                  "type": "object"
+                },
+                "maxItems": 5,
+                "type": "array"
+              },
+              "write_review_url": {
+                "nullable": true,
+                "type": "string"
+              }
+            },
+            "required": [
+              "count",
+              "fetched_at",
+              "maps_uri",
+              "name",
+              "rating",
+              "reviews",
+              "write_review_url"
+            ],
+            "title": "GoogleListing",
+            "type": "object"
+          },
           "settings": {
             "properties": {
               "enabled": {
@@ -75034,6 +76319,7 @@
           }
         },
         "required": [
+          "google",
           "settings"
         ],
         "title": "ReviewAskSettingsResponse",
@@ -82311,6 +83597,32 @@
         "title": "SiteDomain",
         "type": "object"
       },
+      "SiteDomainInstructionsRequest": {
+        "properties": {
+          "email": {
+            "format": "email",
+            "maxLength": 160,
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ],
+        "title": "SiteDomainInstructionsRequest",
+        "type": "object"
+      },
+      "SiteDomainInstructionsResponse": {
+        "properties": {
+          "sent_to": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "sent_to"
+        ],
+        "title": "SiteDomainInstructionsResponse",
+        "type": "object"
+      },
       "SiteDomainRequest": {
         "properties": {
           "host": {
@@ -82430,6 +83742,45 @@
         "title": "SiteDomainResponse",
         "type": "object"
       },
+      "SiteDomainStatusResponse": {
+        "description": "What the person setting up the domain sees from the emailed link",
+        "properties": {
+          "box_name": {
+            "type": "string"
+          },
+          "checked_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "dns_records": {
+            "items": {
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "host": {
+            "type": "string"
+          },
+          "last_error": {
+            "nullable": true,
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "box_name",
+          "checked_at",
+          "dns_records",
+          "host",
+          "last_error",
+          "status"
+        ],
+        "title": "SiteDomainStatusResponse",
+        "type": "object"
+      },
       "SiteDomainsResponse": {
         "properties": {
           "domains": {
@@ -82539,13 +83890,68 @@
         "title": "SiteDomainsResponse",
         "type": "object"
       },
+      "SiteEvent": {
+        "properties": {
+          "currency": {
+            "type": "string"
+          },
+          "ends_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "place_name": {
+            "nullable": true,
+            "type": "string"
+          },
+          "price_cents": {
+            "type": "integer"
+          },
+          "starts_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "time_zone": {
+            "nullable": true,
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "currency",
+          "ends_at",
+          "id",
+          "place_name",
+          "price_cents",
+          "starts_at",
+          "time_zone",
+          "title"
+        ],
+        "title": "SiteEvent",
+        "type": "object"
+      },
       "SiteFaqEntry": {
         "properties": {
           "answer": {
             "maxLength": 1000,
             "type": "string"
           },
+          "answer_en": {
+            "description": "Optional English text (ADR-388)",
+            "maxLength": 1000,
+            "type": "string"
+          },
           "question": {
+            "maxLength": 200,
+            "type": "string"
+          },
+          "question_en": {
+            "description": "Optional English text (ADR-388)",
             "maxLength": 200,
             "type": "string"
           }
@@ -82736,8 +84142,280 @@
         "title": "SiteOpsDomainsResponse",
         "type": "object"
       },
+      "SitePaleeReviews": {
+        "nullable": true,
+        "properties": {
+          "average": {
+            "nullable": true,
+            "type": "number"
+          },
+          "count": {
+            "type": "integer"
+          },
+          "latest": {
+            "items": {
+              "properties": {
+                "author_name": {
+                  "description": "First name only; null for people who hide themselves",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "body": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "created_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "edited_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "rating": {
+                  "maximum": 5,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "reply": {
+                  "nullable": true,
+                  "properties": {
+                    "body": {
+                      "type": "string"
+                    },
+                    "replied_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "body",
+                    "replied_at"
+                  ],
+                  "title": "BoxReviewReply",
+                  "type": "object"
+                }
+              },
+              "required": [
+                "author_name",
+                "body",
+                "created_at",
+                "edited_at",
+                "id",
+                "rating",
+                "reply"
+              ],
+              "title": "BoxReview",
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "average",
+          "count",
+          "latest"
+        ],
+        "title": "SitePaleeReviews",
+        "type": "object"
+      },
+      "SiteReviews": {
+        "properties": {
+          "google": {
+            "description": "The box's Google rating and up to five reviews, kept apart (ADR-387)",
+            "nullable": true,
+            "properties": {
+              "count": {
+                "nullable": true,
+                "type": "integer"
+              },
+              "fetched_at": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "maps_uri": {
+                "nullable": true,
+                "type": "string"
+              },
+              "name": {
+                "nullable": true,
+                "type": "string"
+              },
+              "rating": {
+                "nullable": true,
+                "type": "number"
+              },
+              "reviews": {
+                "items": {
+                  "properties": {
+                    "author_name": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "author_photo_uri": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "author_uri": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "published_at": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "rating": {
+                      "nullable": true,
+                      "type": "integer"
+                    },
+                    "relative_time": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "text": {
+                      "nullable": true,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "author_name",
+                    "author_photo_uri",
+                    "author_uri",
+                    "published_at",
+                    "rating",
+                    "relative_time",
+                    "text"
+                  ],
+                  "title": "GoogleReview",
+                  "type": "object"
+                },
+                "maxItems": 5,
+                "type": "array"
+              },
+              "write_review_url": {
+                "nullable": true,
+                "type": "string"
+              }
+            },
+            "required": [
+              "count",
+              "fetched_at",
+              "maps_uri",
+              "name",
+              "rating",
+              "reviews",
+              "write_review_url"
+            ],
+            "title": "GoogleListing",
+            "type": "object"
+          },
+          "google_reviews_url": {
+            "nullable": true,
+            "type": "string"
+          },
+          "palee": {
+            "nullable": true,
+            "properties": {
+              "average": {
+                "nullable": true,
+                "type": "number"
+              },
+              "count": {
+                "type": "integer"
+              },
+              "latest": {
+                "items": {
+                  "properties": {
+                    "author_name": {
+                      "description": "First name only; null for people who hide themselves",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "body": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "edited_at": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "rating": {
+                      "maximum": 5,
+                      "minimum": 1,
+                      "type": "integer"
+                    },
+                    "reply": {
+                      "nullable": true,
+                      "properties": {
+                        "body": {
+                          "type": "string"
+                        },
+                        "replied_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "body",
+                        "replied_at"
+                      ],
+                      "title": "BoxReviewReply",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "author_name",
+                    "body",
+                    "created_at",
+                    "edited_at",
+                    "id",
+                    "rating",
+                    "reply"
+                  ],
+                  "title": "BoxReview",
+                  "type": "object"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "average",
+              "count",
+              "latest"
+            ],
+            "title": "SitePaleeReviews",
+            "type": "object"
+          }
+        },
+        "required": [
+          "google",
+          "google_reviews_url",
+          "palee"
+        ],
+        "title": "SiteReviews",
+        "type": "object"
+      },
       "SiteSettings": {
         "properties": {
+          "about_en": {
+            "maxLength": 4000,
+            "nullable": true,
+            "type": "string"
+          },
           "banner_version": {
             "type": "integer"
           },
@@ -82751,7 +84429,17 @@
                   "maxLength": 1000,
                   "type": "string"
                 },
+                "answer_en": {
+                  "description": "Optional English text (ADR-388)",
+                  "maxLength": 1000,
+                  "type": "string"
+                },
                 "question": {
+                  "maxLength": 200,
+                  "type": "string"
+                },
+                "question_en": {
+                  "description": "Optional English text (ADR-388)",
                   "maxLength": 200,
                   "type": "string"
                 }
@@ -82787,6 +84475,8 @@
                 "hero",
                 "about",
                 "schedule",
+                "events",
+                "wod",
                 "packages",
                 "coaches",
                 "location",
@@ -82809,12 +84499,18 @@
           "public_schedule": {
             "type": "boolean"
           },
+          "public_wod": {
+            "description": "«WOD της ημέρας» on the site (ADR-388)",
+            "type": "boolean"
+          },
           "section_order": {
             "items": {
               "enum": [
                 "hero",
                 "about",
                 "schedule",
+                "events",
+                "wod",
                 "packages",
                 "coaches",
                 "location",
@@ -82829,6 +84525,7 @@
           }
         },
         "required": [
+          "about_en",
           "banner_version",
           "conversions_api_enabled",
           "faq",
@@ -82840,6 +84537,7 @@
           "lock_version",
           "meta_pixel_id",
           "public_schedule",
+          "public_wod",
           "section_order"
         ],
         "title": "SiteSettings",
@@ -82849,6 +84547,11 @@
         "properties": {
           "settings": {
             "properties": {
+              "about_en": {
+                "maxLength": 4000,
+                "nullable": true,
+                "type": "string"
+              },
               "banner_version": {
                 "type": "integer"
               },
@@ -82862,7 +84565,17 @@
                       "maxLength": 1000,
                       "type": "string"
                     },
+                    "answer_en": {
+                      "description": "Optional English text (ADR-388)",
+                      "maxLength": 1000,
+                      "type": "string"
+                    },
                     "question": {
+                      "maxLength": 200,
+                      "type": "string"
+                    },
+                    "question_en": {
+                      "description": "Optional English text (ADR-388)",
                       "maxLength": 200,
                       "type": "string"
                     }
@@ -82898,6 +84611,8 @@
                     "hero",
                     "about",
                     "schedule",
+                    "events",
+                    "wod",
                     "packages",
                     "coaches",
                     "location",
@@ -82920,12 +84635,18 @@
               "public_schedule": {
                 "type": "boolean"
               },
+              "public_wod": {
+                "description": "«WOD της ημέρας» on the site (ADR-388)",
+                "type": "boolean"
+              },
               "section_order": {
                 "items": {
                   "enum": [
                     "hero",
                     "about",
                     "schedule",
+                    "events",
+                    "wod",
                     "packages",
                     "coaches",
                     "location",
@@ -82940,6 +84661,7 @@
               }
             },
             "required": [
+              "about_en",
               "banner_version",
               "conversions_api_enabled",
               "faq",
@@ -82951,6 +84673,7 @@
               "lock_version",
               "meta_pixel_id",
               "public_schedule",
+              "public_wod",
               "section_order"
             ],
             "title": "SiteSettings",
@@ -82965,6 +84688,11 @@
       },
       "SiteSettingsUpdate": {
         "properties": {
+          "about_en": {
+            "maxLength": 4000,
+            "nullable": true,
+            "type": "string"
+          },
           "conversions_api_enabled": {
             "type": "boolean"
           },
@@ -82981,7 +84709,17 @@
                   "maxLength": 1000,
                   "type": "string"
                 },
+                "answer_en": {
+                  "description": "Optional English text (ADR-388)",
+                  "maxLength": 1000,
+                  "type": "string"
+                },
                 "question": {
+                  "maxLength": 200,
+                  "type": "string"
+                },
+                "question_en": {
+                  "description": "Optional English text (ADR-388)",
                   "maxLength": 200,
                   "type": "string"
                 }
@@ -83013,6 +84751,8 @@
                 "hero",
                 "about",
                 "schedule",
+                "events",
+                "wod",
                 "packages",
                 "coaches",
                 "location",
@@ -83035,12 +84775,17 @@
           "public_schedule": {
             "type": "boolean"
           },
+          "public_wod": {
+            "type": "boolean"
+          },
           "section_order": {
             "items": {
               "enum": [
                 "hero",
                 "about",
                 "schedule",
+                "events",
+                "wod",
                 "packages",
                 "coaches",
                 "location",
@@ -83180,6 +84925,38 @@
           "scheduled_at"
         ],
         "title": "SiteTimetableClass",
+        "type": "object"
+      },
+      "SiteWod": {
+        "properties": {
+          "body": {
+            "nullable": true,
+            "type": "string"
+          },
+          "date": {
+            "format": "date",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "body",
+          "date",
+          "id",
+          "title",
+          "type"
+        ],
+        "title": "SiteWod",
         "type": "object"
       },
       "SocialPrivacy": {
@@ -166348,6 +168125,367 @@
         ]
       }
     },
+    "/api/org/{organization_slug}/admin/box-reviews": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminBoxReviewsController.index",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "average": {
+                      "nullable": true,
+                      "type": "number"
+                    },
+                    "count": {
+                      "type": "integer"
+                    },
+                    "google": {
+                      "description": "The box's Google rating and up to five reviews, kept apart (ADR-387)",
+                      "nullable": true,
+                      "properties": {
+                        "count": {
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "fetched_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "maps_uri": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "name": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "rating": {
+                          "nullable": true,
+                          "type": "number"
+                        },
+                        "reviews": {
+                          "items": {
+                            "properties": {
+                              "author_name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "author_photo_uri": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "author_uri": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "published_at": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "rating": {
+                                "nullable": true,
+                                "type": "integer"
+                              },
+                              "relative_time": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "text": {
+                                "nullable": true,
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "author_name",
+                              "author_photo_uri",
+                              "author_uri",
+                              "published_at",
+                              "rating",
+                              "relative_time",
+                              "text"
+                            ],
+                            "title": "GoogleReview",
+                            "type": "object"
+                          },
+                          "maxItems": 5,
+                          "type": "array"
+                        },
+                        "write_review_url": {
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "count",
+                        "fetched_at",
+                        "maps_uri",
+                        "name",
+                        "rating",
+                        "reviews",
+                        "write_review_url"
+                      ],
+                      "title": "GoogleListing",
+                      "type": "object"
+                    },
+                    "has_more": {
+                      "type": "boolean"
+                    },
+                    "reviews": {
+                      "items": {
+                        "properties": {
+                          "author_name": {
+                            "description": "First name only; null for people who hide themselves",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "body": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "created_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "edited_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "rating": {
+                            "maximum": 5,
+                            "minimum": 1,
+                            "type": "integer"
+                          },
+                          "reply": {
+                            "nullable": true,
+                            "properties": {
+                              "body": {
+                                "type": "string"
+                              },
+                              "replied_at": {
+                                "format": "date-time",
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "body",
+                              "replied_at"
+                            ],
+                            "title": "BoxReviewReply",
+                            "type": "object"
+                          }
+                        },
+                        "required": [
+                          "author_name",
+                          "body",
+                          "created_at",
+                          "edited_at",
+                          "id",
+                          "rating",
+                          "reply"
+                        ],
+                        "title": "BoxReview",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "average",
+                    "count",
+                    "google",
+                    "has_more",
+                    "reviews"
+                  ],
+                  "title": "BoxReviewsResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Reviews"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The box's reviews (newest first) with the average and the Google listing",
+        "tags": [
+          "Box reviews"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/box-reviews/{id}/reply": {
+      "put": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminBoxReviewsController.reply",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "body": {
+                    "maxLength": 2000,
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "body"
+                ],
+                "title": "BoxReviewReplyRequest",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "review": {
+                      "properties": {
+                        "author_name": {
+                          "description": "First name only; null for people who hide themselves",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "body": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "created_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "edited_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "rating": {
+                          "maximum": 5,
+                          "minimum": 1,
+                          "type": "integer"
+                        },
+                        "reply": {
+                          "nullable": true,
+                          "properties": {
+                            "body": {
+                              "type": "string"
+                            },
+                            "replied_at": {
+                              "format": "date-time",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "body",
+                            "replied_at"
+                          ],
+                          "title": "BoxReviewReply",
+                          "type": "object"
+                        }
+                      },
+                      "required": [
+                        "author_name",
+                        "body",
+                        "created_at",
+                        "edited_at",
+                        "id",
+                        "rating",
+                        "reply"
+                      ],
+                      "title": "BoxReview",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "review"
+                  ],
+                  "title": "BoxReviewResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Review"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No such review"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Invalid"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Reply to a review as the box (or edit the reply)",
+        "tags": [
+          "Box reviews"
+        ]
+      }
+    },
     "/api/org/{organization_slug}/admin/box-screens": {
       "get": {
         "callbacks": {},
@@ -243084,6 +245222,104 @@
         ]
       }
     },
+    "/api/org/{organization_slug}/admin/review-asks/places": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminReviewAsksController.places",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "places": {
+                      "items": {
+                        "properties": {
+                          "address": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "name": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "place_id": {
+                            "type": "string"
+                          },
+                          "rating": {
+                            "nullable": true,
+                            "type": "number"
+                          },
+                          "rating_count": {
+                            "nullable": true,
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "address",
+                          "name",
+                          "place_id",
+                          "rating",
+                          "rating_count"
+                        ],
+                        "title": "GooglePlaceMatch",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "places"
+                  ],
+                  "title": "GooglePlacesSearchResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Matches"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Too short"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Places unavailable"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Find the box's Google listing by name (Places API, ADR-387)",
+        "tags": [
+          "Google reviews"
+        ]
+      }
+    },
     "/api/org/{organization_slug}/admin/review-asks/settings": {
       "get": {
         "callbacks": {},
@@ -243095,6 +245331,94 @@
               "application/json": {
                 "schema": {
                   "properties": {
+                    "google": {
+                      "description": "The box's Google rating and up to five reviews, kept apart (ADR-387)",
+                      "nullable": true,
+                      "properties": {
+                        "count": {
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "fetched_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "maps_uri": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "name": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "rating": {
+                          "nullable": true,
+                          "type": "number"
+                        },
+                        "reviews": {
+                          "items": {
+                            "properties": {
+                              "author_name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "author_photo_uri": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "author_uri": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "published_at": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "rating": {
+                                "nullable": true,
+                                "type": "integer"
+                              },
+                              "relative_time": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "text": {
+                                "nullable": true,
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "author_name",
+                              "author_photo_uri",
+                              "author_uri",
+                              "published_at",
+                              "rating",
+                              "relative_time",
+                              "text"
+                            ],
+                            "title": "GoogleReview",
+                            "type": "object"
+                          },
+                          "maxItems": 5,
+                          "type": "array"
+                        },
+                        "write_review_url": {
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "count",
+                        "fetched_at",
+                        "maps_uri",
+                        "name",
+                        "rating",
+                        "reviews",
+                        "write_review_url"
+                      ],
+                      "title": "GoogleListing",
+                      "type": "object"
+                    },
                     "settings": {
                       "properties": {
                         "enabled": {
@@ -243130,6 +245454,7 @@
                     }
                   },
                   "required": [
+                    "google",
                     "settings"
                   ],
                   "title": "ReviewAskSettingsResponse",
@@ -243197,6 +245522,94 @@
               "application/json": {
                 "schema": {
                   "properties": {
+                    "google": {
+                      "description": "The box's Google rating and up to five reviews, kept apart (ADR-387)",
+                      "nullable": true,
+                      "properties": {
+                        "count": {
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "fetched_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "maps_uri": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "name": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "rating": {
+                          "nullable": true,
+                          "type": "number"
+                        },
+                        "reviews": {
+                          "items": {
+                            "properties": {
+                              "author_name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "author_photo_uri": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "author_uri": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "published_at": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "rating": {
+                                "nullable": true,
+                                "type": "integer"
+                              },
+                              "relative_time": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "text": {
+                                "nullable": true,
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "author_name",
+                              "author_photo_uri",
+                              "author_uri",
+                              "published_at",
+                              "rating",
+                              "relative_time",
+                              "text"
+                            ],
+                            "title": "GoogleReview",
+                            "type": "object"
+                          },
+                          "maxItems": 5,
+                          "type": "array"
+                        },
+                        "write_review_url": {
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "count",
+                        "fetched_at",
+                        "maps_uri",
+                        "name",
+                        "rating",
+                        "reviews",
+                        "write_review_url"
+                      ],
+                      "title": "GoogleListing",
+                      "type": "object"
+                    },
                     "settings": {
                       "properties": {
                         "enabled": {
@@ -243232,6 +245645,7 @@
                     }
                   },
                   "required": [
+                    "google",
                     "settings"
                   ],
                   "title": "ReviewAskSettingsResponse",
@@ -252571,6 +254985,8 @@
                           "hero",
                           "about",
                           "schedule",
+                          "events",
+                          "wod",
                           "packages",
                           "coaches",
                           "location",
@@ -252585,6 +255001,11 @@
                     },
                     "settings": {
                       "properties": {
+                        "about_en": {
+                          "maxLength": 4000,
+                          "nullable": true,
+                          "type": "string"
+                        },
                         "banner_version": {
                           "type": "integer"
                         },
@@ -252598,7 +255019,17 @@
                                 "maxLength": 1000,
                                 "type": "string"
                               },
+                              "answer_en": {
+                                "description": "Optional English text (ADR-388)",
+                                "maxLength": 1000,
+                                "type": "string"
+                              },
                               "question": {
+                                "maxLength": 200,
+                                "type": "string"
+                              },
+                              "question_en": {
+                                "description": "Optional English text (ADR-388)",
                                 "maxLength": 200,
                                 "type": "string"
                               }
@@ -252634,6 +255065,8 @@
                               "hero",
                               "about",
                               "schedule",
+                              "events",
+                              "wod",
                               "packages",
                               "coaches",
                               "location",
@@ -252656,12 +255089,18 @@
                         "public_schedule": {
                           "type": "boolean"
                         },
+                        "public_wod": {
+                          "description": "«WOD της ημέρας» on the site (ADR-388)",
+                          "type": "boolean"
+                        },
                         "section_order": {
                           "items": {
                             "enum": [
                               "hero",
                               "about",
                               "schedule",
+                              "events",
+                              "wod",
                               "packages",
                               "coaches",
                               "location",
@@ -252676,6 +255115,7 @@
                         }
                       },
                       "required": [
+                        "about_en",
                         "banner_version",
                         "conversions_api_enabled",
                         "faq",
@@ -252687,6 +255127,7 @@
                         "lock_version",
                         "meta_pixel_id",
                         "public_schedule",
+                        "public_wod",
                         "section_order"
                       ],
                       "title": "SiteSettings",
@@ -252725,6 +255166,11 @@
             "application/json": {
               "schema": {
                 "properties": {
+                  "about_en": {
+                    "maxLength": 4000,
+                    "nullable": true,
+                    "type": "string"
+                  },
                   "conversions_api_enabled": {
                     "type": "boolean"
                   },
@@ -252741,7 +255187,17 @@
                           "maxLength": 1000,
                           "type": "string"
                         },
+                        "answer_en": {
+                          "description": "Optional English text (ADR-388)",
+                          "maxLength": 1000,
+                          "type": "string"
+                        },
                         "question": {
+                          "maxLength": 200,
+                          "type": "string"
+                        },
+                        "question_en": {
+                          "description": "Optional English text (ADR-388)",
                           "maxLength": 200,
                           "type": "string"
                         }
@@ -252773,6 +255229,8 @@
                         "hero",
                         "about",
                         "schedule",
+                        "events",
+                        "wod",
                         "packages",
                         "coaches",
                         "location",
@@ -252795,12 +255253,17 @@
                   "public_schedule": {
                     "type": "boolean"
                   },
+                  "public_wod": {
+                    "type": "boolean"
+                  },
                   "section_order": {
                     "items": {
                       "enum": [
                         "hero",
                         "about",
                         "schedule",
+                        "events",
+                        "wod",
                         "packages",
                         "coaches",
                         "location",
@@ -252832,6 +255295,11 @@
                   "properties": {
                     "settings": {
                       "properties": {
+                        "about_en": {
+                          "maxLength": 4000,
+                          "nullable": true,
+                          "type": "string"
+                        },
                         "banner_version": {
                           "type": "integer"
                         },
@@ -252845,7 +255313,17 @@
                                 "maxLength": 1000,
                                 "type": "string"
                               },
+                              "answer_en": {
+                                "description": "Optional English text (ADR-388)",
+                                "maxLength": 1000,
+                                "type": "string"
+                              },
                               "question": {
+                                "maxLength": 200,
+                                "type": "string"
+                              },
+                              "question_en": {
+                                "description": "Optional English text (ADR-388)",
                                 "maxLength": 200,
                                 "type": "string"
                               }
@@ -252881,6 +255359,8 @@
                               "hero",
                               "about",
                               "schedule",
+                              "events",
+                              "wod",
                               "packages",
                               "coaches",
                               "location",
@@ -252903,12 +255383,18 @@
                         "public_schedule": {
                           "type": "boolean"
                         },
+                        "public_wod": {
+                          "description": "«WOD της ημέρας» on the site (ADR-388)",
+                          "type": "boolean"
+                        },
                         "section_order": {
                           "items": {
                             "enum": [
                               "hero",
                               "about",
                               "schedule",
+                              "events",
+                              "wod",
                               "packages",
                               "coaches",
                               "location",
@@ -252923,6 +255409,7 @@
                         }
                       },
                       "required": [
+                        "about_en",
                         "banner_version",
                         "conversions_api_enabled",
                         "faq",
@@ -252934,6 +255421,7 @@
                         "lock_version",
                         "meta_pixel_id",
                         "public_schedule",
+                        "public_wod",
                         "section_order"
                       ],
                       "title": "SiteSettings",
@@ -253479,6 +255967,94 @@
           }
         ],
         "summary": "«Έλεγχος τώρα»: check a custom domain's DNS and HTTPS now",
+        "tags": [
+          "Box website"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/site/domains/{id}/instructions": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminSiteController.send_instructions",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "email": {
+                    "format": "email",
+                    "maxLength": 160,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email"
+                ],
+                "title": "SiteDomainInstructionsRequest",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "sent_to": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "sent_to"
+                  ],
+                  "title": "SiteDomainInstructionsResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Sent"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Error"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "«Στείλε τις οδηγίες»: email the domain's DNS records with a status link",
         "tags": [
           "Box website"
         ]
@@ -294536,6 +297112,453 @@
         ]
       }
     },
+    "/api/org/{organization_slug}/me/box-review": {
+      "delete": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.MyBoxReviewsController.delete",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "Deleted"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Delete my review of the box",
+        "tags": [
+          "Box reviews"
+        ]
+      },
+      "put": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.MyBoxReviewsController.save",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "body": {
+                    "maxLength": 2000,
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "locale": {
+                    "maxLength": 10,
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "rating": {
+                    "maximum": 5,
+                    "minimum": 1,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "rating"
+                ],
+                "title": "BoxReviewRequest",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "review": {
+                      "properties": {
+                        "author_name": {
+                          "description": "First name only; null for people who hide themselves",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "body": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "created_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "edited_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "rating": {
+                          "maximum": 5,
+                          "minimum": 1,
+                          "type": "integer"
+                        },
+                        "reply": {
+                          "nullable": true,
+                          "properties": {
+                            "body": {
+                              "type": "string"
+                            },
+                            "replied_at": {
+                              "format": "date-time",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "body",
+                            "replied_at"
+                          ],
+                          "title": "BoxReviewReply",
+                          "type": "object"
+                        }
+                      },
+                      "required": [
+                        "author_name",
+                        "body",
+                        "created_at",
+                        "edited_at",
+                        "id",
+                        "rating",
+                        "reply"
+                      ],
+                      "title": "BoxReview",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "review"
+                  ],
+                  "title": "BoxReviewResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Review"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Never checked in here"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Invalid"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Write or edit my review of the box (only after checking in there)",
+        "tags": [
+          "Box reviews"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/me/box-reviews": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.MyBoxReviewsController.index",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "average": {
+                      "nullable": true,
+                      "type": "number"
+                    },
+                    "can_review": {
+                      "description": "Checked in at least once",
+                      "type": "boolean"
+                    },
+                    "count": {
+                      "type": "integer"
+                    },
+                    "google": {
+                      "description": "The box's Google rating and up to five reviews, kept apart (ADR-387)",
+                      "nullable": true,
+                      "properties": {
+                        "count": {
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "fetched_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "maps_uri": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "name": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "rating": {
+                          "nullable": true,
+                          "type": "number"
+                        },
+                        "reviews": {
+                          "items": {
+                            "properties": {
+                              "author_name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "author_photo_uri": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "author_uri": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "published_at": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "rating": {
+                                "nullable": true,
+                                "type": "integer"
+                              },
+                              "relative_time": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "text": {
+                                "nullable": true,
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "author_name",
+                              "author_photo_uri",
+                              "author_uri",
+                              "published_at",
+                              "rating",
+                              "relative_time",
+                              "text"
+                            ],
+                            "title": "GoogleReview",
+                            "type": "object"
+                          },
+                          "maxItems": 5,
+                          "type": "array"
+                        },
+                        "write_review_url": {
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "count",
+                        "fetched_at",
+                        "maps_uri",
+                        "name",
+                        "rating",
+                        "reviews",
+                        "write_review_url"
+                      ],
+                      "title": "GoogleListing",
+                      "type": "object"
+                    },
+                    "has_more": {
+                      "type": "boolean"
+                    },
+                    "mine": {
+                      "nullable": true,
+                      "properties": {
+                        "author_name": {
+                          "description": "First name only; null for people who hide themselves",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "body": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "created_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "edited_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "rating": {
+                          "maximum": 5,
+                          "minimum": 1,
+                          "type": "integer"
+                        },
+                        "reply": {
+                          "nullable": true,
+                          "properties": {
+                            "body": {
+                              "type": "string"
+                            },
+                            "replied_at": {
+                              "format": "date-time",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "body",
+                            "replied_at"
+                          ],
+                          "title": "BoxReviewReply",
+                          "type": "object"
+                        }
+                      },
+                      "required": [
+                        "author_name",
+                        "body",
+                        "created_at",
+                        "edited_at",
+                        "id",
+                        "rating",
+                        "reply"
+                      ],
+                      "title": "MyBoxReview",
+                      "type": "object"
+                    },
+                    "reviews": {
+                      "items": {
+                        "properties": {
+                          "author_name": {
+                            "description": "First name only; null for people who hide themselves",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "body": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "created_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "edited_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "rating": {
+                            "maximum": 5,
+                            "minimum": 1,
+                            "type": "integer"
+                          },
+                          "reply": {
+                            "nullable": true,
+                            "properties": {
+                              "body": {
+                                "type": "string"
+                              },
+                              "replied_at": {
+                                "format": "date-time",
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "body",
+                              "replied_at"
+                            ],
+                            "title": "BoxReviewReply",
+                            "type": "object"
+                          }
+                        },
+                        "required": [
+                          "author_name",
+                          "body",
+                          "created_at",
+                          "edited_at",
+                          "id",
+                          "rating",
+                          "reply"
+                        ],
+                        "title": "BoxReview",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "average",
+                    "can_review",
+                    "count",
+                    "google",
+                    "has_more",
+                    "mine",
+                    "reviews"
+                  ],
+                  "title": "MyBoxReviewsResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Reviews"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The box's reviews (newest first), the average, mine and whether I may write one",
+        "tags": [
+          "Box reviews"
+        ]
+      }
+    },
     "/api/org/{organization_slug}/me/channels": {
       "get": {
         "callbacks": {},
@@ -302072,6 +305095,10 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "has_review": {
+                          "description": "The member already wrote an in-app review (ADR-386)",
+                          "type": "boolean"
+                        },
                         "id": {
                           "format": "uuid",
                           "type": "string"
@@ -302096,6 +305123,7 @@
                       "required": [
                         "actions",
                         "google_review_url",
+                        "has_review",
                         "id",
                         "milestone",
                         "shown_at",
@@ -302262,6 +305290,10 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "has_review": {
+                          "description": "The member already wrote an in-app review (ADR-386)",
+                          "type": "boolean"
+                        },
                         "id": {
                           "format": "uuid",
                           "type": "string"
@@ -302286,6 +305318,7 @@
                       "required": [
                         "actions",
                         "google_review_url",
+                        "has_review",
                         "id",
                         "milestone",
                         "shown_at",
@@ -368719,6 +371752,85 @@
         ]
       }
     },
+    "/api/public/sites/domain-status/{token}": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PublicSiteController.domain_status",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "maxLength": 600,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "What the person setting up the domain sees from the emailed link",
+                  "properties": {
+                    "box_name": {
+                      "type": "string"
+                    },
+                    "checked_at": {
+                      "format": "date-time",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "dns_records": {
+                      "items": {
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "host": {
+                      "type": "string"
+                    },
+                    "last_error": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "box_name",
+                    "checked_at",
+                    "dns_records",
+                    "host",
+                    "last_error",
+                    "status"
+                  ],
+                  "title": "SiteDomainStatusResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Status"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "No published box"
+          }
+        },
+        "summary": "The emailed domain instructions' status page (ADR-388): records and state",
+        "tags": [
+          "Box website"
+        ]
+      }
+    },
     "/api/public/sites/tls-allowed": {
       "get": {
         "callbacks": {},
@@ -368784,8 +371896,60 @@
               "application/json": {
                 "schema": {
                   "properties": {
+                    "about_en": {
+                      "nullable": true,
+                      "type": "string"
+                    },
                     "canonical_url": {
                       "type": "string"
+                    },
+                    "events": {
+                      "items": {
+                        "properties": {
+                          "currency": {
+                            "type": "string"
+                          },
+                          "ends_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "place_name": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "price_cents": {
+                            "type": "integer"
+                          },
+                          "starts_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "time_zone": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "currency",
+                          "ends_at",
+                          "id",
+                          "place_name",
+                          "price_cents",
+                          "starts_at",
+                          "time_zone",
+                          "title"
+                        ],
+                        "title": "SiteEvent",
+                        "type": "object"
+                      },
+                      "type": "array"
                     },
                     "faq": {
                       "items": {
@@ -368794,7 +371958,17 @@
                             "maxLength": 1000,
                             "type": "string"
                           },
+                          "answer_en": {
+                            "description": "Optional English text (ADR-388)",
+                            "maxLength": 1000,
+                            "type": "string"
+                          },
                           "question": {
+                            "maxLength": 200,
+                            "type": "string"
+                          },
+                          "question_en": {
+                            "description": "Optional English text (ADR-388)",
                             "maxLength": 200,
                             "type": "string"
                           }
@@ -368835,16 +372009,200 @@
                       ],
                       "type": "object"
                     },
+                    "language": {
+                      "description": "The box's language (ADR-388)",
+                      "type": "string"
+                    },
+                    "languages": {
+                      "description": "The site's languages: the box's own and English",
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
                     "reviews": {
                       "properties": {
+                        "google": {
+                          "description": "The box's Google rating and up to five reviews, kept apart (ADR-387)",
+                          "nullable": true,
+                          "properties": {
+                            "count": {
+                              "nullable": true,
+                              "type": "integer"
+                            },
+                            "fetched_at": {
+                              "format": "date-time",
+                              "type": "string"
+                            },
+                            "maps_uri": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "name": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "rating": {
+                              "nullable": true,
+                              "type": "number"
+                            },
+                            "reviews": {
+                              "items": {
+                                "properties": {
+                                  "author_name": {
+                                    "nullable": true,
+                                    "type": "string"
+                                  },
+                                  "author_photo_uri": {
+                                    "nullable": true,
+                                    "type": "string"
+                                  },
+                                  "author_uri": {
+                                    "nullable": true,
+                                    "type": "string"
+                                  },
+                                  "published_at": {
+                                    "nullable": true,
+                                    "type": "string"
+                                  },
+                                  "rating": {
+                                    "nullable": true,
+                                    "type": "integer"
+                                  },
+                                  "relative_time": {
+                                    "nullable": true,
+                                    "type": "string"
+                                  },
+                                  "text": {
+                                    "nullable": true,
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "author_name",
+                                  "author_photo_uri",
+                                  "author_uri",
+                                  "published_at",
+                                  "rating",
+                                  "relative_time",
+                                  "text"
+                                ],
+                                "title": "GoogleReview",
+                                "type": "object"
+                              },
+                              "maxItems": 5,
+                              "type": "array"
+                            },
+                            "write_review_url": {
+                              "nullable": true,
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "count",
+                            "fetched_at",
+                            "maps_uri",
+                            "name",
+                            "rating",
+                            "reviews",
+                            "write_review_url"
+                          ],
+                          "title": "GoogleListing",
+                          "type": "object"
+                        },
                         "google_reviews_url": {
                           "nullable": true,
                           "type": "string"
+                        },
+                        "palee": {
+                          "nullable": true,
+                          "properties": {
+                            "average": {
+                              "nullable": true,
+                              "type": "number"
+                            },
+                            "count": {
+                              "type": "integer"
+                            },
+                            "latest": {
+                              "items": {
+                                "properties": {
+                                  "author_name": {
+                                    "description": "First name only; null for people who hide themselves",
+                                    "nullable": true,
+                                    "type": "string"
+                                  },
+                                  "body": {
+                                    "nullable": true,
+                                    "type": "string"
+                                  },
+                                  "created_at": {
+                                    "format": "date-time",
+                                    "type": "string"
+                                  },
+                                  "edited_at": {
+                                    "format": "date-time",
+                                    "nullable": true,
+                                    "type": "string"
+                                  },
+                                  "id": {
+                                    "format": "uuid",
+                                    "type": "string"
+                                  },
+                                  "rating": {
+                                    "maximum": 5,
+                                    "minimum": 1,
+                                    "type": "integer"
+                                  },
+                                  "reply": {
+                                    "nullable": true,
+                                    "properties": {
+                                      "body": {
+                                        "type": "string"
+                                      },
+                                      "replied_at": {
+                                        "format": "date-time",
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "body",
+                                      "replied_at"
+                                    ],
+                                    "title": "BoxReviewReply",
+                                    "type": "object"
+                                  }
+                                },
+                                "required": [
+                                  "author_name",
+                                  "body",
+                                  "created_at",
+                                  "edited_at",
+                                  "id",
+                                  "rating",
+                                  "reply"
+                                ],
+                                "title": "BoxReview",
+                                "type": "object"
+                              },
+                              "type": "array"
+                            }
+                          },
+                          "required": [
+                            "average",
+                            "count",
+                            "latest"
+                          ],
+                          "title": "SitePaleeReviews",
+                          "type": "object"
                         }
                       },
                       "required": [
-                        "google_reviews_url"
+                        "google",
+                        "google_reviews_url",
+                        "palee"
                       ],
+                      "title": "SiteReviews",
                       "type": "object"
                     },
                     "sections": {
@@ -368853,6 +372211,8 @@
                           "hero",
                           "about",
                           "schedule",
+                          "events",
+                          "wod",
                           "packages",
                           "coaches",
                           "location",
@@ -368866,6 +372226,9 @@
                       "type": "array"
                     },
                     "slug": {
+                      "type": "string"
+                    },
+                    "time_zone": {
                       "type": "string"
                     },
                     "timetable": {
@@ -368965,17 +372328,58 @@
                         "validity_days"
                       ],
                       "type": "object"
+                    },
+                    "wod": {
+                      "items": {
+                        "properties": {
+                          "body": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "date": {
+                            "format": "date",
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "type": {
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "body",
+                          "date",
+                          "id",
+                          "title",
+                          "type"
+                        ],
+                        "title": "SiteWod",
+                        "type": "object"
+                      },
+                      "type": "array"
                     }
                   },
                   "required": [
+                    "about_en",
                     "canonical_url",
+                    "events",
                     "faq",
                     "forms",
+                    "language",
+                    "languages",
                     "reviews",
                     "sections",
                     "slug",
+                    "time_zone",
                     "timetable",
-                    "tracking"
+                    "tracking",
+                    "wod"
                   ],
                   "title": "PublicSiteResponse",
                   "type": "object"

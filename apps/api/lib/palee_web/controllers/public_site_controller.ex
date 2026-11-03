@@ -8,7 +8,7 @@ defmodule PaleeWeb.PublicSiteController do
   use PaleeWeb, :controller
   use OpenApiSpex.ControllerSpecs
 
-  alias Palee.Application.BoxSite.PublicSite
+  alias Palee.Application.BoxSite.{PublicSite, SiteAdmin}
   alias PaleeWeb.Schemas.BoxSite, as: S
   alias OpenApiSpex.{Parameter, Schema}
 
@@ -37,6 +37,26 @@ defmodule PaleeWeb.PublicSiteController do
 
   def show(conn, %{"slug" => slug}) do
     with {:ok, site} <- PublicSite.show(slug), do: json(conn, site)
+  end
+
+  operation(:domain_status,
+    summary: "The emailed domain instructions' status page (ADR-388): records and state",
+    parameters: [
+      %Parameter{
+        name: :token,
+        in: :path,
+        required: true,
+        schema: %Schema{type: :string, maxLength: 600}
+      }
+    ],
+    responses: [
+      ok: {"Status", "application/json", PaleeWeb.Schemas.BoxReviews.domain_status_response()},
+      not_found: @not_found
+    ]
+  )
+
+  def domain_status(conn, %{"token" => token}) do
+    with {:ok, status} <- SiteAdmin.domain_status(token), do: json(conn, status)
   end
 
   operation(:by_host,

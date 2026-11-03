@@ -4,9 +4,13 @@ defmodule Palee.BoxSite.Domain.SiteSections do
   from data the box already has; the owner only orders them and hides some.
   A section with no data is hidden by the renderer, so the default needs no
   setting up.
+
+  ADR-388 (v3.1) adds `events` (the box's events open to everyone) and `wod`
+  («WOD της ημέρας», off until the owner turns `public_wod` on, like the
+  timetable). Existing sites get them appended to their order.
   """
 
-  @keys ~w(hero about schedule packages coaches location reviews faq trial_form contact_form)
+  @keys ~w(hero about schedule events wod packages coaches location reviews faq trial_form contact_form)
 
   @doc "Every section key, in the default order."
   def keys, do: @keys
@@ -39,7 +43,7 @@ defmodule Palee.BoxSite.Domain.SiteSections do
   @doc """
   The sections a visitor sees, in order: the owner's order without hidden
   ones, and without those whose switch is off (`facts`: `public_schedule`,
-  `faq?`, `forms_enabled`, `reviews?`).
+  `public_wod`, `faq?`, `forms_enabled`, `reviews?`).
   """
   def visible(order, hidden, facts) do
     order
@@ -49,6 +53,7 @@ defmodule Palee.BoxSite.Domain.SiteSections do
   end
 
   defp available?("schedule", facts), do: Map.get(facts, :public_schedule, false)
+  defp available?("wod", facts), do: Map.get(facts, :public_wod, false)
   defp available?("faq", facts), do: Map.get(facts, :faq?, false)
   defp available?("reviews", facts), do: Map.get(facts, :reviews?, false)
 

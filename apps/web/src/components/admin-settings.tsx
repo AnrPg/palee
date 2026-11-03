@@ -30,6 +30,8 @@ import { useSession } from "@/components/session-provider";
 import { ClassTypeSettings } from "@/components/admin/ClassTypeSettings";
 import { LocationSettings } from "@/components/admin/LocationSettings";
 import { PublicPageLink } from "@/components/admin/public-page/PublicPageLink";
+import { ReviewsSettingsLink } from "@/components/box-site/ReviewsSettings";
+import { WebsiteSettingsLink } from "@/components/box-site/WebsiteSettings";
 import { TrialsLink } from "@/components/admin/trials/TrialsLink";
 import { CommunitySettingsLink } from "@/components/admin/community/CommunitySettings";
 import { CheckInSettingsLink } from "@/components/check-in/CheckInSettings";
@@ -1316,6 +1318,12 @@ export function AdminSettingsHub() {
 
             <CollapsibleSection id="public-page" title={i18n("admPublicPageTitle")} description={i18n("admPublicPageDescription")}>
               <PublicPageLink />
+              <div className="mt-3">
+                <WebsiteSettingsLink />
+              </div>
+              <div className="mt-3">
+                <ReviewsSettingsLink />
+              </div>
               <div className="mt-3">
                 <TrialsLink />
               </div>

@@ -31,7 +31,8 @@ defmodule Palee.ReviewAsks.ReviewAskPolicyTest do
 
   test "every rule is a behavioural fact, never an opinion" do
     assert {:skip, :off} = decide(%{settings: %{enabled: false}})
-    assert {:skip, :off} = decide(%{settings: %{google_place_id: nil}})
+    # ADR-386: the card also offers the in-app review, so no Place ID is needed.
+    assert {:ask, 10} = decide(%{settings: %{google_place_id: nil}})
     assert {:skip, :opted_out} = decide(%{}, [], true)
     assert {:skip, :no_membership} = decide(%{facts: %{active_membership: false}})
     assert {:skip, :new_member} = decide(%{facts: %{member_since: ~U[2026-10-20 00:00:00Z]}})
@@ -57,11 +58,9 @@ defmodule Palee.ReviewAsks.ReviewAskPolicyTest do
     assert {:skip, :asked_enough} = decide(%{facts: %{attendance_count: 50}}, three)
   end
 
-  test "an unanswered ask is shown again within a day" do
-    open = %{status: "shown", shown_at: DateTime.add(@now, -3_600)}
-    assert ReviewAskPolicy.open_ask([open], @now) == open
-    refute ReviewAskPolicy.open_ask([%{open | shown_at: DateTime.add(@now, -90_000)}], @now)
-    refute ReviewAskPolicy.open_ask([%{open | status: "later"}], @now)
+  test "ADR-386: an ask shown once is never shown again, answered or not" do
+    shown = %{milestone: 10, shown_at: DateTime.add(@now, -3_600), status: "shown"}
+    assert {:skip, :cooldown} = decide(%{}, [shown])
   end
 
   test "answers" do
@@ -77,11 +76,10 @@ defmodule Palee.ReviewAsks.ReviewAskPolicyTest do
              ReviewAskPolicy.respond(%{status: "shown"}, "5 stars", @now)
   end
 
-  test "settings: a Place ID is needed to turn asks on" do
+  test "settings: asks turn on without a Place ID (ADR-386); a bad one is refused" do
     defaults = ReviewAskPolicy.default_settings()
 
-    assert {:error, {:invalid_fields, %{google_place_id: "required"}}} =
-             ReviewAskPolicy.changes(defaults, %{"enabled" => true})
+    assert {:ok, %{enabled: true}} = ReviewAskPolicy.changes(defaults, %{"enabled" => true})
 
     assert {:error, {:invalid_fields, %{google_place_id: "invalid", milestones: "invalid"}}} =
              ReviewAskPolicy.changes(defaults, %{

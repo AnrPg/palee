@@ -119,4 +119,21 @@ defmodule PaleeWeb.AdminSiteController do
     with :ok <- SiteAdmin.remove_domain(conn.assigns.tenant_context, id),
          do: send_resp(conn, :no_content, "")
   end
+
+  operation(:send_instructions,
+    summary: "«Στείλε τις οδηγίες»: email the domain's DNS records with a status link",
+    parameters: [@id],
+    request_body: S.body(PaleeWeb.Schemas.BoxReviews.instructions_request()),
+    responses: [
+      ok: {"Sent", "application/json", PaleeWeb.Schemas.BoxReviews.instructions_response()},
+      not_found: @error,
+      unprocessable_entity: @error
+    ]
+  )
+
+  def send_instructions(conn, %{"id" => id}) do
+    with {:ok, result} <-
+           SiteAdmin.send_instructions(conn.assigns.tenant_context, id, conn.body_params),
+         do: json(conn, result)
+  end
 end

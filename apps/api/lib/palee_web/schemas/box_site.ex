@@ -2,6 +2,7 @@ defmodule PaleeWeb.Schemas.BoxSite do
   @moduledoc "OpenAPI schemas of the box's website and Google review asks (ADR-352..355)."
 
   alias OpenApiSpex.{MediaType, RequestBody, Schema}
+  alias PaleeWeb.Schemas.BoxReviews
 
   @uuid %Schema{type: :string, format: :uuid}
   @time %Schema{type: :string, format: :"date-time", nullable: true}
@@ -9,7 +10,7 @@ defmodule PaleeWeb.Schemas.BoxSite do
   @int %Schema{type: :integer}
   @bool %Schema{type: :boolean}
 
-  @section_keys ~w(hero about schedule packages coaches location reviews faq trial_form contact_form)
+  @section_keys ~w(hero about schedule events wod packages coaches location reviews faq trial_form contact_form)
   @domain_statuses ~w(pending_dns pending_tls active broken expired)
   @consent_actions ~w(accept_all reject_all custom withdraw)
   @review_actions ~w(opened later dismissed)
@@ -26,7 +27,17 @@ defmodule PaleeWeb.Schemas.BoxSite do
       type: :object,
       properties: %{
         question: %Schema{type: :string, maxLength: 200},
-        answer: %Schema{type: :string, maxLength: 1000}
+        answer: %Schema{type: :string, maxLength: 1000},
+        question_en: %Schema{
+          type: :string,
+          maxLength: 200,
+          description: "Optional English text (ADR-388)"
+        },
+        answer_en: %Schema{
+          type: :string,
+          maxLength: 1000,
+          description: "Optional English text (ADR-388)"
+        }
       },
       required: [:answer, :question]
     }
@@ -58,6 +69,8 @@ defmodule PaleeWeb.Schemas.BoxSite do
         section_order: sections(),
         hidden_sections: sections(),
         public_schedule: @bool,
+        public_wod: %Schema{type: :boolean, description: "«WOD της ημέρας» on the site (ADR-388)"},
+        about_en: %Schema{type: :string, nullable: true, maxLength: 4000},
         faq: faq(),
         forms_enabled: @bool,
         meta_pixel_id: @text,
@@ -72,6 +85,7 @@ defmodule PaleeWeb.Schemas.BoxSite do
         lock_version: @int
       },
       required: [
+        :about_en,
         :banner_version,
         :conversions_api_enabled,
         :faq,
@@ -83,6 +97,7 @@ defmodule PaleeWeb.Schemas.BoxSite do
         :lock_version,
         :meta_pixel_id,
         :public_schedule,
+        :public_wod,
         :section_order
       ]
     }
@@ -96,6 +111,8 @@ defmodule PaleeWeb.Schemas.BoxSite do
         section_order: sections(),
         hidden_sections: sections(),
         public_schedule: @bool,
+        public_wod: @bool,
+        about_en: %Schema{type: :string, nullable: true, maxLength: 4000},
         faq: faq(),
         forms_enabled: @bool,
         meta_pixel_id: @text,
@@ -279,11 +296,17 @@ defmodule PaleeWeb.Schemas.BoxSite do
           },
           required: [:contact, :kinds, :trial]
         },
-        reviews: %Schema{
-          type: :object,
-          properties: %{google_reviews_url: @text},
-          required: [:google_reviews_url]
+        reviews: BoxReviews.site_reviews(),
+        language: %Schema{type: :string, description: "The box's language (ADR-388)"},
+        languages: %Schema{
+          type: :array,
+          items: %Schema{type: :string},
+          description: "The site's languages: the box's own and English"
         },
+        time_zone: %Schema{type: :string},
+        about_en: %Schema{type: :string, nullable: true},
+        events: %Schema{type: :array, items: BoxReviews.site_event()},
+        wod: %Schema{type: :array, items: BoxReviews.site_wod()},
         tracking: %Schema{
           type: :object,
           properties: %{
@@ -318,14 +341,20 @@ defmodule PaleeWeb.Schemas.BoxSite do
         }
       },
       required: [
+        :about_en,
         :canonical_url,
+        :events,
         :faq,
         :forms,
+        :language,
+        :languages,
         :reviews,
         :sections,
         :slug,
+        :time_zone,
         :timetable,
-        :tracking
+        :tracking,
+        :wod
       ]
     }
   end
@@ -464,8 +493,8 @@ defmodule PaleeWeb.Schemas.BoxSite do
     %Schema{
       title: "ReviewAskSettingsResponse",
       type: :object,
-      properties: %{settings: review_settings()},
-      required: [:settings]
+      properties: %{settings: review_settings(), google: BoxReviews.google()},
+      required: [:google, :settings]
     }
   end
 
@@ -504,9 +533,13 @@ defmodule PaleeWeb.Schemas.BoxSite do
         status: %Schema{type: :string, enum: ["shown" | @review_actions]},
         shown_at: %Schema{type: :string, format: :"date-time"},
         google_review_url: @text,
+        has_review: %Schema{
+          type: :boolean,
+          description: "The member already wrote an in-app review (ADR-386)"
+        },
         actions: %Schema{type: :array, items: %Schema{type: :string, enum: @review_actions}}
       },
-      required: [:actions, :google_review_url, :id, :milestone, :shown_at, :status]
+      required: [:actions, :google_review_url, :has_review, :id, :milestone, :shown_at, :status]
     }
   end
 

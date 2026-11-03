@@ -805,3 +805,12 @@ msgstr "%{nickname} писа на %{box}"
 
 msgid "%{nickname} sent the box a message."
 msgstr "%{nickname} изпрати съобщение на бокса."
+
+msgid "Question from the website"
+msgstr "Въпрос от сайта"
+
+msgid "Trial request from the website"
+msgstr "Заявка за пробна тренировка от сайта"
+
+msgid "%{name} wrote through the box's website. Answer or call them."
+msgstr "%{name} писа през сайта на бокса. Отговори или се обади."

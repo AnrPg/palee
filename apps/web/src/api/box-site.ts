@@ -2,9 +2,8 @@ import { apiRequest } from "@/api/client";
 import type { components } from "@/api/generated/schema";
 
 /**
- * The box's website (ADR-352..354) and Google review asks (ADR-355). No
- * screens use these yet: they wait for ANR's pick of the mockups
- * (v31-mockups/w4-web.html).
+ * The box's website (ADR-352..354, ADR-388), Google review asks (ADR-355),
+ * the box's in-app reviews (ADR-386) and its Google listing (ADR-387).
  */
 export type PublicSite = components["schemas"]["PublicSiteResponse"];
 export type SiteSettings = components["schemas"]["SiteSettings"];
@@ -20,6 +19,15 @@ export type ReviewAskSettings = components["schemas"]["ReviewAskSettings"];
 export type ReviewAskSettingsUpdate = components["schemas"]["ReviewAskSettingsUpdate"];
 export type ReviewAskSummary = components["schemas"]["ReviewAskSummaryResponse"];
 export type ReviewAskAction = components["schemas"]["ReviewAskRespondRequest"]["action"];
+export type ReviewAskSettingsResponse = components["schemas"]["ReviewAskSettingsResponse"];
+export type SiteSection = SiteSettings["section_order"][number];
+export type SiteFaqEntry = SiteSettings["faq"][number];
+export type BoxReview = components["schemas"]["BoxReview"];
+export type GoogleListing = NonNullable<components["schemas"]["GoogleListing"]>;
+export type BoxReviews = components["schemas"]["BoxReviewsResponse"];
+export type MyBoxReviews = components["schemas"]["MyBoxReviewsResponse"];
+export type GooglePlaceMatch = components["schemas"]["GooglePlaceMatch"];
+export type SiteDomainStatus = components["schemas"]["SiteDomainStatusResponse"];
 
 const SITE = "/admin/site";
 const REVIEWS = "/admin/review-asks";
@@ -37,6 +45,11 @@ export function sendSiteForm(slug: string, kind: "trial" | "contact", form: Site
 
 export function recordSiteConsent(slug: string, consent: SiteConsentRequest) {
   return apiRequest<SiteConsentResponse>(`${publicSite(slug)}/consents`, { method: "POST", body: consent });
+}
+
+/** ADR-388: the page behind «Στείλε τις οδηγίες» (no account). */
+export function fetchDomainStatus(token: string) {
+  return apiRequest<SiteDomainStatus>(`/public/sites/domain-status/${encodeURIComponent(token)}`);
 }
 
 // ── Staff ──────────────────────────────────────────────────────────────────
@@ -69,14 +82,47 @@ export function removeSiteDomain(token: string, id: string) {
   return apiRequest<void>(`${SITE}/domains/${id}`, { method: "DELETE", token });
 }
 
-export async function getReviewAskSettings(token: string) {
-  return (await apiRequest<{ settings: ReviewAskSettings }>(`${REVIEWS}/settings`, { token })).settings;
+/** ADR-388 «Στείλε τις οδηγίες»: email the records to whoever runs the domain. */
+export async function sendSiteDomainInstructions(token: string, id: string, email: string) {
+  return (await apiRequest<{ sent_to: string }>(`${SITE}/domains/${id}/instructions`, { method: "POST", token, body: { email } })).sent_to;
 }
 
-export async function saveReviewAskSettings(token: string, update: ReviewAskSettingsUpdate) {
-  return (
-    await apiRequest<{ settings: ReviewAskSettings }>(`${REVIEWS}/settings`, { method: "PUT", token, body: update })
-  ).settings;
+export function getReviewAskSettings(token: string) {
+  return apiRequest<ReviewAskSettingsResponse>(`${REVIEWS}/settings`, { token });
+}
+
+export function saveReviewAskSettings(token: string, update: ReviewAskSettingsUpdate) {
+  return apiRequest<ReviewAskSettingsResponse>(`${REVIEWS}/settings`, { method: "PUT", token, body: update });
+}
+
+/** ADR-387: find the box's Google listing by name. */
+export async function searchGooglePlaces(token: string, query: string) {
+  return (await apiRequest<{ places: GooglePlaceMatch[] }>(`${REVIEWS}/places?q=${encodeURIComponent(query)}`, { token })).places;
+}
+
+// ── In-app reviews (ADR-386) ────────────────────────────────────────────────
+
+export const MY_BOX_REVIEWS_KEY = ["me", "box-reviews"] as const;
+export const STAFF_BOX_REVIEWS_KEY = ["admin", "box-reviews"] as const;
+
+export function fetchMyBoxReviews(token: string) {
+  return apiRequest<MyBoxReviews>("/me/box-reviews", { token });
+}
+
+export async function saveMyBoxReview(token: string, review: { rating: number; body: string | null; locale?: string }) {
+  return (await apiRequest<{ review: BoxReview }>("/me/box-review", { method: "PUT", token, body: review })).review;
+}
+
+export function deleteMyBoxReview(token: string) {
+  return apiRequest<void>("/me/box-review", { method: "DELETE", token });
+}
+
+export function fetchStaffBoxReviews(token: string) {
+  return apiRequest<BoxReviews>("/admin/box-reviews", { token });
+}
+
+export async function replyToBoxReview(token: string, id: string, body: string) {
+  return (await apiRequest<{ review: BoxReview }>(`/admin/box-reviews/${id}/reply`, { method: "PUT", token, body: { body } })).review;
 }
 
 export function getReviewAskSummary(token: string) {

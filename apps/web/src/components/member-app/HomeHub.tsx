@@ -30,6 +30,7 @@ import { FeedPage } from "@/components/member-app/HubParts";
 import { WellnessStrip } from "@/components/member-app/wellness/WellnessStrip";
 import { useLanding } from "@/components/member-app/progress/use-landing";
 import { useSession } from "@/components/session-provider";
+import { ReviewAskCard } from "@/components/reviews/ReviewAskCard";
 import { MyTrialsCard } from "@/components/trials/MyTrialsCard";
 import { useSelectedMembershipRole } from "@/lib/membership-role";
 
@@ -79,6 +80,8 @@ export function HomeHub() {
       <SupportInbox />
       <WellnessStrip />
       <MyTrialsCard />
+      {/* ADR-386: after the 10th, 50th or 100th class only, once. */}
+      <ReviewAskCard />
       {gymClub ? <WodCard club={gymClub} /> : null}
       <MyEventsCard />
       <ChallengesCard challenges={gamification?.active_challenges ?? []} />

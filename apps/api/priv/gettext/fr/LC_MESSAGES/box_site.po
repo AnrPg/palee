@@ -1,0 +1,23 @@
+msgid ""
+msgstr ""
+"Language: fr\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "DNS records for %{host}"
+msgstr "Enregistrements DNS pour %{host}"
+
+msgid "See if the records are found"
+msgstr "Voir si les enregistrements sont trouvés"
+
+msgid "%{box} wants its website to open at %{host}. Whoever manages the domain can do it in a few minutes."
+msgstr "%{box} veut que son site s'ouvre sur %{host}. La personne qui gère le domaine peut le faire en quelques minutes."
+
+msgid "Add these records at the domain's provider (DNS settings):"
+msgstr "Ajoute ces enregistrements chez le fournisseur du domaine (paramètres DNS) :"
+
+msgid "We check every few minutes. When the records are found, the site gets its certificate (https) by itself."
+msgstr "Nous vérifions toutes les quelques minutes. Dès que les enregistrements sont trouvés, le site obtient son certificat (https) tout seul."
+
+msgid "You get this email because %{box} sent you its domain instructions."
+msgstr "Tu reçois cet e-mail parce que %{box} t'a envoyé les instructions de son domaine."

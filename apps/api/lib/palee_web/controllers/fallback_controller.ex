@@ -515,7 +515,12 @@ defmodule PaleeWeb.FallbackController do
     review_ask_answered: {:conflict, "This ask was already answered"},
     invalid_review_action: {:unprocessable_entity, "Choose opened, later or dismissed"},
     settings_changed_meanwhile:
-      {:conflict, "Someone saved these settings meanwhile; reload and try again"}
+      {:conflict, "Someone saved these settings meanwhile; reload and try again"},
+    # ADR-386..388: in-app reviews, the Google listing, domain instructions.
+    review_needs_check_in: {:forbidden, "Only people who checked in at this box can review it"},
+    box_review_not_found: {:not_found, "Review not found"},
+    invalid_place_query: {:unprocessable_entity, "Type at least 3 letters of the box's name"},
+    places_unavailable: {:service_unavailable, "Google search is unavailable; use the Place ID"}
   }
 
   def call(conn, {:error, reason}) when is_map_key(@box_site_errors, reason) do

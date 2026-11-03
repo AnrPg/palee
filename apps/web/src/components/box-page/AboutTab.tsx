@@ -30,7 +30,25 @@ const ABOUT_PREVIEW = 320;
  * languages, then locations with the map and opening hours. Only what the
  * owner published.
  */
-export function AboutTab({ page, onOpenPhoto }: { page: PublicBoxPage; onOpenPhoto: (index: number) => void }) {
+export type AboutPart = "about" | "coaches" | "location";
+const ALL_PARTS: AboutPart[] = ["about", "coaches", "location"];
+
+/**
+ * ADR-388: the box's website shows these parts as its «Σχετικά», «Coaches»
+ * and «Τοποθεσία» sections, each where the owner put it (`parts`), and on
+ * `/en` the owner's English about text (`aboutText`).
+ */
+export function AboutTab({
+  page,
+  onOpenPhoto,
+  parts = ALL_PARTS,
+  aboutText,
+}: {
+  page: PublicBoxPage;
+  onOpenPhoto: (index: number) => void;
+  parts?: AboutPart[];
+  aboutText?: string;
+}) {
   const t = useTranslations("BoxPage");
   const tags = useTranslations("BoxTags");
   const locale = useLocale();
@@ -38,7 +56,8 @@ export function AboutTab({ page, onOpenPhoto }: { page: PublicBoxPage; onOpenPho
   const [aboutOpen, setAboutOpen] = useState(false);
   const [allDisciplines, setAllDisciplines] = useState(false);
   const names = useMemo(() => languageNames(locale), [locale]);
-  const about = profile.about ?? "";
+  const show = (part: AboutPart) => parts.includes(part);
+  const about = show("about") ? (aboutText ?? profile.about ?? "") : "";
   const longAbout = about.length > ABOUT_PREVIEW;
   const photoOffset = profile.cover ? 1 : 0;
   const disciplines = allDisciplines ? profile.disciplines : profile.disciplines.slice(0, SHOWN_DISCIPLINES);
@@ -68,7 +87,7 @@ export function AboutTab({ page, onOpenPhoto }: { page: PublicBoxPage; onOpenPho
         </section>
       ) : null}
 
-      {profile.photos.length > 0 ? (
+      {show("about") && profile.photos.length > 0 ? (
         <section aria-label={t("photosTitle")}>
           <ul className="-mx-4 flex snap-x gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:px-0">
             {profile.photos.map((photo, index) => (
@@ -89,7 +108,7 @@ export function AboutTab({ page, onOpenPhoto }: { page: PublicBoxPage; onOpenPho
         </section>
       ) : null}
 
-      {profile.disciplines.length > 0 ? (
+      {show("about") && profile.disciplines.length > 0 ? (
         <Section title={t("disciplines")}>
           <ul className="flex flex-wrap gap-2">
             {disciplines.map((key) => (
@@ -114,13 +133,13 @@ export function AboutTab({ page, onOpenPhoto }: { page: PublicBoxPage; onOpenPho
         </Section>
       ) : null}
 
-      {profile.audiences.length > 0 ? (
+      {show("about") && profile.audiences.length > 0 ? (
         <p className="text-[15px]" style={{ color: "var(--text)" }}>
           <span className="font-bold">{t("welcomes")}</span> {profile.audiences.map((key) => tags(`audience.${key}`)).join(", ")}
         </p>
       ) : null}
 
-      {profile.services.length > 0 ? (
+      {show("about") && profile.services.length > 0 ? (
         <Section title={t("services")}>
           <ul className="flex flex-wrap gap-2">
             {profile.services.map((key) => (
@@ -132,7 +151,7 @@ export function AboutTab({ page, onOpenPhoto }: { page: PublicBoxPage; onOpenPho
         </Section>
       ) : null}
 
-      {profile.coaches.length > 0 ? (
+      {show("coaches") && profile.coaches.length > 0 ? (
         <Section title={t("coaches")}>
           <ul className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-1 lg:mx-0 lg:grid lg:grid-cols-2 lg:px-0">
             {profile.coaches.map((coach) => (
@@ -154,7 +173,7 @@ export function AboutTab({ page, onOpenPhoto }: { page: PublicBoxPage; onOpenPho
         </Section>
       ) : null}
 
-      {(page.open_clubs ?? []).length > 0 ? (
+      {show("about") && (page.open_clubs ?? []).length > 0 ? (
         <Section title={t("openClubs")}>
           <ul className="flex flex-col gap-2">
             {page.open_clubs.map((club) => (
@@ -182,7 +201,7 @@ export function AboutTab({ page, onOpenPhoto }: { page: PublicBoxPage; onOpenPho
         </Section>
       ) : null}
 
-      {(page.rooms ?? []).length > 0 ? (
+      {show("about") && (page.rooms ?? []).length > 0 ? (
         // ADR-290: the room photos their uploader chose to show here.
         <Section title={t("rooms")}>
           <ul className="flex flex-col gap-4" data-testid="box-rooms">
@@ -197,7 +216,7 @@ export function AboutTab({ page, onOpenPhoto }: { page: PublicBoxPage; onOpenPho
         </Section>
       ) : null}
 
-      {profile.amenities.length > 0 ? (
+      {show("about") && profile.amenities.length > 0 ? (
         <Section title={t("amenities")}>
           <ul className="grid grid-cols-2 gap-x-4 gap-y-3">
             {profile.amenities.map((key) => (
@@ -212,7 +231,7 @@ export function AboutTab({ page, onOpenPhoto }: { page: PublicBoxPage; onOpenPho
         </Section>
       ) : null}
 
-      {profile.languages.length > 0 ? (
+      {show("about") && profile.languages.length > 0 ? (
         <Section title={t("languages")}>
           <p className="text-[15px]" style={{ color: "var(--text)" }}>
             {profile.languages.map((code) => names(code).own).join(" · ")}
@@ -220,7 +239,7 @@ export function AboutTab({ page, onOpenPhoto }: { page: PublicBoxPage; onOpenPho
         </Section>
       ) : null}
 
-      {page.locations.length > 0 ? (
+      {show("location") && page.locations.length > 0 ? (
         <Section title={page.locations.length > 1 ? t("locations") : t("location")}>
           <Locations locations={page.locations} />
         </Section>

@@ -184,6 +184,9 @@ defmodule Palee.PersonalData.Domain.Catalog do
       # ADR-355: Google review asks shown to the person and their opt-out.
       tenant("community", "review_asks", @me),
       tenant("community", "review_ask_opt_outs", @me),
+      # ADR-386: the person's in-app reviews of a box, with the box's reply
+      # (not who on staff wrote it).
+      tenant("community", "box_reviews", @me, drop: ~w(replied_by_id)),
       # ADR-280 verification: the outcome and the person's own request; the
       # phone and selfie never leave, nor who else is named.
       account("community", "partner_verifications", @me, drop: ~w(source_organization_id)),

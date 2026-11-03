@@ -1,0 +1,23 @@
+msgid ""
+msgstr ""
+"Language: nl\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "DNS records for %{host}"
+msgstr "DNS-records voor %{host}"
+
+msgid "See if the records are found"
+msgstr "Kijk of de records gevonden zijn"
+
+msgid "%{box} wants its website to open at %{host}. Whoever manages the domain can do it in a few minutes."
+msgstr "%{box} wil dat zijn website op %{host} opent. Wie het domein beheert, regelt dit in een paar minuten."
+
+msgid "Add these records at the domain's provider (DNS settings):"
+msgstr "Voeg deze records toe bij de aanbieder van het domein (DNS-instellingen):"
+
+msgid "We check every few minutes. When the records are found, the site gets its certificate (https) by itself."
+msgstr "We controleren om de paar minuten. Zodra de records gevonden zijn, krijgt de site vanzelf zijn certificaat (https)."
+
+msgid "You get this email because %{box} sent you its domain instructions."
+msgstr "Je krijgt deze e-mail omdat %{box} je de instructies voor zijn domein stuurde."

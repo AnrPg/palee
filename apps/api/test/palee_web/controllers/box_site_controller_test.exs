@@ -188,6 +188,19 @@ defmodule PaleeWeb.BoxSiteControllerTest do
     assert [["delivered", nil, nil, lead_id, "sent", nil]] = rows
     assert is_binary(lead_id)
 
+    # ADR-388: the lead has no owner yet, so whoever handles «Ενδιαφερόμενοι»
+    # hears about it (the owner here); never the member.
+    notices =
+      bypass_rls(fn ->
+        Palee.Repo.query!(
+          "SELECT user_id FROM notifications WHERE type = 'site_request' AND organization_id = $1",
+          [Ecto.UUID.dump!(ctx.organization.id)]
+        ).rows
+      end)
+
+    assert [[owner_id]] = notices
+    assert Ecto.UUID.load!(owner_id) == ctx.owner.id
+
     assert %{
              "submissions" => %{"total" => 1, "delivered" => 1},
              "consents" => %{"accept_all" => 1}
@@ -371,6 +384,100 @@ defmodule PaleeWeb.BoxSiteControllerTest do
     site = build_conn() |> get(ctx.public) |> json_response(200)
     assert "schedule" in site["sections"]
     assert is_list(site["timetable"])
+  end
+
+  test "ADR-388: events and WOD sections, English texts and the site's languages", ctx do
+    site = build_conn() |> get(ctx.public) |> json_response(200)
+    # WOD stays off until the owner turns it on; events show when there are any.
+    assert "events" in site["sections"]
+    refute "wod" in site["sections"]
+    assert %{"language" => language, "languages" => languages, "time_zone" => _zone} = site
+    assert "en" in languages and language in languages
+    assert site["about_en"] == nil
+    assert site["events"] == [] and site["wod"] == []
+
+    assert %{"errors" => _} =
+             ctx
+             |> owner_conn()
+             |> put(ctx.admin, %{lock_version: 0, about_en: String.duplicate("a", 4001)})
+             |> json_response(422)
+
+    assert %{"settings" => %{"public_wod" => true, "about_en" => "We train every day."}} =
+             ctx
+             |> owner_conn()
+             |> put(ctx.admin, %{
+               lock_version: 0,
+               public_wod: true,
+               about_en: "  We train every day. ",
+               faq: [
+                 %{
+                   question: "Πού παρκάρω;",
+                   answer: "Στην πλατεία.",
+                   question_en: "Where do I park?",
+                   answer_en: "On the square."
+                 },
+                 %{question: "Χρειάζομαι εμπειρία;", answer: "Όχι.", question_en: "Experience?"}
+               ]
+             })
+             |> json_response(200)
+
+    site = build_conn() |> get(ctx.public) |> json_response(200)
+    assert "wod" in site["sections"]
+    assert site["about_en"] == "We train every day."
+
+    # The English half shows only when both are there.
+    assert [%{"question_en" => "Where do I park?", "answer_en" => "On the square."}, second] =
+             site["faq"]
+
+    refute Map.has_key?(second, "question_en")
+  end
+
+  test "ADR-388: «Στείλε τις οδηγίες» emails the records with a status link", ctx do
+    host = "www.instr#{System.unique_integer([:positive])}.test"
+
+    %{"domain" => %{"id" => id}} =
+      ctx
+      |> owner_conn()
+      |> post("#{ctx.admin}/domains", %{host: host})
+      |> json_response(201)
+
+    assert %{"errors" => _} =
+             ctx
+             |> owner_conn()
+             |> post("#{ctx.admin}/domains/#{id}/instructions", %{email: "not an address"})
+             |> json_response(422)
+
+    conn =
+      ctx
+      |> owner_conn()
+      |> post("#{ctx.admin}/domains/#{id}/instructions", %{email: "Web@Example.gr"})
+
+    # A new business is in demo mode (ADR-184): nothing leaves.
+    case conn.status do
+      200 ->
+        assert %{"sent_to" => "web@example.gr"} = json_response(conn, 200)
+
+      403 ->
+        assert %{"code" => "business_not_activated"} = json_response(conn, 403)
+    end
+
+    token =
+      Palee.Application.SignedToken.sign("box-site-domain-status", %{
+        "o" => ctx.organization.id,
+        "d" => id
+      })
+
+    assert %{"host" => ^host, "status" => "pending_dns", "dns_records" => [_txt, _cname]} =
+             build_conn()
+             |> get("/api/public/sites/domain-status/#{token}")
+             |> json_response(200)
+
+    build_conn() |> get("/api/public/sites/domain-status/forged") |> json_response(404)
+
+    ctx
+    |> owner_conn()
+    |> post("#{ctx.admin}/domains/#{Ecto.UUID.generate()}/instructions", %{email: "a@b.gr"})
+    |> json_response(404)
   end
 
   defp perform_job(worker, args), do: worker.perform(%Oban.Job{args: args})
