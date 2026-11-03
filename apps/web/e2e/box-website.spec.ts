@@ -361,7 +361,8 @@ test.describe("Settings › Reviews", () => {
     await expect(page.getByRole("heading", { name: "Reviews", level: 1 })).toBeVisible();
     const listing = page.getByTestId("reviews-google");
     await expect(listing.getByTestId("google-reviews")).toContainText("120 Google reviews");
-    await expect(listing.getByText("Top box.")).toBeVisible();
+    // ADR-390: Google shows only the rating and the count; review texts never show, even if sent.
+    await expect(listing.getByText("Top box.")).toHaveCount(0);
 
     await expect(page.getByTestId("reviews-ask-summary")).toHaveText("Last 30 days: asked 12, answered 5");
     const ask = page.getByTestId("reviews-ask-switch");
@@ -464,7 +465,8 @@ test.describe("members' reviews", () => {
     });
     // A member of one box opens the app on Box (W7 screen 12); the ask sits on Feed.
     await page.goto("/");
-    await expect(page).toHaveURL(/\/box$/);
+    // The dev server may compile /box on its first visit, which can take longer than the default wait.
+    await expect(page).toHaveURL(/\/box$/, { timeout: 30_000 });
     // The dev build's Next.js indicator sits over the bottom bar's first item, so the tap is dispatched.
     await page.getByRole("navigation", { name: "Main sections" }).getByRole("link", { name: "Feed" }).dispatchEvent("click");
     await expect(page).toHaveURL(/\/$/);

@@ -55,7 +55,7 @@ const usage = {
   palee_charge_cents: 1240,
 };
 
-function connection(channels: string[]) {
+function connection(channels: string[], monthly_budget_cents: number | null = 2000) {
   return {
     provider: "brevo",
     account_mode: "palee",
@@ -63,7 +63,7 @@ function connection(channels: string[]) {
     channels,
     default_country: "GR",
     has_secret: false,
-    monthly_budget_cents: 2000,
+    monthly_budget_cents,
     quiet_start: "21:00",
     quiet_end: "09:00",
     sms_sender: "BoxKypseli",
@@ -89,7 +89,8 @@ async function stub(page: Page, activation: "demo" | "active", writes: Array<{ p
     if (path === "/api/admin/community/groups") return json(route, { settings: { member_groups: "none" }, pending: [], groups: [] });
     if (path === "/api/admin/channels/settings") {
       if (method === "PUT") {
-        current = connection((body as { channels?: string[] }).channels ?? current?.channels ?? []);
+        const put = body as { channels?: string[]; monthly_budget_cents?: number };
+        current = connection(put.channels ?? current?.channels ?? [], put.monthly_budget_cents ?? current?.monthly_budget_cents ?? null);
         return json(route, { connection: current, check: { ok: true, details: {} } });
       }
       return json(route, { connection: current, providers: [{ provider: "brevo", channels: ["sms"], account_modes: ["palee", "own"] }], usage });
@@ -126,14 +127,19 @@ test("a demo box is told plainly that no SMS leave, and can still switch SMS on"
   await stub(page, "demo", writes);
   await page.goto("/admin/settings#connections");
 
+  // The #connections link opens the section by itself.
   const section = page.locator("#connections");
-  await section.getByRole("button", { name: /Connections/ }).first().click();
   await expect(section.getByTestId("sms-demo-notice")).toContainText("no SMS leave until it is activated");
 
+  // ADR-390: SMS go on only after the box types its monthly cap; nothing is saved before that.
   await section.getByRole("switch", { name: "Text messages (SMS)" }).click();
+  await expect(section.getByTestId("sms-budget")).toContainText("Before SMS go on, type the most the box spends in a month.");
+  expect(writes.some((write) => write.path === "/api/admin/channels/settings" && write.method === "PUT")).toBe(false);
+  await section.getByLabel("Monthly cost limit").fill("20");
+  await section.getByRole("button", { name: "Turn on SMS" }).click();
   await expect
     .poll(() => writes.find((write) => write.path === "/api/admin/channels/settings" && write.method === "PUT")?.body)
-    .toMatchObject({ channels: ["sms"], account_mode: "palee" });
+    .toMatchObject({ channels: ["sms"], account_mode: "palee", monthly_budget_cents: 2000 });
   await expect(section.getByTestId("sms-status")).toHaveText("Connected");
   await expect(section.getByLabel("Sender")).toHaveValue("BoxKypseli");
 
