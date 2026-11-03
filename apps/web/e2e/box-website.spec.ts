@@ -85,15 +85,6 @@ const site = {
   },
 };
 
-// APP BUG (found by this spec): Dialog renders a <form> but does not call
-// preventDefault, and SiteRequestSheet and ReviewSheet pass
-// `onSubmit={() => ...}` without it, so «Send request» / «Publish» also do a
-// native GET to the same page (`/b/<slug>?website=`, `/?`), reloading it and
-// losing the sheet before anything is sent. The two tests that submit them
-// describe the intended behaviour and are marked `test.fail` until the app
-// calls `event.preventDefault()`; drop the mark then. (ReviewsSettings'
-// ReplyDialog and WebsiteSettings' InstructionsDialog use the same pattern.)
-const SUBMIT_RELOADS_PAGE = "Dialog onSubmit without preventDefault reloads the page (see the note above)";
 
 let server: Server;
 
@@ -121,7 +112,7 @@ async function asVisitor(page: Page, { appLocale = true } = {}) {
   await page.route("**/api/**", async (route) => {
     const url = new URL(route.request().url());
     const method = route.request().method();
-    if (method !== "GET") forms.push({ path: url.pathname, method, body: route.request().postDataJSON() });
+    if (method !== "GET" && url.pathname !== "/api/auth/refresh") forms.push({ path: url.pathname, method, body: route.request().postDataJSON() });
     if (url.pathname === "/api/auth/refresh") return json(route, { error: "unauthorized" }, 401);
     if (url.pathname.startsWith(`/api/public/sites/${slug}/forms/`)) return json(route, { status: "received" }, 202);
     return json(route, {});
@@ -169,7 +160,6 @@ test.describe("the box's public website", () => {
   });
 
   test("the trial request sheet sends the form with an event_id and the privacy yes", async ({ page }) => {
-    test.fail(true, SUBMIT_RELOADS_PAGE);
     const forms = await asVisitor(page);
     await page.goto(`/b/${slug}`);
 
@@ -497,7 +487,6 @@ test.describe("members' reviews", () => {
   });
 
   test("the review sheet asks for stars, then publishes the stars and words", async ({ page }) => {
-    test.fail(true, SUBMIT_RELOADS_PAGE);
     const writes = await homeWithAsk(page);
     await page.getByTestId("review-ask-card").getByTestId("review-ask-write").click();
     const sheet = page.getByRole("dialog", { name: "Review Box Kypseli" });
