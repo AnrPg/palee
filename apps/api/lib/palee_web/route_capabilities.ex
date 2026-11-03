@@ -541,6 +541,10 @@ defmodule PaleeWeb.RouteCapabilities do
     # ADR-165: coverage, qualities and load from shared entries; the use
     # case also requires the coach role and the client in scope.
     {W.TrainingDepthController, :client} => [:view_client_training],
+    # ADR-395: a client's fitness card; the use case also requires an
+    # active coaching relationship (owners who do not coach them get 403).
+    {W.ClientFitnessDisplayController, :show} => [:view_client_training],
+    {W.ClientFitnessDisplayController, :update} => [:manage_coaching],
 
     # Private coach notes (ADR-101)
     # ADR-359 (CP-E5): staff notes are read and written by anyone who sees

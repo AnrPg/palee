@@ -275,10 +275,29 @@ defmodule PaleeWeb.Schemas.TrainingFloor do
         },
         beaten_on: @date,
         age_days: %Schema{type: :integer},
-        stale: %Schema{type: :boolean}
+        stale: %Schema{type: :boolean},
+        load: %Schema{type: :number, nullable: true, description: "The lift's load in kg"},
+        reps: %Schema{type: :integer, nullable: true, description: "The lift's reps"},
+        basis: %Schema{
+          type: :string,
+          enum: ~w(absolute body_weight),
+          description: "ADR-395: body_weight reads the lift as a multiple of body weight"
+        },
+        ratio: %Schema{type: :number, nullable: true, description: "Lift ÷ body weight"},
+        body_weight_kg: %Schema{type: :number, nullable: true},
+        age_band: @maybe_string,
+        age_percent: %Schema{type: :number, nullable: true},
+        next: %Schema{
+          type: :object,
+          nullable: true,
+          description: "What the next level takes, in the PR's own unit",
+          properties: %{points: %Schema{type: :integer}, value: %Schema{type: :number}},
+          required: [:points, :value]
+        }
       },
       required: [
         :age_days,
+        :basis,
         :anchors,
         :beaten_on,
         :benchmark,
@@ -311,7 +330,8 @@ defmodule PaleeWeb.Schemas.TrainingFloor do
           properties: %{
             score: %Schema{type: :integer},
             domains_scored: %Schema{type: :integer},
-            reason: %Schema{type: :string}
+            reason: %Schema{type: :string},
+            change: %Schema{type: :integer, nullable: true}
           },
           required: [:domains_scored, :reason, :score]
         },
@@ -329,9 +349,21 @@ defmodule PaleeWeb.Schemas.TrainingFloor do
                 nullable: true
               },
               stale: %Schema{type: :boolean},
-              reasons: %Schema{type: :array, items: fitness_reason()}
+              reasons: %Schema{type: :array, items: fitness_reason()},
+              previous_score: @maybe_integer,
+              change: @maybe_integer,
+              tested: %Schema{type: :boolean, description: "progress_only: has a score"},
+              direction: %Schema{
+                type: :string,
+                enum: ["up", "down", "same", nil],
+                nullable: true,
+                description: "progress_only: the change without its number"
+              }
             },
-            required: [:confidence, :domain, :reasons, :score, :stale]
+            description:
+              "With display all: score, confidence, stale, reasons (and change with a period). " <>
+                "With progress_only: tested and direction only.",
+            required: [:domain]
           }
         },
         focus: %Schema{
@@ -351,10 +383,34 @@ defmodule PaleeWeb.Schemas.TrainingFloor do
           }
         },
         injury_caution: %Schema{type: :boolean},
-        benchmarks_known: %Schema{type: :integer}
+        benchmarks_known: %Schema{type: :integer},
+        inputs: %Schema{
+          type: :object,
+          properties: %{
+            body_weight_kg: %Schema{type: :number, nullable: true},
+            age_band: @maybe_string,
+            age_percent: %Schema{type: :number, nullable: true},
+            age_ready: %Schema{type: :boolean, description: "Whether a birth year counts yet"}
+          },
+          required: [:age_ready, :age_band, :age_percent, :body_weight_kg]
+        },
+        display: %Schema{
+          type: :object,
+          properties: %{
+            mode: %Schema{type: :string, enum: ~w(all progress_only none)},
+            set_by: %Schema{type: :string, enum: ~w(self coach)}
+          },
+          required: [:mode, :set_by]
+        },
+        settings: fitness_settings(),
+        period_from: @maybe_date
       },
       required: [
         :algorithm,
+        :display,
+        :inputs,
+        :period_from,
+        :settings,
         :benchmarks_known,
         :division,
         :domains,
@@ -363,6 +419,71 @@ defmodule PaleeWeb.Schemas.TrainingFloor do
         :neutral_standards,
         :overall
       ]
+    }
+  end
+
+  # -- ADR-395: fitness card settings -----------------------------------------
+
+  def fitness_settings do
+    %Schema{
+      title: "FitnessSettings",
+      type: :object,
+      properties: %{
+        body_weight_kg: %Schema{type: :number, nullable: true},
+        birth_year: @maybe_integer,
+        display: %Schema{type: :string, enum: ~w(all progress_only none)}
+      },
+      required: [:birth_year, :body_weight_kg, :display]
+    }
+  end
+
+  def fitness_settings_request do
+    %Schema{
+      title: "FitnessSettingsRequest",
+      type: :object,
+      properties: %{
+        body_weight_kg: %Schema{type: :number, nullable: true, minimum: 25, maximum: 300},
+        birth_year: %Schema{type: :integer, nullable: true, minimum: 1900},
+        display: %Schema{type: :string, enum: ~w(all progress_only none)}
+      }
+    }
+  end
+
+  def client_fitness_display do
+    %Schema{
+      title: "ClientFitnessDisplay",
+      type: :object,
+      properties: %{
+        settings: %Schema{
+          type: :object,
+          nullable: true,
+          description: "The client's own settings (null when they set none)",
+          properties: %{
+            body_weight_kg: %Schema{type: :number, nullable: true},
+            birth_year: @maybe_integer,
+            display: %Schema{type: :string, enum: ~w(all progress_only none)}
+          },
+          required: [:birth_year, :body_weight_kg, :display]
+        },
+        override: %Schema{type: :string, enum: ["progress_only", "none", nil], nullable: true}
+      },
+      required: [:override, :settings]
+    }
+  end
+
+  def client_fitness_display_request do
+    %Schema{
+      title: "ClientFitnessDisplayRequest",
+      type: :object,
+      properties: %{
+        display: %Schema{
+          type: :string,
+          enum: ["progress_only", "none", nil],
+          nullable: true,
+          description: "null gives the choice back to the client"
+        }
+      },
+      required: [:display]
     }
   end
 

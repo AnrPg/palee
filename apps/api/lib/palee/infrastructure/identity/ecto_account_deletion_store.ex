@@ -167,6 +167,11 @@ defmodule Palee.Infrastructure.Identity.EctoAccountDeletionStore do
 
     delete_partner_rows(user.id)
 
+    # ADR-395: a kept (anonymised) profile keeps no body weight or birth year.
+    Repo.query!("DELETE FROM fitness_profile_settings WHERE user_id = $1", [
+      Ecto.UUID.dump!(user.id)
+    ])
+
     # ADR-394: a kept (anonymised) profile leaves every Palee-wide board.
     Repo.query!("DELETE FROM palee_leaderboard_consents WHERE user_id = $1", [
       Ecto.UUID.dump!(user.id)

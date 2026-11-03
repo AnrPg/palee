@@ -114,6 +114,10 @@ defmodule Palee.PersonalData.Domain.Catalog do
       tenant("training", "leaderboard_opt_ins", @me),
       # ADR-394: the answer about the Palee-wide benchmark board.
       account("training", "palee_leaderboard_consents", @me),
+      # ADR-395: the fitness card's body weight, birth year and choice, and
+      # what each box's coach chose it shows.
+      account("training", "fitness_profile_settings", @me),
+      tenant("training", "fitness_display_overrides", {:eq, "client_user_id"}),
       tenant("training", "reviews", @me),
 
       # -- wellness and body -----------------------------------------------------

@@ -91,6 +91,33 @@ export async function saveClientTrainingGoal(token: string, userId: string, week
   return response.goal;
 }
 
+// ADR-395: what a client's «Επίπεδο φυσικής κατάστασης» shows, set by their
+// coach. Only a coach with an active coaching relationship gets an answer
+// (403 not_your_client otherwise).
+export type ClientFitnessDisplay = Json<
+  operations["PaleeWeb.ClientFitnessDisplayController.show"]["responses"][200]
+>;
+export type FitnessDisplayOverride = NonNullable<ClientFitnessDisplay["override"]>;
+
+export const clientFitnessDisplayKey = (userId: string) => ["staff", "clients", userId, "fitness-display"] as const;
+
+export function fetchClientFitnessDisplay(token: string, userId: string): Promise<ClientFitnessDisplay> {
+  return apiRequest<ClientFitnessDisplay>(`/staff/clients/${userId}/fitness-display`, { token });
+}
+
+/** `null` gives the choice back to the client. */
+export function saveClientFitnessDisplay(
+  token: string,
+  userId: string,
+  display: FitnessDisplayOverride | null,
+): Promise<ClientFitnessDisplay> {
+  return apiRequest<ClientFitnessDisplay>(`/staff/clients/${userId}/fitness-display`, {
+    method: "PUT",
+    token,
+    body: { display },
+  });
+}
+
 export async function fetchAppointmentSlots(
   token: string,
   filters: { from?: string; to?: string; coach_id?: string } = {},

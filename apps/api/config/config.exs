@@ -584,6 +584,8 @@ config :palee, :day_workout_store, Palee.Infrastructure.Scheduling.EctoDayWorkou
 config :palee, :visit_facts_store, Palee.Infrastructure.Scheduling.EctoVisitFactsStore
 
 config :palee, :pr_store, Palee.Infrastructure.Pantheon.EctoPRStore
+# ADR-395: the fitness card's settings and coach overrides.
+config :palee, :fitness_settings_store, Palee.Infrastructure.Pantheon.EctoFitnessSettingsStore
 config :palee, :journal_store, Palee.Infrastructure.Journal.EctoJournalStore
 
 config :palee,
