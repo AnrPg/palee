@@ -5,6 +5,7 @@ defmodule Palee.Infrastructure.Identity.EctoAccountDeletionStore do
   import Ecto.Query
 
   alias Palee.Identity.{AccountDeletion, Login, PasswordHasher, User}
+  alias Palee.Infrastructure.Tenancy.RepoContext
   alias Palee.Repo
 
   # What an anonymised profile shows wherever a business record still names
@@ -147,6 +148,31 @@ defmodule Palee.Infrastructure.Identity.EctoAccountDeletionStore do
     :ok
   end
 
+  # Rows only their owner may touch (forced owner RLS): the deletion worker
+  # runs without a session scope, so these deletes run in the person's own
+  # scope, or under the runtime role they would delete nothing.
+  #   * ADR-395: a kept (anonymised) profile keeps no body weight or birth year;
+  #   * ADR-394: it leaves every Palee-wide board.
+  @owner_rows ~w(fitness_profile_settings palee_leaderboard_consents)
+
+  defp delete_owner_rows(user_id) do
+    id = Ecto.UUID.dump!(user_id)
+
+    :ok =
+      RepoContext.run(%{user_id: user_id}, fn ->
+        Enum.each(@owner_rows, &Repo.query!("DELETE FROM #{&1} WHERE user_id = $1", [id]))
+      end)
+  end
+
+  # ADR-395: what each box's coach chose the person's fitness card shows.
+  # Those rows are in the boxes' scopes, which the sweep cannot enter, so a
+  # definer function deletes them, and only for a profile whose deletion is
+  # scheduled.
+  defp delete_fitness_overrides(user_id) do
+    Repo.query!("SELECT palee_forget_fitness_overrides($1)", [Ecto.UUID.dump!(user_id)])
+    :ok
+  end
+
   defp anonymize(%User{} = user) do
     # A login of its own: the person's login (and email) can go, and nobody
     # knows this one's address or password.
@@ -167,15 +193,8 @@ defmodule Palee.Infrastructure.Identity.EctoAccountDeletionStore do
 
     delete_partner_rows(user.id)
 
-    # ADR-395: a kept (anonymised) profile keeps no body weight or birth year.
-    Repo.query!("DELETE FROM fitness_profile_settings WHERE user_id = $1", [
-      Ecto.UUID.dump!(user.id)
-    ])
-
-    # ADR-394: a kept (anonymised) profile leaves every Palee-wide board.
-    Repo.query!("DELETE FROM palee_leaderboard_consents WHERE user_id = $1", [
-      Ecto.UUID.dump!(user.id)
-    ])
+    delete_owner_rows(user.id)
+    delete_fitness_overrides(user.id)
 
     user
     |> Ecto.Changeset.change(

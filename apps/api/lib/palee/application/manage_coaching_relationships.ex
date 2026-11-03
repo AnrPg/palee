@@ -4,12 +4,14 @@ defmodule Palee.Application.ManageCoachingRelationships do
   any coach to any client; a coach may take an athlete as their own client,
   which notifies the gym's owners and admins; a coach's invitation makes the
   redeemed client theirs. Ending one takes the client out of that coach's
-  PT squads (ADR-168).
+  PT squads (ADR-168); ending the client's last one in the box also removes
+  the box's «Τι να δείχνει» choice for their fitness card (ADR-395).
   """
 
   alias Palee.Application.PtSquads
-  alias Palee.{Coaching, Identity, Notifications, Organizations}
+  alias Palee.{Coaching, Identity, Notifications, Organizations, Pantheon}
   alias Palee.Coaching.Domain.CoachingRelationshipPolicy
+  alias Palee.Pantheon.FitnessSettingsStore
 
   def assign(context, coach_user_id, client_user_id) do
     with :ok <- Organizations.authorize_capability(context, :assign_coaches) do
@@ -60,6 +62,8 @@ defmodule Palee.Application.ManageCoachingRelationships do
               relationship.coach_user_id,
               relationship.client_user_id
             )
+
+          :ok = clear_fitness_display(context, relationship.client_user_id)
 
           {:ok, ended}
         end
@@ -125,5 +129,18 @@ defmodule Palee.Application.ManageCoachingRelationships do
         client_user_id: client_user_id
       })
     end)
+  end
+
+  # ADR-395: a coach's choice of what the client's fitness card shows lasts
+  # only while the box coaches the client; nobody could clear it afterwards.
+  defp clear_fitness_display(%{organization_id: organization_id} = context, client_user_id) do
+    if Coaching.list_relationships(context, %{client_user_id: client_user_id}) == [] do
+      :ok =
+        Pantheon.with_tenant_context(context, fn ->
+          FitnessSettingsStore.delete_override(organization_id, client_user_id)
+        end)
+    end
+
+    :ok
   end
 end

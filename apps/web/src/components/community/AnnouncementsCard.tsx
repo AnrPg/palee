@@ -18,7 +18,7 @@ export function AnnouncementsCard({ club }: { club: CommunityClub }) {
   if (!channel) return null;
 
   const page = feed.data?.pages[0];
-  const latest = page?.pinned[0] ?? page?.posts[0] ?? null;
+  const latest = page?.pinned?.[0] ?? page?.posts?.[0] ?? null;
 
   return (
     <HubCard eyebrow={`#${channelName(channel, t)}`}>
