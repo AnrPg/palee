@@ -120,6 +120,25 @@ defmodule PaleeWeb.PaleeBenchmarkLeaderboardTest do
 
       assert %{"benchmark" => nil} = tag(as, base, coach, workout, nil) |> json_response(200)
     end
+
+    test "a copy of a benchmark WOD is still that benchmark", ctx do
+      %{as: as, base: base, coach: coach} = ctx
+      workout = fran(coach)
+      tag(as, base, coach, workout, "fran") |> json_response(200)
+
+      assert %{"workout" => %{"benchmark_key" => "fran"}} =
+               as.(coach) |> get("#{base}/admin/workouts/#{workout.id}") |> json_response(200)
+
+      %{"draft" => %{"id" => copy_id}} =
+        as.(coach)
+        |> send_json(:post, "#{base}/admin/workouts/#{workout.id}/duplicate", %{})
+        |> json_response(201)
+
+      assert %{rows: [["fran"]]} =
+               Repo.query!("SELECT benchmark_key FROM master_workouts WHERE id = $1", [
+                 Ecto.UUID.dump!(copy_id)
+               ])
+    end
   end
 
   describe "the Palee-wide answer" do
@@ -170,9 +189,12 @@ defmodule PaleeWeb.PaleeBenchmarkLeaderboardTest do
 
       %{"entry" => %{"id" => private_id}} = log(as, other_base, maria, other_fran, "2:00")
 
-      Repo.query!("UPDATE training_log_entries SET journal_visibility = 'private' WHERE id = $1", [
-        Ecto.UUID.dump!(private_id)
-      ])
+      Repo.query!(
+        "UPDATE training_log_entries SET journal_visibility = 'private' WHERE id = $1",
+        [
+          Ecto.UUID.dump!(private_id)
+        ]
+      )
 
       for user <- [anna, kostas, eleni, maria], do: answer(as, user, "share")
       answer(as, sofia, "see_only")
@@ -275,6 +297,33 @@ defmodule PaleeWeb.PaleeBenchmarkLeaderboardTest do
                |> json_response(200)
     end
 
+    test "a WOD scored the other way round does not mix in", ctx do
+      %{as: as, base: base, other_base: other_base, home_fran: fran, anna: anna} = ctx
+
+      # Another coach tags a WOD as Fran but scores it in reps.
+      reps =
+        workout_fixture(ctx.other_owner, %{
+          tenant_context: ctx.other_context,
+          title: "Fran for reps",
+          sections: [
+            %{
+              name: "AMRAP",
+              order: 1,
+              scoreable: true,
+              score_config: %{type: "reps"},
+              exercises: [%{name: "Thrusters", order: 1, prescription_value: 21}]
+            }
+          ]
+        })
+
+      tag(as, other_base, ctx.other_owner, reps, "fran") |> json_response(200)
+      log(as, other_base, ctx.eleni, reps, 1)
+
+      palee = board(as, base, anna, fran, "&scope=palee") |> json_response(200)
+      assert palee["total"] == 3
+      refute Enum.any?(palee["rows"], &(&1["value"] in ["1", "1.0"]))
+    end
+
     test "withdrawing removes a person from every board at once", ctx do
       %{as: as, base: base, home_fran: fran, anna: anna, kostas: kostas} = ctx
 
@@ -287,7 +336,10 @@ defmodule PaleeWeb.PaleeBenchmarkLeaderboardTest do
 
     test "box tables stay closed across boxes; the functions need a person", ctx do
       %{anna: anna, other: other} = ctx
-      {:ok, context} = Organizations.resolve_tenant_context(anna, Organizations.legacy_organization_slug())
+
+      {:ok, context} =
+        Organizations.resolve_tenant_context(anna, Organizations.legacy_organization_slug())
+
       other_id = Ecto.UUID.dump!(other.id)
 
       DataCase.with_runtime_role(fn ->
