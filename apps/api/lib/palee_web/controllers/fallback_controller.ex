@@ -339,7 +339,8 @@ defmodule PaleeWeb.FallbackController do
     channel_budget_exceeded:
       {:conflict, "This month's message budget is used up. Raise it in the settings"},
     channel_budget_missing:
-      {:conflict, "Type the box's monthly SMS cap in the settings first; nothing is sent without one"},
+      {:conflict,
+       "Type the box's monthly SMS cap in the settings first; nothing is sent without one"},
     not_cancellable: {:conflict, "Only a message that has not left yet can be stopped"},
     channel_not_retryable: {:conflict, "Only a failed message can be sent again"},
     invalid_month: {:unprocessable_entity, "Choose a month as YYYY-MM"},

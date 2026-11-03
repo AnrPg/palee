@@ -224,7 +224,9 @@ defmodule Palee.Channels.SendingTest do
 
     contact(ctx)
     assert {:error, :channel_budget_missing} = Channels.send(ctx.context, request(ctx), ctx.env)
-    assert {:error, :channel_budget_missing} = Channels.preview(ctx.context, request(ctx), ctx.env)
+
+    assert {:error, :channel_budget_missing} =
+             Channels.preview(ctx.context, request(ctx), ctx.env)
 
     assert {:ok, %{monthly_budget_cents: 1500}} =
              Channels.save_connection(ctx.context, %{monthly_budget_cents: 1500}, ctx.owner.id)
@@ -351,7 +353,9 @@ defmodule Palee.Channels.SendingTest do
     forged = <<if(first == ?A, do: ?B, else: ?A)>> <> rest
     assert {:error, :not_found} = Channels.find_unsubscribe(forged)
     assert {:error, :not_found} = Channels.unsubscribe("nonsense", later)
-    assert {:error, :not_found} = Channels.find_unsubscribe(Unsubscribe.token(Ecto.UUID.generate()))
+
+    assert {:error, :not_found} =
+             Channels.find_unsubscribe(Unsubscribe.token(Ecto.UUID.generate()))
   end
 
   describe "webhook" do

@@ -32,7 +32,8 @@ defmodule PaleeWeb.Schemas.Channels do
         monthly_budget_cents: %Schema{
           type: :integer,
           nullable: true,
-          description: "The cap the box typed; null until it does, and then nothing is sent (ADR-390)"
+          description:
+            "The cap the box typed; null until it does, and then nothing is sent (ADR-390)"
         },
         currency: %Schema{type: :string},
         quiet_start: %Schema{type: :string, nullable: true, example: "21:00"},

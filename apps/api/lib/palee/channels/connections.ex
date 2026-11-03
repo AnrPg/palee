@@ -198,7 +198,8 @@ defmodule Palee.Channels.Connections do
         "required"
       )
       |> add(
-        not (is_nil(budget) or (is_integer(budget) and budget >= 0 and budget <= @max_budget_cents)),
+        not (is_nil(budget) or
+               (is_integer(budget) and budget >= 0 and budget <= @max_budget_cents)),
         :monthly_budget_cents,
         "invalid"
       )
