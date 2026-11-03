@@ -1,5 +1,5 @@
 import { apiRequest } from "@/api/client";
-import type { OnlinePayment } from "@/api/online-payments";
+import type { OnlinePayment } from "@/api/my-payments";
 import type { components } from "@/api/generated/schema";
 
 /**

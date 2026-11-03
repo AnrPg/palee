@@ -1,6 +1,6 @@
 # ADR-370: Programme marketplace: boxes and coaches sell versioned programmes built from their own WODs
 Date: 2026-10-31
-Status: Accepted
+Status: Accepted (amended 2026-11-03: screens)
 
 ## Context
 CP-D4 (docs/plans/competitive-parity-and-beyond.md, P2): SugarWOD, BTWB and
@@ -80,8 +80,8 @@ that digital-only services are not sold in the apps (ADR-256).
   library's own views already skip `personal` copies.
 - The catalogue lists businesses by name and slug; a business that does not
   want this keeps `listing: box`.
-- UI waits for the approved mockup
-  (`/mnt/project-files/milos/v31-mockups/w8-marketplace.html`).
+- Screens follow the recommended options of `w8-marketplace.html` (ANR
+  2026-11-02), see the amendment below.
 
 ## Implementation Notes
 - Domain: `ProgrammePolicy`, `ProgrammeSchedule`, `ReviewPolicy`,
@@ -93,3 +93,25 @@ that digital-only services are not sold in the apps (ADR-256).
   `Buying` (buyer), `Fulfilment` (payments), `Presenter`, `Terms`.
 - The visitor's catalogue text is matched literally (LIKE wildcards
   escaped), at most 60 characters, 50 rows a page.
+
+## Amendment 2026-11-03: screens
+- **Builder (s1 A):** Προγραμματισμός › «Προγράμματα προπόνησης»
+  (`/admin/programmes`, a tab next to «Αρχείο WOD»): a weeks grid, one row per
+  week, one cell per day with up to 4 WODs from the library or «Ξεκούραση»;
+  title, short description, level and goal beside it; the draft saves itself.
+  Columns are numbered days («Ημ. 1»), not weekdays as in the mockup, because
+  day 1 is the start date each buyer chooses; «Ημέρες ανά εβδομάδα» (5–7)
+  sits under «Προχωρημένα».
+- **Publishing (s2 A):** one dialog with the price and «Πού φαίνεται»
+  («Στη σελίδα του box» / «Και στην Αγορά προγραμμάτων», an explicit opt-in);
+  preview days and the refund rule under «Προχωρημένα»; what blocks
+  publishing (online payments off, no WOD) shows inside the dialog only when
+  it applies.
+- **Catalogue (s3 A):** `/programmes`, cards with chips (Όλα, Δύναμη, Αντοχή,
+  Αρχάριοι) and search behind an icon.
+- **Programme page (s4 A):** `/b/:slug/programmes/:id`, one scrolling page:
+  description, week 1 with the open preview days and the locked ones,
+  reviews, then «Αγορά». It is not added as a section of the box website
+  (ADR-352/388 keep their decided section list); the catalogue links to it.
+- The programme review is «Κριτική προγράμματος» (ontology §4.26), the same
+  word as a box review, never «Αξιολόγηση».

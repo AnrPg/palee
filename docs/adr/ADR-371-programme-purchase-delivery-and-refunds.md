@@ -1,6 +1,6 @@
 # ADR-371: Buying a programme: the seller's provider, Finance lineage, scheduled WODs, withdrawal and refunds
 Date: 2026-10-31
-Status: Accepted
+Status: Accepted (amended 2026-11-03: start request only inside the 14 days; hourly sweep; screens)
 
 ## Context
 ADR-370 lets a business sell programmes. Palee must not hold money
@@ -39,9 +39,11 @@ grant (ADR-225). The store apps may not sell digital-only services
 6. **Withdrawal and refunds** (`RefundRules.quote/3`, the larger wins):
    - **the law**, where the seller's fiscal country is in the EU, EEA or UK
      (unknown counts as yes): within 14 days of buying, the price less the
-     part already provided (days since the start over all days). Buying
-     requires the express request to start (`start_now`, text versioned and
-     hashed into `withdrawal`, art. 14(3)/16(a));
+     part already provided (days since the start over all days). A start
+     date inside those 14 days requires the express request to start
+     (`start_now`, text versioned and hashed into `withdrawal`, art.
+     14(3)/16(a)); a later start needs none, since nothing is provided before
+     the right ends (amended 2026-11-03, mockup W8 s5 A);
    - **the seller's rule**, copied onto each purchase: `before_start` (full
      refund until the start date, the default), `withdrawal_only`, or
      `pro_rata` (the days not yet reached, until the end).
@@ -81,9 +83,11 @@ grant (ADR-225). The store apps may not sell digital-only services
   reports can refine it by `source_type` without a migration.
 - The wording of the start request and refund rules is a draft for legal
   review (`Programmes.Terms`).
-- A daily sweep that marks purchases `completed` after their last day is
-  not built yet (`Programmes.due_completions/2` exists); until then the
-  status stays `active` and nothing else depends on it.
+- An hourly sweep (`Programmes.Sweep`, `ProgrammeSweepJob` at :29) marks
+  purchases `completed` after their last day on the seller's clock, and
+  cancels `pending_payment` purchases older than a day whose checkout never
+  opened or whose payment failed, was cancelled or expired. An open or
+  succeeded payment is never cancelled under it (amended 2026-11-03).
 
 ## Implementation Notes
 - Domain: `PurchaseLifecycle`, `RefundRules`.
@@ -91,3 +95,23 @@ grant (ADR-225). The store apps may not sell digital-only services
   the purchase by intent or by `purpose_id`.
 - Telemetry: `[:palee, :programmes, :created | :published | :archive |
   :restore | :refunded | :withdrawn]`.
+
+## Amendment 2026-11-03: screens (ANR picked the recommended options of `w8-marketplace.html`)
+- **Buy sheet (s5 A):** on the programme page, one sheet with the start date
+  (ui/DateInput, today to +60 days), the request-to-start box only when the
+  start is inside the 14 days and never pre-ticked, the refund rule's text,
+  the total with VAT and «Πληρωμή στο <box>». A visitor signs in or joins
+  the box first (same path as packages, ADR-248); the store apps show no
+  buy button and no link to buy on the web (ADR-256 wins over the mockup's
+  «Άνοιγμα στο palee.app»).
+- **Member (s6 A):** the WODs are ordinary assignments in Box; a «Τα
+  προγράμματά μου» card in Box › Σήμερα shows week, day and progress, and
+  «Λεπτομέρειες» (`/box/programmes/:id`) lists the next WODs, the review
+  (after the start) and «Υπαναχώρηση» with the amount shown before the
+  button.
+- **Staff (s7 A):** tabs «Αγορές» (table, a side panel with the suggested
+  refund) · «Κριτικές» (hide with a reason, show again) · «Εκδόσεις».
+- Open questions answered with the recommendations: withdrawal stays
+  pro rata with the express request; no Palee commission; a buyer from
+  another box joins it as a member without a package; earlier buyers keep
+  their version.
