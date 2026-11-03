@@ -88,6 +88,13 @@ describe("ServiceStatusStrip (ADR-366)", () => {
     expect(screen.queryByTestId("service-status-strip")).toBeNull();
   });
 
+  it("stays hidden, without breaking the page, when the answer is malformed", async () => {
+    vi.mocked(fetchStatusOverview).mockResolvedValue({} as StatusOverview);
+    renderStrip();
+    await vi.waitFor(() => expect(fetchStatusOverview).toHaveBeenCalled());
+    expect(screen.queryByTestId("service-status-strip")).toBeNull();
+  });
+
   it("never shows signed out or on the status page itself", () => {
     user = null;
     renderStrip();

@@ -71,6 +71,8 @@ describe("service status (ADR-364/366)", () => {
     expect(stripIncident([works], member)?.id).toBe("m");
     expect(stripIncident([email], guest)).toBeNull();
     expect(stripIncident([{ id: "all", kind: "incident", impact: "critical", components: [] }], noBox)?.id).toBe("all");
+    const noComponents = { id: "n", kind: "incident", impact: "major" } as unknown as typeof email;
+    expect(stripIncident([noComponents], member)?.id).toBe("n");
   });
 
   it("serves the status page at the status host's root only", () => {

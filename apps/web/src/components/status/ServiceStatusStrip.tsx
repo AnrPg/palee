@@ -42,7 +42,9 @@ export function ServiceStatusStrip() {
     signedIn,
     memberships: Array.isArray(memberships.data) ? memberships.data : [],
   });
-  const incident = stripIncident(overview.data.active, viewer);
+  // The strip sits in the root layout: a malformed answer must hide it, never break every page.
+  const active = Array.isArray(overview.data.active) ? overview.data.active : [];
+  const incident = stripIncident(active, viewer);
   if (!incident) return null;
 
   const text = incidentText(incident, locale);

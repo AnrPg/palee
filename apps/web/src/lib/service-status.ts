@@ -163,11 +163,11 @@ type StripCandidate = { id: string; kind: string; impact: string; components: st
  */
 export function stripIncident<T extends StripCandidate>(active: T[], viewer: StatusViewer): T | null {
   if (!viewer.signedIn) return null;
-  const relevant = active.filter(
-    (incident) =>
-      incident.impact !== "none" &&
-      (incident.components.length === 0 || incident.components.some((component) => usesComponent(component, viewer))),
-  );
+  const relevant = active.filter((incident) => {
+    if (!incident || incident.impact === "none") return false;
+    const components = Array.isArray(incident.components) ? incident.components : [];
+    return components.length === 0 || components.some((component) => usesComponent(component, viewer));
+  });
   return relevant.find((incident) => incident.kind === "incident") ?? relevant[0] ?? null;
 }
 
