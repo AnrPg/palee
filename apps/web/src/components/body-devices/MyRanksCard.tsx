@@ -21,7 +21,7 @@ import { rankSkills, skillTicks } from "@/lib/body-devices";
  * owner's pick, pending confirmation) or an overlay on Box. One switch.
  */
 export const MY_RANKS_OPENS_AS: "page" | "overlay" = "page";
-export const MY_RANKS_HREF = "/box/ranks";
+export const MY_RANKS_HREF = "/me/ranks";
 
 /** The standings the person has something on: a rank, or a history. */
 export function myStandings(ladders: RankStanding[] | undefined): RankStanding[] {
@@ -39,8 +39,8 @@ export function useMyRanks(slug: string | null | undefined) {
  * «Ο βαθμός μου» on the Box tab, under the membership (ADR-377, mockup «Η
  * πρόοδός μου», option Γ as the line): one calm line per ladder, «Μπλε ·
  * Προς Μωβ: 3 από 5 δεξιότητες ›», which opens the progress (option Α).
- * The rank is the box's, so its home is Box (vision §4.1); no comparison
- * (§4.4). Nothing shows at a box without ladders.
+ * It sits on the profile (Εγώ), as ANR asked; no comparison (§4.4).
+ * Nothing shows at a box without ladders.
  */
 export function MyRanksCard({ slug }: { slug: string }) {
   const t = useTranslations("BodyDevices");

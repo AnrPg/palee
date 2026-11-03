@@ -383,11 +383,11 @@ test.describe("body and devices", () => {
     expect(bodyOf(await awarded)).toMatchObject({ ladder_id: "ladder-1", rank_id: "r-blue", stripes: 0, skills_checked: ["Armbar"] });
   });
 
-  test("the member sees one line on Box and opens their progress page", async ({ page }) => {
+  test("the member sees one line on the profile and opens their progress page", async ({ page }) => {
     await asMember(page);
     await page.route("**/api/org/kypseli/me/ranks", (route) => route.fulfill(json({ ladders: [standing] })));
 
-    await page.goto("/box");
+    await page.goto("/me");
     const line = page.getByTestId("my-ranks-open");
     await expect(line).toContainText("White · towards Blue: 1 of 2 skills");
     await line.click();

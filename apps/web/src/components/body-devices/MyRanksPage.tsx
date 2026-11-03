@@ -6,7 +6,7 @@ import { MyRanksDetail, useMyRanks } from "@/components/body-devices/MyRanksCard
 import { ClientPage, LoadingLine } from "@/components/client/ClientPage";
 import { useOrganizationSlug } from "@/lib/organization-slug";
 
-/** `/box/ranks`: «Η πρόοδός μου» on the box's ladders (opened from the line on Box). */
+/** `/me/ranks`: «Η πρόοδός μου» on the box's ladders (opened from the line on the profile). */
 export function MyRanksPage() {
   const t = useTranslations("BodyDevices");
   const slug = useOrganizationSlug();

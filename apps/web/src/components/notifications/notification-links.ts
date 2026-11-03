@@ -89,7 +89,7 @@ function phaseCUrl(notification: LinkableNotification, role: string | null | und
       return "/box/coach";
     // ADR-400 follow-up: new skills open «Η πρόοδός μου».
     case "rank_skills_checked":
-      return "/box/ranks";
+      return "/me/ranks";
     // ADR-229: my weekly goal lives in Εγώ › Ρυθμίσεις.
     case "training_goal_updated":
       return "/me/settings#training-schedule";

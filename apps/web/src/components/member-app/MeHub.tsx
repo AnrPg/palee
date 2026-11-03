@@ -6,6 +6,7 @@ import { ProfileSwitcherMenu } from "@/components/account/ProfileSwitcherMenu";
 import { CountBadge } from "@/components/buddy/BuddyBits";
 import { activeBuddies, recipientNames, unreadTotal } from "@/components/buddy/buddy-model";
 import { useBuddies } from "@/components/buddy/use-buddies";
+import { MyRanksCard } from "@/components/body-devices/MyRanksCard";
 import { HubCard, HubList, HubListRow, HubPage } from "@/components/member-app/HubParts";
 import { MeProfile } from "@/components/member-app/me/MeProfile";
 import { useOpenConsole } from "@/components/member-app/me/use-open-console";
@@ -36,7 +37,7 @@ export function MeHub() {
   const buddyNames = recipientNames(activeBuddies(buddies.data), tBuddy("someone"));
   const buddyUnread = unreadTotal(buddies.data);
   const { currentUser, signOut } = useSession();
-  const { memberships } = useSelectedMembershipRole();
+  const { membership, memberships } = useSelectedMembershipRole();
   const { hasBillingProviders } = useHasBillingProviders();
   const resets = usePasswordResets();
   const openConsole = useOpenConsole();
@@ -71,6 +72,9 @@ export function MeHub() {
       </HubCard>
 
       <MeProfile postsCount={summary.data?.posts_count ?? 0} mediaCount={summary.data?.media_count ?? 0} />
+
+      {/* ADR-400 (ANR 2026-11-03): one line on the profile, opening the rank page. */}
+      {membership ? <MyRanksCard slug={membership.organization.slug} /> : null}
 
       {/* ADR-187: the profile switch (also a long press on the avatar tab). */}
       {(currentUser?.profile_count ?? 1) > 1 ? (

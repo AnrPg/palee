@@ -15,7 +15,6 @@ import { AccessNotice, EntitlementCard } from "@/components/finance/MembershipEn
 import { BoxToday } from "@/components/member-app/box/BoxToday";
 import { RenewButton } from "@/components/payments/BoxSales";
 import { PendingPackages } from "@/components/payments/DeskPayment";
-import { MyRanksCard } from "@/components/body-devices/MyRanksCard";
 import { boxExtensionsFor } from "@/components/member-app/box/box-extensions";
 import { CoachActions, NextCoachSession, SessionPackageSummary } from "@/components/member-app/box/CoachBox";
 import { HubActionTile, HubButton, HubCard, HubIcons, HubPage } from "@/components/member-app/HubParts";
@@ -108,9 +107,6 @@ export function BoxHub() {
           <DocumentsButton />
         </div>
       </HubCard>
-
-      {/* ADR-377: belts and levels the box gave, under the membership. */}
-      {membership ? <MyRanksCard slug={membership.organization.slug} /> : null}
 
       {membership ? <BoxExtensions membership={membership} layout={layout} /> : null}
 
