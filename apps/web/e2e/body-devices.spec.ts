@@ -127,7 +127,7 @@ const standing = {
     skills_checked: [{ skill: "Armbar", skill_id: "s-armbar", checked_on: "2026-10-12", note: null }],
     ready: true,
   },
-  history: [{ award_id: "award-1", rank: ladder.ranks[0], stripes: 4, awarded_on: "2025-03-01" }],
+  history: [{ id: "award-1", ladder_id: "ladder-1", rank_id: "r-white", rank_name: ladder.ranks[0].name, color: "white", stripes: 4, awarded_on: "2025-03-01", certificate_number: "PAL-2025-0001", revoked: false }],
 };
 
 test.describe("body and devices", () => {
