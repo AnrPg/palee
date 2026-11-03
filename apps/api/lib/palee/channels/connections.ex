@@ -8,8 +8,11 @@ defmodule Palee.Channels.Connections do
       Brevo account (`config :palee, :channel_managed_accounts`). Palee
       pays Brevo and tracks each box's cost against its monthly cap; how
       boxes are charged for it is configuration (ADR-349 §4);
-    * `own` – the box's own Brevo account. Brevo bills the box; its API
-      key is encrypted at rest and never returned, logged or exported.
+    * `own` – the box's own account with one of the vendors of
+      `Domain.VendorRules` (Brevo, Twilio, Vonage, Infobip, Yuboto, Apifon;
+      ADR-396). The vendor bills the box; its secrets (`secret`,
+      `webhook_secret`) are encrypted at rest and never returned, logged,
+      journaled or exported.
 
   Delivery receipts and inbound texts reach the box's own webhook URL,
   `/api/webhooks/channels/<organization>/<token>`. The token is an HMAC of
@@ -18,9 +21,18 @@ defmodule Palee.Channels.Connections do
   """
 
   alias Palee.Channels.ChannelStore
-  alias Palee.Channels.Domain.{PhoneNumber, QuietHours}
+  alias Palee.Channels.Domain.{PhoneNumber, QuietHours, VendorRules}
 
   @account_modes ~w(own palee)
+  @account_fields [
+    :account_id,
+    :secret,
+    :webhook_secret,
+    :base_url,
+    :sms_sender,
+    :viber_sender,
+    :whatsapp_sender
+  ]
   @max_budget_cents 1_000_000
 
   def account_modes, do: @account_modes
@@ -69,14 +81,14 @@ defmodule Palee.Channels.Connections do
       |> Map.reject(fn {_key, value} -> is_nil(value) end)
 
     managed
-    |> Map.take([:account_id, :secret, :base_url, :sms_sender, :viber_sender, :whatsapp_sender])
+    |> Map.take(@account_fields)
     |> Map.merge(senders)
     |> Map.put(:provider, provider)
   end
 
   def account(connection) do
     connection
-    |> Map.take([:account_id, :secret, :base_url, :sms_sender, :viber_sender, :whatsapp_sender])
+    |> Map.take(@account_fields)
     |> Map.put(:provider, connection.provider)
   end
 
@@ -108,6 +120,7 @@ defmodule Palee.Channels.Connections do
       quiet_start: QuietHours.format(connection.quiet_start_minute),
       quiet_end: QuietHours.format(connection.quiet_end_minute),
       has_secret: is_binary(connection.secret),
+      has_webhook_secret: is_binary(Map.get(connection, :webhook_secret)),
       webhook_url: webhook_url(connection)
     })
   end
@@ -116,8 +129,9 @@ defmodule Palee.Channels.Connections do
 
   @doc """
   Saves the connection. `params` (atom keys; missing keys keep what is
-  saved): `provider`, `account_mode`, `account_id`, `secret` (kept when
-  not sent), `base_url`, `sms_sender`, `viber_sender`, `whatsapp_sender`,
+  saved): `provider`, `account_mode`, `account_id`, `secret` and
+  `webhook_secret` (kept when not sent, unless the vendor changes),
+  `base_url` (the vendor's fields: `Domain.VendorRules`), `sms_sender`, `viber_sender`, `whatsapp_sender`,
   `channels`, `channel_order`, `default_country`, `monthly_budget_cents`
   (required once any channel is on; no default, ADR-390), `quiet_start`
   and `quiet_end` (`"HH:MM"`, both nil for none, the default),
@@ -155,7 +169,25 @@ defmodule Palee.Channels.Connections do
 
     provider = value.(:provider)
     mode = value.(:account_mode) || "palee"
-    secret = clean(params[:secret]) || Map.get(current, :secret)
+    # ADR-396: another vendor's credentials never carry over to this one.
+    same_vendor? = Map.get(current, :provider) == provider
+    kept = fn key -> if same_vendor?, do: clean(Map.get(current, key)) end
+
+    secret = clean(params[:secret]) || kept.(:secret)
+    webhook_secret = clean(params[:webhook_secret]) || kept.(:webhook_secret)
+
+    credentials = %{
+      account_id:
+        if(Map.has_key?(params, :account_id), do: clean(params[:account_id]), else: kept.(:account_id)),
+      base_url:
+        if(Map.has_key?(params, :base_url),
+          do: params[:base_url] |> clean() |> trim_slash(),
+          else: kept.(:base_url)
+        ),
+      secret: secret,
+      webhook_secret: webhook_secret
+    }
+
     adapter = Map.get(providers(), provider)
     channels = value.(:channels) || []
     order = value.(:channel_order) || ["sms", "viber", "whatsapp"]
@@ -177,10 +209,10 @@ defmodule Palee.Channels.Connections do
           {:ok, QuietHours.initial()}
       end
 
-    own_needs_secret? = mode == "own" and provider not in [nil, "sandbox"]
+    vendor? = mode == "own" and VendorRules.vendor?(provider)
 
     errors =
-      %{}
+      if(vendor?, do: VendorRules.credential_errors(provider, credentials), else: %{})
       |> add(is_nil(adapter), :provider, "invalid")
       |> add(mode not in @account_modes, :account_mode, "invalid")
       |> add(
@@ -188,8 +220,12 @@ defmodule Palee.Channels.Connections do
         :account_mode,
         "not_available"
       )
-      |> add(own_needs_secret? and is_nil(secret), :secret, "required")
       |> add(is_binary(secret) and String.length(secret) > 300, :secret, "too_long")
+      |> add(
+        is_binary(webhook_secret) and String.length(webhook_secret) > 300,
+        :webhook_secret,
+        "too_long"
+      )
       |> add(not channel_list?(channels, adapter), :channels, "invalid")
       |> add(not channel_list?(order, nil), :channel_order, "invalid")
       |> add(country not in PhoneNumber.countries(), :default_country, "invalid")
@@ -205,7 +241,11 @@ defmodule Palee.Channels.Connections do
         "invalid"
       )
       |> add(match?({:error, _}, quiet), :quiet_hours, "invalid")
-      |> add(not sms_sender?(clean(value.(:sms_sender))), :sms_sender, "invalid")
+      |> add(
+        not VendorRules.sender?(provider, clean(value.(:sms_sender))),
+        :sms_sender,
+        "invalid"
+      )
       |> add(not short_text?(clean(value.(:viber_sender)), 60), :viber_sender, "invalid")
       |> add(not short_text?(clean(value.(:whatsapp_sender)), 30), :whatsapp_sender, "invalid")
       |> add(
@@ -230,8 +270,6 @@ defmodule Palee.Channels.Connections do
       attrs = %{
         provider: provider,
         account_mode: mode,
-        account_id: if(mode == "own", do: clean(value.(:account_id))),
-        base_url: if(mode == "own", do: clean(value.(:base_url))),
         sms_sender: clean(value.(:sms_sender)),
         viber_sender: clean(value.(:viber_sender)),
         whatsapp_sender: clean(value.(:whatsapp_sender)),
@@ -243,8 +281,7 @@ defmodule Palee.Channels.Connections do
         quiet_end_minute: finish
       }
 
-      {:ok,
-       if(mode == "own", do: Map.put(attrs, :secret, secret), else: Map.put(attrs, :secret, nil))}
+      {:ok, Map.merge(attrs, own_credentials(mode, vendor?, provider, credentials))}
     else
       {:error, {:invalid_fields, errors}}
     end
@@ -263,14 +300,18 @@ defmodule Palee.Channels.Connections do
   defp sender_missing?(channels, channel, sender, _provider),
     do: is_list(channels) and channel in channels and is_nil(clean(sender))
 
-  # An alphanumeric sender (up to 11 letters, digits or spaces with at least
-  # one letter) or a number in E.164.
-  defp sms_sender?(nil), do: true
-  defp sms_sender?("+" <> digits), do: digits =~ ~r/^[1-9][0-9]{7,14}$/
-  defp sms_sender?(sender), do: alphanumeric_sender?(sender)
+  @no_credentials %{account_id: nil, base_url: nil, secret: nil, webhook_secret: nil}
 
-  defp alphanumeric_sender?(sender),
-    do: sender =~ ~r/^[A-Za-z0-9 ]{1,11}$/ and sender =~ ~r/[A-Za-z]/
+  # Palee's account keeps no credentials of the box; a vendor keeps only its
+  # own fields (`VendorRules.fields/1`); the sandbox keeps what it was sent.
+  defp own_credentials("own", true, provider, credentials),
+    do: Map.merge(@no_credentials, Map.take(credentials, VendorRules.fields(provider)))
+
+  defp own_credentials("own", false, _provider, credentials), do: credentials
+  defp own_credentials(_palee, _vendor?, _provider, _credentials), do: @no_credentials
+
+  defp trim_slash(nil), do: nil
+  defp trim_slash(url), do: String.trim_trailing(url, "/")
 
   defp short_text?(nil, _max), do: true
   defp short_text?(value, max), do: String.length(value) <= max

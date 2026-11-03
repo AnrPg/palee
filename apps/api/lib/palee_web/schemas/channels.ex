@@ -43,6 +43,10 @@ defmodule PaleeWeb.Schemas.Channels do
         last_error: @text,
         checked_at: @time,
         has_secret: %Schema{type: :boolean},
+        has_webhook_secret: %Schema{
+          type: :boolean,
+          description: "Whether the vendor's own webhook signing key is saved (ADR-396)"
+        },
         webhook_url: %Schema{
           type: :string,
           nullable: true,
@@ -56,6 +60,7 @@ defmodule PaleeWeb.Schemas.Channels do
         :channels,
         :default_country,
         :has_secret,
+        :has_webhook_secret,
         :monthly_budget_cents,
         :provider,
         :status
@@ -150,17 +155,33 @@ defmodule PaleeWeb.Schemas.Channels do
       type: :object,
       additionalProperties: false,
       properties: %{
-        provider: %Schema{type: :string, enum: ["sandbox", "brevo"]},
+        provider: %Schema{
+          type: :string,
+          enum: ["sandbox", "brevo", "twilio", "vonage", "infobip", "yuboto", "apifon"]
+        },
         account_mode: %Schema{type: :string, enum: ["palee", "own"]},
         account_id: %Schema{type: :string, maxLength: 120, nullable: true},
         secret: %Schema{
           type: :string,
           maxLength: 300,
           format: :password,
-          description: "The box's own API key (`own`); kept when not sent"
+          description:
+            "The box's own API key, Auth Token, API secret or secret key (`own`); kept when not sent"
         },
-        base_url: %Schema{type: :string, maxLength: 200, nullable: true},
-        sms_sender: %Schema{type: :string, maxLength: 20, nullable: true},
+        webhook_secret: %Schema{
+          type: :string,
+          maxLength: 300,
+          format: :password,
+          description:
+            "Vonage's signature secret for signed delivery receipts (ADR-396); kept when not sent"
+        },
+        base_url: %Schema{
+          type: :string,
+          maxLength: 200,
+          nullable: true,
+          description: "Infobip's personal base URL, https://<id>.api.infobip.com"
+        },
+        sms_sender: %Schema{type: :string, maxLength: 40, nullable: true},
         viber_sender: %Schema{type: :string, maxLength: 60, nullable: true},
         whatsapp_sender: %Schema{type: :string, maxLength: 30, nullable: true},
         channels: %Schema{type: :array, items: @channel, maxItems: 3},
