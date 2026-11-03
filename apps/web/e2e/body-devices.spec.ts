@@ -3,8 +3,9 @@ import { expect, test, type Page, type Request } from "./support/test";
 // W9 body and devices (ADR-374..377, ontology §4.27): the watch row in
 // Εγώ › Συνδεδεμένες συσκευές (mockup d8pair A), foods by barcode in the meal
 // sheet (d9scan A, d9manual A; «Φωτογραφία ετικέτας», ADR-421), the rank ladders in Ρυθμίσεις › Προχωρημένα
-// (e2setup A), the coach's promotion on a member's training tab (e2coach A)
-// and «Οι βαθμοί μου» on Box (e2member A). The API is stubbed; every route
+// (template picker Β, curriculum editor Α), the coach's ticks and promotion on a
+// member's training tab (ticking Α and Γ) and «Η πρόοδός μου» from Box (Γ line,
+// Α page). The API is stubbed; every route
 // not listed answers an empty object.
 
 // A 1×1 PNG for the label photo.
@@ -107,14 +108,25 @@ const ladder = {
   discipline: "bjj_grappling",
   style: "belt",
   class_type_ids: [],
-  ranks: [rank("r-white", "White", "white", 0), rank("r-blue", "Blue", "blue", 1, { min_classes: 80, min_days: 730, skills: ["Armbar"] })],
+  ready_criteria: ["classes", "days"],
+  ranks: [
+    rank("r-white", "White", "white", 0),
+    rank("r-blue", "Blue", "blue", 1, { min_classes: 80, min_days: 730, skills: ["Armbar", "Triangle"], skill_ids: ["s-armbar", "s-triangle"], skill_notes: [null, "Knees tight"] }),
+  ],
 };
 
 const standing = {
   ladder,
   current: { award_id: "award-1", rank: ladder.ranks[0], stripes: 4, awarded_on: "2025-03-01" },
   next: ladder.ranks[1],
-  progress: { rank_id: "r-blue", classes: { done: 80, needed: 80 }, days: { done: 760, needed: 730 }, skills: [], ready: true },
+  progress: {
+    rank_id: "r-blue",
+    classes: { done: 80, needed: 80 },
+    days: { done: 760, needed: 730 },
+    skills: ["Armbar", "Triangle"],
+    skills_checked: [{ skill: "Armbar", skill_id: "s-armbar", checked_on: "2026-10-12", note: null }],
+    ready: true,
+  },
   history: [{ award_id: "award-1", rank: ladder.ranks[0], stripes: 4, awarded_on: "2025-03-01" }],
 };
 
@@ -254,7 +266,7 @@ test.describe("body and devices", () => {
     await expect(page.getByText(/kcal|calorie/i)).toHaveCount(0);
   });
 
-  test("the owner starts a ladder from a template in Settings › Advanced", async ({ page }) => {
+  test("the owner starts a ladder from a template in Settings › Advanced (picker, option Β)", async ({ page }) => {
     await asOwner(page);
     const ladders: unknown[] = [];
     // ADR-400: the catalogue comes from the server in the page's language (`?locale=`).
@@ -266,8 +278,10 @@ test.describe("body and devices", () => {
       return route.fulfill(
         json({
           ladders,
+          box_disciplines: ["judo"],
           templates: [
-            { key: "bjj_adult", name: "BJJ belts", discipline: "bjj_grappling", style: "belt", source: "federation", ranks: [] },
+            { key: "bjj_adult", name: "BJJ belts", discipline: "bjj_grappling", style: "belt", source: "federation", system: "IBJJF", ranks: [{ name: "White", color: "white" }] },
+            { key: "bjj_kids", name: "BJJ kids", discipline: "bjj_grappling", style: "belt", source: "federation", ranks: [] },
             { key: "judo_kyu", name: "Judo belts", discipline: "judo", style: "belt", source: "federation", ranks: [] },
             "not a template",
           ],
@@ -279,10 +293,48 @@ test.describe("body and devices", () => {
     // ADR-377: belts and levels sit under «Advanced» › Ranks.
     await page.getByTestId("advanced-settings").getByRole("button", { name: /Advanced/ }).click();
     await expect(page.getByTestId("advanced-group-ranks")).toBeVisible();
+    const picker = page.getByTestId("rank-template-picker");
+    // Step 1: the box's own kinds first, each with its template count.
+    await expect(picker.getByTestId("rank-kinds-mine")).toContainText("Judo");
+    await picker.getByTestId("rank-kinds").getByRole("button", { name: /BJJ/ }).click();
+    await expect(picker.getByRole("button", { name: "Continue" })).toBeDisabled();
+    // Step 2: that kind's templates with their source and system.
+    const adult = picker.getByRole("radio", { name: /BJJ belts/ });
+    await expect(adult).toContainText("Official system");
+    await expect(adult).toContainText("IBJJF");
+    await adult.click();
     const created = page.waitForRequest((request) => request.url().endsWith("/admin/rank-ladders") && request.method() === "POST");
-    await page.getByRole("button", { name: "BJJ belts" }).click();
+    await picker.getByRole("button", { name: "Continue" }).click();
     expect(bodyOf(await created)).toMatchObject({ template: "bjj_adult", name: "BJJ belts", locale: "en" });
     await expect(page.getByLabel("Ladder name")).toHaveValue("BJJ");
+  });
+
+  test("the owner edits a rank's skills one per row and saves with the save bar (editor, option Α)", async ({ page }) => {
+    await asOwner(page);
+    let saved: Record<string, unknown> | null = null;
+    await page.route(/\/api\/org\/box1\/admin\/rank-ladders(\?.*)?$/, (route) => route.fulfill(json({ ladders: [ladder], templates: [], box_disciplines: [] })));
+    await page.route("**/api/org/box1/admin/rank-ladders/ladder-1", (route) => {
+      saved = bodyOf(route.request());
+      return route.fulfill(json({ ladder }));
+    });
+
+    await page.goto("/admin/settings");
+    await page.getByTestId("advanced-settings").getByRole("button", { name: /Advanced/ }).click();
+    const editor = page.getByTestId("rank-ladder-ladder-1");
+    await editor.getByTestId("rank-section").filter({ hasText: "Blue" }).getByRole("button", { name: /Blue/ }).first().click();
+    const skills = editor.getByTestId("rank-skills");
+    await expect(skills.getByRole("textbox", { name: "Skill" })).toHaveCount(2);
+    await skills.getByRole("textbox", { name: "Skill" }).first().fill("Armbar from guard");
+    await skills.getByRole("button", { name: "Remove: Triangle" }).click();
+    await editor.getByRole("button", { name: "Add skill" }).click();
+    await skills.getByRole("textbox", { name: "Skill" }).last().fill("Kimura");
+    await page.getByTestId("rank-ladder-save-ladder-1").getByRole("button", { name: "Save" }).click();
+    await expect.poll(() => (saved as { ranks?: { requirements: unknown }[] } | null)?.ranks?.[1]?.requirements).toEqual({
+      min_days: 730,
+      min_classes: 80,
+      skills: ["Armbar from guard", "Kimura"],
+      skill_ids: ["s-armbar", null],
+    });
   });
 
   test("the coach promotes from the member's training tab; «Ready» only informs", async ({ page }) => {
@@ -301,29 +353,51 @@ test.describe("body and devices", () => {
         }),
       ),
     );
+    let ticked: Record<string, unknown> | null = null;
     await page.route("**/api/org/box1/staff/clients/u-2/ranks", (route) =>
       route.request().method() === "POST"
         ? route.fulfill(json({ award: { award_id: "award-2", rank: ladder.ranks[1], stripes: 0, awarded_on: "2026-11-03" } }, 201))
         : route.fulfill(json({ ladders: [standing] })),
     );
+    await page.route("**/api/org/box1/staff/clients/u-2/ranks/skills", (route) => {
+      ticked = bodyOf(route.request());
+      return route.fulfill(json({ ladders: [standing] }));
+    });
 
     await page.goto("/admin/users/u-2?tab=training");
     const ranks = page.getByTestId("client-ranks");
     await expect(ranks).toContainText("Meets the requirements. The coach decides.");
+    // Option Α: one tap ticks a skill on the profile.
+    const checklist = ranks.getByTestId("skill-checklist");
+    await expect(checklist).toContainText("1 of 2 skills");
+    await checklist.getByRole("button", { name: "Triangle" }).click();
+    await expect.poll(() => ticked).toEqual({ rank_id: "r-blue", skill_id: "s-triangle", checked: true });
+
+    // Option Γ: the promotion comes pre-filled with what is ticked.
     await ranks.getByRole("button", { name: "Promote" }).click();
     const sheet = page.getByTestId("promote-sheet");
-    await sheet.getByRole("button", { name: "Armbar" }).click();
+    await sheet.getByRole("button", { name: /Blue/ }).click();
+    await expect(sheet.getByRole("button", { name: /Armbar/ })).toHaveAttribute("aria-pressed", "true");
     const awarded = page.waitForRequest((request) => request.url().endsWith("/staff/clients/u-2/ranks") && request.method() === "POST");
     await sheet.getByRole("button", { name: "Promote" }).last().click();
     expect(bodyOf(await awarded)).toMatchObject({ ladder_id: "ladder-1", rank_id: "r-blue", stripes: 0, skills_checked: ["Armbar"] });
   });
 
-  test("the member sees their belt and what is left for the next rank on Box", async ({ page }) => {
+  test("the member sees one line on Box and opens their progress page", async ({ page }) => {
     await asMember(page);
     await page.route("**/api/org/kypseli/me/ranks", (route) => route.fulfill(json({ ladders: [standing] })));
 
     await page.goto("/box");
-    await expect(page.getByText("For Blue:")).toBeVisible();
+    const line = page.getByTestId("my-ranks-open");
+    await expect(line).toContainText("White · towards Blue: 1 of 2 skills");
+    await line.click();
+    await expect(page).toHaveURL(/\/box\/ranks$/);
+    const card = page.getByTestId("next-rank-card");
+    await expect(card).toContainText("Still to learn");
+    await expect(card).toContainText("Triangle");
+    await card.getByText("Note").click();
+    await expect(card).toContainText("Knees tight");
+    await expect(page.getByTestId("my-ranks-path")).toContainText("Blue");
     await expect(page.getByRole("button", { name: "Diploma (PDF)" })).toBeVisible();
   });
 });

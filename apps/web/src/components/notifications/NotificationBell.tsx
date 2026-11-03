@@ -77,6 +77,7 @@ function NotificationCard({
   const tClubs = useTranslations("Clubs");
   const tReferrals = useTranslations("Referrals");
   const tAround = useTranslations("Around");
+  const tRanks = useTranslations("BodyDevices");
   const tCheckIn = useTranslations("CheckIn");
   const tDevices = useTranslations("Devices");
   // ADR-161: Garmin stopped answering; the notice opens Συνδεδεμένες συσκευές.
@@ -155,6 +156,14 @@ function NotificationCard({
     const name = typeof notification.payload.filter_name === "string" ? notification.payload.filter_name : "";
     const count = Number(notification.payload.count ?? 0);
     return tAround("notifBody", { name, count: Number.isFinite(count) ? count : 0 });
+  }
+  // ADR-400 follow-up: the coach's new skill ticks, told once and grouped (ICU plural).
+  function rankSkillsText(notification: NotificationRecord, part: "title" | "body") {
+    if (notification.type !== "rank_skills_checked") return null;
+    if (part === "title") return tRanks("ranks.notice.title");
+    const count = Number(notification.payload.count ?? 0);
+    const rank = typeof notification.payload.rank_name === "string" ? notification.payload.rank_name : "";
+    return tRanks("ranks.notice.body", { count: Number.isFinite(count) && count > 0 ? count : 1, rank });
   }
   // ADR-143: group, report and open-club notifications carry their names (events: ADR-153).
   function communityText(notification: NotificationRecord, part: "title" | "body") {
@@ -269,6 +278,8 @@ function NotificationCard({
     if (checkIn !== null) return checkIn;
     const around = aroundText(notification, "body");
     if (around !== null) return around;
+    const rankSkills = rankSkillsText(notification, "body");
+    if (rankSkills !== null) return rankSkills;
     const trial = trialText(notification, "body");
     if (trial !== null) return trial;
     const referral = referralText(notification, "body");
@@ -573,6 +584,8 @@ function NotificationCard({
     if (checkIn !== null) return checkIn;
     const around = aroundText(notification, "title");
     if (around !== null) return around;
+    const rankSkills = rankSkillsText(notification, "title");
+    if (rankSkills !== null) return rankSkills;
     const trial = trialText(notification, "title");
     if (trial !== null) return trial;
     const referral = referralText(notification, "title");
@@ -782,6 +795,8 @@ const FILTER_TYPES: Record<FilterTab, string[] | null> = {
     "coaching_reply_overdue",
     "nutrition_plan_updated",
     "training_goal_updated",
+    // ADR-400 follow-up
+    "rank_skills_checked",
   ],
   bookings: [
     "booking_pending",
