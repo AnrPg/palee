@@ -45,3 +45,7 @@ and Palee from a runaway automation.
 ## Implementation Notes
 Default prices (cents): SMS 7 per part (GR, CY), 9 elsewhere; Viber 2–3, WhatsApp 3
 (service) / 9 (marketing) for when those channels come.
+
+## Amendment (ADR-390, 2026-11-03)
+
+ANR, v3.1 questions 1 and 2: no invented defaults. §3's 20 € cap is gone: the box types its own cap before a channel goes on (`monthly_budget_cents` required then; without one nothing is sent, `channel_budget_missing`). §4's 21:00–09:00 is gone: quiet hours start off and the box picks both times under «Προχωρημένα»; they hold only marketing messages, and service messages always go at once. Existing connections keep their values.

@@ -57,3 +57,7 @@ consent screen can show plainly. Keeping the consent ledger on the contact keeps
 ## Implementation Notes
 `Channels.consented?(context, %{user_id: id} | %{lead_id: id}, channel, purpose)` is the
 public check other contexts use (W10 keeps its own email marketing consent).
+
+## Amendment (ADR-390, 2026-11-03)
+
+ANR, v3.1 question 4: the sender stays the box's name, which cannot receive replies, so marketing SMS end with a short signed link (« Διακοπή: palee.app/u/<token>») instead of «Για διακοπή απάντησε STOP.». The link's page withdraws that contact's `sms` / `marketing` consent with source `unsubscribe_link`; service messages carry no link and their consent is untouched. STOP replies keep working from a numeric sender.
