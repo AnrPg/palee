@@ -86,4 +86,50 @@ defmodule Palee.BoxSite.RLSTest do
     _ = visitor_s
     Postgrex.query!(conn, "DELETE FROM organizations WHERE id = ANY($1)", [[org, other]])
   end
+
+  test "ADR-398: ingress ops stay in their box; the sweep and the worker see across boxes",
+       %{conn: conn} do
+    {org_s, org} = org!(conn)
+    {other_s, other} = org!(conn)
+    host = "www.ops#{System.unique_integer([:positive])}.test"
+
+    as_session(conn, nil, org_s, false, fn ->
+      Postgrex.query!(
+        conn,
+        "INSERT INTO box_site_domains (id, organization_id, host, verification_token, status, inserted_at, updated_at) VALUES (gen_random_uuid(), $1, $2, 'tok', 'pending_tls', now(), now())",
+        [org, host]
+      )
+
+      Postgrex.query!(
+        conn,
+        "INSERT INTO box_site_ingress_ops (id, organization_id, host, action, next_attempt_at, inserted_at, updated_at) VALUES (gen_random_uuid(), $1, $2, 'apply', now() - interval '1 minute', now(), now())",
+        [org, host]
+      )
+    end)
+
+    count = fn ->
+      %{rows: [[n]]} = Postgrex.query!(conn, "SELECT count(*) FROM box_site_ingress_ops", [])
+      n
+    end
+
+    assert as_session(conn, nil, org_s, false, count) == 1
+    assert as_session(conn, nil, other_s, false, count) == 0
+    assert as_session(conn, nil, nil, false, count) == 0
+
+    %{rows: hosts} =
+      as_session(conn, nil, nil, false, fn ->
+        Postgrex.query!(conn, "SELECT host FROM palee_site_ingress_hosts()", [])
+      end)
+
+    assert [host] in hosts
+
+    %{rows: due} =
+      as_session(conn, nil, nil, false, fn ->
+        Postgrex.query!(conn, "SELECT organization_id FROM palee_box_site_due_organizations(now())", [])
+      end)
+
+    assert [org] in due
+
+    Postgrex.query!(conn, "DELETE FROM organizations WHERE id = ANY($1)", [[org, other]])
+  end
 end

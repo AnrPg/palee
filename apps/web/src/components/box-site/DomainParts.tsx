@@ -36,12 +36,41 @@ export function DomainSteps({ status }: { status: string }) {
   );
 }
 
+const CERTIFICATE_ERRORS = ["cluster_refused", "cluster_unreachable", "challenge_failed", "rate_limited", "issuer_not_ready", "issuance_failed"];
+
+/**
+ * ADR-398: the certificate's line under the status, or null. Shown once Palee
+ * made the Ingress (not `none`); once the domain is active only a failure is
+ * worth a line. A known certificate state replaces the generic TLS reason.
+ */
+export function certificateLine(status: string, certificateStatus: string | null | undefined, certificateError: string | null | undefined) {
+  if (!certificateStatus || certificateStatus === "none" || status === "pending_dns" || status === "expired") return null;
+  const error = certificateError && CERTIFICATE_ERRORS.includes(certificateError) ? certificateError : null;
+  if (certificateStatus === "failed") return { key: `domains.certificateError.${error ?? "issuance_failed"}`, tone: "danger" as const };
+  if (status === "active") return null;
+  if (certificateStatus === "pending" && error) return { key: `domains.certificateError.${error}`, tone: "warning" as const };
+  if (["pending", "issuing", "active"].includes(certificateStatus)) return { key: `domains.certificate.${certificateStatus}`, tone: "neutral" as const };
+  return null;
+}
+
 /** One line on where the domain stands, with the reason when it is stuck. */
-export function DomainStatusLine({ status, lastError }: { status: string; lastError: string | null }) {
+export function DomainStatusLine({
+  status,
+  lastError,
+  certificateStatus,
+  certificateError,
+}: {
+  status: string;
+  lastError: string | null;
+  certificateStatus?: string | null;
+  certificateError?: string | null;
+}) {
   const t = useTranslations("BoxSite");
   const known = ["pending_dns", "pending_tls", "active", "broken", "expired"].includes(status) ? status : "pending_dns";
   const tone = known === "active" ? "var(--success)" : known === "broken" || known === "expired" ? "var(--danger)" : "var(--warning)";
-  const reason = lastError && ["dns_txt_missing", "dns_not_pointing", "tls_not_ready", "tls_failed"].includes(lastError) ? lastError : null;
+  const certificate = certificateLine(known, certificateStatus, certificateError);
+  const tlsReasons = certificate ? [] : ["tls_not_ready", "tls_failed"];
+  const reason = lastError && ["dns_txt_missing", "dns_not_pointing", ...tlsReasons].includes(lastError) ? lastError : null;
   return (
     <div className="flex flex-col gap-1" data-testid="site-domain-status-line">
       <DomainSteps status={known} />
@@ -50,6 +79,11 @@ export function DomainStatusLine({ status, lastError }: { status: string; lastEr
         {t(`domains.status.${known}`)}
       </p>
       {reason && known !== "active" ? <p className="text-sm" style={{ color: "var(--text-soft)" }}>{t(`domains.error.${reason}`)}</p> : null}
+      {certificate ? (
+        <p className="text-sm" style={{ color: certificate.tone === "danger" ? "var(--danger)" : "var(--text-soft)" }} data-testid="site-domain-certificate">
+          {t(certificate.key)}
+        </p>
+      ) : null}
     </div>
   );
 }

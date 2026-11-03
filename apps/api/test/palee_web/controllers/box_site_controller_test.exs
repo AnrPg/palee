@@ -382,6 +382,155 @@ defmodule PaleeWeb.BoxSiteControllerTest do
     build_conn() |> get("/api/public/sites/by-host/#{host}") |> json_response(404)
   end
 
+  defmodule RecordingIngress do
+    @moduledoc "ADR-398: the sandbox cluster, telling the test process what it was asked."
+    @behaviour Palee.BoxSite.Ports.SiteIngress
+    alias Palee.Infrastructure.BoxSite.SandboxSiteIngress
+
+    @impl true
+    def apply_site(host), do: tell({:apply, host}, SandboxSiteIngress.apply_site(host))
+    @impl true
+    def remove_site(host), do: tell({:remove, host}, SandboxSiteIngress.remove_site(host))
+    @impl true
+    def certificate(host), do: SandboxSiteIngress.certificate(host)
+    @impl true
+    def managed_hosts, do: SandboxSiteIngress.managed_hosts()
+
+    defp tell(message, answer) do
+      send(self(), {:ingress, message})
+      answer
+    end
+  end
+
+  test "ADR-398: a verified host gets its Ingress and certificate; removal deletes it", ctx do
+    previous = Application.get_env(:palee, :box_site_ingress)
+    Application.put_env(:palee, :box_site_ingress, RecordingIngress)
+
+    on_exit(fn ->
+      Application.put_env(:palee, :box_site_ingress, previous)
+      Application.delete_env(:palee, :box_site_sandbox_certificates)
+      Application.delete_env(:palee, :box_site_sandbox_ingress_refused)
+      Application.delete_env(:palee, :box_site_sandbox_managed_hosts)
+    end)
+
+    host = "www.certs#{System.unique_integer([:positive])}.test"
+
+    domain =
+      ctx
+      |> owner_conn()
+      |> post("#{ctx.admin}/domains", %{host: host})
+      |> json_response(201)
+      |> Map.fetch!("domain")
+
+    # No DNS proof yet: no Ingress, nothing to say about the certificate.
+    assert %{"certificate_status" => "none", "certificate_error" => nil} = domain
+    refute_received {:ingress, _call}
+
+    [txt | _cname] = Enum.map(domain["dns_records"], & &1["value"])
+
+    Application.put_env(:palee, :box_site_sandbox_dns, %{
+      {"_palee-challenge." <> host, :txt} => [txt],
+      {host, :cname} => ["sites.palee.app."]
+    })
+
+    # Proven: the Ingress is applied at once and the certificate is issuing.
+    assert %{"domain" => %{"status" => "pending_tls", "certificate_status" => "issuing"}} =
+             ctx
+             |> owner_conn()
+             |> post("#{ctx.admin}/domains/#{domain["id"]}/check")
+             |> json_response(200)
+
+    assert_received {:ingress, {:apply, ^host}}
+
+    # cert-manager gave up for now: the card shows a plain reason.
+    Application.put_env(:palee, :box_site_sandbox_certificates, %{host => {:failed, :challenge_failed}})
+
+    assert %{"domain" => %{"certificate_status" => "failed", "certificate_error" => "challenge_failed"}} =
+             ctx
+             |> owner_conn()
+             |> post("#{ctx.admin}/domains/#{domain["id"]}/check")
+             |> json_response(200)
+
+    refute_received {:ingress, {:apply, _host}}
+
+    Application.put_env(:palee, :box_site_sandbox_certificates, %{host => :active})
+    Application.put_env(:palee, :box_site_sandbox_tls_ready, [host])
+
+    assert %{"domain" => %{"status" => "active", "certificate_status" => "active", "certificate_error" => nil}} =
+             ctx
+             |> owner_conn()
+             |> post("#{ctx.admin}/domains/#{domain["id"]}/check")
+             |> json_response(200)
+
+    # The sweep removes an Ingress no box has and restores a missing one.
+    Application.put_env(:palee, :box_site_sandbox_managed_hosts, ["gone.example"])
+    assert :ok = perform_job(Palee.Workers.BoxSiteIngressSweepJob, %{})
+    assert_received {:ingress, {:remove, "gone.example"}}
+    assert_received {:ingress, {:apply, ^host}}
+
+    ctx |> owner_conn() |> delete("#{ctx.admin}/domains/#{domain["id"]}") |> response(204)
+    assert_received {:ingress, {:remove, ^host}}
+
+    assert [] = bypass_rls(fn -> Palee.Repo.query!("SELECT 1 FROM box_site_ingress_ops WHERE host = $1", [host]).rows end)
+  end
+
+  test "ADR-398: a cluster that refuses keeps the op for a retry and says so", ctx do
+    previous = Application.get_env(:palee, :box_site_ingress)
+    Application.put_env(:palee, :box_site_ingress, RecordingIngress)
+    host = "www.refused#{System.unique_integer([:positive])}.test"
+    Application.put_env(:palee, :box_site_sandbox_ingress_refused, [host])
+
+    on_exit(fn ->
+      Application.put_env(:palee, :box_site_ingress, previous)
+      Application.delete_env(:palee, :box_site_sandbox_ingress_refused)
+    end)
+
+    domain =
+      ctx |> owner_conn() |> post("#{ctx.admin}/domains", %{host: host}) |> json_response(201)
+      |> Map.fetch!("domain")
+
+    [txt | _cname] = Enum.map(domain["dns_records"], & &1["value"])
+
+    Application.put_env(:palee, :box_site_sandbox_dns, %{
+      {"_palee-challenge." <> host, :txt} => [txt],
+      {host, :cname} => ["sites.palee.app."]
+    })
+
+    assert %{"domain" => %{"certificate_status" => "pending", "certificate_error" => "cluster_refused"}} =
+             ctx
+             |> owner_conn()
+             |> post("#{ctx.admin}/domains/#{domain["id"]}/check")
+             |> json_response(200)
+
+    assert [["pending", 1, "cluster_refused"]] =
+             bypass_rls(fn ->
+               Palee.Repo.query!(
+                 "SELECT status, attempts, last_error FROM box_site_ingress_ops WHERE host = $1",
+                 [host]
+               ).rows
+             end)
+
+    # The cluster is set up: the due op goes through on the next run.
+    Application.delete_env(:palee, :box_site_sandbox_ingress_refused)
+
+    bypass_rls(fn ->
+      Palee.Repo.query!(
+        "UPDATE box_site_ingress_ops SET next_attempt_at = now() - interval '1 minute' WHERE host = $1",
+        [host]
+      )
+    end)
+
+    assert :ok = perform_job(BoxSiteJob, %{})
+    assert_received {:ingress, {:apply, ^host}}
+
+    assert [%{"certificate_status" => "issuing", "certificate_error" => nil}] =
+             ctx
+             |> owner_conn()
+             |> get("#{ctx.admin}/domains")
+             |> json_response(200)
+             |> Map.fetch!("domains")
+  end
+
   test "the public timetable shows classes without people when the owner turns it on", ctx do
     ctx
     |> owner_conn()

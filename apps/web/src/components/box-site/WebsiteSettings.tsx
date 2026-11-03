@@ -412,7 +412,7 @@ function DomainCard({ token, domain, onChanged, onInstructions }: { token: strin
           />
         </span>
       </div>
-      <DomainStatusLine status={domain.status} lastError={domain.last_error} />
+      <DomainStatusLine status={domain.status} lastError={domain.last_error} certificateStatus={domain.certificate_status} certificateError={domain.certificate_error} />
       {!active ? <DnsRecords records={domain.dns_records} /> : null}
       {!active ? (
         <button type="button" onClick={() => check.mutate()} disabled={check.isPending} className={`${secondaryButtonClass} self-start`} style={secondaryButtonStyle} data-testid="website-domain-check">

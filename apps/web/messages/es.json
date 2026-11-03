@@ -16274,6 +16274,19 @@
         "tls_not_ready": "El certificado se está emitiendo.",
         "tls_failed": "No se pudo emitir el certificado. Revisa los registros e inténtalo de nuevo."
       },
+      "certificate": {
+        "pending": "Estamos preparando el certificado.",
+        "issuing": "El certificado se está emitiendo. Suele tardar unos minutos.",
+        "active": "El certificado está listo. El dominio estará disponible en breve."
+      },
+      "certificateError": {
+        "cluster_refused": "No pudimos configurar el certificado. Lo hemos visto y lo estamos arreglando.",
+        "cluster_unreachable": "Aún no pudimos configurar el certificado. Lo reintentaremos automáticamente.",
+        "challenge_failed": "El certificado no se emitió: Let's Encrypt no pudo llegar al dominio. Comprueba que los registros apuntan a Palee; lo reintentaremos automáticamente.",
+        "rate_limited": "Demasiadas solicitudes de certificado para este dominio. Lo reintentaremos automáticamente en unas horas.",
+        "issuer_not_ready": "El certificado aún no se ha emitido. Lo hemos visto y lo estamos arreglando.",
+        "issuance_failed": "El certificado aún no se ha emitido. Lo reintentaremos automáticamente."
+      },
       "recordsTitle": "Registros que añadir",
       "recordName": "Nombre",
       "recordValue": "Valor",

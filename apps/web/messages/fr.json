@@ -16274,6 +16274,19 @@
         "tls_not_ready": "Le certificat est en cours d'émission.",
         "tls_failed": "Le certificat n'a pas pu être émis. Vérifie les enregistrements et réessaie."
       },
+      "certificate": {
+        "pending": "Nous préparons le certificat.",
+        "issuing": "Le certificat est en cours d'émission. Cela prend généralement quelques minutes.",
+        "active": "Le certificat est prêt. Le domaine sera accessible sous peu."
+      },
+      "certificateError": {
+        "cluster_refused": "Nous n'avons pas pu mettre en place le certificat. Nous l'avons vu et nous corrigeons.",
+        "cluster_unreachable": "Nous n'avons pas encore pu mettre en place le certificat. Nous réessaierons automatiquement.",
+        "challenge_failed": "Le certificat n'a pas été émis : Let's Encrypt n'a pas pu joindre le domaine. Vérifie que les enregistrements pointent vers Palee ; nous réessaierons automatiquement.",
+        "rate_limited": "Trop de demandes de certificat pour ce domaine. Nous réessaierons automatiquement dans quelques heures.",
+        "issuer_not_ready": "Le certificat n'a pas encore été émis. Nous l'avons vu et nous corrigeons.",
+        "issuance_failed": "Le certificat n'a pas encore été émis. Nous réessaierons automatiquement."
+      },
       "recordsTitle": "Enregistrements à ajouter",
       "recordName": "Nom",
       "recordValue": "Valeur",

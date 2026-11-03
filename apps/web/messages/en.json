@@ -16274,6 +16274,19 @@
         "tls_not_ready": "The certificate is being issued.",
         "tls_failed": "The certificate could not be issued. Check the records and try again."
       },
+      "certificate": {
+        "pending": "We're preparing the certificate.",
+        "issuing": "The certificate is being issued. This usually takes a few minutes.",
+        "active": "The certificate is ready. The domain will open shortly."
+      },
+      "certificateError": {
+        "cluster_refused": "We couldn't set up the certificate. We've seen it and are fixing it.",
+        "cluster_unreachable": "We couldn't set up the certificate yet. We'll retry on our own.",
+        "challenge_failed": "The certificate wasn't issued: Let's Encrypt couldn't reach the domain. Check that the records point to Palee; we'll retry on our own.",
+        "rate_limited": "Too many certificate requests for this domain. We'll retry on our own in a few hours.",
+        "issuer_not_ready": "The certificate hasn't been issued yet. We've seen it and are fixing it.",
+        "issuance_failed": "The certificate hasn't been issued yet. We'll retry on our own."
+      },
       "recordsTitle": "Records to add",
       "recordName": "Name",
       "recordValue": "Value",

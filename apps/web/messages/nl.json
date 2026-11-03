@@ -16274,6 +16274,19 @@
         "tls_not_ready": "Het certificaat wordt uitgegeven.",
         "tls_failed": "Het certificaat kon niet worden uitgegeven. Controleer de records en probeer opnieuw."
       },
+      "certificate": {
+        "pending": "We bereiden het certificaat voor.",
+        "issuing": "Het certificaat wordt uitgegeven. Dit duurt meestal een paar minuten.",
+        "active": "Het certificaat is klaar. Het domein is zo bereikbaar."
+      },
+      "certificateError": {
+        "cluster_refused": "We konden het certificaat niet instellen. We hebben het gezien en lossen het op.",
+        "cluster_unreachable": "We konden het certificaat nog niet instellen. We proberen het automatisch opnieuw.",
+        "challenge_failed": "Het certificaat is niet uitgegeven: Let's Encrypt kon het domein niet bereiken. Controleer of de records naar Palee wijzen; we proberen het automatisch opnieuw.",
+        "rate_limited": "Te veel certificaataanvragen voor dit domein. We proberen het over een paar uur automatisch opnieuw.",
+        "issuer_not_ready": "Het certificaat is nog niet uitgegeven. We hebben het gezien en lossen het op.",
+        "issuance_failed": "Het certificaat is nog niet uitgegeven. We proberen het automatisch opnieuw."
+      },
       "recordsTitle": "Toe te voegen records",
       "recordName": "Naam",
       "recordValue": "Waarde",
