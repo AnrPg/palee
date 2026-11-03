@@ -111,6 +111,9 @@ defmodule Palee.Scheduling.Domain.VisitBadgesAndCalendarTest do
       assert CoachNotePolicy.readable?(@staff, "coach", [:coach], false)
       assert CoachNotePolicy.readable?(@staff, "other-desk", [:front_desk], false)
       refute CoachNotePolicy.readable?(@staff, "cleaner", [:janitor], false)
+      # ANR 2026-11-03 (v3.1 question 12): the accountant never reads staff notes.
+      refute CoachNotePolicy.readable?(@staff, "books", [:accountant], false)
+      refute CoachNotePolicy.readable?(@private, "books", [:accountant], true)
       refute CoachNotePolicy.readable?(@staff, "member", [:member], false)
       refute CoachNotePolicy.logged?(@staff, "coach")
       assert CoachNotePolicy.can_edit?(@staff, "desk")

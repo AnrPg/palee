@@ -291,6 +291,25 @@ defmodule PaleeWeb.LeadControllerTest do
       assert %{"existing" => 1, "created" => 1} = again
       assert %{"counts" => %{"new" => 3}} = leads(build_conn(), ctx, ctx.owner)
     end
+
+    # ANR 2026-11-03 (v3.1 question 18): an imported lead may be contacted about
+    # their request, never sent offers, whatever the file claims.
+    test "CSV import never records consent to offers", %{conn: conn} = ctx do
+      csv = """
+      Όνομα,Email,marketing_consent
+      Ελένη,eleni@example.com,true
+      """
+
+      assert %{"created" => 1} =
+               conn
+               |> put_bearer_token(ctx.owner)
+               |> post(admin(ctx, "/leads/import"), %{"csv" => csv})
+               |> json_response(200)
+
+      [lead] = Enum.filter(Leads.list(ctx.context, %{}), &(&1.email == "eleni@example.com"))
+      assert lead.consent_contact_at
+      assert lead.consent_marketing_at == nil
+    end
   end
 
   describe "other ways in" do

@@ -32,7 +32,8 @@ same UID (`METHOD:CANCEL` once cancelled). The private feed URL and its rotation
 
 ### Staff notes (CP-E5)
 `coaching_notes.audience` (`private` default | `staff`, migration `20270505000200`). A staff note is
-read by owner, admin, coach and front desk (the roles that see the directory; never the janitor),
+read by owner, admin, coach and front desk (the roles that see the directory; never the janitor,
+and never the accountant: ANR confirmed 2026-11-03),
 written by anyone with `view_directory` for members they may see, edited only by its author, and its
 reads are not logged (it is shared on purpose). Private notes keep ADR-101 exactly.
 

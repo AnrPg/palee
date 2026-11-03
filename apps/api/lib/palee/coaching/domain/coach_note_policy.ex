@@ -6,7 +6,8 @@ defmodule Palee.Coaching.Domain.CoachNotePolicy do
   is told when an admin read a note.
   """
 
-  # The roles that see the box's people (`view_directory`); never the janitor.
+  # The roles that see the box's people (`view_directory`); never the janitor,
+  # and never the accountant (ANR 2026-11-03).
   @staff_roles [:owner, :admin, :coach, :front_desk]
 
   @doc """
