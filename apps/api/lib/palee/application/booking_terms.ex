@@ -57,7 +57,6 @@ defmodule Palee.Application.BookingTerms do
       no_show_penalty_waived: terms[:no_show_penalty_waived] == true,
       # ADR-342: package booking limits (no gym default: a package rule only).
       daily_booking_limit: terms[:daily_booking_limit],
-      weekly_booking_limit: terms[:weekly_booking_limit],
       open_bookings_limit: terms[:open_bookings_limit]
     }
   end

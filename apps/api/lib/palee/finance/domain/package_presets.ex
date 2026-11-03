@@ -43,7 +43,6 @@ defmodule Palee.Finance.Domain.PackagePresets do
     "booking.cancellation_cutoff_hours" => nil,
     "booking.no_show_penalty_waived" => false,
     "booking.daily_limit" => nil,
-    "booking.weekly_limit" => nil,
     "booking.open_bookings_limit" => nil,
     "personal_training.included" => false,
     "personal_training.sessions" => %{"limit" => 0, "period" => "subscription_period"},

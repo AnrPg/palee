@@ -88599,7 +88599,6 @@ export interface operations {
                         "booking.no_show_penalty_waived"?: boolean;
                         "booking.open_bookings_limit"?: number | null;
                         "booking.waitlist_priority"?: string;
-                        "booking.weekly_limit"?: number | null;
                         "booking.window_days"?: number | null;
                         "content.advanced_analytics"?: boolean;
                         "content.on_demand_video"?: boolean;
@@ -88802,7 +88801,6 @@ export interface operations {
                         "booking.no_show_penalty_waived"?: boolean;
                         "booking.open_bookings_limit"?: number | null;
                         "booking.waitlist_priority"?: string;
-                        "booking.weekly_limit"?: number | null;
                         "booking.window_days"?: number | null;
                         "content.advanced_analytics"?: boolean;
                         "content.on_demand_video"?: boolean;

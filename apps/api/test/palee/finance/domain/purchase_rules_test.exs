@@ -25,9 +25,16 @@ defmodule Palee.Finance.Domain.PurchaseRulesTest do
 
   test "the new fields are authorable and validated" do
     for key <- ~w(terms.buyers terms.max_purchases_per_person terms.prerequisite_package_ids
-                  booking.daily_limit booking.weekly_limit booking.open_bookings_limit) do
+                  booking.daily_limit booking.open_bookings_limit) do
       assert PackageCatalog.available?(key), key
     end
+
+    # ADR-383: the weekly limit left the catalog; a stored key is dropped, never refused.
+    assert {:error, {:unknown_package_field, "booking.weekly_limit"}} =
+             PackageCatalog.fetch("booking.weekly_limit")
+
+    assert PackageCatalog.drop_removed(%{"booking.weekly_limit" => 3, "booking.daily_limit" => 1}) ==
+             %{"booking.daily_limit" => 1}
 
     {:ok, spec} = PackageCatalog.fetch("booking.daily_limit")
     assert PackageCatalog.cast(spec, nil) == {:ok, nil}

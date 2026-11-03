@@ -733,6 +733,46 @@ function IntegerControl({ spec, value, label, onChange }: { spec: CatalogField; 
   return <Stepper label={label} value={current} min={spec.min ?? 0} max={spec.max ?? 10000} onChange={onChange} suffix={t(`${fieldLabelKey(spec.key)}Suffix`, { count: current })} />;
 }
 
+/** ADR-342: empty is «Χωρίς όριο»; a number is the limit (purchases, bookings per day, open bookings). */
+function LimitControl({ spec, value, label, onChange }: { spec: CatalogField; value: unknown; label: string; onChange: (value: number | null) => void }) {
+  const t = useT();
+  const limited = typeof value === "number";
+  return (
+    <div className="space-y-3">
+      <Segmented
+        label={label}
+        value={limited ? "limit" : "none"}
+        options={[
+          { value: "none", label: t("pkgNoLimit") },
+          { value: "limit", label: t("pkgSetLimit") },
+        ]}
+        onChange={(mode) => onChange(mode === "none" ? null : spec.min ?? 1)}
+      />
+      {limited ? (
+        <Stepper
+          label={label}
+          value={value}
+          min={spec.min ?? 1}
+          max={spec.max ?? 100}
+          onChange={onChange}
+          suffix={t(`${fieldLabelKey(spec.key)}Suffix`, { count: value })}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+/** ADR-342: the packages a member must have bought first; none picked means none needed. */
+function PrerequisitesControl({ value, packages, onChange }: { value: unknown; packages: FinanceRecord[]; onChange: (value: string[]) => void }) {
+  const t = useT();
+  const selected = Array.isArray(value) ? value.map(String) : [];
+  const options = packages
+    .filter((pkg) => pkg.active !== false || selected.includes(String(pkg.id)))
+    .map((pkg) => ({ value: String(pkg.id), label: String(pkg.name) }));
+  if (options.length === 0) return <p className="text-sm" style={{ color: "var(--dim)" }}>{t("pkgNone")}</p>;
+  return <ChipList options={options} value={selected} onChange={onChange} />;
+}
+
 const GYM_DEFAULT_STARTS: Record<string, number> = { "booking.window_days": 7, "booking.cancellation_cutoff_hours": 12 };
 
 /** null follows the gym's scheduling default; a number overrides it for this package. */
@@ -985,6 +1025,18 @@ export function FieldControl({
           />
         );
       break;
+    case "integer_or_null":
+      control = <LimitControl spec={spec} value={value} label={label} onChange={(next) => onFieldChange(spec.key, next)} />;
+      break;
+    case "id_list":
+      control = (
+        <PrerequisitesControl
+          value={value}
+          packages={context.packages}
+          onChange={(next) => onFieldChange(spec.key, next)}
+        />
+      );
+      break;
     case "uuid_or_null":
       control = spec.key === "personal_training.coach_id" ? (
         <CoachSelect id={id} label={label} value={value} onChange={(next) => onFieldChange(spec.key, next)} />
@@ -1032,14 +1084,9 @@ function phaseBFieldVisible(key: string, draft: PackageDraft, catalog: PackageCa
   const on = (field: string) => draft.fields[field] === true;
   const enabled = (module: string) => catalog.modules.some((candidate) => candidate.key === module && candidate.enabled);
   switch (key) {
-    // ADR-342: purchase and booking rules stay hidden until their screen is approved.
-    case "terms.buyers":
-    case "terms.max_purchases_per_person":
+    // ADR-342/383: prerequisites need another package to point at.
     case "terms.prerequisite_package_ids":
-    case "booking.daily_limit":
-    case "booking.weekly_limit":
-    case "booking.open_bookings_limit":
-      return false;
+      return context.packages.some((pkg) => pkg.active !== false) || (Array.isArray(draft.fields[key]) && (draft.fields[key] as unknown[]).length > 0);
     case "facility.open_gym":
       return enabled("open_gym") || on(key);
     case "facility.open_gym_visits":
@@ -1112,7 +1159,37 @@ export function sectionVisible(section: string, draft: PackageDraft, catalog: Pa
   }
 }
 
-const ADVANCED_SECTIONS = ["terms", "group_classes", "booking", "personal_training", "online_coaching", "content", "facility", "perks"];
+const ADVANCED_SECTIONS = [
+  "terms",
+  "purchase_rules",
+  "group_classes",
+  "booking",
+  "booking_limits",
+  "personal_training",
+  "online_coaching",
+  "content",
+  "facility",
+  "perks",
+];
+
+/**
+ * ADR-342/383 (mockup W1 s7 A): the purchase rules sit together with «Μόνο
+ * για νέα μέλη» and «Μία φορά ανά άτομο» in «Ποιος μπορεί να αγοράσει», and the
+ * booking limits in «Όρια κρατήσεων». Every other field stays in its section.
+ */
+export const ADVANCED_GROUP: Record<string, string> = {
+  "terms.buyers": "purchase_rules",
+  "terms.new_members_only": "purchase_rules",
+  "terms.once_per_person": "purchase_rules",
+  "terms.max_purchases_per_person": "purchase_rules",
+  "terms.prerequisite_package_ids": "purchase_rules",
+  "booking.daily_limit": "booking_limits",
+  "booking.open_bookings_limit": "booking_limits",
+};
+
+export function advancedGroupOf(spec: Pick<CatalogField, "key" | "section">): string {
+  return ADVANCED_GROUP[spec.key] ?? spec.section;
+}
 
 /** Field changes that keep dependent values valid (switching PT format resets the group size). */
 export function withDependents(key: string, value: unknown, draft: PackageDraft): Array<[string, unknown]> {
@@ -1157,7 +1234,7 @@ export function AdvancedSettings({
           field.available &&
           // Retired fields (content.workout_library) stay readable for stored contracts but are never authored.
           field.phase !== "retired" &&
-          field.section === section &&
+          advancedGroupOf(field) === section &&
           (normalizedQuery === "" || t(fieldLabelKey(field.key)).toLocaleLowerCase().includes(normalizedQuery)) &&
           (field.key !== "terms.conversion_package_id" || type.key === "trial") &&
           (field.key !== "terms.validity" || type.billing_model === "one_off" || isFieldLocked(type, field.key)) &&
@@ -1280,6 +1357,10 @@ export function priceSuffix(t: UiTranslator, billingPeriod: string) {
 
 /** Readable text for a stored field value (package detail and summaries for staff). */
 export function fieldValueText(t: UiTranslator, spec: CatalogField, value: unknown, names: { coaches: CoachOption[]; packages: FinanceRecord[] }): string {
+  if (spec.kind === "integer_or_null") {
+    return typeof value === "number" ? `${value} ${t(`${fieldLabelKey(spec.key)}Suffix`, { count: value })}` : t("pkgNoLimit");
+  }
+  if (spec.kind === "id_list") return Array.isArray(value) && value.length > 0 ? (packageNames(names.packages, value) ?? []).join(", ") : t("pkgNone");
   if (value === null || value === undefined) return spec.key === "personal_training.coach_id" ? t("pkgCoachAny") : t("pkgNone");
   if (typeof value === "boolean") return value ? t("pkgYes") : t("pkgNo");
   if (spec.key === "personal_training.coach_id") {

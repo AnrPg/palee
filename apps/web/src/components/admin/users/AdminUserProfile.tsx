@@ -60,6 +60,8 @@ import { allowanceLabel, localizeError, semanticLabel } from "@/i18n/presentatio
 import { MemberRolesEditor } from "@/components/admin/users/MemberRolesEditor";
 import { CoachAssignmentPanel } from "@/components/admin/users/CoachAssignmentPanel";
 import { BoxMessagePanel } from "@/components/admin/users/BoxMessagePanel";
+import { PAY_ROLES } from "@/components/admin/coach-pay/coach-pay";
+import { StaffPayCard } from "@/components/admin/coach-pay/StaffPayCard";
 import { MemberDocumentsPanel } from "@/components/documents/staff/MemberDocumentsPanel";
 import { CoachNotesPanel, type CoachNoteSubjectOption } from "@/components/admin/users/CoachNotesPanel";
 import { ClientTrainingGoalPanel } from "@/components/training-goal/ClientTrainingGoalPanel";
@@ -699,6 +701,7 @@ export function AdminUserProfile({ userId }: { userId: string }) {
   const clientRole = boxRoles.includes("athlete") ? "athlete" : boxRoles.includes("member") ? "member" : null;
   // ADR-100/101: coaches and private coach notes belong to client profiles.
   const isClient = clientRole !== null;
+  const isStaffPerson = boxRoles.some((role) => (PAY_ROLES as string[]).includes(role));
   if (isClient) sections.add("schedule");
   const showCoachNotes = isClient && (can(actor, "write_coach_notes") || can(actor, "read_coach_notes"));
   // ADR-359 (ANR mockup e5 A): the front desk reads and writes notes for the staff.
@@ -842,6 +845,9 @@ export function AdminUserProfile({ userId }: { userId: string }) {
 
           {/* ADR-252: the client's documents, signatures and health certificate. */}
           {isClient && tab === "overview" ? <MemberDocumentsPanel userId={userId} name={profile.identity.nickname} /> : null}
+
+          {/* ADR-382 (W1 s4): a staff member's pay rules and statements; the card checks who may see them. */}
+          {isStaffPerson && tab === "overview" ? <StaffPayCard userId={userId} name={profile.identity.nickname} /> : null}
 
           {inTab("box_message") ? (
             <Panel id="box_message" title={i18n("bmTitle")}>

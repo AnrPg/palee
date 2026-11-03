@@ -57,6 +57,8 @@ import { Dialog } from "@/components/ui/Dialog";
 import { Popover } from "@/components/ui/Popover";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { OnlinePaymentsSettings } from "@/components/admin/payments/OnlinePaymentsSettings";
+import { PayItemsCatalog } from "@/components/admin/coach-pay/PayItemsCatalog";
+import { CardSurchargeSettings } from "@/components/admin/payments/CardSurchargeSettings";
 import { useSettingLevels, type SettingLevels } from "@/components/settings/AdvancedSettings";
 import { AdvancedSettingsCard } from "@/components/settings/AdvancedSettingsCard";
 
@@ -1175,6 +1177,7 @@ export function AdminSettingsHub() {
   const i18n = useUiTranslations();
   const paymentsT = useTranslations("OnlinePayments");
   const smsT = useTranslations("Sms");
+  const coachPayT = useTranslations("CoachPay");
   const adv = useTranslations("AdvancedSettings");
   const { tokens, currentUser } = useSession();
   const token = tokens?.access_token;
@@ -1260,6 +1263,17 @@ export function AdminSettingsHub() {
                 <Suspense>
                   <OnlinePaymentsSettings token={token} />
                 </Suspense>
+                {/* ADR-340 (mockup W1 s1 B): the card surcharge, next to the provider it applies to. */}
+                <div className="mt-4">
+                  <CardSurchargeSettings token={token} />
+                </div>
+              </CollapsibleSection>
+            ) : null}
+
+            {/* ADR-382 (W1 s4): the overtime and allowances catalogue; also in Οικονομικά › Αμοιβές coaches. */}
+            {can(membership, "manage_settings") ? (
+              <CollapsibleSection id="coach-pay-items" title={coachPayT("viewItems")} description={coachPayT("itemsDescription")} defaultOpen={false}>
+                <PayItemsCatalog canEdit />
               </CollapsibleSection>
             ) : null}
 

@@ -166,14 +166,6 @@ defmodule Palee.Finance.Domain.PackageCatalog do
       max: 20
     },
     %{
-      key: "booking.weekly_limit",
-      section: "booking",
-      kind: :integer_or_null,
-      phase: :b,
-      min: 1,
-      max: 50
-    },
-    %{
       key: "booking.open_bookings_limit",
       section: "booking",
       kind: :integer_or_null,
@@ -298,11 +290,20 @@ defmodule Palee.Finance.Domain.PackageCatalog do
   @fields_by_key Map.new(@fields, &{&1.key, &1})
   @sections ~w[terms group_classes booking personal_training online_coaching content facility perks]
 
+  # ADR-383: fields that left the catalog. Packages saved before keep the
+  # key in their stored fields; it is dropped when they are read or saved
+  # again, never refused.
+  @removed_keys ["booking.weekly_limit"]
+
   def fields, do: @fields
   def keys, do: Enum.map(@fields, & &1.key)
   def sections, do: @sections
   def quota_periods, do: @quota_periods
   def implemented_phases, do: @implemented_phases
+
+  @doc "The fields without the keys that left the catalog (ADR-383)."
+  def drop_removed(fields) when is_map(fields), do: Map.drop(fields, @removed_keys)
+  def drop_removed(fields), do: fields
 
   def fetch(key) when is_binary(key) do
     case Map.fetch(@fields_by_key, key) do
