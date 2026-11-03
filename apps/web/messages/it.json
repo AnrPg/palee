@@ -16450,7 +16450,6 @@
       "needsUpgrade": "Aggiorna Palee sull’orologio.",
       "maxHr": "Battito massimo (per le zone)",
       "maxHrHint": "Facoltativo, da 120 a 230.",
-      "maxHrInvalid": "Inserisci un numero da 120 a 230.",
       "unpair": "Scollega orologio",
       "unpairConfirm": "Scollegare l’orologio? Il battito già registrato resta con i suoi allenamenti.",
       "unpairAction": "Scollega",

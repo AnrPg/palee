@@ -28,7 +28,7 @@ describe("platform capability layer", () => {
     expect(nativePushProvider()).toBeNull();
     expect(Object.values(getCapabilities()).every((value) => value === false)).toBe(true);
     expect(Object.keys(getCapabilities()).sort()).toEqual(
-      ["geofence", "healthConnect", "healthKit", "nativePush", "nfc", "tapToPay", "widgets"].sort(),
+      ["geofence", "healthConnect", "healthKit", "nativePush", "nfc", "tapToPay", "watch", "widgets"].sort(),
     );
   });
 

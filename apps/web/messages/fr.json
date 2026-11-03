@@ -16450,7 +16450,6 @@
       "needsUpgrade": "Mets à jour Palee sur la montre.",
       "maxHr": "Fréquence cardiaque max. (pour les zones)",
       "maxHrHint": "Facultatif, de 120 à 230.",
-      "maxHrInvalid": "Saisis un nombre de 120 à 230.",
       "unpair": "Déconnecter la montre",
       "unpairConfirm": "Déconnecter la montre ? La fréquence cardiaque déjà enregistrée reste avec ses entraînements.",
       "unpairAction": "Déconnecter",

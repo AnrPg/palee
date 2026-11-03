@@ -77,7 +77,6 @@ function WatchSettingsSheet({ token, watch, onClose }: { token: string; watch: P
   const [settings, setSettings] = useState<WatchSettings>(watch.settings);
   const [advanced, setAdvanced] = useState(false);
   const [maxHr, setMaxHr] = useState<number | null>(watch.settings.max_hr ?? null);
-  const maxHrInvalid = maxHr !== null && (maxHr < 120 || maxHr > 230);
 
   const replace = (saved: PairedWatch | null) =>
     queryClient.setQueryData<WatchList>(WATCHES_KEY, (current) =>
@@ -146,22 +145,22 @@ function WatchSettingsSheet({ token, watch, onClose }: { token: string; watch: P
               {t("watch.maxHr")}
               <IntegerInput
                 value={maxHr}
-                onValueChange={setMaxHr}
+                onValueChange={(value) => {
+                  // IntegerInput keeps the value within 120–230 when the field is left.
+                  setMaxHr(value);
+                  if (value !== (settings.max_hr ?? null)) save.mutate({ max_hr: value });
+                }}
                 min={120}
                 max={230}
-                aria-invalid={maxHrInvalid}
-                onBlur={() => {
-                  if (!maxHrInvalid && maxHr !== (settings.max_hr ?? null)) save.mutate({ max_hr: maxHr });
-                }}
                 className="min-h-11 rounded-2xl px-4"
                 style={{
                   background: "var(--panel-muted)",
-                  border: `1px solid ${maxHrInvalid ? "var(--danger)" : "var(--border)"}`,
+                  border: "1px solid var(--border)",
                   color: "var(--text)",
                 }}
               />
-              <span className="text-xs font-normal" style={{ color: maxHrInvalid ? "var(--danger)" : "var(--dim)" }}>
-                {maxHrInvalid ? t("watch.maxHrInvalid") : t("watch.maxHrHint")}
+              <span className="text-xs font-normal" style={{ color: "var(--dim)" }}>
+                {t("watch.maxHrHint")}
               </span>
             </label>
             <ConfirmButton

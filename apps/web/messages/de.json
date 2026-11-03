@@ -16450,7 +16450,6 @@
       "needsUpgrade": "Aktualisiere Palee auf der Uhr.",
       "maxHr": "Maximalpuls (für Zonen)",
       "maxHrHint": "Optional, von 120 bis 230.",
-      "maxHrInvalid": "Gib eine Zahl von 120 bis 230 ein.",
       "unpair": "Uhr trennen",
       "unpairConfirm": "Uhr trennen? Bereits erfasster Puls bleibt bei seinen Trainings.",
       "unpairAction": "Trennen",

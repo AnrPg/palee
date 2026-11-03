@@ -16450,7 +16450,6 @@
       "needsUpgrade": "Actualiza Palee en el reloj.",
       "maxHr": "Pulso máximo (para zonas)",
       "maxHrHint": "Opcional, de 120 a 230.",
-      "maxHrInvalid": "Escribe un número de 120 a 230.",
       "unpair": "Desconectar reloj",
       "unpairConfirm": "¿Desconectar el reloj? El pulso ya registrado se queda con sus entrenamientos.",
       "unpairAction": "Desconectar",

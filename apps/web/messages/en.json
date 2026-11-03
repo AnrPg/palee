@@ -16450,7 +16450,6 @@
       "needsUpgrade": "Update Palee on the watch.",
       "maxHr": "Maximum heart rate (for zones)",
       "maxHrHint": "Optional, from 120 to 230.",
-      "maxHrInvalid": "Enter a number from 120 to 230.",
       "unpair": "Disconnect watch",
       "unpairConfirm": "Disconnect the watch? Heart rate already recorded stays with its workouts.",
       "unpairAction": "Disconnect",

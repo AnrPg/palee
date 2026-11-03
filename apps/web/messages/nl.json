@@ -16450,7 +16450,6 @@
       "needsUpgrade": "Werk Palee bij op het horloge.",
       "maxHr": "Maximale hartslag (voor zones)",
       "maxHrHint": "Optioneel, van 120 tot 230.",
-      "maxHrInvalid": "Vul een getal van 120 tot 230 in.",
       "unpair": "Horloge loskoppelen",
       "unpairConfirm": "Horloge loskoppelen? Al vastgelegde hartslag blijft bij de trainingen.",
       "unpairAction": "Loskoppelen",

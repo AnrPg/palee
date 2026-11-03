@@ -16450,7 +16450,6 @@
       "needsUpgrade": "Atualiza o Palee no relógio.",
       "maxHr": "Pulsação máxima (para zonas)",
       "maxHrHint": "Opcional, de 120 a 230.",
-      "maxHrInvalid": "Escreve um número de 120 a 230.",
       "unpair": "Desligar relógio",
       "unpairConfirm": "Desligar o relógio? A pulsação já registada fica com os respetivos treinos.",
       "unpairAction": "Desligar",
