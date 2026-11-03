@@ -168,4 +168,6 @@ on 2026-11-03.
    and the reporter's note, against a possible claim window?
 10. **Placeholders.** `providerBody` still carries the bracketed company name,
     address and contact; the law section now names Greek law and Athens
-    directly. Confirm both.
+    directly, so the `[governing law and competent courts]` placeholder was
+    dropped from the catalogs. Confirm both. The draft date shown on both
+    legal pages (`LEGAL_DRAFT_DATE`) is now 2026-11-03.
