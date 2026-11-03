@@ -13,7 +13,6 @@ export async function legalPlaceholders() {
     address: t("placeholderAddress"),
     contact: t("placeholderContact"),
     authority: t("placeholderAuthority"),
-    law: t("placeholderLaw"),
   };
 }
 
