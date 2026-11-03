@@ -17,7 +17,7 @@ defmodule Palee.Workers.PaymentReminderJob do
     settings = Finance.get_finance_settings(context)
     interval_days = Map.get(settings, :payment_reminder_interval_days, 7)
 
-    # ADR-396: a deleted debtor's kept contact goes once the debt is settled.
+    # ADR-450: a deleted debtor's kept contact goes once the debt is settled.
     _released = DebtorContacts.release_settled(context)
 
     memberships = Finance.memberships_needing_payment_reminder(context, interval_days)

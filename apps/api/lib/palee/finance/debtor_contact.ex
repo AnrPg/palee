@@ -1,6 +1,6 @@
 defmodule Palee.Finance.DebtorContact do
   @moduledoc """
-  ADR-396: the name, email and SMS number a profile had when it was deleted while it
+  ADR-450: the name, email and SMS number a profile had when it was deleted while it
   still owed this box money. The box keeps them only to claim that debt
   (GDPR art. 17(3)(e)) and they go as soon as the person owes it nothing.
   """

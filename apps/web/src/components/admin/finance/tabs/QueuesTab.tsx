@@ -251,7 +251,7 @@ function QueueRow({ children, last }: { children: React.ReactNode; last: boolean
 }
 
 /**
- * ADR-396: a person who deleted their account while owing the box. The box
+ * ADR-450: a person who deleted their account while owing the box. The box
  * keeps the name, email and SMS number only until the debt is paid.
  */
 function KeptContact({ contact, note }: { contact: unknown; note: string }) {

@@ -1,6 +1,6 @@
 defmodule Palee.Finance.DebtorContactStore do
   @moduledoc """
-  ADR-396: the kept contacts of deleted debtors through the configured
+  ADR-450: the kept contacts of deleted debtors through the configured
   adapter. Callers run it inside the box's scope (`Finance.with_tenant_context/2`).
   """
 

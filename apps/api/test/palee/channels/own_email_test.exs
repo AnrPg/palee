@@ -65,7 +65,7 @@ defmodule Palee.Channels.OwnEmailTest do
       |> Enum.sort()
 
     # ADR-392: the booking email with its calendar invite is the box's own.
-    # ADR-396: so is the reminder of a debt owed to the box.
+    # ADR-450: so is the reminder of a debt owed to the box.
     assert box_kinds ==
              ~w(booking_invite box_automation corporate_invoice_issued corporate_invoice_reminder debt_reminder fiscal_document)a
 

@@ -1,4 +1,4 @@
-# ADR-396: A deleted profile that still owes a box keeps a contact there until the debt is paid
+# ADR-450: A deleted profile that still owes a box keeps a contact there until the debt is paid
 Date: 2026-11-03
 Status: Accepted
 

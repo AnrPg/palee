@@ -339,7 +339,7 @@ test.describe("finance ledger", () => {
             open_charges: [
               { id: "m-2", user_id: "u-2", user_label: "nikos", balance_due_cents: 5000, oldest_due_on: "2026-10-05", state: "overdue" },
               { id: "m-1", user_id: MEMBER_ID, user_label: "Maria", balance_due_cents: 4500, oldest_due_on: "2026-10-29", state: "unpaid" },
-              // ADR-396: deleted their account while owing; the box kept how to reach them.
+              // ADR-450: deleted their account while owing; the box kept how to reach them.
               {
                 id: "m-3",
                 user_id: "u-3",

@@ -24,7 +24,7 @@ defmodule Palee.Application.GetFinanceOperationalQueues do
      }}
   end
 
-  # ADR-396: a profile deleted while it owes the box shows the name the box
+  # ADR-450: a profile deleted while it owes the box shows the name the box
   # kept for the debt, with how to reach the person, not «Deleted account».
   defp with_kept_contacts(queues, kept) when map_size(kept) == 0, do: queues
 

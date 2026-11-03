@@ -31,7 +31,7 @@ defmodule Palee.Identity.Ports.AccountDeletionStore do
   @doc "Whether the profile appears in accounting records a business must keep."
   @callback has_retained_records?(id()) :: boolean()
 
-  @doc "ADR-396: the boxes and memberships of a profile whose deletion is scheduled."
+  @doc "ADR-450: the boxes and memberships of a profile whose deletion is scheduled."
   @callback deleting_profile_memberships(id()) :: [%{organization_id: id(), membership_id: id()}]
 
   @doc """

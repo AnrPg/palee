@@ -1,6 +1,6 @@
 defmodule Palee.Email.Templates.DebtReminder do
   @moduledoc """
-  `:debt_reminder` (ADR-396): the payment reminder of a person whose Palee
+  `:debt_reminder` (ADR-450): the payment reminder of a person whose Palee
   profile was deleted while they still owed a box money. They have no app to
   see it in, so it goes to the email the box kept for the debt. Carries no
   link (there is no account to sign in to), only who to contact.

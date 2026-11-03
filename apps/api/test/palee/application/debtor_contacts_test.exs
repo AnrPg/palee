@@ -1,6 +1,6 @@
 defmodule Palee.Application.DebtorContactsTest do
   @moduledoc """
-  ADR-396: a profile deleted while it owes a box money. The box keeps the
+  ADR-450: a profile deleted while it owes a box money. The box keeps the
   name, email and SMS number until the debt is settled, sees them on
   «Οφειλές», and the reminder goes to the kept email.
   """

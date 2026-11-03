@@ -1,5 +1,5 @@
 defmodule Palee.Infrastructure.Finance.EctoDebtorContactStore do
-  @moduledoc "ADR-396: Postgres storage of deleted debtors' kept contacts (tenant RLS)."
+  @moduledoc "ADR-450: Postgres storage of deleted debtors' kept contacts (tenant RLS)."
 
   @behaviour Palee.Finance.Ports.DebtorContactStore
 

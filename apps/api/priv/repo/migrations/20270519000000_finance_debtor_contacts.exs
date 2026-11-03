@@ -1,6 +1,6 @@
 defmodule Palee.Repo.Migrations.FinanceDebtorContacts do
   @moduledoc """
-  ADR-396: a profile deleted while it still owes a box money.
+  ADR-450: a profile deleted while it still owes a box money.
 
   A profile in a box's accounts is anonymised, not deleted (ADR-211), and the
   debt stays owed (ADR-220). Without a name or an address the box could no

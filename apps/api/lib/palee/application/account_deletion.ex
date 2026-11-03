@@ -328,7 +328,7 @@ defmodule Palee.Application.AccountDeletion do
   end
 
   defp remove_profile(profile) do
-    # ADR-396: each box the person still owes keeps their name, email and
+    # ADR-450: each box the person still owes keeps their name, email and
     # SMS number until the debt is settled (read before the number goes).
     :ok = DebtorContacts.keep(profile)
     # ADR-280: the Partners check's selfies and rows (anonymising keeps the

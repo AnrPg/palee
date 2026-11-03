@@ -43,7 +43,7 @@ defmodule Palee.Finance.Domain.TenantDataPolicy do
               %{table: "membership_payments"},
               %{table: "finance_invoices"},
               %{table: "finance_subscription_freezes"},
-              # ADR-396: a deleted debtor's kept contact references the membership.
+              # ADR-450: a deleted debtor's kept contact references the membership.
               %{table: "finance_debtor_contacts"},
               # ADR-274: values staff set by hand, per membership.
               %{table: "finance_value_overrides"},

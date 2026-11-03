@@ -1,6 +1,6 @@
 defmodule Palee.Finance.Ports.DebtorContactStore do
   @moduledoc """
-  ADR-396: storage of the contact a box keeps for a deleted profile that
+  ADR-450: storage of the contact a box keeps for a deleted profile that
   still owes it money. Every call runs inside the box's tenant scope.
   """
 
