@@ -5,7 +5,7 @@ defmodule PaleeWeb.AccountProfilesController do
   the profiles listed, added or switched to.
   """
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Guardian.Plug, as: GuardianPlug
   alias OpenApiSpex.{RequestBody, Schema}

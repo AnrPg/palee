@@ -2,7 +2,7 @@ defmodule PaleeWeb.AdminSiteController do
   @moduledoc "Staff set up the box's website and its custom domains (ADR-352..354)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.BoxSite.SiteAdmin
   alias PaleeWeb.Schemas.BoxSite, as: S

@@ -2,7 +2,7 @@ defmodule PaleeWeb.MyInterestsController do
   @moduledoc "«Τι κάνεις»: the current person's disciplines and level (ADR-183)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.MyInterests
   alias PaleeWeb.Schemas.Interests, as: S

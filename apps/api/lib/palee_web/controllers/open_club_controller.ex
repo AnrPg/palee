@@ -2,7 +2,7 @@ defmodule PaleeWeb.OpenClubController do
   @moduledoc "«Βρες», open clubs, a club's «Μέλη» and reports, from your personal session (ADR-143)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{ClubMembers, CommunityReports, OpenClubs}
   alias PaleeWeb.Schemas.Community, as: C

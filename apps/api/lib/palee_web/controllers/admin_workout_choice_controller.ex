@@ -2,7 +2,7 @@ defmodule PaleeWeb.AdminWorkoutChoiceController do
   @moduledoc "The class form's WOD picker: suggestions and paged search (no whole-library loads)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias OpenApiSpex.{Parameter, Schema}
   alias Palee.Application.WorkoutChoices

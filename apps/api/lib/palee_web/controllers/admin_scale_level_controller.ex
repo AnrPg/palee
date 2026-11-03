@@ -1,6 +1,6 @@
 defmodule PaleeWeb.AdminScaleLevelController do
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{ListScaleLevels, ReplaceScaleLevels}
   alias OpenApiSpex.{MediaType, RequestBody, Schema}

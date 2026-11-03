@@ -2,7 +2,7 @@ defmodule PaleeWeb.CoachNotesController do
   @moduledoc "Private coach notes and who read them (ADR-101)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.CoachNotes
   alias Palee.Organizations

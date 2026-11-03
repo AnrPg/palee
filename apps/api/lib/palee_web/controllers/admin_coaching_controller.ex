@@ -1,6 +1,6 @@
 defmodule PaleeWeb.AdminCoachingController do
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.GetCoachingAthleteDrillDown
   alias OpenApiSpex.{Parameter, Schema}

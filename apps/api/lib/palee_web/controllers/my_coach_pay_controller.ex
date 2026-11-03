@@ -2,7 +2,7 @@ defmodule PaleeWeb.MyCoachPayController do
   @moduledoc "A staff member's own approved pay statements and their PDF (ADR-341, ADR-382)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias OpenApiSpex.{Parameter, Schema}
   alias Palee.Application.CoachPay.CoachPayService

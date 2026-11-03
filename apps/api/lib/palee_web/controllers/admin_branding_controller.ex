@@ -2,7 +2,7 @@ defmodule PaleeWeb.AdminBrandingController do
   @moduledoc "Tenant owner/admin logo upload (ADR-121)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{
     FinalizeOrganizationLogo,

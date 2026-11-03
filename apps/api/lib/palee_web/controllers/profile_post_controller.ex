@@ -2,7 +2,7 @@ defmodule PaleeWeb.ProfilePostController do
   @moduledoc "Posts to your followers or to everyone, with kudos and comments (ADR-142, P2-M2)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.ProfilePosts
   alias PaleeWeb.Schemas.Community, as: C

@@ -2,7 +2,7 @@ defmodule PaleeWeb.SavedFilterController do
   @moduledoc "A person's remembered and named filters per list surface (ADR-151)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.SavedFilters
   alias PaleeWeb.Schemas.SavedFilters, as: Schemas

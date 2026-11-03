@@ -2,7 +2,7 @@ defmodule PaleeWeb.AdminVisitBadgesController do
   @moduledoc "ADR-359 (CP-E1): visit badges («Πρώτη επίσκεψη», «Επισκέπτης») of a class's seats."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.VisitBadges
   alias PaleeWeb.Schemas.TrainingFloor, as: S

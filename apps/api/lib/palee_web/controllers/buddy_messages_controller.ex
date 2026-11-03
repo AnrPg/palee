@@ -6,7 +6,7 @@ defmodule PaleeWeb.BuddyMessagesController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.BuddyMessages
   alias PaleeWeb.Schemas.Buddies, as: S

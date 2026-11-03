@@ -2,7 +2,7 @@ defmodule PaleeWeb.PlatformOrganizationBrandingController do
   @moduledoc "Vendor logo upload for any organization from the platform console (ADR-121)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{
     FinalizeOrganizationLogo,

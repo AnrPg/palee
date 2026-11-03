@@ -2,7 +2,7 @@ defmodule PaleeWeb.AdminCommunityController do
   @moduledoc "«Κοινότητα» for staff (ADR-143, board 7 Q3, Q5, Q6): groups, reports and open clubs."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{CommunityGroups, CommunityReports, OpenClubs}
   alias PaleeWeb.Schemas.CommunityGroups, as: S

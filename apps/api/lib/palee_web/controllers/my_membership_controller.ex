@@ -1,7 +1,7 @@
 defmodule PaleeWeb.MyMembershipController do
   @moduledoc "ADR-220: the member's renewal choice and leaving the box."
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias OpenApiSpex.Schema
   alias Palee.Application.MembershipRenewal

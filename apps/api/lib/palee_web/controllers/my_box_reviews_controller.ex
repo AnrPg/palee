@@ -2,7 +2,7 @@ defmodule PaleeWeb.MyBoxReviewsController do
   @moduledoc "A member reads the box's reviews and writes their own (ADR-386)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.ReviewAsks.{BoxReviews, ReviewReports}
   alias PaleeWeb.Schemas.BoxReviews, as: S

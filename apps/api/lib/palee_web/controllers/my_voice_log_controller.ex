@@ -7,7 +7,7 @@ defmodule PaleeWeb.MyVoiceLogController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.VoiceLogDrafts
   alias PaleeWeb.Schemas.VoiceLog, as: VoiceLogSchemas

@@ -5,7 +5,7 @@ defmodule PaleeWeb.MyCheckInController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{DeskCheckIn, MemberCodes, WalletPasses}
   alias PaleeWeb.Schemas.CheckIn, as: S

@@ -1,6 +1,6 @@
 defmodule PaleeWeb.ClassTimerController do
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{CommandClassTimer, GetClassTimer}
   alias OpenApiSpex.{MediaType, Parameter, RequestBody, Schema}

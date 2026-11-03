@@ -7,7 +7,7 @@ defmodule PaleeWeb.AdminChannelEmailController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.Channels.ChannelEmailSettings
   alias PaleeWeb.Schemas.Channels, as: C

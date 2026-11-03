@@ -2,7 +2,7 @@ defmodule PaleeWeb.AdminReviewAsksController do
   @moduledoc "Staff set up Google review asks and see their counts (ADR-355)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.ReviewAsks.ReviewAskAdmin
   alias PaleeWeb.Schemas.BoxReviews

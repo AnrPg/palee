@@ -1,6 +1,6 @@
 defmodule PaleeWeb.AdminAnalyticsController do
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.GetAdminAnalyticsSummary
   alias OpenApiSpex.{Parameter, Schema}

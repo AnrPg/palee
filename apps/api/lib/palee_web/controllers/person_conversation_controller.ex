@@ -5,7 +5,7 @@ defmodule PaleeWeb.PersonConversationController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.PersonConversations
   alias PaleeWeb.Schemas.Conversations, as: S

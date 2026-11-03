@@ -5,7 +5,7 @@ defmodule PaleeWeb.PostAttachmentController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.PostAttachment
   alias PaleeWeb.Schemas.Community

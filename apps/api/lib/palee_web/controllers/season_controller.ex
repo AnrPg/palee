@@ -2,7 +2,7 @@ defmodule PaleeWeb.SeasonController do
   @moduledoc "A member's seasons in `Box › Συνδρομή`: the list, a request and its withdrawal (ADR-167)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.Seasons
   alias PaleeWeb.Schemas.Seasons, as: S
