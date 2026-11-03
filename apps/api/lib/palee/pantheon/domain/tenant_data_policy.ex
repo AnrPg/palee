@@ -12,8 +12,11 @@ defmodule Palee.Pantheon.Domain.TenantDataPolicy do
             context: "pantheon",
             purge_order: 40,
             disposition: :purge,
-            basis: "Personal records are member training data with no retention obligation.",
+            basis:
+              "Personal records and coach display choices are member training data with no retention obligation.",
             tables: [
+              # ADR-395: a coach's per-box choice of what a client's fitness card shows.
+              %{table: "fitness_display_overrides"},
               %{table: "user_pr_history", rls: {:user_via, "user_pr_records", "pr_record_id"}},
               %{table: "user_pr_records", rls: :user}
             ]
