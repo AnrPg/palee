@@ -3,7 +3,8 @@ defmodule Palee.Pdf do
   A small, deterministic PDF 1.7 writer (ADR-245): A4 pages with Unicode
   text in embedded TrueType fonts, filled and stroked rectangles and lines.
   Enough for fiscal documents and the Swiss QR-bill; no dependency, no
-  network, no external process.
+  network, no external process. JPEG and PNG images (`Palee.Pdf.Image`) are
+  drawn with `image/6`.
 
   Coordinates are PDF points (1/72 inch) from the **bottom-left** corner.
   Text is drawn with a `Palee.Pdf.TrueType` font as two-byte glyph ids
@@ -20,11 +21,11 @@ defmodule Palee.Pdf do
       |> Palee.Pdf.render(title: "I-000042")
   """
 
-  alias Palee.Pdf.TrueType
+  alias Palee.Pdf.{Image, TrueType}
 
   @a4 {595.28, 841.89}
 
-  defstruct fonts: %{}, pages: [], current: [], used: %{}, texts: [], size: @a4
+  defstruct fonts: %{}, pages: [], current: [], used: %{}, texts: [], images: [], size: @a4
 
   @doc "A new document with one empty page. `fonts` maps a key to a parsed `TrueType` font."
   def new(fonts, opts \\ []) when is_map(fonts) do
@@ -208,6 +209,33 @@ defmodule Palee.Pdf do
     %{pdf | current: [op | pdf.current]}
   end
 
+  @doc """
+  Draws an image (`Palee.Pdf.Image`) with its lower-left corner at `{x, y}`,
+  scaled to `width` × `height` points.
+  """
+  def image(%__MODULE__{} = pdf, %Image{} = image, x, y, width, height) do
+    name = "Im#{length(pdf.images) + 1}"
+
+    op = [
+      "q ",
+      num(width),
+      " 0 0 ",
+      num(height),
+      " ",
+      num(x),
+      " ",
+      num(y),
+      " cm /",
+      name,
+      " Do Q\n"
+    ]
+
+    %{pdf | current: [op | pdf.current], images: [{name, image} | pdf.images]}
+  end
+
+  @doc "How many images were drawn so far."
+  def image_count(%__MODULE__{images: images}), do: length(images)
+
   @doc "Every text drawn so far, in drawing order (for tests and checks)."
   def texts(%__MODULE__{texts: texts}), do: Enum.reverse(texts)
 
@@ -233,10 +261,26 @@ defmodule Palee.Pdf do
       |> Enum.with_index()
       |> Map.new(fn {key, index} -> {key, first_font + index * 5} end)
 
+    # Then per image: the image and, when it has transparency, its mask.
+    first_image = first_font + length(font_keys) * 5
+    {image_objects, image_ids} = image_objects(Enum.reverse(pdf.images), first_image)
+
     resources = [
       "<< /Font << ",
       Enum.map(font_keys, fn key -> ["/", font_name(key), " ", ref(font_ids[key]), " "] end),
-      ">> >>"
+      ">> ",
+      case image_ids do
+        [] ->
+          []
+
+        ids ->
+          [
+            "/XObject << ",
+            Enum.map(ids, fn {name, id} -> ["/", name, " ", ref(id), " "] end),
+            ">> "
+          ]
+      end,
+      ">>"
     ]
 
     page_objects =
@@ -274,9 +318,50 @@ defmodule Palee.Pdf do
         {1, "<< /Type /Catalog /Pages 2 0 R >>"},
         {2, ["<< /Type /Pages /Kids [", kids, "] /Count ", Integer.to_string(page_count), " >>"]},
         {3, info_dict(info)}
-      ] ++ page_objects ++ font_objects
+      ] ++ page_objects ++ font_objects ++ image_objects
 
     write(objects)
+  end
+
+  # ── Images ────────────────────────────────────────────────────────────────
+
+  defp image_objects(images, first_id) do
+    {objects, {ids, _next}} =
+      Enum.flat_map_reduce(images, {[], first_id}, fn {name, image}, {ids, id} ->
+        case image.smask do
+          nil ->
+            {[{id, image_object(image, nil)}], {[{name, id} | ids], id + 1}}
+
+          mask ->
+            {[{id, image_object(image, id + 1)}, {id + 1, image_object(mask, nil)}],
+             {[{name, id} | ids], id + 2}}
+        end
+      end)
+
+    {objects, Enum.reverse(ids)}
+  end
+
+  defp image_object(%Image{} = image, smask_id) do
+    [
+      "<< /Type /XObject /Subtype /Image /Width ",
+      Integer.to_string(image.width),
+      " /Height ",
+      Integer.to_string(image.height),
+      " /ColorSpace ",
+      image.color_space,
+      " /BitsPerComponent ",
+      Integer.to_string(image.bits),
+      " /Filter /",
+      image.filter,
+      if(image.decode_parms, do: [" /DecodeParms ", image.decode_parms], else: []),
+      if(image.decode, do: [" /Decode ", image.decode], else: []),
+      if(smask_id, do: [" /SMask ", ref(smask_id)], else: []),
+      " /Length ",
+      Integer.to_string(byte_size(image.data)),
+      " >>\nstream\n",
+      image.data,
+      "\nendstream"
+    ]
   end
 
   # ── Fonts ─────────────────────────────────────────────────────────────────
