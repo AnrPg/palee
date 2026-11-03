@@ -814,3 +814,12 @@ msgstr "בקשה לאימון ניסיון מהאתר"
 
 msgid "%{name} wrote through the box's website. Answer or call them."
 msgstr "%{name} כתב/ה דרך האתר של הבוקס. כדאי לענות או להתקשר."
+
+msgid "The WOD changed"
+msgstr "ה-WOD השתנה"
+
+msgid "%{title} changed after you did it. See it as it was in your Journal."
+msgstr "„%{title}” השתנה אחרי שעשית אותו. אפשר לראות אותו כפי שהיה ביומן שלך."
+
+msgid "A WOD you did changed. See it as it was in your Journal."
+msgstr "WOD שעשית השתנה. אפשר לראות אותו כפי שהיה ביומן שלך."

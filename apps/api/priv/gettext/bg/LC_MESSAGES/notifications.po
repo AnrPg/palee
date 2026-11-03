@@ -814,3 +814,12 @@ msgstr "Заявка за пробна тренировка от сайта"
 
 msgid "%{name} wrote through the box's website. Answer or call them."
 msgstr "%{name} писа през сайта на бокса. Отговори или се обади."
+
+msgid "The WOD changed"
+msgstr "WOD-ът е променен"
+
+msgid "%{title} changed after you did it. See it as it was in your Journal."
+msgstr "„%{title}“ е променен, след като го направихте. Вижте го какъвто беше в Дневника си."
+
+msgid "A WOD you did changed. See it as it was in your Journal."
+msgstr "WOD, който направихте, е променен. Вижте го какъвто беше в Дневника си."

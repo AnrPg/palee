@@ -814,3 +814,12 @@ msgstr "طلب حصة تجريبية من الموقع"
 
 msgid "%{name} wrote through the box's website. Answer or call them."
 msgstr "كتب %{name} عبر موقع الصالة. أجب أو اتصل."
+
+msgid "The WOD changed"
+msgstr "تغيّر الـWOD"
+
+msgid "%{title} changed after you did it. See it as it was in your Journal."
+msgstr "تغيّر «%{title}» بعد أن أدّيته. شاهده كما كان في يومياتك."
+
+msgid "A WOD you did changed. See it as it was in your Journal."
+msgstr "تغيّر WOD أدّيته. شاهده كما كان في يومياتك."
