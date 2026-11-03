@@ -3080,6 +3080,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/me/fitness-profile/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Your settings for the fitness card: body weight, birth year, what it shows */
+        get: operations["PaleeWeb.FitnessProfileController.settings"];
+        /** Change your settings for the fitness card (only the fields sent change) */
+        put: operations["PaleeWeb.FitnessProfileController.update_settings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me/follow-requests": {
         parameters: {
             query?: never;
@@ -16390,6 +16408,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/staff/clients/{user_id}/fitness-display": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A client's fitness card settings (only for their coach) */
+        get: operations["PaleeWeb.ClientFitnessDisplayController.show"];
+        /** Choose what a client's fitness card shows (progress only, nothing, or theirs) */
+        put: operations["PaleeWeb.ClientFitnessDisplayController.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/staff/clients/{user_id}/journal": {
         parameters: {
             query?: never;
@@ -28476,6 +28512,26 @@ export interface components {
             times: string[];
             weekdays: number[];
         };
+        /** ClientFitnessDisplay */
+        ClientFitnessDisplay: {
+            /** @enum {string|null} */
+            override: "progress_only" | "none" | null;
+            /** @description The client's own settings (null when they set none) */
+            settings: {
+                birth_year: number | null;
+                body_weight_kg: number | null;
+                /** @enum {string} */
+                display: "all" | "progress_only" | "none";
+            } | null;
+        };
+        /** ClientFitnessDisplayRequest */
+        ClientFitnessDisplayRequest: {
+            /**
+             * @description null gives the choice back to the client
+             * @enum {string|null}
+             */
+            display: "progress_only" | "none" | null;
+        };
         /**
          * ClientTrainingDepth
          * @description Only from entries the client shares with this gym's coaches
@@ -34726,36 +34782,67 @@ export interface components {
                 user_id: string;
             };
         };
-        /** FitnessDomain */
+        /**
+         * FitnessDomain
+         * @description With display all: score, confidence, stale, reasons (and change with a period). With progress_only: tested and direction only.
+         */
         FitnessDomain: {
+            change?: number | null;
             /** @enum {string|null} */
-            confidence: "low" | "medium" | "high" | null;
+            confidence?: "low" | "medium" | "high" | null;
+            /**
+             * @description progress_only: the change without its number
+             * @enum {string|null}
+             */
+            direction?: "up" | "down" | "same" | null;
             /** @enum {string} */
             domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
-            reasons: {
+            previous_score?: number | null;
+            reasons?: {
+                age_band?: string | null;
                 age_days: number;
+                age_percent?: number | null;
                 anchors: {
                     points: number;
                     value: number;
                 }[];
+                /**
+                 * @description ADR-395: body_weight reads the lift as a multiple of body weight
+                 * @enum {string}
+                 */
+                basis: "absolute" | "body_weight";
                 /** Format: date */
                 beaten_on: string;
                 benchmark: string;
+                body_weight_kg?: number | null;
                 /** @enum {string} */
                 domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
                 /** @description 1RM estimated from a multi-rep set */
                 estimated: boolean;
+                /** @description The lift's load in kg */
+                load?: number | null;
                 /** @description The PR as the person named it */
                 name: string;
+                /** @description What the next level takes, in the PR's own unit */
+                next?: {
+                    points: number;
+                    value: number;
+                } | null;
                 points: number;
+                /** @description Lift ÷ body weight */
+                ratio?: number | null;
+                /** @description The lift's reps */
+                reps?: number | null;
                 stale: boolean;
                 /** @enum {string} */
                 unit: "kg" | "reps" | "mins_secs";
                 /** @description kg (1RM), reps or seconds */
                 value: number;
             }[];
-            score: number | null;
-            stale: boolean;
+            score?: number | null;
+            stale?: boolean;
+            /** @description progress_only: has a score */
+            tested?: boolean;
         };
         /** FitnessFocus */
         FitnessFocus: {
@@ -34773,37 +34860,71 @@ export interface components {
                 version: number;
             };
             benchmarks_known: number;
+            display: {
+                /** @enum {string} */
+                mode: "all" | "progress_only" | "none";
+                /** @enum {string} */
+                set_by: "self" | "coach";
+            };
             /** @enum {string|null} */
             division: "women" | "men" | null;
             domains: {
+                change?: number | null;
                 /** @enum {string|null} */
-                confidence: "low" | "medium" | "high" | null;
+                confidence?: "low" | "medium" | "high" | null;
+                /**
+                 * @description progress_only: the change without its number
+                 * @enum {string|null}
+                 */
+                direction?: "up" | "down" | "same" | null;
                 /** @enum {string} */
                 domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
-                reasons: {
+                previous_score?: number | null;
+                reasons?: {
+                    age_band?: string | null;
                     age_days: number;
+                    age_percent?: number | null;
                     anchors: {
                         points: number;
                         value: number;
                     }[];
+                    /**
+                     * @description ADR-395: body_weight reads the lift as a multiple of body weight
+                     * @enum {string}
+                     */
+                    basis: "absolute" | "body_weight";
                     /** Format: date */
                     beaten_on: string;
                     benchmark: string;
+                    body_weight_kg?: number | null;
                     /** @enum {string} */
                     domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
                     /** @description 1RM estimated from a multi-rep set */
                     estimated: boolean;
+                    /** @description The lift's load in kg */
+                    load?: number | null;
                     /** @description The PR as the person named it */
                     name: string;
+                    /** @description What the next level takes, in the PR's own unit */
+                    next?: {
+                        points: number;
+                        value: number;
+                    } | null;
                     points: number;
+                    /** @description Lift ÷ body weight */
+                    ratio?: number | null;
+                    /** @description The lift's reps */
+                    reps?: number | null;
                     stale: boolean;
                     /** @enum {string} */
                     unit: "kg" | "reps" | "mins_secs";
                     /** @description kg (1RM), reps or seconds */
                     value: number;
                 }[];
-                score: number | null;
-                stale: boolean;
+                score?: number | null;
+                stale?: boolean;
+                /** @description progress_only: has a score */
+                tested?: boolean;
             }[];
             focus: ({
                 /** @enum {string} */
@@ -34814,38 +34935,88 @@ export interface components {
                 [key: string]: unknown;
             })[];
             injury_caution: boolean;
+            inputs: {
+                age_band: string | null;
+                age_percent: number | null;
+                /** @description Whether a birth year counts yet */
+                age_ready: boolean;
+                body_weight_kg: number | null;
+            };
             neutral_standards: boolean;
             overall: {
+                change?: number | null;
                 domains_scored: number;
                 reason: string;
                 score: number;
             } | null;
+            /** Format: date */
+            period_from: string | null;
+            /** FitnessSettings */
+            settings: {
+                birth_year: number | null;
+                body_weight_kg: number | null;
+                /** @enum {string} */
+                display: "all" | "progress_only" | "none";
+            };
         };
         /**
          * FitnessReason
          * @description One benchmark PR and the points it gave
          */
         FitnessReason: {
+            age_band?: string | null;
             age_days: number;
+            age_percent?: number | null;
             anchors: {
                 points: number;
                 value: number;
             }[];
+            /**
+             * @description ADR-395: body_weight reads the lift as a multiple of body weight
+             * @enum {string}
+             */
+            basis: "absolute" | "body_weight";
             /** Format: date */
             beaten_on: string;
             benchmark: string;
+            body_weight_kg?: number | null;
             /** @enum {string} */
             domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
             /** @description 1RM estimated from a multi-rep set */
             estimated: boolean;
+            /** @description The lift's load in kg */
+            load?: number | null;
             /** @description The PR as the person named it */
             name: string;
+            /** @description What the next level takes, in the PR's own unit */
+            next?: {
+                points: number;
+                value: number;
+            } | null;
             points: number;
+            /** @description Lift ÷ body weight */
+            ratio?: number | null;
+            /** @description The lift's reps */
+            reps?: number | null;
             stale: boolean;
             /** @enum {string} */
             unit: "kg" | "reps" | "mins_secs";
             /** @description kg (1RM), reps or seconds */
             value: number;
+        };
+        /** FitnessSettings */
+        FitnessSettings: {
+            birth_year: number | null;
+            body_weight_kg: number | null;
+            /** @enum {string} */
+            display: "all" | "progress_only" | "none";
+        };
+        /** FitnessSettingsRequest */
+        FitnessSettingsRequest: {
+            birth_year?: number | null;
+            body_weight_kg?: number | null;
+            /** @enum {string} */
+            display?: "all" | "progress_only" | "none";
         };
         /** FloorPlan */
         FloorPlan: {
@@ -71343,6 +71514,8 @@ export interface operations {
             query?: {
                 /** @description Standards to read the PRs with (neutral mean when absent) */
                 division?: "women" | "men";
+                /** @description ADR-395: Πρόοδος's period; adds each domain's change since its start */
+                period?: "4w" | "12w" | "6m" | "1y" | "all";
             };
             header?: never;
             path?: never;
@@ -71362,37 +71535,71 @@ export interface operations {
                             version: number;
                         };
                         benchmarks_known: number;
+                        display: {
+                            /** @enum {string} */
+                            mode: "all" | "progress_only" | "none";
+                            /** @enum {string} */
+                            set_by: "self" | "coach";
+                        };
                         /** @enum {string|null} */
                         division: "women" | "men" | null;
                         domains: {
+                            change?: number | null;
                             /** @enum {string|null} */
-                            confidence: "low" | "medium" | "high" | null;
+                            confidence?: "low" | "medium" | "high" | null;
+                            /**
+                             * @description progress_only: the change without its number
+                             * @enum {string|null}
+                             */
+                            direction?: "up" | "down" | "same" | null;
                             /** @enum {string} */
                             domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
-                            reasons: {
+                            previous_score?: number | null;
+                            reasons?: {
+                                age_band?: string | null;
                                 age_days: number;
+                                age_percent?: number | null;
                                 anchors: {
                                     points: number;
                                     value: number;
                                 }[];
+                                /**
+                                 * @description ADR-395: body_weight reads the lift as a multiple of body weight
+                                 * @enum {string}
+                                 */
+                                basis: "absolute" | "body_weight";
                                 /** Format: date */
                                 beaten_on: string;
                                 benchmark: string;
+                                body_weight_kg?: number | null;
                                 /** @enum {string} */
                                 domain: "strength" | "power" | "gymnastics" | "monostructural" | "metcon";
                                 /** @description 1RM estimated from a multi-rep set */
                                 estimated: boolean;
+                                /** @description The lift's load in kg */
+                                load?: number | null;
                                 /** @description The PR as the person named it */
                                 name: string;
+                                /** @description What the next level takes, in the PR's own unit */
+                                next?: {
+                                    points: number;
+                                    value: number;
+                                } | null;
                                 points: number;
+                                /** @description Lift ÷ body weight */
+                                ratio?: number | null;
+                                /** @description The lift's reps */
+                                reps?: number | null;
                                 stale: boolean;
                                 /** @enum {string} */
                                 unit: "kg" | "reps" | "mins_secs";
                                 /** @description kg (1RM), reps or seconds */
                                 value: number;
                             }[];
-                            score: number | null;
-                            stale: boolean;
+                            score?: number | null;
+                            stale?: boolean;
+                            /** @description progress_only: has a score */
+                            tested?: boolean;
                         }[];
                         focus: ({
                             /** @enum {string} */
@@ -71403,16 +71610,103 @@ export interface operations {
                             [key: string]: unknown;
                         })[];
                         injury_caution: boolean;
+                        inputs: {
+                            age_band: string | null;
+                            age_percent: number | null;
+                            /** @description Whether a birth year counts yet */
+                            age_ready: boolean;
+                            body_weight_kg: number | null;
+                        };
                         neutral_standards: boolean;
                         overall: {
+                            change?: number | null;
                             domains_scored: number;
                             reason: string;
                             score: number;
                         } | null;
+                        /** Format: date */
+                        period_from: string | null;
+                        /** FitnessSettings */
+                        settings: {
+                            birth_year: number | null;
+                            body_weight_kg: number | null;
+                            /** @enum {string} */
+                            display: "all" | "progress_only" | "none";
+                        };
                     };
                 };
             };
             /** @description Unknown division */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.FitnessProfileController.settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        birth_year: number | null;
+                        body_weight_kg: number | null;
+                        /** @enum {string} */
+                        display: "all" | "progress_only" | "none";
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.FitnessProfileController.update_settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    birth_year?: number | null;
+                    body_weight_kg?: number | null;
+                    /** @enum {string} */
+                    display?: "all" | "progress_only" | "none";
+                };
+            };
+        };
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        birth_year: number | null;
+                        body_weight_kg: number | null;
+                        /** @enum {string} */
+                        display: "all" | "progress_only" | "none";
+                    };
+                };
+            };
+            /** @description A value out of range */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -137747,6 +138041,113 @@ export interface operations {
                             /** Format: date-time */
                             updated_at?: string;
                         };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.ClientFitnessDisplayController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string|null} */
+                        override: "progress_only" | "none" | null;
+                        /** @description The client's own settings (null when they set none) */
+                        settings: {
+                            birth_year: number | null;
+                            body_weight_kg: number | null;
+                            /** @enum {string} */
+                            display: "all" | "progress_only" | "none";
+                        } | null;
+                    };
+                };
+            };
+            /** @description Not one of your clients */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.ClientFitnessDisplayController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description null gives the choice back to the client
+                     * @enum {string|null}
+                     */
+                    display: "progress_only" | "none" | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string|null} */
+                        override: "progress_only" | "none" | null;
+                        /** @description The client's own settings (null when they set none) */
+                        settings: {
+                            birth_year: number | null;
+                            body_weight_kg: number | null;
+                            /** @enum {string} */
+                            display: "all" | "progress_only" | "none";
+                        } | null;
+                    };
+                };
+            };
+            /** @description Not one of your clients */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Unknown choice */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
                     };
                 };
             };

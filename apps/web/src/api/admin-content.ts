@@ -15,7 +15,7 @@ export type ContentVideoInput = NonNullable<
 
 export async function fetchAdminVideos(token: string) {
   const response = await apiRequest<VideosResponse>("/admin/videos", { token });
-  return response.videos;
+  return response.videos ?? [];
 }
 
 export async function createAdminVideo(token: string, body: ContentVideoInput) {

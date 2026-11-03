@@ -224,7 +224,7 @@ function SavedChip({ entry, active, onApply, onManage }: { entry: SavedFilter; a
           onApply();
         }}
         className={`${chipClass} min-w-0 rounded-l-full pl-3.5`}
-        style={{ background, border, borderRight: "none", color: active ? "var(--text)" : "var(--text-soft)" }}
+        style={{ background, borderTop: border, borderBottom: border, borderLeft: border, color: active ? "var(--text)" : "var(--text-soft)" }}
       >
         {entry.alert ? <span aria-hidden="true">🔔</span> : null}
         <span className="truncate">{entry.name}</span>
@@ -236,7 +236,7 @@ function SavedChip({ entry, active, onApply, onManage }: { entry: SavedFilter; a
         aria-label={t("savedOptions", { name: entry.name })}
         aria-haspopup="dialog"
         className={`${chipClass} shrink-0 rounded-r-full pl-1.5 pr-2.5`}
-        style={{ background, border, borderLeft: "none", color: "var(--dim)" }}
+        style={{ background, borderTop: border, borderBottom: border, borderRight: border, color: "var(--dim)" }}
       >
         <span aria-hidden="true">⋯</span>
       </button>

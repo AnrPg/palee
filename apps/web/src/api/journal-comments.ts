@@ -41,7 +41,7 @@ export async function saveJournalComments(
     token,
     body: { comments },
   });
-  return data.comments;
+  return data.comments ?? [];
 }
 
 export async function deleteJournalComment(token: string, id: string): Promise<void> {

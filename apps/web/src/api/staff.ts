@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 import type { TrainingGoal } from "@/api/gamification";
 import type { operations, paths } from "@/api/generated/schema";
 
@@ -45,7 +45,7 @@ export type AttendanceStatus = "attended" | "no_show";
 export async function fetchFormReviewQueue(token: string, status?: FormReviewStatus) {
   const suffix = status ? `?status=${encodeURIComponent(status)}` : "";
   const response = await apiRequest<FormReviewQueueResponse>(`/staff/form-reviews${suffix}`, { token });
-  return response.form_reviews;
+  return response.form_reviews ?? [];
 }
 
 export async function completeFormReview(token: string, id: string, feedback: string) {
@@ -59,7 +59,7 @@ export async function completeFormReview(token: string, id: string, feedback: st
 
 export async function fetchReplyQueue(token: string) {
   const response = await apiRequest<ReplyQueueResponse>("/staff/reply-queue", { token });
-  return response.replies;
+  return response.replies ?? [];
 }
 
 export async function fetchClientNutritionPlan(token: string, userId: string) {
@@ -79,7 +79,7 @@ export async function saveClientNutritionPlan(token: string, userId: string, bod
 /** ADR-229: a client's weekly goal, for their coach or full-scope staff. */
 export async function fetchClientTrainingGoal(token: string, userId: string): Promise<TrainingGoal> {
   const response = await apiRequest<{ goal: TrainingGoal }>(`/staff/clients/${userId}/training-goal`, { token });
-  return response.goal;
+  return requiredField(response.goal, "goal");
 }
 
 export async function saveClientTrainingGoal(token: string, userId: string, weeklyWorkoutTarget: number): Promise<TrainingGoal> {
@@ -89,6 +89,33 @@ export async function saveClientTrainingGoal(token: string, userId: string, week
     body: { weekly_workout_target: weeklyWorkoutTarget },
   });
   return response.goal;
+}
+
+// ADR-395: what a client's «Επίπεδο φυσικής κατάστασης» shows, set by their
+// coach. Only a coach with an active coaching relationship gets an answer
+// (403 not_your_client otherwise).
+export type ClientFitnessDisplay = Json<
+  operations["PaleeWeb.ClientFitnessDisplayController.show"]["responses"][200]
+>;
+export type FitnessDisplayOverride = NonNullable<ClientFitnessDisplay["override"]>;
+
+export const clientFitnessDisplayKey = (userId: string) => ["staff", "clients", userId, "fitness-display"] as const;
+
+export function fetchClientFitnessDisplay(token: string, userId: string): Promise<ClientFitnessDisplay> {
+  return apiRequest<ClientFitnessDisplay>(`/staff/clients/${userId}/fitness-display`, { token });
+}
+
+/** `null` gives the choice back to the client. */
+export function saveClientFitnessDisplay(
+  token: string,
+  userId: string,
+  display: FitnessDisplayOverride | null,
+): Promise<ClientFitnessDisplay> {
+  return apiRequest<ClientFitnessDisplay>(`/staff/clients/${userId}/fitness-display`, {
+    method: "PUT",
+    token,
+    body: { display },
+  });
 }
 
 export async function fetchAppointmentSlots(
@@ -101,7 +128,7 @@ export async function fetchAppointmentSlots(
   });
   const suffix = params.toString() ? `?${params.toString()}` : "";
   const response = await apiRequest<SlotsResponse>(`/staff/appointment-slots${suffix}`, { token });
-  return response.slots;
+  return response.slots ?? [];
 }
 
 export async function createAppointmentSlot(token: string, body: AppointmentSlotInput) {
@@ -164,5 +191,5 @@ export type StaffMember = GymStaffResponse["staff"][number];
 
 export async function fetchGymStaff(token: string) {
   const response = await apiRequest<GymStaffResponse>("/staff/members", { token });
-  return response.staff;
+  return response.staff ?? [];
 }

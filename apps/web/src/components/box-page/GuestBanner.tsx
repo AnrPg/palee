@@ -21,7 +21,7 @@ export function GuestBanner({ token, box }: { token: string; box: { organization
   const boxes = useQuery({
     queryKey: GUEST_BOXES_KEY,
     staleTime: FRESHNESS.account,
-    queryFn: () => fetchGuestBoxes(token).then((response) => response.boxes),
+    queryFn: () => fetchGuestBoxes(token).then((response) => response.boxes ?? []),
   });
   const guest = boxes.data?.some((entry) => entry.id === box.organization_id || entry.slug === box.slug);
   if (!guest) return null;

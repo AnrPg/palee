@@ -2,7 +2,11 @@ defmodule Palee.Pantheon.Domain.FitnessProfile do
   @moduledoc """
   ADR-358 (CP-D6): an explainable fitness score per domain and «τι να
   δουλέψεις», from the person's own PRs and training. Algorithm
-  `fitness-profile` version 1.
+  `fitness-profile` version 2 (ADR-395): the lifts read as a multiple of
+  body weight when the person gave it, the anchors ease by age band once
+  the reviewing coach set the percentages, every reading says what the next
+  level takes, and `with_change/2` adds how each domain moved since an
+  earlier date (`as_of/3`).
 
   1. **Benchmarks.** Each PR whose name is a known benchmark
      (`FitnessBenchmarks.match/1`) and whose unit fits is read: a weight PR
@@ -34,7 +38,7 @@ defmodule Palee.Pantheon.Domain.FitnessProfile do
 
   alias Palee.Pantheon.Domain.{FitnessBenchmarks, StrengthTrend}
 
-  @algorithm %{id: "fitness-profile", version: 1}
+  @algorithm %{id: "fitness-profile", version: 2}
   @stale_days 365
   @min_domains 2
   @gap 15
@@ -59,7 +63,9 @@ defmodule Palee.Pantheon.Domain.FitnessProfile do
           optional(:division) => String.t() | nil,
           optional(:qualities) => %{sessions: non_neg_integer(), qualities: [map()]} | nil,
           optional(:injured_domains) => [String.t()],
-          optional(:active_injury) => boolean()
+          optional(:active_injury) => boolean(),
+          optional(:body_weight_kg) => number() | nil,
+          optional(:age) => non_neg_integer() | nil
         }
 
   @doc "The profile: overall, domains with their reasons, focus and the algorithm."
@@ -67,10 +73,19 @@ defmodule Palee.Pantheon.Domain.FitnessProfile do
   def build(%{prs: prs, today: %Date{} = today} = input) do
     division = Map.get(input, :division)
     injured = MapSet.new(Map.get(input, :injured_domains, []))
+    body_weight = positive(Map.get(input, :body_weight_kg))
+    age_band = FitnessBenchmarks.age_band(Map.get(input, :age))
+
+    scale = %{
+      division: division,
+      body_weight: body_weight,
+      age_band: age_band,
+      age_percent: FitnessBenchmarks.age_factor(age_band, division)
+    }
 
     readings =
       prs
-      |> Enum.map(&reading(&1, division, today))
+      |> Enum.map(&reading(&1, scale, today))
       |> Enum.reject(&is_nil/1)
       |> best_per_benchmark()
 
@@ -90,9 +105,139 @@ defmodule Palee.Pantheon.Domain.FitnessProfile do
       focus:
         focus(domains, Map.get(input, :qualities), injured, Map.get(input, :active_injury, false)),
       injury_caution: Map.get(input, :active_injury, false) or MapSet.size(injured) > 0,
-      benchmarks_known: length(FitnessBenchmarks.all())
+      benchmarks_known: length(FitnessBenchmarks.all()),
+      inputs: %{
+        body_weight_kg: body_weight,
+        age_band: age_band,
+        age_percent: scale.age_percent,
+        age_ready: FitnessBenchmarks.age_ready?()
+      }
     }
   end
+
+  @doc """
+  The PRs as they stood on `date`: each PR's latest value beaten on or
+  before it (the PR itself or one of its history snapshots), or nothing
+  when it was set later. `history` rows carry `pr_record_id`, `score`,
+  `beaten_on` and `supporting_metrics`.
+  """
+  def as_of(prs, history, %Date{} = date) do
+    by_record = Enum.group_by(history, &field(&1, :pr_record_id))
+
+    prs
+    |> Enum.map(fn pr ->
+      snapshots =
+        by_record
+        |> Map.get(field(pr, :id), [])
+        |> Enum.map(
+          &%{
+            score: field(&1, :score),
+            beaten_on: date(field(&1, :beaten_on)),
+            metrics: field(&1, :supporting_metrics)
+          }
+        )
+
+      current = %{
+        score: field(pr, :current_score),
+        beaten_on: date(field(pr, :beaten_on)),
+        metrics: field(pr, :supporting_metrics)
+      }
+
+      [current | snapshots]
+      |> Enum.filter(&(match?(%Date{}, &1.beaten_on) and Date.compare(&1.beaten_on, date) != :gt))
+      |> Enum.max_by(&Date.to_gregorian_days(&1.beaten_on), fn -> nil end)
+      |> case do
+        nil ->
+          nil
+
+        then ->
+          %{
+            name: field(pr, :name),
+            unit: field(pr, :unit),
+            current_score: then.score,
+            beaten_on: then.beaten_on,
+            supporting_metrics: then.metrics
+          }
+      end
+    end)
+    |> Enum.reject(&is_nil/1)
+  end
+
+  @doc """
+  `profile` with how it moved since `previous` (the same algorithm on the
+  PRs as they stood at the start of the period): each domain gains
+  `previous_score` and `change`, the overall `change`; nil where either
+  side has no score.
+  """
+  def with_change(profile, previous) do
+    before = Map.new(previous.domains, &{&1.domain, &1.score})
+
+    domains =
+      Enum.map(profile.domains, fn domain ->
+        was = Map.get(before, domain.domain)
+        Map.merge(domain, %{previous_score: was, change: change(domain.score, was)})
+      end)
+
+    overall =
+      case profile.overall do
+        nil -> nil
+        overall -> Map.put(overall, :change, change(overall.score, score(previous.overall)))
+      end
+
+    %{profile | domains: domains, overall: overall}
+  end
+
+  @display_rank %{"all" => 0, "progress_only" => 1, "none" => 2}
+
+  @doc """
+  What the card shows (ADR-395): the most restrictive of the person's own
+  choice and every coach override (`progress_only`, `none`). `set_by` is
+  `coach` when an override is what restricts it beyond the person's choice.
+  """
+  def display(own, overrides) do
+    own = if Map.has_key?(@display_rank, own), do: own, else: "all"
+    strictest = Enum.max_by([own | overrides], &Map.get(@display_rank, &1, 0))
+
+    set_by =
+      if Map.fetch!(@display_rank, strictest) > Map.fetch!(@display_rank, own),
+        do: "coach",
+        else: "self"
+
+    %{mode: strictest, set_by: set_by}
+  end
+
+  @doc """
+  The profile as the card may show it (ADR-395): `all` keeps everything;
+  `progress_only` keeps the domains' direction of change and «Τι να
+  δουλέψεις» but no score, level or reasoning; `none` keeps nothing.
+  """
+  def for_display(profile, "all"), do: profile
+
+  def for_display(profile, "progress_only") do
+    domains =
+      Enum.map(profile.domains, fn domain ->
+        %{
+          domain: domain.domain,
+          tested: not is_nil(domain.score),
+          direction: direction(Map.get(domain, :change))
+        }
+      end)
+
+    %{profile | domains: domains, overall: nil}
+  end
+
+  def for_display(profile, "none"), do: %{profile | domains: [], overall: nil, focus: []}
+
+  defp direction(change) when is_number(change) and change > 0, do: "up"
+  defp direction(change) when is_number(change) and change < 0, do: "down"
+  defp direction(0), do: "same"
+  defp direction(_none), do: nil
+
+  defp change(now, was) when is_number(now) and is_number(was), do: now - was
+  defp change(_now, _was), do: nil
+
+  defp score(%{score: score}), do: score
+  defp score(_none), do: nil
 
   @doc "Points of a value on a benchmark's anchors (0..100, one decimal)."
   def points(value, anchors, lower_is_better) do
@@ -130,13 +275,14 @@ defmodule Palee.Pantheon.Domain.FitnessProfile do
     end)
   end
 
-  defp reading(pr, division, today) do
+  defp reading(pr, scale, today) do
     with %{} = benchmark <- FitnessBenchmarks.match(field(pr, :name)),
          true <- field(pr, :unit) == benchmark.unit,
          value when is_number(value) <- value(pr, benchmark),
          %Date{} = on <- date(field(pr, :beaten_on)) do
-      anchors = Map.fetch!(benchmark.anchors, division)
       age = Date.diff(today, on)
+      {basis, scored, anchors} = scored(value, benchmark, scale)
+      points = points(scored, anchors, benchmark.lower_is_better)
 
       %{
         benchmark: benchmark.key,
@@ -145,8 +291,16 @@ defmodule Palee.Pantheon.Domain.FitnessProfile do
         value: value,
         unit: benchmark.unit,
         estimated: benchmark.unit == "kg" and reps(pr) > 1,
-        points: points(value, anchors, benchmark.lower_is_better),
+        load: if(benchmark.unit == "kg", do: number(field(pr, :current_score))),
+        reps: if(benchmark.unit == "kg", do: trunc(reps(pr))),
+        basis: basis,
+        ratio: if(basis == "body_weight", do: Float.round(scored, 2)),
+        body_weight_kg: if(basis == "body_weight", do: scale.body_weight),
+        age_band: if(scale.age_percent, do: scale.age_band),
+        age_percent: scale.age_percent,
+        points: points,
         anchors: Enum.map(anchors, fn {v, p} -> %{value: v, points: p} end),
+        next: next(points, anchors, basis, scale.body_weight, benchmark),
         beaten_on: on,
         age_days: age,
         stale: age > @stale_days
@@ -155,6 +309,49 @@ defmodule Palee.Pantheon.Domain.FitnessProfile do
       _not_a_benchmark -> nil
     end
   end
+
+  # ADR-395: a lift is read as a multiple of body weight when the person gave
+  # it; the anchors then ease by the age band's percentage, if any.
+  defp scored(value, benchmark, scale) do
+    {basis, scored, anchors} =
+      case {benchmark.ratio_anchors, scale.body_weight} do
+        {%{} = ratio, weight} when is_number(weight) ->
+          {"body_weight", value / weight, Map.fetch!(ratio, scale.division)}
+
+        _absolute ->
+          {"absolute", value, Map.fetch!(benchmark.anchors, scale.division)}
+      end
+
+    {basis, scored, ease(anchors, scale.age_percent, benchmark.lower_is_better)}
+  end
+
+  defp ease(anchors, nil, _lower_is_better), do: anchors
+
+  defp ease(anchors, percent, lower_is_better) do
+    factor = if lower_is_better, do: 1 + percent / 100, else: 1 - percent / 100
+    Enum.map(anchors, fn {v, p} -> {v * factor, p} end)
+  end
+
+  # What the next level takes, in the PR's own unit (kg for a lift read as a
+  # multiple of body weight): the first anchor above the reading's points.
+  defp next(points, anchors, basis, body_weight, benchmark) do
+    case Enum.find(anchors, fn {_v, p} -> p > points end) do
+      nil ->
+        nil
+
+      {target, at} ->
+        target = if basis == "body_weight", do: target * body_weight, else: target
+        %{points: at, value: next_value(target * 1.0, benchmark)}
+    end
+  end
+
+  defp next_value(target, %{unit: "kg"}), do: Float.ceil(target * 2) / 2
+  defp next_value(target, %{unit: "reps"}), do: trunc(Float.ceil(target))
+  defp next_value(target, _time), do: trunc(Float.floor(target))
+
+  defp positive(value) when is_number(value) and value > 0, do: value * 1.0
+  defp positive(%Decimal{} = value), do: value |> Decimal.to_float() |> positive()
+  defp positive(_value), do: nil
 
   defp value(pr, %{unit: "kg"}) do
     case number(field(pr, :current_score)) do

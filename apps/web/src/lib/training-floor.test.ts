@@ -4,6 +4,10 @@ import type { ClassVisitPerson, FitnessDomain } from "@/api/training-floor";
 
 import {
   DEFAULT_LEADERBOARD_FILTERS,
+  ageBandLabel,
+  changeDirection,
+  looserDisplay,
+  nextGap,
   advancedActive,
   ageGroupFor,
   journalEntryFocused,
@@ -221,5 +225,36 @@ describe("ADR-393: the WOD changed after you logged it", () => {
     expect(journalEntryFocused("?entry=e1&x=1", "e2")).toBe(false);
     expect(journalEntryFocused("", "e1")).toBe(false);
     expect(journalEntryFocused(null, "e1")).toBe(false);
+  });
+});
+
+describe("fitness card version 2 (ADR-395)", () => {
+  it("writes an age band the way people do", () => {
+    expect(ageBandLabel("40_44")).toBe("40–44");
+    expect(ageBandLabel("60_plus")).toBe("60+");
+    expect(ageBandLabel(null)).toBeNull();
+    expect(ageBandLabel("odd")).toBeNull();
+  });
+
+  it("says what the next level takes in the PR's own unit", () => {
+    expect(nextGap({ unit: "kg", value: 77, next: { points: 75, value: 81 } })).toBe(4);
+    expect(nextGap({ unit: "kg", value: 77.2, next: { points: 75, value: 81 } })).toBe(4);
+    expect(nextGap({ unit: "reps", value: 10, next: { points: 50, value: 14 } })).toBe(4);
+    expect(nextGap({ unit: "mins_secs", value: 360, next: { points: 75, value: 315 } })).toBe(45);
+    expect(nextGap({ unit: "kg", value: 200, next: null })).toBeNull();
+  });
+
+  it("orders display choices so a looser own choice never loosens the coach's", () => {
+    expect(looserDisplay("all", "progress_only")).toBe(true);
+    expect(looserDisplay("none", "progress_only")).toBe(false);
+    expect(looserDisplay("progress_only", "progress_only")).toBe(false);
+  });
+
+  it("reads the change chip's direction", () => {
+    expect(changeDirection(6)).toBe("up");
+    expect(changeDirection(-3)).toBe("down");
+    expect(changeDirection(0)).toBe("same");
+    expect(changeDirection(null)).toBeNull();
+    expect(changeDirection(undefined)).toBeNull();
   });
 });

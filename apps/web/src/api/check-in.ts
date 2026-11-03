@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 import type { components } from "@/api/generated/schema";
 
 /**
@@ -92,7 +92,7 @@ export function rotateNfcTag(token: string, locationId: string) {
 
 export async function fetchCheckInRules(token: string) {
   const data = await apiRequest<Schemas["CheckInRulesResponse"]>("/admin/check-in/settings", { token });
-  return data.settings;
+  return requiredField(data.settings, "settings");
 }
 
 export async function updateCheckInRules(token: string, rules: CheckInRules) {
@@ -132,7 +132,7 @@ export async function fetchVisitors(token: string, filters: { date?: string; loc
   const data = await apiRequest<Schemas["CheckInVisitors"]>(`/admin/check-in/visitors${query ? `?${query}` : ""}`, {
     token,
   });
-  return data.visitors;
+  return data.visitors ?? [];
 }
 
 // Member: the door scan -----------------------------------------------------------

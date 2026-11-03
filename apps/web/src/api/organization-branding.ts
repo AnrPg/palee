@@ -1,5 +1,5 @@
 import type { components } from "@/api/generated/schema";
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 
 // ADR-121 tenant logo upload. Tenant owners/admins use the `/admin/branding`
 // routes (scoped to the selected organization by the API client); vendors use
@@ -20,7 +20,7 @@ export type OrganizationLogoApi = {
 
 export async function fetchAdminBranding(token: string) {
   const result = await apiRequest<BrandingResponse>("/admin/branding", { token });
-  return result.branding;
+  return requiredField(result.branding, "branding");
 }
 
 export function adminLogoApi(token: string): OrganizationLogoApi {

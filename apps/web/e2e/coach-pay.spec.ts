@@ -177,6 +177,8 @@ test("rules read as sentences and someone without a rule stands out", async ({ p
 });
 
 test("a period has one primary button per status and statements open into lines", async ({ page }) => {
+  // Desktop layout: on a phone this picker is a combobox (SegmentPicker collapses).
+  await page.setViewportSize({ width: 1280, height: 800 });
   const writes: Write[] = [];
   await stubAccountant(page, writes);
   await page.goto("/admin/finance?tab=pay");

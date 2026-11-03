@@ -51,6 +51,28 @@ export class ApiError extends Error {
   }
 }
 
+/**
+ * A successful answer without a field the API contract promises (an older or
+ * newer server mid-deploy, or a stub that left it out). Raised by
+ * `requiredField` so a read fails as an error the screen can show, instead of
+ * handing `undefined` to a query or a component.
+ */
+export class ApiContractError extends Error {
+  field: string;
+
+  constructor(field: string) {
+    super(`The server's answer has no "${field}".`);
+    this.name = "ApiContractError";
+    this.field = field;
+  }
+}
+
+/** The value of a field the contract requires; see `ApiContractError`. */
+export function requiredField<T>(value: T | undefined, field: string): T {
+  if (value === undefined) throw new ApiContractError(field);
+  return value;
+}
+
 type ApiRequestOptions = {
   method?: "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
   token?: string | null;

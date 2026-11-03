@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 import type { components, operations } from "@/api/generated/schema";
 
 /**
@@ -64,7 +64,7 @@ export async function fetchMyClubs(token: string) {
   return data.clubs ?? [];
 }
 
-export function fetchFeed(token: string, filter: FeedFilter, cursor: string | null, limit = 20) {
+export async function fetchFeed(token: string, filter: FeedFilter, cursor: string | null, limit = 20): Promise<CommunityFeedPage> {
   const query = new URLSearchParams();
   if (filter.clubId) query.set("club_id", filter.clubId);
   if (filter.channelId) query.set("channel_id", filter.channelId);
@@ -73,7 +73,8 @@ export function fetchFeed(token: string, filter: FeedFilter, cursor: string | nu
   if (filter.coachesOnly) query.set("coaches_only", "true");
   if (cursor) query.set("cursor", cursor);
   query.set("limit", String(limit));
-  return apiRequest<CommunityFeedPage>(`/me/feed?${query.toString()}`, { token });
+  const page = await apiRequest<CommunityFeedPage>(`/me/feed?${query.toString()}`, { token });
+  return { ...page, posts: page.posts ?? [] };
 }
 
 const base = (slug: string) => `/org/${slug}/community`;
@@ -117,7 +118,7 @@ export const setKudos = (token: string, post: CommunityPost, kudos: boolean) => 
 
 export async function fetchComments(token: string, post: CommunityPost) {
   const data = await apiRequest<{ comments: CommunityComment[] }>(`${postPath(post)}/comments`, { token });
-  return data.comments;
+  return data.comments ?? [];
 }
 
 export async function addComment(token: string, post: CommunityPost, body: string) {
@@ -176,7 +177,7 @@ export async function proposeGroup(token: string, slug: string, draft: GroupDraf
 
 export async function fetchGroup(token: string, slug: string, groupId: string) {
   const data = await apiRequest<{ group: CommunityGroup }>(`${base(slug)}/groups/${id(groupId)}`, { token });
-  return data.group;
+  return requiredField(data.group, "group");
 }
 
 export async function updateGroup(token: string, slug: string, groupId: string, draft: Partial<GroupDraft>) {
@@ -255,7 +256,7 @@ export function fetchDiscover(token: string, q: string) {
 
 export async function fetchOpenClub(token: string, clubId: string) {
   const data = await apiRequest<{ club: OpenClub }>(`/me/open-clubs/${id(clubId)}`, { token });
-  return data.club;
+  return requiredField(data.club, "club");
 }
 
 export async function setOpenClubJoined(token: string, clubId: string, joined: boolean) {

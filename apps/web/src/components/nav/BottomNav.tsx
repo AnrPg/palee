@@ -195,7 +195,6 @@ export function BottomNav() {
                   href={item.href}
                   prefetch
                   aria-current={current ? "page" : undefined}
-                  aria-label={t("me")}
                   className={`${ITEM_CLASS} w-full`}
                   style={{ color }}
                   onPointerDown={startLongPress}

@@ -2,7 +2,7 @@ import { expect, test, type Page } from "./support/test";
 
 // v3.1 W5 «Προπόνηση και πάτωμα» (ADR-356..359, ADR-389, ANR mockups d2 A,
 // d6 A, e4 A): the #wod leaderboard chips with the percentile on the
-// member's own row, the fitness profile on Πρόοδος, and the calendar offer
+// member's own row, the fitness profile on Πρόοδος (version 2, ADR-395), and the calendar offer
 // after the first booking. The API is stubbed; every route not listed
 // answers an empty object.
 
@@ -85,6 +85,8 @@ const row = (userId: string, rank: number, value: string, extra: Record<string, 
 
 test.describe("training floor (v3.1 W5)", () => {
   test("the #wod leaderboard: my chips on top, my percentile on my row, the rest under «Advanced» (mockup d2 A)", async ({ page }) => {
+    // Desktop layout: on a phone this picker is a combobox (SegmentPicker collapses).
+    await page.setViewportSize({ width: 1280, height: 800 });
     await stubApi(page);
     const asked: URLSearchParams[] = [];
     await page.route("**/api/me/clubs", (route) => route.fulfill(json({ clubs: [gymClub] })));
@@ -144,22 +146,30 @@ test.describe("training floor (v3.1 W5)", () => {
     await expect.poll(() => asked.at(-1)?.get("window")).toBe("month");
   });
 
-  test("Progress shows a bar per domain with «Why?», then «What to work on» (mockup d6 A)", async ({ page }) => {
+  test("Progress shows a bar per domain with the change next to it and a stepped «Why?» (mockup d6 A, fitness v2 A)", async ({ page }) => {
     await stubApi(page);
-    await page.route("**/api/me/fitness-profile**", (route) =>
-      route.fulfill(
+    const asked: URLSearchParams[] = [];
+    await page.route((url) => url.pathname.endsWith("/api/me/fitness-profile"), (route) => {
+      asked.push(new URL(route.request().url()).searchParams);
+      return route.fulfill(
         json({
-          algorithm: { id: "fitness-profile", version: 1 },
+          algorithm: { id: "fitness-profile", version: 2 },
           benchmarks_known: 3,
           division: null,
           neutral_standards: true,
           injury_caution: false,
-          overall: { score: 58, domains_scored: 2, reason: "mean" },
+          overall: { score: 58, domains_scored: 2, reason: "mean_of_domains", change: 4 },
           focus: [{ kind: "weakest_domain", domain: "gymnastics" }],
+          display: { mode: "all", set_by: "self" },
+          settings: { body_weight_kg: 60, birth_year: null, display: "all" },
+          inputs: { body_weight_kg: 60, age_band: null, age_percent: null, age_ready: false },
+          period_from: localDate(-84),
           domains: [
             {
               domain: "strength",
               score: 66,
+              previous_score: 60,
+              change: 6,
               confidence: "medium",
               stale: false,
               reasons: [
@@ -167,18 +177,80 @@ test.describe("training floor (v3.1 W5)", () => {
                   benchmark: "back_squat",
                   name: "Back squat",
                   domain: "strength",
-                  value: 110,
+                  value: 77,
                   unit: "kg",
                   points: 66,
-                  estimated: false,
+                  estimated: true,
                   stale: false,
                   age_days: 12,
                   beaten_on: localDate(-12),
-                  anchors: [],
+                  load: 70,
+                  reps: 3,
+                  basis: "body_weight",
+                  ratio: 1.28,
+                  body_weight_kg: 60,
+                  age_band: null,
+                  age_percent: null,
+                  anchors: [
+                    { value: 0.7, points: 20 },
+                    { value: 1.1, points: 50 },
+                    { value: 1.35, points: 75 },
+                    { value: 1.7, points: 95 },
+                  ],
+                  next: { points: 75, value: 81 },
                 },
               ],
             },
-            { domain: "gymnastics", score: 40, confidence: "low", stale: false, reasons: [] },
+            { domain: "gymnastics", score: 40, previous_score: 40, change: 0, confidence: "low", stale: false, reasons: [] },
+          ],
+        }),
+      );
+    });
+
+    await page.goto("/journal/progress");
+    const card = page.getByTestId("fitness-profile");
+    await expect(card.getByRole("heading", { name: "Fitness level" })).toBeVisible();
+    await expect(card.getByRole("meter")).toHaveCount(5);
+    await expect.poll(() => asked.at(-1)?.get("period")).toBe("12w");
+    const strength = card.getByTestId("fitness-domain-strength");
+    await expect(strength.getByTestId("fitness-change")).toContainText("▲ +6");
+    await expect(strength.getByTestId("fitness-previous-tick")).toBeAttached();
+    await strength.getByRole("button", { name: /Why\?/ }).click();
+    const why = strength.getByTestId("fitness-why-back_squat");
+    await expect(why).toContainText("70 kg × (1 + 3 ÷ 30) ≈ 77 kg");
+    await expect(why).toContainText("77 kg ÷ 60 kg = 1.28 ×");
+    await expect(why).toContainText("4 kg more");
+    await expect(card.getByTestId("fitness-focus")).toContainText("What to work on");
+
+    // The period comes from Progress's own period bar.
+    await page.getByRole("button", { name: "6 months" }).click();
+    await expect.poll(() => asked.at(-1)?.get("period")).toBe("6m");
+  });
+
+  test("the card shows only progress when the coach set it, and saves the member's own choice (fitness v2 §4 A)", async ({ page }) => {
+    await stubApi(page);
+    const saved: unknown[] = [];
+    await page.route("**/api/me/fitness-profile/settings", async (route) => {
+      saved.push(route.request().postDataJSON());
+      await route.fulfill(json({ body_weight_kg: 72, birth_year: null, display: "none" }));
+    });
+    await page.route((url) => url.pathname.endsWith("/api/me/fitness-profile"), (route) =>
+      route.fulfill(
+        json({
+          algorithm: { id: "fitness-profile", version: 2 },
+          benchmarks_known: 3,
+          division: null,
+          neutral_standards: true,
+          injury_caution: false,
+          overall: null,
+          focus: [{ kind: "untested_domain", domain: "power" }],
+          display: { mode: "progress_only", set_by: "coach" },
+          settings: { body_weight_kg: null, birth_year: null, display: "all" },
+          inputs: { body_weight_kg: null, age_band: null, age_percent: null, age_ready: false },
+          period_from: localDate(-84),
+          domains: [
+            { domain: "strength", tested: true, direction: "up" },
+            { domain: "power", tested: false, direction: null },
           ],
         }),
       ),
@@ -186,12 +258,17 @@ test.describe("training floor (v3.1 W5)", () => {
 
     await page.goto("/journal/progress");
     const card = page.getByTestId("fitness-profile");
-    await expect(card.getByRole("heading", { name: "Fitness level" })).toBeVisible();
-    await expect(card.getByRole("meter")).toHaveCount(5);
-    const strength = card.getByTestId("fitness-domain-strength");
-    await strength.getByRole("button", { name: /Why\?/ }).click();
-    await expect(strength).toContainText("Back squat");
-    await expect(card.getByTestId("fitness-focus")).toContainText("What to work on");
+    await expect(card.getByTestId("fitness-set-by-coach")).toHaveText("Your coach set this");
+    await expect(card.getByTestId("fitness-domain-strength")).toContainText("improved");
+    await expect(card.getByRole("meter")).toHaveCount(0);
+
+    await card.getByTestId("fitness-profile-advanced").getByRole("button").first().click();
+    await expect(card.getByLabel("Year of birth")).toHaveCount(0);
+    await expect(card.getByTestId("fitness-coach-limit")).toContainText("Your coach chose “Only progress”");
+    await card.getByLabel("Body weight").fill("72");
+    await card.getByRole("radio", { name: "Nothing" }).click();
+    await card.getByRole("button", { name: "Save" }).click();
+    await expect.poll(() => saved.at(-1)).toEqual({ body_weight_kg: 72, display: "none" });
   });
 
   test("the first booking offers the calendar once; «Not now» is an answer (mockup e4 A)", async ({ page }) => {

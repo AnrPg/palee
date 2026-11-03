@@ -28,7 +28,7 @@ export function useFailedCharges(token: string | null | undefined, enabled: bool
   return useQuery({
     queryKey: FAILED_CHARGES_KEY,
     enabled: Boolean(token) && enabled,
-    queryFn: async () => (await fetchFailedCharges(token!)).payments,
+    queryFn: async () => (await fetchFailedCharges(token!)).payments ?? [],
   });
 }
 

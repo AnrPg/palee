@@ -18,6 +18,8 @@ export const SECTION_TAB: Record<string, ProfileTab> = {
   training_history: "training",
   // ADR-165: the client's coverage, qualities and load (shared entries only).
   training_depth: "training",
+  // ADR-395: a client's body weight, birth year and what their fitness card shows.
+  fitness_display: "training",
   prs: "training",
   training_notes: "training",
   health_incidents: "wellbeing",

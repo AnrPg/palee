@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 
 /** One weekly opening span (ADR-141): ISO weekday (Monday = 1), "HH:MM" times. */
 export type OpeningHoursSpan = { weekday: number; opens: string; closes: string };
@@ -53,7 +53,7 @@ export async function searchAddresses(
   const response = await apiRequest<{ places: GeocodePlace[] }>(`/admin/geocode?${search.toString()}`, {
     token,
   });
-  return response.places;
+  return response.places ?? [];
 }
 
 /** Whether pasted text is a Google Maps link rather than an address. */
@@ -66,7 +66,7 @@ export async function resolveMapLink(token: string, url: string, language?: stri
   const search = new URLSearchParams({ url: url.trim() });
   if (language) search.set("language", language);
   const response = await apiRequest<{ place: GeocodePlace }>(`/admin/geocode/link?${search.toString()}`, { token });
-  return response.place;
+  return requiredField(response.place, "place");
 }
 
 export async function reverseGeocode(token: string, latitude: number, longitude: number, language?: string) {
@@ -75,13 +75,13 @@ export async function reverseGeocode(token: string, latitude: number, longitude:
   const response = await apiRequest<{ place: GeocodePlace | null }>(`/admin/geocode/reverse?${search.toString()}`, {
     token,
   });
-  return response.place;
+  return response.place ?? null;
 }
 
 /** All locations, archived ones included, for admin screens. */
 export async function listAdminLocations(token: string) {
   const response = await apiRequest<{ locations: FacilityLocation[] }>("/admin/locations", { token });
-  return response.locations;
+  return response.locations ?? [];
 }
 
 export async function createLocation(token: string, payload: { name: string; address?: string | null }) {
@@ -132,7 +132,7 @@ export async function listCheckIns(token: string, params: { date?: string; userI
   if (params.userId) search.set("user_id", params.userId);
   const suffix = search.size > 0 ? `?${search.toString()}` : "";
   const response = await apiRequest<{ check_ins: FacilityCheckIn[] }>(`/admin/check-ins${suffix}`, { token });
-  return response.check_ins;
+  return response.check_ins ?? [];
 }
 
 export async function createCheckIn(token: string, payload: { user_id: string; location_id?: string | null }) {

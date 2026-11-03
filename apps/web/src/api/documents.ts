@@ -1,4 +1,4 @@
-import { ApiError, apiRequest } from "@/api/client";
+import { ApiError, apiRequest, requiredField } from "@/api/client";
 
 /**
  * Documents and simple electronic signatures (ADR-252, V3-M8).
@@ -217,7 +217,7 @@ const ME = "/me/documents";
 // ── Staff ──────────────────────────────────────────────────────────────────
 
 export async function fetchDocumentTemplates(token: string) {
-  return (await apiRequest<{ templates: DocumentTemplate[] }>(`${ADMIN}/templates?status=active`, { token })).templates;
+  return (await apiRequest<{ templates: DocumentTemplate[] }>(`${ADMIN}/templates?status=active`, { token })).templates ?? [];
 }
 
 export async function fetchDocumentTemplate(token: string, id: string) {
@@ -228,16 +228,16 @@ export async function fetchDocumentTemplate(token: string, id: string) {
 }
 
 export async function fetchDocumentVersion(token: string, templateId: string, versionId: string) {
-  return (
+  return requiredField((
     await apiRequest<{ version: DocumentVersion }>(
       `${ADMIN}/templates/${encodeURIComponent(templateId)}/versions/${encodeURIComponent(versionId)}`,
       { token },
     )
-  ).version;
+  ).version, "version");
 }
 
 export async function fetchStarterDocuments(token: string, language: "el" | "en") {
-  return (await apiRequest<{ starters: StarterDocument[] }>(`${ADMIN}/starters?language=${language}`, { token })).starters;
+  return (await apiRequest<{ starters: StarterDocument[] }>(`${ADMIN}/starters?language=${language}`, { token })).starters ?? [];
 }
 
 /** Who has not signed each document, and `clients`: how many a new mandatory document would block. */
@@ -307,14 +307,14 @@ export async function requestSignatures(token: string, templateId: string, input
 
 export async function fetchPendingRequests(token: string, templateId: string) {
   const search = new URLSearchParams({ template_id: templateId, status: "pending", limit: "200" });
-  return (await apiRequest<{ requests: SignatureRequest[]; total: number }>(`${ADMIN}/requests?${search}`, { token })).requests;
+  return (await apiRequest<{ requests: SignatureRequest[]; total: number }>(`${ADMIN}/requests?${search}`, { token })).requests ?? [];
 }
 
 export async function fetchSignatures(token: string, filters: { template_id?: string; user_id?: string }) {
   const search = new URLSearchParams({ limit: "200" });
   if (filters.template_id) search.set("template_id", filters.template_id);
   if (filters.user_id) search.set("user_id", filters.user_id);
-  return (await apiRequest<{ signatures: Signature[]; total: number }>(`${ADMIN}/signatures?${search}`, { token })).signatures;
+  return (await apiRequest<{ signatures: Signature[]; total: number }>(`${ADMIN}/signatures?${search}`, { token })).signatures ?? [];
 }
 
 export async function fetchSignatureEvidence(token: string, signatureId: string) {
@@ -326,7 +326,7 @@ export async function fetchMemberDocuments(token: string, userId: string) {
 }
 
 export async function fetchDocumentSettings(token: string) {
-  return (await apiRequest<{ settings: DocumentSettings }>(`${ADMIN}/settings`, { token })).settings;
+  return requiredField((await apiRequest<{ settings: DocumentSettings }>(`${ADMIN}/settings`, { token })).settings, "settings");
 }
 
 export async function saveDocumentSettings(token: string, changes: Partial<DocumentSettings>) {
@@ -343,7 +343,7 @@ export async function fetchClientHealthCertificates(token: string, userId: strin
       `${ADMIN}/health-certificates/members/${encodeURIComponent(userId)}`,
       { token },
     )
-  ).health_certificates;
+  ).health_certificates ?? [];
 }
 
 export async function fetchClientHealthFile(token: string, certificateId: string) {
@@ -404,7 +404,7 @@ export async function signMyDocument(token: string, templateId: string, input: S
 }
 
 export async function fetchMySignatures(token: string) {
-  return (await apiRequest<{ signatures: Signature[]; total: number }>(`${ME}/signatures`, { token })).signatures;
+  return (await apiRequest<{ signatures: Signature[]; total: number }>(`${ME}/signatures`, { token })).signatures ?? [];
 }
 
 export async function fetchMySignatureEvidence(token: string, signatureId: string) {

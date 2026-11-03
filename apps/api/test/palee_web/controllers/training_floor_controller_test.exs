@@ -394,15 +394,129 @@ defmodule PaleeWeb.TrainingFloorControllerTest do
 
       profile = as.(member) |> get("/api/me/fitness-profile?division=men") |> json_response(200)
 
-      assert %{"algorithm" => %{"id" => "fitness-profile", "version" => 1}} = profile
-      assert %{"score" => 63, "domains_scored" => 2} = profile["overall"]
+      assert %{"algorithm" => %{"id" => "fitness-profile", "version" => 2}} = profile
+      # Back squat 140 kg: 64.3 points (between 120 and 155); Fran 6:00: 42.5.
+      assert %{"score" => 54, "domains_scored" => 2} = profile["overall"]
 
       strength = Enum.find(profile["domains"], &(&1["domain"] == "strength"))
 
-      assert %{"score" => 75, "reasons" => [%{"benchmark" => "back_squat", "points" => 75.0}]} =
+      assert %{"score" => 64, "reasons" => [%{"benchmark" => "back_squat", "points" => 64.3}]} =
                strength
 
       assert as.(member) |> get("/api/me/fitness-profile?division=x") |> json_response(422)
+    end
+  end
+
+  describe "ADR-395 fitness card version 2" do
+    test "the person's own settings: body weight, birth year, what the card shows", ctx do
+      %{as: as, person: person} = ctx
+      member = person.(:member)
+
+      assert %{"body_weight_kg" => nil, "birth_year" => nil, "display" => "all"} =
+               as.(member) |> get("/api/me/fitness-profile/settings") |> json_response(200)
+
+      assert %{"body_weight_kg" => 60.0, "display" => "all"} =
+               as.(member)
+               |> send_json(:put, "/api/me/fitness-profile/settings", %{body_weight_kg: 60})
+               |> json_response(200)
+
+      assert %{"body_weight_kg" => 60.0, "birth_year" => 1985, "display" => "progress_only"} =
+               as.(member)
+               |> send_json(:put, "/api/me/fitness-profile/settings", %{
+                 birth_year: 1985,
+                 display: "progress_only"
+               })
+               |> json_response(200)
+
+      assert as.(member)
+             |> send_json(:put, "/api/me/fitness-profile/settings", %{body_weight_kg: 5})
+             |> json_response(422)
+
+      as.(member)
+      |> post("/api/prs", %{
+        "name" => "Back squat",
+        "current_score" => 70,
+        "unit" => "kg",
+        "beaten_on" => Date.to_iso8601(Date.utc_today()),
+        "supporting_metrics" => %{"reps" => 3}
+      })
+      |> json_response(201)
+
+      shown = as.(member) |> get("/api/me/fitness-profile?division=women") |> json_response(200)
+      assert %{"display" => %{"mode" => "progress_only", "set_by" => "self"}} = shown
+      assert shown["overall"] == nil
+      strength = Enum.find(shown["domains"], &(&1["domain"] == "strength"))
+      assert strength["tested"] == true
+      refute Map.has_key?(strength, "score")
+
+      as.(member)
+      |> send_json(:put, "/api/me/fitness-profile/settings", %{display: "all"})
+      |> json_response(200)
+
+      full =
+        as.(member)
+        |> get("/api/me/fitness-profile?division=women&period=12w")
+        |> json_response(200)
+
+      # Born 1985: the 40–44 band, 8% easier for women (ADR-395 age bands).
+      assert %{
+               "inputs" => %{
+                 "body_weight_kg" => 60.0,
+                 "age_ready" => true,
+                 "age_band" => band,
+                 "age_percent" => percent
+               }
+             } = full
+
+      assert {band, percent} in [{"40_44", 8}, {"35_39", 5}]
+      assert is_binary(full["period_from"])
+
+      [reason] = Enum.find(full["domains"], &(&1["domain"] == "strength"))["reasons"]
+
+      assert %{"basis" => "body_weight", "ratio" => 1.28, "next" => %{"points" => 75}} = reason
+      # The PR is new within the period: no earlier score to compare with.
+      assert Enum.find(full["domains"], &(&1["domain"] == "strength"))["change"] == nil
+
+      assert as.(member) |> get("/api/me/fitness-profile?period=2w") |> json_response(422)
+    end
+
+    test "only the client's coach reads their settings and chooses what the card shows", ctx do
+      %{as: as, base: base, coach: coach, owner: owner, person: person} = ctx
+      member = person.(:member)
+
+      as.(member)
+      |> send_json(:put, "/api/me/fitness-profile/settings", %{body_weight_kg: 72.5})
+      |> json_response(200)
+
+      path = "#{base}/staff/clients/#{member.id}/fitness-display"
+
+      # Not their coach (yet): nothing, owners included.
+      assert as.(coach) |> get(path) |> json_response(403)
+      assert as.(owner) |> get(path) |> json_response(403)
+
+      {:ok, _} =
+        Palee.Coaching.start_relationship(%{organization_id: ctx.organization.id}, %{
+          coach_user_id: coach.id,
+          client_user_id: member.id,
+          origin: "assigned"
+        })
+
+      assert %{"settings" => %{"body_weight_kg" => 72.5, "display" => "all"}, "override" => nil} =
+               as.(coach) |> get(path) |> json_response(200)
+
+      assert %{"override" => "none"} =
+               as.(coach) |> send_json(:put, path, %{display: "none"}) |> json_response(200)
+
+      assert as.(coach) |> send_json(:put, path, %{display: "all"}) |> json_response(422)
+
+      shown = as.(member) |> get("/api/me/fitness-profile") |> json_response(200)
+      assert %{"display" => %{"mode" => "none", "set_by" => "coach"}, "domains" => []} = shown
+
+      assert %{"override" => nil} =
+               as.(coach) |> send_json(:put, path, %{display: nil}) |> json_response(200)
+
+      assert %{"display" => %{"mode" => "all", "set_by" => "self"}} =
+               as.(member) |> get("/api/me/fitness-profile") |> json_response(200)
     end
   end
 

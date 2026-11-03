@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 import type { CommunityPost } from "@/api/community";
 import type { components } from "@/api/generated/schema";
 
@@ -64,7 +64,7 @@ export async function unfollow(token: string, targetType: FollowTargetType, targ
 
 export async function fetchFollowStatus(token: string, targetType: FollowTargetType, targetId: string) {
   const data = await apiRequest<{ status: FollowStatus }>(`/me/follows/${targetType}/${targetId}`, { token });
-  return data.status;
+  return requiredField(data.status, "status");
 }
 
 function paged(path: string, cursor: string | null, extra: Record<string, string> = {}) {

@@ -83,6 +83,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     messaging_threads
     messaging_participants messaging_messages messaging_box_blocks seasonal_challenges
     user_challenge_progress challenge_leaderboard_opt_ins leaderboard_opt_ins
+    fitness_display_overrides
     gamification_settings attendance_records communication_threads
     communication_messages analytics_events notification_click_events
     push_dispatch_attempts
@@ -158,6 +159,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     personal_data_exports
     palee_leaderboard_consents
     execution_splits watch_links execution_heart_rate_batches custom_foods watch_offers
+    fitness_profile_settings
   )
 
   def report do

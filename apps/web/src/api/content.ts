@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 import type { paths } from "@/api/generated/schema";
 
 type VideosResponse =
@@ -14,12 +14,12 @@ export type ScoreHistorySeries = ProgressStats["score_history"][number];
 /** Published on-demand videos included in my package (ADR-098). */
 export async function fetchMyVideos(token: string): Promise<OnDemandVideo[]> {
   const data = await apiRequest<VideosResponse>("/me/videos", { token });
-  return data.videos;
+  return data.videos ?? [];
 }
 
 /** Advanced statistics of my own training (ADR-098). */
 export async function fetchMyProgress(token: string): Promise<ProgressStats> {
   const data = await apiRequest<ProgressResponse>("/me/progress", { token });
-  return data.progress;
+  return requiredField(data.progress, "progress");
 }
 export type PRTimelineEntry = ProgressStats["pr_timeline"][number];

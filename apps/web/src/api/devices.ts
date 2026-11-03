@@ -71,7 +71,7 @@ export function markDeviceSummarySeen(token: string) {
 }
 
 export async function fetchGarminPending(token: string) {
-  return (await apiRequest<Schemas["DevicePendingImports"]>("/me/devices/garmin/pending", { token })).imports;
+  return (await apiRequest<Schemas["DevicePendingImports"]>("/me/devices/garmin/pending", { token })).imports ?? [];
 }
 
 export async function confirmDeviceImport(token: string, importId: string, answer: { target_id: string } | { as_new: true }) {

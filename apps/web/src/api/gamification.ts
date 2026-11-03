@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 import type { JournalComment, JournalCommentInput } from "@/api/journal-comments";
 
 export type GamificationPreferences = {
@@ -109,7 +109,7 @@ export async function fetchGamificationPreferences(
     "/gamification/preferences",
     { token },
   );
-  return data.preferences;
+  return requiredField(data.preferences, "preferences");
 }
 
 export async function updateGamificationPreferences(
@@ -128,7 +128,7 @@ export async function listPRs(token: string, query?: string): Promise<PRRecord[]
     ? `/prs?q=${encodeURIComponent(query)}`
     : "/prs";
   const data = await apiRequest<{ prs: PRRecord[] }>(path, { token });
-  return data.prs;
+  return data.prs ?? [];
 }
 
 export async function createPR(
@@ -202,7 +202,7 @@ export async function deletePR(token: string, id: string): Promise<void> {
 
 export async function getPRHistory(token: string, id: string): Promise<PRHistoryEntry[]> {
   const data = await apiRequest<{ history: PRHistoryEntry[] }>(`/prs/${id}/history`, { token });
-  return data.history;
+  return data.history ?? [];
 }
 
 /** Every superseded score of all my PRs, oldest first (ADR-194): one read for Πρόοδος's trends. */
@@ -233,5 +233,5 @@ export async function setPRProfileAudience(token: string, id: string, audience: 
 /** The PRs a person shows on their profile, as I, a follower, see them (ADR-196). */
 export async function fetchProfilePRs(token: string, userId: string): Promise<ProfilePR[]> {
   const data = await apiRequest<{ prs: ProfilePR[] }>(`/prs/profile/${userId}`, { token });
-  return data.prs;
+  return data.prs ?? [];
 }

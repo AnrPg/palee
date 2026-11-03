@@ -14,7 +14,7 @@ export type SubmitFormReviewParams = NonNullable<
 
 export async function fetchMyFormReviews(token: string): Promise<FormReview[]> {
   const data = await apiRequest<FormReviewsResponse>("/me/form-reviews", { token });
-  return data.form_reviews;
+  return data.form_reviews ?? [];
 }
 
 /** Submitting reserves one `form_reviews` unit (ADR-098). */

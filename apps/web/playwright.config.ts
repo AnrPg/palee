@@ -31,7 +31,7 @@ export default defineConfig({
   webServer: {
     command: `NEXT_DIST_DIR=.next-playwright npm run dev -- -H 127.0.0.1 -p ${port}`,
     url: `http://127.0.0.1:${port}`,
-    env: { API_PROXY_TARGET: `http://127.0.0.1:${stubApiPort}` },
+    env: { API_PROXY_TARGET: `http://127.0.0.1:${stubApiPort}`, PALEE_E2E: "1" },
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },

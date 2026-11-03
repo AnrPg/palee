@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 import type { components } from "@/api/generated/schema";
 
 /**
@@ -66,7 +66,7 @@ export async function changeBuddyLink(token: string, linkId: string, action: "ac
 }
 
 export async function fetchBuddySettings(token: string) {
-  return (await apiRequest<{ settings: BuddySettings }>("/me/buddies/settings", { token })).settings;
+  return requiredField((await apiRequest<{ settings: BuddySettings }>("/me/buddies/settings", { token })).settings, "settings");
 }
 
 export async function updateBuddySettings(token: string, body: BuddySettingsRequest) {
@@ -102,7 +102,7 @@ export async function fetchSupportRequests(token: string, role: "sent" | "receiv
 }
 
 export async function fetchSupportRequest(token: string, requestId: string) {
-  return (await apiRequest<{ support_request: SupportRequest }>(`/me/support-requests/${id(requestId)}`, { token })).support_request;
+  return requiredField((await apiRequest<{ support_request: SupportRequest }>(`/me/support-requests/${id(requestId)}`, { token })).support_request, "support_request");
 }
 
 export async function sendSupportRequest(token: string, message: string | null) {
@@ -120,7 +120,7 @@ export function replyToSupportRequest(token: string, requestId: string, body: { 
 }
 
 export async function fetchWellnessSummarySharing(token: string) {
-  return (await apiRequest<{ sharing: WellnessSummarySharing }>("/me/wellness-summary-sharing", { token })).sharing;
+  return requiredField((await apiRequest<{ sharing: WellnessSummarySharing }>("/me/wellness-summary-sharing", { token })).sharing, "sharing");
 }
 
 export async function updateWellnessSummarySharing(token: string, body: WellnessSummarySharingRequest) {

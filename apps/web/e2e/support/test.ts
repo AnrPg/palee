@@ -1,8 +1,24 @@
+import { connect } from "node:net";
+
 import { test as base, type Page } from "@playwright/test";
+
+import { stubApiPort } from "../../playwright.config";
 
 export * from "@playwright/test";
 
 const HYDRATION_TIMEOUT_MS = 15_000;
+
+/** Whether a spec has its stub API server (playwright.config's `stubApiPort`) up right now. */
+function stubApiListening(): Promise<boolean> {
+  return new Promise((resolve) => {
+    const socket = connect({ host: "127.0.0.1", port: stubApiPort });
+    socket.once("connect", () => {
+      socket.destroy();
+      resolve(true);
+    });
+    socket.once("error", () => resolve(false));
+  });
+}
 
 /** Waits for the root layout's HydrationMarker; pages without the app shell just move on. */
 async function waitForHydration(page: Page) {
@@ -12,11 +28,29 @@ async function waitForHydration(page: Page) {
 }
 
 /**
- * The shared `test`: `page.goto` and `page.reload` resolve only once React has
+ * The shared `test`: a quiet browser context (below), and `page.goto` and `page.reload` resolve only once React has
  * hydrated the page, so a first tap is never lost on server-rendered HTML
  * (the cause of the intermittent "New entry" / "+ New PR" failures in CI).
  */
 export const test = base.extend({
+  context: async ({ context }, provide) => {
+    // `serviceWorkers: "block"` replaces `register` with one that resolves to
+    // nothing and logs a warning each time; keep the same answer, without the warning.
+    await context.addInitScript(() => {
+      const container = navigator.serviceWorker;
+      if (!container) return;
+      container.register = async () => undefined as unknown as ServiceWorkerRegistration;
+    });
+    // Lowest-priority fallback (page routes and later routes win): an API call
+    // a spec does not stub goes to the spec's stub API server when one is up,
+    // and otherwise answers 404 here instead of being proxied to a closed port
+    // (an ECONNREFUSED stack trace in the dev server log).
+    await context.route("**/api/**", async (route) => {
+      if (await stubApiListening()) return route.continue();
+      return route.fulfill({ status: 404, contentType: "application/json", body: JSON.stringify({ error: "not_stubbed" }) });
+    });
+    await provide(context);
+  },
   page: async ({ page }, provide) => {
     const goto = page.goto.bind(page);
     const reload = page.reload.bind(page);

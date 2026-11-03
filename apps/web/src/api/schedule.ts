@@ -269,7 +269,7 @@ export async function fetchSchedule(
 
 export async function listAdminClassTypes(token: string) {
   const response = await apiRequest<{ class_types: ClassTypeRecord[] }>("/admin/class-types", { token });
-  return response.class_types;
+  return response.class_types ?? [];
 }
 
 export type ClassTypePayload = {

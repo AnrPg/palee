@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/client";
+import { apiRequest, requiredField } from "@/api/client";
 import type { operations } from "@/api/generated/schema";
 
 // ADR-098 payment models: corporate clients (seats, invoices) and shared
@@ -38,7 +38,7 @@ const CLIENTS = "/admin/finance/corporate-clients";
 
 export async function fetchCorporateClients(token: string) {
   const response = await apiRequest<ClientsResponse>(CLIENTS, { token });
-  return response.clients;
+  return response.clients ?? [];
 }
 
 export async function createCorporateClient(token: string, body: CorporateClientCreate) {
@@ -53,7 +53,7 @@ export async function updateCorporateClient(token: string, id: string, body: Cor
 
 export async function fetchCorporateSeats(token: string, clientId: string) {
   const response = await apiRequest<SeatsResponse>(`${CLIENTS}/${clientId}/seats`, { token });
-  return response.seats;
+  return response.seats ?? [];
 }
 
 export async function addCorporateSeat(token: string, clientId: string, userId: string) {
@@ -75,7 +75,7 @@ export async function endCorporateSeat(token: string, clientId: string, subscrip
 
 export async function fetchCorporateInvoices(token: string, clientId: string) {
   const response = await apiRequest<InvoicesResponse>(`${CLIENTS}/${clientId}/invoices`, { token });
-  return response.invoices;
+  return response.invoices ?? [];
 }
 
 /** Generates the invoice for the billing period that contains `on` (default today). */
@@ -103,7 +103,7 @@ export async function voidCorporateInvoice(token: string, invoiceId: string) {
 /** The invoice with its client and issuer, for the PDF. */
 export async function fetchCorporateInvoiceDocument(token: string, invoiceId: string) {
   const response = await apiRequest<InvoiceDocumentResponse>(`${INVOICES}/${invoiceId}`, { token });
-  return response.invoice;
+  return requiredField(response.invoice, "invoice");
 }
 
 export async function recordCorporatePayment(token: string, invoiceId: string, body: CorporatePaymentInput) {
@@ -135,7 +135,7 @@ export async function fetchSubscriptionBeneficiaries(token: string, subscription
     `/admin/finance/subscriptions/${subscriptionId}/beneficiaries`,
     { token },
   );
-  return response.beneficiaries;
+  return response.beneficiaries ?? [];
 }
 
 export async function addSubscriptionBeneficiary(
