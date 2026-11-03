@@ -85,7 +85,10 @@ jobs:
           PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH: /usr/bin/google-chrome
       # The traces of failed e2e tests (what the page showed, step by step),
       # so a CI-only failure can be read instead of guessed at.
+      # The runner cannot always resolve the Gitea host for uploads; a failed
+      # upload must not hide the real result.
       - if: failure()
+        continue-on-error: true
         uses: actions/upload-artifact@v3
         with:
           name: e2e-test-results

@@ -85,6 +85,8 @@ const row = (userId: string, rank: number, value: string, extra: Record<string, 
 
 test.describe("training floor (v3.1 W5)", () => {
   test("the #wod leaderboard: my chips on top, my percentile on my row, the rest under «Advanced» (mockup d2 A)", async ({ page }) => {
+    // Desktop layout: on a phone this picker is a combobox (SegmentPicker collapses).
+    await page.setViewportSize({ width: 1280, height: 800 });
     await stubApi(page);
     const asked: URLSearchParams[] = [];
     await page.route("**/api/me/clubs", (route) => route.fulfill(json({ clubs: [gymClub] })));

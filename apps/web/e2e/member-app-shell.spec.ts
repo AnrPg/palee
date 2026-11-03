@@ -372,6 +372,16 @@ async function stubMemberApi(page: Page) {
   );
 }
 
+// stubMemberApi's member belongs to one box, so the app opens on Box (W7
+// screen 12, app-open landing) a moment after "/". Wait for that landing, then
+// tap Feed, which always shows Feed: no race with the redirect.
+async function openFeedAsOneBoxMember(page: Page) {
+  await page.goto("/");
+  await expect(page).toHaveURL(/\/box$/);
+  await page.getByRole("navigation", { name: "Main sections" }).getByRole("link", { name: "Feed" }).click();
+  await expect(page).toHaveURL(/\/$/);
+}
+
 test.describe("member app shell", () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
@@ -580,7 +590,7 @@ test.describe("member app shell", () => {
 
   test("Instagram-like bars: Messages in the bottom bar, logo · ⊕ · bell on top, hidden while scrolling down", async ({ page }) => {
     await stubMemberApi(page);
-    await page.goto("/");
+    await openFeedAsOneBoxMember(page);
 
     const bottom = page.getByRole("navigation", { name: "Main sections" });
     await expect(bottom.getByRole("link", { name: "Messages", exact: true })).toHaveAttribute("href", "/messages");
@@ -605,7 +615,7 @@ test.describe("member app shell", () => {
 
   test("Home shows the gym's day: greeting and today's WOD, and hides the empty cards", async ({ page }) => {
     await stubMemberApi(page);
-    await page.goto("/");
+    await openFeedAsOneBoxMember(page);
 
     await expect(page.getByRole("navigation", { name: "Main sections" }).getByRole("link", { name: "Feed" })).toHaveAttribute("aria-current", "page");
     await expect(page.getByText("Strength grows in the moments you think you can't go on.")).toBeVisible();

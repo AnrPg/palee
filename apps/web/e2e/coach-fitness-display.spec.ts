@@ -65,6 +65,8 @@ async function asCoach(page: Page) {
 
 test.describe("coach and a client's fitness card (ADR-395)", () => {
   test("the coach reads weight and birth year and sets «Nothing», then gives the choice back", async ({ page }) => {
+    // Desktop layout: on a phone this picker is a combobox (SegmentPicker collapses).
+    await page.setViewportSize({ width: 1280, height: 800 });
     const server = { settings: { body_weight_kg: 64, birth_year: 1991, display: "progress_only" }, override: null as string | null };
     const puts: Array<Record<string, unknown>> = [];
     await asCoach(page);

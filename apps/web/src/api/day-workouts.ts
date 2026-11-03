@@ -59,7 +59,7 @@ export async function fetchDayAssignmentTags(token: string, from: string, to: st
     `/admin/schedule/day-workouts?from=${from}&to=${to}`,
     { token },
   );
-  return response.days;
+  return response.days ?? [];
 }
 
 export async function previewDayWorkout(token: string, request: DayWorkoutRequest) {
