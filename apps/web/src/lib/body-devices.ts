@@ -129,6 +129,34 @@ export function addMealFood(foods: MealFood[], food: MealFood): MealFood[] {
   return [...foods.filter((entry) => !same(entry)), food].slice(-10);
 }
 
+// ADR-421: the nutrition table of «Δικό μου τρόφιμο», grams per 100 g.
+export const FOOD_NUTRIENTS = ["proteins", "carbohydrates", "fat", "fiber", "sugars", "salt"] as const;
+export type FoodNutrientKey = (typeof FOOD_NUTRIENTS)[number];
+
+/** A typed amount: null when blank, "invalid" unless 0–100 (a comma works as the decimal mark). */
+export function parseNutrient(raw: string): number | null | "invalid" {
+  const text = raw.trim().replace(",", ".");
+  if (text === "") return null;
+  if (!/^\d+(\.\d+)?$/.test(text)) return "invalid";
+  const value = Number(text);
+  return value >= 0 && value <= 100 ? value : "invalid";
+}
+
+/** The nutrients to send and the fields to mark; nothing to send when every field is blank. */
+export function nutrientsFrom(fields: Partial<Record<FoodNutrientKey, string>>): {
+  nutrients: Partial<Record<FoodNutrientKey, number>>;
+  invalid: FoodNutrientKey[];
+} {
+  const nutrients: Partial<Record<FoodNutrientKey, number>> = {};
+  const invalid: FoodNutrientKey[] = [];
+  for (const key of FOOD_NUTRIENTS) {
+    const value = parseNutrient(fields[key] ?? "");
+    if (value === "invalid") invalid.push(key);
+    else if (value !== null) nutrients[key] = value;
+  }
+  return { nutrients, invalid };
+}
+
 // ADR-377: belts and levels.
 
 const BELT_TOKENS: Record<RankColor, string> = {

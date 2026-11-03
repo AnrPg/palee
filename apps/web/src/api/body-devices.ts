@@ -23,6 +23,10 @@ export type Food = NonNullable<BarcodeLookup["food"]>;
 export type FoodPortion = NonNullable<Food["portion_hint"]>;
 export type CustomFoodInput = Json<NonNullable<Op["PaleeWeb.FoodsController.create"]["requestBody"]>>;
 export type FoodResponse = Json<Op["PaleeWeb.FoodsController.update"]["responses"][200]>;
+export type FoodLabelReading = Json<Op["PaleeWeb.FoodsController.read_label"]["responses"][200]>;
+export type FoodLabelPrefill = FoodLabelReading["food"];
+export type BarcodeMisses = Json<Op["PaleeWeb.PlatformFoodMissesController.index"]["responses"][200]>;
+export type BarcodeMiss = BarcodeMisses["misses"][number];
 
 export type RankLadders = Json<Op["PaleeWeb.AdminRankLaddersController.index"]["responses"][200]>;
 export type RankLadder = RankLadders["ladders"][number];
@@ -96,6 +100,31 @@ export function lookUpBarcode(token: string, barcode: string) {
 
 export function createCustomFood(token: string, food: CustomFoodInput) {
   return apiRequest<FoodResponse>("/me/foods", { method: "POST", token, body: food }).then((body) => body.food);
+}
+
+// ADR-421: «Φωτογραφία ετικέτας» prefills the own food; the photos are not kept.
+export function readFoodLabel(token: string, photos: { front?: Blob | null; nutrition?: Blob | null }) {
+  const form = new FormData();
+  if (photos.front) form.append("front", photos.front, "front");
+  if (photos.nutrition) form.append("nutrition", photos.nutrition, "nutrition");
+  return apiRequest<FoodLabelReading>("/me/foods/label-read", { method: "POST", token, body: form }).then((body) => ({
+    macros_visible: body?.macros_visible === true,
+    food: {
+      name: body?.food?.name ?? null,
+      brand: body?.food?.brand ?? null,
+      serving_label: body?.food?.serving_label ?? null,
+      portion_hint: body?.food?.portion_hint ?? null,
+      nutrients: body?.food?.nutrients ?? null,
+    },
+  }));
+}
+
+// ADR-421: barcodes no source had (platform console).
+export function fetchBarcodeMisses(token: string, country?: string | null) {
+  const query = country ? `?country=${encodeURIComponent(country)}` : "";
+  return apiRequest<BarcodeMisses>(`/platform/food-misses${query}`, { token }).then((body) =>
+    Array.isArray(body?.misses) ? body.misses : [],
+  );
 }
 
 // ADR-377: belts and levels.

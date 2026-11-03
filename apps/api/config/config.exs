@@ -628,13 +628,34 @@ config :palee, :application_clock, Palee.Infrastructure.Clock.SystemClock
 config :palee, :execution_split_store, Palee.Infrastructure.Execution.EctoSplitStore
 config :palee, :watch_store, Palee.Infrastructure.Devices.EctoWatchStore
 config :palee, :food_store, Palee.Infrastructure.Nutrition.EctoFoodStore
-config :palee, :food_database, Palee.Infrastructure.Nutrition.OpenFoodFactsClient
+# ADR-421: free sources asked in order, each with its own timeout, inside a
+# total budget so a scan never hangs (the outbox retries what timed out).
+config :palee, :food_database, Palee.Infrastructure.Nutrition.ChainFoodDatabase
+
+config :palee, :food_chain,
+  sources: [
+    {Palee.Infrastructure.Nutrition.OpenFoodFactsClient, 3_000},
+    {Palee.Infrastructure.Nutrition.UsdaFoodDataCentralClient, 2_500},
+    {Palee.Infrastructure.Nutrition.EctoFoodCatalogue, 1_000}
+  ],
+  total_timeout_ms: 5_000
 
 config :palee, :open_food_facts,
   base_url: "https://world.openfoodfacts.org",
   user_agent: "Palee/3.2 (https://palee.app; support@palee.app)",
-  receive_timeout: 4_000,
+  receive_timeout: 3_000,
   req_options: []
+
+# The key comes from USDA_FDC_API_KEY (runtime.exs); without one the source is skipped.
+config :palee, :usda_food_data_central,
+  base_url: "https://api.nal.usda.gov/fdc",
+  api_key: nil,
+  receive_timeout: 2_500,
+  req_options: []
+
+# ADR-421: «Φωτογραφία ετικέτας» reads a food label with the platform's
+# Gemini vision call (ADR-157); without GEMINI_API_KEY the action is hidden.
+config :palee, :food_label_reader, Palee.Infrastructure.Ai.GeminiFoodLabelReader
 
 config :palee, :rank_store, Palee.Infrastructure.Ranks.EctoRankStore
 

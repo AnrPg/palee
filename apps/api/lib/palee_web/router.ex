@@ -2701,6 +2701,8 @@ defmodule PaleeWeb.Router do
     get("/partner-reports", PlatformPartnerReportController, :index)
     post("/partner-reports/:id/decision", PlatformPartnerReportController, :decide)
     # ADR-397: reported box reviews, decided only by the Palee team.
+    # ADR-421: barcodes no food source had, per country.
+    get("/food-misses", PlatformFoodMissesController, :index)
     get("/review-reports", PlatformReviewReportController, :index)
     post("/review-reports/:review_id/decision", PlatformReviewReportController, :decide)
     post("/review-reports/:review_id/restore", PlatformReviewReportController, :restore)
@@ -2756,6 +2758,19 @@ defmodule PaleeWeb.Router do
     ])
 
     post("/:id/alt-text-suggestion", MyMediaController, :suggest_alt_text)
+  end
+
+  # ADR-421: «Φωτογραφία ετικέτας» shares the AI suggestion budget.
+  scope "/api/me/foods", PaleeWeb do
+    pipe_through([
+      :api,
+      :authenticated,
+      :authenticated_rate_limited,
+      :user_only,
+      :ai_suggestion_rate_limited
+    ])
+
+    post("/label-read", FoodsController, :read_label)
   end
 
   # ADR-158: body photo uploads share the media upload limits.

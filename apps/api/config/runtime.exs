@@ -98,6 +98,12 @@ config :palee, :gemini,
   # ADR-366: status page incidents into English.
   translate_model: System.get_env("GEMINI_TRANSLATE_MODEL", "gemini-2.5-flash-lite")
 
+# ADR-421: USDA FoodData Central (free api.data.gov key); unset, the barcode
+# chain skips it. Tests keep their own fake key.
+if config_env() != :test do
+  config :palee, :usda_food_data_central, api_key: System.get_env("USDA_FDC_API_KEY")
+end
+
 # ADR-174: AI scaling suggestions call the Claude API with each gym's own key
 # (set in the gym's AI settings); only the default model is configured here.
 config :palee, :anthropic,

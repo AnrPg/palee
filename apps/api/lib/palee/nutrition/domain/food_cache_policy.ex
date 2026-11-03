@@ -5,14 +5,14 @@ defmodule Palee.Nutrition.Domain.FoodCachePolicy do
 
     * a found product is served for 30 days, then still served while a
       refresh is queued (Open Food Facts changes slowly);
-    * "not in Open Food Facts" is believed for 7 days, so a new product
+    * "in no source" is believed for 7 days, so a new product
       added there later is found;
     * a failed call is retried after 1, 5, 30 minutes, then hourly, up to
       6 attempts; then `failed` until someone scans it again a day later;
     * a claim older than 2 minutes is taken over (a crashed worker).
 
   Attribution travels with every product shown (ODbL §4.3): the source,
-  its licence and a link to the product page.
+  its licence and a link (ADR-421: per source, each row from one source).
   """
 
   @found_ttl_days 30
@@ -100,8 +100,14 @@ defmodule Palee.Nutrition.Domain.FoodCachePolicy do
   defp older_than?(nil, _now, _seconds), do: true
   defp older_than?(at, now, seconds), do: DateTime.diff(now, at, :second) > seconds
 
-  @doc "The attribution shown with a product from Open Food Facts."
-  def attribution(barcode) do
+  @doc """
+  The attribution shown with a product, by its source (ADR-421): Open Food
+  Facts (ODbL §4.3: source, licence, link), USDA FoodData Central (CC0;
+  USDA asks to be credited), or what a licensed list stored with the row.
+  """
+  def attribution(source, barcode, stored \\ nil)
+
+  def attribution("open_food_facts", barcode, _stored) do
     %{
       source: "Open Food Facts",
       licence: "ODbL-1.0",
@@ -110,4 +116,28 @@ defmodule Palee.Nutrition.Domain.FoodCachePolicy do
       url: "https://world.openfoodfacts.org/product/" <> barcode
     }
   end
+
+  def attribution("usda_fdc", _barcode, _stored) do
+    %{
+      source: "USDA FoodData Central",
+      licence: "CC0-1.0",
+      licence_url: "https://creativecommons.org/publicdomain/zero/1.0/",
+      images_licence: nil,
+      url: "https://fdc.nal.usda.gov/"
+    }
+  end
+
+  def attribution(_source, _barcode, %{} = stored) do
+    %{
+      source: value(stored, :source),
+      licence: value(stored, :licence),
+      licence_url: value(stored, :licence_url),
+      images_licence: nil,
+      url: value(stored, :url) || value(stored, :licence_url)
+    }
+  end
+
+  def attribution(_source, _barcode, nil), do: nil
+
+  defp value(map, key), do: Map.get(map, key) || Map.get(map, Atom.to_string(key))
 end

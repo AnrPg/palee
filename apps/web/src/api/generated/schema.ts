@@ -3260,10 +3260,30 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Look a scanned barcode up: own foods, then Open Food Facts; else the manual entry */
+        /** Look a scanned barcode up: own foods, the cache, then Open Food Facts, USDA and licensed lists; else the manual entry */
         get: operations["PaleeWeb.FoodsController.barcode"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/foods/label-read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Read a food label from photos into the «Δικό μου τρόφιμο» form (nothing is saved)
+         * @description One or two photos (`front`, `nutrition`), JPEG, PNG or WebP up to 4 MB each. The photos are read during the request and never stored. 503 when label reading is off.
+         */
+        post: operations["PaleeWeb.FoodsController.read_label"];
         delete?: never;
         options?: never;
         head?: never;
@@ -18211,6 +18231,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/platform/food-misses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Barcodes no source had, most scanned first (vendors) */
+        get: operations["PaleeWeb.PlatformFoodMissesController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/platform/organization-purges": {
         parameters: {
             query?: never;
@@ -24025,14 +24062,14 @@ export interface components {
         BarcodeLookup: {
             /**
              * FoodAttribution
-             * @description Shown with every Open Food Facts product (ODbL 1.0)
+             * @description Shown with every product from a public source: Open Food Facts (ODbL 1.0), USDA FoodData Central (CC0) or a licensed product list (its own licence)
              */
             attribution?: {
-                images_licence: string;
+                images_licence?: string | null;
                 licence: string;
-                licence_url: string;
+                licence_url?: string | null;
                 source: string;
-                url: string;
+                url?: string | null;
             } | null;
             barcode: string;
             food?: {
@@ -24063,6 +24100,8 @@ export interface components {
                 quantity?: string | null;
                 serving_size?: string | null;
             } | null;
+            /** @description Whether «Φωτογραφία ετικέτας» can prefill the manual entry (ADR-421) */
+            label_reading?: boolean;
             macros_visible: boolean;
             /**
              * @description Why the manual entry
@@ -24070,12 +24109,25 @@ export interface components {
              */
             reason?: "not_found" | "failed" | "in_store_code" | null;
             /** @enum {string|null} */
-            source?: "open_food_facts" | "custom" | null;
+            source?: "open_food_facts" | "usda_fdc" | "catalogue" | "custom" | null;
             /**
              * @description `pending`: still asking, scan again in a few seconds; `manual`: write it down yourself
              * @enum {string}
              */
             status: "found" | "pending" | "manual";
+        };
+        /** BarcodeMisses */
+        BarcodeMisses: {
+            misses: {
+                barcode: string;
+                /** @description ISO 3166 alpha-2; empty when unknown */
+                country: string;
+                /** Format: date */
+                first_seen_on: string;
+                /** Format: date */
+                last_seen_on: string;
+                scans: number;
+            }[];
         };
         /** BillingActions */
         BillingActions: {
@@ -35176,15 +35228,38 @@ export interface components {
         };
         /**
          * FoodAttribution
-         * @description Shown with every Open Food Facts product (ODbL 1.0)
+         * @description Shown with every product from a public source: Open Food Facts (ODbL 1.0), USDA FoodData Central (CC0) or a licensed product list (its own licence)
          */
         FoodAttribution: {
-            images_licence: string;
+            images_licence?: string | null;
             licence: string;
-            licence_url: string;
+            licence_url?: string | null;
             source: string;
-            url: string;
+            url?: string | null;
         } | null;
+        /** FoodLabelReading */
+        FoodLabelReading: {
+            food: {
+                brand: string | null;
+                name: string | null;
+                /**
+                 * FoodNutrients
+                 * @description Grams per 100 g. Only when a coach's plan sets macros and macros are not hidden; never energy
+                 */
+                nutrients: {
+                    carbohydrates?: number;
+                    fat?: number;
+                    fiber?: number;
+                    proteins?: number;
+                    salt?: number;
+                    sugars?: number;
+                } | null;
+                /** @enum {string|null} */
+                portion_hint: "protein" | "carbs" | "veg" | "fat" | null;
+                serving_label: string | null;
+            };
+            macros_visible: boolean;
+        };
         /**
          * FoodNutrients
          * @description Grams per 100 g. Only when a coach's plan sets macros and macros are not hidden; never energy
@@ -72293,14 +72368,14 @@ export interface operations {
                     "application/json": {
                         /**
                          * FoodAttribution
-                         * @description Shown with every Open Food Facts product (ODbL 1.0)
+                         * @description Shown with every product from a public source: Open Food Facts (ODbL 1.0), USDA FoodData Central (CC0) or a licensed product list (its own licence)
                          */
                         attribution?: {
-                            images_licence: string;
+                            images_licence?: string | null;
                             licence: string;
-                            licence_url: string;
+                            licence_url?: string | null;
                             source: string;
-                            url: string;
+                            url?: string | null;
                         } | null;
                         barcode: string;
                         food?: {
@@ -72331,6 +72406,8 @@ export interface operations {
                             quantity?: string | null;
                             serving_size?: string | null;
                         } | null;
+                        /** @description Whether «Φωτογραφία ετικέτας» can prefill the manual entry (ADR-421) */
+                        label_reading?: boolean;
                         macros_visible: boolean;
                         /**
                          * @description Why the manual entry
@@ -72338,7 +72415,7 @@ export interface operations {
                          */
                         reason?: "not_found" | "failed" | "in_store_code" | null;
                         /** @enum {string|null} */
-                        source?: "open_food_facts" | "custom" | null;
+                        source?: "open_food_facts" | "usda_fdc" | "catalogue" | "custom" | null;
                         /**
                          * @description `pending`: still asking, scan again in a few seconds; `manual`: write it down yourself
                          * @enum {string}
@@ -72349,6 +72426,85 @@ export interface operations {
             };
             /** @description Not a valid barcode */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.FoodsController.read_label": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /**
+                     * Format: binary
+                     * @description The front of the pack
+                     */
+                    front?: string;
+                    locale?: string;
+                    /**
+                     * Format: binary
+                     * @description The nutrition table
+                     */
+                    nutrition?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Prefill */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        food: {
+                            brand: string | null;
+                            name: string | null;
+                            /**
+                             * FoodNutrients
+                             * @description Grams per 100 g. Only when a coach's plan sets macros and macros are not hidden; never energy
+                             */
+                            nutrients: {
+                                carbohydrates?: number;
+                                fat?: number;
+                                fiber?: number;
+                                proteins?: number;
+                                salt?: number;
+                                sugars?: number;
+                            } | null;
+                            /** @enum {string|null} */
+                            portion_hint: "protein" | "carbs" | "veg" | "fat" | null;
+                            serving_label: string | null;
+                        };
+                        macros_visible: boolean;
+                    };
+                };
+            };
+            /** @description Unreadable or not a photo */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Label reading is off */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -151348,6 +151504,40 @@ export interface operations {
                         };
                         /** Format: date-time */
                         updated_at: string | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PlatformFoodMissesController.index": {
+        parameters: {
+            query?: {
+                /** @description ISO 3166 alpha-2 */
+                country?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Misses */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        misses: {
+                            barcode: string;
+                            /** @description ISO 3166 alpha-2; empty when unknown */
+                            country: string;
+                            /** Format: date */
+                            first_seen_on: string;
+                            /** Format: date */
+                            last_seen_on: string;
+                            scans: number;
+                        }[];
                     };
                 };
             };

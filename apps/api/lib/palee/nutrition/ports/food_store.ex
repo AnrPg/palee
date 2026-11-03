@@ -6,7 +6,7 @@ defmodule Palee.Nutrition.Ports.FoodStore do
   RepoContext (row security admits only them).
   """
 
-  alias Palee.Nutrition.{CachedFood, CustomFood}
+  alias Palee.Nutrition.{BarcodeMiss, CachedFood, CustomFood}
 
   @type id :: Ecto.UUID.t()
 
@@ -16,6 +16,11 @@ defmodule Palee.Nutrition.Ports.FoodStore do
   @doc "Claims due rows (or this barcode) with FOR UPDATE SKIP LOCKED, counting an attempt."
   @callback claim(:due | String.t(), DateTime.t(), pos_integer()) :: [CachedFood.t()]
   @callback finish(String.t(), map(), DateTime.t()) :: {:ok, CachedFood.t()} | {:error, term()}
+
+  @doc "Counts one scan that found nothing, for the barcode and country (`\"\"` when unknown) (ADR-421)."
+  @callback record_miss(String.t(), String.t(), Date.t()) :: :ok
+  @doc "The most scanned barcodes nobody had, optionally in one country (ADR-421)."
+  @callback list_misses(country :: String.t() | nil, limit :: pos_integer()) :: [BarcodeMiss.t()]
 
   @callback list_custom_foods(id()) :: [CustomFood.t()]
   @callback get_custom_food(id(), id()) :: CustomFood.t() | nil

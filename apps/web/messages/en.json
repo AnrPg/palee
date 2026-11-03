@@ -16900,7 +16900,26 @@
       "brand": "Brand",
       "serving": "Serving",
       "staysYours": "It stays yours; it isn't sent anywhere.",
-      "saveOwn": "Save food"
+      "saveOwn": "Save food",
+      "labelPhoto": "Photo of the label",
+      "labelFront": "Front of the pack",
+      "labelTable": "Nutrition table",
+      "labelRead": "Read the label",
+      "labelReading": "Reading…",
+      "labelHint": "AI reads the photos to fill in the form; they aren't kept. Check what it wrote.",
+      "labelNeedPhoto": "Add at least one photo.",
+      "labelUnreadable": "We couldn't read it. Try a sharper photo or type it.",
+      "labelUnavailable": "Reading labels isn't available right now. Type it instead.",
+      "per100gTitle": "Per 100 g",
+      "nutrientInvalid": "From 0 to 100 g.",
+      "nutrient": {
+        "proteins": "Protein (g)",
+        "carbohydrates": "Carbohydrates (g)",
+        "fat": "Fat (g)",
+        "fiber": "Fibre (g)",
+        "sugars": "Sugars (g)",
+        "salt": "Salt (g)"
+      }
     },
     "ranks": {
       "groupTitle": "Ranks",
@@ -17409,5 +17428,19 @@
     "display_none": "Nothing",
     "hint": "With “Progress only” or “Nothing”, their card says “Set by your coach”.",
     "theirsIsStricter": "{name} chose “{choice}”, which is stricter, so that stays."
+  },
+  "PlatformFoodMisses": {
+    "title": "Barcodes not found",
+    "subtitle": "Barcodes members scanned that no food source had, per country, most scanned first. No person is recorded.",
+    "back": "Businesses",
+    "forbidden": "Only platform staff can see this list.",
+    "loadError": "The list couldn't be loaded.",
+    "loading": "Loading…",
+    "empty": "No missing barcodes.",
+    "country": "Country",
+    "countryAll": "All countries",
+    "noCountry": "No country",
+    "scans": "{count, plural, one {# scan} other {# scans}}",
+    "seen": "{first} – {last}"
   }
 }

@@ -12706,31 +12706,31 @@
       "BarcodeLookup": {
         "properties": {
           "attribution": {
-            "description": "Shown with every Open Food Facts product (ODbL 1.0)",
+            "description": "Shown with every product from a public source: Open Food Facts (ODbL 1.0), USDA FoodData Central (CC0) or a licensed product list (its own licence)",
             "nullable": true,
             "properties": {
               "images_licence": {
+                "nullable": true,
                 "type": "string"
               },
               "licence": {
                 "type": "string"
               },
               "licence_url": {
+                "nullable": true,
                 "type": "string"
               },
               "source": {
                 "type": "string"
               },
               "url": {
+                "nullable": true,
                 "type": "string"
               }
             },
             "required": [
-              "images_licence",
               "licence",
-              "licence_url",
-              "source",
-              "url"
+              "source"
             ],
             "title": "FoodAttribution",
             "type": "object"
@@ -12823,6 +12823,10 @@
             ],
             "nullable": true
           },
+          "label_reading": {
+            "description": "Whether «Φωτογραφία ετικέτας» can prefill the manual entry (ADR-421)",
+            "type": "boolean"
+          },
           "macros_visible": {
             "type": "boolean"
           },
@@ -12839,6 +12843,8 @@
           "source": {
             "enum": [
               "open_food_facts",
+              "usda_fdc",
+              "catalogue",
               "custom"
             ],
             "nullable": true,
@@ -12860,6 +12866,48 @@
           "status"
         ],
         "title": "BarcodeLookup",
+        "type": "object"
+      },
+      "BarcodeMisses": {
+        "properties": {
+          "misses": {
+            "items": {
+              "properties": {
+                "barcode": {
+                  "type": "string"
+                },
+                "country": {
+                  "description": "ISO 3166 alpha-2; empty when unknown",
+                  "type": "string"
+                },
+                "first_seen_on": {
+                  "format": "date",
+                  "type": "string"
+                },
+                "last_seen_on": {
+                  "format": "date",
+                  "type": "string"
+                },
+                "scans": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "barcode",
+                "country",
+                "scans",
+                "first_seen_on",
+                "last_seen_on"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "misses"
+        ],
+        "title": "BarcodeMisses",
         "type": "object"
       },
       "BillingActions": {
@@ -48973,33 +49021,106 @@
         "type": "object"
       },
       "FoodAttribution": {
-        "description": "Shown with every Open Food Facts product (ODbL 1.0)",
+        "description": "Shown with every product from a public source: Open Food Facts (ODbL 1.0), USDA FoodData Central (CC0) or a licensed product list (its own licence)",
         "nullable": true,
         "properties": {
           "images_licence": {
+            "nullable": true,
             "type": "string"
           },
           "licence": {
             "type": "string"
           },
           "licence_url": {
+            "nullable": true,
             "type": "string"
           },
           "source": {
             "type": "string"
           },
           "url": {
+            "nullable": true,
             "type": "string"
           }
         },
         "required": [
-          "images_licence",
           "licence",
-          "licence_url",
-          "source",
-          "url"
+          "source"
         ],
         "title": "FoodAttribution",
+        "type": "object"
+      },
+      "FoodLabelReading": {
+        "properties": {
+          "food": {
+            "properties": {
+              "brand": {
+                "nullable": true,
+                "type": "string"
+              },
+              "name": {
+                "nullable": true,
+                "type": "string"
+              },
+              "nutrients": {
+                "description": "Grams per 100 g. Only when a coach's plan sets macros and macros are not hidden; never energy",
+                "nullable": true,
+                "properties": {
+                  "carbohydrates": {
+                    "type": "number"
+                  },
+                  "fat": {
+                    "type": "number"
+                  },
+                  "fiber": {
+                    "type": "number"
+                  },
+                  "proteins": {
+                    "type": "number"
+                  },
+                  "salt": {
+                    "type": "number"
+                  },
+                  "sugars": {
+                    "type": "number"
+                  }
+                },
+                "title": "FoodNutrients",
+                "type": "object"
+              },
+              "portion_hint": {
+                "enum": [
+                  "protein",
+                  "carbs",
+                  "veg",
+                  "fat"
+                ],
+                "nullable": true,
+                "type": "string"
+              },
+              "serving_label": {
+                "nullable": true,
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "brand",
+              "serving_label",
+              "portion_hint",
+              "nutrients"
+            ],
+            "type": "object"
+          },
+          "macros_visible": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "food",
+          "macros_visible"
+        ],
+        "title": "FoodLabelReading",
         "type": "object"
       },
       "FoodNutrients": {
@@ -160301,31 +160422,31 @@
                 "schema": {
                   "properties": {
                     "attribution": {
-                      "description": "Shown with every Open Food Facts product (ODbL 1.0)",
+                      "description": "Shown with every product from a public source: Open Food Facts (ODbL 1.0), USDA FoodData Central (CC0) or a licensed product list (its own licence)",
                       "nullable": true,
                       "properties": {
                         "images_licence": {
+                          "nullable": true,
                           "type": "string"
                         },
                         "licence": {
                           "type": "string"
                         },
                         "licence_url": {
+                          "nullable": true,
                           "type": "string"
                         },
                         "source": {
                           "type": "string"
                         },
                         "url": {
+                          "nullable": true,
                           "type": "string"
                         }
                       },
                       "required": [
-                        "images_licence",
                         "licence",
-                        "licence_url",
-                        "source",
-                        "url"
+                        "source"
                       ],
                       "title": "FoodAttribution",
                       "type": "object"
@@ -160418,6 +160539,10 @@
                       ],
                       "nullable": true
                     },
+                    "label_reading": {
+                      "description": "Whether «Φωτογραφία ετικέτας» can prefill the manual entry (ADR-421)",
+                      "type": "boolean"
+                    },
                     "macros_visible": {
                       "type": "boolean"
                     },
@@ -160434,6 +160559,8 @@
                     "source": {
                       "enum": [
                         "open_food_facts",
+                        "usda_fdc",
+                        "catalogue",
                         "custom"
                       ],
                       "nullable": true,
@@ -160478,7 +160605,154 @@
             "bearerAuth": []
           }
         ],
-        "summary": "Look a scanned barcode up: own foods, then Open Food Facts; else the manual entry",
+        "summary": "Look a scanned barcode up: own foods, the cache, then Open Food Facts, USDA and licensed lists; else the manual entry",
+        "tags": [
+          "Foods"
+        ]
+      }
+    },
+    "/api/me/foods/label-read": {
+      "post": {
+        "callbacks": {},
+        "description": "One or two photos (`front`, `nutrition`), JPEG, PNG or WebP up to 4 MB each. The photos are read during the request and never stored. 503 when label reading is off.",
+        "operationId": "PaleeWeb.FoodsController.read_label",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "front": {
+                    "description": "The front of the pack",
+                    "format": "binary",
+                    "type": "string"
+                  },
+                  "locale": {
+                    "maxLength": 10,
+                    "type": "string"
+                  },
+                  "nutrition": {
+                    "description": "The nutrition table",
+                    "format": "binary",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "food": {
+                      "properties": {
+                        "brand": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "name": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "nutrients": {
+                          "description": "Grams per 100 g. Only when a coach's plan sets macros and macros are not hidden; never energy",
+                          "nullable": true,
+                          "properties": {
+                            "carbohydrates": {
+                              "type": "number"
+                            },
+                            "fat": {
+                              "type": "number"
+                            },
+                            "fiber": {
+                              "type": "number"
+                            },
+                            "proteins": {
+                              "type": "number"
+                            },
+                            "salt": {
+                              "type": "number"
+                            },
+                            "sugars": {
+                              "type": "number"
+                            }
+                          },
+                          "title": "FoodNutrients",
+                          "type": "object"
+                        },
+                        "portion_hint": {
+                          "enum": [
+                            "protein",
+                            "carbs",
+                            "veg",
+                            "fat"
+                          ],
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "serving_label": {
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "brand",
+                        "serving_label",
+                        "portion_hint",
+                        "nutrients"
+                      ],
+                      "type": "object"
+                    },
+                    "macros_visible": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "food",
+                    "macros_visible"
+                  ],
+                  "title": "FoodLabelReading",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Prefill"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Unreadable or not a photo"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Label reading is off"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Read a food label from photos into the «Δικό μου τρόφιμο» form (nothing is saved)",
         "tags": [
           "Foods"
         ]
@@ -385638,6 +385912,84 @@
         "summary": "Set Palee's margin per channel; channels not sent keep theirs",
         "tags": [
           "Platform"
+        ]
+      }
+    },
+    "/api/platform/food-misses": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformFoodMissesController.index",
+        "parameters": [
+          {
+            "description": "ISO 3166 alpha-2",
+            "in": "query",
+            "name": "country",
+            "required": false,
+            "schema": {
+              "pattern": "^[A-Za-z]{2}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "misses": {
+                      "items": {
+                        "properties": {
+                          "barcode": {
+                            "type": "string"
+                          },
+                          "country": {
+                            "description": "ISO 3166 alpha-2; empty when unknown",
+                            "type": "string"
+                          },
+                          "first_seen_on": {
+                            "format": "date",
+                            "type": "string"
+                          },
+                          "last_seen_on": {
+                            "format": "date",
+                            "type": "string"
+                          },
+                          "scans": {
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "barcode",
+                          "country",
+                          "scans",
+                          "first_seen_on",
+                          "last_seen_on"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "misses"
+                  ],
+                  "title": "BarcodeMisses",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Misses"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Barcodes no source had, most scanned first (vendors)",
+        "tags": [
+          "Platform food misses"
         ]
       }
     },

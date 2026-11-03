@@ -7,6 +7,7 @@ import { MealFoods } from "./MealFoods";
 
 const lookUpBarcode = vi.fn();
 const createCustomFood = vi.fn();
+const readFoodLabel = vi.fn();
 
 vi.mock("next-intl", () => ({
   useTranslations: () => (key: string, values?: Record<string, unknown>) => (values ? `${key}:${Object.values(values).join(",")}` : key),
@@ -15,7 +16,9 @@ vi.mock("@/components/session-provider", () => ({ useSession: () => ({ tokens: {
 vi.mock("@/api/body-devices", () => ({
   lookUpBarcode: (...args: unknown[]) => lookUpBarcode(...args),
   createCustomFood: (...args: unknown[]) => createCustomFood(...args),
+  readFoodLabel: (...args: unknown[]) => readFoodLabel(...args),
 }));
+vi.mock("@/lib/box-photo-upload", () => ({ reencodeImage: async (file: Blob) => file }));
 
 const wrapper = ({ children }: { children: ReactNode }) => (
   <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>{children}</QueryClientProvider>
@@ -36,6 +39,7 @@ describe("MealFoods (ADR-376, mockups d9scan A and d9manual A)", () => {
   beforeEach(() => {
     lookUpBarcode.mockReset();
     createCustomFood.mockReset();
+    readFoodLabel.mockReset();
   });
 
   it("marks a wrong code inside the form and does not ask", () => {
@@ -92,6 +96,67 @@ describe("MealFoods (ADR-376, mockups d9scan A and d9manual A)", () => {
       expect(createCustomFood).toHaveBeenCalledWith("tok", { name: "Grandma's rusk", barcode: "5201054017104", portion_hint: "carbs" }),
     );
     await waitFor(() => expect(onChange).toHaveBeenCalledWith([{ name: "Grandma's rusk", custom_food_id: "f1", portion: "carbs" }]));
+  });
+
+  it("offers «Φωτογραφία ετικέτας» only when the server can read labels", async () => {
+    lookUpBarcode.mockResolvedValue({ barcode: "5201054017104", status: "manual", reason: "not_found", macros_visible: false });
+    open();
+    type("5201054017104");
+    expect(await screen.findByText("foods.notFoundTitle")).toBeInTheDocument();
+    expect(screen.queryByText("foods.labelPhoto")).not.toBeInTheDocument();
+  });
+
+  it("prefills the own food from the label photos; the member saves it with the grams per 100 g", async () => {
+    lookUpBarcode.mockResolvedValue({ barcode: "5201054017104", status: "manual", reason: "not_found", macros_visible: true, label_reading: true });
+    readFoodLabel.mockResolvedValue({
+      macros_visible: true,
+      food: { name: "Φέτα ΠΟΠ", brand: "Sandbox Dairy", serving_label: "30 g", portion_hint: "fat", nutrients: { proteins: 17, fat: 21.5 } },
+    });
+    createCustomFood.mockResolvedValue({ id: "f2", name: "Φέτα ΠΟΠ", portion_hint: "fat", nutrients: null });
+    const onChange = open();
+    type("5201054017104");
+    fireEvent.click(await screen.findByText("foods.labelPhoto"));
+    fireEvent.click(screen.getByText("foods.labelRead"));
+    expect(screen.getByText("foods.labelNeedPhoto")).toBeInTheDocument();
+    expect(readFoodLabel).not.toHaveBeenCalled();
+    const photo = new File(["jpeg"], "front.jpg", { type: "image/jpeg" });
+    fireEvent.change(screen.getByLabelText(/foods.labelFront/), { target: { files: [photo] } });
+    fireEvent.click(screen.getByText("foods.labelRead"));
+    await waitFor(() => expect(screen.getByLabelText(/foods.name/)).toHaveValue("Φέτα ΠΟΠ"));
+    expect(readFoodLabel).toHaveBeenCalledWith("tok", { front: photo, nutrition: null });
+    expect(screen.getByLabelText(/foods.brand/)).toHaveValue("Sandbox Dairy");
+    expect(screen.getByLabelText(/foods.nutrient.proteins/)).toHaveValue("17");
+    expect(screen.getByRole("button", { name: "foods.portion.fat" })).toHaveAttribute("aria-pressed", "true");
+    fireEvent.change(screen.getByLabelText(/foods.nutrient.salt/), { target: { value: "300" } });
+    fireEvent.click(screen.getByText("foods.saveOwn"));
+    expect(screen.getByText("foods.nutrientInvalid")).toBeInTheDocument();
+    expect(createCustomFood).not.toHaveBeenCalled();
+    fireEvent.change(screen.getByLabelText(/foods.nutrient.salt/), { target: { value: "2,4" } });
+    fireEvent.click(screen.getByText("foods.saveOwn"));
+    await waitFor(() =>
+      expect(createCustomFood).toHaveBeenCalledWith("tok", {
+        name: "Φέτα ΠΟΠ",
+        barcode: "5201054017104",
+        brand: "Sandbox Dairy",
+        serving_label: "30 g",
+        portion_hint: "fat",
+        nutrients: { proteins: 17, fat: 21.5, salt: 2.4 },
+      }),
+    );
+    await waitFor(() => expect(onChange).toHaveBeenCalledWith([{ name: "Φέτα ΠΟΠ", custom_food_id: "f2", portion: "fat" }]));
+  });
+
+  it("keeps the grams out of the form without a coach's macros, and says when a label can't be read", async () => {
+    lookUpBarcode.mockResolvedValue({ barcode: "5201054017104", status: "manual", reason: "not_found", macros_visible: false, label_reading: true });
+    readFoodLabel.mockRejectedValue(new Error("422"));
+    open();
+    type("5201054017104");
+    fireEvent.click(await screen.findByText("advanced"));
+    expect(screen.queryByTestId("own-food-nutrients")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByText("foods.labelPhoto"));
+    fireEvent.change(screen.getByLabelText(/foods.labelTable/), { target: { files: [new File(["x"], "t.jpg", { type: "image/jpeg" })] } });
+    fireEvent.click(screen.getByText("foods.labelRead"));
+    expect(await screen.findByText("foods.labelUnreadable")).toBeInTheDocument();
   });
 
   it("says a shop-printed code is not a product and keeps no barcode", async () => {

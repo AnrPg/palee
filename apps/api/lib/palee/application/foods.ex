@@ -2,11 +2,15 @@ defmodule Palee.Application.Foods do
   @moduledoc """
   «Σάρωση barcode» in meals and «Δικά μου τρόφιμα» (ADR-376, CP-D9).
 
-  A scan looks first at the person's own foods, then at the cached Open
-  Food Facts product, and asks Open Food Facts only on a miss (once, with
-  a short timeout; a slow or failed call is left to the outbox worker and
-  the answer is `pending`). A product nobody knows, or a shop's own code,
-  ends in the manual entry, which saves a custom food with that barcode.
+  A scan looks first at the person's own foods, then at Palee's cache of
+  public products, and asks the chain of free sources only on a miss
+  (ADR-421: Open Food Facts, USDA FoodData Central, licensed product lists;
+  once, inside a total budget; a slow or failed call is left to the outbox
+  worker and the answer is `pending`). A product nobody knows, or a shop's
+  own code, ends in the manual entry, which saves a custom food with that
+  barcode, optionally prefilled from a photo of its label. Every scan that
+  found nothing is counted per barcode and country (no person) so the team
+  sees the gaps. Other members' own foods are never used: they are theirs.
 
   What the person sees follows `NutrientDisclosure`: never energy, macros
   only with a coach's plan that sets them and `hide_macros` off. The
@@ -15,10 +19,14 @@ defmodule Palee.Application.Foods do
   """
 
   alias Palee.Application.Clock
-  alias Palee.{Nutrition, Wellness}
-  alias Palee.Nutrition.{FoodDatabase, FoodStore}
+  alias Palee.{Nutrition, Places, Wellness}
+  alias Palee.Nutrition.{FoodDatabase, FoodLabelReader, FoodStore}
+  alias Palee.Organizations.PlatformContext
 
   @default_language "el"
+  @label_content_types ~w(image/jpeg image/png image/webp)
+  @max_label_bytes 4 * 1_024 * 1_024
+  @misses_limit 200
 
   def barcode(%{user_id: user_id} = context, raw, language \\ @default_language) do
     case Nutrition.parse_barcode(raw) do
@@ -26,7 +34,9 @@ defmodule Palee.Application.Foods do
         {:error, reason}
 
       {:in_store, code} ->
-        {:ok, result(code, "manual", nil, nil, false) |> Map.put(:reason, "in_store_code")}
+        {:ok,
+         result(code, "manual", nil, nil, false)
+         |> Map.merge(%{reason: "in_store_code", label_reading: FoodLabelReader.available?()})}
 
       {:ok, code} ->
         visible? = macros_visible?(context, user_id)
@@ -38,8 +48,30 @@ defmodule Palee.Application.Foods do
             {:ok, result(code, "found", "custom", present_custom(food, visible?), visible?)}
 
           nil ->
-            {:ok, from_cache(code, language, visible?)}
+            code |> from_cache(language, visible?) |> after_scan(context)
         end
+    end
+  end
+
+  # ADR-421: a scan that ended in the manual entry because no source has the
+  # product is counted; the label photo is offered when it can run.
+  defp after_scan(%{status: "manual", reason: reason} = result, context) do
+    if reason == "not_found",
+      do: :ok = FoodStore.record_miss(result.barcode, country(context), Clock.today())
+
+    {:ok, Map.put(result, :label_reading, FoodLabelReader.available?())}
+  end
+
+  defp after_scan(result, _context), do: {:ok, result}
+
+  defp country(context) do
+    case Places.home_country(context) do
+      code when is_binary(code) ->
+        code = String.upcase(code)
+        if Regex.match?(~r/^[A-Z]{2}$/, code), do: code, else: ""
+
+      _none ->
+        ""
     end
   end
 
@@ -115,8 +147,8 @@ defmodule Palee.Application.Foods do
     }
 
     row.barcode
-    |> result("found", "open_food_facts", food, visible?)
-    |> Map.put(:attribution, Nutrition.food_attribution(row.barcode))
+    |> result("found", row.source, food, visible?)
+    |> Map.put(:attribution, Nutrition.food_attribution(row.source, row.barcode, row.attribution))
   end
 
   defp present_cached(%{status: status} = row, visible?) when status in ~w(not_found failed),
@@ -132,9 +164,101 @@ defmodule Palee.Application.Foods do
       food: food,
       macros_visible: visible?,
       attribution: nil,
-      reason: nil
+      reason: nil,
+      label_reading: false
     }
   end
+
+  # «Φωτογραφία ετικέτας» (ADR-421) ------------------------------------------
+
+  @doc """
+  Reads a label from one or two photos (front, nutrition table) into the
+  prefill of «Δικό μου τρόφιμο». The photos are only read in this request,
+  never stored; nothing is saved until the person saves the form. Numbers
+  follow `NutrientDisclosure` like every other food.
+  """
+  def read_label(%{user_id: user_id} = context, photos, locale) do
+    with :ok <- label_reading_available(),
+         {:ok, images} <- label_images(photos),
+         {:ok, reading} <-
+           FoodLabelReader.read(images, %{locale: locale}, label_metering(context)),
+         {:ok, prefill} <- Nutrition.food_label_prefill(reading) do
+      visible? = macros_visible?(context, user_id)
+
+      {:ok,
+       %{
+         food: %{
+           name: prefill.name,
+           brand: prefill.brand,
+           serving_label: prefill.serving_label,
+           portion_hint:
+             if(prefill.nutrients == %{},
+               do: nil,
+               else: Nutrition.portion_hint(prefill.nutrients, [])
+             ),
+           nutrients: Nutrition.visible_nutrients(prefill.nutrients, visible?)
+         },
+         macros_visible: visible?
+       }}
+    else
+      {:error, :not_configured} ->
+        {:error, :label_reading_unavailable}
+
+      {:error, reason} when reason in [:label_reading_unavailable, :invalid_label_photo] ->
+        {:error, reason}
+
+      {:error, :label_unreadable} ->
+        {:error, :label_unreadable}
+
+      {:error, _reason} ->
+        {:error, :label_unreadable}
+    end
+  end
+
+  defp label_reading_available,
+    do: if(FoodLabelReader.available?(), do: :ok, else: {:error, :label_reading_unavailable})
+
+  defp label_images(photos) do
+    images = photos |> List.wrap() |> Enum.reject(&is_nil/1)
+
+    if images != [] and length(images) <= 2 and Enum.all?(images, &label_image?/1),
+      do: {:ok, images},
+      else: {:error, :invalid_label_photo}
+  end
+
+  defp label_image?(%{bytes: bytes, content_type: type}) when is_binary(bytes),
+    do: type in @label_content_types and byte_size(bytes) in 1..@max_label_bytes
+
+  defp label_image?(_image), do: false
+
+  # ADR-152: metered for the person; no gym is involved in their own meals.
+  defp label_metering(context) do
+    %{
+      organization_id: nil,
+      user_id: Map.get(context, :user_id),
+      operation_id: Ecto.UUID.generate(),
+      feature: "food_label"
+    }
+  end
+
+  # Barcodes nobody had (platform console, ADR-421) --------------------------
+
+  def barcode_misses(%PlatformContext{}, params) do
+    country =
+      case params |> params_map() |> Map.get("country") do
+        code when is_binary(code) and code != "" -> String.upcase(code)
+        _all -> nil
+      end
+
+    misses =
+      country
+      |> FoodStore.list_misses(@misses_limit)
+      |> Enum.map(&Map.take(&1, [:barcode, :country, :scans, :first_seen_on, :last_seen_on]))
+
+    {:ok, %{misses: misses}}
+  end
+
+  def barcode_misses(_context, _params), do: {:error, :vendor_required}
 
   # Custom foods ------------------------------------------------------------
 

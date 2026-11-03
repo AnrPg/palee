@@ -18,6 +18,11 @@ defmodule Palee.Nutrition.FoodStore do
   def finish(barcode, changes, now), do: adapter().finish(barcode, changes, now)
 
   @impl true
+  def record_miss(barcode, country, date), do: adapter().record_miss(barcode, country, date)
+  @impl true
+  def list_misses(country, limit), do: adapter().list_misses(country, limit)
+
+  @impl true
   def list_custom_foods(user_id), do: adapter().list_custom_foods(user_id)
   @impl true
   def get_custom_food(id, user_id), do: adapter().get_custom_food(id, user_id)

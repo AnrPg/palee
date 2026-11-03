@@ -108,6 +108,7 @@ defmodule Palee.Places do
 
   # «Η περιοχή μου».
   defdelegate home_area(context), to: HomeAreaStore, as: :list
+  defdelegate home_country(context), to: HomeAreaStore, as: :country
   defdelegate replace_home_area(context, ids, now), to: HomeAreaStore, as: :replace
 
   # Discovery.

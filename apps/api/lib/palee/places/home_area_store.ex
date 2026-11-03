@@ -11,6 +11,9 @@ defmodule Palee.Places.HomeAreaStore do
   def list(context), do: RepoContext.run(context, fn -> adapter().list(context) end)
 
   @impl true
+  def country(context), do: RepoContext.run(context, fn -> adapter().country(context) end)
+
+  @impl true
   def replace(context, ids, now),
     do: RepoContext.run(context, fn -> adapter().replace(context, ids, now) end)
 end

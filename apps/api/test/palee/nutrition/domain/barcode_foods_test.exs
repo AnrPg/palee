@@ -1,11 +1,16 @@
 defmodule Palee.Nutrition.Domain.BarcodeFoodsTest do
-  @moduledoc "ADR-376: barcodes, Open Food Facts products, portions, disclosure and the cache."
+  @moduledoc """
+  ADR-376: barcodes, Open Food Facts products, portions, disclosure and the
+  cache; ADR-421: USDA and licensed-list products, attribution per source and
+  label readings.
+  """
 
   use ExUnit.Case, async: true
 
   alias Palee.Nutrition.Domain.{
     Barcode,
     FoodCachePolicy,
+    FoodLabel,
     FoodProduct,
     NutrientDisclosure,
     PortionHint
@@ -135,7 +140,83 @@ defmodule Palee.Nutrition.Domain.BarcodeFoodsTest do
 
     test "attribution names the source and its licence" do
       assert %{licence: "ODbL-1.0", url: "https://world.openfoodfacts.org/product/123"} =
-               FoodCachePolicy.attribution("123")
+               FoodCachePolicy.attribution("open_food_facts", "123")
+
+      assert %{source: "USDA FoodData Central", licence: "CC0-1.0", images_licence: nil} =
+               FoodCachePolicy.attribution("usda_fdc", "123")
+
+      assert %{source: "Λίστα", licence: "CC BY 4.0", url: "https://example.gr/l"} =
+               FoodCachePolicy.attribution("catalogue", "123", %{
+                 "source" => "Λίστα",
+                 "licence" => "CC BY 4.0",
+                 "licence_url" => "https://example.gr/l"
+               })
+
+      assert FoodCachePolicy.attribution("catalogue", "123", nil) == nil
+    end
+  end
+
+  describe "FoodProduct.from_usda/1 and from_catalogue/1 (ADR-421)" do
+    test "a Branded Foods item: per 100 g, sodium as salt, never energy" do
+      item = %{
+        "description" => "GREEK YOGURT",
+        "brandName" => "BRAND",
+        "servingSize" => 170.0,
+        "servingSizeUnit" => "GRM",
+        "brandedFoodCategory" => "Yogurt",
+        "foodNutrients" => [
+          %{"nutrientNumber" => "203", "value" => 10.0},
+          %{"nutrientNumber" => "205", "value" => 3.5},
+          %{"nutrientNumber" => "204", "value" => 2},
+          %{"nutrientNumber" => "307", "value" => 40},
+          %{"nutrientNumber" => "208", "value" => 70},
+          %{"nutrientNumber" => "269", "value" => nil}
+        ]
+      }
+
+      assert %{
+               name: "GREEK YOGURT",
+               brand: "BRAND",
+               serving_size: "170 grm",
+               categories: ["Yogurt"],
+               nutrients: nutrients
+             } = FoodProduct.from_usda(item)
+
+      assert nutrients == %{
+               "proteins" => 10.0,
+               "carbohydrates" => 3.5,
+               "fat" => 2.0,
+               "salt" => 0.1
+             }
+
+      assert FoodProduct.from_usda(%{"description" => " "}) == nil
+    end
+
+    test "a licensed list row has no nutrition" do
+      assert %{name: "Φέτα", brand: "Β", quantity: "400 g", nutrients: %{}} =
+               FoodProduct.from_catalogue(%{name: "Φέτα", brand: "Β", quantity: "400 g"})
+    end
+  end
+
+  describe "FoodLabel.prefill/1 (ADR-421)" do
+    test "per 100 g first, else from the portion's grams; energy and nonsense dropped" do
+      assert {:ok, %{name: "Φέτα", brand: "B", serving_label: "1 φέτα (30 g)", nutrients: n}} =
+               FoodLabel.prefill(%{
+                 "name" => " Φέτα ",
+                 "brand" => "B",
+                 "serving_label" => "1 φέτα (30 g)",
+                 "serving_grams" => "30",
+                 "per_100g" => %{"proteins" => 17, "fat" => "21,5", "sugars" => 140},
+                 "per_serving" => %{"carbohydrates" => 0.3, "energy" => 80, "fiber" => "<0.5"}
+               })
+
+      assert n == %{"proteins" => 17.0, "fat" => 21.5, "carbohydrates" => 1.0}
+    end
+
+    test "nothing read is unreadable; a name alone is enough" do
+      assert {:error, :label_unreadable} = FoodLabel.prefill(%{"name" => nil})
+      assert {:error, :label_unreadable} = FoodLabel.prefill("text")
+      assert {:ok, %{name: "X", nutrients: %{}}} = FoodLabel.prefill(%{"name" => "X"})
     end
   end
 end

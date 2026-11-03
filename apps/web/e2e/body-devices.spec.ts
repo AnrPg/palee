@@ -2,10 +2,13 @@ import { expect, test, type Page, type Request } from "./support/test";
 
 // W9 body and devices (ADR-374..377, ontology §4.27): the watch row in
 // Εγώ › Συνδεδεμένες συσκευές (mockup d8pair A), foods by barcode in the meal
-// sheet (d9scan A, d9manual A), the rank ladders in Ρυθμίσεις › Προχωρημένα
+// sheet (d9scan A, d9manual A; «Φωτογραφία ετικέτας», ADR-421), the rank ladders in Ρυθμίσεις › Προχωρημένα
 // (e2setup A), the coach's promotion on a member's training tab (e2coach A)
 // and «Οι βαθμοί μου» on Box (e2member A). The API is stubbed; every route
 // not listed answers an empty object.
+
+// A 1×1 PNG for the label photo.
+const PNG = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
 
 const json = (body: unknown, status = 200) => ({ status, contentType: "application/json", body: JSON.stringify(body) });
 const bodyOf = (request: Request) => JSON.parse(request.postData() ?? "{}");
@@ -194,6 +197,60 @@ test.describe("body and devices", () => {
     await expect(page.getByText("Source: Open Food Facts · ODbL 1.0")).toBeVisible();
     await expect(page.getByRole("button", { name: "1 palm of protein" })).toHaveAttribute("aria-pressed", "true");
     await page.getByRole("button", { name: "Add to meal" }).click();
+    await expect(page.getByText(/kcal|calorie/i)).toHaveCount(0);
+  });
+
+  test("a barcode nobody has becomes «Δικό μου τρόφιμο», prefilled from a photo of the label", async ({ page }) => {
+    await asMember(page);
+    await page.route("**/api/me/wellness?**", (route) =>
+      route.fulfill(
+        json({
+          consented: true,
+          preferences: { glass_ml: 250, water_goal_ml: 2000, sleep_goal_minutes: 450, hidden_items: [], item_order: ["meals"], water_reminder: false },
+          entries: [],
+          days: [],
+          plans: [],
+          cravings: [],
+          photos: {},
+          photo_capabilities: { content_types: ["image/jpeg", "image/png", "image/webp"], max_bytes: 10_000_000 },
+          week: { water_days_logged: 0, water_days_on_goal: 0, nights_logged: 0, nights_on_goal: 0, meal_days_logged: 0, cravings: 0 },
+        }),
+      ),
+    );
+    await page.route("**/api/me/foods/barcode/5201234500006", (route) =>
+      route.fulfill(json({ barcode: "5201234500006", status: "manual", reason: "not_found", macros_visible: false, label_reading: true, food: null })),
+    );
+    let labelRequest: Request | null = null;
+    await page.route("**/api/me/foods/label-read", (route) => {
+      labelRequest = route.request();
+      return route.fulfill(
+        json({ macros_visible: false, food: { name: "Feta PDO", brand: "Sandbox Dairy", serving_label: "30 g", portion_hint: "fat", nutrients: null } }),
+      );
+    });
+    let saved: Record<string, unknown> | null = null;
+    await page.route("**/api/me/foods", (route) => {
+      if (route.request().method() !== "POST") return route.fulfill(json({ foods: [], macros_visible: false }));
+      saved = bodyOf(route.request());
+      return route.fulfill(json({ food: { id: "food-1", name: "Feta PDO", portion_hint: "fat", nutrients: null } }, 201));
+    });
+
+    await page.goto("/journal/wellbeing");
+    await page.getByRole("button", { name: "+ Snack" }).click();
+    await page.getByRole("button", { name: "Scan barcode" }).click();
+    await page.getByLabel("Can't read it? Type it").fill("5201234500006");
+    await page.getByRole("button", { name: "Look up" }).click();
+    await expect(page.getByTestId("own-food")).toContainText("We didn't find it");
+    await page.getByRole("button", { name: "Photo of the label" }).click();
+    await page.getByLabel("Front of the pack").setInputFiles({ name: "front.png", mimeType: "image/png", buffer: Buffer.from(PNG, "base64") });
+    await page.getByRole("button", { name: "Read the label" }).click();
+    await expect(page.getByLabel("What it is")).toHaveValue("Feta PDO");
+    expect(labelRequest).not.toBeNull();
+    expect(labelRequest!.headers()["content-type"]).toContain("multipart/form-data");
+    await expect(page.getByLabel("Brand")).toHaveValue("Sandbox Dairy");
+    await expect(page.getByRole("button", { name: "1 thumb of fat" })).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByTestId("own-food-nutrients")).toHaveCount(0);
+    await page.getByRole("button", { name: "Save food" }).click();
+    await expect.poll(() => saved).toEqual({ name: "Feta PDO", barcode: "5201234500006", brand: "Sandbox Dairy", serving_label: "30 g", portion_hint: "fat" });
     await expect(page.getByText(/kcal|calorie/i)).toHaveCount(0);
   });
 

@@ -161,3 +161,9 @@ config :palee, :status_translator, Palee.Infrastructure.Status.SandboxTranslator
 # adapter's own tests use a Req.Test plug.
 config :palee, :food_database, Palee.Infrastructure.Nutrition.SandboxFoodDatabase
 config :palee, :open_food_facts, req_options: [plug: {Req.Test, Palee.OpenFoodFacts}]
+
+config :palee, :usda_food_data_central,
+  api_key: "test-usda-key",
+  req_options: [plug: {Req.Test, Palee.UsdaFoodDataCentral}]
+
+config :palee, :food_label_reader, Palee.FakeFoodLabelReader

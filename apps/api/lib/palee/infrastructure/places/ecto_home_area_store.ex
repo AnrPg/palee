@@ -31,6 +31,17 @@ defmodule Palee.Infrastructure.Places.EctoHomeAreaStore do
   end
 
   @impl true
+  def country(%{user_id: user_id}) do
+    HomeArea
+    |> join(:inner, [a], n in Neighbourhood, on: n.id == a.neighbourhood_id)
+    |> where([a], a.user_id == ^user_id)
+    |> order_by([a], asc: a.position)
+    |> limit(1)
+    |> select([_a, n], n.country_code)
+    |> Repo.one()
+  end
+
+  @impl true
   def replace(%{user_id: user_id}, ids, now) do
     rows =
       ids
