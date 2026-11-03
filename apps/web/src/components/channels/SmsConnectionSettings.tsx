@@ -33,13 +33,21 @@ import {
   currencySymbol,
   formatCents,
   inputStyle,
+  isSmsVendor,
+  ownVendors,
   providerFor,
   quietHoursReady,
   senderError,
   SENDER_EXAMPLE,
+  SMS_VENDOR_NAMES,
   smsErrorCode,
   smsSwitchedOn,
   suggestSender,
+  VENDOR_FIELDS,
+  VENDOR_GUIDE_STEPS,
+  vendorFieldError,
+  type SmsVendor,
+  type VendorFieldKey,
 } from "./sms";
 
 export const CHANNEL_SETTINGS_KEY = ["admin", "channels", "settings"] as const;
@@ -70,8 +78,8 @@ function fieldErrors(error: unknown): Record<string, string> {
  * with the box's name and the monthly cost limit the box types itself
  * before they go on (ADR-390: no invented default). «Δοκιμή σύνδεσης» and
  * this month's cost sit beside it. Quiet hours (off until the box picks its
- * own times), the box's own Brevo key and its own email provider (SMTP)
- * wait under «Προχωρημένα». A box in demo mode is told plainly that no SMS
+ * own times), the box's own SMS vendor (ADR-396) and its own email provider
+ * (SMTP) wait under «Προχωρημένα». A box in demo mode is told plainly that no SMS
  * leave.
  */
 export function SmsConnectionSettings({ token }: { token: string }) {
@@ -191,7 +199,7 @@ export function SmsConnectionSettings({ token }: { token: string }) {
                 {connection.status === "active" ? t("statusActive") : t("statusInvalid")}
               </span>
               <span className="min-w-0 flex-1 text-sm" style={{ color: "var(--dim)" }}>
-                {connection.account_mode === "own" ? t("accountOwn") : t("accountPalee")}
+                {connection.account_mode === "own" ? t("accountOwn", { vendor: SMS_VENDOR_NAMES[isSmsVendor(connection.provider) ? connection.provider : "brevo"] }) : t("accountPalee")}
                 {connection.checked_at ? ` · ${t("checkedAt", { when: new Date(connection.checked_at).toLocaleString(locale, { dateStyle: "short", timeStyle: "short", hourCycle: "h23" }) })}` : ""}
               </span>
               <button type="button" className="rounded-full px-4 py-1.5 text-sm font-semibold" style={{ border: "1px solid var(--border)", color: "var(--text)" }} disabled={check.isPending} onClick={() => check.mutate()}>
@@ -223,12 +231,7 @@ export function SmsConnectionSettings({ token }: { token: string }) {
             onSave={(quiet_start, quiet_end) => save.mutate({ quiet_start, quiet_end })}
           />
         ) : null}
-        <OwnAccount
-          settings={settingsQuery.data}
-          pending={save.isPending}
-          error={save.isError ? fieldErrors(save.error).secret ?? null : null}
-          onSave={(update) => save.mutate(update)}
-        />
+        <OwnAccount token={token} settings={settingsQuery.data} />
         <OwnEmailSettings token={token} />
       </Advanced>
     </div>
@@ -476,54 +479,165 @@ export function MonthSummary({ messages, spent, cap, currency }: { messages: num
   );
 }
 
-/** Λογαριασμός Palee (default) or the box's own Brevo key, with the steps to get one. */
-function OwnAccount({ settings, pending, error, onSave }: { settings: ChannelSettings; pending: boolean; error: string | null; onSave: (update: ChannelSettingsUpdate) => void }) {
+/**
+ * Λογαριασμός Palee (default) or the box's own SMS vendor (ADR-348/396):
+ * Brevo, Twilio, Vonage, Infobip, Yuboto or Apifon, picked with ui/Select,
+ * each with its own fields and step-by-step guide. Secrets are written once
+ * and never read back; a refused key or a wrong field shows under that field.
+ */
+function OwnAccount({ token, settings }: { token: string; settings: ChannelSettings }) {
   const t = useTranslations("Sms");
+  const smsError = useSmsError();
+  const queryClient = useQueryClient();
   const connection = settings.connection;
   const own = connection?.account_mode === "own";
+  const vendors = ownVendors(settings.providers);
+  const current = own && isSmsVendor(connection?.provider) ? connection.provider : null;
   const [choosing, setChoosing] = useState(false);
-  const [key, setKey] = useState("");
-  const provider = providerFor(connection, settings.providers, "own");
+  const [vendor, setVendor] = useState<SmsVendor>(current ?? vendors[0] ?? "brevo");
+  const prefill = (next: SmsVendor): Partial<Record<VendorFieldKey, string>> =>
+    next === current ? { account_id: connection?.account_id ?? "", base_url: connection?.base_url ?? "" } : {};
+  const [values, setValues] = useState<Partial<Record<VendorFieldKey, string>>>(() => prefill(vendor));
+  const [submitted, setSubmitted] = useState(false);
+  const [rejected, setRejected] = useState(false);
+
+  const save = useMutation({
+    mutationFn: (update: ChannelSettingsUpdate) => saveChannelSettings(token, update),
+    onSuccess: ({ connection: saved, check }) => {
+      queryClient.setQueryData<ChannelSettings>(CHANNEL_SETTINGS_KEY, (previous) => (previous ? { ...previous, connection: saved } : previous));
+      // ADR-396: refused credentials keep the form open, with the reason under the key.
+      if (check.error_code === "credentials_rejected") {
+        setRejected(true);
+        return;
+      }
+      setChoosing(false);
+      setSubmitted(false);
+      setValues({});
+    },
+  });
+
+  const serverErrors = fieldErrors(save.error);
+  const fields = VENDOR_FIELDS[vendor];
+  const kept = (key: VendorFieldKey) => key !== "account_id" && key !== "base_url" && vendor === current && (key === "secret" ? Boolean(connection?.has_secret) : Boolean(connection?.has_webhook_secret));
+  const localError = (key: VendorFieldKey) => vendorFieldError(vendor, key, values[key] ?? "", kept(key));
+  const errorOf = (key: VendorFieldKey): string | null => {
+    const reason = (submitted ? localError(key) : null) ?? serverErrors[key] ?? null;
+    if (reason === "required") return t("vendorFieldRequired");
+    if (reason) {
+      if (vendor === "twilio" && key === "account_id") return t("twilioSidInvalid");
+      if (key === "base_url") return t("infobipBaseUrlInvalid");
+      return t("vendorFieldInvalid", { vendor: SMS_VENDOR_NAMES[vendor] });
+    }
+    if (rejected && key === "secret") return t("vendorRejected", { vendor: SMS_VENDOR_NAMES[vendor] });
+    return null;
+  };
+  const otherError = save.isError && !Object.keys(serverErrors).length ? smsError(save.error) : null;
+
+  const pick = (next: string) => {
+    if (!isSmsVendor(next)) return;
+    setVendor(next);
+    setValues(prefill(next));
+    setSubmitted(false);
+    setRejected(false);
+    save.reset();
+  };
+
+  const submit = () => {
+    setSubmitted(true);
+    setRejected(false);
+    if (fields.some((entry) => localError(entry.key))) return;
+    const update: ChannelSettingsUpdate = { provider: vendor, account_mode: "own" };
+    for (const entry of fields) {
+      const value = (values[entry.key] ?? "").trim();
+      if (value !== "") update[entry.key] = value;
+    }
+    // ADR-390: the keys alone; SMS go on with the switch, once the box typed its cap.
+    save.mutate(update);
+  };
+
+  const cancel = () => {
+    setChoosing(false);
+    setSubmitted(false);
+    setRejected(false);
+    setValues(prefill(vendor));
+    save.reset();
+  };
+
+  const name = SMS_VENDOR_NAMES[current ?? vendor];
+
   return (
     <section className="space-y-3" data-testid="sms-own-account">
       <div>
         <p className="font-semibold" style={{ color: "var(--text)" }}>{t("accountTitle")}</p>
-        <p className="text-sm" style={{ color: "var(--dim)" }}>{own ? t("accountOwnHint") : t("accountPaleeHint")}</p>
+        <p className="text-sm" style={{ color: "var(--dim)" }}>{own ? t("accountOwnHint", { vendor: name }) : t("accountPaleeHint")}</p>
       </div>
       {own && !choosing ? (
         <div className="flex flex-wrap gap-2">
           <button type="button" className="text-sm font-semibold" style={{ color: "var(--primary)" }} onClick={() => setChoosing(true)}>{t("ownReplaceKey")}</button>
-          <button type="button" className="text-sm font-semibold" style={{ color: "var(--primary)" }} disabled={pending} onClick={() => onSave({ provider, account_mode: "palee" })}>
+          <button
+            type="button"
+            className="text-sm font-semibold"
+            style={{ color: "var(--primary)" }}
+            disabled={save.isPending}
+            onClick={() => save.mutate({ provider: providerFor(null, settings.providers, "palee"), account_mode: "palee" })}
+          >
             {t("backToPalee")}
           </button>
         </div>
       ) : !choosing ? (
-        <button type="button" className="text-sm font-semibold" style={{ color: "var(--primary)" }} onClick={() => setChoosing(true)}>{t("useOwnBrevo")}</button>
+        <button type="button" className="text-sm font-semibold" style={{ color: "var(--primary)" }} onClick={() => setChoosing(true)}>{t("useOwnVendor")}</button>
       ) : (
         <div className="space-y-3">
-          <ol className="list-decimal space-y-1 ps-5 text-sm" style={{ color: "var(--text-soft)" }} data-testid="brevo-guide">
-            <li>{t("brevoStep1")}</li>
-            <li>{t("brevoStep2")}</li>
-            <li>{t("brevoStep3")}</li>
-            <li>{t("brevoStep4")}</li>
+          <div>
+            <label className="block text-sm font-semibold" style={{ color: "var(--text)" }} htmlFor="sms-vendor">{t("vendor")}</label>
+            <Select id="sms-vendor" value={vendor} disabled={save.isPending} onValueChange={pick} className="mt-1 min-w-[10rem]" data-testid="sms-vendor">
+              {vendors.map((entry) => <option key={entry} value={entry}>{SMS_VENDOR_NAMES[entry]}</option>)}
+            </Select>
+          </div>
+          <ol className="list-decimal space-y-1 ps-5 text-sm" style={{ color: "var(--text-soft)" }} data-testid={`${vendor}-guide`}>
+            {Array.from({ length: VENDOR_GUIDE_STEPS[vendor] }, (_, index) => (
+              <li key={index}>{vendor === "brevo" ? t(`brevoStep${index + 1}`) : t(`guide_${vendor}_${index + 1}`)}</li>
+            ))}
           </ol>
-          <label className="block text-sm font-semibold" style={{ color: "var(--text)" }} htmlFor="brevo-key">{t("brevoKey")}</label>
-          <input id="brevo-key" type="password" autoComplete="off" value={key} onChange={(event) => setKey(event.target.value)} aria-invalid={Boolean(error)} className={inputClass} style={inputStyle(Boolean(error))} />
-          {error ? <p className="text-xs" style={{ color: "var(--danger-strong)" }}>{t("brevoKeyInvalid")}</p> : null}
+          {fields.map((entry) => {
+            const id = `sms-vendor-${entry.key}`;
+            const message = errorOf(entry.key);
+            return (
+              <div key={`${vendor}-${entry.key}`}>
+                <label className="block text-sm font-semibold" style={{ color: "var(--text)" }} htmlFor={id}>
+                  {vendor === "brevo" && entry.key === "secret" ? t("brevoKey") : t(`vendorField_${vendor}_${entry.key}`)}
+                </label>
+                <input
+                  id={id}
+                  type={entry.secret ? "password" : "text"}
+                  autoComplete="off"
+                  spellCheck={false}
+                  value={values[entry.key] ?? ""}
+                  placeholder={kept(entry.key) ? t("vendorSecretKept") : entry.key === "base_url" ? "https://xxxxx.api.infobip.com" : undefined}
+                  onChange={(event) => setValues((previous) => ({ ...previous, [entry.key]: event.target.value }))}
+                  aria-invalid={Boolean(message)}
+                  aria-describedby={message ? `${id}-error` : undefined}
+                  className={`${inputClass} mt-1`}
+                  style={inputStyle(Boolean(message))}
+                />
+                {message ? (
+                  <p id={`${id}-error`} className="mt-1 text-xs" style={{ color: "var(--danger-strong)" }}>{message}</p>
+                ) : entry.key === "webhook_secret" ? (
+                  <p className="mt-1 text-xs" style={{ color: "var(--dim)" }}>{t("vonageSignatureHint")}</p>
+                ) : null}
+              </div>
+            );
+          })}
           <p className="text-xs" style={{ color: "var(--dim)" }}>{t("brevoKeyHint")}</p>
+          {otherError ? <ErrorNotice variant="field">{otherError}</ErrorNotice> : null}
           <div className="flex gap-2">
-            <button type="button" className="rounded-full px-4 py-2 text-sm font-semibold" style={{ color: "var(--text)" }} onClick={() => setChoosing(false)}>{t("cancel")}</button>
+            <button type="button" className="rounded-full px-4 py-2 text-sm font-semibold" style={{ color: "var(--text)" }} onClick={cancel}>{t("cancel")}</button>
             <button
               type="button"
               className="rounded-full px-4 py-2 text-sm font-semibold"
               style={{ background: "var(--primary)", color: "var(--primary-contrast)" }}
-              disabled={pending || key.trim() === ""}
-              onClick={() => {
-                // ADR-390: the key alone; SMS go on with the switch, once the box typed its cap.
-                onSave({ provider, account_mode: "own", secret: key.trim() });
-                setKey("");
-                setChoosing(false);
-              }}
+              disabled={save.isPending}
+              onClick={submit}
             >
               {t("saveKey")}
             </button>

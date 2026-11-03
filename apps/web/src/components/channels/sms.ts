@@ -105,6 +105,67 @@ export function providerFor(
   return (preferred ?? providers.find((entry) => entry.account_modes.includes(mode)) ?? providers[0])?.provider ?? "brevo";
 }
 
+/*
+ * ADR-396: the SMS vendors a box may bring itself, under «Προχωρημένα».
+ * Each needs its own fields; secrets are written once and never read back.
+ */
+export const SMS_VENDORS = ["brevo", "twilio", "vonage", "infobip", "yuboto", "apifon"] as const;
+export type SmsVendor = (typeof SMS_VENDORS)[number];
+
+/** Brand names, never translated. */
+export const SMS_VENDOR_NAMES: Record<SmsVendor, string> = {
+  brevo: "Brevo",
+  twilio: "Twilio",
+  vonage: "Vonage",
+  infobip: "Infobip",
+  yuboto: "Yuboto",
+  apifon: "Apifon",
+};
+
+export type VendorFieldKey = "account_id" | "secret" | "webhook_secret" | "base_url";
+export type VendorField = { key: VendorFieldKey; secret: boolean; optional: boolean };
+
+const field = (key: VendorFieldKey, optional = false): VendorField => ({ key, secret: key === "secret" || key === "webhook_secret", optional });
+
+/** The fields each vendor needs, in the order its console shows them. */
+export const VENDOR_FIELDS: Record<SmsVendor, VendorField[]> = {
+  brevo: [field("secret")],
+  twilio: [field("account_id"), field("secret")],
+  vonage: [field("account_id"), field("secret"), field("webhook_secret", true)],
+  infobip: [field("base_url"), field("secret")],
+  yuboto: [field("secret")],
+  apifon: [field("account_id"), field("secret")],
+};
+
+/** Steps of each vendor's guide (`guide_<vendor>_<n>` messages; Brevo keeps `brevoStep<n>`). */
+export const VENDOR_GUIDE_STEPS: Record<SmsVendor, number> = { brevo: 4, twilio: 4, vonage: 4, infobip: 4, yuboto: 4, apifon: 4 };
+
+export function isSmsVendor(value: string | null | undefined): value is SmsVendor {
+  return (SMS_VENDORS as readonly string[]).includes(value ?? "");
+}
+
+/** The vendors this Palee offers for the box's own account, in our order. */
+export function ownVendors(providers: { provider: string; account_modes: string[] }[]): SmsVendor[] {
+  return SMS_VENDORS.filter((vendor) => providers.some((entry) => entry.provider === vendor && entry.account_modes.includes("own")));
+}
+
+/**
+ * Why a vendor field cannot be saved, or null. A secret already saved for
+ * the same vendor may stay empty (it is kept); everything else required
+ * must be filled. Twilio's Account SID is `AC` and 32 hex digits; Infobip's
+ * base URL is its own `https://<id>.api.infobip.com`.
+ */
+export function vendorFieldError(vendor: SmsVendor, key: VendorFieldKey, value: string, kept = false): "required" | "invalid" | null {
+  const spec = VENDOR_FIELDS[vendor].find((entry) => entry.key === key);
+  if (!spec) return null;
+  const text = value.trim();
+  if (text === "") return spec.optional || kept ? null : "required";
+  if (vendor === "twilio" && key === "account_id") return /^AC[0-9a-fA-F]{32}$/.test(text) ? null : "invalid";
+  if (key === "base_url") return /^https:\/\/[a-z0-9-]+\.api\.infobip\.com\/?$/.test(text) ? null : "invalid";
+  if (text.length > (spec.secret ? 300 : 120)) return "invalid";
+  return null;
+}
+
 /** `YYYY-MM` of `at` on the box's clock. */
 export function monthOf(at: Date, timeZone: string | null | undefined): string {
   try {
