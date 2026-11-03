@@ -15093,9 +15093,8 @@
     "saveSender": "Save sender",
     "budget": "Monthly cost limit",
     "budgetHint": "Past the limit no SMS leave; app notifications go on as usual.",
-    "budgetPerMonth": "{amount} / month",
     "quiet": "Quiet hours",
-    "quietHint": "Messages written during them wait until the morning. An urgent update leaves at once.",
+    "quietHint": "Offers written during these hours wait until they end. Updates (e.g. a class cancelled) always go.",
     "quietFrom": "Quiet from",
     "quietTo": "Quiet until",
     "statusActive": "Connected",
@@ -15112,7 +15111,7 @@
     "capNear": "Close to the limit: at the limit SMS stop, the app goes on.",
     "capReached": "Limit reached: SMS stop until next month or a higher limit; the app goes on.",
     "advanced": "Advanced",
-    "advancedHint": "Your own Brevo account, your own email provider",
+    "advancedHint": "Quiet hours, your own Brevo account, your own email provider",
     "accountTitle": "Account that sends the SMS",
     "accountPaleeHint": "Palee's account (default): Palee pays Brevo and counts what your box spends.",
     "accountOwnHint": "Your own Brevo account: Brevo bills your box. The key is never shown again.",
@@ -15208,6 +15207,7 @@
     "sourcePerson": "By the client in the app",
     "sourceStaff": "Told the staff",
     "sourceStop": "Replied STOP",
+    "sourceLink": "Tapped «Stop» in the SMS",
     "yes": "Yes",
     "saidAtDesk": "Said it at the desk",
     "saidStop": "Asked to stop",
@@ -15255,8 +15255,17 @@
       "channel_budget_exceeded": "The month's SMS limit is reached.",
       "channel_contact_missing": "No mobile for this person yet.",
       "channel_consent_missing": "This person has not agreed to SMS.",
-      "channel_opted_out": "This person replied STOP."
-    }
+      "channel_opted_out": "This person replied STOP.",
+      "channel_budget_missing": "There is no monthly SMS limit. Type it in Settings › Connections."
+    },
+    "budgetUnit": "{currency} a month",
+    "budgetRequired": "Type the monthly limit. Without a limit no SMS leave.",
+    "budgetInvalid": "Type an amount from 0 to 10,000, e.g. 20 or 12.50.",
+    "budgetSave": "Save limit",
+    "turnOn": "Turn on SMS",
+    "capFirst": "Before SMS go on, type the most the box spends in a month. Past it, no SMS leave.",
+    "quietChoose": "Time",
+    "quietSave": "Save hours"
   },
   "TrainingFloor": {
     "calendarOfferTitle": "Add your bookings to your calendar?",
@@ -15434,7 +15443,8 @@
     },
     "footerChecks": "Automatic checks run every minute",
     "inEnglish": "English",
-    "stripDetails": "Details"
+    "stripDetails": "Details",
+    "stripStarts": "Starts {when}."
   },
   "PlatformStatus": {
     "title": "Service status",
@@ -16322,5 +16332,16 @@
       "sendReply": "Publish reply",
       "replyRequired": "Write your reply."
     }
+  },
+  "SmsUnsubscribe": {
+    "metaTitle": "Stop offers by SMS",
+    "title": "Offers by SMS",
+    "loading": "Loading…",
+    "question": "Stop SMS with offers from {box}?",
+    "updatesKeepComing": "Updates about your bookings and classes (e.g. a class cancelled) will keep coming.",
+    "confirm": "Stop",
+    "done": "You will no longer get SMS with offers from {box}.",
+    "invalid": "This link is not valid.",
+    "error": "Something went wrong. Please try again."
   }
 }

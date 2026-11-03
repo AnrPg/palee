@@ -24,7 +24,8 @@ export type ChannelConnection = {
   error_code?: string | null;
   has_secret: boolean;
   last_error?: string | null;
-  monthly_budget_cents: number;
+  /** ADR-390: the cap the box typed; null until it does (then nothing is sent). */
+  monthly_budget_cents: number | null;
   quiet_start?: string | null;
   quiet_end?: string | null;
   sms_sender?: string | null;

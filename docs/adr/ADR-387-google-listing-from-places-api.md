@@ -48,3 +48,7 @@ stored indefinitely under Google's terms.
 - Ops set `GOOGLE_PLACES_API_KEY` (restricted to the Places API (New), server
   IPs); cost is billed to Palee.
 - Migration `20270511000000_box_reviews_and_site_v31.exs`.
+
+## Amendment (v3.1 questions, 2026-11-03)
+
+ANR, question 13: until a lawyer has checked Palee's use against Google's terms, the listing shows only the Google rating and the number of reviews, with «Από το Google» and the link to the listing, and no review texts. For data minimisation Palee also stops reading, storing and returning them: the Places field mask no longer asks for `reviews`, the port and snapshot carry none, the API's `GoogleListing` has no `reviews`, and migration `20270514010000` drops `google_place_snapshots.reviews` with the texts and author names already stored. Showing texts again needs the legal check and a new decision.

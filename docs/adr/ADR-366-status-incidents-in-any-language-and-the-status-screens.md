@@ -78,3 +78,7 @@ screens 1 and 2) with these decisions:
   `PlatformServiceStatus.translate/2`, `PlatformStatusController.translate`.
 - Web: `components/status/*`, `components/platform/PlatformStatusPage.tsx`,
   `lib/service-status.ts`, `api/service-status.ts`.
+
+## Amendment (v3.1 questions, 2026-11-03)
+
+ANR, question 6: a planned maintenance enters the in-app strip only in the 24 hours before its `scheduled_for` (and while it runs); earlier it shows only on the status page. The strip reads the overview's `upcoming` list against an injected clock (`stripIncident(active, viewer, {upcoming, now})`, `maintenanceDueSoon`), keeps active incidents and maintenance first, and says when a maintenance starts («Ξεκινά …»). No API change.

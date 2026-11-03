@@ -26,6 +26,8 @@ defmodule Palee.Channels.Ports.ChannelStore do
 
   # ADR-369: the installation's settings (platform data, no tenant)
   @callback get_platform_settings() :: map() | nil
+  # ADR-390: the box of a contact, for the signed unsubscribe link (no tenant session).
+  @callback contact_organization(id()) :: id() | nil
   @callback save_platform_settings(map()) :: {:ok, map()} | {:error, term()}
 
   # Contacts and consents

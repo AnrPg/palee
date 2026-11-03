@@ -41,6 +41,10 @@ defmodule Palee.Channels.ChannelStore do
   @impl true
   def save_platform_settings(attrs), do: adapter().save_platform_settings(attrs)
 
+  # ADR-390: called only once the link's signature is checked.
+  @impl true
+  def contact_organization(contact_id), do: adapter().contact_organization(contact_id)
+
   @impl true
   def get_contact(context, id),
     do: tenant_call(context, :get_contact, [id])

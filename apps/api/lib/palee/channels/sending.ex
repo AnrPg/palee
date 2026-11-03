@@ -6,9 +6,10 @@ defmodule Palee.Channels.Sending do
   `send/3` checks everything a message needs before it is queued, in this
   order: the connection, the template, the person's number, a channel the
   person agreed to for this purpose (`ChannelPolicy`), the text, and the
-  month's budget. It then writes one outbox row, idempotent per box by
-  `idempotency_key`. Quiet hours do not refuse: the row waits until they
-  end, unless it is an urgent service message.
+  month's budget (a connection without a cap the box typed sends nothing,
+  ADR-390). It then writes one outbox row, idempotent per box by
+  `idempotency_key`. Quiet hours do not refuse: a marketing row waits until
+  they end; service messages always go at once (ADR-390).
 
   Workers claim due rows (`deliver/3`), check the consent again (it may
   have been withdrawn while the message waited), call the provider
@@ -19,7 +20,7 @@ defmodule Palee.Channels.Sending do
   box's), `box_name`.
   """
 
-  alias Palee.Channels.{ChannelStore, Connections, Contacts, Margins}
+  alias Palee.Channels.{ChannelStore, Connections, Contacts, Margins, Unsubscribe}
 
   alias Palee.Channels.Domain.{
     ChannelPolicy,
@@ -45,6 +46,7 @@ defmodule Palee.Channels.Sending do
   defp prepare(context, request, env) do
     with :ok <- not_demo(env),
          {:ok, connection} <- usable_connection(context),
+         :ok <- budget_set(connection),
          {:ok, template} <- template(context, request.template_key),
          {:ok, purpose} <- purpose(template, request[:purpose]),
          {:ok, contact} <- contact(context, request.person),
@@ -61,7 +63,7 @@ defmodule Palee.Channels.Sending do
          variables = Map.put_new(request[:variables] || %{}, "box", env.box_name),
          {:ok, {body, locale}} <- body(template, channel, whatsapp, contact.locale),
          {:ok, text} <- Templates.render(body, variables),
-         text = opt_out(text, purpose, channel, locale),
+         text = opt_out(text, purpose, channel, locale, contact),
          :ok <- length_ok(text) do
       segments = MessageText.segments(channel, text)
 
@@ -83,16 +85,17 @@ defmodule Palee.Channels.Sending do
       spent = ChannelStore.spend(context, from, to).total
       urgent? = request[:urgent] == true and purpose == "service"
 
+      # ADR-390: service messages always go; only marketing waits for quiet hours.
       release_at =
-        if urgent?,
-          do: env.now,
-          else:
+        if QuietHours.applies?(purpose),
+          do:
             QuietHours.release_at(
               env.now,
               env.time_zone,
               connection.quiet_start_minute,
               connection.quiet_end_minute
-            )
+            ),
+          else: env.now
 
       plan = %{
         connection: connection,
@@ -139,6 +142,10 @@ defmodule Palee.Channels.Sending do
       connection -> {:ok, connection}
     end
   end
+
+  # ADR-390: no invented cap; until the box types one, nothing is sent.
+  defp budget_set(%{monthly_budget_cents: cap}) when is_integer(cap), do: :ok
+  defp budget_set(_connection), do: {:error, :channel_budget_missing}
 
   # A built-in key, or a key only the box wrote (its own wording).
   defp template(context, key) when is_binary(key) do
@@ -212,10 +219,13 @@ defmodule Palee.Channels.Sending do
 
   defp template_values(_whatsapp, _channel, _variables), do: []
 
-  # Marketing SMS end with how to stop (Viber and WhatsApp have their own
-  # block buttons and the person can reply STOP there too).
-  defp opt_out(text, "marketing", "sms", locale), do: text <> Templates.opt_out(locale)
-  defp opt_out(text, _purpose, _channel, _locale), do: text
+  # Marketing SMS end with a short link that withdraws that consent
+  # (ADR-390: a named sender cannot receive a STOP reply). Service messages
+  # carry no link; Viber and WhatsApp have their own block buttons.
+  defp opt_out(text, "marketing", "sms", locale, contact),
+    do: text <> Templates.opt_out(locale, Unsubscribe.url(contact.id))
+
+  defp opt_out(text, _purpose, _channel, _locale, _contact), do: text
 
   defp length_ok(text) do
     if String.length(text) <= MessageText.max_length(),
@@ -240,12 +250,13 @@ defmodule Palee.Channels.Sending do
     * `variables` – `%{"name" => value}` for the template's placeholders;
     * `purpose` – `service` or `marketing` (fixed by built-in templates);
     * `channels` – the caller's order of preference (else the box's);
-    * `urgent` – a service message that ignores quiet hours;
+    * `urgent` – marks an urgent service message (every service message
+      ignores quiet hours, ADR-390);
     * `idempotency_key` – the same key answers the message already queued;
     * `source` (`staff`, `automation`, `system`), `source_ref`, `actor_id`.
 
   `{:ok, message}` or `{:error, reason}`: `:channels_demo_mode`, `:channels_not_connected`,
-  `:channels_connection_invalid`, `:channel_template_missing`,
+  `:channels_connection_invalid`, `:channel_budget_missing`, `:channel_template_missing`,
   `:channel_contact_missing`, `:channel_not_enabled`,
   `:channel_consent_missing`, `:channel_opted_out`,
   `:whatsapp_template_missing`, `:channel_budget_exceeded`,

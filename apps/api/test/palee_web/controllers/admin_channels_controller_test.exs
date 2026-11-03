@@ -118,8 +118,7 @@ defmodule PaleeWeb.AdminChannelsControllerTest do
     |> send_json(:put, "#{ctx.base}/settings", %{
       provider: "sandbox",
       channels: ["sms"],
-      quiet_start: nil,
-      quiet_end: nil
+      monthly_budget_cents: 2000
     })
     |> json_response(200)
 
@@ -241,5 +240,79 @@ defmodule PaleeWeb.AdminChannelsControllerTest do
              ctx.member_conn
              |> send_json(:put, ctx.me, %{phone: "2101234567"})
              |> json_response(422)
+  end
+
+  test "SMS cannot go on without the cap the box types; quiet hours start off", ctx do
+    # ADR-390: a form error on the field, no invented 20 €.
+    assert %{"code" => "validation_failed", "errors" => %{"monthly_budget_cents" => ["required"]}} =
+             ctx.owner
+             |> send_json(:put, "#{ctx.base}/settings", %{provider: "sandbox", channels: ["sms"]})
+             |> json_response(422)
+
+    assert %{
+             "connection" => %{
+               "monthly_budget_cents" => 2500,
+               "quiet_start" => nil,
+               "quiet_end" => nil
+             }
+           } =
+             ctx.owner
+             |> send_json(:put, "#{ctx.base}/settings", %{
+               provider: "sandbox",
+               channels: ["sms"],
+               monthly_budget_cents: 2500
+             })
+             |> json_response(200)
+  end
+
+  test "the short link of a marketing SMS: public, changes nothing until tapped", ctx do
+    ctx.owner
+    |> send_json(:put, "#{ctx.base}/settings", %{
+      provider: "sandbox",
+      channels: ["sms"],
+      monthly_budget_cents: 2000
+    })
+    |> json_response(200)
+
+    %{"contact" => %{"id" => contact_id}} =
+      ctx.member_conn
+      |> send_json(:put, ctx.me, %{
+        phone: "6912345678",
+        locale: "en",
+        text_version: "app-v1",
+        consents: [
+          %{channel: "sms", purpose: "service", granted: true},
+          %{channel: "sms", purpose: "marketing", granted: true}
+        ]
+      })
+      |> json_response(200)
+
+    token = Palee.Channels.Unsubscribe.token(contact_id)
+    path = "/api/public/channels/unsubscribe/#{token}"
+    public = Phoenix.ConnTest.build_conn()
+    name = ctx.organization.name
+
+    assert %{"box_name" => ^name, "locale" => "en", "withdrawn" => false} =
+             public |> get(path) |> json_response(200)
+
+    assert %{"withdrawn" => true} =
+             public |> recycle() |> post(path) |> json_response(200)
+
+    assert %{"contact" => %{"consents" => consents}} =
+             ctx.member_conn |> get_json(ctx.me) |> json_response(200)
+
+    assert %{"granted" => false, "source" => "unsubscribe_link"} =
+             Enum.find(consents, &(&1["channel"] == "sms" and &1["purpose"] == "marketing"))
+
+    assert %{"granted" => true} =
+             Enum.find(consents, &(&1["channel"] == "sms" and &1["purpose"] == "service"))
+
+    assert %{"withdrawn" => true} = public |> recycle() |> get(path) |> json_response(200)
+
+    assert %{"code" => "not_found"} =
+             public
+             |> recycle()
+             |> post("/api/public/channels/unsubscribe/not-a-token")
+             |> json_response(404)
   end
 end

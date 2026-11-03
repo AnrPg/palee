@@ -40,7 +40,7 @@ defmodule Palee.ReviewAsks.BoxReviewPolicyTest do
     assert BoxReviewPolicy.author_name(nil) == nil
   end
 
-  test "a Google read keeps at most five reviews with attribution, refreshed daily" do
+  test "a Google read keeps the rating and count, never review texts; refreshed daily" do
     reviews =
       for n <- 1..7, do: %{author_name: "A#{n}", author_uri: "http://x", rating: 4.6, text: "t"}
 
@@ -51,8 +51,9 @@ defmodule Palee.ReviewAsks.BoxReviewPolicyTest do
         @now
       )
 
-    assert length(snapshot.reviews) == 5
-    assert %{"author_name" => "A1", "author_uri" => nil, "rating" => 5} = hd(snapshot.reviews)
+    # ADR-387 amendment: no review texts or authors until a legal check.
+    refute Map.has_key?(snapshot, :reviews)
+    assert snapshot.rating_count == 9
     assert Decimal.equal?(snapshot.rating, Decimal.new("4.8"))
     assert snapshot.next_refresh_at == DateTime.add(@now, 86_400, :second)
   end

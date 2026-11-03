@@ -15093,9 +15093,8 @@
     "saveSender": "Enregistrer l'expéditeur",
     "budget": "Plafond de coût mensuel",
     "budgetHint": "Au-delà du plafond, aucun SMS ne part ; les notifications de l'application continuent.",
-    "budgetPerMonth": "{amount} / mois",
     "quiet": "Heures calmes",
-    "quietHint": "Ce qui est écrit pendant ces heures attend le matin. Un message urgent part tout de suite.",
+    "quietHint": "Les offres écrites pendant ces heures attendent leur fin. Les informations (par ex. un cours annulé) partent toujours.",
     "quietFrom": "Calme à partir de",
     "quietTo": "Calme jusqu'à",
     "statusActive": "Connecté",
@@ -15112,7 +15111,7 @@
     "capNear": "Proche du plafond : au plafond, les SMS s'arrêtent, l'application continue.",
     "capReached": "Plafond atteint : les SMS s'arrêtent jusqu'au mois prochain ou à un plafond plus élevé ; l'application continue.",
     "advanced": "Avancé",
-    "advancedHint": "Votre propre compte Brevo, votre propre fournisseur d'e-mail",
+    "advancedHint": "Heures de silence, votre propre compte Brevo, votre propre fournisseur d'e-mail",
     "accountTitle": "Compte d'envoi des SMS",
     "accountPaleeHint": "Compte Palee (par défaut) : Palee paie Brevo et compte ce que dépense votre box.",
     "accountOwnHint": "Votre propre compte Brevo : Brevo facture directement votre box. La clé n'est plus jamais affichée.",
@@ -15208,6 +15207,7 @@
     "sourcePerson": "Par le client dans l'application",
     "sourceStaff": "Dit au staff",
     "sourceStop": "A répondu STOP",
+    "sourceLink": "A touché «Désinscription» dans le SMS",
     "yes": "Oui",
     "saidAtDesk": "L'a dit à l'accueil",
     "saidStop": "Veut arrêter",
@@ -15255,8 +15255,17 @@
       "channel_budget_exceeded": "Le plafond SMS du mois est atteint.",
       "channel_contact_missing": "Pas encore de mobile pour cette personne.",
       "channel_consent_missing": "Cette personne n'a pas accepté les SMS.",
-      "channel_opted_out": "Cette personne a répondu STOP."
-    }
+      "channel_opted_out": "Cette personne a répondu STOP.",
+      "channel_budget_missing": "Il n'y a pas de plafond SMS mensuel. Saisissez-le dans Paramètres › Connexions."
+    },
+    "budgetUnit": "{currency} par mois",
+    "budgetRequired": "Saisissez le plafond mensuel. Sans plafond, aucun SMS ne part.",
+    "budgetInvalid": "Saisissez un montant de 0 à 10 000, par ex. 20 ou 12,50.",
+    "budgetSave": "Enregistrer le plafond",
+    "turnOn": "Activer les SMS",
+    "capFirst": "Avant d'activer les SMS, saisissez le maximum que le box dépense par mois. Au-delà, aucun SMS ne part.",
+    "quietChoose": "Heure",
+    "quietSave": "Enregistrer les heures"
   },
   "TrainingFloor": {
     "calendarOfferTitle": "Ajouter tes réservations à ton calendrier ?",
@@ -15434,7 +15443,8 @@
     },
     "footerChecks": "Les vérifications automatiques tournent chaque minute",
     "inEnglish": "English",
-    "stripDetails": "Détails"
+    "stripDetails": "Détails",
+    "stripStarts": "Commence {when}."
   },
   "PlatformStatus": {
     "title": "État du service",
@@ -16322,5 +16332,16 @@
       "sendReply": "Publier la réponse",
       "replyRequired": "Écris ta réponse."
     }
+  },
+  "SmsUnsubscribe": {
+    "metaTitle": "Arrêter les offres par SMS",
+    "title": "Offres par SMS",
+    "loading": "Chargement…",
+    "question": "Arrêter les SMS d'offres de {box} ?",
+    "updatesKeepComing": "Les informations sur vos réservations et vos cours (par ex. un cours annulé) continueront d'arriver.",
+    "confirm": "Arrêter",
+    "done": "Vous ne recevrez plus de SMS d'offres de {box}.",
+    "invalid": "Ce lien n'est pas valide.",
+    "error": "Une erreur s'est produite. Veuillez réessayer."
   }
 }

@@ -29,6 +29,12 @@ defmodule Palee.Channels.Domain.QuietHoursTest do
     assert QuietHours.release_at(now, @zone, nil, nil) == now
   end
 
+  test "only marketing waits for quiet hours; service messages always go (ADR-390)" do
+    assert QuietHours.applies?("marketing")
+    refute QuietHours.applies?("service")
+    refute function_exported?(QuietHours, :defaults, 0)
+  end
+
   test "parse and format" do
     assert {:ok, {1260, 540}} = QuietHours.parse("21:00", "09:00")
     assert {:ok, {nil, nil}} = QuietHours.parse(nil, nil)

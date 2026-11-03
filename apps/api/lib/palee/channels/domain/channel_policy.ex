@@ -22,7 +22,7 @@ defmodule Palee.Channels.Domain.ChannelPolicy do
   @channels ~w(sms viber whatsapp)
   @purposes ~w(service marketing)
   @sources ~w(staff automation system)
-  @consent_sources ~w(person staff form import stop_keyword)
+  @consent_sources ~w(person staff form import stop_keyword unsubscribe_link)
 
   def channels, do: @channels
   def purposes, do: @purposes

@@ -18217,6 +18217,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/public/channels/unsubscribe/{token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box behind a marketing SMS's unsubscribe link (changes nothing) */
+        get: operations["PaleeWeb.PublicSmsUnsubscribeController.show"];
+        put?: never;
+        /** Stop offers by SMS from this box (withdraws the marketing SMS consent) */
+        post: operations["PaleeWeb.PublicSmsUnsubscribeController.create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/public/perk-verifications/{token}": {
         parameters: {
             query?: never;
@@ -24220,7 +24238,7 @@ export interface components {
             count: number;
             /**
              * GoogleListing
-             * @description The box's Google rating and up to five reviews, kept apart (ADR-387)
+             * @description The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms
              */
             google: {
                 count: number | null;
@@ -24229,15 +24247,6 @@ export interface components {
                 maps_uri: string | null;
                 name: string | null;
                 rating: number | null;
-                reviews: {
-                    author_name: string | null;
-                    author_photo_uri: string | null;
-                    author_uri: string | null;
-                    published_at: string | null;
-                    rating: number | null;
-                    relative_time: string | null;
-                    text: string | null;
-                }[];
                 write_review_url: string | null;
             } | null;
             has_more: boolean;
@@ -33610,7 +33619,7 @@ export interface components {
         };
         /**
          * GoogleListing
-         * @description The box's Google rating and up to five reviews, kept apart (ADR-387)
+         * @description The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms
          */
         GoogleListing: {
             count: number | null;
@@ -33619,15 +33628,6 @@ export interface components {
             maps_uri: string | null;
             name: string | null;
             rating: number | null;
-            reviews: {
-                author_name: string | null;
-                author_photo_uri: string | null;
-                author_uri: string | null;
-                published_at: string | null;
-                rating: number | null;
-                relative_time: string | null;
-                text: string | null;
-            }[];
             write_review_url: string | null;
         } | null;
         /** GooglePlaceMatch */
@@ -33647,16 +33647,6 @@ export interface components {
                 rating: number | null;
                 rating_count: number | null;
             }[];
-        };
-        /** GoogleReview */
-        GoogleReview: {
-            author_name: string | null;
-            author_photo_uri: string | null;
-            author_uri: string | null;
-            published_at: string | null;
-            rating: number | null;
-            relative_time: string | null;
-            text: string | null;
         };
         /** GuideProgress */
         GuideProgress: {
@@ -35218,7 +35208,7 @@ export interface components {
             count: number;
             /**
              * GoogleListing
-             * @description The box's Google rating and up to five reviews, kept apart (ADR-387)
+             * @description The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms
              */
             google: {
                 count: number | null;
@@ -35227,15 +35217,6 @@ export interface components {
                 maps_uri: string | null;
                 name: string | null;
                 rating: number | null;
-                reviews: {
-                    author_name: string | null;
-                    author_photo_uri: string | null;
-                    author_uri: string | null;
-                    published_at: string | null;
-                    rating: number | null;
-                    relative_time: string | null;
-                    text: string | null;
-                }[];
                 write_review_url: string | null;
             } | null;
             has_more: boolean;
@@ -40973,7 +40954,7 @@ export interface components {
             reviews: {
                 /**
                  * GoogleListing
-                 * @description The box's Google rating and up to five reviews, kept apart (ADR-387)
+                 * @description The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms
                  */
                 google: {
                     count: number | null;
@@ -40982,15 +40963,6 @@ export interface components {
                     maps_uri: string | null;
                     name: string | null;
                     rating: number | null;
-                    reviews: {
-                        author_name: string | null;
-                        author_photo_uri: string | null;
-                        author_uri: string | null;
-                        published_at: string | null;
-                        rating: number | null;
-                        relative_time: string | null;
-                        text: string | null;
-                    }[];
                     write_review_url: string | null;
                 } | null;
                 google_reviews_url: string | null;
@@ -41761,7 +41733,7 @@ export interface components {
         ReviewAskSettingsResponse: {
             /**
              * GoogleListing
-             * @description The box's Google rating and up to five reviews, kept apart (ADR-387)
+             * @description The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms
              */
             google: {
                 count: number | null;
@@ -41770,15 +41742,6 @@ export interface components {
                 maps_uri: string | null;
                 name: string | null;
                 rating: number | null;
-                reviews: {
-                    author_name: string | null;
-                    author_photo_uri: string | null;
-                    author_uri: string | null;
-                    published_at: string | null;
-                    rating: number | null;
-                    relative_time: string | null;
-                    text: string | null;
-                }[];
                 write_review_url: string | null;
             } | null;
             /** ReviewAskSettings */
@@ -44197,7 +44160,7 @@ export interface components {
         SiteReviews: {
             /**
              * GoogleListing
-             * @description The box's Google rating and up to five reviews, kept apart (ADR-387)
+             * @description The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms
              */
             google: {
                 count: number | null;
@@ -44206,15 +44169,6 @@ export interface components {
                 maps_uri: string | null;
                 name: string | null;
                 rating: number | null;
-                reviews: {
-                    author_name: string | null;
-                    author_photo_uri: string | null;
-                    author_uri: string | null;
-                    published_at: string | null;
-                    rating: number | null;
-                    relative_time: string | null;
-                    text: string | null;
-                }[];
                 write_review_url: string | null;
             } | null;
             google_reviews_url: string | null;
@@ -44368,6 +44322,16 @@ export interface components {
             id: string;
             title: string;
             type: string | null;
+        };
+        /**
+         * SmsUnsubscribe
+         * @description The box behind a marketing SMS's link and whether offers by SMS are off for the person
+         */
+        SmsUnsubscribe: {
+            box_name: string;
+            /** @enum {string} */
+            locale: "el" | "en" | "de" | "fr" | "it" | "es" | "nl" | "pt-PT" | "bg" | "ru" | "ar" | "he";
+            withdrawn: boolean;
         };
         /**
          * SocialPrivacy
@@ -74680,7 +74644,7 @@ export interface operations {
                         count: number;
                         /**
                          * GoogleListing
-                         * @description The box's Google rating and up to five reviews, kept apart (ADR-387)
+                         * @description The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms
                          */
                         google: {
                             count: number | null;
@@ -74689,15 +74653,6 @@ export interface operations {
                             maps_uri: string | null;
                             name: string | null;
                             rating: number | null;
-                            reviews: {
-                                author_name: string | null;
-                                author_photo_uri: string | null;
-                                author_uri: string | null;
-                                published_at: string | null;
-                                rating: number | null;
-                                relative_time: string | null;
-                                text: string | null;
-                            }[];
                             write_review_url: string | null;
                         } | null;
                         has_more: boolean;
@@ -75998,7 +75953,7 @@ export interface operations {
                         /** Format: uuid */
                         slot_id: string;
                         sms: number;
-                        /** @description The box's own reason no SMS can go (`channels_demo_mode`, `channels_not_connected`, `channel_budget_exceeded`…) */
+                        /** @description The box's own reason no SMS can go (`channels_demo_mode`, `channels_not_connected`, `channel_budget_missing`, `channel_budget_exceeded`…) */
                         sms_blocked: string | null;
                         unreachable: number;
                         /** @description Why, by error code (`channel_consent_missing`…) */
@@ -76066,7 +76021,7 @@ export interface operations {
                         /** Format: uuid */
                         slot_id: string;
                         sms: number;
-                        /** @description The box's own reason no SMS can go (`channels_demo_mode`, `channels_not_connected`, `channel_budget_exceeded`…) */
+                        /** @description The box's own reason no SMS can go (`channels_demo_mode`, `channels_not_connected`, `channel_budget_missing`, `channel_budget_exceeded`…) */
                         sms_blocked: string | null;
                         unreachable: number;
                         /** @description Why, by error code (`channel_consent_missing`…) */
@@ -77007,7 +76962,8 @@ export interface operations {
                             error_code?: string | null;
                             has_secret: boolean;
                             last_error?: string | null;
-                            monthly_budget_cents: number;
+                            /** @description The cap the box typed; null until it does, and then nothing is sent (ADR-390) */
+                            monthly_budget_cents: number | null;
                             provider: string;
                             /** @example 09:00 */
                             quiet_end?: string | null;
@@ -77083,7 +77039,8 @@ export interface operations {
                     channel_order?: ("sms" | "viber" | "whatsapp")[];
                     channels?: ("sms" | "viber" | "whatsapp")[];
                     default_country?: string;
-                    monthly_budget_cents?: number;
+                    /** @description The box's own monthly cap in cents; required once a channel is on (no default, ADR-390) */
+                    monthly_budget_cents?: number | null;
                     /** @enum {string} */
                     provider: "sandbox" | "brevo";
                     quiet_end?: string | null;
@@ -77130,7 +77087,8 @@ export interface operations {
                             error_code?: string | null;
                             has_secret: boolean;
                             last_error?: string | null;
-                            monthly_budget_cents: number;
+                            /** @description The cap the box typed; null until it does, and then nothing is sent (ADR-390) */
+                            monthly_budget_cents: number | null;
                             provider: string;
                             /** @example 09:00 */
                             quiet_end?: string | null;
@@ -77189,7 +77147,8 @@ export interface operations {
                             error_code?: string | null;
                             has_secret: boolean;
                             last_error?: string | null;
-                            monthly_budget_cents: number;
+                            /** @description The cap the box typed; null until it does, and then nothing is sent (ADR-390) */
+                            monthly_budget_cents: number | null;
                             provider: string;
                             /** @example 09:00 */
                             quiet_end?: string | null;
@@ -102044,7 +102003,7 @@ export interface operations {
                     "application/json": {
                         /**
                          * GoogleListing
-                         * @description The box's Google rating and up to five reviews, kept apart (ADR-387)
+                         * @description The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms
                          */
                         google: {
                             count: number | null;
@@ -102053,15 +102012,6 @@ export interface operations {
                             maps_uri: string | null;
                             name: string | null;
                             rating: number | null;
-                            reviews: {
-                                author_name: string | null;
-                                author_photo_uri: string | null;
-                                author_uri: string | null;
-                                published_at: string | null;
-                                rating: number | null;
-                                relative_time: string | null;
-                                text: string | null;
-                            }[];
                             write_review_url: string | null;
                         } | null;
                         /** ReviewAskSettings */
@@ -102104,7 +102054,7 @@ export interface operations {
                     "application/json": {
                         /**
                          * GoogleListing
-                         * @description The box's Google rating and up to five reviews, kept apart (ADR-387)
+                         * @description The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms
                          */
                         google: {
                             count: number | null;
@@ -102113,15 +102063,6 @@ export interface operations {
                             maps_uri: string | null;
                             name: string | null;
                             rating: number | null;
-                            reviews: {
-                                author_name: string | null;
-                                author_photo_uri: string | null;
-                                author_uri: string | null;
-                                published_at: string | null;
-                                rating: number | null;
-                                relative_time: string | null;
-                                text: string | null;
-                            }[];
                             write_review_url: string | null;
                         } | null;
                         /** ReviewAskSettings */
@@ -119654,7 +119595,7 @@ export interface operations {
                         count: number;
                         /**
                          * GoogleListing
-                         * @description The box's Google rating and up to five reviews, kept apart (ADR-387)
+                         * @description The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms
                          */
                         google: {
                             count: number | null;
@@ -119663,15 +119604,6 @@ export interface operations {
                             maps_uri: string | null;
                             name: string | null;
                             rating: number | null;
-                            reviews: {
-                                author_name: string | null;
-                                author_photo_uri: string | null;
-                                author_uri: string | null;
-                                published_at: string | null;
-                                rating: number | null;
-                                relative_time: string | null;
-                                text: string | null;
-                            }[];
                             write_review_url: string | null;
                         } | null;
                         has_more: boolean;
@@ -145141,6 +145073,78 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.PublicSmsUnsubscribeController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Unsubscribe link */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        box_name: string;
+                        /** @enum {string} */
+                        locale: "el" | "en" | "de" | "fr" | "it" | "es" | "nl" | "pt-PT" | "bg" | "ru" | "ar" | "he";
+                        withdrawn: boolean;
+                    };
+                };
+            };
+            /** @description Unknown link */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicSmsUnsubscribeController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Unsubscribed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        box_name: string;
+                        /** @enum {string} */
+                        locale: "el" | "en" | "de" | "fr" | "it" | "es" | "nl" | "pt-PT" | "bg" | "ru" | "ar" | "he";
+                        withdrawn: boolean;
+                    };
+                };
+            };
+            /** @description Unknown link */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
     "PaleeWeb.PerkVerificationController.show": {
         parameters: {
             query?: never;
@@ -145600,7 +145604,7 @@ export interface operations {
                         reviews: {
                             /**
                              * GoogleListing
-                             * @description The box's Google rating and up to five reviews, kept apart (ADR-387)
+                             * @description The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms
                              */
                             google: {
                                 count: number | null;
@@ -145609,15 +145613,6 @@ export interface operations {
                                 maps_uri: string | null;
                                 name: string | null;
                                 rating: number | null;
-                                reviews: {
-                                    author_name: string | null;
-                                    author_photo_uri: string | null;
-                                    author_uri: string | null;
-                                    published_at: string | null;
-                                    rating: number | null;
-                                    relative_time: string | null;
-                                    text: string | null;
-                                }[];
                                 write_review_url: string | null;
                             } | null;
                             google_reviews_url: string | null;

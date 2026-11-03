@@ -87,7 +87,11 @@ defmodule Palee.Application.ReviewAsks.BoxReviews do
     }
   end
 
-  @doc "The Google listing as shown (rating, count, link and up to five reviews), or nil."
+  @doc """
+  The Google listing as shown: rating, number of reviews and links, or nil.
+  No review texts until a lawyer has checked Google's terms (ADR-387
+  amendment).
+  """
   def google(_context, nil), do: nil
 
   def google(context, place_id) do
@@ -102,17 +106,9 @@ defmodule Palee.Application.ReviewAsks.BoxReviews do
           count: snapshot.rating_count,
           maps_uri: snapshot.maps_uri || ReviewAsks.read_reviews_url(place_id),
           write_review_url: ReviewAsks.write_review_url(place_id),
-          fetched_at: snapshot.fetched_at,
-          reviews: Enum.map(snapshot.reviews, &google_review/1)
+          fetched_at: snapshot.fetched_at
         }
     end
-  end
-
-  defp google_review(review) do
-    Map.new(
-      ~w(author_name author_uri author_photo_uri rating text relative_time published_at),
-      &{String.to_atom(&1), Map.get(review, &1)}
-    )
   end
 
   defp listing(context, page) do

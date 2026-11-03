@@ -13,6 +13,7 @@ defmodule Palee.Channels.SendingTest do
   import Palee.AnalyticsHelpers, only: [organization_fixture: 0, member_context: 1]
 
   alias Palee.{Channels, Repo}
+  alias Palee.Channels.Unsubscribe
   alias Palee.Application.Channels.{AutomationSmsChannel, ChannelContacts, SendThroughChannel}
   alias Palee.Infrastructure.Channels.SandboxChannel
 
@@ -152,21 +153,85 @@ defmodule Palee.Channels.SendingTest do
     assert [%{kind: "attempt", status: "sent"}] = sent.events
   end
 
-  test "quiet hours hold a message until morning; an urgent service message goes at once", ctx do
-    connect(ctx)
-    contact(ctx)
+  test "quiet hours are off until the box opens them; then only marketing waits", ctx do
+    # ADR-390: no invented 21:00–09:00.
+    connection = connect(ctx)
+    assert {connection.quiet_start_minute, connection.quiet_end_minute} == {nil, nil}
+    contact(ctx, [{"sms", "service"}, {"sms", "marketing"}])
 
-    assert {:ok, held} = Channels.send(ctx.context, request(ctx), %{ctx.env | now: @late})
+    marketing =
+      request(ctx, %{template_key: "win_back", variables: %{"text" => "Σε περιμένουμε!"}})
+
+    assert {:ok, at_once} = Channels.send(ctx.context, marketing, %{ctx.env | now: @late})
+    assert at_once.next_attempt_at == @late
+    assert at_once.hold_reason == nil
+
+    connect(ctx, %{quiet_start: "21:00", quiet_end: "09:00"})
+
+    assert {:ok, held} =
+             Channels.send(ctx.context, %{marketing | idempotency_key: "late-offer"}, %{
+               ctx.env
+               | now: @late
+             })
+
     assert held.hold_reason == "quiet_hours"
     assert held.next_attempt_at == ~U[2026-11-11 07:00:00.000000Z]
-    assert {:ok, %{sent: 0}} = Channels.deliver(ctx.context, :due, @late)
-    assert {:ok, %{sent: 1}} = Channels.deliver(ctx.context, :due, ~U[2026-11-11 07:00:01Z])
+
+    # Service messages (a class cancelled, a reminder) always go, urgent or not.
+    assert {:ok, service} = Channels.send(ctx.context, request(ctx), %{ctx.env | now: @late})
+    assert service.next_attempt_at == @late
+    assert service.hold_reason == nil
 
     assert {:ok, urgent} =
              Channels.send(ctx.context, request(ctx, %{urgent: true}), %{ctx.env | now: @late})
 
     assert urgent.next_attempt_at == @late
-    assert urgent.hold_reason == nil
+    assert {:ok, %{sent: 3}} = Channels.deliver(ctx.context, :due, @late)
+    assert {:ok, %{sent: 1}} = Channels.deliver(ctx.context, :due, ~U[2026-11-11 07:00:01Z])
+  end
+
+  test "the box types its own cap: SMS cannot go on without one, and nothing is sent", ctx do
+    # ADR-390: no invented 20 € default.
+    assert {:error, {:invalid_fields, %{monthly_budget_cents: "required"}}} =
+             Channels.save_connection(
+               ctx.context,
+               %{provider: "sandbox", channels: ["sms"]},
+               ctx.owner.id
+             )
+
+    assert {:error, {:invalid_fields, %{monthly_budget_cents: "invalid"}}} =
+             Channels.save_connection(
+               ctx.context,
+               %{provider: "sandbox", channels: ["sms"], monthly_budget_cents: -1},
+               ctx.owner.id
+             )
+
+    # Connecting with every channel off needs no cap yet.
+    assert {:ok, %{monthly_budget_cents: nil}} =
+             Channels.save_connection(
+               ctx.context,
+               %{provider: "sandbox", channels: []},
+               ctx.owner.id
+             )
+
+    # A row left without a cap (a connection saved before the rule) sends nothing.
+    bypass_rls(fn ->
+      Repo.query!(
+        "UPDATE channel_connections SET channels = '{sms}' WHERE organization_id = $1",
+        [Ecto.UUID.dump!(ctx.organization.id)]
+      )
+    end)
+
+    contact(ctx)
+    assert {:error, :channel_budget_missing} = Channels.send(ctx.context, request(ctx), ctx.env)
+
+    assert {:error, :channel_budget_missing} =
+             Channels.preview(ctx.context, request(ctx), ctx.env)
+
+    assert {:ok, %{monthly_budget_cents: 1500}} =
+             Channels.save_connection(ctx.context, %{monthly_budget_cents: 1500}, ctx.owner.id)
+
+    assert {:ok, _message} = Channels.send(ctx.context, request(ctx), ctx.env)
   end
 
   test "the monthly budget cap refuses what would pass it", ctx do
@@ -230,9 +295,9 @@ defmodule Palee.Channels.SendingTest do
     assert {:error, :channel_not_retryable} = Channels.retry(ctx.context, message.id, @noon)
   end
 
-  test "marketing SMS end with how to stop", ctx do
+  test "marketing SMS end with a short unsubscribe link; service messages carry none", ctx do
     connect(ctx)
-    contact(ctx, [{"sms", "marketing"}])
+    contact = contact(ctx, [{"sms", "service"}, {"sms", "marketing"}])
 
     assert {:ok, message} =
              Channels.send(
@@ -242,7 +307,55 @@ defmodule Palee.Channels.SendingTest do
              )
 
     assert message.purpose == "marketing"
-    assert String.ends_with?(message.body, "Για διακοπή απάντησε STOP.")
+    token = Unsubscribe.token(contact.id)
+    assert String.length(token) == 30
+    assert Unsubscribe.url(contact.id) == "http://localhost:4000/u/" <> token
+    assert String.ends_with?(message.body, " Διακοπή: " <> Unsubscribe.url(contact.id))
+    refute message.body =~ "STOP"
+
+    assert {:ok, service} = Channels.send(ctx.context, request(ctx), ctx.env)
+    refute service.body =~ "/u/"
+  end
+
+  test "the link withdraws only the marketing SMS consent, once, and is logged", ctx do
+    connect(ctx)
+    contact = contact(ctx, [{"sms", "service"}, {"sms", "marketing"}])
+    token = Unsubscribe.token(contact.id)
+
+    assert {:ok, %{withdrawn: false, contact: %{id: id}}} = Channels.find_unsubscribe(token)
+    assert id == contact.id
+
+    later = DateTime.add(@noon, 60, :second)
+    assert {:ok, %{withdrawn: true}} = Channels.unsubscribe(token, later)
+
+    refute Channels.consented?(ctx.context, %{user_id: ctx.member.id}, "sms", "marketing")
+    assert Channels.consented?(ctx.context, %{user_id: ctx.member.id}, "sms", "service")
+
+    stored = Channels.find_contact(ctx.context, {:user, ctx.member.id})
+    marketing = Enum.find(stored.consents, &(&1.purpose == "marketing"))
+    assert marketing.source == "unsubscribe_link"
+    assert marketing.withdrawn_at == later
+    assert is_nil(stored.opted_out_at)
+
+    # Tapping again changes nothing.
+    assert {:ok, %{withdrawn: true}} = Channels.unsubscribe(token, DateTime.add(later, 60))
+    again = Channels.find_contact(ctx.context, {:user, ctx.member.id})
+    assert Enum.find(again.consents, &(&1.purpose == "marketing")).withdrawn_at == later
+
+    marketing_request =
+      request(ctx, %{template_key: "win_back", variables: %{"text" => "Σε περιμένουμε!"}})
+
+    assert {:error, :channel_consent_missing} =
+             Channels.send(ctx.context, marketing_request, ctx.env)
+
+    # A changed or made-up token finds nobody.
+    <<first, rest::binary>> = token
+    forged = <<if(first == ?A, do: ?B, else: ?A)>> <> rest
+    assert {:error, :not_found} = Channels.find_unsubscribe(forged)
+    assert {:error, :not_found} = Channels.unsubscribe("nonsense", later)
+
+    assert {:error, :not_found} =
+             Channels.find_unsubscribe(Unsubscribe.token(Ecto.UUID.generate()))
   end
 
   describe "webhook" do
@@ -328,7 +441,8 @@ defmodule Palee.Channels.SendingTest do
           "account_mode" => "own",
           "secret" => "xkeysib-own",
           "sms_sender" => "CFAthina",
-          "channels" => ["sms"]
+          "channels" => ["sms"],
+          "monthly_budget_cents" => 3000
         })
 
       assert check.ok

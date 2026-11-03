@@ -17,18 +17,47 @@ export function formatCents(cents: number, currency: string, locale: string): st
 /** Whole hours for the quiet-hours pickers: «00:00» … «23:00». */
 export const QUIET_HOURS = Array.from({ length: 24 }, (_, hour) => `${String(hour).padStart(2, "0")}:00`);
 
-/** ADR-349 defaults: 21:00–09:00, 20 € a month. */
-export const DEFAULT_QUIET_START = "21:00";
-export const DEFAULT_QUIET_END = "09:00";
-export const DEFAULT_BUDGET_CENTS = 2000;
+/*
+ * ADR-390: no invented defaults. The box types its own monthly cap before
+ * SMS go on, and quiet hours stay off until it picks both times.
+ */
 
-/** Budget choices in whole euros; the saved value joins them when it is not one. */
-export const BUDGET_EUROS = [5, 10, 20, 30, 50, 100, 200];
+/** The API's highest cap: 10.000 € a month. */
+export const MAX_BUDGET_CENTS = 1_000_000;
 
-export function budgetChoices(currentCents: number | null | undefined): number[] {
-  const euros = currentCents == null ? null : Math.round(currentCents / 100);
-  if (euros == null || BUDGET_EUROS.includes(euros)) return BUDGET_EUROS;
-  return [...BUDGET_EUROS, euros].sort((a, b) => a - b);
+/**
+ * The cap typed in euros («20», «12,50», «12.5») as cents, or why it cannot
+ * be saved: empty is «required», anything else that is not 0–10.000 € with
+ * at most two decimals is «invalid».
+ */
+export function budgetCents(input: string): { cents: number } | { error: "required" | "invalid" } {
+  const value = input.trim().replace(/\s/g, "").replace(",", ".");
+  if (value === "") return { error: "required" };
+  if (!/^\d+(\.\d{1,2})?$/.test(value)) return { error: "invalid" };
+  const cents = Math.round(Number(value) * 100);
+  if (!Number.isFinite(cents) || cents < 0 || cents > MAX_BUDGET_CENTS) return { error: "invalid" };
+  return { cents };
+}
+
+/** A saved cap as the field shows it: «20», «12,50» in the reader's language; empty when none. */
+export function budgetInput(cents: number | null | undefined, locale: string): string {
+  if (cents == null) return "";
+  const euros = cents / 100;
+  return new Intl.NumberFormat(locale, { minimumFractionDigits: cents % 100 === 0 ? 0 : 2, maximumFractionDigits: 2, useGrouping: false }).format(euros);
+}
+
+/** «€» of a currency in the reader's language (the code itself when unknown). */
+export function currencySymbol(currency: string, locale: string): string {
+  try {
+    return new Intl.NumberFormat(locale, { style: "currency", currency }).formatToParts(0).find((part) => part.type === "currency")?.value ?? currency;
+  } catch {
+    return currency;
+  }
+}
+
+/** Quiet hours are saved only with both times picked (or both cleared). */
+export function quietHoursReady(start: string | null, end: string | null): boolean {
+  return Boolean(start && end && start !== end);
 }
 
 /**
@@ -200,6 +229,7 @@ export const SMS_ERROR_CODES = [
   "channels_not_connected",
   "channels_connection_invalid",
   "channel_not_enabled",
+  "channel_budget_missing",
   "channel_budget_exceeded",
   "channel_contact_missing",
   "channel_consent_missing",

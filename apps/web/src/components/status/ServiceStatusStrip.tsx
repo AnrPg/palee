@@ -8,7 +8,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { fetchStatusOverview } from "@/api/service-status";
 import { useSession } from "@/components/session-provider";
 import { useOrganizationMemberships } from "@/lib/organization-slug";
-import { incidentText, statusViewer, stripIncident, toneColor } from "@/lib/service-status";
+import { incidentText, startsLater, statusViewer, stripIncident, toneColor } from "@/lib/service-status";
 
 import { STATUS_QUERY_KEY } from "./StatusPage";
 
@@ -18,9 +18,12 @@ const HIDDEN = [/^\/status(?:\/|$)/, /^\/login(?:\/|$)/, /^\/b(?:\/|$)/, /^\/tv(
 /**
  * ADR-366, W7 screen 1: a strip inside the app while an incident is active,
  * only for people who use the affected component (members too). No close
- * button; it goes away by itself once the incident is resolved.
+ * button; it goes away by itself once the incident is resolved. A planned
+ * maintenance joins it only in the 24 hours before it starts (and while it
+ * runs); earlier it is on the status page only (ADR-366 amendment).
+ * `now` is injected by tests.
  */
-export function ServiceStatusStrip() {
+export function ServiceStatusStrip({ now = () => new Date() }: { now?: () => Date } = {}) {
   const t = useTranslations("ServiceStatus");
   const locale = useLocale();
   const pathname = usePathname();
@@ -44,10 +47,13 @@ export function ServiceStatusStrip() {
   });
   // The strip sits in the root layout: a malformed answer must hide it, never break every page.
   const active = Array.isArray(overview.data.active) ? overview.data.active : [];
-  const incident = stripIncident(active, viewer);
+  const upcoming = Array.isArray(overview.data.upcoming) ? overview.data.upcoming : [];
+  const at = now();
+  const incident = stripIncident(active, viewer, { upcoming, now: at });
   if (!incident) return null;
 
   const text = incidentText(incident, locale);
+  const later = startsLater(incident, at) && incident.scheduled_for ? new Date(incident.scheduled_for) : null;
   const tone = incident.kind === "maintenance" ? "info" : incident.impact === "minor" ? "warn" : "down";
   const color = toneColor(tone);
 
@@ -67,7 +73,9 @@ export function ServiceStatusStrip() {
           ●
         </span>
         <span className="min-w-0 flex-1">
-          <b>{text.title}.</b> {text.body}
+          <b>{text.title}.</b>{" "}
+          {later ? `${t("stripStarts", { when: later.toLocaleString(locale, { weekday: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }) })} ` : null}
+          {text.body}
         </span>
         <Link href="/status" className="shrink-0 font-semibold" style={{ color: "var(--primary)" }}>
           {t("stripDetails")}

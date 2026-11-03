@@ -15093,9 +15093,8 @@
     "saveSender": "حفظ المرسِل",
     "budget": "الحد الشهري للتكلفة",
     "budgetHint": "بعد تجاوز الحد لا تُرسل رسائل SMS؛ إشعارات التطبيق تستمر كالمعتاد.",
-    "budgetPerMonth": "{amount} / شهرياً",
     "quiet": "ساعات الهدوء",
-    "quietHint": "ما يُكتب خلالها ينتظر حتى الصباح. الرسالة العاجلة تُرسل فوراً.",
+    "quietHint": "العروض المكتوبة خلال هذه الساعات تنتظر حتى انتهائها. التنبيهات (مثل إلغاء حصة) تُرسل دائماً.",
     "quietFrom": "الهدوء من",
     "quietTo": "الهدوء حتى",
     "statusActive": "متصل",
@@ -15112,7 +15111,7 @@
     "capNear": "قريب من الحد: عند الحد تتوقف رسائل SMS ويستمر التطبيق.",
     "capReached": "تم بلوغ الحد: تتوقف رسائل SMS حتى الشهر القادم أو رفع الحد؛ التطبيق يستمر.",
     "advanced": "خيارات متقدمة",
-    "advancedHint": "حسابكم في Brevo، مزوّد البريد الخاص بكم",
+    "advancedHint": "ساعات الهدوء، حسابكم في Brevo، مزوّد البريد الخاص بكم",
     "accountTitle": "الحساب الذي يرسل رسائل SMS",
     "accountPaleeHint": "حساب Palee (الافتراضي): تدفع Palee لـ Brevo وتحتسب ما تنفقه صالتكم.",
     "accountOwnHint": "حسابكم في Brevo: تُصدر Brevo الفاتورة مباشرة لصالتكم. لن يظهر المفتاح مرة أخرى.",
@@ -15208,6 +15207,7 @@
     "sourcePerson": "من العميل في التطبيق",
     "sourceStaff": "أخبر الـ staff",
     "sourceStop": "ردّ STOP",
+    "sourceLink": "ضغط «إلغاء الاشتراك» في رسالة SMS",
     "yes": "نعم",
     "saidAtDesk": "قالها في الاستقبال",
     "saidStop": "يريد الإيقاف",
@@ -15255,8 +15255,17 @@
       "channel_budget_exceeded": "تم بلوغ حد SMS الشهري.",
       "channel_contact_missing": "لا يوجد رقم جوال لهذا الشخص بعد.",
       "channel_consent_missing": "لم يوافق هذا الشخص على SMS.",
-      "channel_opted_out": "ردّ هذا الشخص STOP."
-    }
+      "channel_opted_out": "ردّ هذا الشخص STOP.",
+      "channel_budget_missing": "لا يوجد حد شهري لرسائل SMS. اكتبوه في الإعدادات › الاتصالات."
+    },
+    "budgetUnit": "{currency} شهرياً",
+    "budgetRequired": "اكتبوا الحد الشهري. بدون حد لا تُرسل رسائل SMS.",
+    "budgetInvalid": "اكتبوا مبلغاً من 0 إلى 10000، مثلاً 20 أو 12.50.",
+    "budgetSave": "حفظ الحد",
+    "turnOn": "تشغيل SMS",
+    "capFirst": "قبل تشغيل SMS، اكتبوا أقصى ما ينفقه النادي في الشهر. بعده لا تُرسل رسائل SMS.",
+    "quietChoose": "الوقت",
+    "quietSave": "حفظ الساعات"
   },
   "TrainingFloor": {
     "calendarOfferTitle": "هل تُضاف حجوزاتك إلى تقويمك؟",
@@ -15434,7 +15443,8 @@
     },
     "footerChecks": "تجري الفحوص التلقائية كل دقيقة",
     "inEnglish": "English",
-    "stripDetails": "التفاصيل"
+    "stripDetails": "التفاصيل",
+    "stripStarts": "تبدأ {when}."
   },
   "PlatformStatus": {
     "title": "حالة الخدمة",
@@ -16322,5 +16332,16 @@
       "sendReply": "نشر الرد",
       "replyRequired": "اكتب ردّك."
     }
+  },
+  "SmsUnsubscribe": {
+    "metaTitle": "إيقاف العروض عبر SMS",
+    "title": "العروض عبر SMS",
+    "loading": "جارٍ التحميل…",
+    "question": "إيقاف رسائل SMS التي تحمل عروضاً من {box}؟",
+    "updatesKeepComing": "ستستمر التنبيهات الخاصة بحجوزاتكم وحصصكم (مثل إلغاء حصة) في الوصول.",
+    "confirm": "إيقاف",
+    "done": "لن تصلكم بعد الآن رسائل SMS بعروض من {box}.",
+    "invalid": "هذا الرابط غير صالح.",
+    "error": "حدث خطأ ما. حاولوا مرة أخرى."
   }
 }

@@ -195,9 +195,9 @@ defmodule Palee.Application.Channels.ClassNotices do
   end
 
   # When every SMS failed for the box's own reason (no connection, demo
-  # mode, over budget), the screen says it once instead of per person.
+  # mode, no cap typed, over budget), the screen says it once instead of per person.
   @box_reasons ~w(channels_not_connected channels_demo_mode channels_connection_invalid
-                  channel_not_enabled channel_budget_exceeded)
+                  channel_not_enabled channel_budget_missing channel_budget_exceeded)
   defp blocked(none) do
     none
     |> Enum.map(&reason_code(&1.reason))
