@@ -14,12 +14,17 @@ defmodule Palee.Application.BoxDataExports do
      a short-lived signed download link, made afresh on every call, until
      it expires after `keep_days` days. Files of expired requests are
      deleted when the next one is asked for.
+
+  ADR-367: the box's stored files (documents and PDFs, logo, photos and
+  videos) go into extra ZIP parts of at most `part_bytes`
+  (`config :palee, :box_data_export`), listed as `files` next to the CSV
+  ZIP; the owner who asked gets one email when it is ready.
   """
 
   require Logger
 
-  alias Palee.{BoxData, Organizations}
-  alias Palee.Application.{TenantDataContexts, TenantObjectStorage}
+  alias Palee.{BoxData, Email, Identity, Organizations}
+  alias Palee.Application.{PublicURL, TenantDataContexts, TenantObjectStorage}
   alias Palee.Workers.BoxDataExportJob
 
   @capability :manage_organization_lifecycle
@@ -82,22 +87,137 @@ defmodule Palee.Application.BoxDataExports do
              BoxData.object_folder(export.id) <> name,
              zip,
              "application/zip"
-           ) do
-      BoxData.finish_export(export, %{
-        status: "ready",
-        record_count: bundle.record_count,
-        table_count: bundle.table_count,
-        file: %{
-          "name" => name,
-          "key" => key,
-          "bytes" => byte_size(zip),
-          "sha256" => Base.encode16(:crypto.hash(:sha256, zip), case: :lower)
-        },
-        completed_at: now,
-        expires_at: BoxData.expires_at(now)
-      })
+           ),
+         {:ok, parts} <- pack_files(export, args["slug"] || "box", now),
+         {:ok, ready} <-
+           BoxData.finish_export(export, %{
+             status: "ready",
+             record_count: bundle.record_count,
+             table_count: bundle.table_count,
+             file: stored(name, key, zip),
+             parts: parts,
+             completed_at: now,
+             expires_at: BoxData.expires_at(now)
+           }) do
+      :ok = notify(ready, args, now)
+      {:ok, ready}
     end
   end
+
+  defp stored(name, key, zip) do
+    %{
+      "name" => name,
+      "key" => key,
+      "bytes" => byte_size(zip),
+      "sha256" => Base.encode16(:crypto.hash(:sha256, zip), case: :lower)
+    }
+  end
+
+  # -- stored files (ADR-367) --------------------------------------------------
+
+  defp pack_files(export, slug, now) do
+    organization_id = export.organization_id
+
+    with {:ok, objects} <- TenantObjectStorage.list_box_files(organization_id) do
+      objects
+      |> BoxData.select_files(TenantObjectStorage.tenant_object_prefix(organization_id))
+      |> BoxData.plan_parts(part_bytes())
+      |> Enum.with_index(1)
+      |> Enum.reduce_while({:ok, []}, fn {objects, index}, {:ok, parts} ->
+        case pack_part(export, BoxData.part_name(slug, now, index), objects) do
+          {:ok, part} -> {:cont, {:ok, parts ++ [part]}}
+          {:error, _reason} = error -> {:halt, error}
+        end
+      end)
+    end
+  end
+
+  defp pack_part(export, name, objects) do
+    dir =
+      Path.join(
+        System.tmp_dir!(),
+        "palee-box-export-#{export.id}-#{System.unique_integer([:positive])}"
+      )
+
+    try do
+      with :ok <- File.mkdir_p(dir),
+           {:ok, entries} <- download_all(export.organization_id, objects, dir),
+           {:ok, {_name, zip}} <- :zip.create(~c"files.zip", entries, [:memory, cwd: ~c"#{dir}"]),
+           {:ok, key} <-
+             TenantObjectStorage.put_tenant_object(
+               export.organization_id,
+               BoxData.object_folder(export.id) <> name,
+               zip,
+               "application/zip"
+             ) do
+        {:ok, name |> stored(key, zip) |> Map.put("files", length(entries))}
+      end
+    after
+      File.rm_rf(dir)
+    end
+  end
+
+  defp download_all(organization_id, objects, dir) do
+    Enum.reduce_while(objects, {:ok, []}, fn object, {:ok, entries} ->
+      path = Path.join(dir, object.entry)
+
+      with :ok <- File.mkdir_p(Path.dirname(path)),
+           :ok <-
+             TenantObjectStorage.download_box_file(
+               organization_id,
+               object.bucket,
+               object.key,
+               path
+             ) do
+        {:cont, {:ok, entries ++ [String.to_charlist(object.entry)]}}
+      else
+        # A file deleted since it was listed is simply not in the copy.
+        {:error, :not_found} -> {:cont, {:ok, entries}}
+        {:error, _reason} = error -> {:halt, error}
+      end
+    end)
+  end
+
+  defp part_bytes do
+    :palee
+    |> Application.get_env(:box_data_export, [])
+    |> Keyword.get(:part_bytes, 500 * 1024 * 1024)
+  end
+
+  # -- the email (ADR-367) -----------------------------------------------------
+
+  # One email to the owner who asked, through the outbox (ADR-203). It
+  # carries no download link, only the way to the settings page.
+  defp notify(%{requested_by_id: user_id} = export, args, now) when is_binary(user_id) do
+    with %{email: email} = account when is_binary(email) <- Identity.find_by_id(user_id),
+         {:error, reason} <-
+           Email.enqueue(
+             :box_data_export_ready,
+             email,
+             %{
+               url: settings_url(args["slug"]),
+               box: args["name"] || args["slug"] || "",
+               keep_days: BoxData.keep_days()
+             },
+             locale: account.preferred_locale || "en",
+             login_id: account.login_id,
+             user_id: user_id,
+             idempotency_key: "box_data_export:#{export.id}:ready",
+             now: now
+           ) do
+      Logger.warning("box export #{export.id}: notice not queued: #{inspect(reason)}")
+      :ok
+    else
+      _queued_or_no_address -> :ok
+    end
+  end
+
+  defp notify(_export, _args, _now), do: :ok
+
+  defp settings_url(slug) when is_binary(slug),
+    do: PublicURL.base_url() <> "/org/#{slug}/admin/settings#organization"
+
+  defp settings_url(_slug), do: PublicURL.base_url() <> "/admin/settings#organization"
 
   defp collect(scope) do
     modules = Enum.map(TenantDataContexts.purge_sequence(), &elem(&1, 0)) ++ [Organizations]
@@ -162,18 +282,41 @@ defmodule Palee.Application.BoxDataExports do
       requested_at: export.requested_at,
       completed_at: export.completed_at,
       expires_at: export.expires_at,
-      file: if(BoxData.downloadable?(export, now), do: file(export))
+      file: if(BoxData.downloadable?(export, now), do: file(export)),
+      parts: if(BoxData.downloadable?(export, now), do: parts(export), else: [])
     }
   end
 
-  defp file(%{organization_id: organization_id, file: %{"key" => key} = file}) do
-    url =
-      case TenantObjectStorage.tenant_download_url(organization_id, key) do
-        {:ok, url} -> url
-        _error -> nil
-      end
+  defp parts(%{organization_id: organization_id, parts: parts}) when is_list(parts) do
+    Enum.map(parts, fn part ->
+      %{
+        name: part["name"],
+        bytes: part["bytes"],
+        sha256: part["sha256"],
+        files: part["files"],
+        download_url: download_url(organization_id, part["key"])
+      }
+    end)
+  end
 
-    %{name: file["name"], bytes: file["bytes"], sha256: file["sha256"], download_url: url}
+  defp parts(_export), do: []
+
+  defp download_url(organization_id, key) when is_binary(key) do
+    case TenantObjectStorage.tenant_download_url(organization_id, key) do
+      {:ok, url} -> url
+      _error -> nil
+    end
+  end
+
+  defp download_url(_organization_id, _key), do: nil
+
+  defp file(%{organization_id: organization_id, file: %{"key" => key} = file}) do
+    %{
+      name: file["name"],
+      bytes: file["bytes"],
+      sha256: file["sha256"],
+      download_url: download_url(organization_id, key)
+    }
   end
 
   defp file(_export), do: nil

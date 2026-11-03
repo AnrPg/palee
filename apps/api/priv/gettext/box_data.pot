@@ -1,0 +1,15 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "The box's data is ready to download"
+msgstr ""
+
+msgid "The copy of %{box}'s data you asked for is ready: members, packages, payments, classes, workouts, documents, photos and PDFs."
+msgstr ""
+
+msgid "Download it from Settings › Business while you are signed in. It is kept for %{days} days."
+msgstr ""
+
+msgid "Open Settings"
+msgstr ""

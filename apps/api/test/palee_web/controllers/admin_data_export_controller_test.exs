@@ -7,6 +7,7 @@ defmodule PaleeWeb.AdminDataExportControllerTest do
   """
 
   use PaleeWeb.ConnCase, async: false
+  use Palee.EmailCase
 
   import Palee.TenantPurgeFixtures
   import Palee.TestFixtures
@@ -46,11 +47,14 @@ defmodule PaleeWeb.AdminDataExportControllerTest do
 
     assert listed["id"] == export["id"]
 
-    {:ok, [%{key: stored_key}]} =
+    {:ok, stored} =
       MemoryObjectStore.list_objects(
         :documents,
         "organizations/#{box.organization.id}/exports/box-data/#{export["id"]}/"
       )
+
+    # ADR-367: the box's stored files come in their own ZIP parts.
+    assert [%{key: stored_key}] = Enum.reject(stored, &(&1.key =~ "-files-"))
 
     files = unzip(stored_key)
     assert Map.has_key?(files, "manifest.json")
@@ -88,5 +92,74 @@ defmodule PaleeWeb.AdminDataExportControllerTest do
       status = conn |> recycle() |> put_bearer_token(user) |> post(path(box)) |> Map.get(:status)
       assert status in [403, 404]
     end
+  end
+
+  # ADR-367: photos and PDFs go in ZIP parts; one email when it is ready.
+  test "stored files come in parts next to the CSV ZIP, and the owner gets one email", %{
+    conn: conn,
+    box: box,
+    other: other
+  } do
+    previous = Application.get_env(:palee, :box_data_export)
+    Application.put_env(:palee, :box_data_export, part_bytes: 20)
+    on_exit(fn -> Application.put_env(:palee, :box_data_export, previous || []) end)
+
+    prefix = "organizations/#{box.organization.id}/"
+
+    :ok =
+      MemoryObjectStore.put_object(
+        :documents,
+        prefix <> "documents/contract.pdf",
+        "%PDF-contract",
+        "application/pdf"
+      )
+
+    :ok =
+      MemoryObjectStore.put_object(:branding, prefix <> "branding/logo.png", "logo", "image/png")
+
+    :ok =
+      MemoryObjectStore.put_object(
+        :media_public,
+        prefix <> "media/p1/photo.jpg",
+        "photo",
+        "image/jpeg"
+      )
+
+    :ok =
+      MemoryObjectStore.put_object(
+        :documents,
+        "organizations/#{other.organization.id}/documents/x.pdf",
+        "%PDF-other",
+        "application/pdf"
+      )
+
+    export = conn |> put_bearer_token(box.owner) |> post(path(box)) |> json_response(202)
+
+    assert export["status"] == "ready"
+    # The fixture box stores a few files of its own; parts stay under 20 bytes
+    # of content each unless one file is bigger.
+    assert [first | _] = parts = export["parts"]
+    assert length(parts) >= 2
+    assert first["name"] =~ ~r/^palee-.+-files-\d{4}-\d{2}-\d{2}-1\.zip$/
+    assert Enum.sum(Enum.map(parts, & &1["files"])) >= 3
+    assert Enum.all?(parts, &is_binary(&1["download_url"]))
+
+    {:ok, stored} =
+      MemoryObjectStore.list_objects(:documents, prefix <> "exports/box-data/#{export["id"]}/")
+
+    entries =
+      stored
+      |> Enum.filter(&(&1.key =~ "-files-"))
+      |> Enum.flat_map(fn %{key: key} -> key |> unzip() |> Map.to_list() end)
+      |> Map.new()
+
+    assert entries["documents/documents/contract.pdf"] == "%PDF-contract"
+    assert entries["branding/branding/logo.png"] == "logo"
+    assert entries["media/media/p1/photo.jpg"] == "photo"
+    refute Enum.any?(entries, fn {_name, body} -> body == "%PDF-other" end)
+
+    notice = assert_email_enqueued(kind: :box_data_export_ready, to: box.owner.email)
+    assert notice.text =~ "/org/#{box.organization.slug}/admin/settings#organization"
+    refute notice.text =~ "objects.test"
   end
 end

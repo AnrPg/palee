@@ -143,3 +143,6 @@ config :palee, :box_site_http, req_options: [plug: {Req.Test, Palee.BoxSiteHttp}
 # ADR-364: the status page probes with the sandbox; LiveProbe tests plug Req.Test.
 config :palee, :status_probe, Palee.Infrastructure.Status.SandboxProbe
 config :palee, :status_http, req_options: [plug: {Req.Test, Palee.StatusHttp}]
+
+# ADR-366: no model calls for status page translations outside production.
+config :palee, :status_translator, Palee.Infrastructure.Status.SandboxTranslator

@@ -34,9 +34,21 @@ defmodule PaleeWeb.ServiceStatusJSON do
             changed_at: state.changed_at
           }
         end),
-      incidents: Enum.map(view.incidents, &incident/1),
+      incidents: Enum.map(view.incidents, &incident(&1, Map.get(view, :publishers, %{}))),
       subscribers: view.subscribers
     }
+  end
+
+  @doc "An incident; with `publishers` (console only) each part says who published it (ADR-366)."
+  def incident(incident, publishers) when is_map(publishers) do
+    incident
+    |> incident()
+    |> Map.put(:published_by, publisher(publishers, incident.created_by_id))
+    |> Map.update!(:updates, fn updates ->
+      authors = Map.new(List.wrap(incident.updates), &{&1.id, &1.created_by_id})
+
+      Enum.map(updates, &Map.put(&1, :published_by, publisher(publishers, authors[&1.id])))
+    end)
   end
 
   def incident(incident) do
@@ -51,6 +63,9 @@ defmodule PaleeWeb.ServiceStatusJSON do
       scheduled_until: incident.scheduled_until,
       started_at: incident.started_at,
       resolved_at: incident.resolved_at,
+      locale: incident.locale,
+      title_en: incident.title_en,
+      en_source: incident.en_source,
       updates:
         incident.updates
         |> List.wrap()
@@ -60,11 +75,19 @@ defmodule PaleeWeb.ServiceStatusJSON do
             id: update.id,
             status: update.status,
             body: update.body,
+            locale: update.locale,
+            body_en: update.body_en,
+            en_source: update.en_source,
             created_at: update.inserted_at
           }
         end)
     }
   end
+
+  def translation(answer), do: %{locale: answer.locale, title: answer.title, body: answer.body}
+
+  defp publisher(_publishers, nil), do: nil
+  defp publisher(publishers, id), do: Map.get(publishers, id)
 
   defp component(component),
     do: %{key: component.key, status: component.status, checked_at: component.checked_at}

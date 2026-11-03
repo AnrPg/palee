@@ -145,7 +145,10 @@ defmodule Palee.Infrastructure.Status.EctoStatusStore do
                  status: changes.status,
                  body: changes.body,
                  notify: changes.notify,
-                 created_by_id: author_id
+                 created_by_id: author_id,
+                 locale: Map.get(changes, :locale),
+                 body_en: Map.get(changes, :body_en),
+                 en_source: Map.get(changes, :en_source)
                }
                |> IncidentUpdate.create_changeset()
                |> Repo.insert(),

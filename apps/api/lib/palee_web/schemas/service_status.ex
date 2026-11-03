@@ -12,7 +12,10 @@ defmodule PaleeWeb.Schemas.ServiceStatus do
   @probe_statuses ~w(operational degraded down)
   @day_statuses ~w(operational degraded down no_data)
 
+  @en_sources ~w(auto edited)
+
   defp str(enum), do: %Schema{type: :string, enum: enum}
+  defp str_null, do: %Schema{type: :string, nullable: true}
   defp ts, do: %Schema{type: :string, format: :"date-time"}
   defp ts_null, do: %Schema{type: :string, format: :"date-time", nullable: true}
 
@@ -37,9 +40,17 @@ defmodule PaleeWeb.Schemas.ServiceStatus do
         id: %Schema{type: :string, format: :uuid},
         status: str(@incident_statuses),
         body: %Schema{type: :string},
+        locale: str_null(),
+        body_en: str_null(),
+        en_source: %Schema{type: :string, enum: @en_sources, nullable: true},
+        published_by: %Schema{
+          type: :string,
+          nullable: true,
+          description: "Who published this step (console only)"
+        },
         created_at: ts()
       },
-      required: [:body, :created_at, :id, :status]
+      required: [:body, :body_en, :created_at, :en_source, :id, :locale, :status]
     }
   end
 
@@ -58,19 +69,30 @@ defmodule PaleeWeb.Schemas.ServiceStatus do
         scheduled_until: ts_null(),
         started_at: ts(),
         resolved_at: ts_null(),
+        locale: str_null(),
+        title_en: str_null(),
+        en_source: %Schema{type: :string, enum: @en_sources, nullable: true},
+        published_by: %Schema{
+          type: :string,
+          nullable: true,
+          description: "Who published the incident (console only)"
+        },
         updates: %Schema{type: :array, items: incident_update()}
       },
       required: [
         :components,
+        :en_source,
         :id,
         :impact,
         :kind,
+        :locale,
         :resolved_at,
         :scheduled_for,
         :scheduled_until,
         :started_at,
         :status,
         :title,
+        :title_en,
         :updates
       ]
     }
@@ -177,7 +199,11 @@ defmodule PaleeWeb.Schemas.ServiceStatus do
           scheduled_for: ts(),
           scheduled_until: ts(),
           body: %Schema{type: :string, minLength: 1, maxLength: 2000},
-          notify: %Schema{type: :boolean}
+          notify: %Schema{type: :boolean},
+          locale: %Schema{type: :string, maxLength: 8},
+          title_en: %Schema{type: :string, maxLength: 140},
+          body_en: %Schema{type: :string, maxLength: 2000},
+          en_source: str(@en_sources)
         },
         required: [:body, :title]
       },
@@ -193,7 +219,10 @@ defmodule PaleeWeb.Schemas.ServiceStatus do
         properties: %{
           status: str(@incident_statuses),
           body: %Schema{type: :string, minLength: 1, maxLength: 2000},
-          notify: %Schema{type: :boolean}
+          notify: %Schema{type: :boolean},
+          locale: %Schema{type: :string, maxLength: 8},
+          body_en: %Schema{type: :string, maxLength: 2000},
+          en_source: str(@en_sources)
         },
         required: [:body]
       },
@@ -214,6 +243,38 @@ defmodule PaleeWeb.Schemas.ServiceStatus do
       },
       "A correction (no note, no email)"
     )
+  end
+
+  def translate_body do
+    body(
+      %Schema{
+        title: "StatusTranslate",
+        type: :object,
+        properties: %{
+          title: %Schema{type: :string, maxLength: 140},
+          body: %Schema{type: :string, minLength: 1, maxLength: 2000}
+        },
+        required: [:body]
+      },
+      "The title and note to preview in English"
+    )
+  end
+
+  def translation do
+    %Schema{
+      title: "StatusTranslation",
+      type: :object,
+      properties: %{
+        locale: %Schema{
+          type: :string,
+          nullable: true,
+          description: "The detected language of the text"
+        },
+        title: str_null(),
+        body: %Schema{type: :string}
+      },
+      required: [:body, :locale, :title]
+    }
   end
 
   def subscribe_body do

@@ -15,14 +15,28 @@ defmodule Palee.Status.IncidentUpdate do
     field :body, :string
     field :notify, :boolean, default: true
     field :created_by_id, :binary_id
+    # ADR-366: the language the note was written in and its English version.
+    field :locale, :string
+    field :body_en, :string
+    field :en_source, :string
 
     timestamps(type: :utc_datetime_usec, updated_at: false)
   end
 
   def create_changeset(attrs) do
     %__MODULE__{}
-    |> cast(attrs, [:incident_id, :status, :body, :notify, :created_by_id])
+    |> cast(attrs, [
+      :incident_id,
+      :status,
+      :body,
+      :notify,
+      :created_by_id,
+      :locale,
+      :body_en,
+      :en_source
+    ])
     |> validate_required([:incident_id, :status, :body])
     |> check_constraint(:body, name: :status_incident_updates_body_check)
+    |> check_constraint(:body_en, name: :status_incident_updates_translation_check)
   end
 end

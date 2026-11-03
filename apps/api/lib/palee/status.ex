@@ -16,7 +16,7 @@ defmodule Palee.Status do
   """
 
   alias Palee.Infrastructure.Tenancy.RepoContext
-  alias Palee.Status.Domain.{IncidentPolicy, Overview, SubscriberPolicy, Uptime}
+  alias Palee.Status.Domain.{IncidentPolicy, Overview, SubscriberPolicy, Translation, Uptime}
   alias Palee.Status.StatusStore
 
   @history_since_days 90
@@ -129,6 +129,19 @@ defmodule Palee.Status do
       nil -> {:error, :not_found}
     end
   end
+
+  @doc "`:ok` when the session is a Palee team member's (vendor), else `{:error, :vendor_required}`."
+  def authorize_vendor(%{vendor: vendor, user_id: user_id})
+      when not is_nil(vendor) and is_binary(user_id),
+      do: :ok
+
+  def authorize_vendor(_context), do: {:error, :vendor_required}
+
+  ## Translations (ADR-366)
+
+  defdelegate translation_request(params), to: Translation, as: :request
+  defdelegate translation_result(answer), to: Translation, as: :result
+  defdelegate for_reader(incident, update, reader_locale), to: Translation
 
   ## Subscribers
 

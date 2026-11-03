@@ -22,6 +22,8 @@ defmodule Palee.BoxData.Export do
     field :record_count, :integer
     field :table_count, :integer
     field :file, :map
+    # ADR-367: the ZIP parts with the box's stored files (photos, PDFs).
+    field :parts, {:array, :map}, default: []
     field :error, :string
     field :requested_at, :utc_datetime_usec
     field :completed_at, :utc_datetime_usec
@@ -44,6 +46,7 @@ defmodule Palee.BoxData.Export do
       :record_count,
       :table_count,
       :file,
+      :parts,
       :error,
       :completed_at,
       :expires_at

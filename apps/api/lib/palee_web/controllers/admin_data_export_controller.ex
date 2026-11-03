@@ -1,7 +1,8 @@
 defmodule PaleeWeb.AdminDataExportController do
   @moduledoc """
   ADR-365 (CP-G5): an owner downloads a copy of all the box's data (ZIP of
-  CSV files), at any time, one a day.
+  CSV files), at any time, one a day. ADR-367: plus ZIP parts with the box's
+  photos and PDFs.
   """
 
   use PaleeWeb, :controller
@@ -36,6 +37,22 @@ defmodule PaleeWeb.AdminDataExportController do
           download_url: %Schema{type: :string, nullable: true}
         },
         required: [:bytes, :download_url, :name, :sha256]
+      },
+      parts: %Schema{
+        type: :array,
+        description: "ADR-367: ZIP parts with the box's stored files (photos, PDFs)",
+        items: %Schema{
+          title: "BoxDataExportPart",
+          type: :object,
+          properties: %{
+            name: %Schema{type: :string},
+            bytes: %Schema{type: :integer},
+            sha256: %Schema{type: :string},
+            files: %Schema{type: :integer},
+            download_url: %Schema{type: :string, nullable: true}
+          },
+          required: [:bytes, :download_url, :files, :name, :sha256]
+        }
       }
     },
     required: [
@@ -43,6 +60,7 @@ defmodule PaleeWeb.AdminDataExportController do
       :expires_at,
       :file,
       :id,
+      :parts,
       :record_count,
       :requested_at,
       :status,

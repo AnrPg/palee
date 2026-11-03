@@ -17663,6 +17663,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/platform/status/translations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Preview a title and note in English, by machine (vendors) */
+        post: operations["PaleeWeb.PlatformStatusController.translate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/platform/subscriptions": {
         parameters: {
             query?: never;
@@ -23747,12 +23764,28 @@ export interface components {
             } | null;
             /** Format: uuid */
             id: string;
+            /** @description ADR-367: ZIP parts with the box's stored files (photos, PDFs) */
+            parts: {
+                bytes: number;
+                download_url: string | null;
+                files: number;
+                name: string;
+                sha256: string;
+            }[];
             record_count: number | null;
             /** Format: date-time */
             requested_at: string;
             /** @enum {string} */
             status: "pending" | "ready" | "failed" | "expired";
             table_count: number | null;
+        };
+        /** BoxDataExportPart */
+        BoxDataExportPart: {
+            bytes: number;
+            download_url: string | null;
+            files: number;
+            name: string;
+            sha256: string;
         };
         /** BoxDataExports */
         BoxDataExports: {
@@ -23769,6 +23802,14 @@ export interface components {
                 } | null;
                 /** Format: uuid */
                 id: string;
+                /** @description ADR-367: ZIP parts with the box's stored files (photos, PDFs) */
+                parts: {
+                    bytes: number;
+                    download_url: string | null;
+                    files: number;
+                    name: string;
+                    sha256: string;
+                }[];
                 record_count: number | null;
                 /** Format: date-time */
                 requested_at: string;
@@ -46068,12 +46109,17 @@ export interface components {
         StatusConsole: {
             incidents: {
                 components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                /** @enum {string|null} */
+                en_source: "auto" | "edited" | null;
                 /** Format: uuid */
                 id: string;
                 /** @enum {string} */
                 impact: "none" | "minor" | "major" | "critical";
                 /** @enum {string} */
                 kind: "incident" | "maintenance";
+                locale: string | null;
+                /** @description Who published the incident (console only) */
+                published_by?: string | null;
                 /** Format: date-time */
                 resolved_at: string | null;
                 /** Format: date-time */
@@ -46085,12 +46131,19 @@ export interface components {
                 /** @enum {string} */
                 status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
                 title: string;
+                title_en: string | null;
                 updates: {
                     body: string;
+                    body_en: string | null;
                     /** Format: date-time */
                     created_at: string;
+                    /** @enum {string|null} */
+                    en_source: "auto" | "edited" | null;
                     /** Format: uuid */
                     id: string;
+                    locale: string | null;
+                    /** @description Who published this step (console only) */
+                    published_by?: string | null;
                     /** @enum {string} */
                     status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
                 }[];
@@ -46131,12 +46184,17 @@ export interface components {
             generated_at: string;
             incidents: {
                 components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                /** @enum {string|null} */
+                en_source: "auto" | "edited" | null;
                 /** Format: uuid */
                 id: string;
                 /** @enum {string} */
                 impact: "none" | "minor" | "major" | "critical";
                 /** @enum {string} */
                 kind: "incident" | "maintenance";
+                locale: string | null;
+                /** @description Who published the incident (console only) */
+                published_by?: string | null;
                 /** Format: date-time */
                 resolved_at: string | null;
                 /** Format: date-time */
@@ -46148,12 +46206,19 @@ export interface components {
                 /** @enum {string} */
                 status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
                 title: string;
+                title_en: string | null;
                 updates: {
                     body: string;
+                    body_en: string | null;
                     /** Format: date-time */
                     created_at: string;
+                    /** @enum {string|null} */
+                    en_source: "auto" | "edited" | null;
                     /** Format: uuid */
                     id: string;
+                    locale: string | null;
+                    /** @description Who published this step (console only) */
+                    published_by?: string | null;
                     /** @enum {string} */
                     status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
                 }[];
@@ -46172,12 +46237,17 @@ export interface components {
         /** StatusIncident */
         StatusIncident: {
             components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+            /** @enum {string|null} */
+            en_source: "auto" | "edited" | null;
             /** Format: uuid */
             id: string;
             /** @enum {string} */
             impact: "none" | "minor" | "major" | "critical";
             /** @enum {string} */
             kind: "incident" | "maintenance";
+            locale: string | null;
+            /** @description Who published the incident (console only) */
+            published_by?: string | null;
             /** Format: date-time */
             resolved_at: string | null;
             /** Format: date-time */
@@ -46189,12 +46259,19 @@ export interface components {
             /** @enum {string} */
             status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
             title: string;
+            title_en: string | null;
             updates: {
                 body: string;
+                body_en: string | null;
                 /** Format: date-time */
                 created_at: string;
+                /** @enum {string|null} */
+                en_source: "auto" | "edited" | null;
                 /** Format: uuid */
                 id: string;
+                locale: string | null;
+                /** @description Who published this step (console only) */
+                published_by?: string | null;
                 /** @enum {string} */
                 status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
             }[];
@@ -46202,11 +46279,15 @@ export interface components {
         /** StatusIncidentCreate */
         StatusIncidentCreate: {
             body: string;
+            body_en?: string;
             components?: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+            /** @enum {string} */
+            en_source?: "auto" | "edited";
             /** @enum {string} */
             impact?: "none" | "minor" | "major" | "critical";
             /** @enum {string} */
             kind?: "incident" | "maintenance";
+            locale?: string;
             notify?: boolean;
             /** Format: date-time */
             scheduled_for?: string;
@@ -46215,6 +46296,7 @@ export interface components {
             /** @enum {string} */
             status?: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
             title: string;
+            title_en?: string;
         };
         /** StatusIncidentEdit */
         StatusIncidentEdit: {
@@ -46226,16 +46308,26 @@ export interface components {
         /** StatusIncidentUpdate */
         StatusIncidentUpdate: {
             body: string;
+            body_en: string | null;
             /** Format: date-time */
             created_at: string;
+            /** @enum {string|null} */
+            en_source: "auto" | "edited" | null;
             /** Format: uuid */
             id: string;
+            locale: string | null;
+            /** @description Who published this step (console only) */
+            published_by?: string | null;
             /** @enum {string} */
             status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
         };
         /** StatusIncidentUpdateCreate */
         StatusIncidentUpdateCreate: {
             body: string;
+            body_en?: string;
+            /** @enum {string} */
+            en_source?: "auto" | "edited";
+            locale?: string;
             notify?: boolean;
             /** @enum {string} */
             status?: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
@@ -46244,12 +46336,17 @@ export interface components {
         StatusOverview: {
             active: {
                 components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                /** @enum {string|null} */
+                en_source: "auto" | "edited" | null;
                 /** Format: uuid */
                 id: string;
                 /** @enum {string} */
                 impact: "none" | "minor" | "major" | "critical";
                 /** @enum {string} */
                 kind: "incident" | "maintenance";
+                locale: string | null;
+                /** @description Who published the incident (console only) */
+                published_by?: string | null;
                 /** Format: date-time */
                 resolved_at: string | null;
                 /** Format: date-time */
@@ -46261,12 +46358,19 @@ export interface components {
                 /** @enum {string} */
                 status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
                 title: string;
+                title_en: string | null;
                 updates: {
                     body: string;
+                    body_en: string | null;
                     /** Format: date-time */
                     created_at: string;
+                    /** @enum {string|null} */
+                    en_source: "auto" | "edited" | null;
                     /** Format: uuid */
                     id: string;
+                    locale: string | null;
+                    /** @description Who published this step (console only) */
+                    published_by?: string | null;
                     /** @enum {string} */
                     status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
                 }[];
@@ -46285,12 +46389,17 @@ export interface components {
             status: "operational" | "degraded" | "partial_outage" | "major_outage" | "maintenance" | "unknown";
             upcoming: {
                 components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                /** @enum {string|null} */
+                en_source: "auto" | "edited" | null;
                 /** Format: uuid */
                 id: string;
                 /** @enum {string} */
                 impact: "none" | "minor" | "major" | "critical";
                 /** @enum {string} */
                 kind: "incident" | "maintenance";
+                locale: string | null;
+                /** @description Who published the incident (console only) */
+                published_by?: string | null;
                 /** Format: date-time */
                 resolved_at: string | null;
                 /** Format: date-time */
@@ -46302,12 +46411,19 @@ export interface components {
                 /** @enum {string} */
                 status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
                 title: string;
+                title_en: string | null;
                 updates: {
                     body: string;
+                    body_en: string | null;
                     /** Format: date-time */
                     created_at: string;
+                    /** @enum {string|null} */
+                    en_source: "auto" | "edited" | null;
                     /** Format: uuid */
                     id: string;
+                    locale: string | null;
+                    /** @description Who published this step (console only) */
+                    published_by?: string | null;
                     /** @enum {string} */
                     status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
                 }[];
@@ -46333,6 +46449,18 @@ export interface components {
         /** StatusToken */
         StatusToken: {
             token: string;
+        };
+        /** StatusTranslate */
+        StatusTranslate: {
+            body: string;
+            title?: string;
+        };
+        /** StatusTranslation */
+        StatusTranslation: {
+            body: string;
+            /** @description The detected language of the text */
+            locale: string | null;
+            title: string | null;
         };
         /** StructuredSection */
         StructuredSection: {
@@ -84611,6 +84739,14 @@ export interface operations {
                             } | null;
                             /** Format: uuid */
                             id: string;
+                            /** @description ADR-367: ZIP parts with the box's stored files (photos, PDFs) */
+                            parts: {
+                                bytes: number;
+                                download_url: string | null;
+                                files: number;
+                                name: string;
+                                sha256: string;
+                            }[];
                             record_count: number | null;
                             /** Format: date-time */
                             requested_at: string;
@@ -84651,6 +84787,14 @@ export interface operations {
                         } | null;
                         /** Format: uuid */
                         id: string;
+                        /** @description ADR-367: ZIP parts with the box's stored files (photos, PDFs) */
+                        parts: {
+                            bytes: number;
+                            download_url: string | null;
+                            files: number;
+                            name: string;
+                            sha256: string;
+                        }[];
                         record_count: number | null;
                         /** Format: date-time */
                         requested_at: string;
@@ -141707,12 +141851,17 @@ export interface operations {
                     "application/json": {
                         incidents: {
                             components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                            /** @enum {string|null} */
+                            en_source: "auto" | "edited" | null;
                             /** Format: uuid */
                             id: string;
                             /** @enum {string} */
                             impact: "none" | "minor" | "major" | "critical";
                             /** @enum {string} */
                             kind: "incident" | "maintenance";
+                            locale: string | null;
+                            /** @description Who published the incident (console only) */
+                            published_by?: string | null;
                             /** Format: date-time */
                             resolved_at: string | null;
                             /** Format: date-time */
@@ -141724,12 +141873,19 @@ export interface operations {
                             /** @enum {string} */
                             status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
                             title: string;
+                            title_en: string | null;
                             updates: {
                                 body: string;
+                                body_en: string | null;
                                 /** Format: date-time */
                                 created_at: string;
+                                /** @enum {string|null} */
+                                en_source: "auto" | "edited" | null;
                                 /** Format: uuid */
                                 id: string;
+                                locale: string | null;
+                                /** @description Who published this step (console only) */
+                                published_by?: string | null;
                                 /** @enum {string} */
                                 status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
                             }[];
@@ -141765,11 +141921,15 @@ export interface operations {
             content: {
                 "application/json": {
                     body: string;
+                    body_en?: string;
                     components?: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                    /** @enum {string} */
+                    en_source?: "auto" | "edited";
                     /** @enum {string} */
                     impact?: "none" | "minor" | "major" | "critical";
                     /** @enum {string} */
                     kind?: "incident" | "maintenance";
+                    locale?: string;
                     notify?: boolean;
                     /** Format: date-time */
                     scheduled_for?: string;
@@ -141778,6 +141938,7 @@ export interface operations {
                     /** @enum {string} */
                     status?: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
                     title: string;
+                    title_en?: string;
                 };
             };
         };
@@ -141790,12 +141951,17 @@ export interface operations {
                 content: {
                     "application/json": {
                         components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                        /** @enum {string|null} */
+                        en_source: "auto" | "edited" | null;
                         /** Format: uuid */
                         id: string;
                         /** @enum {string} */
                         impact: "none" | "minor" | "major" | "critical";
                         /** @enum {string} */
                         kind: "incident" | "maintenance";
+                        locale: string | null;
+                        /** @description Who published the incident (console only) */
+                        published_by?: string | null;
                         /** Format: date-time */
                         resolved_at: string | null;
                         /** Format: date-time */
@@ -141807,12 +141973,19 @@ export interface operations {
                         /** @enum {string} */
                         status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
                         title: string;
+                        title_en: string | null;
                         updates: {
                             body: string;
+                            body_en: string | null;
                             /** Format: date-time */
                             created_at: string;
+                            /** @enum {string|null} */
+                            en_source: "auto" | "edited" | null;
                             /** Format: uuid */
                             id: string;
+                            locale: string | null;
+                            /** @description Who published this step (console only) */
+                            published_by?: string | null;
                             /** @enum {string} */
                             status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
                         }[];
@@ -141850,12 +142023,17 @@ export interface operations {
                 content: {
                     "application/json": {
                         components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                        /** @enum {string|null} */
+                        en_source: "auto" | "edited" | null;
                         /** Format: uuid */
                         id: string;
                         /** @enum {string} */
                         impact: "none" | "minor" | "major" | "critical";
                         /** @enum {string} */
                         kind: "incident" | "maintenance";
+                        locale: string | null;
+                        /** @description Who published the incident (console only) */
+                        published_by?: string | null;
                         /** Format: date-time */
                         resolved_at: string | null;
                         /** Format: date-time */
@@ -141867,12 +142045,19 @@ export interface operations {
                         /** @enum {string} */
                         status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
                         title: string;
+                        title_en: string | null;
                         updates: {
                             body: string;
+                            body_en: string | null;
                             /** Format: date-time */
                             created_at: string;
+                            /** @enum {string|null} */
+                            en_source: "auto" | "edited" | null;
                             /** Format: uuid */
                             id: string;
+                            locale: string | null;
+                            /** @description Who published this step (console only) */
+                            published_by?: string | null;
                             /** @enum {string} */
                             status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
                         }[];
@@ -141895,6 +142080,10 @@ export interface operations {
             content: {
                 "application/json": {
                     body: string;
+                    body_en?: string;
+                    /** @enum {string} */
+                    en_source?: "auto" | "edited";
+                    locale?: string;
                     notify?: boolean;
                     /** @enum {string} */
                     status?: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
@@ -141910,12 +142099,17 @@ export interface operations {
                 content: {
                     "application/json": {
                         components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                        /** @enum {string|null} */
+                        en_source: "auto" | "edited" | null;
                         /** Format: uuid */
                         id: string;
                         /** @enum {string} */
                         impact: "none" | "minor" | "major" | "critical";
                         /** @enum {string} */
                         kind: "incident" | "maintenance";
+                        locale: string | null;
+                        /** @description Who published the incident (console only) */
+                        published_by?: string | null;
                         /** Format: date-time */
                         resolved_at: string | null;
                         /** Format: date-time */
@@ -141927,15 +142121,55 @@ export interface operations {
                         /** @enum {string} */
                         status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
                         title: string;
+                        title_en: string | null;
                         updates: {
                             body: string;
+                            body_en: string | null;
                             /** Format: date-time */
                             created_at: string;
+                            /** @enum {string|null} */
+                            en_source: "auto" | "edited" | null;
                             /** Format: uuid */
                             id: string;
+                            locale: string | null;
+                            /** @description Who published this step (console only) */
+                            published_by?: string | null;
                             /** @enum {string} */
                             status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
                         }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PlatformStatusController.translate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The title and note to preview in English */
+        requestBody: {
+            content: {
+                "application/json": {
+                    body: string;
+                    title?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Translation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        body: string;
+                        /** @description The detected language of the text */
+                        locale: string | null;
+                        title: string | null;
                     };
                 };
             };
@@ -144410,12 +144644,17 @@ export interface operations {
                     "application/json": {
                         active: {
                             components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                            /** @enum {string|null} */
+                            en_source: "auto" | "edited" | null;
                             /** Format: uuid */
                             id: string;
                             /** @enum {string} */
                             impact: "none" | "minor" | "major" | "critical";
                             /** @enum {string} */
                             kind: "incident" | "maintenance";
+                            locale: string | null;
+                            /** @description Who published the incident (console only) */
+                            published_by?: string | null;
                             /** Format: date-time */
                             resolved_at: string | null;
                             /** Format: date-time */
@@ -144427,12 +144666,19 @@ export interface operations {
                             /** @enum {string} */
                             status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
                             title: string;
+                            title_en: string | null;
                             updates: {
                                 body: string;
+                                body_en: string | null;
                                 /** Format: date-time */
                                 created_at: string;
+                                /** @enum {string|null} */
+                                en_source: "auto" | "edited" | null;
                                 /** Format: uuid */
                                 id: string;
+                                locale: string | null;
+                                /** @description Who published this step (console only) */
+                                published_by?: string | null;
                                 /** @enum {string} */
                                 status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
                             }[];
@@ -144451,12 +144697,17 @@ export interface operations {
                         status: "operational" | "degraded" | "partial_outage" | "major_outage" | "maintenance" | "unknown";
                         upcoming: {
                             components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                            /** @enum {string|null} */
+                            en_source: "auto" | "edited" | null;
                             /** Format: uuid */
                             id: string;
                             /** @enum {string} */
                             impact: "none" | "minor" | "major" | "critical";
                             /** @enum {string} */
                             kind: "incident" | "maintenance";
+                            locale: string | null;
+                            /** @description Who published the incident (console only) */
+                            published_by?: string | null;
                             /** Format: date-time */
                             resolved_at: string | null;
                             /** Format: date-time */
@@ -144468,12 +144719,19 @@ export interface operations {
                             /** @enum {string} */
                             status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
                             title: string;
+                            title_en: string | null;
                             updates: {
                                 body: string;
+                                body_en: string | null;
                                 /** Format: date-time */
                                 created_at: string;
+                                /** @enum {string|null} */
+                                en_source: "auto" | "edited" | null;
                                 /** Format: uuid */
                                 id: string;
+                                locale: string | null;
+                                /** @description Who published this step (console only) */
+                                published_by?: string | null;
                                 /** @enum {string} */
                                 status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
                             }[];
@@ -144520,12 +144778,17 @@ export interface operations {
                         generated_at: string;
                         incidents: {
                             components: ("app" | "search" | "files" | "email" | "payments" | "fiscal")[];
+                            /** @enum {string|null} */
+                            en_source: "auto" | "edited" | null;
                             /** Format: uuid */
                             id: string;
                             /** @enum {string} */
                             impact: "none" | "minor" | "major" | "critical";
                             /** @enum {string} */
                             kind: "incident" | "maintenance";
+                            locale: string | null;
+                            /** @description Who published the incident (console only) */
+                            published_by?: string | null;
                             /** Format: date-time */
                             resolved_at: string | null;
                             /** Format: date-time */
@@ -144537,12 +144800,19 @@ export interface operations {
                             /** @enum {string} */
                             status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
                             title: string;
+                            title_en: string | null;
                             updates: {
                                 body: string;
+                                body_en: string | null;
                                 /** Format: date-time */
                                 created_at: string;
+                                /** @enum {string|null} */
+                                en_source: "auto" | "edited" | null;
                                 /** Format: uuid */
                                 id: string;
+                                locale: string | null;
+                                /** @description Who published this step (console only) */
+                                published_by?: string | null;
                                 /** @enum {string} */
                                 status: "investigating" | "identified" | "monitoring" | "resolved" | "scheduled" | "in_progress" | "completed";
                             }[];

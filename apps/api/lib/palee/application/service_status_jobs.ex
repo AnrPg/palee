@@ -51,15 +51,18 @@ defmodule Palee.Application.ServiceStatusJobs do
   end
 
   defp send_update(subscriber, incident, update, now) do
+    # ADR-366: the subscriber reads the original in its own language, else English.
+    text = Status.for_reader(incident, update, subscriber.locale)
+
     result =
       Email.enqueue(
         :status_update,
         subscriber.email,
         %{
           kind: incident.kind,
-          title: incident.title,
+          title: text.title,
           status: update.status,
-          body: update.body,
+          body: text.body,
           components: incident.components,
           scheduled_for: incident.scheduled_for,
           scheduled_until: incident.scheduled_until,

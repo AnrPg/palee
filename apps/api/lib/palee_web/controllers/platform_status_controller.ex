@@ -2,6 +2,7 @@ defmodule PaleeWeb.PlatformStatusController do
   @moduledoc """
   ADR-364 (CP-G4): the status page in the platform console (vendors): live
   probes with their reasons, incidents and maintenance, subscribers.
+  ADR-366: the English preview of an incident and who published it.
   """
 
   use PaleeWeb, :controller
@@ -44,9 +45,9 @@ defmodule PaleeWeb.PlatformStatusController do
   )
 
   def create(conn, _params) do
-    with {:ok, incident} <-
+    with {:ok, incident, publishers} <-
            PlatformServiceStatus.create_incident(conn.assigns.platform_context, conn.body_params) do
-      conn |> put_status(:created) |> json(ServiceStatusJSON.incident(incident))
+      conn |> put_status(:created) |> json(ServiceStatusJSON.incident(incident, publishers))
     end
   end
 
@@ -58,9 +59,9 @@ defmodule PaleeWeb.PlatformStatusController do
   )
 
   def add_update(conn, %{id: id}) do
-    with {:ok, incident} <-
+    with {:ok, incident, publishers} <-
            PlatformServiceStatus.add_update(conn.assigns.platform_context, id, conn.body_params) do
-      conn |> put_status(:created) |> json(ServiceStatusJSON.incident(incident))
+      conn |> put_status(:created) |> json(ServiceStatusJSON.incident(incident, publishers))
     end
   end
 
@@ -72,13 +73,26 @@ defmodule PaleeWeb.PlatformStatusController do
   )
 
   def update(conn, %{id: id}) do
-    with {:ok, incident} <-
+    with {:ok, incident, publishers} <-
            PlatformServiceStatus.edit_incident(
              conn.assigns.platform_context,
              id,
              conn.body_params
            ) do
-      json(conn, ServiceStatusJSON.incident(incident))
+      json(conn, ServiceStatusJSON.incident(incident, publishers))
+    end
+  end
+
+  operation(:translate,
+    summary: "Preview a title and note in English, by machine (vendors)",
+    request_body: S.translate_body(),
+    responses: [ok: {"Translation", "application/json", S.translation()}]
+  )
+
+  def translate(conn, _params) do
+    with {:ok, answer} <-
+           PlatformServiceStatus.translate(conn.assigns.platform_context, conn.body_params) do
+      json(conn, ServiceStatusJSON.translation(answer))
     end
   end
 end

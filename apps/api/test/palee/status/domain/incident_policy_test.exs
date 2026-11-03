@@ -25,10 +25,14 @@ defmodule Palee.Status.Domain.IncidentPolicyTest do
       assert attrs.started_at == @now
       assert attrs.resolved_at == nil
 
+      # ADR-366: no language given, no English copy.
       assert attrs.update == %{
                status: "investigating",
                body: "We are looking into it.",
-               notify: true
+               notify: true,
+               locale: nil,
+               body_en: nil,
+               en_source: nil
              }
     end
 
