@@ -523,7 +523,13 @@ defmodule PaleeWeb.FallbackController do
     review_needs_check_in: {:forbidden, "Only people who checked in at this box can review it"},
     box_review_not_found: {:not_found, "Review not found"},
     invalid_place_query: {:unprocessable_entity, "Type at least 3 letters of the box's name"},
-    places_unavailable: {:service_unavailable, "Google search is unavailable; use the Place ID"}
+    places_unavailable: {:service_unavailable, "Google search is unavailable; use the Place ID"},
+    # ADR-397: reports on reviews, decided by the Palee team.
+    cannot_report_own_review: {:unprocessable_entity, "You cannot report your own review"},
+    review_report_limit: {:too_many_requests, "Too many reports today; try again tomorrow"},
+    review_moderated: {:conflict, "The Palee team hid or removed this review"},
+    review_report_decided: {:conflict, "This review has no open reports"},
+    invalid_review_report_status: {:unprocessable_entity, "Choose open or decided"}
   }
 
   def call(conn, {:error, reason}) when is_map_key(@box_site_errors, reason) do

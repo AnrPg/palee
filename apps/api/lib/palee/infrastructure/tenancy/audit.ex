@@ -88,6 +88,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     demo_records
     box_site_settings box_site_domains box_site_submissions box_site_consents
     review_ask_settings review_asks review_ask_opt_outs box_reviews google_place_snapshots
+    box_review_reports box_review_decisions
   )
 
   @transitional_tenant_tables []

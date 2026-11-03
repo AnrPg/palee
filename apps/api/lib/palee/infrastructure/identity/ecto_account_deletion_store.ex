@@ -167,6 +167,10 @@ defmodule Palee.Infrastructure.Identity.EctoAccountDeletionStore do
 
     delete_partner_rows(user.id)
 
+    # ADR-397: the person's reports on box reviews (a tenant table, so
+    # through its SECURITY DEFINER function).
+    Repo.query!("SELECT palee_forget_box_review_reports($1)", [Ecto.UUID.dump!(user.id)])
+
     # ADR-394: a kept (anonymised) profile leaves every Palee-wide board.
     Repo.query!("DELETE FROM palee_leaderboard_consents WHERE user_id = $1", [
       Ecto.UUID.dump!(user.id)

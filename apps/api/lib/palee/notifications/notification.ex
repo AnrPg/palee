@@ -130,7 +130,10 @@ defmodule Palee.Notifications.Notification do
     # ADR-388: a trial request or question from the box's website.
     :site_request,
     # ADR-393: a WOD the person already performed was edited.
-    :logged_workout_changed
+    :logged_workout_changed,
+    # ADR-397: the Palee team's decision on a reported review.
+    :box_review_moderated,
+    :box_review_report_decided
   ]
 
   schema "notifications" do

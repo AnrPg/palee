@@ -823,3 +823,24 @@ msgstr "‘%{title}’ is gewijzigd nadat je hem deed. Bekijk hem zoals hij was 
 
 msgid "A WOD you did changed. See it as it was in your Journal."
 msgstr "Een WOD die je deed is gewijzigd. Bekijk hem zoals hij was in je Logboek."
+
+msgid "Your report was decided"
+msgstr "Er is over je melding beslist"
+
+msgid "The Palee team hid the review you reported."
+msgstr "Het Palee-team heeft de gemelde review verborgen."
+
+msgid "The Palee team removed the review you reported."
+msgstr "Het Palee-team heeft de gemelde review verwijderd."
+
+msgid "The Palee team checked the review you reported and kept it."
+msgstr "Het Palee-team heeft de gemelde review bekeken en laat hem staan."
+
+msgid "The Palee team removed your review"
+msgstr "Het Palee-team heeft je review verwijderd"
+
+msgid "The Palee team hid your review"
+msgstr "Het Palee-team heeft je review verborgen"
+
+msgid "See why and what you can do."
+msgstr "Bekijk waarom en wat je kunt doen."

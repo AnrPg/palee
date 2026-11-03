@@ -84,10 +84,247 @@ defmodule PaleeWeb.Schemas.BoxReviews do
       type: :object,
       properties:
         Map.merge(listing_properties(), %{
-          mine: %Schema{review() | title: "MyBoxReview", nullable: true},
-          can_review: %Schema{type: :boolean, description: "Checked in at least once"}
+          mine: my_review(),
+          can_review: %Schema{type: :boolean, description: "Checked in at least once"},
+          reported_ids: %Schema{
+            type: :array,
+            items: @uuid,
+            description: "Reviews I reported that the Palee team has not decided yet (ADR-397)"
+          }
         }),
-      required: [:average, :can_review, :count, :google, :has_more, :mine, :reviews]
+      required: [:average, :can_review, :count, :google, :has_more, :mine, :reported_ids, :reviews]
+    }
+  end
+
+  # ADR-397: my review, with what the Palee team decided when it hid or
+  # removed it (the statement of reasons, DSA Art. 17).
+  defp my_review do
+    base = review()
+
+    %Schema{
+      base
+      | title: "MyBoxReview",
+        nullable: true,
+        properties: Map.put(base.properties, :moderation, moderation()),
+        required: Enum.sort([:moderation | base.required])
+    }
+  end
+
+  def moderation do
+    %Schema{
+      title: "BoxReviewModeration",
+      type: :object,
+      nullable: true,
+      description: "Null while the review is up; the statement of reasons when it is not",
+      properties: %{
+        status: %Schema{type: :string, enum: ~w(hidden removed)},
+        moderated_at: @time,
+        outcome: %Schema{type: :string, enum: ~w(hide remove), nullable: true},
+        ground: %Schema{type: :string, nullable: true},
+        legal_basis: %Schema{
+          type: :string,
+          enum: ~w(law terms),
+          nullable: true,
+          description: "The law (illegal content) or Palee's terms"
+        },
+        statement: @text,
+        after_report: %Schema{type: :boolean, description: "Decided after a report"},
+        automated: %Schema{type: :boolean, description: "Always false: a person decided"},
+        decided_at: @time,
+        redress: %Schema{type: :array, items: %Schema{type: :string, enum: ~w(ask_palee_again court)}}
+      },
+      required: [
+        :after_report,
+        :automated,
+        :decided_at,
+        :ground,
+        :legal_basis,
+        :moderated_at,
+        :outcome,
+        :redress,
+        :statement,
+        :status
+      ]
+    }
+  end
+
+  # ── Reports (ADR-397) ────────────────────────────────────────────────────
+
+  @reasons ~w(offensive personal_data not_genuine spam illegal other)
+
+  def report_request do
+    %Schema{
+      title: "BoxReviewReportRequest",
+      type: :object,
+      properties: %{
+        reason: %Schema{type: :string, enum: @reasons},
+        note: %Schema{
+          type: :string,
+          nullable: true,
+          maxLength: 500,
+          description: "Required for illegal and other"
+        }
+      },
+      required: [:reason]
+    }
+  end
+
+  def report_response do
+    %Schema{
+      title: "BoxReviewReportResponse",
+      type: :object,
+      description: "The review stays up until the Palee team decides",
+      properties: %{review_id: @uuid, status: %Schema{type: :string, enum: ["open"]}},
+      required: [:review_id, :status]
+    }
+  end
+
+  defp organization_ref do
+    %Schema{
+      title: "ReviewReportOrganization",
+      type: :object,
+      properties: %{id: @uuid, name: @text},
+      required: [:id, :name]
+    }
+  end
+
+  def platform_queue_response do
+    %Schema{
+      title: "PlatformReviewReportsResponse",
+      type: :object,
+      properties: %{
+        items: %Schema{
+          type: :array,
+          items: %Schema{
+            title: "PlatformReviewReportItem",
+            type: :object,
+            properties: %{
+              review_id: @uuid,
+              organization: organization_ref(),
+              author_name: @text,
+              reported: %Schema{
+                title: "ReportedReviewText",
+                type: :object,
+                description: "The review as the latest report saw it",
+                properties: %{rating: @int, body: @text},
+                required: [:body, :rating]
+              },
+              current: %Schema{
+                title: "CurrentReviewText",
+                type: :object,
+                nullable: true,
+                properties: %{rating: @int, body: @text, edited_at: @maybe_time},
+                required: [:body, :edited_at, :rating]
+              },
+              reports_count: @int,
+              box_reported: %Schema{type: :boolean, description: "The box itself reported it"},
+              reasons: %Schema{
+                type: :array,
+                items: %Schema{
+                  title: "ReviewReportReasonCount",
+                  type: :object,
+                  properties: %{reason: %Schema{type: :string}, count: @int},
+                  required: [:count, :reason]
+                }
+              },
+              notes: %Schema{
+                type: :array,
+                items: %Schema{
+                  title: "ReviewReportNote",
+                  type: :object,
+                  properties: %{
+                    reason: %Schema{type: :string},
+                    role: %Schema{type: :string, enum: ~w(member box)},
+                    note: %Schema{type: :string},
+                    at: @time
+                  },
+                  required: [:at, :note, :reason, :role]
+                }
+              },
+              first_reported_at: @time
+            },
+            required: [
+              :author_name,
+              :box_reported,
+              :current,
+              :first_reported_at,
+              :notes,
+              :organization,
+              :reasons,
+              :reported,
+              :reports_count,
+              :review_id
+            ]
+          }
+        },
+        decisions: %Schema{
+          type: :array,
+          items: %Schema{
+            title: "PlatformReviewDecision",
+            type: :object,
+            properties: %{
+              id: @uuid,
+              review_id: %Schema{type: :string, format: :uuid, nullable: true},
+              organization: organization_ref(),
+              outcome: %Schema{type: :string, enum: ~w(keep hide remove)},
+              ground: %Schema{type: :string},
+              statement: @text,
+              reports_count: @int,
+              decided_by: @text,
+              decided_at: @time
+            },
+            required: [
+              :decided_at,
+              :decided_by,
+              :ground,
+              :id,
+              :organization,
+              :outcome,
+              :reports_count,
+              :review_id,
+              :statement
+            ]
+          }
+        }
+      },
+      required: [:decisions, :items]
+    }
+  end
+
+  def decision_request do
+    %Schema{
+      title: "PlatformReviewDecisionRequest",
+      type: :object,
+      properties: %{
+        outcome: %Schema{type: :string, enum: ~w(keep hide remove)},
+        ground: %Schema{
+          type: :string,
+          enum: ["no_violation" | @reasons],
+          nullable: true,
+          description: "no_violation for keep; a report reason for hide and remove"
+        },
+        statement: %Schema{
+          type: :string,
+          nullable: true,
+          maxLength: 1000,
+          description: "What the author reads; required for hide and remove"
+        }
+      },
+      required: [:outcome]
+    }
+  end
+
+  def decision_response do
+    %Schema{
+      title: "PlatformReviewDecisionResponse",
+      type: :object,
+      properties: %{
+        review_id: @uuid,
+        outcome: %Schema{type: :string},
+        ground: %Schema{type: :string},
+        resolved: %Schema{type: :integer, description: "Open reports this decision closed"}
+      },
+      required: [:ground, :outcome, :resolved, :review_id]
     }
   end
 

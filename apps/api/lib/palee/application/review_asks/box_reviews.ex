@@ -28,8 +28,9 @@ defmodule Palee.Application.ReviewAsks.BoxReviews do
      context
      |> listing(page)
      |> Map.merge(%{
-       mine: mine && present(mine, names([mine])),
-       can_review: ReviewAsks.may_review(facts) == :ok
+       mine: mine && present_mine(context, mine),
+       can_review: ReviewAsks.may_review(facts) == :ok,
+       reported_ids: ReviewAsks.reported_review_ids(context, user_id)
      })}
   end
 
@@ -124,6 +125,38 @@ defmodule Palee.Application.ReviewAsks.BoxReviews do
       has_more: length(reviews) == page.limit,
       google: google(context, settings.google_place_id)
     }
+  end
+
+  # ADR-397: the author sees their own review even when the Palee team hid
+  # or removed it, with the statement of reasons (DSA Art. 17).
+  defp present_mine(context, review) do
+    review
+    |> present(names([review]))
+    |> Map.put(:moderation, moderation(context, review))
+  end
+
+  defp moderation(_context, %{moderation: nil}), do: nil
+
+  defp moderation(context, review) do
+    reasons =
+      case ReviewAsks.latest_decision(context, review.id) do
+        nil ->
+          %{
+            outcome: nil,
+            ground: nil,
+            legal_basis: nil,
+            statement: nil,
+            after_report: false,
+            automated: false,
+            decided_at: review.moderated_at,
+            redress: []
+          }
+
+        decision ->
+          ReviewAsks.statement_of_reasons(decision)
+      end
+
+    Map.merge(%{status: review.moderation, moderated_at: review.moderated_at}, reasons)
   end
 
   defp present(review, names) do

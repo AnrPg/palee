@@ -948,6 +948,41 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
     }
   end
 
+  # ADR-397: the Palee team decided on a review the person reported.
+  def build("box_review_report_decided", payload, localize) do
+    body =
+      case payload["outcome"] do
+        "hide" ->
+          localize.("The Palee team hid the review you reported.", %{})
+
+        "remove" ->
+          localize.("The Palee team removed the review you reported.", %{})
+
+        _keep ->
+          localize.("The Palee team checked the review you reported and kept it.", %{})
+      end
+
+    %{
+      title: localize.("Your report was decided", %{}),
+      body: body,
+      url: payload["url"] || "/box"
+    }
+  end
+
+  # ADR-397: the Palee team hid or removed the person's review, with reasons.
+  def build("box_review_moderated", payload, localize) do
+    title =
+      if payload["outcome"] == "remove",
+        do: localize.("The Palee team removed your review", %{}),
+        else: localize.("The Palee team hid your review", %{})
+
+    %{
+      title: title,
+      body: localize.("See why and what you can do.", %{}),
+      url: payload["url"] || "/box"
+    }
+  end
+
   # ADR-220.
   def build("member_leaving", payload, localize) do
     bindings = %{nickname: payload["person_nickname"], date: payload["leaving_on"]}

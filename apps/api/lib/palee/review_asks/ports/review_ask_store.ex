@@ -25,6 +25,18 @@ defmodule Palee.ReviewAsks.Ports.ReviewAskStore do
   @callback review_stats(context()) :: %{count: non_neg_integer(), sum: non_neg_integer()}
   @callback reply_review(context(), id(), map()) :: {:ok, map()} | {:error, term()}
 
+  # ADR-397: reports on reviews and the Palee team's decisions.
+  @callback reported_review_ids(context(), reporter_id :: id()) :: [id()]
+  @callback count_reports_since(context(), reporter_id :: id(), DateTime.t()) :: non_neg_integer()
+  @callback insert_report(context(), map()) :: {:ok, map()} | {:error, :already_reported | term()}
+  @callback latest_decision(context(), review_id :: id()) :: map() | nil
+  @callback decide_review(context(), review_id :: id(), review_changes :: map(), map(), String.t()) ::
+              {:ok, %{review: map(), decision: map(), reports: [map()]}}
+              | {:error, :box_review_not_found | :review_report_decided | term()}
+  @callback platform_open_reports(context(), limit :: pos_integer()) :: [map()]
+  @callback platform_decisions(context(), limit :: pos_integer()) :: [map()]
+  @callback platform_review_organization(context(), review_id :: id()) :: id() | nil
+
   # ADR-387: the Google listing snapshot.
   @callback get_place_snapshot(context()) :: map() | nil
   @callback save_place_snapshot(context(), map()) :: {:ok, map()} | {:error, term()}

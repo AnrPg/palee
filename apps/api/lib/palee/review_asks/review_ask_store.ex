@@ -45,6 +45,32 @@ defmodule Palee.ReviewAsks.ReviewAskStore do
   @impl true
   def reply_review(context, id, attrs), do: call(context, :reply_review, [id, attrs])
   @impl true
+  def reported_review_ids(context, reporter_id),
+    do: call(context, :reported_review_ids, [reporter_id])
+
+  @impl true
+  def count_reports_since(context, reporter_id, since),
+    do: call(context, :count_reports_since, [reporter_id, since])
+
+  @impl true
+  def insert_report(context, attrs), do: call(context, :insert_report, [attrs])
+  @impl true
+  def latest_decision(context, review_id), do: call(context, :latest_decision, [review_id])
+
+  @impl true
+  def decide_review(context, review_id, review_changes, decision, report_status),
+    do: call(context, :decide_review, [review_id, review_changes, decision, report_status])
+
+  @impl true
+  def platform_open_reports(context, limit), do: call(context, :platform_open_reports, [limit])
+  @impl true
+  def platform_decisions(context, limit), do: call(context, :platform_decisions, [limit])
+
+  @impl true
+  def platform_review_organization(context, review_id),
+    do: call(context, :platform_review_organization, [review_id])
+
+  @impl true
   def get_place_snapshot(context), do: call(context, :get_place_snapshot, [])
   @impl true
   def save_place_snapshot(context, attrs), do: call(context, :save_place_snapshot, [attrs])

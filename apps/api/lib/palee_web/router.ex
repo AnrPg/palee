@@ -265,6 +265,16 @@ defmodule PaleeWeb.Router do
     )
   end
 
+  # ADR-397: reporting a box review, on top of the service's 10 a day per box.
+  pipeline :review_report_rate_limited do
+    plug(PaleeWeb.Plugs.RateLimit,
+      max: 10,
+      interval: 3_600_000,
+      bucket: "review-reports",
+      methods: ["POST"]
+    )
+  end
+
   pipeline :platform_write_rate_limited do
     plug(PaleeWeb.Plugs.RateLimit,
       max: 60,
@@ -2499,6 +2509,34 @@ defmodule PaleeWeb.Router do
     post("/reports", PartnersController, :report)
   end
 
+  # ADR-397: «Αναφορά» on a box review, to the Palee team, by a member or
+  # by the box; hourly cap on top of the service's daily one.
+  scope "/api/org/:organization_slug/me", PaleeWeb do
+    pipe_through([
+      :api,
+      :authenticated,
+      :authenticated_rate_limited,
+      :tenant_member,
+      :tenant_write_rate_limited,
+      :review_report_rate_limited
+    ])
+
+    post("/box-reviews/:id/report", MyBoxReviewsController, :report)
+  end
+
+  scope "/api/org/:organization_slug/admin", PaleeWeb do
+    pipe_through([
+      :api,
+      :authenticated,
+      :authenticated_rate_limited,
+      :admin_only,
+      :tenant_write_rate_limited,
+      :review_report_rate_limited
+    ])
+
+    post("/box-reviews/:id/report", AdminBoxReviewsController, :report)
+  end
+
   # ADR-280 deck: the Palee team's Partners reports queue.
   scope "/api/platform", PaleeWeb do
     pipe_through([
@@ -2511,6 +2549,9 @@ defmodule PaleeWeb.Router do
 
     get("/partner-reports", PlatformPartnerReportController, :index)
     post("/partner-reports/:id/decision", PlatformPartnerReportController, :decide)
+    # ADR-397: reported box reviews, decided only by the Palee team.
+    get("/review-reports", PlatformReviewReportController, :index)
+    post("/review-reports/:review_id/decision", PlatformReviewReportController, :decide)
   end
 
   # ADR-185: creating an event as yourself or a business has its own budget

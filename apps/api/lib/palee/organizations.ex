@@ -614,6 +614,10 @@ defmodule Palee.Organizations do
     do:
       Palee.Organizations.Commands.RecordPlatformEvent.exists?(platform_context, organization_id)
 
+  @doc "ADR-397: organization names by id, read as the vendor (the review reports queue)."
+  def platform_organization_names(platform_context, ids),
+    do: Palee.Organizations.Commands.RecordPlatformEvent.names(platform_context, ids)
+
   def grant_vendor(user_id), do: OrganizationStore.grant_vendor(user_id)
 
   @doc "The user ids of every active vendor, for platform alerts (ADR-212)."

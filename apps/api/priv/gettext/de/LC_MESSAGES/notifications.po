@@ -823,3 +823,24 @@ msgstr "„%{title}“ wurde geändert, nachdem du es gemacht hast. Sieh es dir 
 
 msgid "A WOD you did changed. See it as it was in your Journal."
 msgstr "Ein WOD, das du gemacht hast, wurde geändert. Sieh es dir im Tagebuch so an, wie es war."
+
+msgid "Your report was decided"
+msgstr "Über deine Meldung wurde entschieden"
+
+msgid "The Palee team hid the review you reported."
+msgstr "Das Palee-Team hat die gemeldete Bewertung ausgeblendet."
+
+msgid "The Palee team removed the review you reported."
+msgstr "Das Palee-Team hat die gemeldete Bewertung entfernt."
+
+msgid "The Palee team checked the review you reported and kept it."
+msgstr "Das Palee-Team hat die gemeldete Bewertung geprüft und sie bleibt sichtbar."
+
+msgid "The Palee team removed your review"
+msgstr "Das Palee-Team hat deine Bewertung entfernt"
+
+msgid "The Palee team hid your review"
+msgstr "Das Palee-Team hat deine Bewertung ausgeblendet"
+
+msgid "See why and what you can do."
+msgstr "Sieh dir an, warum, und was du tun kannst."
