@@ -14666,6 +14666,7 @@
     "setStatus": "Définir le statut",
     "chooseStatus": "Choisir un statut",
     "automatic": "Automatique : {value}",
+    "statusReasonHint": "Le statut est calculé automatiquement à partir de l’abonnement et des paiements. Indique pourquoi tu le modifies, pour que le reste de l’équipe connaisse la raison. La raison reste dans l’historique.",
     "reasonOptional": "Motif (facultatif)",
     "save": "Enregistrer",
     "saving": "Enregistrement…",

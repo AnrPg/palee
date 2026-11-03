@@ -14666,6 +14666,7 @@
     "setStatus": "Fijar estado",
     "chooseStatus": "Elige un estado",
     "automatic": "Automático: {value}",
+    "statusReasonHint": "El estado se calcula automáticamente a partir de la suscripción y los pagos. Escribe por qué lo cambias, para que el resto del equipo sepa el motivo. El motivo queda en el historial.",
     "reasonOptional": "Motivo (opcional)",
     "save": "Guardar",
     "saving": "Guardando…",

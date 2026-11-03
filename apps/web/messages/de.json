@@ -14666,6 +14666,7 @@
     "setStatus": "Status festlegen",
     "chooseStatus": "Status wählen",
     "automatic": "Automatisch: {value}",
+    "statusReasonHint": "Der Status wird automatisch aus Abo und Zahlungen ermittelt. Schreib, warum du ihn änderst, damit der Rest des Teams den Grund kennt. Der Grund bleibt im Verlauf.",
     "reasonOptional": "Grund (optional)",
     "save": "Speichern",
     "saving": "Wird gespeichert…",

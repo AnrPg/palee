@@ -14666,6 +14666,7 @@
     "setStatus": "Status instellen",
     "chooseStatus": "Kies een status",
     "automatic": "Automatisch: {value}",
+    "statusReasonHint": "De status wordt automatisch bepaald uit het abonnement en de betalingen. Schrijf waarom je hem wijzigt, zodat de rest van het team de reden kent. De reden blijft in de geschiedenis.",
     "reasonOptional": "Reden (optioneel)",
     "save": "Opslaan",
     "saving": "Opslaan…",
