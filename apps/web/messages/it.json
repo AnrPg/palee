@@ -16607,7 +16607,19 @@
       "door_unauthorized": "Il controller ha rifiutato la chiave di Palee. Controlla le impostazioni della porta.",
       "door_refused": "Il controller si è rifiutato di aprire.",
       "door_disabled": "Questa porta è spenta."
-    }
+    },
+    "unsubscribeTitle": "Disiscrizioni dalla lista",
+    "unsubscribeOn": "Collegato",
+    "unsubscribeOff": "Non impostato",
+    "unsubscribeHint": "Chi si disiscrive da un’email della lista ha anche l’interruttore spento in Palee, così la prossima sincronizzazione non lo riaggiunge.",
+    "unsubscribeUrlTitle": "L’indirizzo per le disiscrizioni",
+    "unsubscribeWhere": {
+      "mailchimp": "In Mailchimp: Audience › Settings › Webhooks › Create new webhook. Incolla l’indirizzo, seleziona solo «Unsubscribes» e salva.",
+      "brevo": "In Brevo: Settings › Webhooks › Add a new webhook › Marketing. Incolla l’indirizzo, seleziona solo «Unsubscribed» e salva."
+    },
+    "unsubscribeRenew": "Nuovo indirizzo",
+    "unsubscribeMake": "Crea l’indirizzo",
+    "unsubscribeRenewHint": "Un nuovo indirizzo ferma subito il vecchio; incolla il nuovo anche nel servizio."
   },
   "Doors": {
     "title": "Porte",

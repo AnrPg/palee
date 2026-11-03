@@ -75,6 +75,8 @@ defmodule Palee.Integrations.IntegrationStore do
   def due_organizations(now), do: adapter().due_organizations(now)
 
   @impl true
+  def lookup_connection(id), do: adapter().lookup_connection(id)
+  @impl true
   def get_connection(context), do: tenant_call(context, :get_connection, [])
   @impl true
   def save_connection(context, attrs), do: tenant_call(context, :save_connection, [attrs])
@@ -97,4 +99,8 @@ defmodule Palee.Integrations.IntegrationStore do
   @impl true
   def upsert_audience_member(context, attrs),
     do: tenant_call(context, :upsert_audience_member, [attrs])
+
+  @impl true
+  def find_audience_member(context, connection_id, email_hash),
+    do: tenant_call(context, :find_audience_member, [connection_id, email_hash])
 end

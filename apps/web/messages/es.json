@@ -16607,7 +16607,19 @@
       "door_unauthorized": "El controlador rechazó la clave de Palee. Revisa los ajustes de la puerta.",
       "door_refused": "El controlador se negó a abrir.",
       "door_disabled": "Esta puerta está desactivada."
-    }
+    },
+    "unsubscribeTitle": "Bajas de la lista",
+    "unsubscribeOn": "Conectado",
+    "unsubscribeOff": "Sin configurar",
+    "unsubscribeHint": "Quien se da de baja desde un email de la lista también queda desactivado en Palee, para que la próxima sincronización no lo vuelva a añadir.",
+    "unsubscribeUrlTitle": "La dirección para las bajas",
+    "unsubscribeWhere": {
+      "mailchimp": "En Mailchimp: Audience › Settings › Webhooks › Create new webhook. Pega la dirección, marca solo «Unsubscribes» y guarda.",
+      "brevo": "En Brevo: Settings › Webhooks › Add a new webhook › Marketing. Pega la dirección, marca solo «Unsubscribed» y guarda."
+    },
+    "unsubscribeRenew": "Nueva dirección",
+    "unsubscribeMake": "Crear la dirección",
+    "unsubscribeRenewHint": "Una dirección nueva detiene la anterior al momento; pega también la nueva en el servicio."
   },
   "Doors": {
     "title": "Puertas",

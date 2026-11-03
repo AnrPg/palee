@@ -823,3 +823,9 @@ msgstr "تغيّر «%{title}» بعد أن أدّيته. شاهده كما كا
 
 msgid "A WOD you did changed. See it as it was in your Journal."
 msgstr "تغيّر WOD أدّيته. شاهده كما كان في يومياتك."
+
+msgid "A webhook was turned off"
+msgstr "تم إيقاف webhook"
+
+msgid "Palee stopped sending events to %{host}. Open the webhook to check it and turn it back on."
+msgstr "توقف Palee عن إرسال الأحداث إلى %{host}. افتح الـ webhook لفحصه وإعادة تشغيله."

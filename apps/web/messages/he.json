@@ -16607,7 +16607,19 @@
       "door_unauthorized": "הבקר דחה את המפתח של Palee. בדקו את הגדרות הדלת.",
       "door_refused": "הבקר סירב לפתוח.",
       "door_disabled": "הדלת הזו כבויה."
-    }
+    },
+    "unsubscribeTitle": "הסרות מהרשימה",
+    "unsubscribeOn": "מחובר",
+    "unsubscribeOff": "לא הוגדר",
+    "unsubscribeHint": "מי שמסיר את עצמו ממייל של הרשימה נכבה גם המתג שלו ב-Palee, כדי שהסנכרון הבא לא יוסיף אותו שוב.",
+    "unsubscribeUrlTitle": "הכתובת להסרות",
+    "unsubscribeWhere": {
+      "mailchimp": "ב-Mailchimp: ‏Audience › Settings › Webhooks › Create new webhook. הדביקו את הכתובת, סמנו רק „Unsubscribes” ושמרו.",
+      "brevo": "ב-Brevo: ‏Settings › Webhooks › Add a new webhook › Marketing. הדביקו את הכתובת, סמנו רק „Unsubscribed” ושמרו."
+    },
+    "unsubscribeRenew": "כתובת חדשה",
+    "unsubscribeMake": "יצירת הכתובת",
+    "unsubscribeRenewHint": "כתובת חדשה עוצרת את הישנה מיד; הדביקו את החדשה גם בשירות."
   },
   "Doors": {
     "title": "דלתות",

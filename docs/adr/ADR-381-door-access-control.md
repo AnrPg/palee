@@ -92,3 +92,9 @@ the cheapest path for the typical Greek box; Kisi shows the port fits a real acc
   a timeline with filters (all, refusals and faults, staff) and a door picker. `GET /admin/access-events`
   now returns `person_name`, `actor_name` and `door_name`.
 - Not built yet (API gaps): the live desk card (6C) and the weekly hours grid (4C).
+
+## Amendment 2026-11-03 (b): the poster never opens a door
+- `POST /api/access/open` accepts presence only from the door itself: the rotating door QR or the NFC tag
+  (or the `scan_token` of a choice made from one of those). The printed poster and the arrival reminder
+  check a member in but are refused for doors with `door_needs_door_scan` (403), because a photo of the
+  poster can be shared. The app already asked the door only for the QR and NFC scans.

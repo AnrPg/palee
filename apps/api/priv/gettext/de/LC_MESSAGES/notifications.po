@@ -823,3 +823,9 @@ msgstr "„%{title}“ wurde geändert, nachdem du es gemacht hast. Sieh es dir 
 
 msgid "A WOD you did changed. See it as it was in your Journal."
 msgstr "Ein WOD, das du gemacht hast, wurde geändert. Sieh es dir im Tagebuch so an, wie es war."
+
+msgid "A webhook was turned off"
+msgstr "Ein Webhook wurde ausgeschaltet"
+
+msgid "Palee stopped sending events to %{host}. Open the webhook to check it and turn it back on."
+msgstr "Palee sendet keine Ereignisse mehr an %{host}. Öffne den Webhook, um ihn zu prüfen und wieder einzuschalten."

@@ -1,0 +1,50 @@
+msgid ""
+msgstr ""
+"Language: nl\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "A webhook of %{box} was turned off"
+msgstr "Een webhook van %{box} is uitgeschakeld"
+
+msgid "Open the webhook"
+msgstr "Webhook openen"
+
+msgid "Palee stopped sending events to %{host}."
+msgstr "Palee stuurt geen gebeurtenissen meer naar %{host}."
+
+msgid "The receiver answered that the address no longer exists."
+msgstr "De ontvanger antwoordde dat het adres niet meer bestaat."
+
+msgid "The address now points to a private network, which Palee does not call."
+msgstr "Het adres wijst nu naar een privénetwerk, dat Palee niet aanroept."
+
+msgid "Every delivery failed many times in a row, so Palee stopped trying."
+msgstr "Alle afleveringen zijn vele keren achter elkaar mislukt, dus Palee is gestopt met proberen."
+
+msgid "Check the receiver, then turn the webhook back on from its page and resend what failed."
+msgstr "Controleer de ontvanger, schakel de webhook daarna op zijn pagina weer in en verstuur opnieuw wat mislukte."
+
+msgid "New API key for %{box}"
+msgstr "Nieuwe API-sleutel voor %{box}"
+
+msgid "Open API keys"
+msgstr "API-sleutels openen"
+
+msgid "A new API key can now read or change %{box}'s data through Palee's public API."
+msgstr "Een nieuwe API-sleutel kan nu gegevens van %{box} lezen of wijzigen via de openbare API van Palee."
+
+msgid "Key"
+msgstr "Sleutel"
+
+msgid "Access"
+msgstr "Toegang"
+
+msgid "Made by"
+msgstr "Gemaakt door"
+
+msgid "When"
+msgstr "Wanneer"
+
+msgid "If nobody at the box made it, revoke it now from Settings › Connections."
+msgstr "Als niemand van de box hem heeft gemaakt, trek hem dan nu in via Instellingen › Koppelingen."

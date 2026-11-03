@@ -1,0 +1,50 @@
+msgid ""
+msgstr ""
+"Language: es\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "A webhook of %{box} was turned off"
+msgstr "Se ha desactivado un webhook de %{box}"
+
+msgid "Open the webhook"
+msgstr "Abrir el webhook"
+
+msgid "Palee stopped sending events to %{host}."
+msgstr "Palee ha dejado de enviar eventos a %{host}."
+
+msgid "The receiver answered that the address no longer exists."
+msgstr "El receptor respondió que la dirección ya no existe."
+
+msgid "The address now points to a private network, which Palee does not call."
+msgstr "La dirección ahora apunta a una red privada, a la que Palee no llama."
+
+msgid "Every delivery failed many times in a row, so Palee stopped trying."
+msgstr "Todos los envíos fallaron muchas veces seguidas, así que Palee dejó de intentarlo."
+
+msgid "Check the receiver, then turn the webhook back on from its page and resend what failed."
+msgstr "Revisa el receptor, luego vuelve a activar el webhook desde su página y reenvía lo que falló."
+
+msgid "New API key for %{box}"
+msgstr "Nueva clave API para %{box}"
+
+msgid "Open API keys"
+msgstr "Abrir claves API"
+
+msgid "A new API key can now read or change %{box}'s data through Palee's public API."
+msgstr "Una nueva clave API ya puede leer o cambiar los datos de %{box} a través de la API pública de Palee."
+
+msgid "Key"
+msgstr "Clave"
+
+msgid "Access"
+msgstr "Acceso"
+
+msgid "Made by"
+msgstr "Creada por"
+
+msgid "When"
+msgstr "Cuándo"
+
+msgid "If nobody at the box made it, revoke it now from Settings › Connections."
+msgstr "Si nadie del box la creó, revócala ahora en Ajustes › Conexiones."

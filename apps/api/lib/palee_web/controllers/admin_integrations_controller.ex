@@ -232,6 +232,20 @@ defmodule PaleeWeb.AdminIntegrationsController do
     with :ok <- ok(IntegrationSettings.sync_audience(ctx(conn))), do: json(conn, %{ok: true})
   end
 
+  operation(:rotate_unsubscribe_url,
+    summary: "A new address for Mailchimp's or Brevo's unsubscribe webhook (shown once)",
+    description:
+      "Paste it into the provider's webhook settings (Mailchimp: «Unsubscribes»; Brevo: " <>
+        "marketing event «Unsubscribed»). Someone who unsubscribes there has their switch " <>
+        "in Palee turned off too. The old address stops working at once.",
+    responses: [ok: {"Address", "application/json", S.unsubscribe_url()}]
+  )
+
+  def rotate_unsubscribe_url(conn, _params) do
+    with {:ok, result} <- IntegrationSettings.rotate_unsubscribe_url(ctx(conn)),
+         do: json(conn, result)
+  end
+
   defp ctx(conn), do: conn.assigns.tenant_context
 
   defp ok(:ok), do: :ok

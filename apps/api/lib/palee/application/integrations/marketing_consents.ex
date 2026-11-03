@@ -35,5 +35,16 @@ defmodule Palee.Application.Integrations.MarketingConsents do
     end
   end
 
+  @doc """
+  Mailchimp's or Brevo's call when someone unsubscribes there (ADR-380,
+  2026-11-03): their switch in Palee turns off too. `{:ok, %{withdrawn: n}}`,
+  or `{:error, :not_found}` for an unknown address or a wrong token.
+  """
+  def provider_unsubscribe(connection_id, token, params, now \\ DateTime.utc_now()) do
+    with {:ok, %{withdrawn: count}} <-
+           Integrations.provider_unsubscribe(connection_id, token, params, now),
+         do: {:ok, %{withdrawn: count}}
+  end
+
   defp connected?(context), do: not is_nil(Integrations.connection(context))
 end

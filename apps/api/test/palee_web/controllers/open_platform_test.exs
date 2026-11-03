@@ -8,11 +8,13 @@ defmodule PaleeWeb.OpenPlatformTest do
 
   use PaleeWeb.ConnCase, async: false
 
+  import Ecto.Query
   import Palee.TestFixtures
 
   alias Palee.Application.Integrations.WebhookEvents
   alias Palee.Integrations.Domain.{AudienceSyncPlan, WebhookSignature}
-  alias Palee.{Facility, Integrations, Organizations, Repo, Scheduling}
+  alias Palee.{Email, Facility, Integrations, Organizations, Repo, Scheduling}
+  alias Palee.Notifications.Notification
 
   setup do
     {:ok, organization} =
@@ -143,6 +145,13 @@ defmodule PaleeWeb.OpenPlatformTest do
       # The last use is remembered.
       assert %{last_used_at: %DateTime{}} =
                ctx.context |> Integrations.list_api_keys() |> hd()
+
+      # The owners hear of the new key by email, without the key itself.
+      assert [notice] = Email.list_by_idempotency_prefix("api_key_created:#{key["id"]}:")
+      assert notice.kind == "api_key_created"
+      assert notice.category == "security"
+      assert String.ends_with?(notice.idempotency_key, ":" <> ctx.owner.id)
+      refute inspect(notice) =~ token
     end
 
     test "no key, a wrong key or a made-up key answer 401 with a challenge", ctx do
@@ -399,6 +408,21 @@ defmodule PaleeWeb.OpenPlatformTest do
 
       assert off["status"] == "disabled"
       assert off["disabled_reason"] == "gone"
+
+      # The staff who manage settings hear of it: the bell and an email.
+      assert [%{payload: payload}] =
+               Repo.all(
+                 from n in Notification,
+                   where: n.user_id == ^ctx.owner.id and n.type == :webhook_disabled
+               )
+
+      assert payload["host"] == "hooks.example.com"
+      assert payload["url"] == "/admin/settings/webhooks/#{endpoint["id"]}"
+
+      assert [%{kind: "webhook_disabled", idempotency_key: key}] =
+               Email.list_by_idempotency_prefix("webhook_disabled:#{endpoint["id"]}:")
+
+      assert String.ends_with?(key, ":" <> ctx.owner.id)
     end
 
     test "private and plain-http addresses are refused", ctx do
@@ -508,6 +532,62 @@ defmodule PaleeWeb.OpenPlatformTest do
       assert %{"status" => "unsubscribed"} = Jason.decode!(unsubscribe)
     end
 
+    test "an unsubscribe on the provider's side turns the member's switch off", ctx do
+      member = add_member(ctx.organization, user_fixture())
+      Req.Test.stub(Palee.AudienceHttp, &Req.Test.json(&1, %{"id" => "x"}))
+
+      as(ctx.owner)
+      |> put("#{ctx.admin}/integrations/email-list", %{
+        provider: "mailchimp",
+        list_id: "abc123",
+        api_key: "0123456789abcdef0123456789abcdef-us21"
+      })
+      |> json_response(200)
+
+      consent = "/api/org/#{ctx.organization.slug}/me/marketing-consent"
+      as(member) |> put(consent, %{granted: true}) |> json_response(200)
+
+      %{"url" => url} =
+        as(ctx.owner)
+        |> post("#{ctx.admin}/integrations/email-list/unsubscribe-url")
+        |> json_response(200)
+
+      %URI{path: path, query: query} = URI.parse(url)
+      assert path =~ ~r"\A/api/integrations/email-list/[0-9a-f-]{36}/unsubscribe\z"
+      hook = path <> "?" <> query
+
+      assert %{"connection" => %{"unsubscribe_hook" => true}} =
+               as(ctx.owner) |> get("#{ctx.admin}/integrations/email-list") |> json_response(200)
+
+      # Mailchimp checks the address first; a wrong token is a 404.
+      assert %{"withdrawn" => 0} = build_conn() |> get(hook) |> json_response(200)
+
+      assert build_conn()
+             |> post(path <> "?token=wrong", %{type: "unsubscribe"})
+             |> json_response(404)
+
+      # A cleaned (bouncing) address is the provider's call, not the member's.
+      cleaned = %{type: "cleaned", data: %{email: member.email, list_id: "abc123"}}
+      assert %{"withdrawn" => 0} = build_conn() |> post(hook, cleaned) |> json_response(200)
+      assert %{"granted" => true} = as(member) |> get(consent) |> json_response(200)
+
+      unsubscribe = %{
+        type: "unsubscribe",
+        data: %{email: String.upcase(member.email), list_id: "abc123"}
+      }
+
+      assert %{"withdrawn" => 1} = build_conn() |> post(hook, unsubscribe) |> json_response(200)
+
+      assert %{"granted" => false, "withdrawn_at" => withdrawn} =
+               as(member) |> get(consent) |> json_response(200)
+
+      assert withdrawn
+
+      # A new address replaces the old one at once.
+      as(ctx.owner) |> post("#{ctx.admin}/integrations/email-list/unsubscribe-url")
+      assert build_conn() |> get(hook) |> json_response(404)
+    end
+
     test "a refused key is not saved", ctx do
       Req.Test.stub(
         Palee.AudienceHttp,
@@ -590,6 +670,20 @@ defmodule PaleeWeb.OpenPlatformTest do
       # W10 screen 6: the log names the person and the door.
       assert Enum.all?(events, &(&1["door_name"] == door["name"]))
       assert Enum.all?(events, &is_binary(&1["person_name"]))
+    end
+
+    test "the printed poster checks a member in but never opens a door", ctx do
+      make_door(ctx, %{rules: %{who: "members"}})
+      member = add_member(ctx.organization, user_fixture())
+      poster = "#{ctx.admin}/check-in/door/#{ctx.location.id}/poster"
+      %{"code" => code} = as(ctx.owner) |> put(poster, %{enabled: true}) |> json_response(200)
+
+      assert %{"code" => "door_needs_door_scan"} =
+               as(member)
+               |> post("/api/access/open", %{location_id: ctx.location.id, poster_code: code})
+               |> json_response(403)
+
+      assert %{"opened" => true} = open(ctx, member) |> json_response(200)
     end
 
     test "an offline controller keeps the door locked and sends the member to the desk", ctx do

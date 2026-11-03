@@ -115,6 +115,11 @@ export function syncEmailList(token: string) {
   return apiRequest<{ ok: boolean }>(`${base}/email-list/sync`, { method: "POST", token });
 }
 
+/** The provider's unsubscribe webhook address, shown once (ADR-380). */
+export function rotateUnsubscribeUrl(token: string) {
+  return apiRequest<{ url: string }>(`${base}/email-list/unsubscribe-url`, { method: "POST", token });
+}
+
 // The member's own yes or no (ADR-380) ---------------------------------------------
 
 const myGym = (slug: string) => `/org/${encodeURIComponent(slug)}/me`;

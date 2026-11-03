@@ -3,11 +3,13 @@ defmodule Palee.Application.Integrations.WebhookDelivery do
   Sending what is in the webhook outbox (ADR-379): right after an event (a
   job per box), every minute for retries (only boxes with deliveries due),
   and at once for «Δοκιμή» and «Ξανά». Without background jobs (tests,
-  one-off tasks) it sends inline.
+  one-off tasks) it sends inline. A webhook Palee turns off for failing is
+  told to the staff who manage settings.
   """
 
   require Logger
 
+  alias Palee.Application.Integrations.ConnectionNotices
   alias Palee.Integrations
   alias Palee.Workers.DeliverWebhooksJob
 
@@ -25,9 +27,17 @@ defmodule Palee.Application.Integrations.WebhookDelivery do
     end
   end
 
-  @doc "Sends now: `{:ok, %{sent, delivered, failed}}`."
-  def deliver(context, which \\ :due, now \\ DateTime.utc_now()),
-    do: Integrations.deliver(context, which, now)
+  @doc """
+  Sends now: `{:ok, %{sent, delivered, failed, disabled}}`. When a webhook
+  is turned off for failing, the staff who manage settings hear of it
+  (bell and email).
+  """
+  def deliver(context, which \\ :due, now \\ DateTime.utc_now()) do
+    with {:ok, %{disabled: disabled}} = result <- Integrations.deliver(context, which, now) do
+      Enum.each(disabled, &ConnectionNotices.webhook_disabled(context, &1, now))
+      result
+    end
+  end
 
   @doc "The minute sweep: every box with deliveries due."
   def sweep(now \\ DateTime.utc_now()) do

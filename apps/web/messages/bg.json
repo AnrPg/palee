@@ -16607,7 +16607,19 @@
       "door_unauthorized": "Контролерът отказа ключа на Palee. Проверете настройките на вратата.",
       "door_refused": "Контролерът отказа да отвори.",
       "door_disabled": "Тази врата е изключена."
-    }
+    },
+    "unsubscribeTitle": "Отписвания от списъка",
+    "unsubscribeOn": "Свързано",
+    "unsubscribeOff": "Не е настроено",
+    "unsubscribeHint": "Който се отпише от имейл на списъка, се изключва и в Palee, за да не го добави отново следващата синхронизация.",
+    "unsubscribeUrlTitle": "Адресът за отписвания",
+    "unsubscribeWhere": {
+      "mailchimp": "В Mailchimp: Audience › Settings › Webhooks › Create new webhook. Поставете адреса, отметнете само „Unsubscribes“ и запазете.",
+      "brevo": "В Brevo: Settings › Webhooks › Add a new webhook › Marketing. Поставете адреса, отметнете само „Unsubscribed“ и запазете."
+    },
+    "unsubscribeRenew": "Нов адрес",
+    "unsubscribeMake": "Създаване на адрес",
+    "unsubscribeRenewHint": "Новият адрес спира стария веднага; поставете новия и в услугата."
   },
   "Doors": {
     "title": "Врати",

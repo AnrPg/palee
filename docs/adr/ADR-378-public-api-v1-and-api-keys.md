@@ -91,3 +91,10 @@ outlive a staff member's role.
 - «+ Νέο κλειδί» is a three-step guide: what it is for (Zapier/Make, the box's website, own system),
   which picks the fewest scopes; name and the scope grid (payments read only); the key once, with a copy
   button. Rotate and revoke ask first.
+
+## Amendment 2026-11-03 (b): follow-ups decided by the coordinator for ANR
+- **The owners hear of every new key.** Each person who manages settings gets an email (`api_key_created`,
+  category `security`, through the outbox with idempotency key `api_key_created:<key>:<person>`) naming the
+  key, its masked prefix, its scopes, who made it and when, with the way to «Κλειδιά API». It never carries
+  the key. A mail problem never fails the creation.
+- **Keys never expire by default.** `expires_at` stays optional; none is set unless the maker asks.

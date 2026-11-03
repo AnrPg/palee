@@ -1,0 +1,48 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "A webhook of %{box} was turned off"
+msgstr ""
+
+msgid "Open the webhook"
+msgstr ""
+
+msgid "Palee stopped sending events to %{host}."
+msgstr ""
+
+msgid "The receiver answered that the address no longer exists."
+msgstr ""
+
+msgid "The address now points to a private network, which Palee does not call."
+msgstr ""
+
+msgid "Every delivery failed many times in a row, so Palee stopped trying."
+msgstr ""
+
+msgid "Check the receiver, then turn the webhook back on from its page and resend what failed."
+msgstr ""
+
+msgid "New API key for %{box}"
+msgstr ""
+
+msgid "Open API keys"
+msgstr ""
+
+msgid "A new API key can now read or change %{box}'s data through Palee's public API."
+msgstr ""
+
+msgid "Key"
+msgstr ""
+
+msgid "Access"
+msgstr ""
+
+msgid "Made by"
+msgstr ""
+
+msgid "When"
+msgstr ""
+
+msgid "If nobody at the box made it, revoke it now from Settings › Connections."
+msgstr ""

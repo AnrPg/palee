@@ -97,3 +97,14 @@ queue service, the pattern used elsewhere (ADR-212 email outbox).
   `/admin/settings/webhooks/:id`: events, on/off, test, new secret, delete, and the delivery log
   (all, retrying, failed) with each delivery's payload, attempts and «Ξανά».
 - The signing secret is shown once, on creation and on rotation.
+
+## Amendment 2026-11-03 (b): telling the owners when Palee turns a webhook off
+- When a delivery run turns an endpoint off (`too_many_failures`, `gone`, `blocked_address`), each person who
+  manages settings gets a bell notification `webhook_disabled` (category `staff`, link to the webhook's page)
+  and an email `webhook_disabled` (category `account`) saying why and what to do. Both are keyed by the
+  endpoint and the moment it was turned off, so a retried job never sends twice. A box turning its own
+  webhook off hears nothing.
+- `Integrations.deliver/3` now also returns the endpoints it turned off; the application layer
+  (`ConnectionNotices`) sends the notices, so the context stays free of Notifications and Email.
+- Migration `20270604000000_open_platform_follow_ups` adds the notification type.
+- The Zapier and Make app submission is left for later.

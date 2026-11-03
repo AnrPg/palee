@@ -12631,6 +12631,10 @@
             "nullable": true,
             "type": "string"
           },
+          "unsubscribe_hook": {
+            "description": "Whether the provider's unsubscribe webhook address was made",
+            "type": "boolean"
+          },
           "updated_at": {
             "format": "date-time",
             "nullable": true,
@@ -43961,7 +43965,7 @@
         "type": "object"
       },
       "DoorOpenRequest": {
-        "description": "Proof of presence as for the check-in scan: `location_id` + `code` (the door screen's QR), `nfc_code` or `poster_code`; `door_id` when the branch has several doors",
+        "description": "Proof of presence at the door: `location_id` + `code` (the door screen's QR) or `nfc_code`; `door_id` when the branch has several doors. A `poster_code` is refused with `door_needs_door_scan`",
         "properties": {
           "code": {
             "maxLength": 64,
@@ -103356,14 +103360,14 @@
     "/api/access/open": {
       "post": {
         "callbacks": {},
-        "description": "Refused with `entry_denied` (`params.reason`: `not_a_member`, `outside_hours`, `no_booking_in_window`, `staff_only`), `choose_door` (`params.doors`) when the branch has several doors, `no_door_here`, or `door_offline` when the controller cannot be reached: the door stays locked and the member goes to the desk.",
+        "description": "Refused with `entry_denied` (`params.reason`: `not_a_member`, `outside_hours`, `no_booking_in_window`, `staff_only`), `choose_door` (`params.doors`) when the branch has several doors, `no_door_here`, `door_needs_door_scan` for the printed poster or the arrival reminder, or `door_offline` when the controller cannot be reached: the door stays locked and the member goes to the desk.",
         "operationId": "PaleeWeb.DoorAccessController.open",
         "parameters": [],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "description": "Proof of presence as for the check-in scan: `location_id` + `code` (the door screen's QR), `nfc_code` or `poster_code`; `door_id` when the branch has several doors",
+                "description": "Proof of presence at the door: `location_id` + `code` (the door screen's QR) or `nfc_code`; `door_id` when the branch has several doors. A `poster_code` is refused with `door_needs_door_scan`",
                 "properties": {
                   "code": {
                     "maxLength": 64,
@@ -119949,6 +119953,142 @@
         "summary": "Read API health",
         "tags": [
           "Health"
+        ]
+      }
+    },
+    "/api/integrations/email-list/{id}/unsubscribe": {
+      "get": {
+        "callbacks": {},
+        "description": "The address with its token is made in Settings › Connections › Email list. An unknown connection and a wrong token answer the same 404. Mailchimp posts a form (`type=unsubscribe`), Brevo posts JSON (`event: unsubscribed`); other events are ignored.",
+        "operationId": "PaleeWeb.EmailListHookController.unsubscribe",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "maxLength": 200,
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": true,
+                "type": "object"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "additionalProperties": true,
+                "type": "object"
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "withdrawn": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "withdrawn"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Handled"
+          }
+        },
+        "security": [],
+        "summary": "The email list's unsubscribe webhook (Mailchimp or Brevo); GET checks the address",
+        "tags": [
+          "Integrations"
+        ]
+      },
+      "post": {
+        "callbacks": {},
+        "description": "The address with its token is made in Settings › Connections › Email list. An unknown connection and a wrong token answer the same 404. Mailchimp posts a form (`type=unsubscribe`), Brevo posts JSON (`event: unsubscribed`); other events are ignored.",
+        "operationId": "PaleeWeb.EmailListHookController.unsubscribe (2)",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "maxLength": 200,
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": true,
+                "type": "object"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "additionalProperties": true,
+                "type": "object"
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "withdrawn": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "withdrawn"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Handled"
+          }
+        },
+        "security": [],
+        "summary": "The email list's unsubscribe webhook (Mailchimp or Brevo); GET checks the address",
+        "tags": [
+          "Integrations"
         ]
       }
     },
@@ -228118,6 +228258,10 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "unsubscribe_hook": {
+                          "description": "Whether the provider's unsubscribe webhook address was made",
+                          "type": "boolean"
+                        },
                         "updated_at": {
                           "format": "date-time",
                           "nullable": true,
@@ -228237,6 +228381,10 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "unsubscribe_hook": {
+                          "description": "Whether the provider's unsubscribe webhook address was made",
+                          "type": "boolean"
+                        },
                         "updated_at": {
                           "format": "date-time",
                           "nullable": true,
@@ -228305,6 +228453,43 @@
           }
         ],
         "summary": "Sync the email list now",
+        "tags": [
+          "Integrations"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/integrations/email-list/unsubscribe-url": {
+      "post": {
+        "callbacks": {},
+        "description": "Paste it into the provider's webhook settings (Mailchimp: «Unsubscribes»; Brevo: marketing event «Unsubscribed»). Someone who unsubscribes there has their switch in Palee turned off too. The old address stops working at once.",
+        "operationId": "PaleeWeb.AdminIntegrationsController.rotate_unsubscribe_url",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "url": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "url"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Address"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "A new address for Mailchimp's or Brevo's unsubscribe webhook (shown once)",
         "tags": [
           "Integrations"
         ]

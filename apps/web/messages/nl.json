@@ -16607,7 +16607,19 @@
       "door_unauthorized": "De controller heeft de sleutel van Palee geweigerd. Controleer de instellingen van de deur.",
       "door_refused": "De controller weigerde te openen.",
       "door_disabled": "Deze deur staat uit."
-    }
+    },
+    "unsubscribeTitle": "Afmeldingen van de lijst",
+    "unsubscribeOn": "Gekoppeld",
+    "unsubscribeOff": "Niet ingesteld",
+    "unsubscribeHint": "Wie zich via een e-mail van de lijst afmeldt, wordt ook in Palee uitgeschakeld, zodat de volgende synchronisatie diegene niet opnieuw toevoegt.",
+    "unsubscribeUrlTitle": "Het adres voor afmeldingen",
+    "unsubscribeWhere": {
+      "mailchimp": "In Mailchimp: Audience › Settings › Webhooks › Create new webhook. Plak het adres, vink alleen „Unsubscribes” aan en sla op.",
+      "brevo": "In Brevo: Settings › Webhooks › Add a new webhook › Marketing. Plak het adres, vink alleen „Unsubscribed” aan en sla op."
+    },
+    "unsubscribeRenew": "Nieuw adres",
+    "unsubscribeMake": "Adres maken",
+    "unsubscribeRenewHint": "Een nieuw adres stopt het oude meteen; plak het nieuwe ook in de dienst."
   },
   "Doors": {
     "title": "Deuren",

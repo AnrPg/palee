@@ -247,6 +247,10 @@ defmodule PaleeWeb.Schemas.OpenPlatform do
         list_id: %Schema{type: :string},
         status: %Schema{type: :string, enum: ~w(active invalid)},
         key_saved: %Schema{type: :boolean},
+        unsubscribe_hook: %Schema{
+          type: :boolean,
+          description: "Whether the provider's unsubscribe webhook address was made"
+        },
         last_error: @maybe_string,
         last_synced_at: @maybe_datetime,
         sync_requested_at: @maybe_datetime,
@@ -441,8 +445,9 @@ defmodule PaleeWeb.Schemas.OpenPlatform do
       title: "DoorOpenRequest",
       type: :object,
       description:
-        "Proof of presence as for the check-in scan: `location_id` + `code` (the door " <>
-          "screen's QR), `nfc_code` or `poster_code`; `door_id` when the branch has several doors",
+        "Proof of presence at the door: `location_id` + `code` (the door screen's QR) or " <>
+          "`nfc_code`; `door_id` when the branch has several doors. A `poster_code` is " <>
+          "refused with `door_needs_door_scan`",
       properties: %{
         location_id: @uuid,
         code: %Schema{type: :string, maxLength: 64},
@@ -474,6 +479,10 @@ defmodule PaleeWeb.Schemas.OpenPlatform do
   def unlock_result, do: one(:opened, %Schema{type: :boolean})
 
   def recorded, do: one(:recorded, %Schema{type: :integer})
+
+  def unsubscribe_url, do: one(:url, %Schema{type: :string})
+
+  def withdrawn, do: one(:withdrawn, %Schema{type: :integer})
 
   def error, do: %Schema{type: :object, additionalProperties: true}
 end

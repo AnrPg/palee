@@ -4,13 +4,37 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 
-import { EMAIL_LIST_KEY, deleteEmailList, fetchEmailList, saveEmailList, syncEmailList, type AudienceConnection, type AudienceProvider } from "@/api/integrations";
+import {
+  EMAIL_LIST_KEY,
+  deleteEmailList,
+  fetchEmailList,
+  rotateUnsubscribeUrl,
+  saveEmailList,
+  syncEmailList,
+  type AudienceConnection,
+  type AudienceProvider,
+} from "@/api/integrations";
 import { ConfirmButton } from "@/components/check-in/ConfirmButton";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { Select } from "@/components/ui/Select";
 import { useUiLocale } from "@/i18n/use-ui-locale";
 
-import { Card, CardTitle, Field, INPUT_CLASS, OutlineButton, Pill, PrimaryButton, TextButton, apiErrorCode, inputStyle, useIntegrationError, useWhen } from "./connections-ui";
+import {
+  Advanced,
+  Card,
+  CardTitle,
+  Field,
+  INPUT_CLASS,
+  OutlineButton,
+  Pill,
+  PrimaryButton,
+  SecretOnce,
+  TextButton,
+  apiErrorCode,
+  inputStyle,
+  useIntegrationError,
+  useWhen,
+} from "./connections-ui";
 
 const PROVIDERS: AudienceProvider[] = ["mailchimp", "brevo"];
 
@@ -61,6 +85,9 @@ export function EmailListSettings({ token }: { token: string }) {
           </div>
           {sync.isSuccess ? <p role="status" className="text-sm" style={{ color: "var(--success)" }}>{t("listSyncQueued")}</p> : null}
           {sync.isError || remove.isError ? <ErrorNotice variant="field">{errorText(sync.error ?? remove.error)}</ErrorNotice> : null}
+          <Advanced testId="email-list-advanced">
+            <UnsubscribeHook token={token} connection={connection} onMade={() => set({ ...connection, unsubscribe_hook: true })} />
+          </Advanced>
         </>
       ) : (
         <ConnectForm
@@ -76,6 +103,36 @@ export function EmailListSettings({ token }: { token: string }) {
       {/* W10 screen 3, question 3: the box names its list provider in its own privacy notice. */}
       <p className="text-xs leading-5" style={{ color: "var(--dim)" }}>{t("listPrivacyReminder")}</p>
     </Card>
+  );
+}
+
+/**
+ * «Διαγραφές από τη λίστα» (ADR-380, 2026-11-03): the address the box pastes
+ * into Mailchimp or Brevo, so someone who unsubscribes there has their
+ * switch in Palee turned off too. Shown once; a new one replaces it.
+ */
+function UnsubscribeHook({ token, connection, onMade }: { token: string; connection: AudienceConnection; onMade: () => void }) {
+  const t = useTranslations("Connections");
+  const errorText = useIntegrationError();
+  const make = useMutation({ mutationFn: () => rotateUnsubscribeUrl(token), onSuccess: onMade });
+  const provider = connection.provider === "brevo" ? "brevo" : "mailchimp";
+  return (
+    <div className="space-y-3" data-testid="email-list-unsubscribe">
+      <div className="flex flex-wrap items-center gap-2">
+        <p className="min-w-0 flex-1 text-sm font-bold" style={{ color: "var(--text)" }}>{t("unsubscribeTitle")}</p>
+        <Pill tone={connection.unsubscribe_hook ? "success" : "neutral"}>{connection.unsubscribe_hook ? t("unsubscribeOn") : t("unsubscribeOff")}</Pill>
+      </div>
+      <p className="text-sm" style={{ color: "var(--text-soft)" }}>{t("unsubscribeHint")}</p>
+      {make.data ? (
+        <SecretOnce title={t("unsubscribeUrlTitle")} secret={make.data.url} hint={t(`unsubscribeWhere.${provider}`)} testId="email-list-unsubscribe-url" />
+      ) : (
+        <OutlineButton disabled={make.isPending} onClick={() => make.mutate()} data-testid="email-list-unsubscribe-make">
+          {connection.unsubscribe_hook ? t("unsubscribeRenew") : t("unsubscribeMake")}
+        </OutlineButton>
+      )}
+      {connection.unsubscribe_hook && !make.data ? <p className="text-xs" style={{ color: "var(--dim)" }}>{t("unsubscribeRenewHint")}</p> : null}
+      {make.isError ? <ErrorNotice variant="field">{errorText(make.error)}</ErrorNotice> : null}
+    </div>
   );
 }
 

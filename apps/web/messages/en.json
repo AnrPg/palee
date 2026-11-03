@@ -16607,7 +16607,19 @@
       "door_unauthorized": "The controller refused Palee's key. Check the door's settings.",
       "door_refused": "The controller refused to open.",
       "door_disabled": "This door is turned off."
-    }
+    },
+    "unsubscribeTitle": "Unsubscribes from the list",
+    "unsubscribeOn": "Connected",
+    "unsubscribeOff": "Not set up",
+    "unsubscribeHint": "Someone who unsubscribes from an email of the list also has their switch in Palee turned off, so the next sync does not add them back.",
+    "unsubscribeUrlTitle": "The address for unsubscribes",
+    "unsubscribeWhere": {
+      "mailchimp": "In Mailchimp: Audience › Settings › Webhooks › Create new webhook. Paste the address, tick only “Unsubscribes” and save.",
+      "brevo": "In Brevo: Settings › Webhooks › Add a new webhook › Marketing. Paste the address, tick only “Unsubscribed” and save."
+    },
+    "unsubscribeRenew": "New address",
+    "unsubscribeMake": "Make the address",
+    "unsubscribeRenewHint": "A new address stops the old one at once; paste the new one in the service too."
   },
   "Doors": {
     "title": "Doors",

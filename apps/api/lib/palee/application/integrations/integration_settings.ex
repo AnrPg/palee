@@ -8,7 +8,8 @@ defmodule Palee.Application.Integrations.IntegrationSettings do
   they can; the scopes chosen here narrow it further.
   """
 
-  alias Palee.Application.Integrations.{AudienceSync, WebhookDelivery}
+  alias Palee.Application.Integrations.{AudienceSync, ConnectionNotices, WebhookDelivery}
+  alias Palee.Application.PublicURL
   alias Palee.Integrations
 
   @doc "What the settings screen needs to offer: scopes and event types, EN and EL."
@@ -28,16 +29,21 @@ defmodule Palee.Application.Integrations.IntegrationSettings do
 
   @doc "`{:ok, %{key, token}}`: the token is shown once."
   def create_key(context, params, now \\ DateTime.utc_now()) do
-    Integrations.create_api_key(
-      context,
-      %{
-        name: param(params, :name),
-        scopes: param(params, :scopes),
-        expires_at: param(params, :expires_at)
-      },
-      context.user_id,
-      now
-    )
+    with {:ok, %{key: key}} = created <-
+           Integrations.create_api_key(
+             context,
+             %{
+               name: param(params, :name),
+               scopes: param(params, :scopes),
+               expires_at: param(params, :expires_at)
+             },
+             context.user_id,
+             now
+           ) do
+      # The owners hear of every new key, so one made without them is seen.
+      ConnectionNotices.api_key_created(context, key, now)
+      created
+    end
   end
 
   def rotate_key(context, id, now \\ DateTime.utc_now()),
@@ -144,6 +150,21 @@ defmodule Palee.Application.Integrations.IntegrationSettings do
   def sync_audience(context, now \\ DateTime.utc_now()) do
     with :ok <- Integrations.request_sync(context, now), do: AudienceSync.schedule(context)
   end
+
+  @doc """
+  «Διαγραφές από τη λίστα»: a new address for Mailchimp's or Brevo's
+  unsubscribe webhook, shown once (`{:ok, %{url}}`).
+  """
+  def rotate_unsubscribe_url(context) do
+    with {:ok, %{connection_id: id, token: token}} <-
+           Integrations.rotate_unsubscribe_token(context),
+         do: {:ok, %{url: unsubscribe_url(id, token)}}
+  end
+
+  defp unsubscribe_url(connection_id, token),
+    do:
+      (PublicURL.base_url() |> String.trim_trailing("/")) <>
+        "/api/integrations/email-list/#{connection_id}/unsubscribe?token=#{token}"
 
   defp param(params, key), do: Map.get(params, key, Map.get(params, Atom.to_string(key)))
 

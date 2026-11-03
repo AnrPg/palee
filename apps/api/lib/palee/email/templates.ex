@@ -10,6 +10,7 @@ defmodule Palee.Email.Templates do
 
   @templates %{
     account_deletion_confirm: Palee.Email.Templates.AccountDeletionConfirm,
+    api_key_created: Palee.Email.Templates.ApiKeyCreated,
     booking_invite: Palee.Email.Templates.BookingInvite,
     box_automation: Palee.Email.Templates.BoxAutomation,
     box_data_export_ready: Palee.Email.Templates.BoxDataExportReady,
@@ -39,7 +40,8 @@ defmodule Palee.Email.Templates do
     site_domain_instructions: Palee.Email.Templates.SiteDomainInstructions,
     status_subscription_confirm: Palee.Email.Templates.StatusSubscriptionConfirm,
     status_update: Palee.Email.Templates.StatusUpdate,
-    verify_email: Palee.Email.Templates.VerifyEmail
+    verify_email: Palee.Email.Templates.VerifyEmail,
+    webhook_disabled: Palee.Email.Templates.WebhookDisabled
   }
 
   @doc "Every kind and its template."

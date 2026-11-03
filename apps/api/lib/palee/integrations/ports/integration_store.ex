@@ -53,6 +53,8 @@ defmodule Palee.Integrations.Ports.IntegrationStore do
   @callback due_organizations(DateTime.t()) :: [id()]
 
   # Audience
+  @doc "The box of an email-list connection, before any tenant session (unsubscribe calls)."
+  @callback lookup_connection(id()) :: id() | nil
   @doc "The connection with decoded credentials, or nil."
   @callback get_connection(context()) :: map() | nil
   @callback save_connection(context(), map()) :: {:ok, map()} | {:error, term()}
@@ -65,4 +67,6 @@ defmodule Palee.Integrations.Ports.IntegrationStore do
   @callback consented_user_ids(context()) :: [id()]
   @callback list_audience_members(context(), connection_id :: id()) :: [map()]
   @callback upsert_audience_member(context(), map()) :: :ok
+  @callback find_audience_member(context(), connection_id :: id(), email_hash :: String.t()) ::
+              map() | nil
 end

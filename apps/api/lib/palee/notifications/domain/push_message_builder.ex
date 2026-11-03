@@ -1417,6 +1417,19 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
     }
   end
 
+  # ADR-379: Palee turned off a webhook; `host` is the receiver's host name.
+  def build("webhook_disabled", payload, localize) do
+    %{
+      title: localize.("A webhook was turned off", %{}),
+      body:
+        localize.(
+          "Palee stopped sending events to %{host}. Open the webhook to check it and turn it back on.",
+          %{host: payload["host"] || ""}
+        ),
+      url: payload["url"] || "/admin/settings"
+    }
+  end
+
   def build("shop_order_placed", payload, localize) do
     %{
       title: localize.("New shop order", %{}),

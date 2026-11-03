@@ -16607,7 +16607,19 @@
       "door_unauthorized": "Ο ελεγκτής δεν δέχτηκε το κλειδί της Palee. Ελέγξτε τις ρυθμίσεις της πόρτας.",
       "door_refused": "Ο ελεγκτής αρνήθηκε να ανοίξει.",
       "door_disabled": "Αυτή η πόρτα είναι κλειστή."
-    }
+    },
+    "unsubscribeTitle": "Διαγραφές από τη λίστα",
+    "unsubscribeOn": "Συνδέθηκε",
+    "unsubscribeOff": "Δεν έχει ρυθμιστεί",
+    "unsubscribeHint": "Όποιος διαγραφεί από ένα email της λίστας κλείνει και τον διακόπτη του στο Palee, ώστε ο επόμενος συγχρονισμός να μην τον ξαναπροσθέσει.",
+    "unsubscribeUrlTitle": "Η διεύθυνση για τις διαγραφές",
+    "unsubscribeWhere": {
+      "mailchimp": "Στο Mailchimp: Audience › Settings › Webhooks › Create new webhook. Επικολλήστε τη διεύθυνση, επιλέξτε μόνο «Unsubscribes» και αποθηκεύστε.",
+      "brevo": "Στο Brevo: Settings › Webhooks › Add a new webhook › Marketing. Επικολλήστε τη διεύθυνση, επιλέξτε μόνο «Unsubscribed» και αποθηκεύστε."
+    },
+    "unsubscribeRenew": "Νέα διεύθυνση",
+    "unsubscribeMake": "Δημιουργία διεύθυνσης",
+    "unsubscribeRenewHint": "Μια νέα διεύθυνση σταματά αμέσως την παλιά· επικολλήστε και τη νέα στην υπηρεσία."
   },
   "Doors": {
     "title": "Πόρτες",

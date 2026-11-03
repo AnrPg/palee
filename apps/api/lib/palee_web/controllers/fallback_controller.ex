@@ -137,6 +137,8 @@ defmodule PaleeWeb.FallbackController do
     door_not_found: {:not_found, "No such door"},
     door_disabled: {:conflict, "This door is turned off"},
     no_door_here: {:not_found, "This branch has no door that opens from the app"},
+    door_needs_door_scan:
+      {:forbidden, "Doors open only from the code on the door's screen or its NFC tag"},
     door_offline:
       {:service_unavailable, "The door is not answering; it stays locked. Ask at the desk"},
     door_unauthorized:

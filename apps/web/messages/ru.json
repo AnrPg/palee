@@ -16607,7 +16607,19 @@
       "door_unauthorized": "Контроллер отклонил ключ Palee. Проверьте настройки двери.",
       "door_refused": "Контроллер отказался открыть.",
       "door_disabled": "Эта дверь выключена."
-    }
+    },
+    "unsubscribeTitle": "Отписки от списка",
+    "unsubscribeOn": "Подключено",
+    "unsubscribeOff": "Не настроено",
+    "unsubscribeHint": "Если человек отписался из письма рассылки, его переключатель в Palee тоже выключается, и следующая синхронизация не добавит его снова.",
+    "unsubscribeUrlTitle": "Адрес для отписок",
+    "unsubscribeWhere": {
+      "mailchimp": "В Mailchimp: Audience › Settings › Webhooks › Create new webhook. Вставьте адрес, отметьте только «Unsubscribes» и сохраните.",
+      "brevo": "В Brevo: Settings › Webhooks › Add a new webhook › Marketing. Вставьте адрес, отметьте только «Unsubscribed» и сохраните."
+    },
+    "unsubscribeRenew": "Новый адрес",
+    "unsubscribeMake": "Создать адрес",
+    "unsubscribeRenewHint": "Новый адрес сразу отключает старый; вставьте новый и в сервисе."
   },
   "Doors": {
     "title": "Двери",

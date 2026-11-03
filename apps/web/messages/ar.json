@@ -16607,7 +16607,19 @@
       "door_unauthorized": "رفضت وحدة التحكم مفتاح Palee. تحقق من إعدادات الباب.",
       "door_refused": "رفضت وحدة التحكم الفتح.",
       "door_disabled": "هذا الباب متوقف."
-    }
+    },
+    "unsubscribeTitle": "إلغاء الاشتراك من القائمة",
+    "unsubscribeOn": "متصل",
+    "unsubscribeOff": "غير مُعد",
+    "unsubscribeHint": "من يلغي اشتراكه من رسالة في القائمة يُطفأ مفتاحه في Palee أيضًا، حتى لا تعيد المزامنة التالية إضافته.",
+    "unsubscribeUrlTitle": "العنوان الخاص بإلغاء الاشتراك",
+    "unsubscribeWhere": {
+      "mailchimp": "في Mailchimp: Audience › Settings › Webhooks › Create new webhook. الصق العنوان، واختر «Unsubscribes» فقط، ثم احفظ.",
+      "brevo": "في Brevo: Settings › Webhooks › Add a new webhook › Marketing. الصق العنوان، واختر «Unsubscribed» فقط، ثم احفظ."
+    },
+    "unsubscribeRenew": "عنوان جديد",
+    "unsubscribeMake": "إنشاء العنوان",
+    "unsubscribeRenewHint": "العنوان الجديد يوقف القديم فورًا؛ الصق الجديد في الخدمة أيضًا."
   },
   "Doors": {
     "title": "الأبواب",

@@ -2,9 +2,11 @@ defmodule Palee.Application.Access.DoorAccess do
   @moduledoc """
   Opening a door (ADR-381, CP-E3) and the controllers' own events.
 
-  A member proves presence exactly as for the QR check-in (ADR-155): the
-  door screen's rotating code, the branch's NFC tag or the printed poster
-  (`ScanCheckIn.door_presence/3`). Then `EntryRules` decides on facts
+  A member proves presence as for the QR check-in (ADR-155), but only at the
+  door itself: the door screen's rotating code or the branch's NFC tag
+  (`ScanCheckIn.door_presence/3`). The printed poster (a photo can share it)
+  and the arrival reminder check a member in but never open a door
+  (`door_needs_door_scan`, 2026-11-03). Then `EntryRules` decides on facts
   gathered now (staff, membership, bookings in the window, open-gym
   coverage) and the box's local time, the controller is asked to open, and
   every outcome goes into the access log:
@@ -27,11 +29,13 @@ defmodule Palee.Application.Access.DoorAccess do
   alias Palee.TimeZones.ZonedTime
 
   @doc """
-  `params`: what the door scan takes (`location_id` + `code`, `nfc_code` or
-  `poster_code`) and optionally `door_id` when a branch has several doors.
+  `params`: what the door scan takes (`location_id` + `code` or `nfc_code`, or
+  the `scan_token` of a `choose` answer from one of those) and optionally
+  `door_id` when a branch has several doors.
   """
   def open(%{id: user_id}, params, now \\ DateTime.utc_now()) do
     with {:ok, presence} <- ScanCheckIn.door_presence(user_id, params, now),
+         :ok <- at_the_door(presence.source),
          context = %{organization_id: presence.organization_id, user_id: user_id},
          {:ok, door} <- pick_door(context, presence.location_id, param(params, :door_id)) do
       facts = facts(context, user_id, presence.location_id, now)
@@ -70,6 +74,11 @@ defmodule Palee.Application.Access.DoorAccess do
     {:error, :entry_denied,
      %{reason: Atom.to_string(reason), door: %{id: door.id, name: door.name}}}
   end
+
+  @door_sources [:door, :nfc]
+
+  defp at_the_door(source) when source in @door_sources, do: :ok
+  defp at_the_door(_poster_or_geofence), do: {:error, :door_needs_door_scan}
 
   defp pick_door(context, location_id, door_id) do
     case {Access.doors_at(context, location_id), door_id} do

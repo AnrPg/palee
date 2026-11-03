@@ -335,6 +335,10 @@ defmodule PaleeWeb.Router do
     plug(PaleeWeb.Plugs.RateLimit, max: 120, interval: 60_000, bucket: "door-events")
   end
 
+  pipeline :list_events do
+    plug(PaleeWeb.Plugs.RateLimit, max: 120, interval: 60_000, bucket: "list-events")
+  end
+
   pipeline :organization_admin do
     plug(PaleeWeb.Plugs.RequireRouteCapability)
   end
@@ -407,6 +411,14 @@ defmodule PaleeWeb.Router do
 
     get("/:id/events", DoorAccessController, :ingest)
     post("/:id/events", DoorAccessController, :ingest)
+  end
+
+  # ADR-380: Mailchimp's and Brevo's unsubscribe webhook, by the connection's token.
+  scope "/api/integrations/email-list", PaleeWeb do
+    pipe_through([:api, :list_events])
+
+    get("/:id/unsubscribe", EmailListHookController, :unsubscribe)
+    post("/:id/unsubscribe", EmailListHookController, :unsubscribe)
   end
 
   # ADR-272: a walk-in's receipt behind the QR on the staff phone.
@@ -1670,6 +1682,13 @@ defmodule PaleeWeb.Router do
     put("/integrations/email-list", AdminIntegrationsController, :save_audience)
     delete("/integrations/email-list", AdminIntegrationsController, :delete_audience)
     post("/integrations/email-list/sync", AdminIntegrationsController, :sync_audience)
+
+    post(
+      "/integrations/email-list/unsubscribe-url",
+      AdminIntegrationsController,
+      :rotate_unsubscribe_url
+    )
+
     # ADR-381: doors, their controllers and the access log.
     get("/doors/catalog", AdminDoorsController, :catalog)
     get("/doors", AdminDoorsController, :index)

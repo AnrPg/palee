@@ -712,7 +712,7 @@ What a box connects Palee to (Settings › «Συνδέσεις») and the doors
 | Event | Συμβάν | `booking.created`, … | One kind of change a webhook can be told about. | Community event («Εκδήλωση»); domain event (code only). |
 | Delivery | Αποστολή | `webhook_deliveries` | One try-until-done of telling a webhook about an event; with its attempts in the delivery log («Ιστορικό αποστολών»). | Email delivery. |
 | Signing secret | Μυστικό υπογραφής | `whsec_…` | The secret a receiver uses to check that a delivery came from Palee. Shown once. | API key. |
-| Email list | Λίστα email | `audience_connections` | The box's Mailchimp or Brevo audience that Palee keeps in step with members' consent. | Palee's own emails to members. |
+| Email list | Λίστα email | `audience_connections` | The box's Mailchimp or Brevo audience that Palee keeps in step with members' consent. Its unsubscribe address («Διαγραφές από τη λίστα») lets an unsubscribe there turn the member's switch off too. | Palee's own emails to members. |
 | Marketing email consent | Ενημερώσεις με email | `integration_marketing_consents` | The member's own yes or no to the box's newsletters and offers. Off by default; only the member changes it, in Box › «Ειδοποιήσεις». | Notification preferences (ADR-199); W3's phone channel consents (SMS, Viber, WhatsApp). |
 | Door | Πόρτα | `door_controllers` | An entrance of a branch whose lock Palee can open, with its controller and entry rules. | Door screen («Οθόνη πόρτας», the check-in QR display, ADR-155); NFC door tag. |
 | Door controller | Ελεγκτής πόρτας | `provider`: `shelly`, `kisi`, `sandbox` | The device or service that opens the lock (a Shelly relay, Kisi). | Payment terminal. |

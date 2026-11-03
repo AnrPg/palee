@@ -71,3 +71,21 @@ mailing list.
 - Settings › Συνδέσεις › Λίστα email connects Mailchimp or Brevo (service, key, list id; errors stay on
   their field), shows the last sync and «Συγχρονισμός τώρα», and reminds the box to name the service in
   its privacy notice. Subscriber counts are not shown: the API does not return them yet.
+
+## Amendment 2026-11-03 (b): unsubscribes on the provider's side
+- **One more address per connection.** Settings › Συνδέσεις › Λίστα email › «Προχωρημένα» makes the address
+  `POST /api/integrations/email-list/:id/unsubscribe?token=…` (`POST
+  /admin/integrations/email-list/unsubscribe-url`, shown once; a new one stops the old at once). The box
+  pastes it into Mailchimp (webhook «Unsubscribes») or Brevo (marketing webhook «Unsubscribed»). Mailchimp's
+  `GET` check answers 200.
+- **Verified by a secret token.** Neither provider signs these calls, so the address carries a 24-byte
+  random token stored as a SHA-256 hash (`audience_connections.unsubscribe_token_hash`, never exported). The
+  SECURITY DEFINER `palee_audience_connection_lookup(uuid)` finds the box; the token is compared inside its
+  tenant session. An unknown connection and a wrong token answer the same 404.
+- **What it does.** `UnsubscribeEvent` reads only Mailchimp's `unsubscribe` (never `cleaned`, which is the
+  provider's call about a bouncing address) and Brevo's `unsubscribed` for the box's list (or a global
+  unsubscribe). Each address Palee sent to this list is matched by its email hash; the member's consent is
+  withdrawn (`source: "provider_unsubscribe"`, the time they said yes is kept as proof) and the list row is
+  remembered as unsubscribed, so the next sync does not add them back.
+- **Consents stay separate from W3's** (decided: no merge). Subscriber counts and the live desk card are
+  not planned now.

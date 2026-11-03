@@ -16607,7 +16607,19 @@
       "door_unauthorized": "Der Controller hat den Schlüssel von Palee abgelehnt. Prüfen Sie die Einstellungen der Tür.",
       "door_refused": "Der Controller hat das Öffnen verweigert.",
       "door_disabled": "Diese Tür ist ausgeschaltet."
-    }
+    },
+    "unsubscribeTitle": "Abmeldungen von der Liste",
+    "unsubscribeOn": "Verbunden",
+    "unsubscribeOff": "Nicht eingerichtet",
+    "unsubscribeHint": "Wer sich über eine E-Mail der Liste abmeldet, wird auch in Palee ausgeschaltet, damit der nächste Abgleich die Person nicht wieder hinzufügt.",
+    "unsubscribeUrlTitle": "Die Adresse für Abmeldungen",
+    "unsubscribeWhere": {
+      "mailchimp": "In Mailchimp: Audience › Settings › Webhooks › Create new webhook. Adresse einfügen, nur „Unsubscribes“ ankreuzen und speichern.",
+      "brevo": "In Brevo: Settings › Webhooks › Add a new webhook › Marketing. Adresse einfügen, nur „Unsubscribed“ ankreuzen und speichern."
+    },
+    "unsubscribeRenew": "Neue Adresse",
+    "unsubscribeMake": "Adresse erstellen",
+    "unsubscribeRenewHint": "Eine neue Adresse stoppt die alte sofort; trage die neue auch im Dienst ein."
   },
   "Doors": {
     "title": "Türen",

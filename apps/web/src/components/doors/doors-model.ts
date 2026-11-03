@@ -120,6 +120,8 @@ export function doorAnswer(result: DoorOpenResult | null, error: unknown): DoorA
   switch (error.payload.code) {
     case "no_door_here":
     case "door_disabled":
+    // The printed poster checks in but never opens a door (2026-11-03).
+    case "door_needs_door_scan":
       return { kind: "none" };
     case "entry_denied":
       return { kind: "denied", reason: DENIAL_REASONS.includes(params.reason ?? "") ? params.reason! : "generic", door: params.door?.name ?? null };

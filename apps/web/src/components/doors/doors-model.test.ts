@@ -38,6 +38,7 @@ describe("doors model (W10 screens 4–6)", () => {
   it("reads the door's answer after a scan", () => {
     expect(doorAnswer({ opened: true, reason: "booked_class", seconds: 5, door: { id: "d", name: "Main" } }, null)).toEqual({ kind: "opened", door: "Main", seconds: 5 });
     expect(doorAnswer(null, new ApiError(404, "x", { code: "no_door_here" }))).toEqual({ kind: "none" });
+    expect(doorAnswer(null, new ApiError(403, "x", { code: "door_needs_door_scan" }))).toEqual({ kind: "none" });
     expect(doorAnswer(null, new ApiError(403, "x", { code: "entry_denied", params: { reason: "no_booking_in_window", door: { name: "Main" } } }))).toEqual({
       kind: "denied",
       reason: "no_booking_in_window",

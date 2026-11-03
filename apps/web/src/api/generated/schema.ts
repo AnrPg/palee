@@ -39,7 +39,7 @@ export interface paths {
         put?: never;
         /**
          * Open the door: proof of presence, then the box's entry rules
-         * @description Refused with `entry_denied` (`params.reason`: `not_a_member`, `outside_hours`, `no_booking_in_window`, `staff_only`), `choose_door` (`params.doors`) when the branch has several doors, `no_door_here`, or `door_offline` when the controller cannot be reached: the door stays locked and the member goes to the desk.
+         * @description Refused with `entry_denied` (`params.reason`: `not_a_member`, `outside_hours`, `no_booking_in_window`, `staff_only`), `choose_door` (`params.doors`) when the branch has several doors, `no_door_here`, `door_needs_door_scan` for the printed poster or the arrival reminder, or `door_offline` when the controller cannot be reached: the door stays locked and the member goes to the desk.
          */
         post: operations["PaleeWeb.DoorAccessController.open"];
         delete?: never;
@@ -1230,6 +1230,30 @@ export interface paths {
         get: operations["PaleeWeb.HealthController.index"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/integrations/email-list/{id}/unsubscribe": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The email list's unsubscribe webhook (Mailchimp or Brevo); GET checks the address
+         * @description The address with its token is made in Settings › Connections › Email list. An unknown connection and a wrong token answer the same 404. Mailchimp posts a form (`type=unsubscribe`), Brevo posts JSON (`event: unsubscribed`); other events are ignored.
+         */
+        get: operations["PaleeWeb.EmailListHookController.unsubscribe"];
+        put?: never;
+        /**
+         * The email list's unsubscribe webhook (Mailchimp or Brevo); GET checks the address
+         * @description The address with its token is made in Settings › Connections › Email list. An unknown connection and a wrong token answer the same 404. Mailchimp posts a form (`type=unsubscribe`), Brevo posts JSON (`event: unsubscribed`); other events are ignored.
+         */
+        post: operations["PaleeWeb.EmailListHookController.unsubscribe (2)"];
         delete?: never;
         options?: never;
         head?: never;
@@ -9490,6 +9514,26 @@ export interface paths {
         put?: never;
         /** Sync the email list now */
         post: operations["PaleeWeb.AdminIntegrationsController.sync_audience"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/integrations/email-list/unsubscribe-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * A new address for Mailchimp's or Brevo's unsubscribe webhook (shown once)
+         * @description Paste it into the provider's webhook settings (Mailchimp: «Unsubscribes»; Brevo: marketing event «Unsubscribed»). Someone who unsubscribes there has their switch in Palee turned off too. The old address stops working at once.
+         */
+        post: operations["PaleeWeb.AdminIntegrationsController.rotate_unsubscribe_url"];
         delete?: never;
         options?: never;
         head?: never;
@@ -23183,6 +23227,8 @@ export interface components {
             status: "active" | "invalid";
             /** Format: date-time */
             sync_requested_at?: string | null;
+            /** @description Whether the provider's unsubscribe webhook address was made */
+            unsubscribe_hook?: boolean;
             /** Format: date-time */
             updated_at?: string | null;
         } | null;
@@ -32871,7 +32917,7 @@ export interface components {
         };
         /**
          * DoorOpenRequest
-         * @description Proof of presence as for the check-in scan: `location_id` + `code` (the door screen's QR), `nfc_code` or `poster_code`; `door_id` when the branch has several doors
+         * @description Proof of presence at the door: `location_id` + `code` (the door screen's QR) or `nfc_code`; `door_id` when the branch has several doors. A `poster_code` is refused with `door_needs_door_scan`
          */
         DoorOpenRequest: {
             code?: string;
@@ -57038,6 +57084,76 @@ export interface operations {
                         status: string;
                         /** @example 0.1.0 */
                         version: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.EmailListHookController.unsubscribe": {
+        parameters: {
+            query: {
+                token: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    [key: string]: unknown;
+                };
+                "application/x-www-form-urlencoded": {
+                    [key: string]: unknown;
+                };
+            };
+        };
+        responses: {
+            /** @description Handled */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        withdrawn: number;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.EmailListHookController.unsubscribe (2)": {
+        parameters: {
+            query: {
+                token: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    [key: string]: unknown;
+                };
+                "application/x-www-form-urlencoded": {
+                    [key: string]: unknown;
+                };
+            };
+        };
+        responses: {
+            /** @description Handled */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        withdrawn: number;
                     };
                 };
             };
@@ -96866,6 +96982,8 @@ export interface operations {
                             status: "active" | "invalid";
                             /** Format: date-time */
                             sync_requested_at?: string | null;
+                            /** @description Whether the provider's unsubscribe webhook address was made */
+                            unsubscribe_hook?: boolean;
                             /** Format: date-time */
                             updated_at?: string | null;
                         } | null;
@@ -96913,6 +97031,8 @@ export interface operations {
                             status: "active" | "invalid";
                             /** Format: date-time */
                             sync_requested_at?: string | null;
+                            /** @description Whether the provider's unsubscribe webhook address was made */
+                            unsubscribe_hook?: boolean;
                             /** Format: date-time */
                             updated_at?: string | null;
                         } | null;
@@ -96960,6 +97080,28 @@ export interface operations {
                 content: {
                     "application/json": {
                         ok: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.rotate_unsubscribe_url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Address */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        url: string;
                     };
                 };
             };

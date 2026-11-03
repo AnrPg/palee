@@ -19,7 +19,9 @@ defmodule Palee.Integrations do
     EndpointUrl,
     Idempotency,
     PublicEvents,
+    AudienceSyncPlan,
     Scopes,
+    UnsubscribeEvent,
     WebhookSignature
   }
 
@@ -572,19 +574,24 @@ defmodule Palee.Integrations do
 
   @doc """
   Sends what is due (or the one delivery `which`): `{:ok, %{sent,
-  delivered, failed}}`. Each delivery is leased first, so overlapping runs
-  never send twice.
+  delivered, failed, disabled}}`, where `disabled` lists the endpoints this
+  run turned off (`id`, `url`, `reason`), for the owners' notice. Each
+  delivery is leased first, so overlapping runs never send twice.
   """
   def deliver(context, which, %DateTime{} = now) do
     counts =
       context
       |> IntegrationStore.claim_deliveries(which, now, DeliveryPolicy.batch())
-      |> Enum.reduce(%{sent: 0, delivered: 0, failed: 0}, fn delivery, counts ->
+      |> Enum.reduce(%{sent: 0, delivered: 0, failed: 0, disabled: []}, fn delivery, counts ->
         endpoint = IntegrationStore.get_endpoint(context, delivery.endpoint_id)
-        bump(counts, deliver_one(context, delivery, endpoint, now))
+
+        case deliver_one(context, delivery, endpoint, now) do
+          {result, nil} -> bump(counts, result)
+          {result, off} -> counts |> bump(result) |> Map.update!(:disabled, &[off | &1])
+        end
       end)
 
-    {:ok, counts}
+    {:ok, Map.update!(counts, :disabled, &Enum.reverse/1)}
   end
 
   defp bump(counts, :delivered),
@@ -603,7 +610,7 @@ defmodule Palee.Integrations do
       last_error: "endpoint_disabled"
     })
 
-    :failed
+    {:failed, nil}
   end
 
   defp deliver_one(context, delivery, endpoint, now) do
@@ -661,17 +668,18 @@ defmodule Palee.Integrations do
       delivered_at: if(status == :succeeded, do: now)
     })
 
-    settle_endpoint(context, endpoint, outcome, status, now)
+    off = settle_endpoint(context, endpoint, outcome, status, now)
 
     case status do
-      :succeeded -> :delivered
-      :failed -> :failed
-      :pending -> :retry
+      :succeeded -> {:delivered, off}
+      :failed -> {:failed, off}
+      :pending -> {:retry, off}
     end
   end
 
   # The endpoint's health changes when a delivery ends, not on every retry.
-  defp settle_endpoint(_context, _endpoint, _outcome, :pending, _now), do: :ok
+  # Nil, or the endpoint this delivery turned off.
+  defp settle_endpoint(_context, _endpoint, _outcome, :pending, _now), do: nil
 
   defp settle_endpoint(context, endpoint, outcome, _final, now) do
     changes =
@@ -692,7 +700,14 @@ defmodule Palee.Integrations do
       end
 
     IntegrationStore.update_endpoint(context, endpoint.id, changes)
-    :ok
+
+    case changes do
+      %{status: "disabled", disabled_reason: reason} ->
+        %{id: endpoint.id, url: endpoint.url, reason: reason}
+
+      _healthy_or_counted ->
+        nil
+    end
   end
 
   defp secrets(endpoint, now) do
@@ -820,6 +835,86 @@ defmodule Palee.Integrations do
 
   def consented_user_ids(context), do: IntegrationStore.consented_user_ids(context)
 
+  @doc """
+  A new secret token for the address Mailchimp or Brevo calls when someone
+  unsubscribes there: `{:ok, %{connection_id, token}}`, shown once. The old
+  address stops working at once.
+  """
+  def rotate_unsubscribe_token(context) do
+    case IntegrationStore.get_connection(context) do
+      nil ->
+        {:error, :audience_not_connected}
+
+      connection ->
+        token = Base.url_encode64(random(24), padding: false)
+
+        with {:ok, _saved} <-
+               IntegrationStore.save_connection(context, %{unsubscribe_token_hash: hash(token)}),
+             do: {:ok, %{connection_id: connection.id, token: token}}
+    end
+  end
+
+  @doc """
+  The provider's unsubscribe call: each address that said no there, and that
+  Palee sent to this list, has its member's marketing consent withdrawn
+  (`source: "provider_unsubscribe"`) and is remembered as unsubscribed, so
+  the next sync does not add it back. `{:ok, %{organization_id, withdrawn}}`;
+  an unknown connection and a wrong token answer the same `{:error,
+  :not_found}`, so ids cannot be probed.
+  """
+  def provider_unsubscribe(connection_id, token, params, %DateTime{} = now)
+      when is_binary(token) do
+    with organization_id when is_binary(organization_id) <-
+           IntegrationStore.lookup_connection(connection_id),
+         context = %{organization_id: organization_id},
+         %{id: ^connection_id} = connection <- IntegrationStore.get_connection(context),
+         true <- token_matches?(token, connection.unsubscribe_token_hash) do
+      withdrawn =
+        connection.provider
+        |> UnsubscribeEvent.emails(connection.list_id, params)
+        |> Enum.count(&withdraw(context, connection, &1, now))
+
+      {:ok, %{organization_id: organization_id, withdrawn: withdrawn}}
+    else
+      _unknown -> {:error, :not_found}
+    end
+  end
+
+  def provider_unsubscribe(_connection_id, _token, _params, _now), do: {:error, :not_found}
+
+  defp token_matches?(token, stored) when is_binary(stored),
+    do: :crypto.hash_equals(hash(token), stored)
+
+  defp token_matches?(_token, _stored), do: false
+
+  defp withdraw(context, connection, email, now) do
+    email_hash = AudienceSyncPlan.email_hash(email)
+
+    case IntegrationStore.find_audience_member(context, connection.id, email_hash) do
+      %{user_id: user_id} ->
+        IntegrationStore.upsert_audience_member(context, %{
+          connection_id: connection.id,
+          user_id: user_id,
+          email_hash: email_hash,
+          status: "unsubscribed",
+          synced_at: now
+        })
+
+        withdraw_consent(context, user_id, now)
+
+      nil ->
+        false
+    end
+  end
+
+  defp withdraw_consent(context, user_id, now) do
+    if consent(context, user_id).granted do
+      match?({:ok, _consent}, set_consent(context, user_id, false, "provider_unsubscribe", now))
+    else
+      false
+    end
+  end
+
   defp connection_view(nil), do: nil
 
   defp connection_view(connection) do
@@ -828,6 +923,7 @@ defmodule Palee.Integrations do
       list_id: connection.list_id,
       status: connection.status,
       key_saved: connection.credentials not in [nil, %{}],
+      unsubscribe_hook: is_binary(Map.get(connection, :unsubscribe_token_hash)),
       last_error: connection.last_error,
       last_synced_at: connection.last_synced_at,
       sync_requested_at: connection.sync_requested_at,
@@ -888,4 +984,6 @@ defmodule Palee.Integrations do
     do: Palee.TenantData.TableStore.purge(tenant_data_policy(), context)
 
   defp random(bytes), do: :crypto.strong_rand_bytes(bytes)
+
+  defp hash(token), do: :crypto.hash(:sha256, token)
 end

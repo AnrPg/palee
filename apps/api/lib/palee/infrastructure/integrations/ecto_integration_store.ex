@@ -363,6 +363,17 @@ defmodule Palee.Infrastructure.Integrations.EctoIntegrationStore do
   # ── Audience ────────────────────────────────────────────────────────────
 
   @impl true
+  def lookup_connection(id) do
+    with {:ok, id} <- Ecto.UUID.cast(id),
+         {:ok, %{rows: [[organization_id]]}} when not is_nil(organization_id) <-
+           Repo.query("SELECT palee_audience_connection_lookup($1)", [Ecto.UUID.dump!(id)]) do
+      Ecto.UUID.load!(organization_id)
+    else
+      _missing -> nil
+    end
+  end
+
+  @impl true
   def get_connection(%{organization_id: organization_id}) do
     AudienceConnection
     |> where([c], c.organization_id == ^organization_id)
@@ -448,6 +459,15 @@ defmodule Palee.Infrastructure.Integrations.EctoIntegrationStore do
     |> where([m], m.organization_id == ^organization_id and m.connection_id == ^connection_id)
     |> Repo.all()
     |> Enum.map(&plain/1)
+  end
+
+  @impl true
+  def find_audience_member(%{organization_id: organization_id}, connection_id, email_hash) do
+    AudienceMember
+    |> where([m], m.organization_id == ^organization_id and m.connection_id == ^connection_id)
+    |> where([m], m.email_hash == ^email_hash)
+    |> Repo.one()
+    |> plain()
   end
 
   @impl true

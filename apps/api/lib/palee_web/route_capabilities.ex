@@ -324,6 +324,7 @@ defmodule PaleeWeb.RouteCapabilities do
     {W.AdminIntegrationsController, :save_audience} => [:manage_settings],
     {W.AdminIntegrationsController, :delete_audience} => [:manage_settings],
     {W.AdminIntegrationsController, :sync_audience} => [:manage_settings],
+    {W.AdminIntegrationsController, :rotate_unsubscribe_url} => [:manage_settings],
     # ADR-381: doors per branch (branch managers too), opening from the desk.
     {W.AdminDoorsController, :catalog} => [:manage_settings, :manage_locations, :check_in],
     {W.AdminDoorsController, :index} => [:manage_settings, :manage_locations, :check_in],

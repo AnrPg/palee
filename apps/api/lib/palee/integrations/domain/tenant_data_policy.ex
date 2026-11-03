@@ -32,6 +32,7 @@ defmodule Palee.Integrations.Domain.TenantDataPolicy do
               "secret",
               "previous_secret",
               "credentials",
+              "unsubscribe_token_hash",
               "response_body"
             ]
           })

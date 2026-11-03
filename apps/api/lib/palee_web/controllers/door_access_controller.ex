@@ -26,7 +26,8 @@ defmodule PaleeWeb.DoorAccessController do
     description:
       "Refused with `entry_denied` (`params.reason`: `not_a_member`, `outside_hours`, " <>
         "`no_booking_in_window`, `staff_only`), `choose_door` (`params.doors`) when the " <>
-        "branch has several doors, `no_door_here`, or `door_offline` when the controller " <>
+        "branch has several doors, `no_door_here`, `door_needs_door_scan` for the printed " <>
+        "poster or the arrival reminder, or `door_offline` when the controller " <>
         "cannot be reached: the door stays locked and the member goes to the desk.",
     security: [%{"bearerAuth" => []}],
     request_body: S.body(S.open_request()),

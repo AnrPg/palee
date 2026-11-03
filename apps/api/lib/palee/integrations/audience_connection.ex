@@ -1,7 +1,8 @@
 defmodule Palee.Integrations.AudienceConnection do
   @moduledoc """
   The box's email-marketing list (ADR-380): Mailchimp audience or Brevo
-  list. `credentials` is the provider's API key, encrypted, never returned.
+  list. `credentials` is the provider's API key, encrypted, never returned;
+  `unsubscribe_token_hash` checks the provider's unsubscribe calls.
   """
 
   use Ecto.Schema
@@ -12,7 +13,7 @@ defmodule Palee.Integrations.AudienceConnection do
   @primary_key {:id, :binary_id, autogenerate: true}
 
   @fields ~w(provider list_id credentials status last_error last_synced_at sync_requested_at
-             claimed_at updated_by_id)a
+             claimed_at updated_by_id unsubscribe_token_hash)a
 
   schema "audience_connections" do
     field :organization_id, :binary_id, read_after_writes: true
@@ -25,6 +26,7 @@ defmodule Palee.Integrations.AudienceConnection do
     field :sync_requested_at, :utc_datetime_usec
     field :claimed_at, :utc_datetime_usec
     field :updated_by_id, :binary_id
+    field :unsubscribe_token_hash, :binary, redact: true
     timestamps(type: :utc_datetime_usec)
   end
 
