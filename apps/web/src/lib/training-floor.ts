@@ -174,9 +174,10 @@ export function snapshotLines(content: Record<string, unknown>): string[] {
 export const FITNESS_DOMAINS: readonly FitnessDomainName[] = ["strength", "power", "gymnastics", "monostructural", "metcon"];
 
 /** The five domains in a fixed order, untested ones included. */
-export function orderedDomains(domains: FitnessDomain[]): FitnessDomain[] {
+export function orderedDomains(domains: FitnessDomain[] | undefined): FitnessDomain[] {
+  const known = Array.isArray(domains) ? domains : [];
   return FITNESS_DOMAINS.map(
-    (name) => domains.find((domain) => domain.domain === name) ?? { domain: name, score: null, confidence: null, reasons: [], stale: false },
+    (name) => known.find((domain) => domain.domain === name) ?? { domain: name, score: null, confidence: null, reasons: [], stale: false },
   );
 }
 

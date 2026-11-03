@@ -115,6 +115,7 @@ describe("fitness profile (ADR-358, mockup d6 A)", () => {
     expect(ordered.map((domain) => domain.domain)).toEqual(["strength", "power", "gymnastics", "monostructural", "metcon"]);
     expect(ordered[0].score).toBeNull();
     expect(ordered[4]).toBe(metcon);
+    expect(orderedDomains(undefined).every((domain) => domain.score === null)).toBe(true);
   });
 
   it("writes PR values as kg, reps or m:ss", () => {

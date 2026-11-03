@@ -13,6 +13,7 @@ import { AfterBookingSmsAsk } from "./AfterBookingSmsAsk";
 import { ClassNoticeDialog } from "./ClassNoticeDialog";
 import { ClientSmsPanel } from "./ClientSmsPanel";
 import { EventSmsCard } from "./EventSmsCard";
+import { BoxSmsCard } from "./MySmsSettings";
 
 vi.mock("@/components/session-provider", () => ({
   useSession: () => ({ tokens: { access_token: "access" }, currentUser: { id: "me" }, status: "authenticated" }),
@@ -212,5 +213,16 @@ describe("Ask once after a booking (W3 screen 2 B)", () => {
     const { container } = wrap(<AfterBookingSmsAsk slug="box2" onDone={vi.fn()} />);
     await waitFor(() => expect(channels.fetchMyChannels).toHaveBeenCalled());
     expect(container.querySelector("[data-testid=after-booking-sms]")).toBeNull();
+  });
+});
+
+describe("Box › Notifications card (W3 screen 2)", () => {
+  const membership = { organization: { slug: "box4", name: "Box Four" }, settings: null } as unknown as Parameters<typeof BoxSmsCard>[0]["membership"];
+
+  it("shows nothing, without breaking Box, when the channels answer is malformed", async () => {
+    vi.mocked(channels.fetchMyChannels).mockResolvedValue({} as Awaited<ReturnType<typeof channels.fetchMyChannels>>);
+    const { container } = wrap(<BoxSmsCard membership={membership} providerKind="gym" />);
+    await waitFor(() => expect(channels.fetchMyChannels).toHaveBeenCalled());
+    expect(container.textContent).toBe("");
   });
 });

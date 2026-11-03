@@ -58,7 +58,7 @@ export function CardSurchargeSettings({ token }: { token: string }) {
   });
 
   if (query.isLoading) return <p className="text-sm" style={{ color: "var(--dim)" }}>{ui("loading33ce417")}</p>;
-  if (query.isError || !query.data) return <ErrorNotice>{localizeError(query.error, ui)}</ErrorNotice>;
+  if (query.isError || !query.data?.settings) return <ErrorNotice>{localizeError(query.error, ui)}</ErrorNotice>;
   const status = query.data;
   const on = status.settings.enabled && status.allowed;
 

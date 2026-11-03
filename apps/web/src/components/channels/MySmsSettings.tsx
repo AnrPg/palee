@@ -36,7 +36,7 @@ export function BoxSmsCard({ membership }: BoxExtensionProps) {
   const token = tokens?.access_token;
   const slug = membership.organization.slug;
   const query = useQuery({ queryKey: myChannelsKey(slug), queryFn: () => fetchMyChannels(token!, slug), enabled: Boolean(token) });
-  if (!token || !query.data || !query.data.channels.includes("sms")) return null;
+  if (!token || !Array.isArray(query.data?.channels) || !query.data.channels.includes("sms")) return null;
   return (
     <HubCard eyebrow={t("memberEyebrow")}>
       <MySmsForm token={token} slug={slug} boxName={membership.settings?.brand_name?.trim() || membership.organization.name} data={query.data} />
