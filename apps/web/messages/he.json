@@ -16653,6 +16653,8 @@
     "turnOn": "הפעלה",
     "turnOff": "כיבוי",
     "remove": "הסרה",
+    "removeQuestion": "להסיר את „{door}”?",
+    "removeHint": "הדלת לא תיפתח יותר מהאפליקציה; יומן הכניסות שומר את הרשומות שלו.",
     "rulesSummary": "כללי כניסה: {who} ›",
     "rulesTitle": "כללי כניסה · {door}",
     "staffAlwaysNote": "הצוות תמיד פותח.",

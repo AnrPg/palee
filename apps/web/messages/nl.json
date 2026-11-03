@@ -16653,6 +16653,8 @@
     "turnOn": "Aanzetten",
     "turnOff": "Uitzetten",
     "remove": "Verwijderen",
+    "removeQuestion": "“{door}” verwijderen?",
+    "removeHint": "De deur gaat dan niet meer open via de app; het toegangslogboek bewaart zijn regels.",
     "rulesSummary": "Toegangsregels: {who} ›",
     "rulesTitle": "Toegangsregels · {door}",
     "staffAlwaysNote": "Personeel opent altijd.",

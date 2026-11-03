@@ -16653,6 +16653,8 @@
     "turnOn": "تشغيل",
     "turnOff": "إيقاف",
     "remove": "حذف",
+    "removeQuestion": "هل تريد إزالة «{door}»؟",
+    "removeHint": "لن يُفتح الباب من التطبيق بعد الآن؛ يحتفظ سجل الدخول بسطوره.",
     "rulesSummary": "قواعد الدخول: {who} ›",
     "rulesTitle": "قواعد الدخول · {door}",
     "staffAlwaysNote": "الموظفون يفتحون دائمًا.",

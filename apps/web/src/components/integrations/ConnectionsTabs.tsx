@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { SegmentPicker } from "@/components/filters/SegmentPicker";
@@ -18,12 +19,9 @@ export type ConnectionTab = (typeof CONNECTION_TABS)[number];
  */
 export function ConnectionsTabs({ token, sms }: { token: string; sms: ReactNode }) {
   const t = useTranslations("Connections");
-  const [tab, setTab] = useState<ConnectionTab>("sms");
   // A webhook's page links back with `?connections=webhooks`.
-  useEffect(() => {
-    const wanted = new URLSearchParams(window.location.search).get("connections");
-    if (wanted && (CONNECTION_TABS as readonly string[]).includes(wanted)) setTab(wanted as ConnectionTab);
-  }, []);
+  const wanted = useSearchParams()?.get("connections");
+  const [tab, setTab] = useState<ConnectionTab>(() => (wanted && (CONNECTION_TABS as readonly string[]).includes(wanted) ? (wanted as ConnectionTab) : "sms"));
   return (
     <div className="space-y-4" data-testid="connections-tabs">
       <SegmentPicker

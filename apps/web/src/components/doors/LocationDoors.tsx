@@ -8,9 +8,8 @@ import { useTranslations } from "next-intl";
 import { DOOR_CATALOG_KEY, createDoor, deleteDoor, doorsKey, fetchDoorCatalog, fetchDoors, unlockDoor, updateDoor, type Door, type DoorProvider, type DoorRules } from "@/api/doors";
 import { OpeningHoursEditor } from "@/components/admin/location/OpeningHoursEditor";
 import { Toggle } from "@/components/admin/finance/packages/package-ui";
-import { ConfirmButton } from "@/components/check-in/ConfirmButton";
 import { Advanced, Field, INPUT_CLASS, OutlineButton, Pill, PrimaryButton, SecretOnce, TextButton, inputStyle, useIntegrationError, apiErrorCode } from "@/components/integrations/connections-ui";
-import { Dialog } from "@/components/ui/Dialog";
+import { Dialog, DialogButton } from "@/components/ui/Dialog";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { MoreMenu } from "@/components/ui/MoreMenu";
 import { Select } from "@/components/ui/Select";
@@ -34,9 +33,10 @@ export function LocationDoors({ token, locationId }: { token: string; locationId
   const [adding, setAdding] = useState(false);
   const [rulesFor, setRulesFor] = useState<Door | null>(null);
   const [opened, setOpened] = useState<string | null>(null);
+  const [removing, setRemoving] = useState<Door | null>(null);
   const refresh = () => void queryClient.invalidateQueries({ queryKey: doorsKey(locationId) });
   const unlock = useMutation({ mutationFn: (door: Door) => unlockDoor(token, door.id), onSuccess: (_ok, door) => setOpened(door.name), onError: refresh });
-  const remove = useMutation({ mutationFn: (door: Door) => deleteDoor(token, door.id), onSuccess: refresh });
+  const remove = useMutation({ mutationFn: (door: Door) => deleteDoor(token, door.id), onSettled: () => setRemoving(null), onSuccess: refresh });
   const toggle = useMutation({ mutationFn: (door: Door) => updateDoor(token, door.id, { status: door.status === "disabled" ? "active" : "disabled" }), onSuccess: refresh });
 
   return (
@@ -68,7 +68,7 @@ export function LocationDoors({ token, locationId }: { token: string; locationId
                 items={[
                   { label: t("rules"), onSelect: () => setRulesFor(door) },
                   { label: door.status === "disabled" ? t("turnOn") : t("turnOff"), onSelect: () => toggle.mutate(door) },
-                  { label: t("remove"), tone: "danger", onSelect: () => remove.mutate(door) },
+                  { label: t("remove"), tone: "danger", onSelect: () => setRemoving(door) },
                 ]}
               />
             </div>
@@ -85,6 +85,21 @@ export function LocationDoors({ token, locationId }: { token: string; locationId
       <Link href={adminHref("/admin/check-in/access-log", slug)} className="self-start text-sm font-semibold" style={{ color: "var(--primary)" }}>{t("logLink")}</Link>
 
       {adding ? <NewDoorDialog token={token} locationId={locationId} onClose={() => { setAdding(false); refresh(); }} /> : null}
+      {removing ? (
+        <Dialog
+          onClose={() => setRemoving(null)}
+          title={t("removeQuestion", { door: removing.name })}
+          size="sm"
+          footer={
+            <>
+              <DialogButton tone="ghost" onClick={() => setRemoving(null)}>{t("cancel")}</DialogButton>
+              <DialogButton tone="danger" disabled={remove.isPending} onClick={() => remove.mutate(removing)} testId="door-remove-confirm">{t("remove")}</DialogButton>
+            </>
+          }
+        >
+          <p className="text-sm" style={{ color: "var(--text-soft)" }}>{t("removeHint")}</p>
+        </Dialog>
+      ) : null}
       {rulesFor ? <RulesDialog token={token} door={rulesFor} onClose={() => { setRulesFor(null); refresh(); }} /> : null}
     </section>
   );

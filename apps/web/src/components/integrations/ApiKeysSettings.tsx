@@ -11,7 +11,7 @@ import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { useUiLocale } from "@/i18n/use-ui-locale";
 
 import { KEY_PURPOSES, PURPOSE_SCOPES, SCOPE_OBJECTS, keyLabel, scopesOf, toggleScope, type KeyPurpose, type Scope } from "./connections-model";
-import { Card, CardTitle, Field, INPUT_CLASS, OutlineButton, Pill, PrimaryButton, SecretOnce, TextButton, inputStyle, useIntegrationError, useWhen } from "./connections-ui";
+import { Card, CardTitle, Field, INPUT_CLASS, Pill, PrimaryButton, SecretOnce, TextButton, inputStyle, useIntegrationError, useWhen } from "./connections-ui";
 
 /**
  * Ρυθμίσεις › Συνδέσεις › Κλειδιά API (W10 screen 1, option B; ADR-378).

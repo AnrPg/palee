@@ -16653,6 +16653,8 @@
     "turnOn": "Turn on",
     "turnOff": "Turn off",
     "remove": "Remove",
+    "removeQuestion": "Remove “{door}”?",
+    "removeHint": "The door stays locked to the app; the access log keeps its entries.",
     "rulesSummary": "Entry rules: {who} ›",
     "rulesTitle": "Entry rules · {door}",
     "staffAlwaysNote": "Staff always open.",

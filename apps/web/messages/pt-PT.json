@@ -16653,6 +16653,8 @@
     "turnOn": "Ligar",
     "turnOff": "Desligar",
     "remove": "Remover",
+    "removeQuestion": "Remover «{door}»?",
+    "removeHint": "A porta deixa de abrir pela aplicação; o registo de entradas mantém as suas linhas.",
     "rulesSummary": "Regras de entrada: {who} ›",
     "rulesTitle": "Regras de entrada · {door}",
     "staffAlwaysNote": "A equipa abre sempre.",

@@ -16653,6 +16653,8 @@
     "turnOn": "Activer",
     "turnOff": "Désactiver",
     "remove": "Supprimer",
+    "removeQuestion": "Supprimer « {door} » ?",
+    "removeHint": "La porte ne s’ouvrira plus depuis l’application ; le journal des entrées garde ses lignes.",
     "rulesSummary": "Règles d’entrée : {who} ›",
     "rulesTitle": "Règles d’entrée · {door}",
     "staffAlwaysNote": "Le personnel ouvre toujours.",

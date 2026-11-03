@@ -16653,6 +16653,8 @@
     "turnOn": "Einschalten",
     "turnOff": "Ausschalten",
     "remove": "Entfernen",
+    "removeQuestion": "„{door}“ entfernen?",
+    "removeHint": "Die Tür lässt sich dann nicht mehr über die App öffnen; das Zutrittsprotokoll behält seine Einträge.",
     "rulesSummary": "Zutrittsregeln: {who} ›",
     "rulesTitle": "Zutrittsregeln · {door}",
     "staffAlwaysNote": "Das Personal öffnet immer.",

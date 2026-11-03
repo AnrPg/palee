@@ -16653,6 +16653,8 @@
     "turnOn": "Activar",
     "turnOff": "Desactivar",
     "remove": "Eliminar",
+    "removeQuestion": "¿Quitar «{door}»?",
+    "removeHint": "La puerta ya no se abrirá desde la app; el registro de entradas conserva sus líneas.",
     "rulesSummary": "Reglas de entrada: {who} ›",
     "rulesTitle": "Reglas de entrada · {door}",
     "staffAlwaysNote": "El personal siempre abre.",

@@ -586,6 +586,10 @@ defmodule PaleeWeb.OpenPlatformTest do
       assert {"granted", "booked_class", booked.id} in kinds
       assert {"denied", "no_booking_in_window", walk_in.id} in kinds
       assert {"granted", "staff", ctx.owner.id} in kinds
+
+      # W10 screen 6: the log names the person and the door.
+      assert Enum.all?(events, &(&1["door_name"] == door["name"]))
+      assert Enum.all?(events, &is_binary(&1["person_name"]))
     end
 
     test "an offline controller keeps the door locked and sends the member to the desk", ctx do
@@ -708,6 +712,8 @@ defmodule PaleeWeb.OpenPlatformTest do
         as(ctx.owner) |> get("#{ctx.admin}/access-events?kind=staff_unlock") |> json_response(200)
 
       assert event["actor_id"] == desk.id
+      assert is_binary(event["actor_name"])
+      assert event["door_name"] == door["name"]
     end
   end
 end
