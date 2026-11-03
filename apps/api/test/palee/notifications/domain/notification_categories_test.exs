@@ -29,8 +29,13 @@ defmodule Palee.Notifications.Domain.NotificationCategoriesTest do
 
       assert Enum.map(resolved, & &1.category) == Categories.category_ids()
 
-      assert Enum.all?(resolved, fn %{channels: channels} ->
-               channels == %{"in_app" => true, "push" => true}
+      assert Enum.all?(resolved, fn
+               # ADR-392: the booking email with its calendar invite, on by default.
+               %{category: "bookings", channels: channels} ->
+                 channels == %{"in_app" => true, "push" => true, "email" => true}
+
+               %{channels: channels} ->
+                 channels == %{"in_app" => true, "push" => true}
              end)
 
       assert %{locked: true} = Enum.find(resolved, &(&1.category == "account"))
@@ -66,7 +71,28 @@ defmodule Palee.Notifications.Domain.NotificationCategoriesTest do
     end
 
     test "a channel the category does not offer is untouched" do
-      assert Categories.delivers?([], :booking_approved, "email")
+      assert Categories.delivers?([], :new_follower, "email")
+    end
+  end
+
+  describe "the booking email (ADR-392)" do
+    test "only bookings offers email; it is on until turned off, whatever the bell" do
+      assert Categories.channel_on?([], "bookings", "email")
+      refute Categories.channel_on?([], "community", "email")
+      refute Categories.channel_on?([], "no_such_category", "email")
+
+      bell_off = [%{category: "bookings", channel: "in_app", enabled: false}]
+      assert Categories.channel_on?(bell_off, "bookings", "email")
+      refute Categories.channel_on?(bell_off, "bookings", "push")
+
+      off = [%{category: "bookings", channel: "email", enabled: false}]
+      refute Categories.channel_on?(off, "bookings", "email")
+      assert Categories.channel_on?(off, "bookings", "in_app")
+    end
+
+    test "the switch is changed like any other channel" do
+      assert {:ok, [{"email", false}]} = Categories.parse_change("bookings", %{"email" => false})
+      assert {:error, :invalid_change} = Categories.parse_change("coach", %{"email" => false})
     end
   end
 
