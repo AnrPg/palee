@@ -16431,7 +16431,7 @@
     "noneFilled": "لم يُدخل {name} وزن الجسم ولا سنة الميلاد.",
     "question": "ما يراه في البطاقة",
     "theirChoice": "اختياره ({choice})",
-    "display_all": "كل شيء",
+    "display_all": "الكل",
     "display_progress_only": "التقدّم فقط",
     "display_none": "لا شيء",
     "hint": "مع «التقدّم فقط» أو «لا شيء» تظهر في بطاقته عبارة «حدّده مدرّبك».",

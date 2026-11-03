@@ -146,7 +146,7 @@ describe("«What they see on the card»", () => {
     vi.mocked(saveClientFitnessDisplay).mockResolvedValue(filled);
     renderPanel();
 
-    fireEvent.click(await screen.findByRole("radio", { name: "Their choice (Everything)" }));
+    fireEvent.click(await screen.findByRole("radio", { name: "Their choice (All)" }));
     save();
 
     await waitFor(() => expect(saveClientFitnessDisplay).toHaveBeenCalledWith("access", client, null));
