@@ -143,7 +143,7 @@ defmodule Palee.Application.OrganizationPurgeTest do
 
     assert Map.keys(retained) |> Enum.sort() ==
              ~w(contexts/analytics.json contexts/coach_pay.json contexts/documents.json contexts/finance.json
-                 contexts/fiscal.json contexts/payments.json contexts/shop.json retention-manifest.json)
+                 contexts/fiscal.json contexts/payments.json contexts/programmes.json contexts/shop.json retention-manifest.json)
 
     assert [_invoice] = retained["contexts/finance.json"]["tables"]["finance_invoices"]
   end
