@@ -282,7 +282,7 @@ test.describe("Doors", () => {
     await log.getByRole("radio", { name: "Refusals and faults" }).click();
     await expect(log.getByTestId("access-row")).toHaveCount(1);
     await expect(log.getByTestId("access-row")).toContainText("Nikos K. · not let in");
-    await expect(log.getByTestId("access-row")).toContainText("No booking now · Main entrance");
+    await expect(log.getByTestId("access-row")).toContainText("No booking now · QR · Main entrance");
   });
 
   test("the door's QR checks in and opens the door: one answer", async ({ page }) => {

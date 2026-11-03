@@ -50,7 +50,7 @@ export function CheckInPanel({ skipQuestions = [] }: { skipQuestions?: string[] 
   });
 
   // ADR-159 (board 14, Q3): no sleep question on a day the night is already logged.
-  const questionKeys = (timelineQuery.data?.questions.map((question) => question.key) ?? [...QUESTION_KEYS]).filter(
+  const questionKeys = (timelineQuery.data?.questions?.map((question) => question.key) ?? [...QUESTION_KEYS]).filter(
     (key) => !skipQuestions.includes(key),
   );
   const answers = draftAnswers(draft, questionKeys);

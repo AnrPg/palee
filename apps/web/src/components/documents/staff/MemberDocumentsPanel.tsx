@@ -125,13 +125,13 @@ export function MemberDocumentsPanel({ userId, name }: { userId: string; name: s
           />
         ) : null}
       </ul>
-      {member.data && member.data.signatures.length > 0 ? (
+      {member.data && (member.data.signatures?.length ?? 0) > 0 ? (
         <>
           <h3 className="mt-4 text-sm font-bold" style={{ color: "var(--text)" }}>
             {t("signaturesHeading")}
           </h3>
           <ul>
-            {member.data.signatures.map((signature) => (
+            {(member.data.signatures ?? []).map((signature) => (
               <PersonRow
                 key={signature.id}
                 name={titles.get(signature.template_id) ?? t("documentFallback")}
