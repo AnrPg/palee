@@ -79,11 +79,16 @@ export function HubCard({ eyebrow, children, highlighted, guide }: { eyebrow?: s
   );
 }
 
+/**
+ * A card's button. Its label never wraps (a wrapped label sat off-centre,
+ * ANR 2026-11-02): put buttons in a `flex flex-wrap` row, where they grow to
+ * fill it and move to the next line when they don't fit.
+ */
 export function HubButton({ href, children, primary }: { href: string; children: ReactNode; primary?: boolean }) {
   return (
     <Link
       href={href}
-      className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded-2xl px-4 text-sm font-bold"
+      className="flex min-h-11 flex-auto items-center justify-center gap-2 whitespace-nowrap rounded-2xl px-4 text-center text-sm font-bold"
       style={{
         background: primary ? "var(--primary)" : "var(--panel-raised)",
         color: primary ? "var(--primary-contrast)" : "var(--text)",

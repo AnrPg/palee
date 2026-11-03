@@ -46,6 +46,8 @@ export const BOTTOM_NAV_HIDDEN_ROUTES: ReadonlyArray<{ id: string; pattern: RegE
   { id: "checkInScan", pattern: /^\/c\/[^/]+(?:\/|$)/ },
   // The public Partners deck (ADR-280): one full-screen card at a time.
   { id: "partnersDeck", pattern: /^\/partners\/?$/ },
+  // Talking to a box (ADR-282): a full-screen chat with its own way back (ANR 2026-11-02).
+  { id: "boxChat", pattern: /^\/b\/[^/]+\/chat\/?$/ },
   // Onboarding / first run.
   { id: "firstRun", pattern: /^\/welcome(?:\/|$)/ },
   // Auth and account set-up.

@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { ApiError } from "@/api/client";
 import {
+  allowanceAmount,
   formatScore,
   localizeAdminAssignmentError,
   localizeError,
@@ -138,5 +139,14 @@ describe("formatScore", () => {
 
   it("localizes a canonical unit without altering the numeric score", () => {
     expect(formatScore(42, "reps", "reps", translate)).toBe("42 semanticReps");
+  });
+});
+
+describe("allowanceAmount", () => {
+  it("says unlimited in words, never the API's raw token", () => {
+    expect(allowanceAmount("unlimited", translate)).toBe("clUnlimited");
+    expect(allowanceAmount(7, translate)).toBe("7");
+    expect(allowanceAmount(0, translate)).toBe("0");
+    expect(allowanceAmount(null, translate)).toBe("—");
   });
 });

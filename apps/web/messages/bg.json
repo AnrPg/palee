@@ -6727,6 +6727,7 @@
     "error_class_not_found": "Това занятие вече не е налично.",
     "error_package_not_found": "Избери активен абонаментен пакет.",
     "chatTeamAnswers": "Отговаря екипът на бокса",
+    "chatBack": "Назад",
     "chatEmptyBox": "Пиши на бокса. Ще ти отговори който от екипа е свободен.",
     "chatFrom": "{name} · {box}",
     "chatTopicLabel": "За какво става дума?",

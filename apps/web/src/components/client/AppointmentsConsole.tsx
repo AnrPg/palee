@@ -13,6 +13,7 @@ import {
   type OfferedSlot,
 } from "@/api/appointments";
 import { SemanticLabel } from "@/components/semantic-label";
+import { allowanceAmount } from "@/i18n/presentation";
 import { useSession } from "@/components/session-provider";
 import { groupSlotsByDay, isLateCancellation, splitAppointments } from "@/components/client/appointments";
 import { ClientCard, ClientPage, EmptyLine, LoadingLine, QueryProblem } from "@/components/client/ClientPage";
@@ -136,7 +137,7 @@ function AppointmentsContent() {
               <span key={item.key} className="rounded-full px-3 py-1 text-xs font-semibold" style={{ background: "var(--panel)", border: "1px solid var(--border)", color: "var(--text-soft)" }}>
                 {item.label}{" "}
                 <strong style={{ color: "var(--text)" }}>
-                  {item.value?.remaining === "unlimited" ? i18n("clUnlimited") : String(item.value?.remaining)}
+                  {allowanceAmount(item.value?.remaining, i18n)}
                 </strong>
               </span>
             ) : null,

@@ -6727,6 +6727,7 @@
     "error_class_not_found": "Deze les is niet meer beschikbaar.",
     "error_package_not_found": "Kies een actief abonnementspakket.",
     "chatTeamAnswers": "Het team van de box antwoordt",
+    "chatBack": "Terug",
     "chatEmptyBox": "Schrijf de box. Wie van het team tijd heeft, antwoordt.",
     "chatFrom": "{name} · {box}",
     "chatTopicLabel": "Waar gaat het over?",

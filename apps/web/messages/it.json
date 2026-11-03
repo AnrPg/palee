@@ -6727,6 +6727,7 @@
     "error_class_not_found": "Questa lezione non è più disponibile.",
     "error_package_not_found": "Scegli un pacchetto di abbonamento attivo.",
     "chatTeamAnswers": "Risponde il team del box",
+    "chatBack": "Indietro",
     "chatEmptyBox": "Scrivi al box. Ti risponderà chi del team è libero.",
     "chatFrom": "{name} · {box}",
     "chatTopicLabel": "Di cosa si tratta?",

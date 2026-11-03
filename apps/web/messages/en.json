@@ -6727,6 +6727,7 @@
     "error_class_not_found": "This class isn't available anymore.",
     "error_package_not_found": "Pick an active subscription package.",
     "chatTeamAnswers": "The box's team answers",
+    "chatBack": "Back",
     "chatEmptyBox": "Write to the box. Whoever on the team is free will answer.",
     "chatFrom": "{name} · {box}",
     "chatTopicLabel": "What is it about?",

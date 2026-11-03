@@ -4,7 +4,7 @@ import { useUiLocale } from "@/i18n/use-ui-locale";
 import { useUiTranslations } from "@/i18n/ui";
 import type { EffectiveEntitlement } from "@/api/my-finance";
 import { SemanticLabel } from "@/components/semantic-label";
-import { allowanceLabel } from "@/i18n/presentation";
+import { allowanceAmount, allowanceLabel } from "@/i18n/presentation";
 import { SPARK_ACTIVE_STYLE } from "@/lib/spark";
 import {
   shouldShowAllowanceQuota,
@@ -44,7 +44,7 @@ export function StatusBadge({ status }: { status: string }) {
   const style = status === "active" ? SPARK_ACTIVE_STYLE : { background: `color-mix(in srgb, ${color} 13%, transparent)`, color };
   return (
     <span
-      className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide"
+      className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide"
       style={style}
     >
       <span
@@ -96,8 +96,8 @@ export function EntitlementCard({ entitlement }: { entitlement: EffectiveEntitle
   const freezes = visibleBillingFreezes(entitlement.freezes ?? []);
   return (
     <section className="rounded-2xl p-5" style={{ background: "var(--panel-muted)", border: "1px solid var(--border)" }}>
-      <div className="flex items-center justify-between gap-3">
-        <h2 className="text-sm font-medium" style={{ color: "var(--text-soft)" }}>{i18n("yourPackageBenefitsb75c7f4")}</h2>
+      <div className="flex items-start justify-between gap-3">
+        <h2 className="min-w-0 text-sm font-medium" style={{ color: "var(--text-soft)" }}>{i18n("yourPackageBenefitsb75c7f4")}</h2>
         <StatusBadge status={entitlement.status} />
       </div>
       {entitlement.frozen_until ? (
@@ -111,19 +111,22 @@ export function EntitlementCard({ entitlement }: { entitlement: EffectiveEntitle
           <p className="mt-0.5 text-xs" style={{ color: "var(--muted)" }}>{i18n("mbPausedExplainer")}</p>
         </div>
       ) : null}
-      <div className="mt-4 flex flex-wrap gap-2">
+      {channels.length > 0 ? <div className="mt-4 flex flex-wrap gap-2">
         {channels.map((channel) => <span key={channel} className="rounded-full px-3 py-1 text-xs font-semibold" style={{ background: "var(--border)", color: "var(--text-soft)" }}><SemanticLabel value={channel} /></span>)}
-      </div>
-      <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        {allowanceEntries.map(([key, usage]) => usage ? (
-          <div key={key} className="rounded-xl p-3" style={{ background: "var(--panel-muted)" }}>
-            <p className="text-sm font-semibold" style={{ color: "var(--text)" }}>{allowanceLabel(key, i18n, entitlement.class_type_names)}</p>
-            <p className="mt-1 text-2xl font-semibold" style={{ color: "var(--primary)" }}>{String(usage.remaining)}</p>
-            {shouldShowAllowanceQuota(usage) ? <p className="text-xs" style={{ color: "var(--dim)" }}>{i18n("allowanceLeftOfLimitResets", { remaining: usage.remaining, limit: usage.limit, date: formatDate(uiLocale, usage.period_end) })}</p> : null}
-            {usage.extensions > 0 ? <p className="mt-1 text-xs" style={{ color: "var(--success)" }}>{i18n("allowanceIncludesExtensions", { count: usage.extensions })}</p> : null}
-          </div>
-        ) : null)}
-      </div>
+      </div> : null}
+      {/* Limits as tiles on the chips' left edge (ANR 2026-11-02, mockup alt A). */}
+      {allowanceEntries.length > 0 ? (
+        <ul className="mt-4 grid gap-2 sm:grid-cols-2" data-testid="entitlement-allowances">
+          {allowanceEntries.map(([key, usage]) => usage ? (
+            <li key={key} className="flex min-w-0 flex-col rounded-xl px-3 py-2.5" style={{ background: "var(--panel)" }}>
+              <p className="text-sm font-semibold" style={{ color: "var(--text-soft)" }}>{allowanceLabel(key, i18n, entitlement.class_type_names)}</p>
+              <p className="mt-0.5 text-xl font-bold tabular-nums" style={{ color: "var(--primary)" }}>{allowanceAmount(usage.remaining, i18n)}</p>
+              {shouldShowAllowanceQuota(usage) ? <p className="text-xs" style={{ color: "var(--dim)" }}>{i18n("allowanceLeftOfLimitResets", { remaining: usage.remaining, limit: usage.limit, date: formatDate(uiLocale, usage.period_end) })}</p> : null}
+              {usage.extensions > 0 ? <p className="mt-1 text-xs" style={{ color: "var(--success)" }}>{i18n("allowanceIncludesExtensions", { count: usage.extensions })}</p> : null}
+            </li>
+          ) : null)}
+        </ul>
+      ) : null}
       {freezes.length > 0 ? (
         <div className="mt-4">
           <p className="text-xs font-medium uppercase tracking-wide" style={{ color: "var(--dim)" }}>{i18n("mbFreezesTitle")}</p>

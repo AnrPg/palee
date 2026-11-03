@@ -47,10 +47,13 @@ describe("hidden routes", () => {
       "/activate-business",
       "/platform/organizations",
       "/partners",
+      "/b/kypseli/chat",
+      "/org/kypseli/b/kypseli/chat",
     ]) {
       expect(routeShowsBottomNav(path), path).toBe(false);
     }
     expect(bottomNavHiddenRoute("/workouts/w1/execute?from=box")).toBe("workoutExecution");
+    expect(bottomNavHiddenRoute("/b/kypseli/chat?topic=membership")).toBe("boxChat");
   });
 
   it("shows it on every member page", () => {

@@ -197,6 +197,9 @@ test.describe("trials", () => {
     });
 
     await page.goto(`/b/${box.slug}/chat?topic=payment`);
+    // Full screen with its own way back (ANR 2026-11-02): no bottom bar under the composer.
+    await expect(page.getByTestId("box-chat-back")).toBeVisible();
+    await expect(page.getByTestId("bottom-nav")).toHaveCount(0);
     const topics = page.getByTestId("box-chat-topics");
     await expect(topics.getByRole("button", { name: "Payment" })).toHaveAttribute("aria-pressed", "true");
     await topics.getByRole("button", { name: "Training" }).click();

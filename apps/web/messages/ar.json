@@ -6727,6 +6727,7 @@
     "error_class_not_found": "هذه الحصة لم تعد متاحة.",
     "error_package_not_found": "اختر باقة اشتراك نشطة.",
     "chatTeamAnswers": "يرد فريق الصالة",
+    "chatBack": "رجوع",
     "chatEmptyBox": "اكتب إلى الصالة. سيرد عليك من يتوفر من الفريق.",
     "chatFrom": "{name} · {box}",
     "chatTopicLabel": "بخصوص ماذا؟",

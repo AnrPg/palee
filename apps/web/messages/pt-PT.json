@@ -6727,6 +6727,7 @@
     "error_class_not_found": "Esta aula já não está disponível.",
     "error_package_not_found": "Escolhe um pacote de subscrição ativo.",
     "chatTeamAnswers": "Responde a equipa da box",
+    "chatBack": "Voltar",
     "chatEmptyBox": "Escreve à box. Responde quem da equipa estiver livre.",
     "chatFrom": "{name} · {box}",
     "chatTopicLabel": "É sobre o quê?",

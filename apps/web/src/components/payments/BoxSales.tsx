@@ -52,7 +52,7 @@ export function RenewButton({ slug }: { slug: string }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded-2xl px-4 text-sm font-bold"
+        className="flex min-h-11 flex-auto items-center justify-center gap-2 whitespace-nowrap rounded-2xl px-4 text-center text-sm font-bold"
         style={{ background: "var(--primary)", color: "var(--primary-contrast)" }}
         data-testid="pay-renew"
       >

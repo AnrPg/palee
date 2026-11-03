@@ -534,6 +534,16 @@ export function allowanceLabel(
   return semanticLabel(key, translate);
 }
 
+/**
+ * What is left of an allowance, as words: «Απεριόριστες» for an unlimited one,
+ * never the API's raw "unlimited" token; a number otherwise.
+ */
+export function allowanceAmount(value: number | string | null | undefined, translate: UiTranslator): string {
+  if (value === "unlimited") return translate("clUnlimited");
+  if (value == null || value === "") return "—";
+  return String(value);
+}
+
 // Staff and client roles read as a word for the person, never the department,
 // and a member always says what of (docs/product/ontology.md §4.3).
 const ROLE_KEYS: Record<string, string> = {
