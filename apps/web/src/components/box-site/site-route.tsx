@@ -44,16 +44,17 @@ export async function SiteRoute({ slug, language }: { slug: string; language: Si
   if (!page) notFound();
   const suffix = language === "en" ? "/en" : "";
   if (page.box.slug !== slug) permanentRedirect(`/b/${page.box.slug}${suffix}`);
-  const site = await loadPublicSite(page.box.slug);
-  if (!site) {
-    if (language === "en") redirect(`/b/${page.box.slug}`);
-    return <PublicBoxView page={page} />;
-  }
-  if (language === "en" && site.language === "en") redirect(`/b/${page.box.slug}`);
-
-  const jar = await cookies();
   const requestHeaders = await headers();
   const standalone = Boolean(requestHeaders.get(SITE_HOST_HEADER));
+  const home = standalone ? "/" : `/b/${page.box.slug}`;
+  const site = await loadPublicSite(page.box.slug);
+  if (!site) {
+    if (language === "en") redirect(home);
+    return <PublicBoxView page={page} />;
+  }
+  if (language === "en" && site.language === "en") redirect(home);
+
+  const jar = await cookies();
   const appLocaleChosen = isAppLocale(jar.get(LOCALE_COOKIE)?.value);
   const choice = rememberedSiteLanguage(jar.get(SITE_LANGUAGE_COOKIE)?.value, page.box.slug);
 
