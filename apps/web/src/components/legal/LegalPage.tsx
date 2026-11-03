@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { getFormatter, getTranslations } from "next-intl/server";
 
 /** ADR-267: the date of the draft both texts show until the law consultant signs them off. */
-export const LEGAL_DRAFT_DATE = "2026-10-29";
+export const LEGAL_DRAFT_DATE = "2026-11-03";
 
 /** The values the legal adviser fills in; until then each shows as a visible "[…]" placeholder. */
 export async function legalPlaceholders() {
@@ -13,7 +13,6 @@ export async function legalPlaceholders() {
     address: t("placeholderAddress"),
     contact: t("placeholderContact"),
     authority: t("placeholderAuthority"),
-    law: t("placeholderLaw"),
   };
 }
 

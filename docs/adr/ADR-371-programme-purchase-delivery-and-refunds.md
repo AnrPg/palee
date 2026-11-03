@@ -82,7 +82,11 @@ grant (ADR-225). The store apps may not sell digital-only services
 - Programme revenue shows as stream `other` with its source; ADR-192
   reports can refine it by `source_type` without a migration.
 - The wording of the start request and refund rules is a draft for legal
-  review (`Programmes.Terms`).
+  review (`Programmes.Terms`). The buyer-facing terms were drafted on
+  2026-11-03 as the «Προγράμματα προπόνησης» section of `/terms`
+  (`legal.terms.programmesTitle` and `programmesBody1..5` in all 12 locales),
+  with the reasoning and the lawyer's list in
+  `docs/research/legal-terms-v3.2-2026-11-03.md`.
 - An hourly sweep (`Programmes.Sweep`, `ProgrammeSweepJob` at :29) marks
   purchases `completed` after their last day on the seller's clock, and
   cancels `pending_payment` purchases older than a day whose checkout never
