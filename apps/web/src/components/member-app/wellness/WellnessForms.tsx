@@ -45,6 +45,8 @@ import {
 import { ErrorLine, Pills, PrimaryButton, QuietButton, SheetSection, WellnessSheet } from "./WellnessSheet";
 import { TimeInput } from "@/components/ui/DateInput";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
+import { MealFoods } from "@/components/body-devices/MealFoods";
+import type { MealFood } from "@/lib/body-devices";
 
 const SLEEP_KINDS: ("night" | "nap")[] = ["night", "nap"];
 
@@ -223,6 +225,9 @@ export function MealSheet({
     failed: false,
   });
   const fitKey = plan ? "plan" : "own";
+  // ADR-376: what was eaten, from a barcode scan or the person's own foods.
+  const [foods, setFoods] = useState<MealFood[]>(Array.isArray(value.foods) ? (value.foods as MealFood[]) : []);
+  const tFoods = useTranslations("BodyDevices");
 
   async function upload(file: File) {
     const token = tokens!.access_token;
@@ -252,6 +257,7 @@ export function MealSheet({
         ...(Object.keys(cleanPortions).length ? { portions: cleanPortions } : {}),
         ...(hunger ? { hunger_before: hunger } : {}),
         ...(fullness ? { fullness_after: fullness } : {}),
+        ...(foods.length ? { foods } : {}),
       };
       if (meal) return updateWellnessEntry(token, meal.id, { value: mealValue });
       const at = occurredAt(day, new Date());
@@ -322,6 +328,9 @@ export function MealSheet({
             {picked.uploading ? t("meal.photoUploading") : t("meal.photoPrivate")}
           </p>
         )}
+      </SheetSection>
+      <SheetSection label={tFoods("foods.label")}>
+        <MealFoods foods={foods} onChange={setFoods} />
       </SheetSection>
       <label className="flex flex-col gap-1 text-sm font-semibold" style={{ color: "var(--text)" }}>
         {t("meal.note")}
