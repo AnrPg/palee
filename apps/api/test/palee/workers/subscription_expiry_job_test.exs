@@ -164,6 +164,122 @@ defmodule Palee.Workers.SubscriptionExpiryJobTest do
     assert length(notifications(ctx.member.id)) == 2
   end
 
+  describe "the box's reminder schedule (ADR-500)" do
+    defp days_ago(days),
+      do: DateTime.add(DateTime.utc_now(), -days * 86_400 - 60, :second)
+
+    defp set_sent(subscription, field, at) do
+      Repo.query!(
+        "UPDATE membership_package_subscriptions SET #{field} = $1 WHERE id = $2",
+        [at, Ecto.UUID.dump!(subscription.id)]
+      )
+    end
+
+    test "reminds on the day the subscription ends, once", ctx do
+      end_subscription_on(ctx.subscription, gym_today())
+
+      assert :ok = perform_job(SubscriptionExpiryJob, %{})
+      assert :ok = perform_job(SubscriptionExpiryJob, %{})
+
+      # The "days before" reminder does not fire on the end day too.
+      assert [["subscription_expiring", payload]] = notifications(ctx.member.id)
+      assert payload["days_left"] == 0
+    end
+
+    test "the reminder before the end and the end-day one both arrive", ctx do
+      end_subscription_on(ctx.subscription, Date.add(gym_today(), 1))
+      assert :ok = perform_job(SubscriptionExpiryJob, %{})
+
+      end_subscription_on(ctx.subscription, gym_today())
+      assert :ok = perform_job(SubscriptionExpiryJob, %{})
+
+      assert [1, 0] =
+               Enum.map(notifications(ctx.member.id), fn [_type, payload] ->
+                 payload["days_left"]
+               end)
+    end
+
+    test "the day after names no access date when the box gives no grace days", ctx do
+      {:ok, _} = Finance.update_finance_settings(ctx.context, %{subscription_grace_days: 0})
+      end_subscription_on(ctx.subscription, Date.add(gym_today(), -1))
+
+      assert :ok = perform_job(SubscriptionExpiryJob, %{})
+
+      assert [["subscription_grace", payload]] =
+               Enum.filter(notifications(ctx.member.id), &(hd(&1) == "subscription_grace"))
+
+      assert payload["grace_until"] == nil
+      assert payload["ends_on"] == Date.to_iso8601(Date.add(gym_today(), -1))
+    end
+
+    test "the box can turn off the end-day and day-after reminders", ctx do
+      {:ok, _} =
+        Finance.update_finance_settings(ctx.context, %{
+          subscription_end_day_reminder: false,
+          subscription_day_after_reminder: false
+        })
+
+      end_subscription_on(ctx.subscription, gym_today())
+      assert :ok = perform_job(SubscriptionExpiryJob, %{})
+      # Only the "days before" reminder, which now also covers the end day.
+      assert [["subscription_expiring", %{"days_left" => 0}]] = notifications(ctx.member.id)
+
+      end_subscription_on(ctx.subscription, Date.add(gym_today(), -1))
+      assert :ok = perform_job(SubscriptionExpiryJob, %{})
+      assert length(notifications(ctx.member.id)) == 1
+    end
+
+    test "then every interval days until the member renews", ctx do
+      {:ok, _} =
+        Finance.update_finance_settings(ctx.context, %{payment_reminder_interval_days: 7})
+
+      end_subscription_on(ctx.subscription, Date.add(gym_today(), -8))
+      set_sent(ctx.subscription, "grace_notice_sent_at", days_ago(7))
+
+      assert :ok = perform_job(SubscriptionExpiryJob, %{})
+      assert :ok = perform_job(SubscriptionExpiryJob, %{})
+
+      followups =
+        Enum.filter(notifications(ctx.member.id), fn [_type, payload] -> payload["followup"] end)
+
+      assert [["subscription_grace", payload]] = followups
+      assert payload["grace_until"] == nil
+
+      # Six days after the last one: not yet; seven: again.
+      set_sent(ctx.subscription, "renewal_followup_sent_at", days_ago(6))
+      assert :ok = perform_job(SubscriptionExpiryJob, %{})
+      assert length(Enum.filter(notifications(ctx.member.id), &elem_followup?/1)) == 1
+
+      # A week later (the per-day dedupe key is today's: the earlier row goes).
+      Repo.query!("DELETE FROM notifications WHERE user_id = $1", [
+        Ecto.UUID.dump!(ctx.member.id)
+      ])
+
+      set_sent(ctx.subscription, "renewal_followup_sent_at", days_ago(7))
+      assert :ok = perform_job(SubscriptionExpiryJob, %{})
+      assert length(Enum.filter(notifications(ctx.member.id), &elem_followup?/1)) == 1
+    end
+
+    test "a member who owes money gets the payment reminder instead of the follow-up", ctx do
+      end_subscription_on(ctx.subscription, Date.add(gym_today(), -8))
+      set_sent(ctx.subscription, "grace_notice_sent_at", days_ago(7))
+
+      {:ok, invoice} =
+        Finance.create_invoice(ctx.context, ctx.subscription.membership_id, %{
+          amount_cents: 3_000,
+          description: "Monthly",
+          due_date: Date.add(gym_today(), -8)
+        })
+
+      {:ok, _} = Finance.issue_invoice(ctx.context, invoice.id, %{})
+
+      assert :ok = perform_job(SubscriptionExpiryJob, %{})
+      assert Enum.filter(notifications(ctx.member.id), &elem_followup?/1) == []
+    end
+
+    defp elem_followup?([_type, payload]), do: payload["followup"] == true
+  end
+
   defp tenant_context_fixture(owner, name) do
     {:ok, organization} = Organizations.create_organization(%{name: name})
 

@@ -9,10 +9,10 @@
     "capacityLabel": "Lugares em cada nova aula",
     "capacityHelp": "Quantas pessoas podem reservar uma nova aula. Podes alterar em cada aula.",
     "autoApproveLabel": "Confirmar reservas automaticamente",
-    "autoApproveHelp": "Ligado: a reserva fica confirmada de imediato. Desligado: cada reserva é um pedido que alguém da equipa tem de aprovar.",
+    "autoApproveHelp": "Ligado: a reserva fica confirmada de imediato, sem espera. Desligado: cada reserva é um pedido que alguém da equipa aprova, e defines quanto tempo espera por resposta.",
     "approvalWaitLabel": "Tempo para responder a um pedido de reserva",
-    "approvalWaitHelp": "Só para aulas sem confirmação automática. Se ninguém da equipa responder neste tempo, o pedido é cancelado, a visita volta para o membro e o lugar passa para a pessoa seguinte na lista de espera. Um pedido nunca espera para lá do início da aula. Não é quando as reservas abrem: isso é «Abertura das reservas».",
-    "approvalWaitClassHelp": "Se ninguém aprovar o pedido neste tempo, é cancelado automaticamente. Só se aplica sem confirmação automática.",
+    "approvalWaitHelp": "Se ninguém da equipa responder neste tempo, o pedido é cancelado, a visita volta para o membro e o lugar passa para a pessoa seguinte na lista de espera. «Sem limite»: o pedido espera resposta até ao início da aula. Não é quando as reservas abrem: isso é «Abertura das reservas».",
+    "approvalWaitClassHelp": "Se ninguém da equipa aprovar o pedido neste tempo, é cancelado automaticamente e o lugar passa para a pessoa seguinte na lista de espera. «Sem limite»: o pedido espera resposta até ao início da aula.",
     "approvalWaitNoLimit": "Sem limite (até ao início)",
     "bookingWindowLabel": "Abertura das reservas (dias antes da aula)",
     "bookingWindowHelp": "O mais cedo que um membro pode reservar: estes dias antes da aula. As reservas ficam abertas até ao início. Com «Sem limite» pode reservar assim que a aula está no horário. Um pacote de subscrição pode definir o seu.",
@@ -214,7 +214,6 @@
     "scheduledAt": "Agendado em",
     "capacity": "Capacidade",
     "timeoutMinutes": "Minutos de tempo limite",
-    "autoApproveBookingsForThisSlot": "Aprovar automaticamente as reservas desta aula",
     "deleteSlot": "Eliminar aula",
     "saveChanges": "Guardar alterações",
     "createSlot": "Criar aula",
@@ -779,7 +778,7 @@
     "displayLabeld747868": "Etiqueta de exibição",
     "addLeveld2d215f": "+ Adicionar nível",
     "reminderIntervalDaysee3ba34": "Intervalo de lembrete (dias)",
-    "howOftenInDaysAMemberWithAn710fa76": "Com que frequência (em dias) um membro com saldo pendente recebe uma notificação de lembrete de pagamento. O lembrete se repete até que o saldo seja totalmente liquidado.",
+    "howOftenInDaysAMemberWithAn710fa76": "Depois, de quantos em quantos dias o lembrete se repete, até o membro renovar ou sair. Quem deve dinheiro recebe um lembrete de pagamento ao mesmo ritmo até liquidar o saldo.",
     "applicationSettingsIntroduction8f2e9b7": "introdução às configurações do aplicativo",
     "appConfigurations1e15749": "Configurações de aplicativos.",
     "globalSettingsForAppearanceEngagementRulesAndWorkout915168c": "Configurações globais para aparência, regras de engajamento e definições de nível de treino. As alterações são aplicadas imediatamente em todo o aplicativo.",
@@ -2655,7 +2654,6 @@
     "featureOptionalClassSettings": "Definições opcionais da aula",
     "featureCapacity": "Capacidade",
     "featureTimeoutMinutes": "Minutos de tempo limite",
-    "featureAutoApprove": "Aprovar automaticamente",
     "featureCreating": "Criando…",
     "featureReceipt": "Recibo",
     "featureReceiptDocumentTitle": "Recibo {reference}",
@@ -4897,7 +4895,12 @@
     "pkgFieldBookingDailyLimitSuffix": "{count, plural, one {aula por dia} other {aulas por dia}}",
     "pkgFieldBookingOpenBookingsLimit": "Reservas em aberto",
     "pkgFieldBookingOpenBookingsLimitHint": "Quantas aulas futuras um membro pode ter reservadas ao mesmo tempo.",
-    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {aula futura} other {aulas futuras}}"
+    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {aula futura} other {aulas futuras}}",
+    "subscriptionEndsTodayTitle": "A tua subscrição termina hoje",
+    "subscriptionEndsTodayBody": "{package} termina hoje. Renova-a para continuares a reservar aulas.",
+    "subscriptionEndedRenewBody": "{package} terminou a {date}. Renova-a para voltares a reservar aulas.",
+    "subscriptionEndDayReminder": "Lembrete no dia em que termina",
+    "subscriptionDayAfterReminder": "Lembrete no dia seguinte ao fim"
   },
   "PrSharing": {
     "gymLabel": "Onde fizeste este PR?",
@@ -9871,8 +9874,9 @@
       "title": "Assistente de IA",
       "description": "O assistente de WOD, além de sugestões de escalonamento e registo por voz com a sua própria chave. Um coach aprova cada sugestão.",
       "enable": "Sugestões de adaptação",
-      "enableHint": "Desativadas por predefinição. Precisam de uma chave API.",
-      "key": "Chave API (Anthropic)",
+      "enableHint": "Para um atleta com uma lesão registada pelo ginásio, a IA sugere como adaptar o treino: menos carga, menos repetições ou outro exercício. Um coach aprova cada sugestão antes de o atleta a ver. É precisa IA porque cada combinação de treino e lesão é diferente e regras fixas não as cobrem.",
+      "key": "Chave Claude (Anthropic)",
+      "keyHint": "As sugestões de adaptação e o registo por voz precisam dela. O uso é cobrado na tua própria conta Anthropic.",
       "keySet": "Está definida uma chave terminada em {last4}.",
       "keyRejected": "O fornecedor recusou a chave terminada em {last4}. Adicione uma nova chave.",
       "keyMissing": "Nenhuma chave definida.",
@@ -9881,8 +9885,8 @@
       "removeKey": "Remover chave",
       "model": "Modelo (opcional)",
       "saveModel": "Guardar modelo",
-      "usage": "Este mês · sugestões: {count} · custo: ${cost}",
-      "privacy": "Só são enviados o treino e as lesões registadas pelo ginásio, sem nomes. A chave nunca mais é mostrada."
+      "usage": "Este mês · {count, plural, one {# sugestão} other {# sugestões}} · {voice, plural, one {# rascunho por voz} other {# rascunhos por voz}} · custo: ${cost}",
+      "privacy": "Não são enviados nomes. As sugestões enviam o treino e as lesões registadas pelo ginásio. O registo por voz envia só o texto do que o membro disse. A chave nunca mais é mostrada."
     },
     "queue": {
       "eyebrow": "Os meus clientes",
@@ -9946,7 +9950,7 @@
     },
     "settings": {
       "enable": "Registo por voz",
-      "enableHint": "Os membros gravam o treino e verificam um rascunho antes de guardar. O áudio não é guardado."
+      "enableHint": "Os membros dizem por palavras suas o que fizeram e a IA transforma isso em exercícios, séries, repetições e cargas. O membro revê o rascunho antes de guardar. É precisa IA para perceber a fala livre, como «três séries de dez com 60». O áudio não é guardado."
     }
   },
   "Pickers": {
@@ -13440,7 +13444,9 @@
         "community_partners_enabled": "Parceiros de treino",
         "trials_enabled": "Experiências",
         "trials_seats_per_class": "Lugares de experiência por aula",
-        "trials_approval": "Aprovação de experiências"
+        "trials_approval": "Aprovação de experiências",
+        "finance_subscription_end_day_reminder": "Lembrete no dia em que termina",
+        "finance_subscription_day_after_reminder": "Lembrete no dia seguinte ao fim"
       }
     }
   },

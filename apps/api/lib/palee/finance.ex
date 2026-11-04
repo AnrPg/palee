@@ -471,8 +471,8 @@ defmodule Palee.Finance do
   def update_membership_reminder_timestamp(context, membership_id),
     do: scoped(context, fn -> update_membership_reminder_timestamp(membership_id) end)
 
-  def subscriptions_needing_expiry_notice(context, kind, days),
-    do: scoped(context, fn -> FinanceStore.subscriptions_needing_expiry_notice(kind, days) end)
+  def subscriptions_needing_expiry_notice(context, kind, opts),
+    do: scoped(context, fn -> FinanceStore.subscriptions_needing_expiry_notice(kind, opts) end)
 
   # ADR-248: withdrawal (14 days) from a package bought online.
   def withdrawal_facts(context, payment_id),

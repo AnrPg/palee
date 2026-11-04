@@ -52,6 +52,18 @@ defmodule PaleeWeb.AdminSettingsController do
     description: "Days before a subscription ends to remind the member (0 = no reminder)"
   }
 
+  # ADR-500: the rest of the reminder schedule of a subscription not renewed.
+  @end_day_reminder_schema %Schema{
+    type: :boolean,
+    description: "Also remind the member on the day the subscription ends"
+  }
+
+  @day_after_reminder_schema %Schema{
+    type: :boolean,
+    description:
+      "Also remind the member on the day after it ended; then every payment_reminder_interval_days until they renew or leave"
+  }
+
   @grace_days_schema %Schema{
     type: :integer,
     minimum: 0,
@@ -66,6 +78,8 @@ defmodule PaleeWeb.AdminSettingsController do
       id: %Schema{type: :string, format: :uuid, nullable: true},
       payment_reminder_interval_days: %Schema{type: :integer, minimum: 1},
       subscription_expiry_reminder_days: @expiry_reminder_days_schema,
+      subscription_end_day_reminder: @end_day_reminder_schema,
+      subscription_day_after_reminder: @day_after_reminder_schema,
       subscription_grace_days: @grace_days_schema,
       document_mode: %Schema{type: :string, enum: ["invoice", "receipt"]},
       package_modules: %Schema{type: :array, items: %Schema{type: :string}},
@@ -75,6 +89,8 @@ defmodule PaleeWeb.AdminSettingsController do
     required: [
       :payment_reminder_interval_days,
       :subscription_expiry_reminder_days,
+      :subscription_end_day_reminder,
+      :subscription_day_after_reminder,
       :subscription_grace_days,
       :document_mode
     ]
@@ -217,6 +233,8 @@ defmodule PaleeWeb.AdminSettingsController do
         properties: %{
           payment_reminder_interval_days: %Schema{type: :integer, minimum: 1},
           subscription_expiry_reminder_days: @expiry_reminder_days_schema,
+          subscription_end_day_reminder: @end_day_reminder_schema,
+          subscription_day_after_reminder: @day_after_reminder_schema,
           subscription_grace_days: @grace_days_schema,
           document_mode: %Schema{type: :string, enum: ["invoice", "receipt"]},
           package_modules: %Schema{

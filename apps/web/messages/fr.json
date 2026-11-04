@@ -9,10 +9,10 @@
     "capacityLabel": "Places dans chaque nouveau cours",
     "capacityHelp": "Combien de personnes peuvent réserver un nouveau cours. Tu peux le changer sur chaque cours.",
     "autoApproveLabel": "Confirmer les réservations automatiquement",
-    "autoApproveHelp": "Activé : la réservation est confirmée tout de suite. Désactivé : chaque réservation est une demande qu'un membre de l'équipe doit approuver.",
+    "autoApproveHelp": "Activé : la réservation est confirmée tout de suite, sans attente. Désactivé : chaque réservation est une demande qu'un membre de l'équipe approuve, et tu choisis combien de temps elle attend une réponse.",
     "approvalWaitLabel": "Délai pour répondre à une demande de réservation",
-    "approvalWaitHelp": "Seulement pour les cours sans confirmation automatique. Si personne de l'équipe ne répond dans ce délai, la demande est annulée, la visite revient au membre et la place passe à la personne suivante sur la liste d'attente. Une demande n'attend jamais après le début du cours. Ce n'est pas l'ouverture des réservations : c'est « Ouverture des réservations ».",
-    "approvalWaitClassHelp": "Si personne n'approuve la demande dans ce délai, elle est annulée automatiquement. S'applique seulement sans confirmation automatique.",
+    "approvalWaitHelp": "Si personne de l'équipe ne répond dans ce délai, la demande est annulée, la visite revient au membre et la place passe à la personne suivante sur la liste d'attente. « Sans limite » : la demande attend une réponse jusqu'au début du cours. Ce n'est pas l'ouverture des réservations : c'est « Ouverture des réservations ».",
+    "approvalWaitClassHelp": "Si personne de l'équipe n'approuve la demande dans ce délai, elle est annulée automatiquement et la place passe à la personne suivante sur la liste d'attente. « Sans limite » : la demande attend une réponse jusqu'au début du cours.",
     "approvalWaitNoLimit": "Sans limite (jusqu'au début du cours)",
     "bookingWindowLabel": "Ouverture des réservations (jours avant le cours)",
     "bookingWindowHelp": "Au plus tôt, un membre peut réserver ce nombre de jours avant le cours. Les réservations restent ouvertes jusqu'au début du cours. Avec « Sans limite », un cours se réserve dès qu'il est au planning. Un forfait d'abonnement peut fixer le sien.",
@@ -214,7 +214,6 @@
     "scheduledAt": "Prévu à",
     "capacity": "Capacité",
     "timeoutMinutes": "Délai d'expiration (minutes)",
-    "autoApproveBookingsForThisSlot": "Approuver automatiquement les réservations de ce cours",
     "deleteSlot": "Supprimer le cours",
     "saveChanges": "Enregistrer les modifications",
     "createSlot": "Créer un cours",
@@ -779,7 +778,7 @@
     "displayLabeld747868": "Libellé affiché",
     "addLeveld2d215f": "+ Ajouter un niveau",
     "reminderIntervalDaysee3ba34": "Intervalle de rappel (jours)",
-    "howOftenInDaysAMemberWithAn710fa76": "À quelle fréquence (en jours) un membre ayant un solde impayé reçoit une notification de rappel de paiement. Le rappel se répète jusqu'à ce que le solde soit entièrement réglé.",
+    "howOftenInDaysAMemberWithAn710fa76": "Ensuite, tous les combien de jours le rappel se répète, jusqu’à ce que le membre renouvelle ou parte. Un membre qui doit de l’argent reçoit un rappel de paiement au même rythme jusqu’au règlement.",
     "applicationSettingsIntroduction8f2e9b7": "introduction aux paramètres de l'application",
     "appConfigurations1e15749": "Configuration de l’application.",
     "globalSettingsForAppearanceEngagementRulesAndWorkout915168c": "Réglages globaux de l’apparence, des règles d’engagement et des niveaux d’entraînement. Les modifications s’appliquent immédiatement dans toute l’application.",
@@ -2655,7 +2654,6 @@
     "featureOptionalClassSettings": "Paramètres facultatifs du cours",
     "featureCapacity": "Capacité",
     "featureTimeoutMinutes": "Délai d’expiration (minutes)",
-    "featureAutoApprove": "Approuver automatiquement",
     "featureCreating": "Création…",
     "featureReceipt": "Reçu",
     "featureReceiptDocumentTitle": "Reçu {reference}",
@@ -4897,7 +4895,12 @@
     "pkgFieldBookingDailyLimitSuffix": "{count, plural, one {cours par jour} other {cours par jour}}",
     "pkgFieldBookingOpenBookingsLimit": "Réservations ouvertes",
     "pkgFieldBookingOpenBookingsLimitHint": "Combien de cours à venir un membre peut avoir réservés en même temps.",
-    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {cours à venir} other {cours à venir}}"
+    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {cours à venir} other {cours à venir}}",
+    "subscriptionEndsTodayTitle": "Ton abonnement se termine aujourd’hui",
+    "subscriptionEndsTodayBody": "{package} se termine aujourd’hui. Renouvelle-le pour continuer à réserver des cours.",
+    "subscriptionEndedRenewBody": "{package} s’est terminé le {date}. Renouvelle-le pour réserver à nouveau des cours.",
+    "subscriptionEndDayReminder": "Rappel le jour de la fin",
+    "subscriptionDayAfterReminder": "Rappel le lendemain de la fin"
   },
   "PrSharing": {
     "gymLabel": "Où as-tu réalisé ce PR ?",
@@ -9871,8 +9874,9 @@
       "title": "Assistant IA",
       "description": "L'assistant WOD, ainsi que les suggestions de scale et la saisie vocale avec ta propre clé. Un coach approuve chaque suggestion.",
       "enable": "Suggestions de scale",
-      "enableHint": "Désactivées par défaut. Nécessitent une clé API.",
-      "key": "Clé API (Anthropic)",
+      "enableHint": "Pour un athlète avec une blessure enregistrée par la box, l'IA propose comment adapter l'entraînement : moins de charge, moins de répétitions ou un autre mouvement. Un coach valide chaque suggestion avant que l'athlète la voie. L'IA est nécessaire car chaque combinaison d'entraînement et de blessure est différente et des règles fixes ne peuvent pas toutes les couvrir.",
+      "key": "Clé Claude (Anthropic)",
+      "keyHint": "Les suggestions de scale et la saisie vocale en ont besoin. L'usage est facturé sur ton propre compte Anthropic.",
       "keySet": "Une clé se terminant par {last4} est définie.",
       "keyRejected": "Le fournisseur a refusé la clé se terminant par {last4}. Ajoute une nouvelle clé.",
       "keyMissing": "Aucune clé définie.",
@@ -9881,8 +9885,8 @@
       "removeKey": "Supprimer la clé",
       "model": "Modèle (facultatif)",
       "saveModel": "Enregistrer le modèle",
-      "usage": "Ce mois-ci · suggestions : {count} · coût : ${cost}",
-      "privacy": "Seuls l'entraînement et les blessures enregistrées par la box sont envoyés, sans noms. La clé n'est plus jamais affichée."
+      "usage": "Ce mois-ci · {count, plural, one {# suggestion} other {# suggestions}} · {voice, plural, one {# brouillon vocal} other {# brouillons vocaux}} · coût : ${cost}",
+      "privacy": "Aucun nom n'est envoyé. Les suggestions envoient l'entraînement et les blessures enregistrées par la box. La saisie vocale envoie seulement le texte de ce que le membre a dit. La clé n'est plus jamais affichée."
     },
     "queue": {
       "eyebrow": "Mes clients",
@@ -9946,7 +9950,7 @@
     },
     "settings": {
       "enable": "Saisie vocale",
-      "enableHint": "Les membres de la box enregistrent leur entraînement et vérifient un brouillon avant de l'enregistrer. L'audio n'est pas conservé."
+      "enableHint": "Les membres disent avec leurs mots ce qu'ils ont fait et l'IA le transforme en exercices, séries, répétitions et charges. Le membre vérifie le brouillon avant d'enregistrer. L'IA est nécessaire pour comprendre la parole libre, comme « trois séries de dix à 60 ». L'audio n'est pas conservé."
     }
   },
   "Pickers": {
@@ -13440,7 +13444,9 @@
         "community_partners_enabled": "Partenaires d'entraînement",
         "trials_enabled": "Essais",
         "trials_seats_per_class": "Places d'essai par cours",
-        "trials_approval": "Validation des essais"
+        "trials_approval": "Validation des essais",
+        "finance_subscription_end_day_reminder": "Rappel le jour de la fin",
+        "finance_subscription_day_after_reminder": "Rappel le lendemain de la fin"
       }
     }
   },

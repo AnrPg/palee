@@ -7062,6 +7062,8 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
         %{
           payment_reminder_interval_days: 7,
           subscription_expiry_reminder_days: 5,
+          subscription_end_day_reminder: true,
+          subscription_day_after_reminder: true,
           subscription_grace_days: 3,
           entitlement_enforcement_mode: "observe",
           entitlement_timezone: "Europe/Athens",
@@ -7099,6 +7101,8 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
       organization_id: s.organization_id,
       payment_reminder_interval_days: s.payment_reminder_interval_days,
       subscription_expiry_reminder_days: s.subscription_expiry_reminder_days,
+      subscription_end_day_reminder: s.subscription_end_day_reminder,
+      subscription_day_after_reminder: s.subscription_day_after_reminder,
       subscription_grace_days: s.subscription_grace_days,
       entitlement_enforcement_mode: s.entitlement_enforcement_mode,
       entitlement_timezone: s.entitlement_timezone,
@@ -7263,31 +7267,80 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
     :ok
   end
 
+  # Memberships whose subscription notices go out.
+  @noticed_statuses ["active", "expiring", "trial", "comped"]
+
+  # ADR-500: the reminder schedule of a subscription that is not renewed.
+  #   * :expiry_reminder – `days` before it ends (not on the end day itself
+  #     when the box also reminds on that day);
+  #   * :end_day – on the day it ends;
+  #   * :grace_notice – the day after (a missed daily run still sends it
+  #     within `lookback` days);
+  #   * :renewal_followup – then every `interval` days until the member
+  #     renews or leaves; a member who owes money gets the payment reminder
+  #     instead (PaymentReminderJob), never both.
   @impl true
-  def subscriptions_needing_expiry_notice(:expiry_reminder, days) when days > 0 do
+  def subscriptions_needing_expiry_notice(:expiry_reminder, %{days: days} = opts) when days > 0 do
     today = GymClock.today()
+    first_day = if Map.get(opts, :skip_end_day, false), do: Date.add(today, 1), else: today
 
     :expiry_reminder_sent_at
-    |> subscription_notices(today, Date.add(today, days))
+    |> subscription_notices(first_day, Date.add(today, days))
     # A package with its own reminder days (ADR-097) is reminded by
     # PackageExpiryReminderJob on that day instead, so members get one reminder.
     |> Enum.reject(&((package_terms(&1.params_snapshot)[:expiry_reminder_days] || 0) > 0))
     |> Enum.map(&Map.delete(&1, :params_snapshot))
   end
 
-  def subscriptions_needing_expiry_notice(:grace_notice, days) when days > 0 do
+  def subscriptions_needing_expiry_notice(:end_day, _opts) do
     today = GymClock.today()
 
-    :grace_notice_sent_at
-    |> subscription_notices(Date.add(today, -days), Date.add(today, -1))
+    :end_day_notice_sent_at
+    |> subscription_notices(today, today)
     |> Enum.map(&Map.delete(&1, :params_snapshot))
   end
 
-  def subscriptions_needing_expiry_notice(_kind, _days), do: []
+  def subscriptions_needing_expiry_notice(:grace_notice, %{lookback: lookback}) do
+    today = GymClock.today()
+
+    :grace_notice_sent_at
+    |> subscription_notices(Date.add(today, -max(lookback, 1)), Date.add(today, -1))
+    |> Enum.map(&Map.delete(&1, :params_snapshot))
+  end
+
+  def subscriptions_needing_expiry_notice(:renewal_followup, %{interval: interval})
+      when interval > 0 do
+    today = GymClock.today()
+
+    ended =
+      nil
+      # The membership turns "expired" once the slack is over; the follow-ups
+      # go on until the member renews or leaves.
+      |> subscription_notices(nil, Date.add(today, -1), ["expired" | @noticed_statuses])
+      |> Enum.filter(fn subscription ->
+        anchor =
+          [subscription.grace_notice_sent_at, subscription.renewal_followup_sent_at]
+          |> Enum.reject(&is_nil/1)
+          |> Enum.map(&GymClock.today/1)
+          |> Enum.max(Date, fn -> Date.add(subscription.ends_on, 1) end)
+
+        Date.diff(today, anchor) >= interval
+      end)
+
+    balances = outstanding_balance_per_membership(Enum.map(ended, & &1.membership_id))
+
+    ended
+    |> Enum.reject(&(Map.get(balances, &1.membership_id, 0) > 0))
+    |> Enum.map(
+      &Map.drop(&1, [:params_snapshot, :grace_notice_sent_at, :renewal_followup_sent_at])
+    )
+  end
+
+  def subscriptions_needing_expiry_notice(_kind, _opts), do: []
 
   # Active subscriptions ending between the two days that were not renewed
   # (no later subscription for the same membership) and not yet notified.
-  defp subscription_notices(sent_field, first_day, last_day) do
+  defp subscription_notices(sent_field, first_day, last_day, statuses \\ @noticed_statuses) do
     from(subscription in MembershipPackageSubscription, as: :subscription)
     |> tenant_scope()
     |> join(:inner, [subscription], membership in Membership,
@@ -7298,15 +7351,10 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
     )
     |> where([subscription], subscription.status == "active")
     |> where([subscription], not is_nil(subscription.ends_on))
-    |> where(
-      [subscription],
-      subscription.ends_on >= ^first_day and subscription.ends_on <= ^last_day
-    )
-    |> where([subscription], is_nil(field(subscription, ^sent_field)))
-    |> where(
-      [_subscription, membership],
-      membership.status in ["active", "expiring", "trial", "comped"]
-    )
+    |> where([subscription], subscription.ends_on <= ^last_day)
+    |> ends_from(first_day)
+    |> not_yet_sent(sent_field)
+    |> where([_subscription, membership], membership.status in ^statuses)
     # ADR-220: a member who is leaving chose this end; no reminders about it.
     |> where([_subscription, membership], is_nil(membership.left_at))
     |> where(
@@ -7326,14 +7374,28 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
       user_id: membership.user_id,
       ends_on: subscription.ends_on,
       package_name: coalesce(package.name, subscription.package_code_snapshot),
-      params_snapshot: subscription.params_snapshot
+      params_snapshot: subscription.params_snapshot,
+      grace_notice_sent_at: subscription.grace_notice_sent_at,
+      renewal_followup_sent_at: subscription.renewal_followup_sent_at
     })
     |> Repo.all()
   end
 
+  defp ends_from(query, nil), do: query
+  defp ends_from(query, first_day), do: where(query, [s], s.ends_on >= ^first_day)
+
+  defp not_yet_sent(query, nil), do: query
+  defp not_yet_sent(query, field), do: where(query, [s], is_nil(field(s, ^field)))
+
   @impl true
   def mark_subscription_notice_sent(subscription_id, kind) do
-    field = if kind == :grace_notice, do: :grace_notice_sent_at, else: :expiry_reminder_sent_at
+    field =
+      case kind do
+        :grace_notice -> :grace_notice_sent_at
+        :end_day -> :end_day_notice_sent_at
+        :renewal_followup -> :renewal_followup_sent_at
+        :expiry_reminder -> :expiry_reminder_sent_at
+      end
 
     MembershipPackageSubscription
     |> tenant_scope()
@@ -7647,7 +7709,10 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
       ends_on_from_renewal_stop: false,
       expiry_reminder_sent_at:
         if(from_stop?, do: nil, else: subscription.expiry_reminder_sent_at),
-      grace_notice_sent_at: if(from_stop?, do: nil, else: subscription.grace_notice_sent_at)
+      grace_notice_sent_at: if(from_stop?, do: nil, else: subscription.grace_notice_sent_at),
+      end_day_notice_sent_at: if(from_stop?, do: nil, else: subscription.end_day_notice_sent_at),
+      renewal_followup_sent_at:
+        if(from_stop?, do: nil, else: subscription.renewal_followup_sent_at)
     }
 
     update_renewal!(subscription, attrs)
@@ -7801,7 +7866,9 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
       ends_on: if(subscription.ends_on_from_renewal_stop, do: nil, else: subscription.ends_on),
       ends_on_from_renewal_stop: false,
       expiry_reminder_sent_at: nil,
-      grace_notice_sent_at: nil
+      grace_notice_sent_at: nil,
+      end_day_notice_sent_at: nil,
+      renewal_followup_sent_at: nil
     }
 
     update_renewal!(subscription, attrs)

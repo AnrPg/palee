@@ -48758,6 +48758,7 @@
           "usage": {
             "properties": {
               "cost_usd": {
+                "description": "What the gym's key paid this month: suggestions plus voice drafts",
                 "type": "number"
               },
               "since": {
@@ -48766,11 +48767,16 @@
               },
               "suggestions": {
                 "type": "integer"
+              },
+              "voice_drafts": {
+                "description": "Voice drafts written with the gym's key this month",
+                "type": "integer"
               }
             },
             "required": [
               "since",
               "suggestions",
+              "voice_drafts",
               "cost_usd"
             ],
             "title": "GymAiUsage",
@@ -48829,6 +48835,7 @@
               "usage": {
                 "properties": {
                   "cost_usd": {
+                    "description": "What the gym's key paid this month: suggestions plus voice drafts",
                     "type": "number"
                   },
                   "since": {
@@ -48837,11 +48844,16 @@
                   },
                   "suggestions": {
                     "type": "integer"
+                  },
+                  "voice_drafts": {
+                    "description": "Voice drafts written with the gym's key this month",
+                    "type": "integer"
                   }
                 },
                 "required": [
                   "since",
                   "suggestions",
+                  "voice_drafts",
                   "cost_usd"
                 ],
                 "title": "GymAiUsage",
@@ -48899,6 +48911,7 @@
       "GymAiUsage": {
         "properties": {
           "cost_usd": {
+            "description": "What the gym's key paid this month: suggestions plus voice drafts",
             "type": "number"
           },
           "since": {
@@ -48907,11 +48920,16 @@
           },
           "suggestions": {
             "type": "integer"
+          },
+          "voice_drafts": {
+            "description": "Voice drafts written with the gym's key this month",
+            "type": "integer"
           }
         },
         "required": [
           "since",
           "suggestions",
+          "voice_drafts",
           "cost_usd"
         ],
         "title": "GymAiUsage",
@@ -167036,6 +167054,7 @@
                         "usage": {
                           "properties": {
                             "cost_usd": {
+                              "description": "What the gym's key paid this month: suggestions plus voice drafts",
                               "type": "number"
                             },
                             "since": {
@@ -167044,11 +167063,16 @@
                             },
                             "suggestions": {
                               "type": "integer"
+                            },
+                            "voice_drafts": {
+                              "description": "Voice drafts written with the gym's key this month",
+                              "type": "integer"
                             }
                           },
                           "required": [
                             "since",
                             "suggestions",
+                            "voice_drafts",
                             "cost_usd"
                           ],
                           "title": "GymAiUsage",
@@ -167171,6 +167195,7 @@
                         "usage": {
                           "properties": {
                             "cost_usd": {
+                              "description": "What the gym's key paid this month: suggestions plus voice drafts",
                               "type": "number"
                             },
                             "since": {
@@ -167179,11 +167204,16 @@
                             },
                             "suggestions": {
                               "type": "integer"
+                            },
+                            "voice_drafts": {
+                              "description": "Voice drafts written with the gym's key this month",
+                              "type": "integer"
                             }
                           },
                           "required": [
                             "since",
                             "suggestions",
+                            "voice_drafts",
                             "cost_usd"
                           ],
                           "title": "GymAiUsage",
@@ -252166,6 +252196,14 @@
                           "minimum": 1,
                           "type": "integer"
                         },
+                        "subscription_day_after_reminder": {
+                          "description": "Also remind the member on the day after it ended; then every payment_reminder_interval_days until they renew or leave",
+                          "type": "boolean"
+                        },
+                        "subscription_end_day_reminder": {
+                          "description": "Also remind the member on the day the subscription ends",
+                          "type": "boolean"
+                        },
                         "subscription_expiry_reminder_days": {
                           "description": "Days before a subscription ends to remind the member (0 = no reminder)",
                           "maximum": 60,
@@ -252187,6 +252225,8 @@
                       "required": [
                         "payment_reminder_interval_days",
                         "subscription_expiry_reminder_days",
+                        "subscription_end_day_reminder",
+                        "subscription_day_after_reminder",
                         "subscription_grace_days",
                         "document_mode"
                       ],
@@ -252468,6 +252508,14 @@
                         "minimum": 1,
                         "type": "integer"
                       },
+                      "subscription_day_after_reminder": {
+                        "description": "Also remind the member on the day after it ended; then every payment_reminder_interval_days until they renew or leave",
+                        "type": "boolean"
+                      },
+                      "subscription_end_day_reminder": {
+                        "description": "Also remind the member on the day the subscription ends",
+                        "type": "boolean"
+                      },
                       "subscription_expiry_reminder_days": {
                         "description": "Days before a subscription ends to remind the member (0 = no reminder)",
                         "maximum": 60,
@@ -252666,6 +252714,14 @@
                           "minimum": 1,
                           "type": "integer"
                         },
+                        "subscription_day_after_reminder": {
+                          "description": "Also remind the member on the day after it ended; then every payment_reminder_interval_days until they renew or leave",
+                          "type": "boolean"
+                        },
+                        "subscription_end_day_reminder": {
+                          "description": "Also remind the member on the day the subscription ends",
+                          "type": "boolean"
+                        },
                         "subscription_expiry_reminder_days": {
                           "description": "Days before a subscription ends to remind the member (0 = no reminder)",
                           "maximum": 60,
@@ -252687,6 +252743,8 @@
                       "required": [
                         "payment_reminder_interval_days",
                         "subscription_expiry_reminder_days",
+                        "subscription_end_day_reminder",
+                        "subscription_day_after_reminder",
                         "subscription_grace_days",
                         "document_mode"
                       ],

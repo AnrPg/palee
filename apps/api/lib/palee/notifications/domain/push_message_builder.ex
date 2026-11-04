@@ -1081,16 +1081,27 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
       days: payload["days_left"] || 0
     }
 
-    %{
-      title: localize.("Your subscription ends soon", %{}),
-      body:
-        payload["body"] ||
-          localize.(
-            "%{package} ends on %{date} (in %{days} days). Renew to keep booking classes.",
-            params
-          ),
-      url: payload["url"] || "/me/payments"
-    }
+    # ADR-500: the box may also remind on the day it ends (days_left 0).
+    if params.days == 0 do
+      %{
+        title: localize.("Your subscription ends today", %{}),
+        body:
+          payload["body"] ||
+            localize.("%{package} ends today. Renew to keep booking classes.", params),
+        url: payload["url"] || "/me/payments"
+      }
+    else
+      %{
+        title: localize.("Your subscription ends soon", %{}),
+        body:
+          payload["body"] ||
+            localize.(
+              "%{package} ends on %{date} (in %{days} days). Renew to keep booking classes.",
+              params
+            ),
+        url: payload["url"] || "/me/payments"
+      }
+    end
   end
 
   def build("form_review_submitted", payload, localize) do
@@ -1489,19 +1500,27 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
   end
 
   def build("subscription_grace", payload, localize) do
-    params = %{
-      package: payload["package_name"] || localize.("your subscription", %{}),
-      date: payload["grace_until"] || ""
-    }
+    package = payload["package_name"] || localize.("your subscription", %{})
+
+    # ADR-500: after the slack (or with none) there is no access date to name.
+    body =
+      case payload["grace_until"] do
+        until when is_binary(until) and until != "" ->
+          localize.(
+            "%{package} has ended. You keep access until %{date}; renew before then to keep booking classes.",
+            %{package: package, date: until}
+          )
+
+        _none ->
+          localize.("%{package} ended on %{date}. Renew to book classes again.", %{
+            package: package,
+            date: payload["ends_on"] || ""
+          })
+      end
 
     %{
       title: localize.("Your subscription has ended", %{}),
-      body:
-        payload["body"] ||
-          localize.(
-            "%{package} has ended. You keep access until %{date}; renew before then to keep booking classes.",
-            params
-          ),
+      body: payload["body"] || body,
       url: payload["url"] || "/me/payments"
     }
   end

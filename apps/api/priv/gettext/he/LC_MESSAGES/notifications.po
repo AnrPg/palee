@@ -823,3 +823,12 @@ msgstr "„%{title}” השתנה אחרי שעשית אותו. אפשר לרא�
 
 msgid "A WOD you did changed. See it as it was in your Journal."
 msgstr "WOD שעשית השתנה. אפשר לראות אותו כפי שהיה ביומן שלך."
+
+msgid "Your subscription ends today"
+msgstr "המנוי שלך מסתיים היום"
+
+msgid "%{package} ends today. Renew to keep booking classes."
+msgstr "%{package} מסתיים היום. חדשו אותו כדי להמשיך להזמין שיעורים."
+
+msgid "%{package} ended on %{date}. Renew to book classes again."
+msgstr "%{package} הסתיים ב-%{date}. חדשו אותו כדי להזמין שיעורים שוב."

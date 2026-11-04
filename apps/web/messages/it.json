@@ -9,10 +9,10 @@
     "capacityLabel": "Posti in ogni nuova lezione",
     "capacityHelp": "Quante persone possono prenotare una nuova lezione. Puoi cambiarlo su ogni lezione.",
     "autoApproveLabel": "Conferma automatica delle prenotazioni",
-    "autoApproveHelp": "Attivo: la prenotazione è confermata subito. Disattivo: ogni prenotazione è una richiesta che qualcuno dello staff deve approvare.",
+    "autoApproveHelp": "Attivo: la prenotazione è confermata subito, senza attese. Disattivo: ogni prenotazione è una richiesta che qualcuno dello staff approva, e scegli tu quanto aspetta una risposta.",
     "approvalWaitLabel": "Tempo per rispondere a una richiesta di prenotazione",
-    "approvalWaitHelp": "Solo per lezioni senza conferma automatica. Se nessuno dello staff risponde entro questo tempo, la richiesta viene annullata, l'ingresso torna al membro e il posto passa alla persona successiva in lista d'attesa. Una richiesta non aspetta mai oltre l'inizio della lezione. Non è quando aprono le prenotazioni: quello è «Apertura prenotazioni».",
-    "approvalWaitClassHelp": "Se nessuno approva la richiesta entro questo tempo, viene annullata automaticamente. Vale solo senza conferma automatica.",
+    "approvalWaitHelp": "Se nessuno dello staff risponde entro questo tempo, la richiesta viene annullata, l'ingresso torna al membro e il posto passa alla persona successiva in lista d'attesa. «Nessun limite»: la richiesta aspetta una risposta fino all'inizio della lezione. Non è quando aprono le prenotazioni: quello è «Apertura prenotazioni».",
+    "approvalWaitClassHelp": "Se nessuno dello staff approva la richiesta entro questo tempo, viene annullata automaticamente e il posto passa alla persona successiva in lista d'attesa. «Nessun limite»: la richiesta aspetta una risposta fino all'inizio della lezione.",
     "approvalWaitNoLimit": "Nessun limite (fino all'inizio)",
     "bookingWindowLabel": "Apertura prenotazioni (giorni prima della lezione)",
     "bookingWindowHelp": "Il prima possibile in cui un membro può prenotare: questi giorni prima della lezione. Le prenotazioni restano aperte fino all'inizio. Con «Nessun limite» si prenota appena la lezione è in calendario. Un pacchetto di abbonamento può fissare il suo.",
@@ -214,7 +214,6 @@
     "scheduledAt": "Data e ora",
     "capacity": "Capacità",
     "timeoutMinutes": "Minuti di timeout",
-    "autoApproveBookingsForThisSlot": "Approva automaticamente le prenotazioni di questa lezione",
     "deleteSlot": "Elimina lezione",
     "saveChanges": "Salva modifiche",
     "createSlot": "Crea lezione",
@@ -779,7 +778,7 @@
     "displayLabeld747868": "Etichetta visualizzata",
     "addLeveld2d215f": "+ Aggiungi livello",
     "reminderIntervalDaysee3ba34": "Intervallo promemoria (giorni)",
-    "howOftenInDaysAMemberWithAn710fa76": "Ogni quanti giorni un socio con un saldo da pagare riceve una notifica di promemoria di pagamento. Il promemoria si ripete finché il saldo non è pagato per intero.",
+    "howOftenInDaysAMemberWithAn710fa76": "Dopo, ogni quanti giorni si ripete il promemoria finché il membro non rinnova o se ne va. Chi deve denaro riceve un promemoria di pagamento con lo stesso ritmo finché non salda.",
     "applicationSettingsIntroduction8f2e9b7": "introduzione alle impostazioni dell'applicazione",
     "appConfigurations1e15749": "Configurazioni dell'app.",
     "globalSettingsForAppearanceEngagementRulesAndWorkout915168c": "Impostazioni globali per aspetto, regole di coinvolgimento e definizioni dei livelli di allenamento. Le modifiche si applicano subito in tutta l'app.",
@@ -2655,7 +2654,6 @@
     "featureOptionalClassSettings": "Impostazioni facoltative della lezione",
     "featureCapacity": "Capienza",
     "featureTimeoutMinutes": "Minuti di timeout",
-    "featureAutoApprove": "Approvazione automatica",
     "featureCreating": "Creazione…",
     "featureReceipt": "Ricevuta",
     "featureReceiptDocumentTitle": "Ricevuta {reference}",
@@ -4897,7 +4895,12 @@
     "pkgFieldBookingDailyLimitSuffix": "{count, plural, one {lezione al giorno} other {lezioni al giorno}}",
     "pkgFieldBookingOpenBookingsLimit": "Prenotazioni aperte",
     "pkgFieldBookingOpenBookingsLimitHint": "Quante lezioni future un membro può avere prenotate insieme.",
-    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {lezione futura} other {lezioni future}}"
+    "pkgFieldBookingOpenBookingsLimitSuffix": "{count, plural, one {lezione futura} other {lezioni future}}",
+    "subscriptionEndsTodayTitle": "Il tuo abbonamento scade oggi",
+    "subscriptionEndsTodayBody": "{package} scade oggi. Rinnovalo per continuare a prenotare le lezioni.",
+    "subscriptionEndedRenewBody": "{package} è scaduto il {date}. Rinnovalo per prenotare di nuovo le lezioni.",
+    "subscriptionEndDayReminder": "Promemoria il giorno della scadenza",
+    "subscriptionDayAfterReminder": "Promemoria il giorno dopo la scadenza"
   },
   "PrSharing": {
     "gymLabel": "Dove hai stabilito questo PR?",
@@ -9871,8 +9874,9 @@
       "title": "Assistente IA",
       "description": "L'assistente WOD, più suggerimenti di scaling e registrazione vocale con la tua chiave. Un coach approva ogni suggerimento.",
       "enable": "Suggerimenti di scaling",
-      "enableHint": "Disattivati per impostazione predefinita. Serve una chiave API.",
-      "key": "Chiave API (Anthropic)",
+      "enableHint": "Per un atleta con un infortunio registrato dal box, l'IA suggerisce come adattare l'allenamento: meno carico, meno ripetizioni o un altro movimento. Un coach approva ogni suggerimento prima che l'atleta lo veda. Serve l'IA perché ogni combinazione di allenamento e infortunio è diversa e regole fisse non bastano.",
+      "key": "Chiave Claude (Anthropic)",
+      "keyHint": "Servono i suggerimenti di scaling e la registrazione vocale. L'uso è addebitato sul tuo account Anthropic.",
       "keySet": "È impostata una chiave che termina con {last4}.",
       "keyRejected": "Il fornitore ha rifiutato la chiave che termina con {last4}. Inserisci una nuova chiave.",
       "keyMissing": "Nessuna chiave impostata.",
@@ -9881,8 +9885,8 @@
       "removeKey": "Rimuovi chiave",
       "model": "Modello (facoltativo)",
       "saveModel": "Salva modello",
-      "usage": "Questo mese · suggerimenti: {count} · costo: ${cost}",
-      "privacy": "Vengono inviati solo l'allenamento e gli infortuni registrati dal box, senza nomi. La chiave non viene più mostrata."
+      "usage": "Questo mese · {count, plural, one {# suggerimento} other {# suggerimenti}} · {voice, plural, one {# bozza vocale} other {# bozze vocali}} · costo: ${cost}",
+      "privacy": "Non vengono inviati nomi. I suggerimenti inviano l'allenamento e gli infortuni registrati dal box. La registrazione vocale invia solo il testo di ciò che ha detto il membro. La chiave non viene più mostrata."
     },
     "queue": {
       "eyebrow": "I miei clienti",
@@ -9946,7 +9950,7 @@
     },
     "settings": {
       "enable": "Registrazione vocale",
-      "enableHint": "I soci registrano l'allenamento a voce e controllano una bozza prima di salvarla. L'audio non viene conservato."
+      "enableHint": "I membri raccontano con parole loro cosa hanno fatto e l'IA lo trasforma in esercizi, serie, ripetizioni e carichi. Il membro controlla la bozza prima di salvare. Serve l'IA per capire il parlato libero, come «tre serie da dieci a 60». L'audio non viene conservato."
     }
   },
   "Pickers": {
@@ -13440,7 +13444,9 @@
         "community_partners_enabled": "Compagni di allenamento",
         "trials_enabled": "Prove",
         "trials_seats_per_class": "Posti di prova per lezione",
-        "trials_approval": "Approvazione delle prove"
+        "trials_approval": "Approvazione delle prove",
+        "finance_subscription_end_day_reminder": "Promemoria il giorno della scadenza",
+        "finance_subscription_day_after_reminder": "Promemoria il giorno dopo la scadenza"
       }
     }
   },

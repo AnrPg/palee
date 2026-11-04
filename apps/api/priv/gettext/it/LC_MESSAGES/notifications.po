@@ -823,3 +823,12 @@ msgstr "«%{title}» è cambiato dopo che l'hai fatto. Guardalo com'era nel tuo 
 
 msgid "A WOD you did changed. See it as it was in your Journal."
 msgstr "Un WOD che hai fatto è cambiato. Guardalo com'era nel tuo Diario."
+
+msgid "Your subscription ends today"
+msgstr "Il tuo abbonamento scade oggi"
+
+msgid "%{package} ends today. Renew to keep booking classes."
+msgstr "%{package} scade oggi. Rinnovalo per continuare a prenotare le lezioni."
+
+msgid "%{package} ended on %{date}. Renew to book classes again."
+msgstr "%{package} è scaduto il %{date}. Rinnovalo per prenotare di nuovo le lezioni."

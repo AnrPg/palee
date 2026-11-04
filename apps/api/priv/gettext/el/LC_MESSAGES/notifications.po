@@ -823,3 +823,12 @@ msgstr "Το «%{title}» άλλαξε αφού το έκανες. Δες το �
 
 msgid "A WOD you did changed. See it as it was in your Journal."
 msgstr "Ένα WOD που έκανες άλλαξε. Δες το όπως ήταν στο Journal σου."
+
+msgid "Your subscription ends today"
+msgstr "Η συνδρομή σου λήγει σήμερα"
+
+msgid "%{package} ends today. Renew to keep booking classes."
+msgstr "Η συνδρομή %{package} λήγει σήμερα. Ανανέωσέ τη για να συνεχίσεις να κλείνεις τμήματα."
+
+msgid "%{package} ended on %{date}. Renew to book classes again."
+msgstr "Η συνδρομή %{package} έληξε στις %{date}. Ανανέωσέ τη για να ξανακλείνεις τμήματα."
