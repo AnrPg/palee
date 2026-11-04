@@ -2,7 +2,7 @@ defmodule PaleeWeb.OwnerOrganizationController do
   @moduledoc "What only a gym's owner does: new gym, hand over, archive (ADR-099)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.CreateOwnedOrganization
   alias Palee.Organizations

@@ -5,7 +5,7 @@ defmodule PaleeWeb.PaleeLeaderboardConsentController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.ManagePaleeLeaderboardConsent
   alias PaleeWeb.Schemas.TrainingFloor, as: S

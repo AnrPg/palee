@@ -6,7 +6,7 @@ defmodule PaleeWeb.AdminFiscalEInvoicingController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias OpenApiSpex.{Parameter, Schema}
   alias Palee.Application.Fiscal.FiscalEInvoicing

@@ -5,7 +5,7 @@ defmodule PaleeWeb.PublicBoxController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.Payments.OnlineSales
   alias Palee.Application.PublicBox

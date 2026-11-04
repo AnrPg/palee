@@ -2,7 +2,7 @@ defmodule PaleeWeb.AdminTrialController do
   @moduledoc "Staff run the box's trials: the rules and the queue (ADR-144, board 6 Q3–Q4)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.Trials
   alias PaleeWeb.Schemas.Trials, as: S

@@ -5,7 +5,7 @@ defmodule PaleeWeb.AdminBusinessController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{BusinessRequests, DemoData}
   alias PaleeWeb.BusinessAccountJSON

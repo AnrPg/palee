@@ -6,7 +6,7 @@ defmodule PaleeWeb.TrainingHistoryController do
   (`for_user`).
   """
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Guardian.Plug, as: GuardianPlug
   alias Palee.Application.GetTrainingHistory

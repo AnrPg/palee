@@ -6,7 +6,7 @@ defmodule PaleeWeb.PerkVerificationController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.PerkVerification
   alias PaleeWeb.Schemas.Perks, as: S

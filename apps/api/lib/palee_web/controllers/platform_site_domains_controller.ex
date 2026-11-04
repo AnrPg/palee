@@ -2,7 +2,7 @@ defmodule PaleeWeb.PlatformSiteDomainsController do
   @moduledoc "Ops: custom domains of box websites by state (ADR-352 §6), for vendors."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.BoxSite.SiteDomainOps
   alias PaleeWeb.Schemas.BoxSite, as: S

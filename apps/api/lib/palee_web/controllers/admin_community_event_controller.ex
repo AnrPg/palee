@@ -6,7 +6,7 @@ defmodule PaleeWeb.AdminCommunityEventController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{EventCohosts, StaffCommunityEvents}
   alias PaleeWeb.Schemas.CommunityEvents, as: S

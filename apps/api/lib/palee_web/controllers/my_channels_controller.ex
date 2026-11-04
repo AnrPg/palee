@@ -5,7 +5,7 @@ defmodule PaleeWeb.MyChannelsController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.Channels.MyChannels
   alias PaleeWeb.Schemas.Channels, as: C

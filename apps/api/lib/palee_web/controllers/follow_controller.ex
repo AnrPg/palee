@@ -2,7 +2,7 @@ defmodule PaleeWeb.FollowController do
   @moduledoc "Following people and boxes, and the requests a person answers (ADR-142, P2-M2)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{Follows, SocialProfile}
   alias PaleeWeb.Schemas.Social, as: S

@@ -6,7 +6,7 @@ defmodule PaleeWeb.ClubPostController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.CommunityPosts
   alias PaleeWeb.Schemas.Community, as: S

@@ -2,7 +2,7 @@ defmodule PaleeWeb.MyContentController do
   @moduledoc "Client-facing Phase C content: on-demand video and progress statistics (ADR-098)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Guardian.Plug, as: GuardianPlug
   alias Palee.Application.{GetMyProgress, ListOnDemandVideos}

@@ -7,7 +7,7 @@ defmodule PaleeWeb.PartnersController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{PartnerMatches, Partners, PeopleBlocks}
   alias PaleeWeb.Schemas.Partners, as: S

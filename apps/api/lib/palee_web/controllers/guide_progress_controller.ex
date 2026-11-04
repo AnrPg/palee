@@ -2,7 +2,7 @@ defmodule PaleeWeb.GuideProgressController do
   @moduledoc "A person's progress through the in-app walkthroughs (ADR-193)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias OpenApiSpex.{MediaType, Parameter, RequestBody}
   alias Palee.Application.GuideProgress

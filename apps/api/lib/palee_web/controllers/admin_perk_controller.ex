@@ -7,7 +7,7 @@ defmodule PaleeWeb.AdminPerkController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.Perks
   alias PaleeWeb.Schemas.Perks, as: S

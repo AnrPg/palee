@@ -6,7 +6,7 @@ defmodule PaleeWeb.ClientFitnessDisplayController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.ClientFitnessDisplay
   alias PaleeWeb.Schemas.TrainingFloor, as: S

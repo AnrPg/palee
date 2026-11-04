@@ -2,7 +2,7 @@ defmodule PaleeWeb.HomeLocationController do
   @moduledoc "A person's home location in a gym (Phase 2): set by themselves or by staff."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.SetHomeLocation
   alias OpenApiSpex.{MediaType, Parameter, RequestBody, Schema}

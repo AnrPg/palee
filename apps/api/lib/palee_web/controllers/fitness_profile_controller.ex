@@ -5,7 +5,7 @@ defmodule PaleeWeb.FitnessProfileController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{GetFitnessProfile, ManageFitnessSettings}
   alias PaleeWeb.Schemas.TrainingFloor, as: S

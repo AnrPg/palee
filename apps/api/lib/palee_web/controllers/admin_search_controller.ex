@@ -1,6 +1,6 @@
 defmodule PaleeWeb.AdminSearchController do
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.AdminSearchUsers
   alias OpenApiSpex.{Parameter, Schema}

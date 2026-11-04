@@ -2,7 +2,7 @@ defmodule PaleeWeb.CommunityPostController do
   @moduledoc "Posts, kudos and comments in a gym's club, and the member's feed (ADR-138, M7)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{CommunityPosts, GetCommunityFeed}
   alias Palee.Community

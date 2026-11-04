@@ -6,7 +6,7 @@ defmodule PaleeWeb.AccountDeletionController do
   with the same credentials and cancels it.
   """
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Guardian.Plug, as: GuardianPlug
   alias OpenApiSpex.Schema

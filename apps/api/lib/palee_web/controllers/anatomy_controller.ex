@@ -6,7 +6,7 @@ defmodule PaleeWeb.AnatomyController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.GetAnatomyTaxonomy
   alias PaleeWeb.Schemas.WorkoutGoals

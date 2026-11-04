@@ -1,6 +1,6 @@
 defmodule PaleeWeb.AdminWorkoutFolderController do
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias OpenApiSpex.{MediaType, Parameter, RequestBody, Schema}
   alias Palee.Application.WorkoutLibraryFolders

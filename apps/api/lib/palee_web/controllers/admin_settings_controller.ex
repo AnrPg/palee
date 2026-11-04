@@ -1,6 +1,6 @@
 defmodule PaleeWeb.AdminSettingsController do
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{GetAdminSettings, UpdateAdminSettings}
   alias Palee.Finance

@@ -2,7 +2,7 @@ defmodule PaleeWeb.WorkoutGoalsController do
   @moduledoc "A member's read of a published workout's visible WOD goals (ADR-163)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.GetMemberWorkoutGoals
   alias PaleeWeb.Schemas.WorkoutGoals

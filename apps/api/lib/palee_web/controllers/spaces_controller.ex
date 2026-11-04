@@ -2,7 +2,7 @@ defmodule PaleeWeb.SpacesController do
   @moduledoc "Settings › Spaces: the rooms of each branch and their floor plans (ADR-202)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{CompleteMediaUpload, RequestMediaUpload, SpaceDirectory, SpacePhotos}
   alias PaleeWeb.Schemas.Cleaning, as: C

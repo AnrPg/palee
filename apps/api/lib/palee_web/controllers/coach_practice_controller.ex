@@ -2,7 +2,7 @@ defmodule PaleeWeb.CoachPracticeController do
   @moduledoc "ADR-170: an account opens its practice as an independent coach."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Guardian.Plug, as: GuardianPlug
   alias Palee.Application.StartCoachPractice

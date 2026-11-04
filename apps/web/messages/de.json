@@ -9,10 +9,10 @@
     "capacityLabel": "Plätze in jedem neuen Kurs",
     "capacityHelp": "Wie viele Personen einen neuen Kurs buchen können. Du kannst es bei jedem Kurs ändern.",
     "autoApproveLabel": "Buchungen automatisch bestätigen",
-    "autoApproveHelp": "An: Eine Buchung ist sofort bestätigt. Aus: Jede Buchung ist eine Anfrage, die jemand vom Team freigeben muss.",
+    "autoApproveHelp": "An: Eine Buchung ist sofort bestätigt, ohne Wartezeit. Aus: Jede Buchung ist eine Anfrage, die jemand vom Team freigibt, und du legst fest, wie lange sie auf eine Antwort wartet.",
     "approvalWaitLabel": "Zeit für die Antwort auf eine Buchungsanfrage",
-    "approvalWaitHelp": "Nur für Kurse ohne automatische Bestätigung. Antwortet niemand vom Team in dieser Zeit, wird die Anfrage storniert, der Besuch geht an das Mitglied zurück und der Platz an die nächste Person auf der Warteliste. Eine Anfrage wartet nie über den Kursbeginn hinaus. Das ist nicht, wann Buchungen öffnen: Das ist „Buchungen öffnen“.",
-    "approvalWaitClassHelp": "Gibt niemand die Anfrage in dieser Zeit frei, wird sie automatisch storniert. Gilt nur ohne automatische Bestätigung.",
+    "approvalWaitHelp": "Antwortet niemand vom Team in dieser Zeit, wird die Anfrage storniert, der Besuch geht an das Mitglied zurück und der Platz an die nächste Person auf der Warteliste. „Keine Begrenzung“: Die Anfrage wartet bis Kursbeginn auf eine Antwort. Das ist nicht, wann Buchungen öffnen: Das ist „Buchungen öffnen“.",
+    "approvalWaitClassHelp": "Gibt niemand vom Team die Anfrage in dieser Zeit frei, wird sie automatisch storniert und der Platz geht an die nächste Person auf der Warteliste. „Keine Begrenzung“: Die Anfrage wartet bis Kursbeginn auf eine Antwort.",
     "approvalWaitNoLimit": "Keine Begrenzung (bis Kursbeginn)",
     "bookingWindowLabel": "Buchungen öffnen (Tage vor dem Kurs)",
     "bookingWindowHelp": "Frühestens so viele Tage vor dem Kurs kann ein Mitglied buchen. Buchungen bleiben bis Kursbeginn offen. Mit „Keine Begrenzung“ ist ein Kurs buchbar, sobald er im Plan steht. Ein Abo-Paket kann eigene Werte setzen.",
@@ -214,7 +214,6 @@
     "scheduledAt": "Geplant für",
     "capacity": "Kapazität",
     "timeoutMinutes": "Timeout (Minuten)",
-    "autoApproveBookingsForThisSlot": "Buchungen für diesen Kurs automatisch bestätigen",
     "deleteSlot": "Kurs löschen",
     "saveChanges": "Änderungen speichern",
     "createSlot": "Kurs erstellen",
@@ -2655,7 +2654,6 @@
     "featureOptionalClassSettings": "Optionale Kurseinstellungen",
     "featureCapacity": "Kapazität",
     "featureTimeoutMinutes": "Timeout (Minuten)",
-    "featureAutoApprove": "Automatisch genehmigen",
     "featureCreating": "Wird erstellt …",
     "featureReceipt": "Quittung",
     "featureReceiptDocumentTitle": "Quittung {reference}",
@@ -9871,8 +9869,9 @@
       "title": "KI-Assistent",
       "description": "Der WOD-Assistent sowie Skalierungsvorschläge und Spracheingabe mit deinem eigenen Schlüssel. Jeden Vorschlag gibt ein Coach frei.",
       "enable": "Skalierungsvorschläge",
-      "enableHint": "Standardmäßig aus. Braucht einen API-Schlüssel.",
-      "key": "API-Schlüssel (Anthropic)",
+      "enableHint": "Für Athleten mit einer von der Box erfassten Verletzung schlägt die KI vor, wie das Workout angepasst wird: weniger Gewicht, weniger Wiederholungen oder eine andere Übung. Ein Coach gibt jeden Vorschlag frei, bevor der Athlet ihn sieht. Dafür braucht es KI, weil jede Kombination aus Workout und Verletzung anders ist und feste Regeln sie nicht abdecken.",
+      "key": "Claude-Schlüssel (Anthropic)",
+      "keyHint": "Skalierungsvorschläge und Spracherfassung brauchen ihn. Die Kosten gehen an dein eigenes Anthropic-Konto.",
       "keySet": "Ein Schlüssel mit Endung {last4} ist gesetzt.",
       "keyRejected": "Der Anbieter hat den Schlüssel mit Endung {last4} abgelehnt. Neuen Schlüssel eingeben.",
       "keyMissing": "Kein Schlüssel gesetzt.",
@@ -9881,8 +9880,8 @@
       "removeKey": "Schlüssel entfernen",
       "model": "Modell (optional)",
       "saveModel": "Modell speichern",
-      "usage": "Diesen Monat · Vorschläge: {count} · Kosten: ${cost}",
-      "privacy": "Gesendet werden nur das Workout und die von der Box erfassten Verletzungen, ohne Namen. Der Schlüssel wird nie wieder angezeigt."
+      "usage": "Diesen Monat · {count, plural, one {# Vorschlag} other {# Vorschläge}} · {voice, plural, one {# Sprachentwurf} other {# Sprachentwürfe}} · Kosten: ${cost}",
+      "privacy": "Es werden keine Namen gesendet. Vorschläge senden das Workout und die von der Box erfassten Verletzungen. Die Spracherfassung sendet nur den Text dessen, was das Mitglied gesagt hat. Der Schlüssel wird nie wieder angezeigt."
     },
     "queue": {
       "eyebrow": "Meine Kunden",
@@ -9946,7 +9945,7 @@
     },
     "settings": {
       "enable": "Spracherfassung",
-      "enableHint": "Mitglieder sprechen ihr Workout ein und prüfen einen Entwurf vor dem Speichern. Audio wird nicht gespeichert."
+      "enableHint": "Mitglieder sagen in eigenen Worten, was sie gemacht haben, und die KI macht daraus Übungen, Sätze, Wiederholungen und Gewichte. Das Mitglied prüft den Entwurf vor dem Speichern. Dafür braucht es KI, um freie Sprache wie „drei Sätze à zehn mit 60“ zu verstehen. Audio wird nicht gespeichert."
     }
   },
   "Pickers": {

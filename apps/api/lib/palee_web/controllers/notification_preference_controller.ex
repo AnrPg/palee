@@ -2,7 +2,7 @@ defmodule PaleeWeb.NotificationPreferenceController do
   @moduledoc "A person's per-category notification choices (ADR-199)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias OpenApiSpex.{MediaType, Parameter, RequestBody}
   alias Palee.Notifications

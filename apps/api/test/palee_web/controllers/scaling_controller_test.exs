@@ -146,7 +146,7 @@ defmodule Palee.Web.ScalingControllerTest do
                  "scaling_enabled" => false,
                  "key_configured" => false,
                  "default_model" => "claude-sonnet-5-5",
-                 "usage" => %{"suggestions" => 0}
+                 "usage" => %{"suggestions" => 0, "voice_drafts" => 0}
                }
              } = body
 

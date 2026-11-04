@@ -1,6 +1,6 @@
 defmodule PaleeWeb.ReviewController do
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.{ListMyReviews, SubmitReview}
   alias PaleeWeb.Schemas.FeedbackWellbeing

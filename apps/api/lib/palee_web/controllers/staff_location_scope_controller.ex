@@ -2,7 +2,7 @@ defmodule PaleeWeb.StaffLocationScopeController do
   @moduledoc "Admin › Χρήστες: the branches a staff member works at (ADR-186)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.SetStaffLocationScope
   alias PaleeWeb.Schemas.LocationScope

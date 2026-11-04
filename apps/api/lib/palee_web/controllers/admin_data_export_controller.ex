@@ -6,7 +6,7 @@ defmodule PaleeWeb.AdminDataExportController do
   """
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.BoxDataExports
   alias OpenApiSpex.Schema

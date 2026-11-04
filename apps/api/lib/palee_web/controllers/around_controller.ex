@@ -2,7 +2,7 @@ defmodule PaleeWeb.AroundController do
   @moduledoc "Γύρω μου: nearby events, boxes, open clubs and public posts (ADR-154)."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias Palee.Application.AroundMe
   alias PaleeWeb.Schemas.Around, as: S

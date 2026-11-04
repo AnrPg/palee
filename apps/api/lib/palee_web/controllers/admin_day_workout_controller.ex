@@ -2,7 +2,7 @@ defmodule PaleeWeb.AdminDayWorkoutController do
   @moduledoc "ADR-230: the WOD of a whole day, inherited by its classes."
 
   use PaleeWeb, :controller
-  use OpenApiSpex.ControllerSpecs
+  use PaleeWeb.ControllerSpecs
 
   alias OpenApiSpex.{MediaType, Parameter, RequestBody, Schema}
   alias Palee.Application.DayWorkouts
