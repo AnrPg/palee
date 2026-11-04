@@ -55,8 +55,9 @@ https://claude.ai/artifact/JhRJ8ZwAiHzBaj8jSzof16 (round 2). ANR's answers
      🌐.
    - `stats` («Αριθμοί κοινότητας»): classes this week, PRs this year and
      years open. These are aggregates only, and a zero hides the number.
-   - `programmes` («Προγράμματα»): programmes for sale. The data is filled by
-     the programmes work. The section hides while there is none.
+   - `programmes` («Προγράμματα»): the programmes the box sells (ADR-370,
+     published and on sale), each linking to its public page. The section
+     hides while there is none.
 
    As before, a switched-on section with no data is hidden.
 4. **Rendering.** One engine, `components/box-site/templates/`, with four
@@ -108,7 +109,7 @@ https://claude.ai/artifact/JhRJ8ZwAiHzBaj8jSzof16 (round 2). ANR's answers
   the PRs recorded in the box this calendar year (`palee_box_pr_count`, a
   SECURITY DEFINER count of records and history rows with the box's
   provenance) and whole years since the organization was created.
-  `programmes` is empty (`SiteProgrammes`, TD-530).
+  `programmes` lists up to 6 programmes on sale (`SiteProgrammes`).
 - `photos.video` and `phone` are always null for now (TD-530).
 - The notice: `template_notice` drives the banner. `BoxSiteJob`'s cron also
   sends one `site_template_changed` notification to staff with

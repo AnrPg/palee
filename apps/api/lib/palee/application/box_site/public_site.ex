@@ -16,7 +16,7 @@ defmodule Palee.Application.BoxSite.PublicSite do
   ADR-530 adds the look (`template`, `palette`, `appearance`,
   `calm_motion`), `photos` (the page and room photos; no site video yet:
   tenant uploads take images only), `stats` (aggregates, never a person),
-  `programmes` (empty until the programmes work fills `SiteProgrammes`) and
+  `programmes` (the programmes for sale, ADR-370) and
   `preview/2`, the same read with the draft applied for the box's staff.
   `phone` stays null: the box has no public phone yet (the fiscal identity's
   phone is private).
@@ -76,7 +76,7 @@ defmodule Palee.Application.BoxSite.PublicSite do
     week = week_slots(context)
     photos = if "photos" in hidden, do: [], else: photos(context, tr)
     stats = if "stats" in hidden, do: nil, else: stats(box, week, zone)
-    programmes = SiteProgrammes.list(context)
+    programmes = SiteProgrammes.list(context, box.slug)
 
     facts = %{
       public_schedule: settings.public_schedule,
