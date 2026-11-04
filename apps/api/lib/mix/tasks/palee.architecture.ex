@@ -68,6 +68,8 @@ defmodule Mix.Tasks.Palee.Architecture do
     messaging/thread_store
     feedback/feedback_store
     analytics/analytics_store
+    analytics/kpi_store
+    analytics/metric_reset_store
     gamification/gamification_store
     finance/finance_store
     finance/finance_accounting_store

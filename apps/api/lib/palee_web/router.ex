@@ -1387,6 +1387,10 @@ defmodule PaleeWeb.Router do
     get("/users/:id/membership-status", AdminUserController, :membership_status)
     get("/search", AdminSearchController, :index)
     get("/analytics/summary", AdminAnalyticsController, :summary)
+    # ADR-462: per-metric resets (baselines, never deletions).
+    post("/analytics/metrics/:metric_key/reset", AdminAnalyticsController, :reset_metric)
+    post("/analytics/resets/:id/undo", AdminAnalyticsController, :undo_reset)
+    get("/analytics/resets", AdminAnalyticsController, :resets)
     get("/athletes", AdminUserController, :index_athletes)
     # ADR-377: belts and levels per discipline.
     get("/rank-ladders", AdminRankLaddersController, :index)
@@ -2486,6 +2490,10 @@ defmodule PaleeWeb.Router do
     get("/me/progress", AccountTrainingController, :progress)
     # ADR-165: coverage summary, qualities radar and training load.
     get("/me/progress/depth", TrainingDepthController, :show)
+    # ADR-462 §5: a member resets their own Πρόοδος stats.
+    post("/me/progress/metrics/:metric_key/reset", ProgressMetricResetController, :reset)
+    post("/me/progress/resets/:id/undo", ProgressMetricResetController, :undo)
+    get("/me/progress/resets", ProgressMetricResetController, :index)
     # ADR-358 (CP-D6): fitness score per domain and what to work on.
     get("/me/fitness-profile", FitnessProfileController, :show)
     # ADR-395: the card's own settings (body weight, birth year, what it shows).

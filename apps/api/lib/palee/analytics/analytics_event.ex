@@ -15,6 +15,13 @@ defmodule Palee.Analytics.AnalyticsEvent do
     field :occurred_at, :utc_datetime_usec
     field :metadata, :map, default: %{}
     field :dedupe_key, :string
+    # ADR-462: filter dimensions as they were when the fact happened.
+    field :location_id, :binary_id
+    field :class_type_id, :binary_id
+    field :level, :string
+    field :coach_user_id, :binary_id
+    field :package_family, :string
+    field :dimensions, :map, default: %{}
   end
 
   def changeset(event \\ %__MODULE__{}, params) do

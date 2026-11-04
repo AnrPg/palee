@@ -36,21 +36,60 @@ defmodule Palee.Application.GetAccountProgress do
 
       weeks = Analytics.progress_weeks(filter, today, first_day(executions))
 
-      stats =
-        executions
-        |> Enum.map(&Map.put(&1, :master_workout_id, &1.workout_key))
-        |> ProgressStats.build(today, weeks)
+      # ADR-462 §5: a stat the member reset counts only what came after.
+      baselines = Analytics.metric_baselines(context, :member)
+      build = fn key -> build_stats(after_baseline(executions, baselines[key]), today, weeks) end
+      stats = build.(nil)
 
       {:ok,
        stats
-       |> Map.update!(:score_history, &label_points(&1, labels))
-       |> Map.put(:by_source, by_source(executions))
+       |> Map.put(:totals, build.("progress.totals").totals)
+       |> Map.merge(Map.take(build.("progress.weekly"), [:weekly, :days]))
+       |> Map.put(:consistency, build.("progress.consistency").consistency)
+       |> Map.put(:exercise_loads, build.("progress.exercise_loads").exercise_loads)
+       |> Map.put(
+         :score_history,
+         label_points(build.("progress.score_history").score_history, labels)
+       )
+       |> Map.put(
+         :by_source,
+         by_source(after_baseline(executions, baselines["progress.by_source"]))
+       )
        |> Map.put(:available_sources, available_sources(loaded.executions))
-       |> Map.put(:pr_timeline, pr_timeline(context, loaded.directory, filter, since))
+       |> Map.put(
+         :pr_timeline,
+         context
+         |> pr_timeline(loaded.directory, filter, since)
+         |> Enum.filter(
+           &on_or_after?(&1.beaten_on, baseline_date(baselines["progress.pr_timeline"]))
+         )
+       )
+       |> Map.put(
+         :metric_baselines,
+         Map.new(baselines, fn {key, at} -> {key, DateTime.to_iso8601(at)} end)
+       )
        |> Map.put(:filter, Analytics.progress_filter_params(filter))
        |> Map.put(:active_filter_count, Analytics.progress_filter_active_count(filter))}
     end
   end
+
+  defp build_stats(executions, today, weeks) do
+    executions
+    |> Enum.map(&Map.put(&1, :master_workout_id, &1.workout_key))
+    |> ProgressStats.build(today, weeks)
+  end
+
+  defp after_baseline(executions, nil), do: executions
+
+  defp after_baseline(executions, %DateTime{} = baseline) do
+    Enum.filter(executions, fn execution ->
+      at = execution.completed_at_utc || execution.started_at_utc
+      at != nil and DateTime.compare(at, baseline) == :gt
+    end)
+  end
+
+  defp baseline_date(nil), do: nil
+  defp baseline_date(%DateTime{} = at), do: DateTime.to_date(at)
 
   defp first_day(executions) do
     executions

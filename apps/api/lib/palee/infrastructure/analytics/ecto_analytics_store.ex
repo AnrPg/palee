@@ -13,8 +13,10 @@ defmodule Palee.Infrastructure.Analytics.EctoAnalyticsStore do
     PushDispatchAttempt
   }
 
+  alias Palee.Analytics.Domain.EventCatalog
   alias Palee.Execution.WorkoutExecution
-  alias Palee.Infrastructure.Tenancy.RepoContext
+  alias Palee.Infrastructure.Analytics.DimensionSnapshot
+  alias Palee.Infrastructure.Tenancy.{GymClock, RepoContext}
   alias Palee.Workouts.MasterWorkout
   alias Palee.Repo
 
@@ -112,7 +114,8 @@ defmodule Palee.Infrastructure.Analytics.EctoAnalyticsStore do
       end
     end)
     |> case do
-      {:ok, rows} -> {:ok, Enum.reverse(rows)}
+      # ADR-462 §2: the filter dimensions as they are now, recorded with the fact.
+      {:ok, rows} -> {:ok, rows |> Enum.reverse() |> DimensionSnapshot.put_event_dimensions()}
       error -> error
     end
   end
@@ -172,6 +175,7 @@ defmodule Palee.Infrastructure.Analytics.EctoAnalyticsStore do
       params
       |> string_key_map()
       |> Map.put_new("marked_at", DateTime.utc_now())
+      |> put_attendance_dimensions()
 
     %AttendanceRecord{}
     |> AttendanceRecord.changeset(params)
@@ -184,6 +188,17 @@ defmodule Palee.Infrastructure.Analytics.EctoAnalyticsStore do
     )
     |> normalize_result(&normalize_attendance/1)
   end
+
+  defp put_attendance_dimensions(
+         %{"scheduled_class_id" => class_id, "user_id" => user_id} = params
+       )
+       when is_binary(class_id) and is_binary(user_id) do
+    class_id
+    |> DimensionSnapshot.attendance(user_id, GymClock.today())
+    |> Map.merge(params)
+  end
+
+  defp put_attendance_dimensions(params), do: params
 
   @impl true
   def get_attendance_for_user_class(user_id, scheduled_class_id) do
@@ -276,22 +291,34 @@ defmodule Palee.Infrastructure.Analytics.EctoAnalyticsStore do
   @impl true
   def analytics_summary(params) do
     params = string_key_map(params || %{})
-    since = summary_since(params["days"])
+    # ADR-462: an explicit period (`since`/`until`, UTC) wins over `days`.
+    since = summary_since(params["since"] || params["days"])
+    until = summary_until(params["until"])
     # ADR-186 §7: a branch filter restricts people (`user_ids`, their home
     # branch) and located facts (`location_ids`); absent, nothing is filtered.
     users = list_or_nil(params["user_ids"])
     locations = list_or_nil(params["location_ids"])
+    window = {since, until}
 
     %{
-      events: event_summary(since, users),
-      notification_clicks: notification_click_summary(since, users),
-      push_dispatch: push_dispatch_summary(since, users),
-      attendance: attendance_summary(since, locations),
-      communication: communication_summary(since, users),
+      events: event_summary(window, users),
+      notification_clicks: notification_click_summary(window, users),
+      push_dispatch: push_dispatch_summary(window, users),
+      attendance: attendance_summary(window, locations),
+      communication: communication_summary(window, users),
       exercise_catalog: exercise_catalog_summary(),
-      team_workouts: team_workout_summary(since, users)
+      team_workouts: team_workout_summary(window, users)
     }
   end
+
+  defp summary_until(%DateTime{} = until), do: until
+  defp summary_until(_until), do: nil
+
+  defp in_window(query, {since, nil}, field),
+    do: where(query, [row], field(row, ^field) >= ^since)
+
+  defp in_window(query, {since, until}, field),
+    do: where(query, [row], field(row, ^field) >= ^since and field(row, ^field) < ^until)
 
   @impl true
   def branch_activity(%DateTime{} = since) do
@@ -343,12 +370,12 @@ defmodule Palee.Infrastructure.Analytics.EctoAnalyticsStore do
   defp for_users(query, nil, _field), do: query
   defp for_users(query, users, field), do: where(query, [row], field(row, ^field) in ^users)
 
-  defp event_summary(since, users) do
+  defp event_summary({since, _until} = window, users) do
     rows =
       AnalyticsEvent
       |> scoped_to_tenant()
       |> for_users(users, :user_id)
-      |> where([event], event.occurred_at >= ^since)
+      |> in_window(window, :occurred_at)
       |> group_by([event], event.event_name)
       |> select([event], {event.event_name, count(event.id)})
       |> Repo.all()
@@ -356,27 +383,29 @@ defmodule Palee.Infrastructure.Analytics.EctoAnalyticsStore do
     %{
       since: since,
       total: Enum.reduce(rows, 0, fn {_name, count}, acc -> acc + count end),
-      by_name: Map.new(rows)
+      by_name: Map.new(rows),
+      # ADR-462 §6: the same counts grouped for «Κατανομή γεγονότων».
+      by_category: EventCatalog.group_by_category(Map.new(rows))
     }
   end
 
-  defp notification_click_summary(since, users) do
+  defp notification_click_summary({since, _until} = window, users) do
     total =
       NotificationClickEvent
       |> scoped_to_tenant()
       |> for_users(users, :user_id)
-      |> where([event], event.clicked_at >= ^since)
+      |> in_window(window, :clicked_at)
       |> Repo.aggregate(:count)
 
     %{since: since, total: total}
   end
 
-  defp push_dispatch_summary(since, users) do
+  defp push_dispatch_summary({since, _until} = window, users) do
     rows =
       PushDispatchAttempt
       |> scoped_to_tenant()
       |> for_users(users, :user_id)
-      |> where([attempt], attempt.attempted_at >= ^since)
+      |> in_window(window, :attempted_at)
       |> group_by([attempt], attempt.status)
       |> select([attempt], {attempt.status, count(attempt.id)})
       |> Repo.all()
@@ -384,12 +413,12 @@ defmodule Palee.Infrastructure.Analytics.EctoAnalyticsStore do
     %{since: since, by_status: Map.new(rows)}
   end
 
-  defp attendance_summary(since, locations) do
+  defp attendance_summary({since, _until} = window, locations) do
     rows =
       AttendanceRecord
       |> scoped_to_tenant()
       |> at_locations(locations)
-      |> where([record], record.marked_at >= ^since)
+      |> in_window(window, :marked_at)
       |> group_by([record], record.status)
       |> select([record], {record.status, count(record.id)})
       |> Repo.all()
@@ -413,12 +442,12 @@ defmodule Palee.Infrastructure.Analytics.EctoAnalyticsStore do
   defp messages_of(query, users),
     do: where(query, [message], message.sender_id in ^users or message.recipient_id in ^users)
 
-  defp communication_summary(since, users) do
+  defp communication_summary({since, _until} = window, users) do
     direction_rows =
       CommunicationMessage
       |> scoped_to_tenant()
       |> messages_of(users)
-      |> where([message], message.sent_at >= ^since)
+      |> in_window(window, :sent_at)
       |> group_by([message], message.direction)
       |> select([message], {message.direction, count(message.id)})
       |> Repo.all()
@@ -427,7 +456,7 @@ defmodule Palee.Infrastructure.Analytics.EctoAnalyticsStore do
       CommunicationMessage
       |> scoped_to_tenant()
       |> messages_of(users)
-      |> where([message], message.sent_at >= ^since)
+      |> in_window(window, :sent_at)
       |> group_by([message], message.channel)
       |> select([message], {message.channel, count(message.id)})
       |> Repo.all()
@@ -458,13 +487,16 @@ defmodule Palee.Infrastructure.Analytics.EctoAnalyticsStore do
     }
   end
 
-  defp team_workout_summary(since, users) do
+  defp team_workout_summary({since, until}, users) do
     rows =
       WorkoutExecution
       |> join(:inner, [e], w in MasterWorkout, on: e.master_workout_id == w.id)
       |> scoped_to_execution_tenant()
       |> for_users(users, :user_id)
       |> where([e, _w], not is_nil(e.completed_at_utc) and e.completed_at_utc >= ^since)
+      |> then(fn query ->
+        if until, do: where(query, [e, _w], e.completed_at_utc < ^until), else: query
+      end)
       |> group_by([e, w], [e.user_id, w.is_team_workout])
       |> select([e, w], {e.user_id, w.is_team_workout, count(e.id)})
       |> Repo.all()
@@ -510,6 +542,7 @@ defmodule Palee.Infrastructure.Analytics.EctoAnalyticsStore do
     }
   end
 
+  defp summary_since(%DateTime{} = since), do: since
   defp summary_since(nil), do: DateTime.add(DateTime.utc_now(), -30 * 86_400, :second)
 
   defp summary_since(days) when is_integer(days) do

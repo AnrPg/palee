@@ -15,6 +15,14 @@ defmodule Palee.Analytics.AttendanceRecord do
     field :marked_at, :utc_datetime_usec
     field :notes, :string
     field :params, :map, default: %{}
+    # ADR-462: filter dimensions as they were when the fact happened.
+    field :location_id, :binary_id
+    field :class_type_id, :binary_id
+    field :level, :string
+    field :coach_user_id, :binary_id
+    field :package_family, :string
+    field :dimensions, :map, default: %{}
+    field :class_starts_at, :utc_datetime
 
     timestamps(type: :utc_datetime_usec)
   end
@@ -30,7 +38,14 @@ defmodule Palee.Analytics.AttendanceRecord do
       :marked_by_id,
       :marked_at,
       :notes,
-      :params
+      :params,
+      :location_id,
+      :class_type_id,
+      :level,
+      :coach_user_id,
+      :package_family,
+      :dimensions,
+      :class_starts_at
     ])
     |> validate_required([:scheduled_class_id, :user_id, :status, :marked_at])
     |> validate_inclusion(:status, ["attended", "missed", "cancelled", "late_cancel", "no_show"])

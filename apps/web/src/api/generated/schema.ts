@@ -4443,6 +4443,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/me/progress/metrics/{metric_key}/reset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reset one of my Πρόοδος stats: count only from now on (ADR-462) */
+        post: operations["PaleeWeb.ProgressMetricResetController.reset"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/progress/resets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My Πρόοδος reset history (ADR-462) */
+        get: operations["PaleeWeb.ProgressMetricResetController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/progress/resets/{id}/undo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Undo one of my Πρόοδος resets (ADR-462) */
+        post: operations["PaleeWeb.ProgressMetricResetController.undo"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me/providers": {
         parameters: {
             query?: never;
@@ -5367,6 +5418,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/analytics/metrics/{metric_key}/reset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reset one box metric: count only data from now on (owner and admins, ADR-462) */
+        post: operations["PaleeWeb.AdminAnalyticsController.reset_metric"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/analytics/resets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box's metric reset history, with each metric before its reset (ADR-462) */
+        get: operations["PaleeWeb.AdminAnalyticsController.resets"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/analytics/resets/{id}/undo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Undo a box metric reset (owner and admins, ADR-462) */
+        post: operations["PaleeWeb.AdminAnalyticsController.undo_reset"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/analytics/summary": {
         parameters: {
             query?: never;
@@ -5374,7 +5476,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Fetch Phase 8 analytics summary from persisted facts and aggregates */
+        /** Στατιστικά: KPIs of a period with the previous one, filtered (ADR-462) */
         get: operations["PaleeWeb.AdminAnalyticsController.summary"];
         put?: never;
         post?: never;
@@ -20284,6 +20386,10 @@ export interface components {
             filter: {
                 [key: string]: unknown;
             };
+            /** @description ADR-462: metric key → the active reset baseline (counted only after it) */
+            metric_baselines?: {
+                [key: string]: string;
+            };
             pr_timeline: ({
                 /**
                  * EntrySource
@@ -20371,6 +20477,10 @@ export interface components {
                 }[];
                 filter: {
                     [key: string]: unknown;
+                };
+                /** @description ADR-462: metric key → the active reset baseline (counted only after it) */
+                metric_baselines?: {
+                    [key: string]: string;
                 };
                 pr_timeline: ({
                     /**
@@ -20494,6 +20604,108 @@ export interface components {
                 workout_type?: string | null;
             }[];
         };
+        /** AdminAnalyticsResetHistory */
+        AdminAnalyticsResetHistory: {
+            entries: {
+                active: boolean;
+                /** @description Box history: the metric over the days before the reset (`from`, `to`, `value`, `rows`) */
+                before?: {
+                    [key: string]: unknown;
+                } | null;
+                /** Format: uuid */
+                id: string;
+                metric_key: string;
+                /** Format: date-time */
+                reset_at: string;
+                /** Format: uuid */
+                reset_by: string | null;
+                /** @enum {string} */
+                scope: "organization" | "member";
+                /** Format: date-time */
+                undone_at: string | null;
+                /** Format: uuid */
+                undone_by: string | null;
+            }[];
+            page: number;
+            per_page: number;
+            total: number;
+        };
+        /** AdminAnalyticsSummary */
+        AdminAnalyticsSummary: {
+            /** AnalyticsFilter */
+            filter: {
+                age_bands: string[];
+                class_type_ids: string[];
+                coach_ids: string[];
+                days: number;
+                /** Format: date */
+                from: string;
+                genders: string[];
+                levels: string[];
+                location_ids: string[];
+                package_families: string[];
+                package_ids: string[];
+                /** Format: date */
+                previous_from: string;
+                /** Format: date */
+                previous_to: string;
+                tenure_bands: string[];
+                time_of_day: string[];
+                /** Format: date */
+                to: string;
+                v: number;
+            };
+            /** @description ADR-462: every KPI by its registry key */
+            kpis: {
+                [key: string]: {
+                    delta: number | null;
+                    key: string;
+                    /** @enum {string} */
+                    kind: "flow" | "snapshot" | "breakdown";
+                    /** @description The previous equal-length period */
+                    previous: number | null;
+                    previous_rows: ({
+                        key?: (string | number) | null;
+                        suppressed?: boolean;
+                    } & {
+                        [key: string]: unknown;
+                    })[];
+                    previous_suppressed: boolean;
+                    rows: ({
+                        key?: (string | number) | null;
+                        suppressed?: boolean;
+                    } & {
+                        [key: string]: unknown;
+                    })[];
+                    /**
+                     * Format: date-time
+                     * @description The active reset baseline: only data after it counts
+                     */
+                    since: string | null;
+                    /** @description k-anonymity: fewer than 5 people; no number is returned */
+                    suppressed: boolean;
+                    /** @enum {string} */
+                    unit: "count" | "percent" | "ratio" | "cents" | "days" | "per_1000" | "rows";
+                    /** @description Nil when not computable or suppressed */
+                    value: number | null;
+                };
+            };
+            /** AnalyticsPeriod */
+            period: {
+                days: number;
+                /** Format: date */
+                from: string;
+                /** Format: date */
+                previous_from: string;
+                /** Format: date */
+                previous_to: string;
+                time_zone: string;
+                /** Format: date */
+                to: string;
+            };
+        } & {
+            [key: string]: unknown;
+        };
         /** AdminOnboardingChecklist */
         AdminOnboardingChecklist: {
             /** @enum {string} */
@@ -20574,6 +20786,110 @@ export interface components {
                 public_wod: boolean;
                 section_order: ("hero" | "about" | "schedule" | "events" | "wod" | "packages" | "coaches" | "location" | "reviews" | "faq" | "trial_form" | "contact_form")[];
             };
+        };
+        /** AnalyticsFilter */
+        AnalyticsFilter: {
+            age_bands: string[];
+            class_type_ids: string[];
+            coach_ids: string[];
+            days: number;
+            /** Format: date */
+            from: string;
+            genders: string[];
+            levels: string[];
+            location_ids: string[];
+            package_families: string[];
+            package_ids: string[];
+            /** Format: date */
+            previous_from: string;
+            /** Format: date */
+            previous_to: string;
+            tenure_bands: string[];
+            time_of_day: string[];
+            /** Format: date */
+            to: string;
+            v: number;
+        };
+        /** AnalyticsKpi */
+        AnalyticsKpi: {
+            delta: number | null;
+            key: string;
+            /** @enum {string} */
+            kind: "flow" | "snapshot" | "breakdown";
+            /** @description The previous equal-length period */
+            previous: number | null;
+            previous_rows: ({
+                key?: (string | number) | null;
+                suppressed?: boolean;
+            } & {
+                [key: string]: unknown;
+            })[];
+            previous_suppressed: boolean;
+            rows: ({
+                key?: (string | number) | null;
+                suppressed?: boolean;
+            } & {
+                [key: string]: unknown;
+            })[];
+            /**
+             * Format: date-time
+             * @description The active reset baseline: only data after it counts
+             */
+            since: string | null;
+            /** @description k-anonymity: fewer than 5 people; no number is returned */
+            suppressed: boolean;
+            /** @enum {string} */
+            unit: "count" | "percent" | "ratio" | "cents" | "days" | "per_1000" | "rows";
+            /** @description Nil when not computable or suppressed */
+            value: number | null;
+        };
+        /** AnalyticsMetricReset */
+        AnalyticsMetricReset: {
+            /** Format: uuid */
+            id: string;
+            metric_key: string;
+            /** Format: date-time */
+            reset_at: string;
+            /** Format: uuid */
+            reset_by: string | null;
+            /** @enum {string} */
+            scope: "organization" | "member";
+            /** Format: date-time */
+            undone_at: string | null;
+            /** Format: uuid */
+            undone_by: string | null;
+        };
+        /** AnalyticsMetricResetResponse */
+        AnalyticsMetricResetResponse: {
+            /** AnalyticsMetricReset */
+            reset: {
+                /** Format: uuid */
+                id: string;
+                metric_key: string;
+                /** Format: date-time */
+                reset_at: string;
+                /** Format: uuid */
+                reset_by: string | null;
+                /** @enum {string} */
+                scope: "organization" | "member";
+                /** Format: date-time */
+                undone_at: string | null;
+                /** Format: uuid */
+                undone_by: string | null;
+            };
+        };
+        /** AnalyticsPeriod */
+        AnalyticsPeriod: {
+            days: number;
+            /** Format: date */
+            from: string;
+            /** Format: date */
+            previous_from: string;
+            /** Format: date */
+            previous_to: string;
+            time_zone: string;
+            /** Format: date */
+            to: string;
         };
         /** AnatomyNode */
         AnatomyNode: {
@@ -37777,6 +38093,32 @@ export interface components {
             /** @description Weeks the rules look back */
             window_weeks: number;
         };
+        /** MyProgressResetHistory */
+        MyProgressResetHistory: {
+            entries: {
+                active: boolean;
+                /** @description Box history: the metric over the days before the reset (`from`, `to`, `value`, `rows`) */
+                before?: {
+                    [key: string]: unknown;
+                } | null;
+                /** Format: uuid */
+                id: string;
+                metric_key: string;
+                /** Format: date-time */
+                reset_at: string;
+                /** Format: uuid */
+                reset_by: string | null;
+                /** @enum {string} */
+                scope: "organization" | "member";
+                /** Format: date-time */
+                undone_at: string | null;
+                /** Format: uuid */
+                undone_by: string | null;
+            }[];
+            page: number;
+            per_page: number;
+            total: number;
+        };
         /** MyProviders */
         MyProviders: {
             former: {
@@ -37937,6 +38279,10 @@ export interface components {
                     /** Format: date */
                     week_start: string;
                 }[];
+            };
+            /** @description ADR-462: metric key → the active reset baseline (counted only after it) */
+            metric_baselines?: {
+                [key: string]: string;
             };
             /** DepthQualities */
             qualities: {
@@ -77048,6 +77394,10 @@ export interface operations {
                             filter: {
                                 [key: string]: unknown;
                             };
+                            /** @description ADR-462: metric key → the active reset baseline (counted only after it) */
+                            metric_baselines?: {
+                                [key: string]: string;
+                            };
                             pr_timeline: ({
                                 /**
                                  * EntrySource
@@ -77207,6 +77557,10 @@ export interface operations {
                                 week_start: string;
                             }[];
                         };
+                        /** @description ADR-462: metric key → the active reset baseline (counted only after it) */
+                        metric_baselines?: {
+                            [key: string]: string;
+                        };
                         /** DepthQualities */
                         qualities: {
                             felt_entries: number;
@@ -77228,6 +77582,135 @@ export interface operations {
                         /** Format: date */
                         to: string;
                         weeks: number;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.ProgressMetricResetController.reset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A metric key of the registry, e.g. training.class_fill_rate */
+                metric_key: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reset */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** AnalyticsMetricReset */
+                        reset: {
+                            /** Format: uuid */
+                            id: string;
+                            metric_key: string;
+                            /** Format: date-time */
+                            reset_at: string;
+                            /** Format: uuid */
+                            reset_by: string | null;
+                            /** @enum {string} */
+                            scope: "organization" | "member";
+                            /** Format: date-time */
+                            undone_at: string | null;
+                            /** Format: uuid */
+                            undone_by: string | null;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.ProgressMetricResetController.index": {
+        parameters: {
+            query?: {
+                page?: number;
+                per_page?: number;
+                metric_key?: string;
+                /** @description Box history: the days before each reset its `before` values cover */
+                days?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reset history */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        entries: {
+                            active: boolean;
+                            /** @description Box history: the metric over the days before the reset (`from`, `to`, `value`, `rows`) */
+                            before?: {
+                                [key: string]: unknown;
+                            } | null;
+                            /** Format: uuid */
+                            id: string;
+                            metric_key: string;
+                            /** Format: date-time */
+                            reset_at: string;
+                            /** Format: uuid */
+                            reset_by: string | null;
+                            /** @enum {string} */
+                            scope: "organization" | "member";
+                            /** Format: date-time */
+                            undone_at: string | null;
+                            /** Format: uuid */
+                            undone_by: string | null;
+                        }[];
+                        page: number;
+                        per_page: number;
+                        total: number;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.ProgressMetricResetController.undo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reset */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** AnalyticsMetricReset */
+                        reset: {
+                            /** Format: uuid */
+                            id: string;
+                            metric_key: string;
+                            /** Format: date-time */
+                            reset_at: string;
+                            /** Format: uuid */
+                            reset_by: string | null;
+                            /** @enum {string} */
+                            scope: "organization" | "member";
+                            /** Format: date-time */
+                            undone_at: string | null;
+                            /** Format: uuid */
+                            undone_by: string | null;
+                        };
                     };
                 };
             };
@@ -80945,12 +81428,164 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminAnalyticsController.reset_metric": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A metric key of the registry, e.g. training.class_fill_rate */
+                metric_key: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reset */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** AnalyticsMetricReset */
+                        reset: {
+                            /** Format: uuid */
+                            id: string;
+                            metric_key: string;
+                            /** Format: date-time */
+                            reset_at: string;
+                            /** Format: uuid */
+                            reset_by: string | null;
+                            /** @enum {string} */
+                            scope: "organization" | "member";
+                            /** Format: date-time */
+                            undone_at: string | null;
+                            /** Format: uuid */
+                            undone_by: string | null;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminAnalyticsController.resets": {
+        parameters: {
+            query?: {
+                page?: number;
+                per_page?: number;
+                metric_key?: string;
+                /** @description Box history: the days before each reset its `before` values cover */
+                days?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reset history */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        entries: {
+                            active: boolean;
+                            /** @description Box history: the metric over the days before the reset (`from`, `to`, `value`, `rows`) */
+                            before?: {
+                                [key: string]: unknown;
+                            } | null;
+                            /** Format: uuid */
+                            id: string;
+                            metric_key: string;
+                            /** Format: date-time */
+                            reset_at: string;
+                            /** Format: uuid */
+                            reset_by: string | null;
+                            /** @enum {string} */
+                            scope: "organization" | "member";
+                            /** Format: date-time */
+                            undone_at: string | null;
+                            /** Format: uuid */
+                            undone_by: string | null;
+                        }[];
+                        page: number;
+                        per_page: number;
+                        total: number;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminAnalyticsController.undo_reset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reset */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** AnalyticsMetricReset */
+                        reset: {
+                            /** Format: uuid */
+                            id: string;
+                            metric_key: string;
+                            /** Format: date-time */
+                            reset_at: string;
+                            /** Format: uuid */
+                            reset_by: string | null;
+                            /** @enum {string} */
+                            scope: "organization" | "member";
+                            /** Format: date-time */
+                            undone_at: string | null;
+                            /** Format: uuid */
+                            undone_by: string | null;
+                        };
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminAnalyticsController.summary": {
         parameters: {
             query?: {
-                days?: number;
                 /** @description ADR-186: comma-separated branch ids to filter by */
                 location_ids?: string;
+                /** @description First gym-local day of the period (included) */
+                from?: string;
+                /** @description Last gym-local day of the period (included; default today) */
+                to?: string;
+                /** @description Without from: the period's length in days, ending at `to` (default 30) */
+                days?: number;
+                /** @description Comma-separated class type ids */
+                class_type_ids?: string;
+                /** @description Comma-separated class levels: beginner, all_levels, advanced */
+                levels?: string;
+                /** @description Comma-separated coach user ids */
+                coach_ids?: string;
+                /** @description Gym-local start: morning, midday, afternoon, evening */
+                time_of_day?: string;
+                /** @description Comma-separated package families */
+                package_families?: string;
+                /** @description Comma-separated package ids */
+                package_ids?: string;
+                /** @description Time since joining: lt_3m, 3_12m, gt_12m */
+                tenure_bands?: string;
+                /** @description Opt-in age bands (k-anonymous): under_18, 18_34, 35_44, 45_54, 55_64, 65_plus, unknown */
+                age_bands?: string;
+                /** @description Opt-in gender (k-anonymous): women, men, unknown */
+                genders?: string;
             };
             header?: never;
             path?: never;
@@ -80965,6 +81600,78 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** AnalyticsFilter */
+                        filter: {
+                            age_bands: string[];
+                            class_type_ids: string[];
+                            coach_ids: string[];
+                            days: number;
+                            /** Format: date */
+                            from: string;
+                            genders: string[];
+                            levels: string[];
+                            location_ids: string[];
+                            package_families: string[];
+                            package_ids: string[];
+                            /** Format: date */
+                            previous_from: string;
+                            /** Format: date */
+                            previous_to: string;
+                            tenure_bands: string[];
+                            time_of_day: string[];
+                            /** Format: date */
+                            to: string;
+                            v: number;
+                        };
+                        /** @description ADR-462: every KPI by its registry key */
+                        kpis: {
+                            [key: string]: {
+                                delta: number | null;
+                                key: string;
+                                /** @enum {string} */
+                                kind: "flow" | "snapshot" | "breakdown";
+                                /** @description The previous equal-length period */
+                                previous: number | null;
+                                previous_rows: ({
+                                    key?: (string | number) | null;
+                                    suppressed?: boolean;
+                                } & {
+                                    [key: string]: unknown;
+                                })[];
+                                previous_suppressed: boolean;
+                                rows: ({
+                                    key?: (string | number) | null;
+                                    suppressed?: boolean;
+                                } & {
+                                    [key: string]: unknown;
+                                })[];
+                                /**
+                                 * Format: date-time
+                                 * @description The active reset baseline: only data after it counts
+                                 */
+                                since: string | null;
+                                /** @description k-anonymity: fewer than 5 people; no number is returned */
+                                suppressed: boolean;
+                                /** @enum {string} */
+                                unit: "count" | "percent" | "ratio" | "cents" | "days" | "per_1000" | "rows";
+                                /** @description Nil when not computable or suppressed */
+                                value: number | null;
+                            };
+                        };
+                        /** AnalyticsPeriod */
+                        period: {
+                            days: number;
+                            /** Format: date */
+                            from: string;
+                            /** Format: date */
+                            previous_from: string;
+                            /** Format: date */
+                            previous_to: string;
+                            time_zone: string;
+                            /** Format: date */
+                            to: string;
+                        };
+                    } & {
                         [key: string]: unknown;
                     };
                 };

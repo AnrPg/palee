@@ -150,8 +150,39 @@ defmodule Palee.Analytics.Domain.EventCatalog do
     "notification_push_outcome" => {"notification", [], nil},
     # Wellbeing safety warnings (ADR-124). context_id is the workout.
     "injury_warning_shown" => {"workout", [], :explicit},
-    "injury_warning_acknowledged" => {"workout", [], :explicit}
+    "injury_warning_acknowledged" => {"workout", [], :explicit},
+    # ADR-462: a staff metric reset and its undo (the audit trail; the
+    # reset row itself is in analytics_metric_resets).
+    "analytics_metric_reset" => {"analytics_metric_reset", [:metric_key, :scope], :subject},
+    "analytics_metric_reset_undone" => {"analytics_metric_reset", [:metric_key, :scope], :subject}
+    # A member's own Πρόοδος resets are deliberately not box events: they
+    # must never reach the box's analytics. Their record is the member's
+    # own reset history (`GET /me/progress/resets`).
   }
+
+  # ADR-462 §6: the «Κατανομή γεγονότων» groups. Each event belongs to one;
+  # the first matching prefix wins, so the order matters.
+  @categories ~w(classes trials wod training notifications payments referrals
+                 messages shop perks health feedback analytics)
+  @category_prefixes [
+    {"class_", "classes"},
+    {"trial_", "trials"},
+    {"workout_execution_", "training"},
+    {"execution_", "training"},
+    {"training_log_", "training"},
+    {"workout_", "wod"},
+    {"notification_", "notifications"},
+    {"payment_", "payments"},
+    {"finance_", "payments"},
+    {"promotion_", "payments"},
+    {"referral_", "referrals"},
+    {"messaging_", "messages"},
+    {"shop_", "shop"},
+    {"perk_", "perks"},
+    {"injury_", "health"},
+    {"review_", "feedback"},
+    {"analytics_", "analytics"}
+  ]
 
   # ADR-124: health-adjacent events keep ONLY these metadata keys - enums,
   # counts and ids. Body areas, limitations, tags and any other free text are
@@ -180,6 +211,38 @@ defmodule Palee.Analytics.Domain.EventCatalog do
   @doc "Every registered event name, sorted."
   def event_names do
     (Map.keys(@legacy_events) ++ Map.keys(@instrumented_events)) |> Enum.sort()
+  end
+
+  @doc "The event-mix categories (ADR-462 §6), in display order."
+  def categories, do: @categories
+
+  @doc "The category of an event name; `other` for an unregistered one."
+  def category(name) when is_binary(name) do
+    Enum.find_value(@category_prefixes, "other", fn {prefix, category} ->
+      if String.starts_with?(name, prefix), do: category
+    end)
+  end
+
+  def category(_name), do: "other"
+
+  @doc """
+  Event counts (`%{name => count}`) grouped by category, in category order:
+  `[%{category, total, events: [%{name, count}]}]`, biggest events first.
+  """
+  def group_by_category(counts) when is_map(counts) do
+    groups = Enum.group_by(counts, fn {name, _count} -> category(name) end)
+
+    (@categories ++ ["other"])
+    |> Enum.filter(&Map.has_key?(groups, &1))
+    |> Enum.map(fn category ->
+      events =
+        groups
+        |> Map.fetch!(category)
+        |> Enum.sort_by(fn {name, count} -> {-count, name} end)
+        |> Enum.map(fn {name, count} -> %{name: name, count: count} end)
+
+      %{category: category, total: Enum.sum(Enum.map(events, & &1.count)), events: events}
+    end)
   end
 
   @doc "Event names added by ADR-123 instrumentation, sorted."

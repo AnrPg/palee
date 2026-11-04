@@ -23,9 +23,13 @@ defmodule Palee.Application.TrainingDepth do
   Builds the sections for `range` as of `today`. `opts` go to
   `AthleteTrainingVolume.load/3` (`:user_id`, `:scope`); `:sources` keeps
   only performances from those source tokens (none = every source).
+  `:baselines` (ADR-462 §5, the member's own view only) is `%{coverage:,
+  qualities:, load:}` reset moments: each section then counts only what
+  came after its own.
   """
   def build(context, range, %Date{} = today, opts \\ []) when range in @ranges do
     {sources, load_opts} = Keyword.pop(opts, :sources, [])
+    {baselines, load_opts} = Keyword.pop(load_opts, :baselines, %{})
     range_from = range_start(range, today)
     load_from = Analytics.training_load_window_start(today)
     read_from = earliest(range_from, load_from)
@@ -41,9 +45,12 @@ defmodule Palee.Application.TrainingDepth do
 
     from = range_from || first_day(in_range, today)
     weeks = weeks(from, today)
-    coverage = Anatomy.coverage(in_range, felt_in_range, weeks)
-    summary = Anatomy.coverage_summary(coverage.nodes, in_range)
-    qualities = Anatomy.quality_profile(in_range, felt_in_range)
+    {covered, covered_felt} = after_baseline(in_range, felt_in_range, baselines[:coverage])
+    {rated, rated_felt} = after_baseline(in_range, felt_in_range, baselines[:qualities])
+    {loaded, _loaded_felt} = after_baseline(performances, felt, baselines[:load])
+    coverage = Anatomy.coverage(covered, covered_felt, weeks)
+    summary = Anatomy.coverage_summary(coverage.nodes, covered)
+    qualities = Anatomy.quality_profile(rated, rated_felt)
 
     %{
       range: range,
@@ -53,16 +60,16 @@ defmodule Palee.Application.TrainingDepth do
       coverage: %{
         sessions: coverage.sessions,
         exercises: coverage.exercises,
-        felt_entries: length(felt_in_range),
+        felt_entries: length(covered_felt),
         thresholds: Anatomy.coverage_thresholds(),
         most: summary.most,
         least: summary.least,
         balance: summary.balance
       },
       qualities:
-        Map.put(qualities, :felt_entries, Enum.count(felt_in_range, &(&1.felt_qualities != []))),
+        Map.put(qualities, :felt_entries, Enum.count(rated_felt, &(&1.felt_qualities != []))),
       load:
-        performances
+        loaded
         |> Enum.map(&%{on: DateTime.to_date(&1.at), rpe: &1.rpe, minutes: &1.minutes})
         |> Analytics.training_load(today)
         |> Map.put(:bands, Analytics.training_load_bands())
@@ -77,6 +84,14 @@ defmodule Palee.Application.TrainingDepth do
 
   defp earliest(nil, _other), do: nil
   defp earliest(a, b), do: if(Date.compare(a, b) == :lt, do: a, else: b)
+
+  defp after_baseline(performances, felt, nil), do: {performances, felt}
+
+  defp after_baseline(performances, felt, %DateTime{} = baseline) do
+    kept = Enum.filter(performances, &(DateTime.compare(&1.at, baseline) == :gt))
+    ids = MapSet.new(kept, &{&1.kind, &1.id})
+    {kept, Enum.filter(felt, &MapSet.member?(ids, {&1.entry_kind, &1.entry_id}))}
+  end
 
   defp midnight(nil), do: nil
   defp midnight(%Date{} = day), do: DateTime.new!(day, ~T[00:00:00], "Etc/UTC")
