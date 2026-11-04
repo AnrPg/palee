@@ -70,11 +70,92 @@ describe("class timer screens", () => {
     setTimer("ready");
     render(wrap(<ClassTimerControl slotId="slot-1" />));
 
-    fireEvent.click(screen.getByRole("button", { name: "0:05" }));
+    fireEvent.click(screen.getByRole("button", { name: 'classTimerCountdownSeconds:{"seconds":5}' }));
     fireEvent.click(screen.getByRole("button", { name: "start952f375" }));
 
     expect(send).toHaveBeenCalledWith({ command: "start", countdown_seconds: 5 });
-    expect(screen.getByRole("button", { name: "nextbc98198" })).toBeDisabled();
+    // Controls that cannot work before the start are not shown at all (ANR 2026-11-04).
+    expect(screen.queryByRole("button", { name: "nextbc98198" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "plusThirtySecondsLabel" })).toBeNull();
+    expect(screen.queryByTestId("remote-more")).toBeNull();
+  });
+
+  it("shows only the timer chooser when the class has no timed workout", () => {
+    setTimer("ready");
+    hookValue = { ...hookValue, payload: { ...(hookValue.payload as object), workout: null, segments: [] } };
+    render(wrap(<ClassTimerControl slotId="slot-1" />));
+
+    expect(screen.queryByTestId("remote-dock")).toBeNull();
+    expect(screen.queryByRole("button", { name: "start952f375" })).toBeNull();
+    expect(screen.queryByRole("group", { name: "classTimerGetReadyLabel" })).toBeNull();
+    expect(screen.getByText("classTimerNoTimedWorkout")).toBeInTheDocument();
+
+    // A common timer explains its name before it is used.
+    fireEvent.click(screen.getByRole("button", { name: "timerPreset_emom10" }));
+    expect(screen.getByTestId("remote-preset-help")).toHaveTextContent("timerPresetHelp_emom10");
+    fireEvent.click(screen.getByTestId("remote-use-timer"));
+    expect(send).toHaveBeenLastCalledWith({ command: "configure", timer_preset: { format: "emom", interval_seconds: 60, rounds: 10 } });
+
+    // Your own timer comes first and starts from no invented numbers.
+    fireEvent.click(screen.getByTestId("remote-own-timer"));
+    expect(screen.queryByTestId("remote-preset-help")).toBeNull();
+    fireEvent.click(screen.getByTestId("remote-use-timer"));
+    expect(send).toHaveBeenLastCalledWith({ command: "configure", timer_preset: { format: "untimed" } });
+  });
+
+  it("names Back and Next by what they do on the first and last part", () => {
+    setTimer("running", 0);
+    const { unmount } = render(wrap(<ClassTimerControl slotId="slot-1" />));
+    expect(screen.getByRole("button", { name: "classTimerRestart" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "nextbc98198" })).toBeInTheDocument();
+    unmount();
+
+    setTimer("running", 1);
+    render(wrap(<ClassTimerControl slotId="slot-1" />));
+    expect(screen.getByRole("button", { name: "backc32ae9f" })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "classTimerComplete" }));
+    expect(send).toHaveBeenLastCalledWith({ command: "next" });
+    // On the last part «Τέλος χρονομέτρου» would repeat «Ολοκλήρωση», so the menu keeps only Reset.
+    fireEvent.click(screen.getByTestId("remote-more"));
+    expect(screen.queryByTestId("remote-finish")).toBeNull();
+    expect(screen.getByTestId("remote-reset")).toBeInTheDocument();
+  });
+
+  it("asks before resetting a running class and explains every control with «?»", () => {
+    setTimer("running");
+    render(wrap(<ClassTimerControl slotId="slot-1" />));
+
+    expect(screen.queryAllByTestId("remote-help")).toHaveLength(0);
+    fireEvent.click(screen.getByTestId("remote-help-toggle"));
+    expect(screen.getByText("classTimerPauseHelp")).toBeInTheDocument();
+    expect(screen.getAllByText("classTimerAdjustHelp")).toHaveLength(1);
+    expect(screen.getByText("classTimerLiveHelp")).toBeInTheDocument();
+    expect(screen.getByTestId("remote-help-header")).toHaveTextContent("classTimerSoundHelp");
+
+    fireEvent.click(screen.getByTestId("remote-more"));
+    expect(screen.getByText("classTimerResetHelp")).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId("remote-reset"));
+    expect(send).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByTestId("remote-reset-confirm"));
+    expect(send).toHaveBeenCalledWith({ command: "reset" });
+  });
+
+  it("hides ±30 s when the current part has no length", () => {
+    setTimer("running");
+    const untimed = { ...segments[0], kind: "countup", duration_seconds: null };
+    hookValue = { ...hookValue, position: { ...(hookValue.position as object), segment: untimed } };
+    render(wrap(<ClassTimerControl slotId="slot-1" />));
+    expect(screen.queryByRole("button", { name: "plusThirtySecondsLabel" })).toBeNull();
+    expect(screen.getByRole("button", { name: "pausecd21a1b" })).toBeInTheDocument();
+  });
+
+  it("keeps the wall screen's link, «Στην οθόνη» and open-here in one sheet", () => {
+    setTimer("ready");
+    render(wrap(<ClassTimerControl slotId="slot-1" />));
+    expect(screen.queryByTestId("remote-copy-link")).toBeNull();
+    fireEvent.click(screen.getByTestId("remote-wall-screen"));
+    expect(screen.getByTestId("remote-copy-link")).toBeInTheDocument();
+    expect(screen.getByTestId("remote-open-display")).toHaveAttribute("href", "/org/gym/class-timer/slot-1/display");
   });
 
   it("pauses, skips, adjusts and jumps while running", () => {
@@ -83,6 +164,7 @@ describe("class timer screens", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "pausecd21a1b" }));
     fireEvent.click(screen.getByRole("button", { name: "plusThirtySecondsLabel" }));
+    fireEvent.click(screen.getByText("classTimerJumpTitle"));
     fireEvent.click(screen.getByRole("button", { name: /2\. Cool down/ }));
 
     expect(send.mock.calls.map(([command]) => command)).toEqual([

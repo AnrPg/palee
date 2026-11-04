@@ -90,6 +90,8 @@ test.describe("Class timer remote › On screen", () => {
     });
 
     await page.goto("/class-timer/c18/control");
+    // ANR 2026-11-04: wall screen, its link and «On screen» live in one sheet behind the screen icon.
+    await page.getByTestId("remote-wall-screen").click();
     await page.getByTestId("class-screen-open").click();
     const dialog = page.getByTestId("class-screen-dialog");
     await expect(dialog).toContainText("Show this class on a screen");
@@ -113,6 +115,28 @@ test.describe("Class timer remote › On screen", () => {
 
     await page.goto("/class-timer/c18/control");
     await expect(page.getByText("Fran").first()).toBeVisible();
+    await page.getByTestId("remote-wall-screen").click();
+    await expect(page.getByTestId("remote-copy-link")).toBeVisible();
     await expect(page.getByTestId("class-screen-open")).toHaveCount(0);
+  });
+
+  test("on a phone, a class without a timed workout shows only the timer chooser", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await signInAsCoach(page);
+
+    await page.goto("/class-timer/c18/control");
+    await expect(page.getByTestId("remote-chooser")).toBeVisible();
+    // No greyed-out Start / Back / Next / ±30 s: the dock is not there at all.
+    await expect(page.getByTestId("remote-dock")).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Start", exact: true })).toHaveCount(0);
+    await expect(page.getByTestId("remote-own-timer")).toBeVisible();
+
+    await page.getByRole("button", { name: "AMRAP 12" }).click();
+    await expect(page.getByTestId("remote-preset-help")).toContainText("As Many Rounds As Possible");
+
+    await page.getByTestId("remote-help-toggle").click();
+    await expect(page.getByTestId("remote-help-header")).toContainText("Wall screen");
+    const width = await page.evaluate(() => document.documentElement.scrollWidth);
+    expect(width).toBeLessThanOrEqual(390);
   });
 });
