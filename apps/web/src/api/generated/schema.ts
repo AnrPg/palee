@@ -3010,6 +3010,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/me/exercise-suggestions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Exercise-name suggestions: your own, your box's, Palee's */
+        get: operations["PaleeWeb.ExerciseSuggestionsController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me/feed": {
         parameters: {
             query?: never;
@@ -18295,6 +18312,57 @@ export interface paths {
         get: operations["PaleeWeb.PlatformChannelMarginsController.show"];
         /** Set Palee's margin per channel; channels not sent keep theirs */
         put: operations["PaleeWeb.PlatformChannelMarginsController.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/platform/exercise-candidates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Exercise names waiting for the catalog (vendors) */
+        get: operations["PaleeWeb.PlatformExerciseCatalogController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/platform/exercise-candidates/{id}/decision": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Approve a name as a new entry or an alias, or reject it (vendors) */
+        post: operations["PaleeWeb.PlatformExerciseCatalogController.decide"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/platform/exercise-catalog-audit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The latest exercise catalog decisions (vendors) */
+        get: operations["PaleeWeb.PlatformExerciseCatalogController.audit"];
+        put?: never;
         post?: never;
         delete?: never;
         options?: never;
@@ -34420,6 +34488,142 @@ export interface components {
             } & {
                 [key: string]: unknown;
             };
+        };
+        /** ExerciseCatalogAudit */
+        ExerciseCatalogAudit: {
+            events: {
+                /** @enum {string} */
+                action: "approve_entry" | "approve_alias" | "reject";
+                /** Format: uuid */
+                actor_user_id?: string | null;
+                /** Format: date-time */
+                at: string;
+                /** Format: uuid */
+                candidate_id?: string | null;
+                catalog_slug?: string | null;
+                /** Format: uuid */
+                id: string;
+                metadata?: Record<string, never>;
+            }[];
+        };
+        /** ExerciseNameCandidate */
+        ExerciseNameCandidate: {
+            catalog_slug: string | null;
+            /** Format: date-time */
+            decided_at?: string | null;
+            /** Format: date-time */
+            first_seen_at?: string;
+            /** Format: uuid */
+            id: string;
+            /** Format: date-time */
+            last_seen_at?: string;
+            name: string;
+            owners_count: number;
+            /** @enum {string} */
+            status: "pending" | "approved" | "rejected";
+            uses_count: number;
+        };
+        /** ExerciseNameCandidateDecided */
+        ExerciseNameCandidateDecided: {
+            /** ExerciseNameCandidate */
+            candidate: {
+                catalog_slug: string | null;
+                /** Format: date-time */
+                decided_at?: string | null;
+                /** Format: date-time */
+                first_seen_at?: string;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                last_seen_at?: string;
+                name: string;
+                owners_count: number;
+                /** @enum {string} */
+                status: "pending" | "approved" | "rejected";
+                uses_count: number;
+            };
+        };
+        /** ExerciseNameCandidateDecision */
+        ExerciseNameCandidateDecision: {
+            /** @description For an alias: the entry it joins */
+            catalog_slug?: string;
+            /** @enum {string} */
+            category?: "strength" | "bodyweight" | "cardio" | "mobility" | "skill";
+            /** @enum {string} */
+            decision: "entry" | "alias" | "reject";
+            /** @description Defaults to the typed name */
+            label?: string;
+        };
+        /** ExerciseNameCandidateQueue */
+        ExerciseNameCandidateQueue: {
+            candidates: {
+                catalog_slug: string | null;
+                /** Format: date-time */
+                decided_at?: string | null;
+                /** Format: date-time */
+                first_seen_at?: string;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                last_seen_at?: string;
+                name: string;
+                owners_count: number;
+                /** @enum {string} */
+                status: "pending" | "approved" | "rejected";
+                uses_count: number;
+            }[];
+            /** @description The catalog entries an alias can join */
+            catalog: {
+                catalog_slug: string;
+                category: string | null;
+                name: string;
+            }[];
+        };
+        /** ExerciseSuggestion */
+        ExerciseSuggestion: {
+            /** @description The Palee catalog entry the name links to, if any */
+            catalog_slug: string | null;
+            /** @description For a palee item, the catalog category (strength, bodyweight, cardio, mobility, skill) */
+            hint: string | null;
+            /** @description The name to put in the field */
+            name: string;
+            /** @description How often the person (mine) or the box (box) used the name; 0 for palee */
+            uses_count: number;
+        };
+        /** ExerciseSuggestionGroup */
+        ExerciseSuggestionGroup: {
+            items: {
+                /** @description The Palee catalog entry the name links to, if any */
+                catalog_slug: string | null;
+                /** @description For a palee item, the catalog category (strength, bodyweight, cardio, mobility, skill) */
+                hint: string | null;
+                /** @description The name to put in the field */
+                name: string;
+                /** @description How often the person (mine) or the box (box) used the name; 0 for palee */
+                uses_count: number;
+            }[];
+            /** @enum {string} */
+            source: "mine" | "box" | "palee";
+        };
+        /**
+         * ExerciseSuggestionsResponse
+         * @description Groups in order mine, box, palee; a name appears once; empty groups are left out
+         */
+        ExerciseSuggestionsResponse: {
+            groups: {
+                items: {
+                    /** @description The Palee catalog entry the name links to, if any */
+                    catalog_slug: string | null;
+                    /** @description For a palee item, the catalog category (strength, bodyweight, cardio, mobility, skill) */
+                    hint: string | null;
+                    /** @description The name to put in the field */
+                    name: string;
+                    /** @description How often the person (mine) or the box (box) used the name; 0 for palee */
+                    uses_count: number;
+                }[];
+                /** @enum {string} */
+                source: "mine" | "box" | "palee";
+            }[];
         };
         /** FacilityCheckIn */
         FacilityCheckIn: {
@@ -71512,6 +71716,48 @@ export interface operations {
                 content: {
                     "application/json": {
                         counted: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.ExerciseSuggestionsController.index": {
+        parameters: {
+            query?: {
+                /** @description What the person typed so far (up to 80 characters are used) */
+                q?: string;
+                /** @description The box whose WOD names to include; ignored unless the person belongs to it */
+                organization_id?: string;
+                /** @description Suggestions per group, 1 to 10 (default 5) */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Exercise suggestions */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        groups: {
+                            items: {
+                                /** @description The Palee catalog entry the name links to, if any */
+                                catalog_slug: string | null;
+                                /** @description For a palee item, the catalog category (strength, bodyweight, cardio, mobility, skill) */
+                                hint: string | null;
+                                /** @description The name to put in the field */
+                                name: string;
+                                /** @description How often the person (mine) or the box (box) used the name; 0 for palee */
+                                uses_count: number;
+                            }[];
+                            /** @enum {string} */
+                            source: "mine" | "box" | "palee";
+                        }[];
                     };
                 };
             };
@@ -152616,6 +152862,168 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.PlatformExerciseCatalogController.index": {
+        parameters: {
+            query?: {
+                status?: "pending" | "approved" | "rejected";
+                /** @description Only names at least this many people or boxes typed (default 2) */
+                min_owners?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Candidates */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        candidates: {
+                            catalog_slug: string | null;
+                            /** Format: date-time */
+                            decided_at?: string | null;
+                            /** Format: date-time */
+                            first_seen_at?: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            last_seen_at?: string;
+                            name: string;
+                            owners_count: number;
+                            /** @enum {string} */
+                            status: "pending" | "approved" | "rejected";
+                            uses_count: number;
+                        }[];
+                        /** @description The catalog entries an alias can join */
+                        catalog: {
+                            catalog_slug: string;
+                            category: string | null;
+                            name: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PlatformExerciseCatalogController.decide": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description For an alias: the entry it joins */
+                    catalog_slug?: string;
+                    /** @enum {string} */
+                    category?: "strength" | "bodyweight" | "cardio" | "mobility" | "skill";
+                    /** @enum {string} */
+                    decision: "entry" | "alias" | "reject";
+                    /** @description Defaults to the typed name */
+                    label?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Decided */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** ExerciseNameCandidate */
+                        candidate: {
+                            catalog_slug: string | null;
+                            /** Format: date-time */
+                            decided_at?: string | null;
+                            /** Format: date-time */
+                            first_seen_at?: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            last_seen_at?: string;
+                            name: string;
+                            owners_count: number;
+                            /** @enum {string} */
+                            status: "pending" | "approved" | "rejected";
+                            uses_count: number;
+                        };
+                    };
+                };
+            };
+            /** @description Error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.PlatformExerciseCatalogController.audit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Audit */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        events: {
+                            /** @enum {string} */
+                            action: "approve_entry" | "approve_alias" | "reject";
+                            /** Format: uuid */
+                            actor_user_id?: string | null;
+                            /** Format: date-time */
+                            at: string;
+                            /** Format: uuid */
+                            candidate_id?: string | null;
+                            catalog_slug?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            metadata?: Record<string, never>;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.PlatformFoodMissesController.index": {
         parameters: {
             query?: {
@@ -157092,6 +157500,8 @@ export interface operations {
                     beaten_on: string;
                     comments?: components["schemas"]["JournalCommentInput"][];
                     current_score: number;
+                    /** @description Palee catalog slug of a picked suggestion (ADR-461); the name stays as typed */
+                    exercise_ref?: string | null;
                     higher_is_better?: boolean;
                     name: string;
                     /** @description Gym the PR was achieved in (ADR-129). Must be one of the caller's active memberships; the gym's coaches can then read it. Omit for a personal PR. */
@@ -157246,6 +157656,8 @@ export interface operations {
                     beaten_on?: string;
                     comments?: components["schemas"]["JournalCommentInput"][];
                     current_score?: number;
+                    /** @description Palee catalog slug of a picked suggestion (ADR-461); the name stays as typed */
+                    exercise_ref?: string | null;
                     higher_is_better?: boolean;
                     name?: string;
                     /** @description Optional typed result context. Accepted keys: reps, sets, load_kg, duration_seconds, distance_m, calories, rounds, variation. */
@@ -157303,6 +157715,8 @@ export interface operations {
                     beaten_on?: string;
                     comments?: components["schemas"]["JournalCommentInput"][];
                     current_score?: number;
+                    /** @description Palee catalog slug of a picked suggestion (ADR-461); the name stays as typed */
+                    exercise_ref?: string | null;
                     higher_is_better?: boolean;
                     name?: string;
                     /** @description Optional typed result context. Accepted keys: reps, sets, load_kg, duration_seconds, distance_m, calories, rounds, variation. */

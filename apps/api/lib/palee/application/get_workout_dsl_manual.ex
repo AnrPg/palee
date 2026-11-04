@@ -3,5 +3,6 @@ defmodule Palee.Application.GetWorkoutDslManual do
 
   alias Palee.Workouts
 
-  def call, do: {:ok, Workouts.dsl_manual()}
+  # ADR-461: the vocabulary's exercise catalog includes the approved additions.
+  def call, do: {:ok, Workouts.dsl_manual_with_additions()}
 end

@@ -15,6 +15,7 @@ defmodule Palee.Application.LogTrainingEntry do
   alias Palee.Application.{
     AuthorizeTrainingLogSource,
     CompleteWorkout,
+    ExerciseNameIndex,
     InjuryWarningEvaluation,
     JournalComments,
     TrackAnalyticsEvent,
@@ -84,6 +85,10 @@ defmodule Palee.Application.LogTrainingEntry do
           entry.id,
           Map.get(entry, :master_workout_id)
         )
+
+        # ADR-461: the names typed join the owner's suggestions.
+        :ok =
+          ExerciseNameIndex.remember_for_user(user_id, Map.get(entry, :performed_exercises) || [])
       end
 
       TrackAnalyticsEvent.call("training_log_entry_logged", context, entry, %{

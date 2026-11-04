@@ -2364,6 +2364,21 @@ defmodule PaleeWeb.Router do
     get("/partner-suggestion-stats", PartnerSuggestionsController, :stats)
   end
 
+  # ADR-461: typed exercise names into the catalog, by the Palee team only.
+  scope "/api/platform", PaleeWeb do
+    pipe_through([
+      :api,
+      :authenticated,
+      :authenticated_rate_limited,
+      :vendor,
+      :platform_write_rate_limited
+    ])
+
+    get("/exercise-candidates", PlatformExerciseCatalogController, :index)
+    post("/exercise-candidates/:id/decision", PlatformExerciseCatalogController, :decide)
+    get("/exercise-catalog-audit", PlatformExerciseCatalogController, :audit)
+  end
+
   scope "/api/me", PaleeWeb do
     pipe_through([
       :api,
@@ -2443,6 +2458,8 @@ defmodule PaleeWeb.Router do
     post("/wellbeing/check-ins", CheckInController, :create)
     delete("/wellbeing/check-ins/:id", CheckInController, :delete)
     # ADR-183: «Τι κάνεις», asked by the first-run.
+    # ADR-461: exercise names are free text with suggestions.
+    get("/me/exercise-suggestions", ExerciseSuggestionsController, :index)
     get("/me/interests", MyInterestsController, :show)
     put("/me/interests", MyInterestsController, :update)
     get("/me/wellness", WellnessController, :show)

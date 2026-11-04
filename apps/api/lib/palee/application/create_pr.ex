@@ -1,5 +1,11 @@
 defmodule Palee.Application.CreatePR do
-  alias Palee.Application.{InvalidateLandingPages, JournalComments, PRSearchIndex}
+  alias Palee.Application.{
+    ExerciseNameIndex,
+    InvalidateLandingPages,
+    JournalComments,
+    PRSearchIndex
+  }
+
   alias Palee.{Gamification, Journal, Organizations, Pantheon}
   alias Palee.Pantheon.Domain.PRResultMetrics
 
@@ -34,6 +40,7 @@ defmodule Palee.Application.CreatePR do
            |> Pantheon.create_record() do
       {:ok, _stats} = Gamification.increment_advancement(user_id, DateTime.utc_now())
       :ok = PRSearchIndex.enqueue_upsert(pr)
+      :ok = remember_name(pr)
       InvalidateLandingPages.for_users([user_id])
       {:ok, pr}
     end
@@ -62,4 +69,13 @@ defmodule Palee.Application.CreatePR do
   end
 
   defp comments(params), do: params["comments"] || params[:comments]
+
+  # ADR-461: the PR's name joins the owner's exercise-name suggestions.
+  defp remember_name(pr),
+    do:
+      ExerciseNameIndex.remember_for_user(
+        pr.user_id,
+        [%{name: pr.name, catalog_slug: Map.get(pr, :exercise_ref)}],
+        true
+      )
 end

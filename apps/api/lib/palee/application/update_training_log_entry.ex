@@ -6,7 +6,7 @@ defmodule Palee.Application.UpdateTrainingLogEntry do
   projection (gamification is computed once, when the entry is logged).
   """
 
-  alias Palee.Application.JournalComments
+  alias Palee.Application.{ExerciseNameIndex, JournalComments}
   alias Palee.{Execution, Workouts}
 
   def call(%{organization_id: _} = context, %{id: user_id}, entry_id, params)
@@ -22,12 +22,22 @@ defmodule Palee.Application.UpdateTrainingLogEntry do
                    now: DateTime.utc_now(),
                    allowed_section_ids: allowed_section_ids(context, entry)
                  ),
+               :ok <- remember_names(user_id, updated),
                do: {:ok, JournalComments.attach(updated, "training_log")}
       end
     end)
   end
 
   def call(_context, _actor, _entry_id, _params), do: {:error, :organization_context_required}
+
+  # ADR-461: a name added by the edit joins the suggestions, without counting a use.
+  defp remember_names(user_id, entry),
+    do:
+      ExerciseNameIndex.remember_for_user(
+        user_id,
+        Map.get(entry, :performed_exercises) || [],
+        false
+      )
 
   defp allowed_section_ids(_context, %{master_workout_id: nil}), do: []
 

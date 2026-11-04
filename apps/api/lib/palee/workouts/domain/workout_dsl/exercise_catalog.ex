@@ -159,15 +159,83 @@ defmodule Palee.Workouts.Domain.WorkoutDsl.ExerciseCatalog do
     {"foam-roll", "Foam Roll", :mobility, ["Foam Rolling"]}
   ]
 
+  # ADR-461: search-only aliases on top of each entry's own (which stay
+  # unambiguous for Quick Text resolution): common abbreviations and the
+  # Greek names members type. Suggestions match them; `resolve/1` does not.
+  @search_aliases %{
+    "air-squat" => ["Σκουάτ", "Καθίσματα", "Squat"],
+    "back-squat" => ["Σκουάτ πλάτης", "Πίσω σκουάτ", "BS"],
+    "front-squat" => ["Μπροστινό σκουάτ", "FS"],
+    "overhead-squat" => ["Σκουάτ πάνω από το κεφάλι"],
+    "deadlift" => ["Άρσεις θανάτου", "Ντεντλιφτ", "DL"],
+    "romanian-deadlift" => ["Ρουμανικές άρσεις"],
+    "sumo-deadlift" => ["Σούμο ντεντλιφτ", "SDL"],
+    "clean-and-jerk" => ["CJ", "C and J", "Κλιν εν τζερκ", "Ζετέ"],
+    "snatch" => ["Αρασέ", "Σνατς"],
+    "clean" => ["Κλιν"],
+    "power-clean" => ["PC"],
+    "power-snatch" => ["PS"],
+    "jerk" => ["Τζερκ"],
+    "push-press" => ["PP"],
+    "strict-press" => ["Πιέσεις ώμων", "OHP"],
+    "bench-press" => ["Πιέσεις πάγκου", "Πάγκος", "BP"],
+    "barbell-row" => ["Κωπηλατική με μπάρα"],
+    "dumbbell-row" => ["Κωπηλατική με αλτήρα"],
+    "hip-thrust" => ["Γλουτιαία γέφυρα με μπάρα"],
+    "glute-bridge" => ["Γέφυρα γλουτών"],
+    "lunge" => ["Προβολές", "Λάντζες"],
+    "walking-lunge" => ["Προβολές με περπάτημα"],
+    "biceps-curl" => ["Κάμψεις δικεφάλων"],
+    "kettlebell-swing" => ["Αιωρήσεις", "Σουίνγκ", "KBS"],
+    "thruster" => ["Θράστερ"],
+    "wall-ball" => ["Γουόλ μπολ", "WB"],
+    "push-up" => ["Κάμψεις", "Πους απ"],
+    "dip" => ["Βυθίσεις", "Ντιπς"],
+    "pull-up" => ["Έλξεις", "Πουλ απ", "PU"],
+    "chin-up" => ["Έλξεις υπτιασμένες"],
+    "chest-to-bar-pull-up" => ["CTB"],
+    "muscle-up" => ["Μασλ απ", "MU"],
+    "rope-climb" => ["Σχοινί", "Αναρρίχηση σχοινιού"],
+    "toes-to-bar" => ["T2B"],
+    "knees-to-elbows" => ["KTE"],
+    "sit-up" => ["Κοιλιακοί", "Σιτ απ"],
+    "plank" => ["Σανίδα", "Πλανκ"],
+    "side-plank" => ["Πλάγια σανίδα"],
+    "back-extension" => ["Ραχιαίοι", "Υπερεκτάσεις"],
+    "burpee" => ["Μπέρπι", "Μπέρπις"],
+    "box-jump" => ["Άλματα σε κουτί", "BJ"],
+    "broad-jump" => ["Άλμα μήκους"],
+    "double-under" => ["Διπλό σχοινάκι", "Ντάμπλ αντερ"],
+    "single-under" => ["Σχοινάκι"],
+    "handstand-push-up" => ["Κατακόρυφες κάμψεις"],
+    "handstand-walk" => ["Περπάτημα στα χέρια"],
+    "handstand-hold" => ["Κατακόρυφος"],
+    "run" => ["Τρέξιμο"],
+    "sprint" => ["Σπριντ"],
+    "row" => ["Κωπηλατική", "Κωπηλατικό"],
+    "bike" => ["Ποδήλατο"],
+    "air-bike" => ["Assault", "Ποδήλατο αέρα"],
+    "swim" => ["Κολύμπι"],
+    "jumping-jack" => ["Αναπηδήσεις"],
+    "mountain-climber" => ["Ορειβάτες"],
+    "bear-crawl" => ["Αρκουδάκι"],
+    "farmer-carry" => ["Μεταφορά αγρότη"],
+    "turkish-get-up" => ["Τούρκικο σήκωμα"],
+    "calf-raise" => ["Γάμπες"],
+    "good-morning" => ["Γκουντ μόρνινγκ"],
+    "foam-roll" => ["Ρολό"]
+  }
+
+  @capabilities %{
+    "strength" => @strength_capabilities,
+    "bodyweight" => @bodyweight_capabilities,
+    "cardio" => @cardio_capabilities,
+    "mobility" => @mobility_capabilities,
+    "skill" => @skill_capabilities
+  }
+
   @catalog Enum.map(@entries, fn {id, label, category, aliases} ->
-             capabilities =
-               case category do
-                 :strength -> @strength_capabilities
-                 :bodyweight -> @bodyweight_capabilities
-                 :cardio -> @cardio_capabilities
-                 :mobility -> @mobility_capabilities
-                 :skill -> @skill_capabilities
-               end
+             capabilities = Map.fetch!(@capabilities, Atom.to_string(category))
 
              %{
                id: id,
@@ -179,6 +247,39 @@ defmodule Palee.Workouts.Domain.WorkoutDsl.ExerciseCatalog do
            end)
 
   def entries, do: @catalog
+
+  @doc "ADR-461: the capabilities of an entry of `category` (an approved addition's)."
+  def capabilities_for(category), do: Map.get(@capabilities, category, [])
+
+  @doc """
+  ADR-461: the export with the Palee team's approved additions
+  (`%{kind, catalog_slug, label, category}`): new entries appended, aliases
+  joined to their entry's.
+  """
+  def export(additions) do
+    aliases =
+      additions
+      |> Enum.filter(&(&1.kind == "alias"))
+      |> Enum.group_by(& &1.catalog_slug, & &1.label)
+
+    added =
+      for %{kind: "entry"} = addition <- additions do
+        %{
+          id: addition.catalog_slug,
+          label: addition.label,
+          category: addition.category,
+          aliases: [],
+          capabilities: capabilities_for(addition.category)
+        }
+      end
+
+    Enum.map(export() ++ added, fn entry ->
+      %{entry | aliases: entry.aliases ++ Map.get(aliases, entry.id, [])}
+    end)
+  end
+
+  @doc "ADR-461: the entry's search-only aliases (suggestions match them, `resolve/1` does not)."
+  def search_aliases(id), do: Map.get(@search_aliases, id, [])
 
   def resolve(name) when is_binary(name) do
     normalized = normalize_name(name)
