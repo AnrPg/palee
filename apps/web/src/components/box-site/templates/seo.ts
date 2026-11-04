@@ -241,3 +241,22 @@ export function llmsText({ page, site, packages, visible, root }: Omit<SeoInput,
   }
   return lines.join("\n");
 }
+
+const xml = (value: string) => value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+/**
+ * The site's sitemap: each page in the menu, in each language the owner
+ * shows (the first is the box's own, at the root), with its alternates.
+ */
+export function siteSitemapXml({ root, languages, visible }: { root: string; languages: string[]; visible: SiteSection[] }) {
+  const codes = languages.length ? languages : [null];
+  const urls = sitePages(visible).flatMap((entry) => {
+    const alternates = languages.length > 1 ? languages.map((code, index) => ({ code, href: pageUrl(languageRoot(root, index === 0 ? null : code), entry.key) })) : [];
+    return codes.map((code, index) => {
+      const loc = pageUrl(languageRoot(root, index === 0 ? null : code), entry.key);
+      const links = alternates.map((alt) => `<xhtml:link rel="alternate" hreflang="${xml(alt.code)}" href="${xml(alt.href)}"/>`).join("");
+      return `<url><loc>${xml(loc)}</loc>${links}<changefreq>weekly</changefreq><priority>${entry.key === "home" ? "1.0" : "0.7"}</priority></url>`;
+    });
+  });
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${urls.join("\n")}\n</urlset>\n`;
+}
