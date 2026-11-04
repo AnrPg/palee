@@ -182,11 +182,13 @@ defmodule PaleeWeb.Schemas.TrainingDepth do
       title: "MyTrainingDepth",
       type: :object,
       properties:
-        Map.put(@properties, :sources, %Schema{
+        @properties
+        |> Map.put(:sources, %Schema{
           type: :array,
           items: %Schema{type: :string},
           description: "The source filter applied (none = every source)"
-        }),
+        })
+        |> Map.put(:metric_baselines, PaleeWeb.Schemas.AnalyticsMetrics.baselines_schema()),
       required: [:sources | @required]
     }
   end

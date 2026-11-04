@@ -87,6 +87,79 @@ defmodule Palee.Analytics do
   defdelegate progress_since(filter, today), to: ProgressFilter, as: :since
   defdelegate progress_weeks(filter, today, first_day), to: ProgressFilter, as: :weeks
 
+  # ADR-462: staff analytics filters, KPIs, the metric registry and resets.
+  alias Palee.Analytics.Domain.{AnalyticsFilter, MetricBaseline, MetricRegistry}
+  alias Palee.Analytics.{KpiStore, MetricResetStore}
+  alias Palee.Analytics.Queries.KpiReport
+
+  defdelegate parse_analytics_filter(params, today), to: AnalyticsFilter, as: :parse
+  defdelegate analytics_filter_params(filter), to: AnalyticsFilter, as: :to_params
+  defdelegate previous_analytics_filter(filter), to: AnalyticsFilter, as: :previous
+  defdelegate analytics_filter_locations(filter, ids), to: AnalyticsFilter, as: :put_locations
+  defdelegate analytics_people_filtered?(filter), to: AnalyticsFilter, as: :people_filtered?
+
+  defdelegate metrics(scope), to: MetricRegistry, as: :all
+  defdelegate metric_keys(scope), to: MetricRegistry, as: :keys
+  defdelegate section_metric_keys(section), to: MetricRegistry, as: :section_keys
+  defdelegate fetch_metric(scope, key), to: MetricRegistry, as: :fetch
+  defdelegate resettable_metric(scope, key), to: MetricRegistry, as: :resettable
+  defdelegate active_baselines(resets), to: MetricBaseline, as: :active
+  defdelegate event_categories(), to: EventCatalog, as: :categories
+  defdelegate event_category(name), to: EventCatalog, as: :category
+
+  @doc "The gym's zone and local date `{zone, today}` (ADR-179)."
+  def gym_clock(context), do: KpiStore.run(context, &KpiStore.gym_clock/0)
+
+  @doc """
+  The staff KPIs `keys` for `filter` (current and previous period), each
+  counting only data after its active baseline (`baselines`, `%{key =>
+  DateTime}`); `home_user_ids` are a branch filter's people (ADR-186 §7).
+  """
+  def kpi_report(context, filter, keys, baselines, home_user_ids \\ nil),
+    do:
+      KpiStore.run(context, fn ->
+        KpiReport.call(filter, keys, baselines, home_user_ids, elem(KpiStore.gym_clock(), 0))
+      end)
+
+  @doc """
+  The user ids the person filters keep (narrowed to `home_user_ids` when
+  given), for summaries that filter by person; nil when no person filter.
+  """
+  def filter_people(context, filter, home_user_ids \\ nil),
+    do:
+      KpiStore.run(context, fn ->
+        zone = elem(KpiStore.gym_clock(), 0)
+        window = KpiReport.windows(filter, zone).current
+        KpiStore.people_ids(KpiStore.scope(filter, zone, window, home_user_ids))
+      end)
+
+  @doc "The UTC windows `%{current, previous}` of a filter in the gym's zone."
+  defdelegate kpi_windows(filter, zone), to: KpiReport, as: :windows
+
+  @doc "One KPI over an explicit UTC window, no baseline (reset history)."
+  def kpi_over(context, filter, key, window),
+    do:
+      KpiStore.run(context, fn ->
+        KpiReport.over(filter, key, window, elem(KpiStore.gym_clock(), 0))
+      end)
+
+  def record_metric_reset(context, scope, attrs),
+    do: MetricResetStore.insert_reset(context, scope, attrs)
+
+  def undo_metric_reset(context, scope, id, now),
+    do: MetricResetStore.undo_reset(context, scope, id, now)
+
+  def list_metric_resets(context, scope, opts \\ []),
+    do: MetricResetStore.list_resets(context, scope, opts)
+
+  @doc "The active baseline of each metric of a scope, `%{metric_key => DateTime}`."
+  def metric_baselines(context, scope) do
+    case MetricResetStore.active_resets(context, scope) do
+      resets when is_list(resets) -> MetricBaseline.active(resets)
+      _no_scope -> %{}
+    end
+  end
+
   # ADR-165: training load (session RPE, acute:chronic) as an indicator.
   alias Palee.Analytics.Domain.TrainingLoad
 

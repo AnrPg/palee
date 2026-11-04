@@ -68,6 +68,13 @@ defmodule PaleeWeb.FallbackController do
     expired_deletion_link: {:gone, "This link has expired"}
   }
 
+  # ADR-462: metric resets.
+  @metric_reset_errors %{
+    unknown_metric: {:not_found, "There is no such metric"},
+    metric_not_resettable: {:unprocessable_entity, "This figure is a state and cannot be reset"},
+    already_undone: {:conflict, "This reset was already undone"}
+  }
+
   # ADR-202: spaces, floor plans, the cleaning schedule and machine placement.
   @space_errors %{
     space_not_found: {:not_found, "Space not found"},
@@ -170,6 +177,14 @@ defmodule PaleeWeb.FallbackController do
 
   def call(conn, {:error, reason}) when is_map_key(@space_errors, reason) do
     {status, message} = Map.fetch!(@space_errors, reason)
+
+    conn
+    |> put_status(status)
+    |> json(%{code: to_string(reason), error: message})
+  end
+
+  def call(conn, {:error, reason}) when is_map_key(@metric_reset_errors, reason) do
+    {status, message} = Map.fetch!(@metric_reset_errors, reason)
 
     conn
     |> put_status(status)

@@ -163,9 +163,15 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     diploma_signatures diploma_signature_events
   )
 
+  # ADR-462: tables holding both a box's rows (organization_id) and a
+  # person's own account-level rows (user_id), each under its own forced
+  # policy. A row with neither is unmapped.
+  @ready_mixed_tables ~w(analytics_metric_resets)
+
   def report do
     %{
       ready: Enum.map(@ready_tenant_tables, &table_status(&1, :organization_id)),
+      ready_mixed: Enum.map(@ready_mixed_tables, &mixed_table_status/1),
       ready_personal: Enum.map(@ready_personal_tables, &table_status(&1, :user_id)),
       transitional: Enum.map(@transitional_tenant_tables, &table_status(&1, :organization_id)),
       platform_administered: Enum.map(@platform_administered_tables, &platform_table_status/1),
@@ -186,6 +192,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
       @ready_tenant_tables ++
         @transitional_tenant_tables ++
         @ready_personal_tables ++
+        @ready_mixed_tables ++
         @platform_administered_tables
 
     %{rows: rows} =
@@ -236,6 +243,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
   def ready_for_full_enforcement?(report \\ report()) do
     Enum.all?(report.ready, &enforced?/1) and
       Enum.all?(report.ready_personal, &enforced?/1) and
+      Enum.all?(Map.get(report, :ready_mixed, []), &enforced?/1) and
       Enum.all?(report.transitional, &enforced?/1) and
       report.unclassified_tables == [] and
       report.legacy_fallback_policies == []
@@ -270,6 +278,24 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
       "SELECT relrowsecurity, relforcerowsecurity FROM pg_class WHERE oid = to_regclass($1)",
       [table]
     )
+  end
+
+  defp mixed_table_status(table) do
+    %{rows: [[unmapped_rows]]} =
+      Ecto.Adapters.SQL.query!(
+        Repo,
+        "SELECT count(*) FROM #{table} WHERE organization_id IS NULL AND user_id IS NULL",
+        []
+      )
+
+    %{rows: [[rls_enabled, rls_forced]]} = rls_flags(table)
+
+    %{
+      table: table,
+      unmapped_rows: unmapped_rows,
+      rls_enabled: rls_enabled,
+      rls_forced: rls_forced
+    }
   end
 
   defp table_status(table, ownership_column) do
