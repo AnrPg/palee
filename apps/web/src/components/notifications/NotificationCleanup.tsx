@@ -2,7 +2,7 @@
 
 import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
 import {
   deleteNotifications,
@@ -57,9 +57,34 @@ export function NotificationCleanup({ categories }: { categories: NotificationCa
 
   const filter = useMemo(() => cleanupFilter(state, category), [state, category]);
 
+  // The card sits at the end of Settings' notifications section: its list is
+  // read once the card comes near the screen, not on every Settings visit
+  // (the inbox is otherwise read only when the bell opens).
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [nearScreen, setNearScreen] = useState(false);
+  useEffect(() => {
+    const element = sectionRef.current;
+    if (!element) return;
+    if (typeof IntersectionObserver === "undefined") {
+      queueMicrotask(() => setNearScreen(true));
+      return;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setNearScreen(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px 0px" },
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
   const list = useInfiniteQuery({
     queryKey: ["notifications", currentUser?.id, "cleanup", filter],
-    enabled: Boolean(token),
+    enabled: Boolean(token) && nearScreen,
     initialPageParam: null as string | null,
     queryFn: ({ pageParam }) =>
       fetchNotifications(token!, { limit: PAGE_SIZE, cursor: pageParam, filter, includeCount: pageParam === null }),
@@ -111,6 +136,7 @@ export function NotificationCleanup({ categories }: { categories: NotificationCa
 
   return (
     <section
+      ref={sectionRef}
       className="rounded-[1.2rem] p-4"
       style={{ border: "1px solid var(--border)", background: "var(--panel-muted)" }}
       aria-labelledby="notification-cleanup-title"
