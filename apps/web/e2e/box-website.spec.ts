@@ -72,17 +72,8 @@ const site = {
   about: null,
   texts: {},
   class_type_names: {},
-  sections: ["hero", "about", "programmes", "faq", "reviews", "trial_form", "contact_form", "coaches"],
+  sections: ["hero", "about", "faq", "reviews", "trial_form", "contact_form", "coaches"],
   faq: [{ id: "faq-1", question: "Χρειάζομαι εμπειρία;", answer: "Όχι, ξεκινάμε από την αρχή." }],
-  // ADR-543: the first three programmes on sale and how many there are.
-  programmes: {
-    items: [
-      { id: "prog-1", title: "Strength in 6 weeks", goal: "strength", level: "intermediate", weeks: 6, sessions_per_week: 4, price_cents: 3900, currency: "EUR", cover_url: null, reviews: { average: 4.8, count: 23 } },
-      { id: "prog-2", title: "Engine in 4 weeks", goal: "endurance", level: "all", weeks: 4, sessions_per_week: 3, price_cents: 2500, currency: "EUR", cover_url: null, reviews: { average: 4.6, count: 9 } },
-      { id: "prog-3", title: "Running 10K", goal: "endurance", level: "beginner", weeks: 8, sessions_per_week: 3, price_cents: 2900, currency: "EUR", cover_url: null, reviews: { average: null, count: 0 } },
-    ],
-    total: 5,
-  },
   forms: { trial: true, contact: true, kinds: ["trial", "contact"] },
   reviews: { palee: { average: 4.5, count: 2, latest: memberReviews }, google, google_reviews_url: google.maps_uri },
   report_contact: "moderation@palee.app",
@@ -141,94 +132,104 @@ async function asVisitor(page: Page, { appLocale = true } = {}) {
   return forms;
 }
 
+/** The website's page menu: in the header on a wide screen, behind ☰ on a phone. */
+async function sitePagesMenu(page: Page) {
+  const burger = page.getByTestId("site-menu-open");
+  if (await burger.isVisible()) await burger.click();
+  return page.getByRole("navigation", { name: "Pages" }).last();
+}
+
+// ADR-530: guests get the box's website in its template (here «Αρένα», the
+// default for sites without one), server-rendered, with a real URL per page.
 test.describe("the box's public website", () => {
-  test("shows the owner's sections in order, without the box page's «I'm interested» card", async ({ page }) => {
+  test("renders the website for guests with the owner's sections and the pages that have them", async ({ page }) => {
     await asVisitor(page);
     await page.goto(`/b/${slug}`);
 
-    const sections = page.getByTestId("site-sections");
-    await expect(sections).toBeVisible();
-    await expect(sections.getByText("Ένα φιλικό box στην Κυψέλη.")).toBeVisible();
-    const order = await sections
-      .locator("[data-testid='site-faq'], [data-testid='site-reviews'], [data-testid='site-trial-card'], [data-testid='site-contact-card']")
-      .evaluateAll((nodes) => nodes.map((node) => node.getAttribute("data-testid")));
-    expect(order).toEqual(["site-faq", "site-reviews", "site-trial-card", "site-contact-card"]);
-    // «Coaches» comes last, after the forms, as the owner ordered it.
-    const coachesAfterForms = await sections.evaluate((root) => {
-      const contact = root.querySelector("[data-testid='site-contact-card']")!;
-      const coach = [...root.querySelectorAll("*")].find((node) => node.textContent === "Stelios")!;
-      return Boolean(contact.compareDocumentPosition(coach) & Node.DOCUMENT_POSITION_FOLLOWING);
-    });
-    expect(coachesAfterForms).toBe(true);
+    const website = page.getByTestId("box-website");
+    await expect(website).toBeVisible();
+    await expect(website).toHaveAttribute("data-template", "arena");
+    await expect(website).toHaveAttribute("data-page", "home");
+    await expect(website).toHaveAttribute("lang", "el");
+    await expect(page.getByTestId("site-hero")).toBeVisible();
+    await expect(page.getByTestId("site-about")).toContainText("Ένα φιλικό box στην Κυψέλη.");
+
+    // Only pages with a visible section are in the menu: no timetable, events or packages here.
+    const menu = await sitePagesMenu(page);
+    await expect(menu.getByRole("link")).toHaveText(["Home", "Coaches", "The space"]);
+    await page.keyboard.press("Escape");
 
     // In-app reviews and Google's rating, kept apart (ADR-386/387).
-    const reviews = sections.getByTestId("site-reviews");
+    const reviews = page.getByTestId("site-reviews").first();
     await expect(reviews.getByTestId("site-reviews-average")).toContainText("4.5");
     await expect(reviews.getByTestId("site-reviews-average")).toContainText("2 reviews");
     await expect(reviews.getByText("Great coaches and a warm community.")).toBeVisible();
     await expect(reviews.getByTestId("box-review-reply").first()).toContainText("Reply from Box Kypseli: Thank you, Maria!");
     await expect(reviews.getByTestId("google-reviews")).toContainText("From Google");
     await expect(reviews.getByTestId("google-reviews")).toContainText("120 Google reviews");
+    await expect(page.getByTestId("site-faq").first().getByText("Χρειάζομαι εμπειρία;")).toBeVisible();
 
-    // FAQ in the box's language on the box-language page.
-    await expect(sections.getByTestId("site-faq").getByText("Χρειάζομαι εμπειρία;")).toBeVisible();
-
-    // The website has its own request cards, so the W2 enquiry card is not shown (ADR-388).
+    // The app's box page and its enquiry card are not shown to guests.
+    await expect(page.getByTestId("site-sections")).toHaveCount(0);
     await expect(page.getByTestId("enquiry-open")).toHaveCount(0);
-    await expect(page.getByText("I'm interested", { exact: true })).toHaveCount(0);
-
     await expect(page.getByTestId("site-language-switch").getByRole("link", { name: "el" })).toHaveAttribute("aria-current", "page");
 
     // The footer names Palee's moderation address for reports on content (ADR-397).
     await expect(page.getByTestId("site-report-contact")).toHaveAttribute("href", "mailto:moderation@palee.app");
     await expect(page.getByTestId("site-report-contact")).toContainText("moderation@palee.app");
+    // Search and answer engines read the gym and its questions.
+    const jsonLd = await page.locator('script[type="application/ld+json"]').allTextContents();
+    expect(jsonLd.join(" ")).toContain('"ExerciseGym"');
+    expect(jsonLd.join(" ")).toContain('"FAQPage"');
   });
 
-  test("shows the box's training programmes as cards, «All training programmes (5)» and the menu link on a large screen", async ({ page }) => {
+  test("each page has its own URL, title and canonical; a page without sections goes home", async ({ page }) => {
     await asVisitor(page);
     await page.goto(`/b/${slug}`);
+    await (await sitePagesMenu(page)).getByRole("link", { name: "Coaches" }).click();
+    await expect(page).toHaveURL(new RegExp(`/b/${slug}/coaches$`));
+    await expect(page.getByTestId("box-website")).toHaveAttribute("data-page", "coaches");
+    await expect(page.getByTestId("site-coaches").getByText("Stelios")).toBeVisible();
 
-    const programmes = page.getByTestId("site-programmes");
-    await expect(programmes).toContainText("Programmes for wherever you are");
-    await expect(programmes.locator("[data-testid^='site-programme-prog-']")).toHaveCount(3);
-    const first = page.getByTestId("site-programme-prog-1");
-    await expect(first).toContainText("6 wks · 4 a week · Intermediate · ★ 4.8 (23)");
-    await expect(first.getByRole("link", { name: "See it" })).toHaveAttribute("href", `/b/${slug}/programmes/prog-1`);
-    await expect(page.getByTestId("site-programme-prog-3")).toContainText("New");
-    await expect(page.getByTestId("site-programmes-all")).toHaveText("All training programmes (5)");
-    await expect(page.getByTestId("site-programmes-all")).toHaveAttribute("href", `/b/${slug}/programmes`);
+    await page.goto(`/b/${slug}/space`);
+    // The title is in the language of the page's content.
+    await expect(page).toHaveTitle("Ο χώρος · Box Kypseli");
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", new RegExp(`/b/${slug}/space$`));
+    await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute("href", new RegExp(`/b/${slug}/en/space$`));
+    const jsonLd = await page.locator('script[type="application/ld+json"]').allTextContents();
+    expect(jsonLd.join(" ")).toContain('"BreadcrumbList"');
 
-    const wide = (page.viewportSize()?.width ?? 0) >= 1024;
-    await expect(page.getByTestId("site-nav-programmes")).toBeVisible({ visible: wide });
+    await page.goto(`/b/${slug}/schedule`);
+    await expect(page).toHaveURL(new RegExp(`/b/${slug}$`));
   });
 
-  test("the trial request sheet sends the form with an event_id and the privacy yes", async ({ page }) => {
+  test("the trial form sends the request with an event_id, the chosen days and the privacy yes", async ({ page }) => {
     const forms = await asVisitor(page);
     await page.goto(`/b/${slug}`);
 
-    await page.getByTestId("site-trial-card").getByRole("button", { name: "Book a trial class" }).click();
-    const sheet = page.getByRole("dialog", { name: "Book a trial class" });
+    await page.getByTestId("site-cta").first().click();
+    const sheet = page.getByRole("dialog", { name: "Free trial class" });
     await expect(sheet).toContainText("Nothing is booked yet.");
     await sheet.getByLabel("Name").fill("Nikos Ioannou");
     await sheet.getByLabel("Mobile or email").fill("6900000001");
-    await sheet.getByLabel("When suits you (optional)").fill("weekday evenings");
+    await sheet.getByRole("button", { name: "Mon", exact: true }).click();
 
     // The privacy yes is required before anything is sent.
-    await sheet.getByRole("button", { name: "Send request" }).click();
+    await sheet.getByTestId("site-form-send").click();
     await expect(sheet.getByText("Confirm you have read the privacy policy.")).toBeVisible();
     expect(forms).toEqual([]);
 
     await sheet.getByRole("checkbox", { name: /privacy policy/ }).check();
-    await sheet.getByRole("button", { name: "Send request" }).click();
+    await sheet.getByTestId("site-form-send").click();
 
-    await expect(page.getByRole("dialog", { name: "Request sent" })).toBeVisible();
+    await expect(page.getByRole("dialog", { name: "Thank you, Nikos Ioannou!" })).toBeVisible();
     expect(forms).toHaveLength(1);
     expect(forms[0]!.path).toBe(`/api/public/sites/${slug}/forms/trial`);
     const body = forms[0]!.body as Record<string, unknown>;
     expect(body).toMatchObject({
       name: "Nikos Ioannou",
       phone: "6900000001",
-      preferred_time: "weekday evenings",
+      preferred_time: "Mon",
       locale: "en",
       marketing_opt_in: false,
       privacy_ack: true,
@@ -239,26 +240,48 @@ test.describe("the box's public website", () => {
     expect(body.elapsed_ms).toEqual(expect.any(Number));
     expect(body).not.toHaveProperty("email");
     expect(body).not.toHaveProperty("visitor_id");
+
+    // Esc closes the sheet and the page is usable again.
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("dialog")).toHaveCount(0);
   });
 
-  test("/en shows the English translations and marks English as current", async ({ page }) => {
+  test("/en shows the English translations, marks English as current and keeps the page", async ({ page }) => {
     await asVisitor(page);
     await page.goto(`/b/${slug}/en`);
 
-    const sections = page.getByTestId("site-sections");
-    await expect(sections.getByText("A friendly box in Kypseli.")).toBeVisible();
-    await expect(sections.getByText("Ένα φιλικό box στην Κυψέλη.")).toHaveCount(0);
-    await expect(sections.getByTestId("site-faq").getByText("Do I need experience?")).toBeVisible();
+    await expect(page.getByTestId("box-website")).toHaveAttribute("lang", "en");
+    await expect(page.getByTestId("site-about")).toContainText("A friendly box in Kypseli.");
+    await expect(page.getByText("Ένα φιλικό box στην Κυψέλη.")).toHaveCount(0);
+    await expect(page.getByTestId("site-faq").first().getByText("Do I need experience?")).toBeVisible();
     await expect(page.getByTestId("site-language-switch").getByRole("link", { name: "en" })).toHaveAttribute("aria-current", "page");
-    await expect(page.getByTestId("enquiry-open")).toHaveCount(0);
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", new RegExp(`/b/${slug}/en$`));
+
+    await page.goto(`/b/${slug}/en/coaches`);
+    await expect(page.getByTestId("box-website")).toHaveAttribute("data-page", "coaches");
+    await expect(page.getByTestId("site-language-switch").getByRole("link", { name: "el" })).toHaveAttribute("href", `/b/${slug}/coaches`);
   });
 
-  test("a first visit from an English browser opens /en", async ({ page }) => {
+  test("a first visit from an English browser opens the same page in /en", async ({ page }) => {
     await asVisitor(page, { appLocale: false });
     await page.goto(`/b/${slug}`);
     await expect(page).toHaveURL(new RegExp(`/b/${slug}/en$`));
-    await expect(page.getByTestId("site-sections").getByText("A friendly box in Kypseli.")).toBeVisible();
+    await expect(page.getByTestId("site-about")).toContainText("A friendly box in Kypseli.");
+    await page.goto(`/b/${slug}/coaches`);
+    await expect(page).toHaveURL(new RegExp(`/b/${slug}/en/coaches$`));
+  });
+
+  test("llms.txt and the sitemap describe the website", async ({ request }) => {
+    const llms = await request.get(`/b/${slug}/llms.txt`);
+    expect(llms.ok()).toBe(true);
+    const text = await llms.text();
+    expect(text).toContain("# Box Kypseli");
+    expect(text).toContain("### Χρειάζομαι εμπειρία;");
+    expect(text).toContain(`/b/${slug}/coaches)`);
+
+    const sitemap = await (await request.get(`/b/${slug}/sitemap.xml`)).text();
+    expect(sitemap).toContain(`<loc>https://palee.app/b/${slug}/en/coaches</loc>`);
+    expect(sitemap).not.toContain("/schedule");
   });
 });
 
@@ -334,12 +357,31 @@ const siteLanguages = {
   progress: [{ locale: "en", counts: { ok: 1, missing: 2, stale: 1, machine: 0 }, total: 4 }],
 };
 
+const DRAFT_FIELDS = ["template", "palette", "appearance", "calm_motion", "hidden_sections", "public_schedule", "public_wod"];
+
 test.describe("Settings › Website", () => {
-  test("switches sections and their order as a draft, and the save bar sends one PUT", async ({ page }) => {
+  test("keeps the look and the section switches as a draft until «Publish» (ADR-530)", async ({ page }) => {
     const writes: Write[] = [];
+    let server: Record<string, unknown> = { ...siteSettings, template: "arena", palette: "palee", appearance: "auto", calm_motion: false, draft: null, published_at: null, template_notice: true };
     await asOwner(page, writes, (path, method, body, route) => {
-      if (path === "/api/admin/site" && method === "GET") return json(route, { settings: siteSettings, domains: [], languages: siteLanguages });
-      if (path === "/api/admin/site" && method === "PUT") return json(route, { settings: { ...siteSettings, ...(body as object), lock_version: 4 }, languages: siteLanguages });
+      if (path === "/api/admin/site" && method === "GET") return json(route, { settings: server, domains: [], languages: siteLanguages });
+      if (path === "/api/admin/site" && method === "PUT") {
+        // The API keeps the publishable fields as a draft; the rest saves at once.
+        const draft = { ...((server.draft as object | null) ?? {}) } as Record<string, unknown>;
+        const rest: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(body as object)) (DRAFT_FIELDS.includes(key) ? draft : rest)[key] = value;
+        server = { ...server, ...rest, draft, lock_version: (server.lock_version as number) + 1 };
+        return json(route, { settings: server, languages: siteLanguages });
+      }
+      if (path === "/api/admin/site/publish" && method === "POST") {
+        server = { ...server, ...((server.draft as object | null) ?? {}), draft: null, template_notice: false };
+        return json(route, { settings: server });
+      }
+      if (path === "/api/admin/site/notice" && method === "DELETE") {
+        server = { ...server, template_notice: false };
+        return json(route, { settings: server });
+      }
+      if (path === "/api/admin/site/preview") return json(route, { detail: "not_found" }, 404);
       if (path === "/api/admin/site/summary") {
         return json(route, { days: 30, submissions: { total: 7, delivered: 7, failed: 0, waiting: 0 }, consents: { accept_all: 0, custom: 0, reject_all: 0, withdraw: 0 } });
       }
@@ -350,37 +392,70 @@ test.describe("Settings › Website", () => {
     await expect(page.getByRole("heading", { name: "Website", level: 1 })).toBeVisible();
     await expect(page.getByTestId("website-summary")).toHaveText("7 requests in the last 30 days");
     await expect(page.getByTestId("website-open")).toHaveAttribute("href", "/b/kypseli");
+    await expect(page.getByTestId("website-notice")).toContainText("Your website has a new look: Arena.");
+    await expect(page.getByTestId("website-publish-status")).toHaveText("Everything is published.");
+    // From 1100px the preview sits beside the settings; narrower, «Preview» opens it as a sheet.
+    if ((page.viewportSize()?.width ?? 0) >= 1100) {
+      await expect(page.getByTestId("website-preview")).toBeVisible();
+      await expect(page.getByTestId("website-preview-open")).toHaveCount(0);
+    } else {
+      await page.getByTestId("website-preview-open").click();
+      await expect(page.getByTestId("website-preview-sheet").getByTestId("website-preview")).toBeVisible();
+      await page.keyboard.press("Escape");
+      await expect(page.getByTestId("website-preview-sheet")).toHaveCount(0);
+    }
 
+    // Four templates and twelve palettes; the arrow keys move within each group.
+    const look = page.getByTestId("website-look");
+    await expect(look.getByRole("radiogroup", { name: "Template" }).getByRole("radio")).toHaveCount(4);
+    await expect(look.getByRole("radiogroup", { name: "Colours" }).getByRole("radio")).toHaveCount(12);
+    await look.getByRole("radio", { name: /Arena/ }).focus();
+    await page.keyboard.press("ArrowRight");
+    await expect(look.getByRole("radio", { name: /Tiles/ })).toHaveAttribute("aria-checked", "true");
+    await expect(look.getByRole("radio", { name: /Tiles/ })).toBeFocused();
+    await expect(page.getByTestId("website-publish-status")).toHaveText("Not published yet: template.");
+
+    // One switch per section, in groups, without order arrows. «Timetable» is on (public_schedule) only when switched on.
     const sections = page.getByTestId("website-sections");
-    await expect(sections.getByTestId("website-section-hero")).toContainText("Always shown first");
-    // «Timetable» is off until the owner switches it on (public_schedule).
+    await expect(sections.getByRole("button", { name: /^Move / })).toHaveCount(0);
     const timetable = sections.getByRole("switch", { name: "Timetable" });
     await expect(timetable).not.toBeChecked();
-    await expect(sections.getByRole("switch", { name: "Contact form" })).toBeChecked();
+    await timetable.click();
+    await expect(timetable).toBeChecked();
+    await sections.getByRole("switch", { name: "Contact form" }).click();
+    await expect(page.getByTestId("website-publish-status")).toHaveText("Not published yet: template, sections.");
+    // Nothing for the save bar: every click went to the server as a draft.
     await expect(page.getByTestId("website-save-bar-save")).toHaveCount(0);
+    const puts = writes.filter((write) => write.path === "/api/admin/site" && write.method === "PUT");
+    expect(puts.map((write) => write.body)).toEqual([
+      { lock_version: 3, template: "tiles" },
+      { lock_version: 4, hidden_sections: [], public_schedule: true },
+      { lock_version: 5, hidden_sections: ["contact_form"] },
+    ]);
 
-    await timetable.check();
-    await sections.getByRole("switch", { name: "Contact form" }).uncheck();
-    await sections.getByRole("button", { name: "Move Reviews up" }).click();
-    await expect(sections.locator("li")).toHaveText([/^Top/, /^About/, /^Reviews/, /^Timetable/, /^Trial class request/, /^Contact form/, /^FAQ/]);
-    await expect(page.getByTestId("website-save-bar-count")).toHaveText("3 unsaved changes");
-    expect(writes.filter((write) => write.path === "/api/admin/site")).toEqual([]);
+    await page.getByTestId("website-publish").click();
+    await expect(page.getByTestId("website-publish-status")).toHaveText("Published. Visitors see it in a few seconds.");
+    expect(writes.filter((write) => write.path === "/api/admin/site/publish")).toHaveLength(1);
+    await expect(page.getByTestId("website-notice")).toHaveCount(0);
+  });
 
-    await page.getByTestId("website-save-bar-save").click();
-    await expect(page.getByTestId("website-save-bar")).toContainText("Changes saved.");
+  test("«Just the basics» keeps about, packages, location and the trial form", async ({ page }) => {
+    const writes: Write[] = [];
+    await asOwner(page, writes, (path, method, body, route) => {
+      if (path === "/api/admin/site" && method === "GET") return json(route, { settings: siteSettings, domains: [], languages: siteLanguages });
+      if (path === "/api/admin/site" && method === "PUT") return json(route, { settings: { ...siteSettings, lock_version: 4, draft: body }, languages: siteLanguages });
+      if (path === "/api/admin/site/preview") return json(route, { detail: "not_found" }, 404);
+      return null;
+    });
+    await page.goto("/admin/settings/website");
+    const sections = page.getByTestId("website-sections");
+    await sections.getByRole("button", { name: "Just the basics" }).click();
+    await expect(sections.getByRole("switch", { name: "Packages" })).toBeChecked();
+    await expect(sections.getByRole("switch", { name: "Coaches" })).not.toBeChecked();
     const puts = writes.filter((write) => write.path === "/api/admin/site" && write.method === "PUT");
     expect(puts).toHaveLength(1);
-    expect(puts[0]!.body).toMatchObject({
-      lock_version: 3,
-      public_schedule: true,
-      public_wod: false,
-      forms_enabled: true,
-      hidden_sections: ["contact_form"],
-      section_order: ["hero", "about", "reviews", "schedule", "trial_form", "contact_form", "faq"],
-      faq: [],
-      translation_locales: ["en"],
-      visible_locales: [],
-    });
+    expect(puts[0]!.body).toMatchObject({ public_schedule: false, public_wod: false });
+    expect((puts[0]!.body as { hidden_sections: string[] }).hidden_sections).not.toContain("trial_form");
   });
 
   // ADR-398: Palee creates the Ingress of a verified host; the card shows the certificate's state.

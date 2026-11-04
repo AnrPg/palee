@@ -16439,6 +16439,232 @@
     "sentTitle": "Angekommen!",
     "sentBody": "{box} meldet sich bald, meist noch am selben Tag."
   },
+  "SiteTemplates": {
+    "skip": "Zum Inhalt springen",
+    "menu": "Menü",
+    "closeMenu": "Menü schließen",
+    "close": "Schließen",
+    "pagesNav": "Seiten",
+    "logoHome": "{box}, Startseite",
+    "free": "Kostenlos",
+    "from": "ab {price}",
+    "pages": {
+      "home": "Start",
+      "schedule": "Kursplan",
+      "training": "Training",
+      "packages": "Pakete",
+      "coaches": "Coaches",
+      "space": "Die Räume"
+    },
+    "cta": {
+      "trial": "Kostenloses Probetraining",
+      "trialLong": "Kostenloses Probetraining buchen",
+      "contact": "Schreib uns",
+      "call": "{phone} anrufen",
+      "tabTrial": "Probetraining",
+      "tabContact": "Nachricht",
+      "tabCall": "Anrufen"
+    },
+    "next": {
+      "title": "Nächster Kurs",
+      "chip": "Nächster: {name} {when}",
+      "when": "{day, select, today {heute {time}} tomorrow {morgen {time}} other {{weekday} {time}}}",
+      "inDays": "{count, plural, one {in # Tag} other {in # Tagen}}"
+    },
+    "open": {
+      "open": "Geöffnet bis {time}",
+      "opens": "Öffnet um {time}",
+      "closed": "Jetzt geschlossen",
+      "closedToday": "Heute geschlossen"
+    },
+    "per": {
+      "monthly": "pro Monat",
+      "quarterly": "pro Quartal",
+      "semiannual": "pro Halbjahr",
+      "annual": "pro Jahr",
+      "once": "einmalig"
+    },
+    "schedule": {
+      "title": "Kursplan",
+      "sub": "Wische zum nächsten Tag. Mit «Ausprobieren» kommt der Kurs ins Formular für das Probetraining.",
+      "today": "Heute",
+      "day": "Tag",
+      "type": "Kursart",
+      "panes": "Die Kurse des Tages",
+      "empty": "An diesem Tag gibt es keine Kurse.",
+      "emptyType": "An diesem Tag gibt es keine Kurse dieser Art.",
+      "minutes": "{count, plural, other {#′}}",
+      "done": "Vorbei",
+      "try": "Ausprobieren",
+      "tryAria": "{name} ausprobieren, {day} {time}"
+    },
+    "map": {
+      "directions": "Route",
+      "howToGet": "So kommst du hin"
+    },
+    "gallery": {
+      "title": "Fotos",
+      "open": "Öffnen: {name}",
+      "photo": "Foto {index}",
+      "prev": "Vorheriges Foto",
+      "next": "Nächstes Foto",
+      "count": "{index} von {count}"
+    },
+    "programmes": {
+      "weeks": "{count, plural, one {# Woche} other {# Wochen}}"
+    },
+    "stats": {
+      "classes_per_week": "{count, plural, one {Kurs pro Woche} other {Kurse pro Woche}}",
+      "prs_this_year": "{count, plural, other {PRs in diesem Jahr}}",
+      "years_open": "{count, plural, one {Jahr geöffnet} other {Jahre geöffnet}}"
+    },
+    "reviews": {
+      "count": "{count, plural, one {# Bewertung} other {# Bewertungen}}"
+    },
+    "packages": {
+      "title": "Abo-Pakete",
+      "sub": "Die heutigen Preise der Box.",
+      "stackSub": "Wische die Karten oder nutze die Pfeile.",
+      "all": "Alle Abo-Pakete",
+      "bookTrial": "Probetraining buchen",
+      "startTrial": "Mit Probetraining starten",
+      "choose": "Auswählen",
+      "buyOnline": "Online kaufen",
+      "carousel": "Karussell",
+      "stackLabel": "Abo-Pakete: wische oder nutze die Pfeile",
+      "prev": "Vorheriges Paket",
+      "next": "Nächstes Paket",
+      "position": "{index} von {count}"
+    },
+    "form": {
+      "trialTitle": "Kostenloses Probetraining",
+      "contactTitle": "Schreib uns",
+      "contactSub": "Schreib uns, und {box} antwortet dir bald.",
+      "choice": "Deine Wahl: {choice}",
+      "days": "Welche Tage passen dir (optional)",
+      "thanks": "Danke, {name}!",
+      "contactSent": "Deine Nachricht wurde gesendet. Die Box antwortet dir bald.",
+      "previewNote": "Vorschau: Das Formular wurde nicht wirklich gesendet.",
+      "ok": "OK"
+    },
+    "stories": {
+      "label": "Story: {name}",
+      "pause": "Pause",
+      "resume": "Weiter",
+      "prev": "Zurück",
+      "next": "Weiter zur nächsten",
+      "hint": "Tippe rechts für die nächste, halte gedrückt zum Pausieren, wische nach unten zum Schließen.",
+      "trial1": "Dein erstes",
+      "trial2": "Training",
+      "trial3": "ist kostenlos",
+      "hero1": "Training",
+      "hero2": "für jedes",
+      "hero3": "Level",
+      "seeSpace": "Räume ansehen",
+      "fullSchedule": "Der ganze Kursplan",
+      "swipe": "Wische zum Auswählen",
+      "ourStory": "Unsere Geschichte",
+      "allReviews": "Alle Bewertungen",
+      "names": {
+        "wod": "WOD",
+        "space": "Die Räume",
+        "coaches": "Coaches",
+        "events": "Events",
+        "reviews": "Bewertungen"
+      }
+    },
+    "footer": {
+      "contact": "Kontakt"
+    },
+    "sections": {
+      "wod": "WOD des Tages",
+      "events": "Events",
+      "programmes": "Online-Programme",
+      "reviews": "Bewertungen",
+      "faq": "Häufige Fragen",
+      "location": "Standort",
+      "stats": "In Zahlen"
+    },
+    "arena": {
+      "line1": "Werde",
+      "line2": "stärker",
+      "line3": "jeden Tag",
+      "seeSchedule": "Zum Kursplan",
+      "seePrices": "Zu den Preisen",
+      "whyEyebrow": "Warum hier",
+      "why1": "Niemand",
+      "why2": "trainiert",
+      "why3": "allein",
+      "coaches": "Die Coaches",
+      "prevCoach": "Vorheriger Coach",
+      "nextCoach": "Nächster Coach",
+      "prices": "Preise",
+      "reviews": "Was Mitglieder sagen",
+      "findUs": "So findest du uns",
+      "questions": "Häufige Fragen"
+    },
+    "why": {
+      "coaches": "{count, plural, one {# Coach} other {# Coaches}}",
+      "classes": "{count, plural, one {# Kurs pro Woche} other {# Kurse pro Woche}}",
+      "progress": "Sieh deinen Fortschritt",
+      "progressText": "Deine PRs und Trainings bleiben in der App der Box."
+    },
+    "wod": {
+      "band": "WOD des Tages · {title}",
+      "play": "Bewegung fortsetzen",
+      "pause": "Bewegung anhalten"
+    },
+    "video": {
+      "play": "Video abspielen",
+      "pause": "Video anhalten"
+    },
+    "coaches": {
+      "sub": "Die Menschen, die dich trainieren."
+    },
+    "space": {
+      "sub": "Tippe auf ein Foto, um es groß zu sehen."
+    },
+    "tiles": {
+      "hero1": "Training",
+      "hero2": "in deiner Nachbarschaft",
+      "today": "Heute",
+      "nextDay": "Am nächsten Tag",
+      "whoWeAre": "Wer wir sind",
+      "team": "Das Team",
+      "inNumbers": "In Zahlen",
+      "moreEvents": "{count, plural, other {und # weitere}}",
+      "programmes": "{count, plural, one {# Programm} other {# Programme}}",
+      "moreQuestions": "{count, plural, one {und # weitere Frage} other {und # weitere Fragen}}",
+      "askUs": "Frag uns"
+    },
+    "atelier": {
+      "hero1": "Kraft",
+      "hero2": "mit <it>Sorgfalt</it>.",
+      "scroll": "Scrollen",
+      "theSchedule": "Der Kursplan",
+      "philosophy": "Unsere Philosophie",
+      "chapters": "Kapitel",
+      "aDayHere": "Ein Tag <it>hier</it>",
+      "chapterClasses": "Die Kurse",
+      "classesTitle": "Jeder Kurs, <it>mit Sorgfalt</it>.",
+      "seeWeek": "Die Woche ansehen",
+      "chapterSpace": "Die Räume",
+      "spaceTitle": "<it>Unsere</it> Räume.",
+      "comeIn": "Komm herein",
+      "chapterHome": "Und von zu Hause",
+      "programmesTitle": "Programme von unseren <it>Coaches</it>.",
+      "seeProgrammes": "Programme ansehen",
+      "people": "Die Menschen",
+      "onTheFloor": "Auf der Fläche <it>mit dir</it>",
+      "memberships": "Mitgliedschaften",
+      "simplePrices": "Einfache <it>Preise</it>",
+      "fromMembers": "Von den Mitgliedern",
+      "firstHour": "Deine erste Stunde",
+      "closing1": "Komm vorbei und",
+      "closing2": "<it>lern uns kennen</it>.",
+      "contact": "Kontakt"
+    }
+  },
   "BoxSite": {
     "bookTrial": "Probetraining buchen",
     "askSomething": "Frag etwas",
@@ -16464,7 +16690,10 @@
       "reviews": "Bewertungen",
       "faq": "Häufige Fragen",
       "trial_form": "Anfrage Probetraining",
-      "contact_form": "Kontaktformular"
+      "contact_form": "Kontaktformular",
+      "photos": "Fotos",
+      "stats": "Community in Zahlen",
+      "programmes": "Programme"
     },
     "form": {
       "trial": {
@@ -16601,16 +16830,11 @@
       "back": "Einstellungen",
       "title": "Website",
       "navHint": "Bereiche, Sprachen, Domain und Cookies der Website der Box",
-      "intro": "Die Website der Box füllt sich selbst aus Palee. Schalte Abschnitte ein oder aus und ordne sie.",
+      "intro": "Die Website der Box füllt sich selbst aus Palee. Wähle Aussehen und Abschnitte und veröffentliche sie, wenn sie fertig ist.",
       "open": "Website öffnen",
       "requests": "{count, plural, one {# Anfrage} other {# Anfragen}} in den letzten {days} Tagen",
       "loading": "Wird geladen…",
       "stale": "Jemand anderes hat diese Einstellungen geändert. Lade neu und versuch es noch einmal.",
-      "sectionsTitle": "Abschnitte",
-      "sectionsHint": "Besucher sehen die aktiven Abschnitte in dieser Reihenfolge.",
-      "heroAlways": "Immer zuerst",
-      "moveUp": "{section} nach oben",
-      "moveDown": "{section} nach unten",
       "question": "Frage",
       "answer": "Antwort",
       "required": "Füll das aus oder entferne die Frage.",
@@ -16709,6 +16933,139 @@
       "all": "{count, plural, one {Alle Trainingsprogramme (#)} other {Alle Trainingsprogramme (#)}}",
       "nav": "Trainingsprogramme",
       "settingsHint": "Wird angezeigt, wenn du ein Trainingsprogramm im Verkauf hast."
+    }
+  },
+  "WebsiteLook": {
+    "notice": "Deine Website hat ein neues Aussehen: {template}. Sieh dir die anderen Vorlagen an und wechsle, wann immer du willst.",
+    "noticeClose": "Hinweis schließen",
+    "lookTitle": "Aussehen",
+    "template": "Vorlage",
+    "templates": {
+      "arena": {
+        "name": "Arena",
+        "hint": "Energie, große Schrift. CrossFit."
+      },
+      "tiles": {
+        "name": "Kacheln",
+        "hint": "Lebendige Kacheln. Passt überall."
+      },
+      "stories": {
+        "name": "Stories",
+        "hint": "Stories wie in einer App. Vor allem fürs Handy."
+      },
+      "atelier": {
+        "name": "Atelier",
+        "hint": "Redaktionell, premium. Pilates, Yoga."
+      }
+    },
+    "colors": "Farben",
+    "palettes": {
+      "palee": "Palee",
+      "electric": "Elektrisch",
+      "flame": "Flamme",
+      "sun": "Sonne",
+      "amber": "Bernstein",
+      "emerald": "Smaragd",
+      "aegean": "Ägäis",
+      "violet": "Violett",
+      "fuchsia": "Fuchsia",
+      "olive": "Olive",
+      "navy": "Marine",
+      "mono": "Mono"
+    },
+    "contrast": "Textkontrast {ratio}:1.",
+    "contrastAa": "Textkontrast {ratio}:1 · AA ✓.",
+    "contrastHint": "Ist eine Farbe schlecht lesbar, nimmt Palee einen dunkleren Ton davon.",
+    "appearanceTitle": "Hell oder dunkel",
+    "appearance": {
+      "auto": "Automatisch",
+      "light": "Immer hell",
+      "dark": "Immer dunkel"
+    },
+    "appearanceHint": "«Automatisch» folgt dem Gerät des Besuchers.",
+    "motionTitle": "Bewegung",
+    "calm": "Weniger Bewegung",
+    "calmHint": "Schaltet Effekte und automatische Bewegungen für alle Besucher ab. Wer es auf seinem Gerät eingestellt hat, sieht schon weniger Bewegung.",
+    "sectionsTitle": "Was die Website zeigt",
+    "sectionsHint": "Jeder Abschnitt füllt sich selbst aus Palee. Was keine Daten hat, bleibt verborgen, auch wenn es an ist. Der Start ist immer zu sehen.",
+    "quickAll": "Alle",
+    "quickBasic": "Nur das Wichtigste",
+    "groups": {
+      "basics": "Grundlagen",
+      "training": "Training",
+      "shop": "Shop",
+      "team": "Team und Räume",
+      "forms": "Formulare"
+    },
+    "new": "neu",
+    "sectionHints": {
+      "about": "Der «Über uns»-Text der Box-Seite.",
+      "photos": "Bis zu 12 Fotos und 1 Video bis 15″. Ohne sie die mit 🌐 markierten «Räume».",
+      "stats": "Nur Summen: Kurse pro Woche, PRs dieses Jahr, Jahre geöffnet.",
+      "schedule": "Die Kurse der Woche, ohne Plätze und Namen.",
+      "wod": "Das WOD von heute, sobald es veröffentlicht ist.",
+      "events": "Die Events der Box, die allen offenstehen.",
+      "programmes": "Die Programme, die deine Coaches verkaufen.",
+      "packages": "Die Mitgliedspakete, die du online verkaufst.",
+      "coaches": "Die Coaches der Box mit ihren Zertifikaten.",
+      "location": "Adresse, Karte und Öffnungszeiten.",
+      "reviews": "Bewertungen der Mitglieder und deine Google-Bewertung.",
+      "faq": "Bis zu 12 Fragen, die du selbst schreibst.",
+      "trial_form": "Wird ein Interessent unter Leads.",
+      "contact_form": "Wird ein Interessent unter Leads."
+    },
+    "seoTitle": "Auffindbar bei Google und in KI-Antworten",
+    "seoIntro": "Palee erledigt das alles selbst, auf jeder Seite und in jeder Sprache:",
+    "seo": {
+      "google": {
+        "label": "Google (SEO):",
+        "text": "eigener Titel, eigene Beschreibung und Adresse auf jeder Seite, Sitemap, Bild zum Teilen."
+      },
+      "data": {
+        "label": "Strukturierte Daten:",
+        "text": "Box, Pakete, Kurse, Events und Fragen in schema.org, damit Suchmaschinen sie richtig lesen."
+      },
+      "ai": {
+        "label": "KI-Antworten (GEO):",
+        "text": "überall dieselbe Adresse, Telefonnummer und Öffnungszeiten, datierte Texte und eine llms.txt, damit ChatGPT, Gemini und Perplexity dich richtig nennen."
+      },
+      "speed": {
+        "label": "Tempo:",
+        "text": "Seiten laden auf dem Handy in unter 2,5 Sekunden, was auch für Google zählt."
+      },
+      "reviews": {
+        "label": "Bewertungen:",
+        "text": "«Schreib eine Google-Bewertung» nach dem Training bringt dich in lokalen Suchen nach oben."
+      }
+    },
+    "seoTip": "Für noch bessere Plätze: Vervollständige den Google-Eintrag der Box und nutze <domain>deine eigene Domain</domain>.",
+    "publish": {
+      "allPublished": "Alles veröffentlicht.",
+      "pending": "Noch nicht veröffentlicht: {list}.",
+      "published": "Veröffentlicht. Besucher sehen es in wenigen Sekunden.",
+      "publish": "Veröffentlichen",
+      "publishing": "Wird veröffentlicht…",
+      "discard": "Verwerfen",
+      "discardTitle": "Änderungen verwerfen?",
+      "discardText": "Die Änderungen an {list} gehen verloren. Die Website bleibt, wie sie veröffentlicht ist.",
+      "keep": "Behalten",
+      "groups": {
+        "template": "Vorlage",
+        "colors": "Farben",
+        "appearance": "hell oder dunkel",
+        "motion": "Bewegung",
+        "sections": "Abschnitte"
+      }
+    },
+    "preview": {
+      "title": "Vorschau",
+      "hint": "So sehen Besucher sie nach «Veröffentlichen».",
+      "device": "Gerät",
+      "phone": "Handy",
+      "desk": "Computer",
+      "open": "Vorschau",
+      "loading": "Vorschau wird geladen…",
+      "unavailable": "Die Vorschau ist gerade nicht verfügbar."
     }
   },
   "BoxReviews": {

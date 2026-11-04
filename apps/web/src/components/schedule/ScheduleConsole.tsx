@@ -189,9 +189,12 @@ function defaultSlotValues(
 
 export function ScheduleConsole({
   initialOpenSlotId = null,
+  initialOpenDay = null,
   pageTitle,
 }: {
   initialOpenSlotId?: string | null;
+  /** The gym day of `initialOpenSlotId`, when the link knows it (YYYY-MM-DD). */
+  initialOpenDay?: string | null;
   pageTitle?: string;
 } = {}) {
   const i18n = useUiTranslations();
@@ -200,7 +203,8 @@ export function ScheduleConsole({
   const branchT = useTranslations("BranchScope");
   const locale = useLocale();
   const { tokens } = useSession();
-  const { days, setDays, openDay, shiftWindow, resetWindow, startDate, classTypeIds, setClassTypeIds } = useScheduleStore();
+  const { days, setDays, openDay, shiftWindow, resetWindow, focusDay, startDate, classTypeIds, setClassTypeIds } =
+    useScheduleStore();
   const [schedule, setSchedule] = useState<ScheduleSlot[]>([]);
   const [classTypes, setClassTypes] = useState<ClassTypeRecord[]>([]);
   const [locations, setLocations] = useState<ScheduleLocation[]>([]);
@@ -310,6 +314,16 @@ export function ScheduleConsole({
       setLoading(false);
     }
   }, [calendarWindow.queryEndAt, calendarWindow.queryStartAt, classTypeIds, days, i18n, t, tokens]);
+
+  // A link to one class: the store keeps the last range and type filter for
+  // the whole visit, so move to the class's day (today when the link does not
+  // say) with no filter before the first load, or the class may not be loaded.
+  const deepLinkFocusedRef = useRef(false);
+  useEffect(() => {
+    if (!initialOpenSlotId || deepLinkFocusedRef.current) return;
+    deepLinkFocusedRef.current = true;
+    focusDay(initialOpenDay ?? todayKey(gymZone));
+  }, [focusDay, gymZone, initialOpenDay, initialOpenSlotId]);
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {

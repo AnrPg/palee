@@ -9,13 +9,14 @@ defmodule Palee.BoxSite.Domain.SiteSections do
   («WOD της ημέρας», off until the owner turns `public_wod` on, like the
   timetable). Existing sites get them appended to their order.
 
-  ADR-543 adds `programmes` («Προγράμματα»: the programmes the box sells),
-  defaulted like `events`: on, shown only when the box has a programme on
-  sale; the owner hides it like any other section.
+  ADR-530 adds `photos` («Φωτογραφίες»: the box page photos and the room
+  photos marked public), `stats` («Αριθμοί κοινότητας»: aggregates only) and
+  `programmes` («Προγράμματα»: programmes for sale). Every section is now an
+  on/off switch: each template has its own flow, so the order is kept only
+  for the old settings and `normalize_order/1`.
   """
 
-  @keys ~w(hero about schedule events wod packages programmes coaches location reviews faq
-           trial_form contact_form)
+  @keys ~w(hero about photos stats schedule events wod programmes packages coaches location reviews faq trial_form contact_form)
 
   @doc "Every section key, in the default order."
   def keys, do: @keys
@@ -47,8 +48,10 @@ defmodule Palee.BoxSite.Domain.SiteSections do
 
   @doc """
   The sections a visitor sees, in order: the owner's order without hidden
-  ones, and without those whose switch is off (`facts`: `public_schedule`,
-  `public_wod`, `faq?`, `forms_enabled`, `reviews?`, `programmes?`).
+  ones, and without those whose switch is off or that have nothing to show
+  (`facts`: `public_schedule`, `public_wod`, `faq?`, `forms_enabled`,
+  `reviews?`, `photos?`, `stats?`, `programmes?`; a missing fact is off).
+  `hero` always comes first.
   """
   def visible(order, hidden, facts) do
     order
@@ -61,6 +64,8 @@ defmodule Palee.BoxSite.Domain.SiteSections do
   defp available?("wod", facts), do: Map.get(facts, :public_wod, false)
   defp available?("faq", facts), do: Map.get(facts, :faq?, false)
   defp available?("reviews", facts), do: Map.get(facts, :reviews?, false)
+  defp available?("photos", facts), do: Map.get(facts, :photos?, false)
+  defp available?("stats", facts), do: Map.get(facts, :stats?, false)
   defp available?("programmes", facts), do: Map.get(facts, :programmes?, false)
 
   defp available?(form, facts) when form in ["trial_form", "contact_form"],

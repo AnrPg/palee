@@ -10,13 +10,16 @@ export const SITE_PROGRAMMES_ANCHOR = "site-programmes";
 
 /**
  * The website's programmes (ADR-543): up to three cards on sale, newest
- * first, and how many there are. A payload without them (an older API, a
- * stub answering `{}`) reads as none.
+ * first, and how many there are. The site payload carries them as the
+ * `programmes` list (ADR-530) and `programmes_total`; a payload without them
+ * (an older API, a stub answering `{}`) reads as none.
  */
-export function siteProgrammes(site: Pick<PublicSite, "programmes"> | null | undefined): { items: (TileProgramme & { id: string })[]; total: number } {
+export function siteProgrammes(
+  site: (Pick<PublicSite, "programmes"> & { programmes_total?: unknown }) | null | undefined,
+): { items: (TileProgramme & { id: string })[]; total: number } {
   const block = site?.programmes as unknown;
-  if (!block || typeof block !== "object") return { items: [], total: 0 };
-  const { items, total } = block as { items?: unknown; total?: unknown };
+  const items = Array.isArray(block) ? block : block && typeof block === "object" ? (block as { items?: unknown }).items : undefined;
+  const total = Array.isArray(block) ? site?.programmes_total : block && typeof block === "object" ? (block as { total?: unknown }).total : undefined;
   const list = (Array.isArray(items) ? items : [])
     .filter((item): item is TileProgramme & { id: string } => Boolean(item && typeof item === "object" && typeof (item as { id?: unknown }).id === "string"))
     .slice(0, 3);

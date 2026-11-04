@@ -19,6 +19,9 @@ defmodule Palee.BoxSite.BoxSiteStore do
     do: call(context, :save_settings, [changes, lock_version])
 
   @impl true
+  def claim_template_notice(context, now), do: call(context, :claim_template_notice, [now])
+
+  @impl true
   def list_domains(context), do: call(context, :list_domains, [])
   @impl true
   def get_domain(context, id), do: call(context, :get_domain, [id])
@@ -80,4 +83,6 @@ defmodule Palee.BoxSite.BoxSiteStore do
   def due_organizations(now), do: adapter().due_organizations(now)
   @impl true
   def ingress_hosts, do: adapter().ingress_hosts()
+  @impl true
+  def template_notices_due, do: adapter().template_notices_due()
 end

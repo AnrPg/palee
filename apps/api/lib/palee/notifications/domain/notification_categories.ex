@@ -106,7 +106,7 @@ defmodule Palee.Notifications.Domain.NotificationCategories do
         inventory_repair_needed inventory_stock_low inventory_digest cleaning_point_not_cleaned
         shop_stock_low shop_order_placed payment_needs_attention fiscal_connection_failed
         fiscal_documents_not_reported
-        site_request webhook_disabled
+        site_request webhook_disabled site_template_changed
       )
     },
     %{

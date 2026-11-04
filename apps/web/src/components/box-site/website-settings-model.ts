@@ -7,7 +7,6 @@ import type { SiteSection } from "@/api/box-site";
  * One switch per section sets both, so the owner sees a single control.
  */
 export type SectionState = {
-  section_order: SiteSection[];
   hidden_sections: SiteSection[];
   public_schedule: boolean;
   public_wod: boolean;
@@ -41,17 +40,6 @@ export function toggleSection(state: SectionState, key: SiteSection, on: boolean
     }
   }
   return patch;
-}
-
-/** Moves a section one place up (-1) or down (1); «hero» stays first. */
-export function moveSection(order: SiteSection[], key: SiteSection, step: -1 | 1): SiteSection[] {
-  const index = order.indexOf(key);
-  const target = index + step;
-  if (key === "hero" || index < 0 || target < 1 || target >= order.length) return order;
-  const next = [...order];
-  next[index] = next[target]!;
-  next[target] = key;
-  return next;
 }
 
 /** The tag fields under «Προχωρημένα»: product names and id formats, the same in every language. */

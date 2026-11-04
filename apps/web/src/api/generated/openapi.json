@@ -1422,11 +1422,13 @@
               "enum": [
                 "hero",
                 "about",
+                "photos",
+                "stats",
                 "schedule",
                 "events",
                 "wod",
-                "packages",
                 "programmes",
+                "packages",
                 "coaches",
                 "location",
                 "reviews",
@@ -1440,11 +1442,102 @@
           },
           "settings": {
             "properties": {
+              "appearance": {
+                "description": "«Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»",
+                "enum": [
+                  "auto",
+                  "light",
+                  "dark"
+                ],
+                "type": "string"
+              },
               "banner_version": {
                 "type": "integer"
               },
+              "calm_motion": {
+                "description": "«Λιγότερη κίνηση»: the site's motion is off",
+                "type": "boolean"
+              },
               "conversions_api_enabled": {
                 "type": "boolean"
+              },
+              "draft": {
+                "description": "The publishable fields waiting for «Δημοσίευση»; null when nothing waits",
+                "nullable": true,
+                "properties": {
+                  "appearance": {
+                    "description": "«Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»",
+                    "enum": [
+                      "auto",
+                      "light",
+                      "dark"
+                    ],
+                    "type": "string"
+                  },
+                  "calm_motion": {
+                    "description": "«Λιγότερη κίνηση»: the site's motion is off",
+                    "type": "boolean"
+                  },
+                  "hidden_sections": {
+                    "items": {
+                      "enum": [
+                        "hero",
+                        "about",
+                        "photos",
+                        "stats",
+                        "schedule",
+                        "events",
+                        "wod",
+                        "programmes",
+                        "packages",
+                        "coaches",
+                        "location",
+                        "reviews",
+                        "faq",
+                        "trial_form",
+                        "contact_form"
+                      ],
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "palette": {
+                    "description": "ADR-530 palette key",
+                    "enum": [
+                      "palee",
+                      "electric",
+                      "flame",
+                      "sun",
+                      "amber",
+                      "emerald",
+                      "aegean",
+                      "violet",
+                      "fuchsia",
+                      "olive",
+                      "navy",
+                      "mono"
+                    ],
+                    "type": "string"
+                  },
+                  "public_schedule": {
+                    "type": "boolean"
+                  },
+                  "public_wod": {
+                    "type": "boolean"
+                  },
+                  "template": {
+                    "description": "ADR-530 template",
+                    "enum": [
+                      "arena",
+                      "tiles",
+                      "stories",
+                      "atelier"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "title": "SiteDraft",
+                "type": "object"
               },
               "faq": {
                 "items": {
@@ -1493,11 +1586,13 @@
                   "enum": [
                     "hero",
                     "about",
+                    "photos",
+                    "stats",
                     "schedule",
                     "events",
                     "wod",
-                    "packages",
                     "programmes",
+                    "packages",
                     "coaches",
                     "location",
                     "reviews",
@@ -1516,6 +1611,24 @@
                 "nullable": true,
                 "type": "string"
               },
+              "palette": {
+                "description": "ADR-530 palette key",
+                "enum": [
+                  "palee",
+                  "electric",
+                  "flame",
+                  "sun",
+                  "amber",
+                  "emerald",
+                  "aegean",
+                  "violet",
+                  "fuchsia",
+                  "olive",
+                  "navy",
+                  "mono"
+                ],
+                "type": "string"
+              },
               "public_schedule": {
                 "type": "boolean"
               },
@@ -1523,16 +1636,24 @@
                 "description": "«WOD της ημέρας» on the site (ADR-388)",
                 "type": "boolean"
               },
+              "published_at": {
+                "description": "The last «Δημοσίευση» (ADR-530)",
+                "format": "date-time",
+                "nullable": true,
+                "type": "string"
+              },
               "section_order": {
                 "items": {
                   "enum": [
                     "hero",
                     "about",
+                    "photos",
+                    "stats",
                     "schedule",
                     "events",
                     "wod",
-                    "packages",
                     "programmes",
+                    "packages",
                     "coaches",
                     "location",
                     "reviews",
@@ -1543,6 +1664,20 @@
                   "type": "string"
                 },
                 "type": "array"
+              },
+              "template": {
+                "description": "ADR-530 template",
+                "enum": [
+                  "arena",
+                  "tiles",
+                  "stories",
+                  "atelier"
+                ],
+                "type": "string"
+              },
+              "template_notice": {
+                "description": "The site moved to «Αρένα» (ADR-530); shown until published or dismissed",
+                "type": "boolean"
               },
               "translation_locales": {
                 "description": "Languages the box translates its texts into (ADR-520)",
@@ -1564,8 +1699,11 @@
               }
             },
             "required": [
+              "appearance",
               "banner_version",
+              "calm_motion",
               "conversions_api_enabled",
+              "draft",
               "faq",
               "forms_enabled",
               "ga4_measurement_id",
@@ -1574,9 +1712,13 @@
               "hidden_sections",
               "lock_version",
               "meta_pixel_id",
+              "palette",
               "public_schedule",
               "public_wod",
+              "published_at",
               "section_order",
+              "template",
+              "template_notice",
               "translation_locales",
               "visible_locales"
             ],
@@ -82045,6 +82187,19 @@
             "nullable": true,
             "type": "string"
           },
+          "appearance": {
+            "description": "«Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»",
+            "enum": [
+              "auto",
+              "light",
+              "dark"
+            ],
+            "type": "string"
+          },
+          "calm_motion": {
+            "description": "«Λιγότερη κίνηση»: the site's motion is off",
+            "type": "boolean"
+          },
           "canonical_url": {
             "type": "string"
           },
@@ -82167,324 +82322,169 @@
             },
             "type": "array"
           },
-          "programmes": {
-            "description": "«Προγράμματα» (ADR-543): the first programmes on sale, newest first, and how many there are («Όλα τα προγράμματα (N)»); empty when the section is not shown",
+          "palette": {
+            "description": "ADR-530 palette key",
+            "enum": [
+              "palee",
+              "electric",
+              "flame",
+              "sun",
+              "amber",
+              "emerald",
+              "aegean",
+              "violet",
+              "fuchsia",
+              "olive",
+              "navy",
+              "mono"
+            ],
+            "type": "string"
+          },
+          "phone": {
+            "description": "The box's public phone; null while the box has none (ADR-530)",
+            "nullable": true,
+            "type": "string"
+          },
+          "photos": {
+            "description": "«Φωτογραφίες»: page photos then public room photos (at most 12)",
             "properties": {
               "items": {
                 "items": {
                   "properties": {
-                    "coach_name": {
-                      "description": "The author's public name; null once the account is deleted",
+                    "caption": {
+                      "description": "Null for the page's photos; the photo's caption or room's name",
                       "nullable": true,
                       "type": "string"
                     },
-                    "cover_url": {
-                      "description": "ADR-541: null shows the theme strip",
+                    "height": {
                       "nullable": true,
-                      "type": "string"
-                    },
-                    "currency": {
-                      "type": "string"
-                    },
-                    "description": {
-                      "nullable": true,
-                      "type": "string"
-                    },
-                    "equipment": {
-                      "items": {
-                        "type": "string"
-                      },
-                      "type": "array"
-                    },
-                    "goal": {
-                      "type": "string"
+                      "type": "integer"
                     },
                     "id": {
                       "format": "uuid",
                       "type": "string"
                     },
-                    "latest_reviews": {
-                      "items": {
-                        "properties": {
-                          "author": {
-                            "nullable": true,
-                            "properties": {
-                              "id": {
-                                "format": "uuid",
-                                "type": "string"
-                              },
-                              "nickname": {
-                                "nullable": true,
-                                "type": "string"
-                              }
-                            },
-                            "type": "object"
-                          },
-                          "body": {
-                            "nullable": true,
-                            "type": "string"
-                          },
-                          "hidden_reason": {
-                            "nullable": true,
-                            "type": "string"
-                          },
-                          "id": {
-                            "format": "uuid",
-                            "type": "string"
-                          },
-                          "inserted_at": {
-                            "format": "date-time",
-                            "type": "string"
-                          },
-                          "rating": {
-                            "maximum": 5,
-                            "minimum": 1,
-                            "type": "integer"
-                          },
-                          "status": {
-                            "enum": [
-                              "published",
-                              "hidden"
-                            ],
-                            "type": "string"
-                          },
-                          "updated_at": {
-                            "format": "date-time",
-                            "type": "string"
-                          },
-                          "version_number": {
-                            "type": "integer"
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "rating",
-                          "status",
-                          "version_number"
-                        ],
-                        "title": "ProgrammeReview",
-                        "type": "object"
-                      },
-                      "type": "array"
-                    },
-                    "level": {
+                    "url": {
                       "type": "string"
                     },
-                    "listing": {
-                      "type": "string"
-                    },
-                    "main_equipment": {
-                      "description": "ADR-542: «κύριος εξοπλισμός»: the author's added keys, then the derived ones kept",
-                      "items": {
-                        "description": "ADR-542: an equipment key (labels: web messages `Equipment.<key>`)",
-                        "enum": [
-                          "none",
-                          "barbell",
-                          "dumbbell",
-                          "kettlebell",
-                          "bench",
-                          "box",
-                          "pull_up_bar",
-                          "rings",
-                          "dip_bars",
-                          "climbing_rope",
-                          "ghd",
-                          "jump_rope",
-                          "wall_ball",
-                          "sled",
-                          "rower",
-                          "bike",
-                          "air_bike",
-                          "ski_erg",
-                          "pool",
-                          "band",
-                          "foam_roller"
-                        ],
-                        "title": "EquipmentKey",
-                        "type": "string"
-                      },
-                      "type": "array"
-                    },
-                    "minutes_per_session": {
-                      "description": "ADR-542: «περίπου ανά προπόνηση», rounded to 5; null unless every WOD has a duration",
-                      "nullable": true,
-                      "type": "integer"
-                    },
-                    "preview": {
-                      "items": {
-                        "properties": {
-                          "day": {
-                            "type": "integer"
-                          },
-                          "summary": {
-                            "nullable": true,
-                            "type": "string"
-                          },
-                          "title": {
-                            "nullable": true,
-                            "type": "string"
-                          },
-                          "week": {
-                            "type": "integer"
-                          },
-                          "weekday": {
-                            "type": "integer"
-                          }
-                        },
-                        "required": [
-                          "day",
-                          "week",
-                          "weekday"
-                        ],
-                        "title": "ProgrammePreviewDay",
-                        "type": "object"
-                      },
-                      "type": "array"
-                    },
-                    "preview_days": {
-                      "type": "integer"
-                    },
-                    "price_cents": {
-                      "type": "integer"
-                    },
-                    "published_at": {
-                      "format": "date-time",
-                      "nullable": true,
-                      "type": "string"
-                    },
-                    "refund_policy": {
-                      "type": "string"
-                    },
-                    "reviews": {
-                      "properties": {
-                        "average": {
-                          "nullable": true,
-                          "type": "number"
-                        },
-                        "count": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "average",
-                        "count"
-                      ],
-                      "title": "ProgrammeRating",
-                      "type": "object"
-                    },
-                    "sessions": {
-                      "nullable": true,
-                      "type": "integer"
-                    },
-                    "sessions_per_week": {
-                      "nullable": true,
-                      "type": "integer"
-                    },
-                    "summary": {
-                      "nullable": true,
-                      "type": "string"
-                    },
-                    "title": {
-                      "type": "string"
-                    },
-                    "version_number": {
-                      "nullable": true,
-                      "type": "integer"
-                    },
-                    "week_outline": {
-                      "items": {
-                        "properties": {
-                          "days": {
-                            "description": "The week's seven days (weekday 0 is the weekday of the start date)",
-                            "items": {
-                              "description": "A day of the programme as the public page shows it: never the WOD itself (preview days show theirs in `preview`)",
-                              "properties": {
-                                "day": {
-                                  "description": "Day 0 is the start date",
-                                  "type": "integer"
-                                },
-                                "minutes": {
-                                  "description": "Approximate minutes (rounded to 5); null when a WOD has no duration",
-                                  "nullable": true,
-                                  "type": "integer"
-                                },
-                                "preview": {
-                                  "description": "One of the free preview days",
-                                  "type": "boolean"
-                                },
-                                "rest": {
-                                  "description": "No WOD that day",
-                                  "type": "boolean"
-                                },
-                                "weekday": {
-                                  "maximum": 6,
-                                  "minimum": 0,
-                                  "type": "integer"
-                                },
-                                "workout_type": {
-                                  "description": "The WOD's workout type (ADR-275 key); null when not set or a rest day",
-                                  "nullable": true,
-                                  "type": "string"
-                                }
-                              },
-                              "required": [
-                                "day",
-                                "weekday",
-                                "rest",
-                                "workout_type",
-                                "minutes",
-                                "preview"
-                              ],
-                              "title": "ProgrammeOutlineDay",
-                              "type": "object"
-                            },
-                            "type": "array"
-                          },
-                          "sessions": {
-                            "type": "integer"
-                          },
-                          "week": {
-                            "type": "integer"
-                          }
-                        },
-                        "required": [
-                          "days",
-                          "sessions",
-                          "week"
-                        ],
-                        "title": "ProgrammeOutlineWeek",
-                        "type": "object"
-                      },
-                      "type": "array"
-                    },
-                    "weeks": {
+                    "width": {
                       "nullable": true,
                       "type": "integer"
                     }
                   },
                   "required": [
-                    "currency",
-                    "goal",
+                    "caption",
+                    "height",
                     "id",
-                    "level",
-                    "price_cents",
-                    "title"
+                    "url",
+                    "width"
                   ],
-                  "title": "PublicProgramme",
+                  "title": "SitePhoto",
                   "type": "object"
                 },
+                "maxItems": 12,
                 "type": "array"
               },
-              "total": {
-                "type": "integer"
+              "video": {
+                "description": "Null until boxes can add a site video",
+                "nullable": true,
+                "properties": {
+                  "poster_url": {
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "url": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "poster_url",
+                  "url"
+                ],
+                "title": "SiteVideo",
+                "type": "object"
               }
             },
             "required": [
               "items",
-              "total"
+              "video"
             ],
-            "title": "SiteProgrammes",
+            "title": "SitePhotos",
             "type": "object"
+          },
+          "programmes": {
+            "description": "«Προγράμματα» for sale (ADR-530 §3); empty while there is none",
+            "items": {
+              "properties": {
+                "cover_url": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "currency": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "level": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "price_cents": {
+                  "nullable": true,
+                  "type": "integer"
+                },
+                "rating_average": {
+                  "nullable": true,
+                  "type": "number"
+                },
+                "rating_count": {
+                  "type": "integer"
+                },
+                "sessions_per_week": {
+                  "nullable": true,
+                  "type": "integer"
+                },
+                "summary": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "url": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "weeks": {
+                  "nullable": true,
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "cover_url",
+                "currency",
+                "id",
+                "level",
+                "price_cents",
+                "rating_average",
+                "rating_count",
+                "sessions_per_week",
+                "summary",
+                "title",
+                "url",
+                "weeks"
+              ],
+              "title": "SiteProgramme",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "programmes_total": {
+            "description": "How many programmes the box sells (ADR-543), for «Όλα τα προγράμματα (N)»",
+            "type": "integer"
           },
           "report_contact": {
             "description": "Palee's address for reporting content on the site (ADR-397, DSA Art. 16)",
@@ -82633,11 +82633,13 @@
               "enum": [
                 "hero",
                 "about",
+                "photos",
+                "stats",
                 "schedule",
                 "events",
                 "wod",
-                "packages",
                 "programmes",
+                "packages",
                 "coaches",
                 "location",
                 "reviews",
@@ -82650,6 +82652,44 @@
             "type": "array"
           },
           "slug": {
+            "type": "string"
+          },
+          "stats": {
+            "description": "«Αριθμοί κοινότητας»: aggregates only, null when the section is off; a zero or null is not shown",
+            "nullable": true,
+            "properties": {
+              "classes_per_week": {
+                "description": "Classes over the next 7 days",
+                "nullable": true,
+                "type": "integer"
+              },
+              "prs_this_year": {
+                "description": "PRs recorded in the box this year",
+                "nullable": true,
+                "type": "integer"
+              },
+              "years_open": {
+                "description": "Whole years since the box joined",
+                "nullable": true,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "classes_per_week",
+              "prs_this_year",
+              "years_open"
+            ],
+            "title": "SiteStats",
+            "type": "object"
+          },
+          "template": {
+            "description": "ADR-530 template",
+            "enum": [
+              "arena",
+              "tiles",
+              "stories",
+              "atelier"
+            ],
             "type": "string"
           },
           "texts": {
@@ -82803,6 +82843,8 @@
         },
         "required": [
           "about",
+          "appearance",
+          "calm_motion",
           "canonical_url",
           "class_type_names",
           "events",
@@ -82810,17 +82852,23 @@
           "forms",
           "language",
           "languages",
+          "palette",
+          "phone",
+          "photos",
+          "programmes",
+          "programmes_total",
           "report_contact",
           "reviews",
           "sections",
           "slug",
+          "stats",
+          "template",
           "texts",
           "time_zone",
           "timetable",
           "tracking",
           "translation",
-          "wod",
-          "programmes"
+          "wod"
         ],
         "title": "PublicSiteResponse",
         "type": "object"
@@ -96174,6 +96222,84 @@
         "title": "SiteDomainsResponse",
         "type": "object"
       },
+      "SiteDraft": {
+        "description": "The publishable fields waiting for «Δημοσίευση»; null when nothing waits",
+        "nullable": true,
+        "properties": {
+          "appearance": {
+            "description": "«Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»",
+            "enum": [
+              "auto",
+              "light",
+              "dark"
+            ],
+            "type": "string"
+          },
+          "calm_motion": {
+            "description": "«Λιγότερη κίνηση»: the site's motion is off",
+            "type": "boolean"
+          },
+          "hidden_sections": {
+            "items": {
+              "enum": [
+                "hero",
+                "about",
+                "photos",
+                "stats",
+                "schedule",
+                "events",
+                "wod",
+                "programmes",
+                "packages",
+                "coaches",
+                "location",
+                "reviews",
+                "faq",
+                "trial_form",
+                "contact_form"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "palette": {
+            "description": "ADR-530 palette key",
+            "enum": [
+              "palee",
+              "electric",
+              "flame",
+              "sun",
+              "amber",
+              "emerald",
+              "aegean",
+              "violet",
+              "fuchsia",
+              "olive",
+              "navy",
+              "mono"
+            ],
+            "type": "string"
+          },
+          "public_schedule": {
+            "type": "boolean"
+          },
+          "public_wod": {
+            "type": "boolean"
+          },
+          "template": {
+            "description": "ADR-530 template",
+            "enum": [
+              "arena",
+              "tiles",
+              "stories",
+              "atelier"
+            ],
+            "type": "string"
+          }
+        },
+        "title": "SiteDraft",
+        "type": "object"
+      },
       "SiteEvent": {
         "properties": {
           "currency": {
@@ -96620,323 +96746,170 @@
         "title": "SitePaleeReviews",
         "type": "object"
       },
-      "SiteProgrammes": {
-        "description": "«Προγράμματα» (ADR-543): the first programmes on sale, newest first, and how many there are («Όλα τα προγράμματα (N)»); empty when the section is not shown",
+      "SitePhoto": {
+        "properties": {
+          "caption": {
+            "description": "Null for the page's photos; the photo's caption or room's name",
+            "nullable": true,
+            "type": "string"
+          },
+          "height": {
+            "nullable": true,
+            "type": "integer"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "width": {
+            "nullable": true,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "caption",
+          "height",
+          "id",
+          "url",
+          "width"
+        ],
+        "title": "SitePhoto",
+        "type": "object"
+      },
+      "SitePhotos": {
+        "description": "«Φωτογραφίες»: page photos then public room photos (at most 12)",
         "properties": {
           "items": {
             "items": {
               "properties": {
-                "coach_name": {
-                  "description": "The author's public name; null once the account is deleted",
+                "caption": {
+                  "description": "Null for the page's photos; the photo's caption or room's name",
                   "nullable": true,
                   "type": "string"
                 },
-                "cover_url": {
-                  "description": "ADR-541: null shows the theme strip",
+                "height": {
                   "nullable": true,
-                  "type": "string"
-                },
-                "currency": {
-                  "type": "string"
-                },
-                "description": {
-                  "nullable": true,
-                  "type": "string"
-                },
-                "equipment": {
-                  "items": {
-                    "type": "string"
-                  },
-                  "type": "array"
-                },
-                "goal": {
-                  "type": "string"
+                  "type": "integer"
                 },
                 "id": {
                   "format": "uuid",
                   "type": "string"
                 },
-                "latest_reviews": {
-                  "items": {
-                    "properties": {
-                      "author": {
-                        "nullable": true,
-                        "properties": {
-                          "id": {
-                            "format": "uuid",
-                            "type": "string"
-                          },
-                          "nickname": {
-                            "nullable": true,
-                            "type": "string"
-                          }
-                        },
-                        "type": "object"
-                      },
-                      "body": {
-                        "nullable": true,
-                        "type": "string"
-                      },
-                      "hidden_reason": {
-                        "nullable": true,
-                        "type": "string"
-                      },
-                      "id": {
-                        "format": "uuid",
-                        "type": "string"
-                      },
-                      "inserted_at": {
-                        "format": "date-time",
-                        "type": "string"
-                      },
-                      "rating": {
-                        "maximum": 5,
-                        "minimum": 1,
-                        "type": "integer"
-                      },
-                      "status": {
-                        "enum": [
-                          "published",
-                          "hidden"
-                        ],
-                        "type": "string"
-                      },
-                      "updated_at": {
-                        "format": "date-time",
-                        "type": "string"
-                      },
-                      "version_number": {
-                        "type": "integer"
-                      }
-                    },
-                    "required": [
-                      "id",
-                      "rating",
-                      "status",
-                      "version_number"
-                    ],
-                    "title": "ProgrammeReview",
-                    "type": "object"
-                  },
-                  "type": "array"
-                },
-                "level": {
+                "url": {
                   "type": "string"
                 },
-                "listing": {
-                  "type": "string"
-                },
-                "main_equipment": {
-                  "description": "ADR-542: «κύριος εξοπλισμός»: the author's added keys, then the derived ones kept",
-                  "items": {
-                    "description": "ADR-542: an equipment key (labels: web messages `Equipment.<key>`)",
-                    "enum": [
-                      "none",
-                      "barbell",
-                      "dumbbell",
-                      "kettlebell",
-                      "bench",
-                      "box",
-                      "pull_up_bar",
-                      "rings",
-                      "dip_bars",
-                      "climbing_rope",
-                      "ghd",
-                      "jump_rope",
-                      "wall_ball",
-                      "sled",
-                      "rower",
-                      "bike",
-                      "air_bike",
-                      "ski_erg",
-                      "pool",
-                      "band",
-                      "foam_roller"
-                    ],
-                    "title": "EquipmentKey",
-                    "type": "string"
-                  },
-                  "type": "array"
-                },
-                "minutes_per_session": {
-                  "description": "ADR-542: «περίπου ανά προπόνηση», rounded to 5; null unless every WOD has a duration",
-                  "nullable": true,
-                  "type": "integer"
-                },
-                "preview": {
-                  "items": {
-                    "properties": {
-                      "day": {
-                        "type": "integer"
-                      },
-                      "summary": {
-                        "nullable": true,
-                        "type": "string"
-                      },
-                      "title": {
-                        "nullable": true,
-                        "type": "string"
-                      },
-                      "week": {
-                        "type": "integer"
-                      },
-                      "weekday": {
-                        "type": "integer"
-                      }
-                    },
-                    "required": [
-                      "day",
-                      "week",
-                      "weekday"
-                    ],
-                    "title": "ProgrammePreviewDay",
-                    "type": "object"
-                  },
-                  "type": "array"
-                },
-                "preview_days": {
-                  "type": "integer"
-                },
-                "price_cents": {
-                  "type": "integer"
-                },
-                "published_at": {
-                  "format": "date-time",
-                  "nullable": true,
-                  "type": "string"
-                },
-                "refund_policy": {
-                  "type": "string"
-                },
-                "reviews": {
-                  "properties": {
-                    "average": {
-                      "nullable": true,
-                      "type": "number"
-                    },
-                    "count": {
-                      "type": "integer"
-                    }
-                  },
-                  "required": [
-                    "average",
-                    "count"
-                  ],
-                  "title": "ProgrammeRating",
-                  "type": "object"
-                },
-                "sessions": {
-                  "nullable": true,
-                  "type": "integer"
-                },
-                "sessions_per_week": {
-                  "nullable": true,
-                  "type": "integer"
-                },
-                "summary": {
-                  "nullable": true,
-                  "type": "string"
-                },
-                "title": {
-                  "type": "string"
-                },
-                "version_number": {
-                  "nullable": true,
-                  "type": "integer"
-                },
-                "week_outline": {
-                  "items": {
-                    "properties": {
-                      "days": {
-                        "description": "The week's seven days (weekday 0 is the weekday of the start date)",
-                        "items": {
-                          "description": "A day of the programme as the public page shows it: never the WOD itself (preview days show theirs in `preview`)",
-                          "properties": {
-                            "day": {
-                              "description": "Day 0 is the start date",
-                              "type": "integer"
-                            },
-                            "minutes": {
-                              "description": "Approximate minutes (rounded to 5); null when a WOD has no duration",
-                              "nullable": true,
-                              "type": "integer"
-                            },
-                            "preview": {
-                              "description": "One of the free preview days",
-                              "type": "boolean"
-                            },
-                            "rest": {
-                              "description": "No WOD that day",
-                              "type": "boolean"
-                            },
-                            "weekday": {
-                              "maximum": 6,
-                              "minimum": 0,
-                              "type": "integer"
-                            },
-                            "workout_type": {
-                              "description": "The WOD's workout type (ADR-275 key); null when not set or a rest day",
-                              "nullable": true,
-                              "type": "string"
-                            }
-                          },
-                          "required": [
-                            "day",
-                            "weekday",
-                            "rest",
-                            "workout_type",
-                            "minutes",
-                            "preview"
-                          ],
-                          "title": "ProgrammeOutlineDay",
-                          "type": "object"
-                        },
-                        "type": "array"
-                      },
-                      "sessions": {
-                        "type": "integer"
-                      },
-                      "week": {
-                        "type": "integer"
-                      }
-                    },
-                    "required": [
-                      "days",
-                      "sessions",
-                      "week"
-                    ],
-                    "title": "ProgrammeOutlineWeek",
-                    "type": "object"
-                  },
-                  "type": "array"
-                },
-                "weeks": {
+                "width": {
                   "nullable": true,
                   "type": "integer"
                 }
               },
               "required": [
-                "currency",
-                "goal",
+                "caption",
+                "height",
                 "id",
-                "level",
-                "price_cents",
-                "title"
+                "url",
+                "width"
               ],
-              "title": "PublicProgramme",
+              "title": "SitePhoto",
               "type": "object"
             },
+            "maxItems": 12,
             "type": "array"
           },
-          "total": {
-            "type": "integer"
+          "video": {
+            "description": "Null until boxes can add a site video",
+            "nullable": true,
+            "properties": {
+              "poster_url": {
+                "nullable": true,
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "poster_url",
+              "url"
+            ],
+            "title": "SiteVideo",
+            "type": "object"
           }
         },
         "required": [
           "items",
-          "total"
+          "video"
         ],
-        "title": "SiteProgrammes",
+        "title": "SitePhotos",
+        "type": "object"
+      },
+      "SiteProgramme": {
+        "properties": {
+          "cover_url": {
+            "nullable": true,
+            "type": "string"
+          },
+          "currency": {
+            "nullable": true,
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "level": {
+            "nullable": true,
+            "type": "string"
+          },
+          "price_cents": {
+            "nullable": true,
+            "type": "integer"
+          },
+          "rating_average": {
+            "nullable": true,
+            "type": "number"
+          },
+          "rating_count": {
+            "type": "integer"
+          },
+          "sessions_per_week": {
+            "nullable": true,
+            "type": "integer"
+          },
+          "summary": {
+            "nullable": true,
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "url": {
+            "nullable": true,
+            "type": "string"
+          },
+          "weeks": {
+            "nullable": true,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "cover_url",
+          "currency",
+          "id",
+          "level",
+          "price_cents",
+          "rating_average",
+          "rating_count",
+          "sessions_per_week",
+          "summary",
+          "title",
+          "url",
+          "weeks"
+        ],
+        "title": "SiteProgramme",
         "type": "object"
       },
       "SiteReviews": {
@@ -97078,11 +97051,102 @@
       },
       "SiteSettings": {
         "properties": {
+          "appearance": {
+            "description": "«Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»",
+            "enum": [
+              "auto",
+              "light",
+              "dark"
+            ],
+            "type": "string"
+          },
           "banner_version": {
             "type": "integer"
           },
+          "calm_motion": {
+            "description": "«Λιγότερη κίνηση»: the site's motion is off",
+            "type": "boolean"
+          },
           "conversions_api_enabled": {
             "type": "boolean"
+          },
+          "draft": {
+            "description": "The publishable fields waiting for «Δημοσίευση»; null when nothing waits",
+            "nullable": true,
+            "properties": {
+              "appearance": {
+                "description": "«Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»",
+                "enum": [
+                  "auto",
+                  "light",
+                  "dark"
+                ],
+                "type": "string"
+              },
+              "calm_motion": {
+                "description": "«Λιγότερη κίνηση»: the site's motion is off",
+                "type": "boolean"
+              },
+              "hidden_sections": {
+                "items": {
+                  "enum": [
+                    "hero",
+                    "about",
+                    "photos",
+                    "stats",
+                    "schedule",
+                    "events",
+                    "wod",
+                    "programmes",
+                    "packages",
+                    "coaches",
+                    "location",
+                    "reviews",
+                    "faq",
+                    "trial_form",
+                    "contact_form"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "palette": {
+                "description": "ADR-530 palette key",
+                "enum": [
+                  "palee",
+                  "electric",
+                  "flame",
+                  "sun",
+                  "amber",
+                  "emerald",
+                  "aegean",
+                  "violet",
+                  "fuchsia",
+                  "olive",
+                  "navy",
+                  "mono"
+                ],
+                "type": "string"
+              },
+              "public_schedule": {
+                "type": "boolean"
+              },
+              "public_wod": {
+                "type": "boolean"
+              },
+              "template": {
+                "description": "ADR-530 template",
+                "enum": [
+                  "arena",
+                  "tiles",
+                  "stories",
+                  "atelier"
+                ],
+                "type": "string"
+              }
+            },
+            "title": "SiteDraft",
+            "type": "object"
           },
           "faq": {
             "items": {
@@ -97131,11 +97195,13 @@
               "enum": [
                 "hero",
                 "about",
+                "photos",
+                "stats",
                 "schedule",
                 "events",
                 "wod",
-                "packages",
                 "programmes",
+                "packages",
                 "coaches",
                 "location",
                 "reviews",
@@ -97154,6 +97220,24 @@
             "nullable": true,
             "type": "string"
           },
+          "palette": {
+            "description": "ADR-530 palette key",
+            "enum": [
+              "palee",
+              "electric",
+              "flame",
+              "sun",
+              "amber",
+              "emerald",
+              "aegean",
+              "violet",
+              "fuchsia",
+              "olive",
+              "navy",
+              "mono"
+            ],
+            "type": "string"
+          },
           "public_schedule": {
             "type": "boolean"
           },
@@ -97161,16 +97245,24 @@
             "description": "«WOD της ημέρας» on the site (ADR-388)",
             "type": "boolean"
           },
+          "published_at": {
+            "description": "The last «Δημοσίευση» (ADR-530)",
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
           "section_order": {
             "items": {
               "enum": [
                 "hero",
                 "about",
+                "photos",
+                "stats",
                 "schedule",
                 "events",
                 "wod",
-                "packages",
                 "programmes",
+                "packages",
                 "coaches",
                 "location",
                 "reviews",
@@ -97181,6 +97273,20 @@
               "type": "string"
             },
             "type": "array"
+          },
+          "template": {
+            "description": "ADR-530 template",
+            "enum": [
+              "arena",
+              "tiles",
+              "stories",
+              "atelier"
+            ],
+            "type": "string"
+          },
+          "template_notice": {
+            "description": "The site moved to «Αρένα» (ADR-530); shown until published or dismissed",
+            "type": "boolean"
           },
           "translation_locales": {
             "description": "Languages the box translates its texts into (ADR-520)",
@@ -97202,8 +97308,11 @@
           }
         },
         "required": [
+          "appearance",
           "banner_version",
+          "calm_motion",
           "conversions_api_enabled",
+          "draft",
           "faq",
           "forms_enabled",
           "ga4_measurement_id",
@@ -97212,13 +97321,312 @@
           "hidden_sections",
           "lock_version",
           "meta_pixel_id",
+          "palette",
           "public_schedule",
           "public_wod",
+          "published_at",
           "section_order",
+          "template",
+          "template_notice",
           "translation_locales",
           "visible_locales"
         ],
         "title": "SiteSettings",
+        "type": "object"
+      },
+      "SiteSettingsOnlyResponse": {
+        "description": "ADR-530: the settings after «Δημοσίευση», a discarded draft or a hidden notice",
+        "properties": {
+          "settings": {
+            "properties": {
+              "appearance": {
+                "description": "«Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»",
+                "enum": [
+                  "auto",
+                  "light",
+                  "dark"
+                ],
+                "type": "string"
+              },
+              "banner_version": {
+                "type": "integer"
+              },
+              "calm_motion": {
+                "description": "«Λιγότερη κίνηση»: the site's motion is off",
+                "type": "boolean"
+              },
+              "conversions_api_enabled": {
+                "type": "boolean"
+              },
+              "draft": {
+                "description": "The publishable fields waiting for «Δημοσίευση»; null when nothing waits",
+                "nullable": true,
+                "properties": {
+                  "appearance": {
+                    "description": "«Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»",
+                    "enum": [
+                      "auto",
+                      "light",
+                      "dark"
+                    ],
+                    "type": "string"
+                  },
+                  "calm_motion": {
+                    "description": "«Λιγότερη κίνηση»: the site's motion is off",
+                    "type": "boolean"
+                  },
+                  "hidden_sections": {
+                    "items": {
+                      "enum": [
+                        "hero",
+                        "about",
+                        "photos",
+                        "stats",
+                        "schedule",
+                        "events",
+                        "wod",
+                        "programmes",
+                        "packages",
+                        "coaches",
+                        "location",
+                        "reviews",
+                        "faq",
+                        "trial_form",
+                        "contact_form"
+                      ],
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "palette": {
+                    "description": "ADR-530 palette key",
+                    "enum": [
+                      "palee",
+                      "electric",
+                      "flame",
+                      "sun",
+                      "amber",
+                      "emerald",
+                      "aegean",
+                      "violet",
+                      "fuchsia",
+                      "olive",
+                      "navy",
+                      "mono"
+                    ],
+                    "type": "string"
+                  },
+                  "public_schedule": {
+                    "type": "boolean"
+                  },
+                  "public_wod": {
+                    "type": "boolean"
+                  },
+                  "template": {
+                    "description": "ADR-530 template",
+                    "enum": [
+                      "arena",
+                      "tiles",
+                      "stories",
+                      "atelier"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "title": "SiteDraft",
+                "type": "object"
+              },
+              "faq": {
+                "items": {
+                  "properties": {
+                    "answer": {
+                      "maxLength": 1000,
+                      "type": "string"
+                    },
+                    "id": {
+                      "description": "Stable id (ADR-520); a new entry gets one when saved",
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "question": {
+                      "maxLength": 200,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "answer",
+                    "question"
+                  ],
+                  "title": "SiteFaqEntry",
+                  "type": "object"
+                },
+                "maxItems": 12,
+                "type": "array"
+              },
+              "forms_enabled": {
+                "type": "boolean"
+              },
+              "ga4_measurement_id": {
+                "nullable": true,
+                "type": "string"
+              },
+              "gtm_container_id": {
+                "nullable": true,
+                "type": "string"
+              },
+              "has_conversions_api_token": {
+                "description": "A token is saved; the token itself is never returned",
+                "type": "boolean"
+              },
+              "hidden_sections": {
+                "items": {
+                  "enum": [
+                    "hero",
+                    "about",
+                    "photos",
+                    "stats",
+                    "schedule",
+                    "events",
+                    "wod",
+                    "programmes",
+                    "packages",
+                    "coaches",
+                    "location",
+                    "reviews",
+                    "faq",
+                    "trial_form",
+                    "contact_form"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "lock_version": {
+                "type": "integer"
+              },
+              "meta_pixel_id": {
+                "nullable": true,
+                "type": "string"
+              },
+              "palette": {
+                "description": "ADR-530 palette key",
+                "enum": [
+                  "palee",
+                  "electric",
+                  "flame",
+                  "sun",
+                  "amber",
+                  "emerald",
+                  "aegean",
+                  "violet",
+                  "fuchsia",
+                  "olive",
+                  "navy",
+                  "mono"
+                ],
+                "type": "string"
+              },
+              "public_schedule": {
+                "type": "boolean"
+              },
+              "public_wod": {
+                "description": "«WOD της ημέρας» on the site (ADR-388)",
+                "type": "boolean"
+              },
+              "published_at": {
+                "description": "The last «Δημοσίευση» (ADR-530)",
+                "format": "date-time",
+                "nullable": true,
+                "type": "string"
+              },
+              "section_order": {
+                "items": {
+                  "enum": [
+                    "hero",
+                    "about",
+                    "photos",
+                    "stats",
+                    "schedule",
+                    "events",
+                    "wod",
+                    "programmes",
+                    "packages",
+                    "coaches",
+                    "location",
+                    "reviews",
+                    "faq",
+                    "trial_form",
+                    "contact_form"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "template": {
+                "description": "ADR-530 template",
+                "enum": [
+                  "arena",
+                  "tiles",
+                  "stories",
+                  "atelier"
+                ],
+                "type": "string"
+              },
+              "template_notice": {
+                "description": "The site moved to «Αρένα» (ADR-530); shown until published or dismissed",
+                "type": "boolean"
+              },
+              "translation_locales": {
+                "description": "Languages the box translates its texts into (ADR-520)",
+                "items": {
+                  "maxLength": 10,
+                  "type": "string"
+                },
+                "maxItems": 11,
+                "type": "array"
+              },
+              "visible_locales": {
+                "description": "Translations visitors can pick on the site (ADR-520)",
+                "items": {
+                  "maxLength": 10,
+                  "type": "string"
+                },
+                "maxItems": 11,
+                "type": "array"
+              }
+            },
+            "required": [
+              "appearance",
+              "banner_version",
+              "calm_motion",
+              "conversions_api_enabled",
+              "draft",
+              "faq",
+              "forms_enabled",
+              "ga4_measurement_id",
+              "gtm_container_id",
+              "has_conversions_api_token",
+              "hidden_sections",
+              "lock_version",
+              "meta_pixel_id",
+              "palette",
+              "public_schedule",
+              "public_wod",
+              "published_at",
+              "section_order",
+              "template",
+              "template_notice",
+              "translation_locales",
+              "visible_locales"
+            ],
+            "title": "SiteSettings",
+            "type": "object"
+          }
+        },
+        "required": [
+          "settings"
+        ],
+        "title": "SiteSettingsOnlyResponse",
         "type": "object"
       },
       "SiteSettingsResponse": {
@@ -97295,11 +97703,102 @@
           },
           "settings": {
             "properties": {
+              "appearance": {
+                "description": "«Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»",
+                "enum": [
+                  "auto",
+                  "light",
+                  "dark"
+                ],
+                "type": "string"
+              },
               "banner_version": {
                 "type": "integer"
               },
+              "calm_motion": {
+                "description": "«Λιγότερη κίνηση»: the site's motion is off",
+                "type": "boolean"
+              },
               "conversions_api_enabled": {
                 "type": "boolean"
+              },
+              "draft": {
+                "description": "The publishable fields waiting for «Δημοσίευση»; null when nothing waits",
+                "nullable": true,
+                "properties": {
+                  "appearance": {
+                    "description": "«Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»",
+                    "enum": [
+                      "auto",
+                      "light",
+                      "dark"
+                    ],
+                    "type": "string"
+                  },
+                  "calm_motion": {
+                    "description": "«Λιγότερη κίνηση»: the site's motion is off",
+                    "type": "boolean"
+                  },
+                  "hidden_sections": {
+                    "items": {
+                      "enum": [
+                        "hero",
+                        "about",
+                        "photos",
+                        "stats",
+                        "schedule",
+                        "events",
+                        "wod",
+                        "programmes",
+                        "packages",
+                        "coaches",
+                        "location",
+                        "reviews",
+                        "faq",
+                        "trial_form",
+                        "contact_form"
+                      ],
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "palette": {
+                    "description": "ADR-530 palette key",
+                    "enum": [
+                      "palee",
+                      "electric",
+                      "flame",
+                      "sun",
+                      "amber",
+                      "emerald",
+                      "aegean",
+                      "violet",
+                      "fuchsia",
+                      "olive",
+                      "navy",
+                      "mono"
+                    ],
+                    "type": "string"
+                  },
+                  "public_schedule": {
+                    "type": "boolean"
+                  },
+                  "public_wod": {
+                    "type": "boolean"
+                  },
+                  "template": {
+                    "description": "ADR-530 template",
+                    "enum": [
+                      "arena",
+                      "tiles",
+                      "stories",
+                      "atelier"
+                    ],
+                    "type": "string"
+                  }
+                },
+                "title": "SiteDraft",
+                "type": "object"
               },
               "faq": {
                 "items": {
@@ -97348,11 +97847,13 @@
                   "enum": [
                     "hero",
                     "about",
+                    "photos",
+                    "stats",
                     "schedule",
                     "events",
                     "wod",
-                    "packages",
                     "programmes",
+                    "packages",
                     "coaches",
                     "location",
                     "reviews",
@@ -97371,6 +97872,24 @@
                 "nullable": true,
                 "type": "string"
               },
+              "palette": {
+                "description": "ADR-530 palette key",
+                "enum": [
+                  "palee",
+                  "electric",
+                  "flame",
+                  "sun",
+                  "amber",
+                  "emerald",
+                  "aegean",
+                  "violet",
+                  "fuchsia",
+                  "olive",
+                  "navy",
+                  "mono"
+                ],
+                "type": "string"
+              },
               "public_schedule": {
                 "type": "boolean"
               },
@@ -97378,16 +97897,24 @@
                 "description": "«WOD της ημέρας» on the site (ADR-388)",
                 "type": "boolean"
               },
+              "published_at": {
+                "description": "The last «Δημοσίευση» (ADR-530)",
+                "format": "date-time",
+                "nullable": true,
+                "type": "string"
+              },
               "section_order": {
                 "items": {
                   "enum": [
                     "hero",
                     "about",
+                    "photos",
+                    "stats",
                     "schedule",
                     "events",
                     "wod",
-                    "packages",
                     "programmes",
+                    "packages",
                     "coaches",
                     "location",
                     "reviews",
@@ -97398,6 +97925,20 @@
                   "type": "string"
                 },
                 "type": "array"
+              },
+              "template": {
+                "description": "ADR-530 template",
+                "enum": [
+                  "arena",
+                  "tiles",
+                  "stories",
+                  "atelier"
+                ],
+                "type": "string"
+              },
+              "template_notice": {
+                "description": "The site moved to «Αρένα» (ADR-530); shown until published or dismissed",
+                "type": "boolean"
               },
               "translation_locales": {
                 "description": "Languages the box translates its texts into (ADR-520)",
@@ -97419,8 +97960,11 @@
               }
             },
             "required": [
+              "appearance",
               "banner_version",
+              "calm_motion",
               "conversions_api_enabled",
+              "draft",
               "faq",
               "forms_enabled",
               "ga4_measurement_id",
@@ -97429,9 +97973,13 @@
               "hidden_sections",
               "lock_version",
               "meta_pixel_id",
+              "palette",
               "public_schedule",
               "public_wod",
+              "published_at",
               "section_order",
+              "template",
+              "template_notice",
               "translation_locales",
               "visible_locales"
             ],
@@ -97447,7 +97995,21 @@
         "type": "object"
       },
       "SiteSettingsUpdate": {
+        "description": "ADR-530: template, palette, appearance, calm_motion, hidden_sections, public_schedule and public_wod go into the draft; the rest saves at once",
         "properties": {
+          "appearance": {
+            "description": "«Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»",
+            "enum": [
+              "auto",
+              "light",
+              "dark"
+            ],
+            "type": "string"
+          },
+          "calm_motion": {
+            "description": "«Λιγότερη κίνηση»: the site's motion is off",
+            "type": "boolean"
+          },
           "conversions_api_enabled": {
             "type": "boolean"
           },
@@ -97500,11 +98062,13 @@
               "enum": [
                 "hero",
                 "about",
+                "photos",
+                "stats",
                 "schedule",
                 "events",
                 "wod",
-                "packages",
                 "programmes",
+                "packages",
                 "coaches",
                 "location",
                 "reviews",
@@ -97523,6 +98087,24 @@
             "nullable": true,
             "type": "string"
           },
+          "palette": {
+            "description": "ADR-530 palette key",
+            "enum": [
+              "palee",
+              "electric",
+              "flame",
+              "sun",
+              "amber",
+              "emerald",
+              "aegean",
+              "violet",
+              "fuchsia",
+              "olive",
+              "navy",
+              "mono"
+            ],
+            "type": "string"
+          },
           "public_schedule": {
             "type": "boolean"
           },
@@ -97534,11 +98116,13 @@
               "enum": [
                 "hero",
                 "about",
+                "photos",
+                "stats",
                 "schedule",
                 "events",
                 "wod",
-                "packages",
                 "programmes",
+                "packages",
                 "coaches",
                 "location",
                 "reviews",
@@ -97549,6 +98133,16 @@
               "type": "string"
             },
             "type": "array"
+          },
+          "template": {
+            "description": "ADR-530 template",
+            "enum": [
+              "arena",
+              "tiles",
+              "stories",
+              "atelier"
+            ],
+            "type": "string"
           },
           "translation_locales": {
             "description": "Languages to translate into; the box's own is left out",
@@ -97573,6 +98167,34 @@
           "lock_version"
         ],
         "title": "SiteSettingsUpdate",
+        "type": "object"
+      },
+      "SiteStats": {
+        "description": "«Αριθμοί κοινότητας»: aggregates only, null when the section is off; a zero or null is not shown",
+        "nullable": true,
+        "properties": {
+          "classes_per_week": {
+            "description": "Classes over the next 7 days",
+            "nullable": true,
+            "type": "integer"
+          },
+          "prs_this_year": {
+            "description": "PRs recorded in the box this year",
+            "nullable": true,
+            "type": "integer"
+          },
+          "years_open": {
+            "description": "Whole years since the box joined",
+            "nullable": true,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "classes_per_week",
+          "prs_this_year",
+          "years_open"
+        ],
+        "title": "SiteStats",
         "type": "object"
       },
       "SiteSummaryResponse": {
@@ -98087,6 +98709,25 @@
           "locale"
         ],
         "title": "SiteTranslationsSave",
+        "type": "object"
+      },
+      "SiteVideo": {
+        "description": "Null until boxes can add a site video",
+        "nullable": true,
+        "properties": {
+          "poster_url": {
+            "nullable": true,
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "poster_url",
+          "url"
+        ],
+        "title": "SiteVideo",
         "type": "object"
       },
       "SiteWod": {
@@ -289192,11 +289833,13 @@
                         "enum": [
                           "hero",
                           "about",
+                          "photos",
+                          "stats",
                           "schedule",
                           "events",
                           "wod",
-                          "packages",
                           "programmes",
+                          "packages",
                           "coaches",
                           "location",
                           "reviews",
@@ -289210,11 +289853,102 @@
                     },
                     "settings": {
                       "properties": {
+                        "appearance": {
+                          "description": "«Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»",
+                          "enum": [
+                            "auto",
+                            "light",
+                            "dark"
+                          ],
+                          "type": "string"
+                        },
                         "banner_version": {
                           "type": "integer"
                         },
+                        "calm_motion": {
+                          "description": "«Λιγότερη κίνηση»: the site's motion is off",
+                          "type": "boolean"
+                        },
                         "conversions_api_enabled": {
                           "type": "boolean"
+                        },
+                        "draft": {
+                          "description": "The publishable fields waiting for «Δημοσίευση»; null when nothing waits",
+                          "nullable": true,
+                          "properties": {
+                            "appearance": {
+                              "description": "«Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»",
+                              "enum": [
+                                "auto",
+                                "light",
+                                "dark"
+                              ],
+                              "type": "string"
+                            },
+                            "calm_motion": {
+                              "description": "«Λιγότερη κίνηση»: the site's motion is off",
+                              "type": "boolean"
+                            },
+                            "hidden_sections": {
+                              "items": {
+                                "enum": [
+                                  "hero",
+                                  "about",
+                                  "photos",
+                                  "stats",
+                                  "schedule",
+                                  "events",
+                                  "wod",
+                                  "programmes",
+                                  "packages",
+                                  "coaches",
+                                  "location",
+                                  "reviews",
+                                  "faq",
+                                  "trial_form",
+                                  "contact_form"
+                                ],
+                                "type": "string"
+                              },
+                              "type": "array"
+                            },
+                            "palette": {
+                              "description": "ADR-530 palette key",
+                              "enum": [
+                                "palee",
+                                "electric",
+                                "flame",
+                                "sun",
+                                "amber",
+                                "emerald",
+                                "aegean",
+                                "violet",
+                                "fuchsia",
+                                "olive",
+                                "navy",
+                                "mono"
+                              ],
+                              "type": "string"
+                            },
+                            "public_schedule": {
+                              "type": "boolean"
+                            },
+                            "public_wod": {
+                              "type": "boolean"
+                            },
+                            "template": {
+                              "description": "ADR-530 template",
+                              "enum": [
+                                "arena",
+                                "tiles",
+                                "stories",
+                                "atelier"
+                              ],
+                              "type": "string"
+                            }
+                          },
+                          "title": "SiteDraft",
+                          "type": "object"
                         },
                         "faq": {
                           "items": {
@@ -289263,11 +289997,13 @@
                             "enum": [
                               "hero",
                               "about",
+                              "photos",
+                              "stats",
                               "schedule",
                               "events",
                               "wod",
-                              "packages",
                               "programmes",
+                              "packages",
                               "coaches",
                               "location",
                               "reviews",
@@ -289286,6 +290022,24 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "palette": {
+                          "description": "ADR-530 palette key",
+                          "enum": [
+                            "palee",
+                            "electric",
+                            "flame",
+                            "sun",
+                            "amber",
+                            "emerald",
+                            "aegean",
+                            "violet",
+                            "fuchsia",
+                            "olive",
+                            "navy",
+                            "mono"
+                          ],
+                          "type": "string"
+                        },
                         "public_schedule": {
                           "type": "boolean"
                         },
@@ -289293,16 +290047,24 @@
                           "description": "«WOD της ημέρας» on the site (ADR-388)",
                           "type": "boolean"
                         },
+                        "published_at": {
+                          "description": "The last «Δημοσίευση» (ADR-530)",
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
                         "section_order": {
                           "items": {
                             "enum": [
                               "hero",
                               "about",
+                              "photos",
+                              "stats",
                               "schedule",
                               "events",
                               "wod",
-                              "packages",
                               "programmes",
+                              "packages",
                               "coaches",
                               "location",
                               "reviews",
@@ -289313,6 +290075,20 @@
                             "type": "string"
                           },
                           "type": "array"
+                        },
+                        "template": {
+                          "description": "ADR-530 template",
+                          "enum": [
+                            "arena",
+                            "tiles",
+                            "stories",
+                            "atelier"
+                          ],
+                          "type": "string"
+                        },
+                        "template_notice": {
+                          "description": "The site moved to «Αρένα» (ADR-530); shown until published or dismissed",
+                          "type": "boolean"
                         },
                         "translation_locales": {
                           "description": "Languages the box translates its texts into (ADR-520)",
@@ -289334,8 +290110,11 @@
                         }
                       },
                       "required": [
+                        "appearance",
                         "banner_version",
+                        "calm_motion",
                         "conversions_api_enabled",
+                        "draft",
                         "faq",
                         "forms_enabled",
                         "ga4_measurement_id",
@@ -289344,9 +290123,13 @@
                         "hidden_sections",
                         "lock_version",
                         "meta_pixel_id",
+                        "palette",
                         "public_schedule",
                         "public_wod",
+                        "published_at",
                         "section_order",
+                        "template",
+                        "template_notice",
                         "translation_locales",
                         "visible_locales"
                       ],
@@ -289386,7 +290169,21 @@
           "content": {
             "application/json": {
               "schema": {
+                "description": "ADR-530: template, palette, appearance, calm_motion, hidden_sections, public_schedule and public_wod go into the draft; the rest saves at once",
                 "properties": {
+                  "appearance": {
+                    "description": "«Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»",
+                    "enum": [
+                      "auto",
+                      "light",
+                      "dark"
+                    ],
+                    "type": "string"
+                  },
+                  "calm_motion": {
+                    "description": "«Λιγότερη κίνηση»: the site's motion is off",
+                    "type": "boolean"
+                  },
                   "conversions_api_enabled": {
                     "type": "boolean"
                   },
@@ -289439,11 +290236,13 @@
                       "enum": [
                         "hero",
                         "about",
+                        "photos",
+                        "stats",
                         "schedule",
                         "events",
                         "wod",
-                        "packages",
                         "programmes",
+                        "packages",
                         "coaches",
                         "location",
                         "reviews",
@@ -289462,6 +290261,24 @@
                     "nullable": true,
                     "type": "string"
                   },
+                  "palette": {
+                    "description": "ADR-530 palette key",
+                    "enum": [
+                      "palee",
+                      "electric",
+                      "flame",
+                      "sun",
+                      "amber",
+                      "emerald",
+                      "aegean",
+                      "violet",
+                      "fuchsia",
+                      "olive",
+                      "navy",
+                      "mono"
+                    ],
+                    "type": "string"
+                  },
                   "public_schedule": {
                     "type": "boolean"
                   },
@@ -289473,11 +290290,13 @@
                       "enum": [
                         "hero",
                         "about",
+                        "photos",
+                        "stats",
                         "schedule",
                         "events",
                         "wod",
-                        "packages",
                         "programmes",
+                        "packages",
                         "coaches",
                         "location",
                         "reviews",
@@ -289488,6 +290307,16 @@
                       "type": "string"
                     },
                     "type": "array"
+                  },
+                  "template": {
+                    "description": "ADR-530 template",
+                    "enum": [
+                      "arena",
+                      "tiles",
+                      "stories",
+                      "atelier"
+                    ],
+                    "type": "string"
                   },
                   "translation_locales": {
                     "description": "Languages to translate into; the box's own is left out",
@@ -289596,11 +290425,102 @@
                     },
                     "settings": {
                       "properties": {
+                        "appearance": {
+                          "description": "«Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»",
+                          "enum": [
+                            "auto",
+                            "light",
+                            "dark"
+                          ],
+                          "type": "string"
+                        },
                         "banner_version": {
                           "type": "integer"
                         },
+                        "calm_motion": {
+                          "description": "«Λιγότερη κίνηση»: the site's motion is off",
+                          "type": "boolean"
+                        },
                         "conversions_api_enabled": {
                           "type": "boolean"
+                        },
+                        "draft": {
+                          "description": "The publishable fields waiting for «Δημοσίευση»; null when nothing waits",
+                          "nullable": true,
+                          "properties": {
+                            "appearance": {
+                              "description": "«Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»",
+                              "enum": [
+                                "auto",
+                                "light",
+                                "dark"
+                              ],
+                              "type": "string"
+                            },
+                            "calm_motion": {
+                              "description": "«Λιγότερη κίνηση»: the site's motion is off",
+                              "type": "boolean"
+                            },
+                            "hidden_sections": {
+                              "items": {
+                                "enum": [
+                                  "hero",
+                                  "about",
+                                  "photos",
+                                  "stats",
+                                  "schedule",
+                                  "events",
+                                  "wod",
+                                  "programmes",
+                                  "packages",
+                                  "coaches",
+                                  "location",
+                                  "reviews",
+                                  "faq",
+                                  "trial_form",
+                                  "contact_form"
+                                ],
+                                "type": "string"
+                              },
+                              "type": "array"
+                            },
+                            "palette": {
+                              "description": "ADR-530 palette key",
+                              "enum": [
+                                "palee",
+                                "electric",
+                                "flame",
+                                "sun",
+                                "amber",
+                                "emerald",
+                                "aegean",
+                                "violet",
+                                "fuchsia",
+                                "olive",
+                                "navy",
+                                "mono"
+                              ],
+                              "type": "string"
+                            },
+                            "public_schedule": {
+                              "type": "boolean"
+                            },
+                            "public_wod": {
+                              "type": "boolean"
+                            },
+                            "template": {
+                              "description": "ADR-530 template",
+                              "enum": [
+                                "arena",
+                                "tiles",
+                                "stories",
+                                "atelier"
+                              ],
+                              "type": "string"
+                            }
+                          },
+                          "title": "SiteDraft",
+                          "type": "object"
                         },
                         "faq": {
                           "items": {
@@ -289649,11 +290569,13 @@
                             "enum": [
                               "hero",
                               "about",
+                              "photos",
+                              "stats",
                               "schedule",
                               "events",
                               "wod",
-                              "packages",
                               "programmes",
+                              "packages",
                               "coaches",
                               "location",
                               "reviews",
@@ -289672,6 +290594,24 @@
                           "nullable": true,
                           "type": "string"
                         },
+                        "palette": {
+                          "description": "ADR-530 palette key",
+                          "enum": [
+                            "palee",
+                            "electric",
+                            "flame",
+                            "sun",
+                            "amber",
+                            "emerald",
+                            "aegean",
+                            "violet",
+                            "fuchsia",
+                            "olive",
+                            "navy",
+                            "mono"
+                          ],
+                          "type": "string"
+                        },
                         "public_schedule": {
                           "type": "boolean"
                         },
@@ -289679,16 +290619,24 @@
                           "description": "«WOD της ημέρας» on the site (ADR-388)",
                           "type": "boolean"
                         },
+                        "published_at": {
+                          "description": "The last «Δημοσίευση» (ADR-530)",
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
                         "section_order": {
                           "items": {
                             "enum": [
                               "hero",
                               "about",
+                              "photos",
+                              "stats",
                               "schedule",
                               "events",
                               "wod",
-                              "packages",
                               "programmes",
+                              "packages",
                               "coaches",
                               "location",
                               "reviews",
@@ -289699,6 +290647,20 @@
                             "type": "string"
                           },
                           "type": "array"
+                        },
+                        "template": {
+                          "description": "ADR-530 template",
+                          "enum": [
+                            "arena",
+                            "tiles",
+                            "stories",
+                            "atelier"
+                          ],
+                          "type": "string"
+                        },
+                        "template_notice": {
+                          "description": "The site moved to «Αρένα» (ADR-530); shown until published or dismissed",
+                          "type": "boolean"
                         },
                         "translation_locales": {
                           "description": "Languages the box translates its texts into (ADR-520)",
@@ -289720,8 +290682,11 @@
                         }
                       },
                       "required": [
+                        "appearance",
                         "banner_version",
+                        "calm_motion",
                         "conversions_api_enabled",
+                        "draft",
                         "faq",
                         "forms_enabled",
                         "ga4_measurement_id",
@@ -289730,9 +290695,13 @@
                         "hidden_sections",
                         "lock_version",
                         "meta_pixel_id",
+                        "palette",
                         "public_schedule",
                         "public_wod",
+                        "published_at",
                         "section_order",
+                        "template",
+                        "template_notice",
                         "translation_locales",
                         "visible_locales"
                       ],
@@ -290627,6 +291596,1736 @@
           }
         ],
         "summary": "Make a custom domain the site's main address",
+        "tags": [
+          "Box website"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/site/draft": {
+      "delete": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminSiteController.discard_draft",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "ADR-530: the settings after «Δημοσίευση», a discarded draft or a hidden notice",
+                  "properties": {
+                    "settings": {
+                      "properties": {
+                        "appearance": {
+                          "description": "«Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»",
+                          "enum": [
+                            "auto",
+                            "light",
+                            "dark"
+                          ],
+                          "type": "string"
+                        },
+                        "banner_version": {
+                          "type": "integer"
+                        },
+                        "calm_motion": {
+                          "description": "«Λιγότερη κίνηση»: the site's motion is off",
+                          "type": "boolean"
+                        },
+                        "conversions_api_enabled": {
+                          "type": "boolean"
+                        },
+                        "draft": {
+                          "description": "The publishable fields waiting for «Δημοσίευση»; null when nothing waits",
+                          "nullable": true,
+                          "properties": {
+                            "appearance": {
+                              "description": "«Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»",
+                              "enum": [
+                                "auto",
+                                "light",
+                                "dark"
+                              ],
+                              "type": "string"
+                            },
+                            "calm_motion": {
+                              "description": "«Λιγότερη κίνηση»: the site's motion is off",
+                              "type": "boolean"
+                            },
+                            "hidden_sections": {
+                              "items": {
+                                "enum": [
+                                  "hero",
+                                  "about",
+                                  "photos",
+                                  "stats",
+                                  "schedule",
+                                  "events",
+                                  "wod",
+                                  "programmes",
+                                  "packages",
+                                  "coaches",
+                                  "location",
+                                  "reviews",
+                                  "faq",
+                                  "trial_form",
+                                  "contact_form"
+                                ],
+                                "type": "string"
+                              },
+                              "type": "array"
+                            },
+                            "palette": {
+                              "description": "ADR-530 palette key",
+                              "enum": [
+                                "palee",
+                                "electric",
+                                "flame",
+                                "sun",
+                                "amber",
+                                "emerald",
+                                "aegean",
+                                "violet",
+                                "fuchsia",
+                                "olive",
+                                "navy",
+                                "mono"
+                              ],
+                              "type": "string"
+                            },
+                            "public_schedule": {
+                              "type": "boolean"
+                            },
+                            "public_wod": {
+                              "type": "boolean"
+                            },
+                            "template": {
+                              "description": "ADR-530 template",
+                              "enum": [
+                                "arena",
+                                "tiles",
+                                "stories",
+                                "atelier"
+                              ],
+                              "type": "string"
+                            }
+                          },
+                          "title": "SiteDraft",
+                          "type": "object"
+                        },
+                        "faq": {
+                          "items": {
+                            "properties": {
+                              "answer": {
+                                "maxLength": 1000,
+                                "type": "string"
+                              },
+                              "id": {
+                                "description": "Stable id (ADR-520); a new entry gets one when saved",
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "question": {
+                                "maxLength": 200,
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "answer",
+                              "question"
+                            ],
+                            "title": "SiteFaqEntry",
+                            "type": "object"
+                          },
+                          "maxItems": 12,
+                          "type": "array"
+                        },
+                        "forms_enabled": {
+                          "type": "boolean"
+                        },
+                        "ga4_measurement_id": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "gtm_container_id": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "has_conversions_api_token": {
+                          "description": "A token is saved; the token itself is never returned",
+                          "type": "boolean"
+                        },
+                        "hidden_sections": {
+                          "items": {
+                            "enum": [
+                              "hero",
+                              "about",
+                              "photos",
+                              "stats",
+                              "schedule",
+                              "events",
+                              "wod",
+                              "programmes",
+                              "packages",
+                              "coaches",
+                              "location",
+                              "reviews",
+                              "faq",
+                              "trial_form",
+                              "contact_form"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "lock_version": {
+                          "type": "integer"
+                        },
+                        "meta_pixel_id": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "palette": {
+                          "description": "ADR-530 palette key",
+                          "enum": [
+                            "palee",
+                            "electric",
+                            "flame",
+                            "sun",
+                            "amber",
+                            "emerald",
+                            "aegean",
+                            "violet",
+                            "fuchsia",
+                            "olive",
+                            "navy",
+                            "mono"
+                          ],
+                          "type": "string"
+                        },
+                        "public_schedule": {
+                          "type": "boolean"
+                        },
+                        "public_wod": {
+                          "description": "«WOD της ημέρας» on the site (ADR-388)",
+                          "type": "boolean"
+                        },
+                        "published_at": {
+                          "description": "The last «Δημοσίευση» (ADR-530)",
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "section_order": {
+                          "items": {
+                            "enum": [
+                              "hero",
+                              "about",
+                              "photos",
+                              "stats",
+                              "schedule",
+                              "events",
+                              "wod",
+                              "programmes",
+                              "packages",
+                              "coaches",
+                              "location",
+                              "reviews",
+                              "faq",
+                              "trial_form",
+                              "contact_form"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "template": {
+                          "description": "ADR-530 template",
+                          "enum": [
+                            "arena",
+                            "tiles",
+                            "stories",
+                            "atelier"
+                          ],
+                          "type": "string"
+                        },
+                        "template_notice": {
+                          "description": "The site moved to «Αρένα» (ADR-530); shown until published or dismissed",
+                          "type": "boolean"
+                        },
+                        "translation_locales": {
+                          "description": "Languages the box translates its texts into (ADR-520)",
+                          "items": {
+                            "maxLength": 10,
+                            "type": "string"
+                          },
+                          "maxItems": 11,
+                          "type": "array"
+                        },
+                        "visible_locales": {
+                          "description": "Translations visitors can pick on the site (ADR-520)",
+                          "items": {
+                            "maxLength": 10,
+                            "type": "string"
+                          },
+                          "maxItems": 11,
+                          "type": "array"
+                        }
+                      },
+                      "required": [
+                        "appearance",
+                        "banner_version",
+                        "calm_motion",
+                        "conversions_api_enabled",
+                        "draft",
+                        "faq",
+                        "forms_enabled",
+                        "ga4_measurement_id",
+                        "gtm_container_id",
+                        "has_conversions_api_token",
+                        "hidden_sections",
+                        "lock_version",
+                        "meta_pixel_id",
+                        "palette",
+                        "public_schedule",
+                        "public_wod",
+                        "published_at",
+                        "section_order",
+                        "template",
+                        "template_notice",
+                        "translation_locales",
+                        "visible_locales"
+                      ],
+                      "title": "SiteSettings",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "settings"
+                  ],
+                  "title": "SiteSettingsOnlyResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Settings"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Saved meanwhile"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "«Απόρριψη αλλαγών»: throw the draft away; the live site stays as it is",
+        "tags": [
+          "Box website"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/site/notice": {
+      "delete": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminSiteController.dismiss_notice",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "ADR-530: the settings after «Δημοσίευση», a discarded draft or a hidden notice",
+                  "properties": {
+                    "settings": {
+                      "properties": {
+                        "appearance": {
+                          "description": "«Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»",
+                          "enum": [
+                            "auto",
+                            "light",
+                            "dark"
+                          ],
+                          "type": "string"
+                        },
+                        "banner_version": {
+                          "type": "integer"
+                        },
+                        "calm_motion": {
+                          "description": "«Λιγότερη κίνηση»: the site's motion is off",
+                          "type": "boolean"
+                        },
+                        "conversions_api_enabled": {
+                          "type": "boolean"
+                        },
+                        "draft": {
+                          "description": "The publishable fields waiting for «Δημοσίευση»; null when nothing waits",
+                          "nullable": true,
+                          "properties": {
+                            "appearance": {
+                              "description": "«Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»",
+                              "enum": [
+                                "auto",
+                                "light",
+                                "dark"
+                              ],
+                              "type": "string"
+                            },
+                            "calm_motion": {
+                              "description": "«Λιγότερη κίνηση»: the site's motion is off",
+                              "type": "boolean"
+                            },
+                            "hidden_sections": {
+                              "items": {
+                                "enum": [
+                                  "hero",
+                                  "about",
+                                  "photos",
+                                  "stats",
+                                  "schedule",
+                                  "events",
+                                  "wod",
+                                  "programmes",
+                                  "packages",
+                                  "coaches",
+                                  "location",
+                                  "reviews",
+                                  "faq",
+                                  "trial_form",
+                                  "contact_form"
+                                ],
+                                "type": "string"
+                              },
+                              "type": "array"
+                            },
+                            "palette": {
+                              "description": "ADR-530 palette key",
+                              "enum": [
+                                "palee",
+                                "electric",
+                                "flame",
+                                "sun",
+                                "amber",
+                                "emerald",
+                                "aegean",
+                                "violet",
+                                "fuchsia",
+                                "olive",
+                                "navy",
+                                "mono"
+                              ],
+                              "type": "string"
+                            },
+                            "public_schedule": {
+                              "type": "boolean"
+                            },
+                            "public_wod": {
+                              "type": "boolean"
+                            },
+                            "template": {
+                              "description": "ADR-530 template",
+                              "enum": [
+                                "arena",
+                                "tiles",
+                                "stories",
+                                "atelier"
+                              ],
+                              "type": "string"
+                            }
+                          },
+                          "title": "SiteDraft",
+                          "type": "object"
+                        },
+                        "faq": {
+                          "items": {
+                            "properties": {
+                              "answer": {
+                                "maxLength": 1000,
+                                "type": "string"
+                              },
+                              "id": {
+                                "description": "Stable id (ADR-520); a new entry gets one when saved",
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "question": {
+                                "maxLength": 200,
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "answer",
+                              "question"
+                            ],
+                            "title": "SiteFaqEntry",
+                            "type": "object"
+                          },
+                          "maxItems": 12,
+                          "type": "array"
+                        },
+                        "forms_enabled": {
+                          "type": "boolean"
+                        },
+                        "ga4_measurement_id": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "gtm_container_id": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "has_conversions_api_token": {
+                          "description": "A token is saved; the token itself is never returned",
+                          "type": "boolean"
+                        },
+                        "hidden_sections": {
+                          "items": {
+                            "enum": [
+                              "hero",
+                              "about",
+                              "photos",
+                              "stats",
+                              "schedule",
+                              "events",
+                              "wod",
+                              "programmes",
+                              "packages",
+                              "coaches",
+                              "location",
+                              "reviews",
+                              "faq",
+                              "trial_form",
+                              "contact_form"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "lock_version": {
+                          "type": "integer"
+                        },
+                        "meta_pixel_id": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "palette": {
+                          "description": "ADR-530 palette key",
+                          "enum": [
+                            "palee",
+                            "electric",
+                            "flame",
+                            "sun",
+                            "amber",
+                            "emerald",
+                            "aegean",
+                            "violet",
+                            "fuchsia",
+                            "olive",
+                            "navy",
+                            "mono"
+                          ],
+                          "type": "string"
+                        },
+                        "public_schedule": {
+                          "type": "boolean"
+                        },
+                        "public_wod": {
+                          "description": "«WOD της ημέρας» on the site (ADR-388)",
+                          "type": "boolean"
+                        },
+                        "published_at": {
+                          "description": "The last «Δημοσίευση» (ADR-530)",
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "section_order": {
+                          "items": {
+                            "enum": [
+                              "hero",
+                              "about",
+                              "photos",
+                              "stats",
+                              "schedule",
+                              "events",
+                              "wod",
+                              "programmes",
+                              "packages",
+                              "coaches",
+                              "location",
+                              "reviews",
+                              "faq",
+                              "trial_form",
+                              "contact_form"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "template": {
+                          "description": "ADR-530 template",
+                          "enum": [
+                            "arena",
+                            "tiles",
+                            "stories",
+                            "atelier"
+                          ],
+                          "type": "string"
+                        },
+                        "template_notice": {
+                          "description": "The site moved to «Αρένα» (ADR-530); shown until published or dismissed",
+                          "type": "boolean"
+                        },
+                        "translation_locales": {
+                          "description": "Languages the box translates its texts into (ADR-520)",
+                          "items": {
+                            "maxLength": 10,
+                            "type": "string"
+                          },
+                          "maxItems": 11,
+                          "type": "array"
+                        },
+                        "visible_locales": {
+                          "description": "Translations visitors can pick on the site (ADR-520)",
+                          "items": {
+                            "maxLength": 10,
+                            "type": "string"
+                          },
+                          "maxItems": 11,
+                          "type": "array"
+                        }
+                      },
+                      "required": [
+                        "appearance",
+                        "banner_version",
+                        "calm_motion",
+                        "conversions_api_enabled",
+                        "draft",
+                        "faq",
+                        "forms_enabled",
+                        "ga4_measurement_id",
+                        "gtm_container_id",
+                        "has_conversions_api_token",
+                        "hidden_sections",
+                        "lock_version",
+                        "meta_pixel_id",
+                        "palette",
+                        "public_schedule",
+                        "public_wod",
+                        "published_at",
+                        "section_order",
+                        "template",
+                        "template_notice",
+                        "translation_locales",
+                        "visible_locales"
+                      ],
+                      "title": "SiteSettings",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "settings"
+                  ],
+                  "title": "SiteSettingsOnlyResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Settings"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Saved meanwhile"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Hide the notice that the site moved to the «Αρένα» template",
+        "tags": [
+          "Box website"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/site/preview": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminSiteController.preview",
+        "parameters": [
+          {
+            "description": "One of the site's translations (ADR-520); the box's own language when absent",
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "description": "A language of the app, e.g. en, de, pt-PT",
+              "maxLength": 10,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "about": {
+                      "description": "The translated «Σχετικά», null when there is none",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "appearance": {
+                      "description": "«Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»",
+                      "enum": [
+                        "auto",
+                        "light",
+                        "dark"
+                      ],
+                      "type": "string"
+                    },
+                    "calm_motion": {
+                      "description": "«Λιγότερη κίνηση»: the site's motion is off",
+                      "type": "boolean"
+                    },
+                    "canonical_url": {
+                      "type": "string"
+                    },
+                    "class_type_names": {
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "description": "Translated class names by the box's own name",
+                      "type": "object"
+                    },
+                    "events": {
+                      "items": {
+                        "properties": {
+                          "currency": {
+                            "type": "string"
+                          },
+                          "ends_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "place_name": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "price_cents": {
+                            "type": "integer"
+                          },
+                          "starts_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "time_zone": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "currency",
+                          "ends_at",
+                          "id",
+                          "place_name",
+                          "price_cents",
+                          "starts_at",
+                          "time_zone",
+                          "title"
+                        ],
+                        "title": "SiteEvent",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "faq": {
+                      "items": {
+                        "properties": {
+                          "answer": {
+                            "maxLength": 1000,
+                            "type": "string"
+                          },
+                          "id": {
+                            "description": "Stable id (ADR-520); a new entry gets one when saved",
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "question": {
+                            "maxLength": 200,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "answer",
+                          "question"
+                        ],
+                        "title": "SiteFaqEntry",
+                        "type": "object"
+                      },
+                      "maxItems": 12,
+                      "type": "array"
+                    },
+                    "forms": {
+                      "properties": {
+                        "contact": {
+                          "type": "boolean"
+                        },
+                        "kinds": {
+                          "items": {
+                            "enum": [
+                              "trial",
+                              "contact"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "trial": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "contact",
+                        "kinds",
+                        "trial"
+                      ],
+                      "type": "object"
+                    },
+                    "language": {
+                      "description": "The box's language (ADR-388)",
+                      "type": "string"
+                    },
+                    "languages": {
+                      "description": "The site's languages: the box's own first, then its visible translations",
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "palette": {
+                      "description": "ADR-530 palette key",
+                      "enum": [
+                        "palee",
+                        "electric",
+                        "flame",
+                        "sun",
+                        "amber",
+                        "emerald",
+                        "aegean",
+                        "violet",
+                        "fuchsia",
+                        "olive",
+                        "navy",
+                        "mono"
+                      ],
+                      "type": "string"
+                    },
+                    "phone": {
+                      "description": "The box's public phone; null while the box has none (ADR-530)",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "photos": {
+                      "description": "«Φωτογραφίες»: page photos then public room photos (at most 12)",
+                      "properties": {
+                        "items": {
+                          "items": {
+                            "properties": {
+                              "caption": {
+                                "description": "Null for the page's photos; the photo's caption or room's name",
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "height": {
+                                "nullable": true,
+                                "type": "integer"
+                              },
+                              "id": {
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "url": {
+                                "type": "string"
+                              },
+                              "width": {
+                                "nullable": true,
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "caption",
+                              "height",
+                              "id",
+                              "url",
+                              "width"
+                            ],
+                            "title": "SitePhoto",
+                            "type": "object"
+                          },
+                          "maxItems": 12,
+                          "type": "array"
+                        },
+                        "video": {
+                          "description": "Null until boxes can add a site video",
+                          "nullable": true,
+                          "properties": {
+                            "poster_url": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "url": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "poster_url",
+                            "url"
+                          ],
+                          "title": "SiteVideo",
+                          "type": "object"
+                        }
+                      },
+                      "required": [
+                        "items",
+                        "video"
+                      ],
+                      "title": "SitePhotos",
+                      "type": "object"
+                    },
+                    "programmes": {
+                      "description": "«Προγράμματα» for sale (ADR-530 §3); empty while there is none",
+                      "items": {
+                        "properties": {
+                          "cover_url": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "currency": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "level": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "price_cents": {
+                            "nullable": true,
+                            "type": "integer"
+                          },
+                          "rating_average": {
+                            "nullable": true,
+                            "type": "number"
+                          },
+                          "rating_count": {
+                            "type": "integer"
+                          },
+                          "sessions_per_week": {
+                            "nullable": true,
+                            "type": "integer"
+                          },
+                          "summary": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "url": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "weeks": {
+                            "nullable": true,
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "cover_url",
+                          "currency",
+                          "id",
+                          "level",
+                          "price_cents",
+                          "rating_average",
+                          "rating_count",
+                          "sessions_per_week",
+                          "summary",
+                          "title",
+                          "url",
+                          "weeks"
+                        ],
+                        "title": "SiteProgramme",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "programmes_total": {
+                      "description": "How many programmes the box sells (ADR-543), for «Όλα τα προγράμματα (N)»",
+                      "type": "integer"
+                    },
+                    "report_contact": {
+                      "description": "Palee's address for reporting content on the site (ADR-397, DSA Art. 16)",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "reviews": {
+                      "properties": {
+                        "google": {
+                          "description": "The box's Google rating and number of reviews, kept apart (ADR-387); no review texts until a legal check of Google's terms",
+                          "nullable": true,
+                          "properties": {
+                            "count": {
+                              "nullable": true,
+                              "type": "integer"
+                            },
+                            "fetched_at": {
+                              "format": "date-time",
+                              "type": "string"
+                            },
+                            "maps_uri": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "name": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "rating": {
+                              "nullable": true,
+                              "type": "number"
+                            },
+                            "write_review_url": {
+                              "nullable": true,
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "count",
+                            "fetched_at",
+                            "maps_uri",
+                            "name",
+                            "rating",
+                            "write_review_url"
+                          ],
+                          "title": "GoogleListing",
+                          "type": "object"
+                        },
+                        "google_reviews_url": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "palee": {
+                          "nullable": true,
+                          "properties": {
+                            "average": {
+                              "nullable": true,
+                              "type": "number"
+                            },
+                            "count": {
+                              "type": "integer"
+                            },
+                            "latest": {
+                              "items": {
+                                "properties": {
+                                  "author_name": {
+                                    "description": "First name only; null for people who hide themselves",
+                                    "nullable": true,
+                                    "type": "string"
+                                  },
+                                  "body": {
+                                    "nullable": true,
+                                    "type": "string"
+                                  },
+                                  "created_at": {
+                                    "format": "date-time",
+                                    "type": "string"
+                                  },
+                                  "edited_at": {
+                                    "format": "date-time",
+                                    "nullable": true,
+                                    "type": "string"
+                                  },
+                                  "id": {
+                                    "format": "uuid",
+                                    "type": "string"
+                                  },
+                                  "rating": {
+                                    "maximum": 5,
+                                    "minimum": 1,
+                                    "type": "integer"
+                                  },
+                                  "reply": {
+                                    "nullable": true,
+                                    "properties": {
+                                      "body": {
+                                        "type": "string"
+                                      },
+                                      "replied_at": {
+                                        "format": "date-time",
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "body",
+                                      "replied_at"
+                                    ],
+                                    "title": "BoxReviewReply",
+                                    "type": "object"
+                                  }
+                                },
+                                "required": [
+                                  "author_name",
+                                  "body",
+                                  "created_at",
+                                  "edited_at",
+                                  "id",
+                                  "rating",
+                                  "reply"
+                                ],
+                                "title": "BoxReview",
+                                "type": "object"
+                              },
+                              "type": "array"
+                            }
+                          },
+                          "required": [
+                            "average",
+                            "count",
+                            "latest"
+                          ],
+                          "title": "SitePaleeReviews",
+                          "type": "object"
+                        }
+                      },
+                      "required": [
+                        "google",
+                        "google_reviews_url",
+                        "palee"
+                      ],
+                      "title": "SiteReviews",
+                      "type": "object"
+                    },
+                    "sections": {
+                      "items": {
+                        "enum": [
+                          "hero",
+                          "about",
+                          "photos",
+                          "stats",
+                          "schedule",
+                          "events",
+                          "wod",
+                          "programmes",
+                          "packages",
+                          "coaches",
+                          "location",
+                          "reviews",
+                          "faq",
+                          "trial_form",
+                          "contact_form"
+                        ],
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "slug": {
+                      "type": "string"
+                    },
+                    "stats": {
+                      "description": "«Αριθμοί κοινότητας»: aggregates only, null when the section is off; a zero or null is not shown",
+                      "nullable": true,
+                      "properties": {
+                        "classes_per_week": {
+                          "description": "Classes over the next 7 days",
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "prs_this_year": {
+                          "description": "PRs recorded in the box this year",
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "years_open": {
+                          "description": "Whole years since the box joined",
+                          "nullable": true,
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "classes_per_week",
+                        "prs_this_year",
+                        "years_open"
+                      ],
+                      "title": "SiteStats",
+                      "type": "object"
+                    },
+                    "template": {
+                      "description": "ADR-530 template",
+                      "enum": [
+                        "arena",
+                        "tiles",
+                        "stories",
+                        "atelier"
+                      ],
+                      "type": "string"
+                    },
+                    "texts": {
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "description": "Translations of texts served by other reads, keyed kind:id:field",
+                      "type": "object"
+                    },
+                    "time_zone": {
+                      "type": "string"
+                    },
+                    "timetable": {
+                      "description": "The next 7 days' classes when the owner shows the timetable (no spots or people)",
+                      "items": {
+                        "properties": {
+                          "class_type_id": {
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "duration_minutes": {
+                            "type": "integer"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "location_id": {
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "scheduled_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "class_type_id",
+                          "duration_minutes",
+                          "id",
+                          "location_id",
+                          "name",
+                          "scheduled_at"
+                        ],
+                        "title": "SiteTimetableClass",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "tracking": {
+                      "properties": {
+                        "banner_version": {
+                          "type": "integer"
+                        },
+                        "categories": {
+                          "items": {
+                            "enum": [
+                              "necessary",
+                              "analytics",
+                              "marketing"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "consent_required": {
+                          "type": "boolean"
+                        },
+                        "tags": {
+                          "description": "Public tag ids; none loads before the visitor's consent (ADR-354)",
+                          "properties": {
+                            "ga4_measurement_id": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "gtm_container_id": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "meta_pixel_id": {
+                              "nullable": true,
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "ga4_measurement_id",
+                            "gtm_container_id",
+                            "meta_pixel_id"
+                          ],
+                          "title": "SiteTags",
+                          "type": "object"
+                        },
+                        "validity_days": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "banner_version",
+                        "categories",
+                        "consent_required",
+                        "tags",
+                        "validity_days"
+                      ],
+                      "type": "object"
+                    },
+                    "translation": {
+                      "description": "The translation this answer is in (ADR-520), null for the box's own",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "wod": {
+                      "items": {
+                        "properties": {
+                          "body": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "date": {
+                            "format": "date",
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "type": {
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "body",
+                          "date",
+                          "id",
+                          "title",
+                          "type"
+                        ],
+                        "title": "SiteWod",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "about",
+                    "appearance",
+                    "calm_motion",
+                    "canonical_url",
+                    "class_type_names",
+                    "events",
+                    "faq",
+                    "forms",
+                    "language",
+                    "languages",
+                    "palette",
+                    "phone",
+                    "photos",
+                    "programmes",
+                    "programmes_total",
+                    "report_contact",
+                    "reviews",
+                    "sections",
+                    "slug",
+                    "stats",
+                    "template",
+                    "texts",
+                    "time_zone",
+                    "timetable",
+                    "tracking",
+                    "translation",
+                    "wod"
+                  ],
+                  "title": "PublicSiteResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Site"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The website as it will look once the draft is published (public-site shape)",
+        "tags": [
+          "Box website"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/site/publish": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminSiteController.publish",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "ADR-530: the settings after «Δημοσίευση», a discarded draft or a hidden notice",
+                  "properties": {
+                    "settings": {
+                      "properties": {
+                        "appearance": {
+                          "description": "«Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»",
+                          "enum": [
+                            "auto",
+                            "light",
+                            "dark"
+                          ],
+                          "type": "string"
+                        },
+                        "banner_version": {
+                          "type": "integer"
+                        },
+                        "calm_motion": {
+                          "description": "«Λιγότερη κίνηση»: the site's motion is off",
+                          "type": "boolean"
+                        },
+                        "conversions_api_enabled": {
+                          "type": "boolean"
+                        },
+                        "draft": {
+                          "description": "The publishable fields waiting for «Δημοσίευση»; null when nothing waits",
+                          "nullable": true,
+                          "properties": {
+                            "appearance": {
+                              "description": "«Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»",
+                              "enum": [
+                                "auto",
+                                "light",
+                                "dark"
+                              ],
+                              "type": "string"
+                            },
+                            "calm_motion": {
+                              "description": "«Λιγότερη κίνηση»: the site's motion is off",
+                              "type": "boolean"
+                            },
+                            "hidden_sections": {
+                              "items": {
+                                "enum": [
+                                  "hero",
+                                  "about",
+                                  "photos",
+                                  "stats",
+                                  "schedule",
+                                  "events",
+                                  "wod",
+                                  "programmes",
+                                  "packages",
+                                  "coaches",
+                                  "location",
+                                  "reviews",
+                                  "faq",
+                                  "trial_form",
+                                  "contact_form"
+                                ],
+                                "type": "string"
+                              },
+                              "type": "array"
+                            },
+                            "palette": {
+                              "description": "ADR-530 palette key",
+                              "enum": [
+                                "palee",
+                                "electric",
+                                "flame",
+                                "sun",
+                                "amber",
+                                "emerald",
+                                "aegean",
+                                "violet",
+                                "fuchsia",
+                                "olive",
+                                "navy",
+                                "mono"
+                              ],
+                              "type": "string"
+                            },
+                            "public_schedule": {
+                              "type": "boolean"
+                            },
+                            "public_wod": {
+                              "type": "boolean"
+                            },
+                            "template": {
+                              "description": "ADR-530 template",
+                              "enum": [
+                                "arena",
+                                "tiles",
+                                "stories",
+                                "atelier"
+                              ],
+                              "type": "string"
+                            }
+                          },
+                          "title": "SiteDraft",
+                          "type": "object"
+                        },
+                        "faq": {
+                          "items": {
+                            "properties": {
+                              "answer": {
+                                "maxLength": 1000,
+                                "type": "string"
+                              },
+                              "id": {
+                                "description": "Stable id (ADR-520); a new entry gets one when saved",
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "question": {
+                                "maxLength": 200,
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "answer",
+                              "question"
+                            ],
+                            "title": "SiteFaqEntry",
+                            "type": "object"
+                          },
+                          "maxItems": 12,
+                          "type": "array"
+                        },
+                        "forms_enabled": {
+                          "type": "boolean"
+                        },
+                        "ga4_measurement_id": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "gtm_container_id": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "has_conversions_api_token": {
+                          "description": "A token is saved; the token itself is never returned",
+                          "type": "boolean"
+                        },
+                        "hidden_sections": {
+                          "items": {
+                            "enum": [
+                              "hero",
+                              "about",
+                              "photos",
+                              "stats",
+                              "schedule",
+                              "events",
+                              "wod",
+                              "programmes",
+                              "packages",
+                              "coaches",
+                              "location",
+                              "reviews",
+                              "faq",
+                              "trial_form",
+                              "contact_form"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "lock_version": {
+                          "type": "integer"
+                        },
+                        "meta_pixel_id": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "palette": {
+                          "description": "ADR-530 palette key",
+                          "enum": [
+                            "palee",
+                            "electric",
+                            "flame",
+                            "sun",
+                            "amber",
+                            "emerald",
+                            "aegean",
+                            "violet",
+                            "fuchsia",
+                            "olive",
+                            "navy",
+                            "mono"
+                          ],
+                          "type": "string"
+                        },
+                        "public_schedule": {
+                          "type": "boolean"
+                        },
+                        "public_wod": {
+                          "description": "«WOD της ημέρας» on the site (ADR-388)",
+                          "type": "boolean"
+                        },
+                        "published_at": {
+                          "description": "The last «Δημοσίευση» (ADR-530)",
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "section_order": {
+                          "items": {
+                            "enum": [
+                              "hero",
+                              "about",
+                              "photos",
+                              "stats",
+                              "schedule",
+                              "events",
+                              "wod",
+                              "programmes",
+                              "packages",
+                              "coaches",
+                              "location",
+                              "reviews",
+                              "faq",
+                              "trial_form",
+                              "contact_form"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "template": {
+                          "description": "ADR-530 template",
+                          "enum": [
+                            "arena",
+                            "tiles",
+                            "stories",
+                            "atelier"
+                          ],
+                          "type": "string"
+                        },
+                        "template_notice": {
+                          "description": "The site moved to «Αρένα» (ADR-530); shown until published or dismissed",
+                          "type": "boolean"
+                        },
+                        "translation_locales": {
+                          "description": "Languages the box translates its texts into (ADR-520)",
+                          "items": {
+                            "maxLength": 10,
+                            "type": "string"
+                          },
+                          "maxItems": 11,
+                          "type": "array"
+                        },
+                        "visible_locales": {
+                          "description": "Translations visitors can pick on the site (ADR-520)",
+                          "items": {
+                            "maxLength": 10,
+                            "type": "string"
+                          },
+                          "maxItems": 11,
+                          "type": "array"
+                        }
+                      },
+                      "required": [
+                        "appearance",
+                        "banner_version",
+                        "calm_motion",
+                        "conversions_api_enabled",
+                        "draft",
+                        "faq",
+                        "forms_enabled",
+                        "ga4_measurement_id",
+                        "gtm_container_id",
+                        "has_conversions_api_token",
+                        "hidden_sections",
+                        "lock_version",
+                        "meta_pixel_id",
+                        "palette",
+                        "public_schedule",
+                        "public_wod",
+                        "published_at",
+                        "section_order",
+                        "template",
+                        "template_notice",
+                        "translation_locales",
+                        "visible_locales"
+                      ],
+                      "title": "SiteSettings",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "settings"
+                  ],
+                  "title": "SiteSettingsOnlyResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Settings"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Saved meanwhile"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "«Δημοσίευση»: the draft (look and section switches) goes live",
         "tags": [
           "Box website"
         ]
@@ -416011,6 +418710,19 @@
                       "nullable": true,
                       "type": "string"
                     },
+                    "appearance": {
+                      "description": "«Αυτόματα», «Πάντα φωτεινή» or «Πάντα σκοτεινή»",
+                      "enum": [
+                        "auto",
+                        "light",
+                        "dark"
+                      ],
+                      "type": "string"
+                    },
+                    "calm_motion": {
+                      "description": "«Λιγότερη κίνηση»: the site's motion is off",
+                      "type": "boolean"
+                    },
                     "canonical_url": {
                       "type": "string"
                     },
@@ -416133,324 +418845,169 @@
                       },
                       "type": "array"
                     },
-                    "programmes": {
-                      "description": "«Προγράμματα» (ADR-543): the first programmes on sale, newest first, and how many there are («Όλα τα προγράμματα (N)»); empty when the section is not shown",
+                    "palette": {
+                      "description": "ADR-530 palette key",
+                      "enum": [
+                        "palee",
+                        "electric",
+                        "flame",
+                        "sun",
+                        "amber",
+                        "emerald",
+                        "aegean",
+                        "violet",
+                        "fuchsia",
+                        "olive",
+                        "navy",
+                        "mono"
+                      ],
+                      "type": "string"
+                    },
+                    "phone": {
+                      "description": "The box's public phone; null while the box has none (ADR-530)",
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "photos": {
+                      "description": "«Φωτογραφίες»: page photos then public room photos (at most 12)",
                       "properties": {
                         "items": {
                           "items": {
                             "properties": {
-                              "coach_name": {
-                                "description": "The author's public name; null once the account is deleted",
+                              "caption": {
+                                "description": "Null for the page's photos; the photo's caption or room's name",
                                 "nullable": true,
                                 "type": "string"
                               },
-                              "cover_url": {
-                                "description": "ADR-541: null shows the theme strip",
+                              "height": {
                                 "nullable": true,
-                                "type": "string"
-                              },
-                              "currency": {
-                                "type": "string"
-                              },
-                              "description": {
-                                "nullable": true,
-                                "type": "string"
-                              },
-                              "equipment": {
-                                "items": {
-                                  "type": "string"
-                                },
-                                "type": "array"
-                              },
-                              "goal": {
-                                "type": "string"
+                                "type": "integer"
                               },
                               "id": {
                                 "format": "uuid",
                                 "type": "string"
                               },
-                              "latest_reviews": {
-                                "items": {
-                                  "properties": {
-                                    "author": {
-                                      "nullable": true,
-                                      "properties": {
-                                        "id": {
-                                          "format": "uuid",
-                                          "type": "string"
-                                        },
-                                        "nickname": {
-                                          "nullable": true,
-                                          "type": "string"
-                                        }
-                                      },
-                                      "type": "object"
-                                    },
-                                    "body": {
-                                      "nullable": true,
-                                      "type": "string"
-                                    },
-                                    "hidden_reason": {
-                                      "nullable": true,
-                                      "type": "string"
-                                    },
-                                    "id": {
-                                      "format": "uuid",
-                                      "type": "string"
-                                    },
-                                    "inserted_at": {
-                                      "format": "date-time",
-                                      "type": "string"
-                                    },
-                                    "rating": {
-                                      "maximum": 5,
-                                      "minimum": 1,
-                                      "type": "integer"
-                                    },
-                                    "status": {
-                                      "enum": [
-                                        "published",
-                                        "hidden"
-                                      ],
-                                      "type": "string"
-                                    },
-                                    "updated_at": {
-                                      "format": "date-time",
-                                      "type": "string"
-                                    },
-                                    "version_number": {
-                                      "type": "integer"
-                                    }
-                                  },
-                                  "required": [
-                                    "id",
-                                    "rating",
-                                    "status",
-                                    "version_number"
-                                  ],
-                                  "title": "ProgrammeReview",
-                                  "type": "object"
-                                },
-                                "type": "array"
-                              },
-                              "level": {
+                              "url": {
                                 "type": "string"
                               },
-                              "listing": {
-                                "type": "string"
-                              },
-                              "main_equipment": {
-                                "description": "ADR-542: «κύριος εξοπλισμός»: the author's added keys, then the derived ones kept",
-                                "items": {
-                                  "description": "ADR-542: an equipment key (labels: web messages `Equipment.<key>`)",
-                                  "enum": [
-                                    "none",
-                                    "barbell",
-                                    "dumbbell",
-                                    "kettlebell",
-                                    "bench",
-                                    "box",
-                                    "pull_up_bar",
-                                    "rings",
-                                    "dip_bars",
-                                    "climbing_rope",
-                                    "ghd",
-                                    "jump_rope",
-                                    "wall_ball",
-                                    "sled",
-                                    "rower",
-                                    "bike",
-                                    "air_bike",
-                                    "ski_erg",
-                                    "pool",
-                                    "band",
-                                    "foam_roller"
-                                  ],
-                                  "title": "EquipmentKey",
-                                  "type": "string"
-                                },
-                                "type": "array"
-                              },
-                              "minutes_per_session": {
-                                "description": "ADR-542: «περίπου ανά προπόνηση», rounded to 5; null unless every WOD has a duration",
-                                "nullable": true,
-                                "type": "integer"
-                              },
-                              "preview": {
-                                "items": {
-                                  "properties": {
-                                    "day": {
-                                      "type": "integer"
-                                    },
-                                    "summary": {
-                                      "nullable": true,
-                                      "type": "string"
-                                    },
-                                    "title": {
-                                      "nullable": true,
-                                      "type": "string"
-                                    },
-                                    "week": {
-                                      "type": "integer"
-                                    },
-                                    "weekday": {
-                                      "type": "integer"
-                                    }
-                                  },
-                                  "required": [
-                                    "day",
-                                    "week",
-                                    "weekday"
-                                  ],
-                                  "title": "ProgrammePreviewDay",
-                                  "type": "object"
-                                },
-                                "type": "array"
-                              },
-                              "preview_days": {
-                                "type": "integer"
-                              },
-                              "price_cents": {
-                                "type": "integer"
-                              },
-                              "published_at": {
-                                "format": "date-time",
-                                "nullable": true,
-                                "type": "string"
-                              },
-                              "refund_policy": {
-                                "type": "string"
-                              },
-                              "reviews": {
-                                "properties": {
-                                  "average": {
-                                    "nullable": true,
-                                    "type": "number"
-                                  },
-                                  "count": {
-                                    "type": "integer"
-                                  }
-                                },
-                                "required": [
-                                  "average",
-                                  "count"
-                                ],
-                                "title": "ProgrammeRating",
-                                "type": "object"
-                              },
-                              "sessions": {
-                                "nullable": true,
-                                "type": "integer"
-                              },
-                              "sessions_per_week": {
-                                "nullable": true,
-                                "type": "integer"
-                              },
-                              "summary": {
-                                "nullable": true,
-                                "type": "string"
-                              },
-                              "title": {
-                                "type": "string"
-                              },
-                              "version_number": {
-                                "nullable": true,
-                                "type": "integer"
-                              },
-                              "week_outline": {
-                                "items": {
-                                  "properties": {
-                                    "days": {
-                                      "description": "The week's seven days (weekday 0 is the weekday of the start date)",
-                                      "items": {
-                                        "description": "A day of the programme as the public page shows it: never the WOD itself (preview days show theirs in `preview`)",
-                                        "properties": {
-                                          "day": {
-                                            "description": "Day 0 is the start date",
-                                            "type": "integer"
-                                          },
-                                          "minutes": {
-                                            "description": "Approximate minutes (rounded to 5); null when a WOD has no duration",
-                                            "nullable": true,
-                                            "type": "integer"
-                                          },
-                                          "preview": {
-                                            "description": "One of the free preview days",
-                                            "type": "boolean"
-                                          },
-                                          "rest": {
-                                            "description": "No WOD that day",
-                                            "type": "boolean"
-                                          },
-                                          "weekday": {
-                                            "maximum": 6,
-                                            "minimum": 0,
-                                            "type": "integer"
-                                          },
-                                          "workout_type": {
-                                            "description": "The WOD's workout type (ADR-275 key); null when not set or a rest day",
-                                            "nullable": true,
-                                            "type": "string"
-                                          }
-                                        },
-                                        "required": [
-                                          "day",
-                                          "weekday",
-                                          "rest",
-                                          "workout_type",
-                                          "minutes",
-                                          "preview"
-                                        ],
-                                        "title": "ProgrammeOutlineDay",
-                                        "type": "object"
-                                      },
-                                      "type": "array"
-                                    },
-                                    "sessions": {
-                                      "type": "integer"
-                                    },
-                                    "week": {
-                                      "type": "integer"
-                                    }
-                                  },
-                                  "required": [
-                                    "days",
-                                    "sessions",
-                                    "week"
-                                  ],
-                                  "title": "ProgrammeOutlineWeek",
-                                  "type": "object"
-                                },
-                                "type": "array"
-                              },
-                              "weeks": {
+                              "width": {
                                 "nullable": true,
                                 "type": "integer"
                               }
                             },
                             "required": [
-                              "currency",
-                              "goal",
+                              "caption",
+                              "height",
                               "id",
-                              "level",
-                              "price_cents",
-                              "title"
+                              "url",
+                              "width"
                             ],
-                            "title": "PublicProgramme",
+                            "title": "SitePhoto",
                             "type": "object"
                           },
+                          "maxItems": 12,
                           "type": "array"
                         },
-                        "total": {
-                          "type": "integer"
+                        "video": {
+                          "description": "Null until boxes can add a site video",
+                          "nullable": true,
+                          "properties": {
+                            "poster_url": {
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "url": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "poster_url",
+                            "url"
+                          ],
+                          "title": "SiteVideo",
+                          "type": "object"
                         }
                       },
                       "required": [
                         "items",
-                        "total"
+                        "video"
                       ],
-                      "title": "SiteProgrammes",
+                      "title": "SitePhotos",
                       "type": "object"
+                    },
+                    "programmes": {
+                      "description": "«Προγράμματα» for sale (ADR-530 §3); empty while there is none",
+                      "items": {
+                        "properties": {
+                          "cover_url": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "currency": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "level": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "price_cents": {
+                            "nullable": true,
+                            "type": "integer"
+                          },
+                          "rating_average": {
+                            "nullable": true,
+                            "type": "number"
+                          },
+                          "rating_count": {
+                            "type": "integer"
+                          },
+                          "sessions_per_week": {
+                            "nullable": true,
+                            "type": "integer"
+                          },
+                          "summary": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "url": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "weeks": {
+                            "nullable": true,
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "cover_url",
+                          "currency",
+                          "id",
+                          "level",
+                          "price_cents",
+                          "rating_average",
+                          "rating_count",
+                          "sessions_per_week",
+                          "summary",
+                          "title",
+                          "url",
+                          "weeks"
+                        ],
+                        "title": "SiteProgramme",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "programmes_total": {
+                      "description": "How many programmes the box sells (ADR-543), for «Όλα τα προγράμματα (N)»",
+                      "type": "integer"
                     },
                     "report_contact": {
                       "description": "Palee's address for reporting content on the site (ADR-397, DSA Art. 16)",
@@ -416599,11 +419156,13 @@
                         "enum": [
                           "hero",
                           "about",
+                          "photos",
+                          "stats",
                           "schedule",
                           "events",
                           "wod",
-                          "packages",
                           "programmes",
+                          "packages",
                           "coaches",
                           "location",
                           "reviews",
@@ -416616,6 +419175,44 @@
                       "type": "array"
                     },
                     "slug": {
+                      "type": "string"
+                    },
+                    "stats": {
+                      "description": "«Αριθμοί κοινότητας»: aggregates only, null when the section is off; a zero or null is not shown",
+                      "nullable": true,
+                      "properties": {
+                        "classes_per_week": {
+                          "description": "Classes over the next 7 days",
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "prs_this_year": {
+                          "description": "PRs recorded in the box this year",
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "years_open": {
+                          "description": "Whole years since the box joined",
+                          "nullable": true,
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "classes_per_week",
+                        "prs_this_year",
+                        "years_open"
+                      ],
+                      "title": "SiteStats",
+                      "type": "object"
+                    },
+                    "template": {
+                      "description": "ADR-530 template",
+                      "enum": [
+                        "arena",
+                        "tiles",
+                        "stories",
+                        "atelier"
+                      ],
                       "type": "string"
                     },
                     "texts": {
@@ -416769,6 +419366,8 @@
                   },
                   "required": [
                     "about",
+                    "appearance",
+                    "calm_motion",
                     "canonical_url",
                     "class_type_names",
                     "events",
@@ -416776,17 +419375,23 @@
                     "forms",
                     "language",
                     "languages",
+                    "palette",
+                    "phone",
+                    "photos",
+                    "programmes",
+                    "programmes_total",
                     "report_contact",
                     "reviews",
                     "sections",
                     "slug",
+                    "stats",
+                    "template",
                     "texts",
                     "time_zone",
                     "timetable",
                     "tracking",
                     "translation",
-                    "wod",
-                    "programmes"
+                    "wod"
                   ],
                   "title": "PublicSiteResponse",
                   "type": "object"

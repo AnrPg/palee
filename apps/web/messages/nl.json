@@ -16439,6 +16439,232 @@
     "sentTitle": "Ontvangen!",
     "sentBody": "{box} neemt snel contact op, meestal dezelfde dag."
   },
+  "SiteTemplates": {
+    "skip": "Naar de inhoud",
+    "menu": "Menu",
+    "closeMenu": "Menu sluiten",
+    "close": "Sluiten",
+    "pagesNav": "Pagina’s",
+    "logoHome": "{box}, startpagina",
+    "free": "Gratis",
+    "from": "vanaf {price}",
+    "pages": {
+      "home": "Start",
+      "schedule": "Rooster",
+      "training": "Trainingen",
+      "packages": "Pakketten",
+      "coaches": "Coaches",
+      "space": "De ruimte"
+    },
+    "cta": {
+      "trial": "Gratis proefles",
+      "trialLong": "Boek een gratis proefles",
+      "contact": "Stuur ons een bericht",
+      "call": "Bel {phone}",
+      "tabTrial": "Proefles",
+      "tabContact": "Bericht",
+      "tabCall": "Bellen"
+    },
+    "next": {
+      "title": "Volgende les",
+      "chip": "Volgende: {name} {when}",
+      "when": "{day, select, today {vandaag {time}} tomorrow {morgen {time}} other {{weekday} {time}}}",
+      "inDays": "{count, plural, one {over # dag} other {over # dagen}}"
+    },
+    "open": {
+      "open": "Open tot {time}",
+      "opens": "Gaat open om {time}",
+      "closed": "Nu gesloten",
+      "closedToday": "Vandaag gesloten"
+    },
+    "per": {
+      "monthly": "per maand",
+      "quarterly": "per kwartaal",
+      "semiannual": "per half jaar",
+      "annual": "per jaar",
+      "once": "eenmalig"
+    },
+    "schedule": {
+      "title": "Lesrooster",
+      "sub": "Veeg naar de volgende dag. Met «Probeer» komt de les in het formulier voor de proefles.",
+      "today": "Vandaag",
+      "day": "Dag",
+      "type": "Soort les",
+      "panes": "De lessen van de dag",
+      "empty": "Geen lessen op deze dag.",
+      "emptyType": "Geen lessen van deze soort op deze dag.",
+      "minutes": "{count, plural, other {#′}}",
+      "done": "Voorbij",
+      "try": "Probeer",
+      "tryAria": "Probeer {name}, {day} {time}"
+    },
+    "map": {
+      "directions": "Route",
+      "howToGet": "Zo kom je hier"
+    },
+    "gallery": {
+      "title": "Foto’s",
+      "open": "Openen: {name}",
+      "photo": "Foto {index}",
+      "prev": "Vorige foto",
+      "next": "Volgende foto",
+      "count": "{index} van {count}"
+    },
+    "programmes": {
+      "weeks": "{count, plural, one {# week} other {# weken}}"
+    },
+    "stats": {
+      "classes_per_week": "{count, plural, one {les per week} other {lessen per week}}",
+      "prs_this_year": "{count, plural, other {PR’s dit jaar}}",
+      "years_open": "{count, plural, one {jaar open} other {jaar open}}"
+    },
+    "reviews": {
+      "count": "{count, plural, one {# review} other {# reviews}}"
+    },
+    "packages": {
+      "title": "Abonnementspakketten",
+      "sub": "De prijzen van de box vandaag.",
+      "stackSub": "Veeg door de kaarten of gebruik de pijlen.",
+      "all": "Alle abonnementspakketten",
+      "bookTrial": "Proefles boeken",
+      "startTrial": "Begin met een proefles",
+      "choose": "Kies dit",
+      "buyOnline": "Online kopen",
+      "carousel": "carrousel",
+      "stackLabel": "Abonnementspakketten: veeg of gebruik de pijlen",
+      "prev": "Vorig pakket",
+      "next": "Volgend pakket",
+      "position": "{index} van {count}"
+    },
+    "form": {
+      "trialTitle": "Gratis proefles",
+      "contactTitle": "Stuur ons een bericht",
+      "contactSub": "Schrijf ons en {box} antwoordt je snel.",
+      "choice": "Jouw keuze: {choice}",
+      "days": "Welke dagen passen jou (optioneel)",
+      "thanks": "Bedankt, {name}!",
+      "contactSent": "Je bericht is verstuurd. De box antwoordt je snel.",
+      "previewNote": "Voorbeeld: het formulier is niet echt verstuurd.",
+      "ok": "Oké"
+    },
+    "stories": {
+      "label": "Verhaal: {name}",
+      "pause": "Pauze",
+      "resume": "Verder",
+      "prev": "Vorige",
+      "next": "Volgende",
+      "hint": "Tik rechts voor de volgende, houd ingedrukt om te pauzeren, veeg omlaag om te sluiten.",
+      "trial1": "Je eerste",
+      "trial2": "training",
+      "trial3": "is gratis",
+      "hero1": "Training",
+      "hero2": "voor elk",
+      "hero3": "niveau",
+      "seeSpace": "Bekijk de ruimte",
+      "fullSchedule": "Het hele rooster",
+      "swipe": "Veeg om te kiezen",
+      "ourStory": "Ons verhaal",
+      "allReviews": "Alle reviews",
+      "names": {
+        "wod": "WOD",
+        "space": "De ruimte",
+        "coaches": "Coaches",
+        "events": "Events",
+        "reviews": "Reviews"
+      }
+    },
+    "footer": {
+      "contact": "Contact"
+    },
+    "sections": {
+      "wod": "WOD van de dag",
+      "events": "Events",
+      "programmes": "Online programma’s",
+      "reviews": "Reviews",
+      "faq": "Veelgestelde vragen",
+      "location": "Locatie",
+      "stats": "In cijfers"
+    },
+    "arena": {
+      "line1": "Word",
+      "line2": "sterker",
+      "line3": "elke dag",
+      "seeSchedule": "Bekijk het rooster",
+      "seePrices": "Bekijk de prijzen",
+      "whyEyebrow": "Waarom hier",
+      "why1": "Niemand",
+      "why2": "traint",
+      "why3": "alleen",
+      "coaches": "De coaches",
+      "prevCoach": "Vorige coach",
+      "nextCoach": "Volgende coach",
+      "prices": "Prijzen",
+      "reviews": "Wat leden zeggen",
+      "findUs": "Waar je ons vindt",
+      "questions": "Veelgestelde vragen"
+    },
+    "why": {
+      "coaches": "{count, plural, one {# coach} other {# coaches}}",
+      "classes": "{count, plural, one {# les per week} other {# lessen per week}}",
+      "progress": "Zie je vooruitgang",
+      "progressText": "Je PR’s en trainingen blijven in de app van de box."
+    },
+    "wod": {
+      "band": "WOD van de dag · {title}",
+      "play": "Beweging hervatten",
+      "pause": "Beweging pauzeren"
+    },
+    "video": {
+      "play": "Video afspelen",
+      "pause": "Video pauzeren"
+    },
+    "coaches": {
+      "sub": "De mensen die jou gaan trainen."
+    },
+    "space": {
+      "sub": "Tik op een foto om hem groot te zien."
+    },
+    "tiles": {
+      "hero1": "Training",
+      "hero2": "in jouw buurt",
+      "today": "Vandaag",
+      "nextDay": "De volgende dag",
+      "whoWeAre": "Wie we zijn",
+      "team": "Het team",
+      "inNumbers": "In cijfers",
+      "moreEvents": "{count, plural, other {en nog #}}",
+      "programmes": "{count, plural, one {# programma} other {# programma’s}}",
+      "moreQuestions": "{count, plural, one {en nog # vraag} other {en nog # vragen}}",
+      "askUs": "Vraag het ons"
+    },
+    "atelier": {
+      "hero1": "Kracht",
+      "hero2": "met <it>zorg</it>.",
+      "scroll": "Scroll",
+      "theSchedule": "Het rooster",
+      "philosophy": "Onze filosofie",
+      "chapters": "Hoofdstukken",
+      "aDayHere": "Een dag <it>hier</it>",
+      "chapterClasses": "De lessen",
+      "classesTitle": "Elke les, <it>met zorg</it>.",
+      "seeWeek": "Bekijk de week",
+      "chapterSpace": "De ruimte",
+      "spaceTitle": "<it>Onze</it> ruimte.",
+      "comeIn": "Kom binnen",
+      "chapterHome": "En vanuit huis",
+      "programmesTitle": "Programma’s van onze <it>coaches</it>.",
+      "seeProgrammes": "Bekijk de programma’s",
+      "people": "De mensen",
+      "onTheFloor": "Op de vloer <it>met jou</it>",
+      "memberships": "Lidmaatschappen",
+      "simplePrices": "Eenvoudige <it>prijzen</it>",
+      "fromMembers": "Van de leden",
+      "firstHour": "Je eerste uur",
+      "closing1": "Kom eens",
+      "closing2": "<it>kennismaken</it>.",
+      "contact": "Contact"
+    }
+  },
   "BoxSite": {
     "bookTrial": "Boek een proefles",
     "askSomething": "Stel een vraag",
@@ -16464,7 +16690,10 @@
       "reviews": "Reviews",
       "faq": "Veelgestelde vragen",
       "trial_form": "Aanvraag proefles",
-      "contact_form": "Contactformulier"
+      "contact_form": "Contactformulier",
+      "photos": "Foto's",
+      "stats": "Community in cijfers",
+      "programmes": "Programma's"
     },
     "form": {
       "trial": {
@@ -16601,16 +16830,11 @@
       "back": "Instellingen",
       "title": "Website",
       "navHint": "Secties, talen, domein en cookies van de website van de box",
-      "intro": "De website van de box vult zichzelf vanuit Palee. Zet secties aan of uit en zet ze op volgorde.",
+      "intro": "De website van de box vult zichzelf vanuit Palee. Kies het uiterlijk en de secties en publiceer als hij klaar is.",
       "open": "Website openen",
       "requests": "{count, plural, one {# aanvraag} other {# aanvragen}} in de afgelopen {days} dagen",
       "loading": "Laden…",
       "stale": "Iemand anders heeft deze instellingen gewijzigd. Herlaad en probeer opnieuw.",
-      "sectionsTitle": "Secties",
-      "sectionsHint": "Bezoekers zien de actieve secties in deze volgorde.",
-      "heroAlways": "Altijd als eerste",
-      "moveUp": "{section} omhoog",
-      "moveDown": "{section} omlaag",
       "question": "Vraag",
       "answer": "Antwoord",
       "required": "Vul dit in of verwijder de vraag.",
@@ -16709,6 +16933,139 @@
       "all": "{count, plural, one {Alle trainingsprogramma’s (#)} other {Alle trainingsprogramma’s (#)}}",
       "nav": "Trainingsprogramma’s",
       "settingsHint": "Zichtbaar als je een trainingsprogramma te koop hebt."
+    }
+  },
+  "WebsiteLook": {
+    "notice": "Je website heeft een nieuw uiterlijk: {template}. Bekijk de andere sjablonen en wissel wanneer je wilt.",
+    "noticeClose": "Melding sluiten",
+    "lookTitle": "Uiterlijk",
+    "template": "Sjabloon",
+    "templates": {
+      "arena": {
+        "name": "Arena",
+        "hint": "Energie, grote letters. CrossFit."
+      },
+      "tiles": {
+        "name": "Tegels",
+        "hint": "Levendige tegels. Past overal."
+      },
+      "stories": {
+        "name": "Verhalen",
+        "hint": "Stories, zoals een app. Vooral mobiel."
+      },
+      "atelier": {
+        "name": "Atelier",
+        "hint": "Redactioneel, premium. Pilates, yoga."
+      }
+    },
+    "colors": "Kleuren",
+    "palettes": {
+      "palee": "Palee",
+      "electric": "Elektrisch",
+      "flame": "Vlam",
+      "sun": "Zon",
+      "amber": "Amber",
+      "emerald": "Smaragd",
+      "aegean": "Egeïsch",
+      "violet": "Violet",
+      "fuchsia": "Fuchsia",
+      "olive": "Olijf",
+      "navy": "Marine",
+      "mono": "Mono"
+    },
+    "contrast": "Tekstcontrast {ratio}:1.",
+    "contrastAa": "Tekstcontrast {ratio}:1 · AA ✓.",
+    "contrastHint": "Is een kleur slecht leesbaar, dan gebruikt Palee een donkerdere tint.",
+    "appearanceTitle": "Licht of donker",
+    "appearance": {
+      "auto": "Automatisch",
+      "light": "Altijd licht",
+      "dark": "Altijd donker"
+    },
+    "appearanceHint": "«Automatisch» volgt het apparaat van de bezoeker.",
+    "motionTitle": "Beweging",
+    "calm": "Minder beweging",
+    "calmHint": "Zet effecten en automatische bewegingen uit voor alle bezoekers. Wie het op zijn apparaat heeft gevraagd, ziet al minder beweging.",
+    "sectionsTitle": "Wat de website toont",
+    "sectionsHint": "Elke sectie vult zichzelf vanuit Palee. Wat geen gegevens heeft, blijft verborgen, ook als het aan staat. Het Begin staat er altijd.",
+    "quickAll": "Alles",
+    "quickBasic": "Alleen de basis",
+    "groups": {
+      "basics": "Basis",
+      "training": "Training",
+      "shop": "Winkel",
+      "team": "Team en ruimte",
+      "forms": "Formulieren"
+    },
+    "new": "nieuw",
+    "sectionHints": {
+      "about": "De tekst «Over ons» van de boxpagina.",
+      "photos": "Tot 12 foto's en 1 video tot 15″. Zonder foto's de «Ruimtes» met 🌐.",
+      "stats": "Alleen totalen: lessen per week, PR's dit jaar, jaren open.",
+      "schedule": "De lessen van de week, zonder plaatsen of namen.",
+      "wod": "De WOD van vandaag, zodra die gepubliceerd is.",
+      "events": "De events van de box die voor iedereen open zijn.",
+      "programmes": "De programma's die je coaches verkopen.",
+      "packages": "De abonnementen die je online verkoopt.",
+      "coaches": "De coaches van de box met hun certificaten.",
+      "location": "Adres, kaart en openingstijden.",
+      "reviews": "Reviews van leden en je Google-score.",
+      "faq": "Tot 12 vragen die je zelf schrijft.",
+      "trial_form": "Wordt een Geïnteresseerde in Leads.",
+      "contact_form": "Wordt een Geïnteresseerde in Leads."
+    },
+    "seoTitle": "Vindbaar in Google en in AI-antwoorden",
+    "seoIntro": "Palee doet dit allemaal zelf, op elke pagina en in elke taal:",
+    "seo": {
+      "google": {
+        "label": "Google (SEO):",
+        "text": "eigen titel, beschrijving en adres op elke pagina, sitemap, afbeelding om te delen."
+      },
+      "data": {
+        "label": "Gestructureerde gegevens:",
+        "text": "de box, pakketten, lessen, events en vragen in schema.org, zodat zoekmachines ze goed lezen."
+      },
+      "ai": {
+        "label": "AI-antwoorden (GEO):",
+        "text": "overal hetzelfde adres, telefoonnummer en dezelfde openingstijden, gedateerde teksten en een llms.txt-bestand, zodat ChatGPT, Gemini en Perplexity je juist noemen."
+      },
+      "speed": {
+        "label": "Snelheid:",
+        "text": "pagina's openen op een telefoon in minder dan 2,5 seconden, wat ook telt voor Google."
+      },
+      "reviews": {
+        "label": "Reviews:",
+        "text": "«Schrijf een Google-review» na de lessen tilt je hoger in lokale zoekresultaten."
+      }
+    },
+    "seoTip": "Nog hoger komen: vul de Google-vermelding van de box aan en gebruik <domain>je eigen domein</domain>.",
+    "publish": {
+      "allPublished": "Alles is gepubliceerd.",
+      "pending": "Nog niet gepubliceerd: {list}.",
+      "published": "Gepubliceerd. Bezoekers zien het binnen een paar seconden.",
+      "publish": "Publiceren",
+      "publishing": "Publiceren…",
+      "discard": "Verwerpen",
+      "discardTitle": "Wijzigingen verwerpen?",
+      "discardText": "De wijzigingen in {list} gaan verloren. De website blijft zoals hij gepubliceerd is.",
+      "keep": "Bewaren",
+      "groups": {
+        "template": "sjabloon",
+        "colors": "kleuren",
+        "appearance": "licht of donker",
+        "motion": "beweging",
+        "sections": "secties"
+      }
+    },
+    "preview": {
+      "title": "Voorbeeld",
+      "hint": "Zo zien bezoekers hem na «Publiceren».",
+      "device": "Apparaat",
+      "phone": "Mobiel",
+      "desk": "Computer",
+      "open": "Voorbeeld",
+      "loading": "Voorbeeld laden…",
+      "unavailable": "Het voorbeeld is nu niet beschikbaar."
     }
   },
   "BoxReviews": {

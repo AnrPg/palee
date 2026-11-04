@@ -25,6 +25,14 @@ function personaFor(role: "member" | "admin", membershipRole: string) {
   return { user, token: `stub.${payload}.signature` };
 }
 
+const boxMembership = (role: string) => ({
+  role,
+  roles: [role],
+  capabilities: {},
+  organization: { id: "org-1", slug: "kypseli", name: "Box Kypseli" },
+  settings: { brand_name: "Box Kypseli", brand_logo_url: null, brand_primary_color: null },
+});
+
 const channel = (id: string, kind: string, extra: Record<string, unknown> = {}) => ({
   id,
   kind,
@@ -208,6 +216,7 @@ test.describe("community", () => {
 
   test("the club's Feed keeps a fixed order: pinned · WOD · PRs · events · posts (vision §7.1)", async ({ page }) => {
     await member(page);
+    await page.route("**/api/memberships", (route) => route.fulfill(json([boxMembership("member")])));
     const pinnedPost = { ...post, id: "post-pin", body: "Doors open at 07:00 on Monday", pinned: true, channel: { id: "ch-ann", kind: "announcements", name: null } };
     const prPost = { ...post, id: "post-pr", body: "New deadlift PR: 140 kg", attachment_type: "pr" };
     await page.route("**/api/me/feed**", (route) => route.fulfill(json({ posts: [post, prPost], pinned: [pinnedPost], next_cursor: null })));
@@ -275,7 +284,15 @@ test.describe("community", () => {
     expect([...tops].sort((a, b) => a - b)).toEqual(tops);
     await expect(page.getByText("No posts yet.")).toHaveCount(0);
     // ANR 2026-11-04: the WOD banner opens the schedule with that class's sheet.
-    await expect(page.getByTestId("wod-card-banner")).toHaveAttribute("href", /\/box\/schedule\?open_slot=class-1$/);
+    await expect(page.getByTestId("wod-card-banner")).toHaveAttribute(
+      "href",
+      /\/box\/schedule\?open_slot=class-1&open_day=2026-10-20$/,
+    );
+    // Copilot #205: an athlete of the box cannot open its schedule, so the banner is no link for them.
+    await page.route("**/api/memberships", (route) => route.fulfill(json([boxMembership("athlete")])));
+    await page.reload();
+    await expect(page.getByTestId("wod-card-banner")).toBeVisible();
+    await expect(page.getByTestId("wod-card-banner")).not.toHaveAttribute("href", /.*/);
   });
 
   test("an empty club Feed shows no empty cards, only one quiet line", async ({ page }) => {
