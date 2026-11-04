@@ -162,7 +162,7 @@ defmodule Palee.Fiscal.Domain.MyDataInvoice do
   end
 
   @doc """
-  ADR-530: the keys AADE knows a built invoice by (issuer's ΑΦΜ, series,
+  ADR-452: the keys AADE knows a built invoice by (issuer's ΑΦΜ, series,
   number, issue date and type), to look it up after a lost answer.
   """
   def key(invoice) when is_list(invoice) do

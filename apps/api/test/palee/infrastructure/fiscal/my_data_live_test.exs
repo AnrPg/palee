@@ -1,6 +1,6 @@
 defmodule Palee.Infrastructure.Fiscal.MyDataLiveTest do
   @moduledoc """
-  ADR-530 (Κ3): the myDATA adapter against AADE's real development API
+  ADR-452 (Κ3): the myDATA adapter against AADE's real development API
   (`mydataapidev.aade.gr`), not a stub. The `:aade_live` tag is excluded from
   normal runs; `mix test --only aade_live` runs it and needs:
 

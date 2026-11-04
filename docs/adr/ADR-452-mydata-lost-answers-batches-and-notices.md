@@ -1,4 +1,4 @@
-# ADR-530: myDATA lost answers, batched sends, claim heartbeat and problem notices
+# ADR-452: myDATA lost answers, batched sends, claim heartbeat and problem notices
 Date: 2026-11-04
 Status: Accepted
 

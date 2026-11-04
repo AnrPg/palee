@@ -1,6 +1,6 @@
 defmodule Palee.Application.Fiscal.ConnectionFailureNotices do
   @moduledoc """
-  `Fiscal.Ports.ConnectionNotifier` over Notifications (ADR-273, ADR-530): every
+  `Fiscal.Ports.ConnectionNotifier` over Notifications (ADR-273, ADR-452): every
   staff member who manages billing hears that a fiscal connection stopped
   working, with a link to «Στοιχεία τιμολόγησης › Συνδέσεις». At most once
   a day per connection and person, so a retried job never notifies twice.
@@ -43,7 +43,7 @@ defmodule Palee.Application.Fiscal.ConnectionFailureNotices do
   end
 
   @doc """
-  ADR-530: documents that did not reach the authority (refused, or out of
+  ADR-452: documents that did not reach the authority (refused, or out of
   attempts) and wait for staff, with a link to «Παραστατικά». At most once
   a day per connection and person; the count is of this run.
   """

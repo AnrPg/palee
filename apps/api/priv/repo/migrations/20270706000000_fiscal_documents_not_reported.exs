@@ -1,6 +1,6 @@
 defmodule Palee.Repo.Migrations.FiscalDocumentsNotReported do
   @moduledoc """
-  ADR-530: notification type `fiscal_documents_not_reported` for the staff
+  ADR-452: notification type `fiscal_documents_not_reported` for the staff
   who manage billing, when documents were refused by the tax authority or
   ran out of attempts.
   """

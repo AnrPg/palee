@@ -1,6 +1,6 @@
 defmodule Palee.Infrastructure.Fiscal.MyDataGatewayTest do
   @moduledoc """
-  ADR-530: the myDATA adapter matches several answers to their invoices by
+  ADR-452: the myDATA adapter matches several answers to their invoices by
   `index`, turns AADE's "already sent" into `:duplicate`, and finds a
   registered document across pages of `RequestTransmittedDocs`.
   """

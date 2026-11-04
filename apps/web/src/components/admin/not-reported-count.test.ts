@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { notReportedCount } from "./AdminDashboard";
 
-describe("notReportedCount (ADR-530)", () => {
+describe("notReportedCount (ADR-452)", () => {
   it("counts refused and failed reports only", () => {
     expect(notReportedCount({ counts: { accepted: 9, pending: 2, rejected: 1, failed: 2 } })).toBe(3);
   });

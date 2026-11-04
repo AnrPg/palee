@@ -3,7 +3,7 @@ defmodule Palee.Workers.TransmitFiscalDocumentsJob do
   ADR-243: sends due fiscal documents to the tax authority. With an
   `organization_id` it serves that tenant (right after an issue, a retry or
   a new connection); without one (cron, every 5 minutes) it queues one such
-  job per active organization (ADR-530), so retries and deferrals never
+  job per active organization (ADR-452), so retries and deferrals never
   depend on a request and one box never waits for another. Claims are
   row-locked, so overlapping runs are safe.
   """
@@ -24,7 +24,7 @@ defmodule Palee.Workers.TransmitFiscalDocumentsJob do
     transmit(organization_id, args["transmission_id"] || :due)
   end
 
-  # ADR-530 (Κ5): the sweep only fans out, one job per box, so a slow
+  # ADR-452 (Κ5): the sweep only fans out, one job per box, so a slow
   # authority answer for one box never delays the others.
   def perform(_job) do
     Organizations.list_active_organizations_for_system()

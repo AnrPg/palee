@@ -308,7 +308,7 @@ export function AdminDashboard({
     queryFn: () => fetchFinanceQueues(token!, { expires_within_days: "30" }),
   });
 
-  // ADR-530: documents the tax authority refused or that ran out of attempts.
+  // ADR-452: documents the tax authority refused or that ran out of attempts.
   const transmissionsQuery = useQuery({
     queryKey: ["admin", "dashboard", "fiscal-transmissions"],
     enabled: enabled && canFinanceReports,
@@ -786,7 +786,7 @@ export function AdminDashboard({
   );
 }
 
-/** ADR-530: reports that need someone (refused, or out of attempts); malformed answers count none. */
+/** ADR-452: reports that need someone (refused, or out of attempts); malformed answers count none. */
 export function notReportedCount(list: { counts?: Record<string, number> } | undefined): number {
   const counts = list && typeof list.counts === "object" && list.counts ? list.counts : {};
   return (Number(counts.rejected) || 0) + (Number(counts.failed) || 0);
