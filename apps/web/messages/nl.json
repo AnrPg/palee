@@ -16574,7 +16574,7 @@
       "recordsTitle": "Toe te voegen records",
       "recordName": "Naam",
       "recordValue": "Waarde",
-      "aliasType": "CNAME flattening / ALIAS / ANAME",
+      "aliasType": "CNAME-afvlakking / ALIAS / ANAME",
       "aliasHint": "Een domein zonder www kan geen CNAME hebben. Voeg CNAME-flattening, ALIAS of ANAME naar deze waarde toe, zoals je provider het noemt. Geen A-record met een vast IP: onze adressen veranderen.",
       "copy": "Kopiëren",
       "copied": "Gekopieerd",
