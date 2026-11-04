@@ -146,9 +146,11 @@ describe("pay periods", () => {
   });
 
   it("keys a line the way the API groups it, basis included", () => {
-    expect(groupKeyOf({ rule_id: "r1", pay_item_id: null, kind: "clawback", amount_basis: "gross" })).toBe("rule:r1:gross");
-    expect(groupKeyOf({ rule_id: null, pay_item_id: "i1", kind: "allowance", amount_basis: "net" })).toBe("pay_item:i1:allowance:net");
-    expect(groupKeyOf({ rule_id: null, pay_item_id: null, kind: "ad_hoc", amount_basis: "gross" })).toBe("manual:ad_hoc:gross");
+    expect(groupKeyOf({ rule_id: "r1", pay_item_id: null, kind: "clawback", amount_basis: "gross", source_type: "finance_reversal" })).toBe("rule:r1:gross");
+    expect(groupKeyOf({ rule_id: null, pay_item_id: "i1", kind: "allowance", amount_basis: "net", source_type: "pay_item" })).toBe("pay_item:i1:allowance:net");
+    expect(groupKeyOf({ rule_id: null, pay_item_id: null, kind: "ad_hoc", amount_basis: "gross", source_type: "manual" })).toBe("manual:ad_hoc:gross");
+    // One-off overtime and allowances (ADR-510) group apart from what was calculated.
+    expect(groupKeyOf({ rule_id: null, pay_item_id: "i1", kind: "overtime", amount_basis: "gross", source_type: "manual" })).toBe("manual:overtime:gross");
   });
 
   it("names files and picks the payslip's language", () => {

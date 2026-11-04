@@ -6082,7 +6082,7 @@ export interface paths {
         put?: never;
         /**
          * Add overtime or an allowance to the box's catalogue
-         * @description Overtime: an amount per hour above `weekly_threshold` hours a week (both required), counted from the classes the person led. Allowance: per period or per occurrence, added to a period by hand. `roles`: the staff roles it applies to.
+         * @description Overtime: an amount per hour above `weekly_threshold` hours a week (both required), counted from the classes the person led. Allowance: `per_period` (recurring, added by every calculation at its `frequency`) or `per_occurrence` (a rate added by hand). `roles`: the staff roles it applies to.
          */
         post: operations["PaleeWeb.AdminCoachPayController.create_item"];
         delete?: never;
@@ -6151,6 +6151,23 @@ export interface paths {
         };
         /** My pay statement of an approved period as PDF («Εκκαθαριστικό») */
         get: operations["PaleeWeb.MyCoachPayController.payslip"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/people": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box's people who can be paid overtime or allowances, with their pay roles */
+        get: operations["PaleeWeb.AdminCoachPayController.people"];
         put?: never;
         post?: never;
         delete?: never;
@@ -6241,7 +6258,10 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
-        /** Remove a line added by hand (draft periods only) */
+        /**
+         * Remove a line added by hand, or take a recurring allowance off its person
+         * @description Draft periods only. A recurring allowance's line is taken off its person for this period (ADR-510): later calculations leave it out until it is put back.
+         */
         delete: operations["PaleeWeb.AdminCoachPayController.delete_adjustment"];
         options?: never;
         head?: never;
@@ -6351,6 +6371,23 @@ export interface paths {
         /** Reopen an approved period, with a reason (an exported one stays as it is) */
         post: operations["PaleeWeb.AdminCoachPayController.reopen"];
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/skips/{skip_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Put a recurring allowance back on its person and recalculate (draft periods only) */
+        delete: operations["PaleeWeb.AdminCoachPayController.restore_item"];
         options?: never;
         head?: never;
         patch?: never;
@@ -79097,6 +79134,11 @@ export interface operations {
                             /** Format: date-time */
                             archived_at?: string | null;
                             currency: string;
+                            /**
+                             * @description Recurring allowance (unit per_period) only
+                             * @enum {string|null}
+                             */
+                            frequency?: "period" | "daily" | "weekly" | "monthly" | null;
                             /** Format: uuid */
                             id: string;
                             /** @enum {string} */
@@ -79129,16 +79171,21 @@ export interface operations {
                     amount_basis?: "gross" | "net";
                     amount_cents: number;
                     currency?: string;
+                    /**
+                     * @description Recurring allowance: once per pay period (`period`, default) or per day, week or month, prorated by the period's days
+                     * @enum {string|null}
+                     */
+                    frequency?: "period" | "daily" | "weekly" | "monthly" | null;
                     /** @enum {string} */
                     kind: "overtime" | "allowance";
                     name: string;
                     roles: ("owner" | "admin" | "head_coach" | "coach" | "front_desk" | "accountant" | "janitor")[];
                     /**
-                     * @description overtime: per_hour; allowance: per_period or per_occurrence
+                     * @description overtime: per_hour; allowance: per_period (recurring, added by every calculation) or per_occurrence (a rate added by hand)
                      * @enum {string}
                      */
                     unit: "per_period" | "per_occurrence" | "per_hour";
-                    /** @description Overtime: hours a week (Monday to Sunday) before overtime; required */
+                    /** @description Overtime: hours a week (Monday to Sunday) before overtime is counted from classes; null keeps it a rate for one-off hours only */
                     weekly_threshold?: number | null;
                 };
             };
@@ -79161,6 +79208,11 @@ export interface operations {
                             /** Format: date-time */
                             archived_at?: string | null;
                             currency: string;
+                            /**
+                             * @description Recurring allowance (unit per_period) only
+                             * @enum {string|null}
+                             */
+                            frequency?: "period" | "daily" | "weekly" | "monthly" | null;
                             /** Format: uuid */
                             id: string;
                             /** @enum {string} */
@@ -79195,16 +79247,21 @@ export interface operations {
                     amount_basis?: "gross" | "net";
                     amount_cents?: number;
                     currency?: string;
+                    /**
+                     * @description Recurring allowance: once per pay period (`period`, default) or per day, week or month, prorated by the period's days
+                     * @enum {string|null}
+                     */
+                    frequency?: "period" | "daily" | "weekly" | "monthly" | null;
                     /** @enum {string} */
                     kind?: "overtime" | "allowance";
                     name?: string;
                     roles?: ("owner" | "admin" | "head_coach" | "coach" | "front_desk" | "accountant" | "janitor")[];
                     /**
-                     * @description overtime: per_hour; allowance: per_period or per_occurrence
+                     * @description overtime: per_hour; allowance: per_period (recurring, added by every calculation) or per_occurrence (a rate added by hand)
                      * @enum {string}
                      */
                     unit?: "per_period" | "per_occurrence" | "per_hour";
-                    /** @description Overtime: hours a week (Monday to Sunday) before overtime; required */
+                    /** @description Overtime: hours a week (Monday to Sunday) before overtime is counted from classes; null keeps it a rate for one-off hours only */
                     weekly_threshold?: number | null;
                 };
             };
@@ -79227,6 +79284,11 @@ export interface operations {
                             /** Format: date-time */
                             archived_at?: string | null;
                             currency: string;
+                            /**
+                             * @description Recurring allowance (unit per_period) only
+                             * @enum {string|null}
+                             */
+                            frequency?: "period" | "daily" | "weekly" | "monthly" | null;
                             /** Format: uuid */
                             id: string;
                             /** @enum {string} */
@@ -79270,6 +79332,11 @@ export interface operations {
                             /** Format: date-time */
                             archived_at?: string | null;
                             currency: string;
+                            /**
+                             * @description Recurring allowance (unit per_period) only
+                             * @enum {string|null}
+                             */
+                            frequency?: "period" | "daily" | "weekly" | "monthly" | null;
                             /** Format: uuid */
                             id: string;
                             /** @enum {string} */
@@ -79408,6 +79475,33 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminCoachPayController.people": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description People */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        people: {
+                            name: string | null;
+                            pay_roles: ("owner" | "admin" | "head_coach" | "coach" | "front_desk" | "accountant" | "janitor")[];
+                            /** Format: uuid */
+                            user_id: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminCoachPayController.person_statements": {
         parameters: {
             query?: never;
@@ -79541,6 +79635,16 @@ export interface operations {
                             gross_cents: number;
                             /** Format: uuid */
                             id: string;
+                            /** @description ADR-510: recurring allowances taken off a person for this period */
+                            item_skips?: {
+                                /** Format: uuid */
+                                id: string;
+                                name: string | null;
+                                /** Format: uuid */
+                                pay_item_id: string;
+                                /** Format: uuid */
+                                user_id: string;
+                            }[];
                             net_cents: number;
                             reopen_reason?: string | null;
                             /** Format: date */
@@ -79665,6 +79769,16 @@ export interface operations {
                             gross_cents: number;
                             /** Format: uuid */
                             id: string;
+                            /** @description ADR-510: recurring allowances taken off a person for this period */
+                            item_skips?: {
+                                /** Format: uuid */
+                                id: string;
+                                name: string | null;
+                                /** Format: uuid */
+                                pay_item_id: string;
+                                /** Format: uuid */
+                                user_id: string;
+                            }[];
                             net_cents: number;
                             reopen_reason?: string | null;
                             /** Format: date */
@@ -79782,6 +79896,16 @@ export interface operations {
                             gross_cents: number;
                             /** Format: uuid */
                             id: string;
+                            /** @description ADR-510: recurring allowances taken off a person for this period */
+                            item_skips?: {
+                                /** Format: uuid */
+                                id: string;
+                                name: string | null;
+                                /** Format: uuid */
+                                pay_item_id: string;
+                                /** Format: uuid */
+                                user_id: string;
+                            }[];
                             net_cents: number;
                             reopen_reason?: string | null;
                             /** Format: date */
@@ -79919,6 +80043,16 @@ export interface operations {
                             gross_cents: number;
                             /** Format: uuid */
                             id: string;
+                            /** @description ADR-510: recurring allowances taken off a person for this period */
+                            item_skips?: {
+                                /** Format: uuid */
+                                id: string;
+                                name: string | null;
+                                /** Format: uuid */
+                                pay_item_id: string;
+                                /** Format: uuid */
+                                user_id: string;
+                            }[];
                             net_cents: number;
                             reopen_reason?: string | null;
                             /** Format: date */
@@ -80037,6 +80171,16 @@ export interface operations {
                             gross_cents: number;
                             /** Format: uuid */
                             id: string;
+                            /** @description ADR-510: recurring allowances taken off a person for this period */
+                            item_skips?: {
+                                /** Format: uuid */
+                                id: string;
+                                name: string | null;
+                                /** Format: uuid */
+                                pay_item_id: string;
+                                /** Format: uuid */
+                                user_id: string;
+                            }[];
                             net_cents: number;
                             reopen_reason?: string | null;
                             /** Format: date */
@@ -80154,6 +80298,16 @@ export interface operations {
                             gross_cents: number;
                             /** Format: uuid */
                             id: string;
+                            /** @description ADR-510: recurring allowances taken off a person for this period */
+                            item_skips?: {
+                                /** Format: uuid */
+                                id: string;
+                                name: string | null;
+                                /** Format: uuid */
+                                pay_item_id: string;
+                                /** Format: uuid */
+                                user_id: string;
+                            }[];
                             net_cents: number;
                             reopen_reason?: string | null;
                             /** Format: date */
@@ -80271,6 +80425,16 @@ export interface operations {
                             gross_cents: number;
                             /** Format: uuid */
                             id: string;
+                            /** @description ADR-510: recurring allowances taken off a person for this period */
+                            item_skips?: {
+                                /** Format: uuid */
+                                id: string;
+                                name: string | null;
+                                /** Format: uuid */
+                                pay_item_id: string;
+                                /** Format: uuid */
+                                user_id: string;
+                            }[];
                             net_cents: number;
                             reopen_reason?: string | null;
                             /** Format: date */
@@ -80421,6 +80585,16 @@ export interface operations {
                             gross_cents: number;
                             /** Format: uuid */
                             id: string;
+                            /** @description ADR-510: recurring allowances taken off a person for this period */
+                            item_skips?: {
+                                /** Format: uuid */
+                                id: string;
+                                name: string | null;
+                                /** Format: uuid */
+                                pay_item_id: string;
+                                /** Format: uuid */
+                                user_id: string;
+                            }[];
                             net_cents: number;
                             reopen_reason?: string | null;
                             /** Format: date */
@@ -80558,6 +80732,16 @@ export interface operations {
                             gross_cents: number;
                             /** Format: uuid */
                             id: string;
+                            /** @description ADR-510: recurring allowances taken off a person for this period */
+                            item_skips?: {
+                                /** Format: uuid */
+                                id: string;
+                                name: string | null;
+                                /** Format: uuid */
+                                pay_item_id: string;
+                                /** Format: uuid */
+                                user_id: string;
+                            }[];
                             net_cents: number;
                             reopen_reason?: string | null;
                             /** Format: date */
@@ -80681,6 +80865,144 @@ export interface operations {
                             gross_cents: number;
                             /** Format: uuid */
                             id: string;
+                            /** @description ADR-510: recurring allowances taken off a person for this period */
+                            item_skips?: {
+                                /** Format: uuid */
+                                id: string;
+                                name: string | null;
+                                /** Format: uuid */
+                                pay_item_id: string;
+                                /** Format: uuid */
+                                user_id: string;
+                            }[];
+                            net_cents: number;
+                            reopen_reason?: string | null;
+                            /** Format: date */
+                            starts_on: string;
+                            statements?: {
+                                coach_name?: string | null;
+                                /** Format: uuid */
+                                coach_user_id: string;
+                                gross_cents: number;
+                                groups: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    key: string;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    line_count: number;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** @description The rule's or pay item's terms when the statement was calculated */
+                                    terms?: Record<string, never> | null;
+                                    unit_cents?: number | null;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                line_count: number;
+                                lines: {
+                                    /**
+                                     * @description Whether the amount is before (gross) or after (net) the person's taxes
+                                     * @enum {string}
+                                     */
+                                    amount_basis: "gross" | "net";
+                                    amount_cents: number;
+                                    base_cents?: number | null;
+                                    /** Format: uuid */
+                                    created_by_id?: string | null;
+                                    description: string;
+                                    /** @description True for a net line (the default is gross): show it marked */
+                                    deviates_from_default: boolean;
+                                    /** Format: uuid */
+                                    id: string;
+                                    /** Format: date-time */
+                                    inserted_at?: string | null;
+                                    /** @enum {string} */
+                                    kind: "per_class" | "per_attendee" | "per_session" | "percent_of_sales" | "fixed" | "clawback" | "adjustment" | "ad_hoc" | "non_taxable_reimbursement" | "overtime" | "allowance";
+                                    note?: string | null;
+                                    /** Format: date */
+                                    occurred_on: string;
+                                    /** Format: uuid */
+                                    pay_item_id?: string | null;
+                                    percent_bps?: number | null;
+                                    quantity: number;
+                                    quantity_divisor?: number | null;
+                                    /** Format: uuid */
+                                    rule_id?: string | null;
+                                    /** Format: uuid */
+                                    source_id?: string | null;
+                                    /** @enum {string} */
+                                    source_type: "scheduled_class" | "appointment_slot" | "finance_payment" | "finance_reversal" | "manual" | "rule" | "pay_item";
+                                    unit_cents?: number | null;
+                                }[];
+                                net_cents: number;
+                                net_line_count: number;
+                                period?: Record<string, never> | null;
+                                /** @description Every line summed whatever its basis; show gross_cents and net_cents */
+                                total_cents: number;
+                            }[];
+                            /** @enum {string} */
+                            status: "draft" | "approved" | "exported";
+                            total_cents: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminCoachPayController.restore_item": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                skip_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Period */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        period: {
+                            /** Format: date-time */
+                            approved_at?: string | null;
+                            /** Format: uuid */
+                            approved_by_id?: string | null;
+                            /** Format: date-time */
+                            calculated_at?: string | null;
+                            currency: string;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: date-time */
+                            exported_at?: string | null;
+                            gross_cents: number;
+                            /** Format: uuid */
+                            id: string;
+                            /** @description ADR-510: recurring allowances taken off a person for this period */
+                            item_skips?: {
+                                /** Format: uuid */
+                                id: string;
+                                name: string | null;
+                                /** Format: uuid */
+                                pay_item_id: string;
+                                /** Format: uuid */
+                                user_id: string;
+                            }[];
                             net_cents: number;
                             reopen_reason?: string | null;
                             /** Format: date */

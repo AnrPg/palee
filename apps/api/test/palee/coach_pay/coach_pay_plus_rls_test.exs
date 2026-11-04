@@ -117,26 +117,49 @@ defmodule Palee.CoachPay.CoachPayPlusRLSTest do
 
     {:ok, period} = CoachPayService.calculate(ctx, period.id)
 
-    [statement] = period.statements
-    assert statement.coach_user_id == coach.id
+    statement = Enum.find(period.statements, &(&1.coach_user_id == coach.id))
     # 12 days × 10,00 plus 1,5 h × 20,00.
     assert statement.gross_cents == 15_000
     assert statement.net_cents == 0
     assert Enum.map(statement.groups, & &1.kind) == ["fixed", "overtime"]
 
-    # The allowance goes to the front desk only; the coach does not hold its role.
+    # ADR-510: the recurring allowance reached the front desk by itself.
+    desk_statement = Enum.find(period.statements, &(&1.coach_user_id == desk.id))
+    assert %{net_cents: 1_500, gross_cents: 0} = desk_statement
+
+    assert [%{kind: "allowance", source_type: "pay_item", id: desk_line_id}] =
+             desk_statement.lines
+
+    # It is never added by hand on top, and the coach does not hold its role.
     assert {:error, {:invalid_fields, %{"user_id" => "role_not_covered"}}} =
              CoachPayService.add_pay_item_line(ctx, period.id, %{
                "pay_item_id" => allowance.id,
                "user_id" => coach.id
              })
 
-    {:ok, period} =
-      CoachPayService.add_pay_item_line(ctx, period.id, %{
-        "pay_item_id" => allowance.id,
-        "user_id" => desk.id,
-        "note" => "Νοέμβριος"
-      })
+    assert {:error, {:invalid_fields, %{"pay_item_id" => "added_automatically"}}} =
+             CoachPayService.add_pay_item_line(ctx, period.id, %{
+               "pay_item_id" => allowance.id,
+               "user_id" => desk.id
+             })
+
+    # Taken off the desk for this period, it stays off when recalculated…
+    {:ok, period} = CoachPayService.delete_adjustment(ctx, period.id, desk_line_id)
+    assert [%{id: skip_id, user_id: desk_id, name: "Επίδομα μετακίνησης"}] = period.item_skips
+    assert desk_id == desk.id
+    {:ok, period} = CoachPayService.calculate(ctx, period.id)
+    refute Enum.any?(period.statements, &(&1.coach_user_id == desk.id and &1.net_cents > 0))
+
+    # …until it is put back.
+    {:ok, period} = CoachPayService.restore_item(ctx, period.id, skip_id)
+    assert period.item_skips == []
+    desk_statement = Enum.find(period.statements, &(&1.coach_user_id == desk.id))
+    assert %{net_cents: 1_500} = desk_statement
+
+    # People with pay roles, for the forms.
+    %{people: people} = CoachPayService.people(ctx)
+    assert %{pay_roles: ["front_desk"]} = Enum.find(people, &(&1.user_id == desk.id))
+    assert %{pay_roles: ["coach"]} = Enum.find(people, &(&1.user_id == coach.id))
 
     {:ok, period} =
       CoachPayService.add_adjustment(ctx, period.id, %{
@@ -148,7 +171,7 @@ defmodule Palee.CoachPay.CoachPayPlusRLSTest do
 
     desk_statement = Enum.find(period.statements, &(&1.coach_user_id == desk.id))
     assert %{net_cents: 1_500, gross_cents: 0, net_line_count: 1} = desk_statement
-    assert [%{deviates_from_default: true, note: "Νοέμβριος"}] = desk_statement.lines
+    assert [%{deviates_from_default: true, source_type: "pay_item"}] = desk_statement.lines
 
     coach_statement = Enum.find(period.statements, &(&1.coach_user_id == coach.id))
     ad_hoc = Enum.find(coach_statement.lines, &(&1.kind == "ad_hoc"))
@@ -165,8 +188,8 @@ defmodule Palee.CoachPay.CoachPayPlusRLSTest do
     assert %{gross_cents: 15_000, net_cents: 5_500} = period
 
     # One-off overtime (ANR 2026-11-04): 1,5 h outside classes at the item's
-    # rate, with its reason; it joins the computed overtime's group and
-    # survives recalculation.
+    # rate, with its reason; it is grouped apart from the computed overtime
+    # and survives recalculation.
     assert {:error, {:invalid_fields, %{"note" => "required"}}} =
              CoachPayService.add_pay_item_line(ctx, period.id, %{
                "pay_item_id" => overtime.id,
@@ -186,8 +209,10 @@ defmodule Palee.CoachPay.CoachPayPlusRLSTest do
     coach_statement = Enum.find(period.statements, &(&1.coach_user_id == coach.id))
     assert %{gross_cents: 18_000} = coach_statement
 
-    assert %{quantity: 180, unit_cents: 2_000} =
-             Enum.find(coach_statement.groups, &(&1.kind == "overtime"))
+    assert [%{key: "manual:overtime:gross", quantity: 90}, %{quantity: 90, unit_cents: 2_000}] =
+             coach_statement.groups
+             |> Enum.filter(&(&1.kind == "overtime"))
+             |> Enum.sort_by(& &1.key)
 
     assert [%{note: "Αγώνας του box", created_by_id: owner_id}] =
              Enum.filter(

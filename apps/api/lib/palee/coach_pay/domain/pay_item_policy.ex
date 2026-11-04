@@ -9,10 +9,16 @@ defmodule Palee.CoachPay.Domain.PayItemPolicy do
       (hours outside classes: a competition, a cleaning shift) is added by
       hand to one person's period as `minutes` at the item's rate, or at a
       `unit_cents` rate typed for that line, with a required reason
-      (product owner 2026-11-04).
-    * `allowance` – `amount_cents` `per_period` (once a period) or
-      `per_occurrence` (times the number of occurrences); always added to
-      a period by hand, per person.
+      (product owner 2026-11-04). Overtime without a `weekly_threshold`
+      is never counted from classes: a saved rate for one-off hours
+      (ADR-510).
+    * `allowance` – `amount_cents` `per_period`: recurring, added to every
+      calculated period by itself for each person holding one of its roles
+      (`Palee.CoachPay.Domain.Allowances`), at its `frequency`: once per
+      pay period (`period`) or per day, week or month prorated by the
+      period's days like fixed pay (ADR-510, product owner 2026-11-04); or
+      `per_occurrence`: a saved rate added by hand to one person's period,
+      times the number of occurrences.
 
   `amount_basis` (`gross` default, or `net`) is inherited by its lines.
 
@@ -25,6 +31,7 @@ defmodule Palee.CoachPay.Domain.PayItemPolicy do
 
   @kinds ~w(overtime allowance)
   @units %{"overtime" => ~w(per_hour), "allowance" => ~w(per_period per_occurrence)}
+  @frequencies ~w(period daily weekly monthly)
   @roles ~w(owner admin head_coach coach front_desk accountant janitor)
   @max_amount 10_000_000
   @max_threshold 168
@@ -34,6 +41,12 @@ defmodule Palee.CoachPay.Domain.PayItemPolicy do
   def kinds, do: @kinds
   def units, do: @units |> Map.values() |> List.flatten()
   def roles, do: @roles
+  def frequencies, do: @frequencies
+
+  @doc "ADR-510: whether an item is a recurring allowance, added by every calculation."
+  def recurring?(%{kind: "allowance", unit: "per_period"}), do: true
+  def recurring?(%{"kind" => "allowance", "unit" => "per_period"}), do: true
+  def recurring?(_item), do: false
 
   @doc """
   Checks and normalizes a new item or a change (`current` is the stored
@@ -45,6 +58,8 @@ defmodule Palee.CoachPay.Domain.PayItemPolicy do
     kind = merged["kind"]
     name = if is_binary(merged["name"]), do: String.trim(merged["name"])
     roles = merged["roles"]
+    # Only a recurring allowance has a frequency; `period` when none is given.
+    frequency = if recurring?(merged), do: merged["frequency"] || "period"
 
     errors =
       %{}
@@ -58,6 +73,7 @@ defmodule Palee.CoachPay.Domain.PayItemPolicy do
         "invalid"
       )
       |> check(threshold_ok?(kind, merged["weekly_threshold"]), "weekly_threshold", "invalid")
+      |> check(is_nil(frequency) or frequency in @frequencies, "frequency", "invalid")
       |> check(currency?(merged["currency"]), "currency", "invalid")
       |> check(
         is_nil(merged["amount_basis"]) or AmountBasis.valid?(merged["amount_basis"]),
@@ -74,6 +90,7 @@ defmodule Palee.CoachPay.Domain.PayItemPolicy do
          unit: merged["unit"],
          roles: Enum.filter(@roles, &(&1 in roles)),
          weekly_threshold: merged["weekly_threshold"],
+         frequency: frequency,
          currency: String.upcase(merged["currency"]),
          amount_basis: merged["amount_basis"] || AmountBasis.default()
        }}
@@ -83,6 +100,9 @@ defmodule Palee.CoachPay.Domain.PayItemPolicy do
   end
 
   def change(_current, _params), do: {:error, {:invalid_fields, %{"item" => "invalid"}}}
+
+  # ADR-510: overtime without a threshold is a saved rate for one-off hours only.
+  defp threshold_ok?("overtime", nil), do: true
 
   defp threshold_ok?("overtime", value),
     do: is_integer(value) and value >= 0 and value <= @max_threshold
@@ -155,7 +175,11 @@ defmodule Palee.CoachPay.Domain.PayItemPolicy do
   defp usable(%{archived_at: archived}) when not is_nil(archived),
     do: {:error, :coach_pay_item_archived}
 
-  defp usable(_item), do: :ok
+  defp usable(item) do
+    if recurring?(item),
+      do: {:error, {:invalid_fields, %{"pay_item_id" => "added_automatically"}}},
+      else: :ok
+  end
 
   # `minutes` and `unit_cents` belong to one-off overtime only.
   defp only_overtime_fields("overtime", _params), do: :ok
@@ -227,6 +251,7 @@ defmodule Palee.CoachPay.Domain.PayItemPolicy do
       "amount_cents" => item.amount_cents,
       "unit" => item.unit,
       "weekly_threshold" => item.weekly_threshold,
+      "frequency" => Map.get(item, :frequency),
       "currency" => item.currency,
       "amount_basis" => Map.get(item, :amount_basis) || AmountBasis.default()
     }

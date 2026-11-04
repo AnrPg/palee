@@ -3,6 +3,7 @@ defmodule Palee.CoachPay.Domain.CoachPayPlusTest do
   use ExUnit.Case, async: true
 
   alias Palee.CoachPay.Domain.{
+    Allowances,
     AmountBasis,
     PayCalculator,
     PayItemPolicy,
@@ -345,7 +346,19 @@ defmodule Palee.CoachPay.Domain.CoachPayPlusTest do
       assert %{@coach => [%{quantity: 60}]} = PayCalculator.calculate([], work, "EUR")
     end
 
-    test "overtime is per hour with a required threshold; allowances have none" do
+    test "overtime is per hour; without a threshold it is a one-off rate; allowances have none" do
+      assert {:ok, %{weekly_threshold: nil} = one_off} =
+               PayItemPolicy.change(%{}, %{
+                 "kind" => "overtime",
+                 "name" => "OT",
+                 "amount_cents" => 100,
+                 "unit" => "per_hour",
+                 "roles" => ["coach"],
+                 "currency" => "EUR"
+               })
+
+      refute PayItemPolicy.computed?(Map.put(one_off, :archived_at, nil))
+
       assert {:error, {:invalid_fields, %{"weekly_threshold" => "invalid"}}} =
                PayItemPolicy.change(%{}, %{
                  "kind" => "overtime",
@@ -353,6 +366,7 @@ defmodule Palee.CoachPay.Domain.CoachPayPlusTest do
                  "amount_cents" => 100,
                  "unit" => "per_hour",
                  "roles" => ["coach"],
+                 "weekly_threshold" => 169,
                  "currency" => "EUR"
                })
 
@@ -557,6 +571,137 @@ defmodule Palee.CoachPay.Domain.CoachPayPlusTest do
                  ~D[2027-01-31],
                  @other
                )
+    end
+  end
+
+  describe "recurring allowances (ADR-510)" do
+    defp recurring(attrs) do
+      item(
+        Map.merge(
+          %{
+            "kind" => "allowance",
+            "name" => "Μετακίνηση",
+            "amount_cents" => 4_000,
+            "unit" => "per_period",
+            "roles" => ["coach"],
+            "weekly_threshold" => nil
+          },
+          attrs
+        )
+      )
+    end
+
+    test "a recurring allowance is once per period unless a frequency is given" do
+      assert %{frequency: "period"} = recurring(%{})
+      assert %{frequency: "monthly"} = recurring(%{"frequency" => "monthly"})
+
+      assert %{frequency: nil} =
+               recurring(%{"unit" => "per_occurrence", "frequency" => "monthly"})
+
+      assert %{frequency: nil} = item(%{})
+
+      assert {:error, {:invalid_fields, %{"frequency" => "invalid"}}} =
+               PayItemPolicy.change(%{}, %{
+                 "kind" => "allowance",
+                 "name" => "x",
+                 "amount_cents" => 100,
+                 "unit" => "per_period",
+                 "roles" => ["coach"],
+                 "currency" => "EUR",
+                 "frequency" => "yearly"
+               })
+    end
+
+    test "every person holding a role gets it, prorated by frequency, skips and archive respected" do
+      roles = %{"a" => ["coach"], "b" => ["front_desk"], "c" => ["coach", "head_coach"]}
+      per_period = recurring(%{})
+
+      assert [
+               %{coach_user_id: "a", amount_cents: 4_000, quantity: 1, source_type: "pay_item"},
+               %{coach_user_id: "c", amount_cents: 4_000}
+             ] =
+               Allowances.lines([per_period], roles, [], ~D[2026-11-01], ~D[2026-11-15], "EUR")
+
+      # Half of November: half of a monthly amount.
+      monthly = recurring(%{"frequency" => "monthly"})
+
+      assert [%{amount_cents: 2_000, quantity: 15, quantity_divisor: 30}] =
+               Allowances.lines(
+                 [monthly],
+                 %{"a" => ["coach"]},
+                 [],
+                 ~D[2026-11-01],
+                 ~D[2026-11-15],
+                 "EUR"
+               )
+
+      # A period over two months: one line per month.
+      assert [%{amount_cents: 2_000}, %{amount_cents: a}] =
+               Allowances.lines(
+                 [monthly],
+                 %{"a" => ["coach"]},
+                 [],
+                 ~D[2026-11-16],
+                 ~D[2026-12-15],
+                 "EUR"
+               )
+
+      assert a == Proration.amount(4_000, 15, 31)
+
+      weekly = recurring(%{"frequency" => "weekly", "amount_cents" => 700})
+
+      assert [%{amount_cents: 1_400, quantity: 14, quantity_divisor: 7}] =
+               Allowances.lines(
+                 [weekly],
+                 %{"a" => ["coach"]},
+                 [],
+                 ~D[2026-11-01],
+                 ~D[2026-11-14],
+                 "EUR"
+               )
+
+      daily = recurring(%{"frequency" => "daily", "amount_cents" => 300})
+
+      assert [%{amount_cents: 900}] =
+               Allowances.lines(
+                 [daily],
+                 %{"a" => ["coach"]},
+                 [],
+                 ~D[2026-11-01],
+                 ~D[2026-11-03],
+                 "EUR"
+               )
+
+      assert [%{coach_user_id: "c"}] =
+               Allowances.lines(
+                 [per_period],
+                 roles,
+                 [{"a", per_period.id}],
+                 ~D[2026-11-01],
+                 ~D[2026-11-15],
+                 "EUR"
+               )
+
+      assert [] =
+               Allowances.lines(
+                 [
+                   %{per_period | archived_at: DateTime.utc_now()},
+                   item(%{}),
+                   recurring(%{"unit" => "per_occurrence"})
+                 ],
+                 roles,
+                 [],
+                 ~D[2026-11-01],
+                 ~D[2026-11-15],
+                 "EUR"
+               )
+
+      assert [] = Allowances.lines([per_period], roles, [], ~D[2026-11-01], ~D[2026-11-15], "USD")
+    end
+
+    test "a recurring allowance is never added by hand" do
+      assert {:error, {:invalid_fields, %{"pay_item_id" => "added_automatically"}}} =
+               PayItemPolicy.manual_line(recurring(%{}), %{}, ~D[2027-01-31], @coach)
     end
   end
 

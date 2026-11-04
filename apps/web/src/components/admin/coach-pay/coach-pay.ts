@@ -458,8 +458,9 @@ export function calendarNoon(iso: string): Date {
  * `StatementGroups`): its rule, or its pay item and kind, or its kind when
  * added by hand, and its gross/net basis. Clawbacks join their rule's group.
  */
-export function groupKeyOf(line: Pick<PayLine, "rule_id" | "pay_item_id" | "kind" | "amount_basis">): string {
+export function groupKeyOf(line: Pick<PayLine, "rule_id" | "pay_item_id" | "kind" | "amount_basis" | "source_type">): string {
   const basis = line.amount_basis || "gross";
+  if (line.source_type === "manual") return ["manual", line.kind, basis].join(":");
   if (line.rule_id) return ["rule", line.rule_id, basis].join(":");
   if (line.pay_item_id) return ["pay_item", line.pay_item_id, line.kind, basis].join(":");
   return ["manual", line.kind, basis].join(":");

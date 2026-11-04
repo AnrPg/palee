@@ -16,14 +16,16 @@ defmodule Palee.CoachPay.Domain.PayCalculator do
     * ADR-382, optional: `period` (`%{starts_on, ends_on}`, for fixed
       pay), `coach_clients` (`%{coach_user_id, client_user_id, from, to}`,
       gym-local days the coaching relation held, ADR-100), `pay_items` and
-      `staff_roles` (`%{user_id => [role]}`, for overtime).
+      `staff_roles` (`%{user_id => [role]}`, for overtime and recurring
+      allowances); ADR-510: `item_skips` (`[{user_id, pay_item_id}]`, the
+      recurring allowances taken off a person for this period).
 
   Every line names its rule and its source, so a statement can be traced
   to the class, session, payment or refund behind it. A rule in another
   currency than the money is skipped (never converted).
   """
 
-  alias Palee.CoachPay.Domain.{Overtime, PayItemPolicy, Proration, RulePolicy}
+  alias Palee.CoachPay.Domain.{Allowances, Overtime, PayItemPolicy, Proration, RulePolicy}
 
   # ADR-382: only subscription and package money counts for these scopes.
   @subscription_streams ~w(membership package)
@@ -37,6 +39,7 @@ defmodule Palee.CoachPay.Domain.PayCalculator do
     end)
     |> count_payments_once()
     |> Kernel.++(overtime(work, currency))
+    |> Kernel.++(allowances(work, currency))
     |> Enum.group_by(& &1.coach_user_id, &Map.delete(&1, :coach_user_id))
   end
 
@@ -68,6 +71,19 @@ defmodule Palee.CoachPay.Domain.PayCalculator do
       )
 
   defp overtime(_work, _currency), do: []
+
+  defp allowances(%{period: %{starts_on: from, ends_on: to}} = work, currency),
+    do:
+      Allowances.lines(
+        Map.get(work, :pay_items, []),
+        Map.get(work, :staff_roles, %{}),
+        Map.get(work, :item_skips, []),
+        from,
+        to,
+        currency
+      )
+
+  defp allowances(_work, _currency), do: []
 
   @doc """
   ADR-382: the terms of the rules and pay items behind each coach's lines

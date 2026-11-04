@@ -1,7 +1,8 @@
 defmodule Palee.CoachPay.Domain.StatementGroups do
   @moduledoc """
   ADR-382: a statement's lines as one group per rule (and per pay item,
-  and one for each kind of line added by hand), with the terms they were
+  and one for each kind of line added by hand, ADR-510: one-off overtime and
+  allowances included), with the terms they were
   paid by, the quantity × rate and the group's total, pure.
 
   A rule's clawbacks fall in that rule's group, so the group shows what the
@@ -32,6 +33,9 @@ defmodule Palee.CoachPay.Domain.StatementGroups do
 
   defp basis(line), do: Map.get(line, :amount_basis) || "gross"
 
+  # Lines added by hand group by kind, apart from what was calculated (one-off
+  # overtime and allowances too, ADR-510), so each can be read and removed.
+  defp key(%{source_type: "manual", kind: kind}), do: "manual:" <> kind
   defp key(%{rule_id: rule_id}) when is_binary(rule_id), do: "rule:" <> rule_id
 
   defp key(%{pay_item_id: item_id, kind: kind}) when is_binary(item_id),
