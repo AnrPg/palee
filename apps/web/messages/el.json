@@ -17879,7 +17879,8 @@
       "people": "{count, plural, one {# άτομο} other {# άτομα}}",
       "noPackage": "Χωρίς πακέτο συνδρομής",
       "more": "Περισσότερα νούμερα",
-      "loading": "Φόρτωση…"
+      "loading": "Φόρτωση…",
+      "teamWorkouts": "Ομαδικές και ατομικές προπονήσεις"
     },
     "pages": {
       "overview": {

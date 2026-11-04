@@ -298,7 +298,7 @@ export function AdminAnalytics({ section = "overview" }: { section?: AnalyticsSe
         ) : null}
 
         {section === "training" ? <section id="training-analytics" className="scroll-mt-20 space-y-4">
-          <h2 className="text-xl font-black">{i18n("teamWorkoutBreakdownLast30Days86ec3d2")}</h2>
+          <h2 className="text-xl font-black">{t("kpi.teamWorkouts")}</h2>
           <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
             <PlainTile label={i18n("teamCompletions2a732d2")} value={count(metricNumber(teamWorkoutsAggregate, "team_count"))} helpPath="widgets.training.team_completions" />
             <PlainTile

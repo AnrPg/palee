@@ -17879,7 +17879,8 @@
       "people": "{count, plural, one {# person} other {# people}}",
       "noPackage": "No subscription package",
       "more": "More figures",
-      "loading": "Loading…"
+      "loading": "Loading…",
+      "teamWorkouts": "Team and solo workouts"
     },
     "pages": {
       "overview": {
