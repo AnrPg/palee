@@ -37,4 +37,17 @@ defmodule Palee.Organizations.Commands.RecordPlatformEvent do
   end
 
   def exists?(_context, _organization_id), do: false
+
+  @doc "ADR-397: the names of these organizations by id (read as the vendor)."
+  def names(%PlatformContext{user_id: user_id}, ids) when is_list(ids) do
+    RepoContext.run(%{user_id: user_id}, fn ->
+      ids
+      |> Enum.uniq()
+      |> Map.new(fn id ->
+        {id, (organization = OrganizationStore.get_organization_by_id(id)) && organization.name}
+      end)
+    end)
+  end
+
+  def names(_context, _ids), do: %{}
 end

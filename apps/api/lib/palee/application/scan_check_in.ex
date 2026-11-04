@@ -95,6 +95,12 @@ defmodule Palee.Application.ScanCheckIn do
     end
   end
 
+  @doc """
+  ADR-381: the same proof of presence for opening a door: `{:ok, %{organization_id,
+  location_id, source, ...}}` or `{:error, :invalid_door_code}`.
+  """
+  def door_presence(user_id, params, now), do: door(user_id, params, now)
+
   # -- the door
 
   defp door(user_id, params, now) do

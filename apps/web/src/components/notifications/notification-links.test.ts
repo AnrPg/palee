@@ -186,6 +186,10 @@ describe("notificationTargetUrl", () => {
     expect(
       notificationTargetUrl({ type: "training_goal_updated", payload: { target: 4, set_by_nickname: "Nikos" } }, "member"),
     ).toBe("/me/settings#training-schedule");
+    expect(notificationTargetUrl({ type: "rank_skills_checked", payload: { count: 2, rank_name: "Blue" } }, "member")).toBe("/me/ranks");
+    expect(
+      notificationTargetUrl({ type: "training_goal_updated", payload: { target: 4, set_by_nickname: "Nikos" } }, "member"),
+    ).toBe("/me/settings#training-schedule");
   });
 
   it("opens appointments on the side of the reader", () => {

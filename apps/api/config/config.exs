@@ -30,8 +30,14 @@ config :palee, Oban,
        {"*/15 * * * *", Palee.Workers.RefreshLeaderboardJob},
        # ADR-352/353: custom domain checks and the website form outbox.
        {"*/5 * * * *", Palee.Workers.BoxSiteJob},
+       # ADR-398: remove Ingresses of hosts no box has any more.
+       # ADR-398: nightly. The cron runs in UTC: 01:15 UTC is 03:15 in Athens
+       # in winter (04:15 in summer), a quiet hour either way.
+       {"15 1 * * *", Palee.Workers.BoxSiteIngressSweepJob},
        # ADR-387: refresh due Google listings (each box once a day).
        {"17 * * * *", Palee.Workers.GooglePlacesJob},
+       # ADR-397: removed review texts after 6 months; the open reports summary.
+       {"10 7 * * *", Palee.Workers.ReviewReportsDailyJob},
        {"*/15 * * * *", Palee.Workers.RefreshFinanceAggregatesJob},
        {"*/15 * * * *", Palee.Workers.RefreshCoachingAggregatesJob},
        {"0 2 * * *", Palee.Workers.MarkOverdueInvoicesJob},
@@ -68,6 +74,8 @@ config :palee, Oban,
        {"*/10 * * * *", Palee.Workers.WellnessNudgesJob},
        {"*/15 * * * *", Palee.Workers.DeviceMaintenanceJob},
        {"10 1 * * *", Palee.Workers.SeasonSweepJob},
+       # ADR-371: programme purchases complete after their last day; abandoned checkouts close.
+       {"29 * * * *", Palee.Workers.ProgrammeSweepJob},
        {"40 2 * * *", Palee.Workers.NightlyInsightsJob},
        {"27 * * * *", Palee.Workers.ScalingSuggestionScanJob},
        {"47 * * * *", Palee.Workers.WorldGazetteerJob},
@@ -96,7 +104,13 @@ config :palee, Oban,
        {"5 4 * * *", Palee.Workers.PartnerVerificationRetention},
        # ADR-364: the status page probes every component each minute; a daily sweep.
        {"* * * * *", Palee.Workers.StatusProbeJob},
-       {"33 3 * * *", Palee.Workers.StatusProbeJob, args: %{"sweep" => true}}
+       {"33 3 * * *", Palee.Workers.StatusProbeJob, args: %{"sweep" => true}},
+       # ADR-376: barcode lookups left pending (Open Food Facts outbox).
+       {"*/5 * * * *", Palee.Workers.LookUpFoodsJob},
+       # ADR-379: webhook deliveries that are due (only boxes with something to send).
+       {"* * * * *", Palee.Workers.DeliverWebhooksJob},
+       # ADR-378..381: idempotency records, the access log, audience syncs.
+       {"33 * * * *", Palee.Workers.OpenPlatformSweepJob}
      ]}
   ],
   queues: [
@@ -118,7 +132,9 @@ config :palee, Oban,
     # ADR-254: CSV imports, one at a time per node (each row its own transaction).
     imports: 1,
     # ADR-352/353: domain checks, lead hand-off and conversions.
-    box_site: 2
+    box_site: 2,
+    # ADR-379/380: webhook deliveries and email-list syncs (HTTP to receivers).
+    integrations: 3
   ]
 
 config :palee, Palee.Infrastructure.Auth.Guardian,
@@ -286,9 +302,15 @@ config :palee, :payment_store, Palee.Infrastructure.Payments.EctoPaymentStore
 # (`channel_managed_accounts`, runtime), a box's own Brevo key as an option.
 config :palee, :channel_store, Palee.Infrastructure.Channels.EctoChannelStore
 
+# ADR-396: a box's own account with one of the popular vendors (`own` only).
 config :palee, :channel_providers, %{
   "sandbox" => Palee.Infrastructure.Channels.SandboxChannel,
-  "brevo" => Palee.Infrastructure.Channels.BrevoChannel
+  "brevo" => Palee.Infrastructure.Channels.BrevoChannel,
+  "twilio" => Palee.Infrastructure.Channels.TwilioChannel,
+  "vonage" => Palee.Infrastructure.Channels.VonageChannel,
+  "infobip" => Palee.Infrastructure.Channels.InfobipChannel,
+  "yuboto" => Palee.Infrastructure.Channels.YubotoChannel,
+  "apifon" => Palee.Infrastructure.Channels.ApifonChannel
 }
 
 config :palee, :channel_managed_accounts, %{}
@@ -315,6 +337,43 @@ config :palee, :payment_gateways, %{
   "viva" => Palee.Infrastructure.Payments.VivaGateway,
   "stripe" => Palee.Infrastructure.Payments.StripeGateway
 }
+
+# ADR-378..381: the open platform (public API, webhooks, email lists) and door access.
+config :palee, :integration_store, Palee.Infrastructure.Integrations.EctoIntegrationStore
+config :palee, :access_store, Palee.Infrastructure.Access.EctoAccessStore
+config :palee, :webhook_transport, Palee.Infrastructure.Integrations.HttpWebhookTransport
+
+config :palee, :audience_providers, %{
+  "sandbox" => Palee.Infrastructure.Integrations.SandboxAudience,
+  "mailchimp" => Palee.Infrastructure.Integrations.MailchimpAudience,
+  "brevo" => Palee.Infrastructure.Integrations.BrevoAudience
+}
+
+config :palee, :door_controllers, %{
+  "sandbox" => Palee.Infrastructure.Access.SandboxDoorController,
+  "shelly" => Palee.Infrastructure.Access.ShellyDoorController,
+  "kisi" => Palee.Infrastructure.Access.KisiDoorController
+}
+
+# ADR-300 (first step): the operations of the public API v1. Each module is
+# one use case; routes, the OpenAPI document and checks come from its spec.
+config :palee, :operations, [
+  Palee.Application.Operations.MembersList,
+  Palee.Application.Operations.MembersGet,
+  Palee.Application.Operations.MembersInvite,
+  Palee.Application.Operations.ClassesList,
+  Palee.Application.Operations.ClassesGet,
+  Palee.Application.Operations.ClassesCreate,
+  Palee.Application.Operations.BookingsList,
+  Palee.Application.Operations.BookingsCreate,
+  Palee.Application.Operations.BookingsCancel,
+  Palee.Application.Operations.PackagesList,
+  Palee.Application.Operations.MemberPackagesAssign,
+  Palee.Application.Operations.PaymentsList,
+  Palee.Application.Operations.WebhookSubscriptionsCreate,
+  Palee.Application.Operations.WebhookSubscriptionsDelete,
+  Palee.Application.Operations.KeyDescribe
+]
 
 # ADR-252: documents and signatures. The evidence store is where an advanced
 # e-signature provider plugs in later.
@@ -379,6 +438,11 @@ config :palee,
 
 config :palee, :trial_store, Palee.Infrastructure.Trials.EctoTrialStore
 config :palee, :season_store, Palee.Infrastructure.Seasons.EctoSeasonStore
+
+# ADR-370/371: programmes a box or a coach sells (CP-D4).
+config :palee, :programme_store, Palee.Infrastructure.Programmes.EctoProgrammeStore
+config :palee, :programme_catalogue, Palee.Infrastructure.Programmes.EctoProgrammeCatalogue
+
 # ADR-174: AI scaling suggestions (the advisor runs on the gym's own key).
 config :palee, :scaling_store, Palee.Infrastructure.Scaling.EctoScalingStore
 config :palee, :scaling_advisor, Palee.Infrastructure.Ai.AnthropicScalingAdvisor
@@ -407,7 +471,9 @@ config :palee, :domain_event_handlers, %{
     Palee.Application.EventReactions,
     Palee.Application.ReferralReactions,
     Palee.Application.Leads.LeadReactions,
-    Palee.Application.Automations.AutomationReactions
+    Palee.Application.Automations.AutomationReactions,
+    # ADR-379: domain events with a public form feed the box's webhooks.
+    Palee.Application.Integrations.WebhookEvents
   ],
   attendance_recorded: [
     Palee.Application.TrialReactions,
@@ -415,29 +481,39 @@ config :palee, :domain_event_handlers, %{
     Palee.Application.WalletReactions,
     Palee.Application.BoxScreenReactions,
     Palee.Application.Leads.LeadReactions,
-    Palee.Application.Automations.AutomationReactions
+    Palee.Application.Automations.AutomationReactions,
+    Palee.Application.Integrations.WebhookEvents
   ],
   # ADR-344/346/347: leads moved by staff, members whose risk became high.
   lead_moved: [Palee.Application.Automations.AutomationReactions],
   member_at_risk: [Palee.Application.Automations.AutomationReactions],
   # ADR-156: the invite funnel follows events, trials, joining and paying.
   event_attendance_recorded: [Palee.Application.ReferralReactions],
-  membership_payment_recorded: [Palee.Application.ReferralReactions],
+  membership_payment_recorded: [
+    Palee.Application.ReferralReactions,
+    Palee.Application.Integrations.WebhookEvents
+  ],
   booking_cancelled: [
     Palee.Application.TrialReactions,
     Palee.Application.WalletReactions,
     Palee.Application.BoxScreenReactions,
-    Palee.Application.BookingInviteEmails
+    Palee.Application.BookingInviteEmails,
+    Palee.Application.Integrations.WebhookEvents
   ],
   booking_made: [
     Palee.Application.WalletReactions,
     Palee.Application.BoxScreenReactions,
-    Palee.Application.BookingInviteEmails
+    Palee.Application.BookingInviteEmails,
+    Palee.Application.Integrations.WebhookEvents
   ],
   # ADR-392: the booking email with its calendar invite.
   booking_confirmed: [Palee.Application.BookingInviteEmails],
   class_moved: [Palee.Application.BookingInviteEmails],
-  class_cancelled: [Palee.Application.TrialReactions, Palee.Application.BoxScreenReactions],
+  class_cancelled: [
+    Palee.Application.TrialReactions,
+    Palee.Application.BoxScreenReactions,
+    Palee.Application.Integrations.WebhookEvents
+  ],
   # ADR-253: box screens refresh their leaderboards.
   workout_result_recorded: [Palee.Application.BoxScreenReactions]
 }
@@ -484,10 +560,23 @@ config :palee, :box_site_dns, Palee.Infrastructure.BoxSite.InetDomainDns
 config :palee, :box_site_tls_probe, Palee.Infrastructure.BoxSite.HttpTlsProbe
 config :palee, :box_site_conversions_api, Palee.Infrastructure.BoxSite.MetaConversionsApi
 
+# ADR-398: Palee creates custom hosts' Ingresses itself only where an adapter
+# is set (prod: BOX_SITE_INGRESS=kubernetes); otherwise ops use the list.
+config :palee, :box_site_ingress, nil
+
+config :palee, :box_site_kubernetes,
+  issuer_kind: "ClusterIssuer",
+  issuer_name: "letsencrypt-production",
+  ingress_class: "nginx",
+  api_service: "palee-api",
+  api_port: 4000,
+  web_service: "palee-web",
+  web_port: 3000
+
 config :palee, :box_site,
   cname_target: "sites.palee.app",
-  a_records: [],
-  refused_suffixes: ["palee.app", "4kq.net", "localhost", "localdomain", "invalid", "local"]
+  # On top of Hostname.system_suffixes/0 (palee.app, 4kq.net, atha.gr, atha.io).
+  refused_suffixes: ["localhost", "localdomain", "invalid", "local"]
 
 # ADR-355: Google review asks.
 config :palee, :review_ask_store, Palee.Infrastructure.ReviewAsks.EctoReviewAskStore
@@ -545,6 +634,60 @@ config :palee,
        :execution_store,
        Palee.Infrastructure.Execution.EctoExecutionStore
 
+# ADR-374..377 (v3.2 W9, body and devices): splits, watches, foods, ranks.
+config :palee, :application_clock, Palee.Infrastructure.Clock.SystemClock
+config :palee, :execution_split_store, Palee.Infrastructure.Execution.EctoSplitStore
+config :palee, :watch_store, Palee.Infrastructure.Devices.EctoWatchStore
+config :palee, :food_store, Palee.Infrastructure.Nutrition.EctoFoodStore
+# ADR-421: free sources asked in order, each with its own timeout, inside a
+# total budget so a scan never hangs (the outbox retries what timed out).
+config :palee, :food_database, Palee.Infrastructure.Nutrition.ChainFoodDatabase
+
+config :palee, :food_chain,
+  sources: [
+    {Palee.Infrastructure.Nutrition.OpenFoodFactsClient, 3_000},
+    {Palee.Infrastructure.Nutrition.UsdaFoodDataCentralClient, 2_500},
+    {Palee.Infrastructure.Nutrition.EctoFoodCatalogue, 1_000}
+  ],
+  total_timeout_ms: 5_000
+
+config :palee, :open_food_facts,
+  base_url: "https://world.openfoodfacts.org",
+  user_agent: "Palee/3.2 (https://palee.app; support@palee.app)",
+  receive_timeout: 3_000,
+  req_options: []
+
+# ADR-421 addendum: products members chose to share go to Open Food Facts
+# through its write API, with Palee's own account (OFF_USER_ID, OFF_PASSWORD
+# in runtime.exs); without it the shares wait in the outbox and only Palee's
+# cache has them.
+config :palee, :food_contributor, Palee.Infrastructure.Nutrition.OpenFoodFactsContributor
+
+config :palee, :open_food_facts_contributions,
+  base_url: "https://world.openfoodfacts.org",
+  user_id: nil,
+  password: nil,
+  app_name: "Palee",
+  app_version: "3.2",
+  uuid_salt: nil,
+  user_agent: "Palee/3.2 (https://palee.app; support@palee.app)",
+  receive_timeout: 10_000,
+  req_options: []
+
+# The key comes from USDA_FDC_API_KEY (runtime.exs); without one the source is skipped.
+config :palee, :usda_food_data_central,
+  base_url: "https://api.nal.usda.gov/fdc",
+  api_key: nil,
+  receive_timeout: 2_500,
+  req_options: []
+
+# ADR-421: «Φωτογραφία ετικέτας» reads a food label with the platform's
+# Gemini vision call (ADR-157); without GEMINI_API_KEY the action is hidden.
+config :palee, :food_label_reader, Palee.Infrastructure.Ai.GeminiFoodLabelReader
+
+config :palee, :rank_store, Palee.Infrastructure.Ranks.EctoRankStore
+config :palee, :diploma_signature_store, Palee.Infrastructure.Ranks.EctoSignatureStore
+
 config :palee,
        :class_timer_store,
        Palee.Infrastructure.Execution.EctoClassTimerStore
@@ -595,6 +738,7 @@ config :palee, :visit_facts_store, Palee.Infrastructure.Scheduling.EctoVisitFact
 config :palee, :pr_store, Palee.Infrastructure.Pantheon.EctoPRStore
 # ADR-395: the fitness card's settings and coach overrides.
 config :palee, :fitness_settings_store, Palee.Infrastructure.Pantheon.EctoFitnessSettingsStore
+config :palee, :debtor_contact_store, Palee.Infrastructure.Finance.EctoDebtorContactStore
 config :palee, :journal_store, Palee.Infrastructure.Journal.EctoJournalStore
 
 config :palee,
@@ -631,6 +775,14 @@ config :palee,
 config :palee, :push_key_store, Palee.Infrastructure.Notifications.EctoPushKeyStore
 config :palee, :web_push_auto_keys, true
 config :palee, :web_push_default_subject, "mailto:alerts@palee.app"
+
+# ADR-397: the Palee team's review moderation. `contact_email` is named in
+# every statement of reasons and in the box website's footer; the daily
+# summary of open review reports goes to `team_email` in `team_locale`.
+config :palee, :review_moderation,
+  contact_email: "moderation@palee.app",
+  team_email: "moderation@palee.app",
+  team_locale: "el"
 
 config :palee,
        :notification_store,

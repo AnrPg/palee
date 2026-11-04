@@ -49,8 +49,14 @@ defmodule Palee.PersonalData do
   end
 
   @doc "The archive of `collect/1`'s sections (see `Archive.build/1`)."
-  def archive(user_id, sections, %DateTime{} = generated_at),
-    do: Archive.build(%{profile_id: user_id, generated_at: generated_at, sections: sections})
+  def archive(user_id, sections, %DateTime{} = generated_at, files \\ []),
+    do:
+      Archive.build(%{
+        profile_id: user_id,
+        generated_at: generated_at,
+        sections: sections,
+        files: files
+      })
 
   defdelegate file_name(generated_at), to: Archive
 end

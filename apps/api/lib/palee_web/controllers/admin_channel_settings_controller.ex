@@ -30,8 +30,10 @@ defmodule PaleeWeb.AdminChannelSettingsController do
     summary: "Connect the box's messaging provider, then check it",
     description:
       "`account_mode` `palee` (default) sends through Palee's own Brevo account, with the " <>
-        "box's cost tracked against `monthly_budget_cents`; `own` uses the box's own Brevo API " <>
-        "key (`secret`, kept when not sent, never returned). `quiet_start`/`quiet_end` " <>
+        "box's cost tracked against `monthly_budget_cents`; `own` uses the box's own account " <>
+        "with a vendor of ADR-396 (`brevo`, `twilio`, `vonage`, `infobip`, `yuboto`, `apifon`): " <>
+        "`account_id`, `secret`, `webhook_secret` and `base_url` as that vendor needs them " <>
+        "(secrets kept when not sent, never returned). `quiet_start`/`quiet_end` " <>
         "(\"HH:MM\" on the box's clock, both null for none) hold non-urgent messages. " <>
         "`rotate_webhook` draws a new webhook URL.",
     request_body: C.body(C.settings_body()),

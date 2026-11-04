@@ -1,0 +1,50 @@
+msgid ""
+msgstr ""
+"Language: en\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "A webhook of %{box} was turned off"
+msgstr "A webhook of %{box} was turned off"
+
+msgid "Open the webhook"
+msgstr "Open the webhook"
+
+msgid "Palee stopped sending events to %{host}."
+msgstr "Palee stopped sending events to %{host}."
+
+msgid "The receiver answered that the address no longer exists."
+msgstr "The receiver answered that the address no longer exists."
+
+msgid "The address now points to a private network, which Palee does not call."
+msgstr "The address now points to a private network, which Palee does not call."
+
+msgid "Every delivery failed many times in a row, so Palee stopped trying."
+msgstr "Every delivery failed many times in a row, so Palee stopped trying."
+
+msgid "Check the receiver, then turn the webhook back on from its page and resend what failed."
+msgstr "Check the receiver, then turn the webhook back on from its page and resend what failed."
+
+msgid "New API key for %{box}"
+msgstr "New API key for %{box}"
+
+msgid "Open API keys"
+msgstr "Open API keys"
+
+msgid "A new API key can now read or change %{box}'s data through Palee's public API."
+msgstr "A new API key can now read or change %{box}'s data through Palee's public API."
+
+msgid "Key"
+msgstr "Key"
+
+msgid "Access"
+msgstr "Access"
+
+msgid "Made by"
+msgstr "Made by"
+
+msgid "When"
+msgstr "When"
+
+msgid "If nobody at the box made it, revoke it now from Settings › Connections."
+msgstr "If nobody at the box made it, revoke it now from Settings › Connections."

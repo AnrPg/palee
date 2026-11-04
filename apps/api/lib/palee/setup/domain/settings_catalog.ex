@@ -90,8 +90,8 @@ defmodule Palee.Setup.Domain.SettingsCatalog do
     {"referrals.approval", :advanced, "manual", false},
     # J. Per class type
     {"class_type.name", :basic, nil, false},
-    {"class_type.kind", :basic, "class", false},
-    {"class_type.level", :advanced, "all_levels", false},
+    {"class_type.kind", :advanced, "class", false},
+    {"class_type.levels", :advanced, [], false},
     {"class_type.audiences", :advanced, [], false},
     {"class_type.credit_cost", :advanced, 1, false},
     # L. Legal identity and payments

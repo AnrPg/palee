@@ -824,6 +824,45 @@ msgstr "‘%{title}’ is gewijzigd nadat je hem deed. Bekijk hem zoals hij was 
 msgid "A WOD you did changed. See it as it was in your Journal."
 msgstr "Een WOD die je deed is gewijzigd. Bekijk hem zoals hij was in je Logboek."
 
+msgid "Your report was decided"
+msgstr "Er is over je melding beslist"
+
+msgid "The Palee team hid the review you reported."
+msgstr "Het Palee-team heeft de gemelde review verborgen."
+
+msgid "The Palee team removed the review you reported."
+msgstr "Het Palee-team heeft de gemelde review verwijderd."
+
+msgid "The Palee team checked the review you reported and kept it."
+msgstr "Het Palee-team heeft de gemelde review bekeken en laat hem staan."
+
+msgid "The Palee team removed your review"
+msgstr "Het Palee-team heeft je review verwijderd"
+
+msgid "The Palee team hid your review"
+msgstr "Het Palee-team heeft je review verborgen"
+
+msgid "See why and what you can do."
+msgstr "Bekijk waarom en wat je kunt doen."
+
+msgid "The Palee team restored your review"
+msgstr "Het Palee-team heeft je review teruggezet"
+
+msgid "Your review shows again in the box's reviews."
+msgstr "Je review staat weer bij de reviews van de box."
+
+msgid "A webhook was turned off"
+msgstr "Een webhook is uitgeschakeld"
+
+msgid "Palee stopped sending events to %{host}. Open the webhook to check it and turn it back on."
+msgstr "Palee stuurt geen gebeurtenissen meer naar %{host}. Open de webhook om hem te controleren en weer in te schakelen."
+
+msgid "New skills"
+msgstr "Nieuwe vaardigheden"
+
+msgid "Your coach ticked new skills for %{rank}."
+msgstr "Je coach heeft nieuwe vaardigheden afgevinkt voor %{rank}."
+
 msgid "Your subscription ends today"
 msgstr "Je abonnement eindigt vandaag"
 

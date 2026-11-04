@@ -44,10 +44,11 @@ defmodule PaleeWeb.Schemas.Around do
         languages: list(string(pattern: "^[a-z]{2}$")),
         amenities: strings(),
         levels:
-          list(string(enum: Scheduling.class_levels()))
+          list(string(enum: Scheduling.class_levels() ++ ["all_levels"]))
           |> Map.put(
             :description,
-            "Class levels (ADR-197): hosts running a current class type at one of them"
+            "Class levels (ADR-197, ADR-490): hosts running a current class type that suits " <>
+              "one of them. The retired all_levels is accepted and ignored."
           )
       },
       []

@@ -1,0 +1,50 @@
+msgid ""
+msgstr ""
+"Language: he\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "A webhook of %{box} was turned off"
+msgstr "webhook של %{box} כובה"
+
+msgid "Open the webhook"
+msgstr "פתיחת ה-webhook"
+
+msgid "Palee stopped sending events to %{host}."
+msgstr "Palee הפסיק לשלוח אירועים אל %{host}."
+
+msgid "The receiver answered that the address no longer exists."
+msgstr "המקבל השיב שהכתובת כבר לא קיימת."
+
+msgid "The address now points to a private network, which Palee does not call."
+msgstr "הכתובת מפנה עכשיו לרשת פרטית, ש-Palee לא פונה אליה."
+
+msgid "Every delivery failed many times in a row, so Palee stopped trying."
+msgstr "כל המשלוחים נכשלו פעמים רבות ברצף, ולכן Palee הפסיק לנסות."
+
+msgid "Check the receiver, then turn the webhook back on from its page and resend what failed."
+msgstr "בדקו את המקבל, ואז הפעילו שוב את ה-webhook מהדף שלו ושלחו מחדש את מה שנכשל."
+
+msgid "New API key for %{box}"
+msgstr "מפתח API חדש עבור %{box}"
+
+msgid "Open API keys"
+msgstr "פתיחת מפתחות API"
+
+msgid "A new API key can now read or change %{box}'s data through Palee's public API."
+msgstr "מפתח API חדש יכול עכשיו לקרוא או לשנות נתונים של %{box} דרך ה-API הציבורי של Palee."
+
+msgid "Key"
+msgstr "מפתח"
+
+msgid "Access"
+msgstr "גישה"
+
+msgid "Made by"
+msgstr "נוצר על ידי"
+
+msgid "When"
+msgstr "מתי"
+
+msgid "If nobody at the box made it, revoke it now from Settings › Connections."
+msgstr "אם אף אחד מהבוקס לא יצר אותו, בטלו אותו עכשיו מהגדרות › חיבורים."

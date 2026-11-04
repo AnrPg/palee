@@ -265,6 +265,16 @@ defmodule PaleeWeb.Router do
     )
   end
 
+  # ADR-397: reporting a box review, on top of the service's 10 a day per box.
+  pipeline :review_report_rate_limited do
+    plug(PaleeWeb.Plugs.RateLimit,
+      max: 10,
+      interval: 3_600_000,
+      bucket: "review-reports",
+      methods: ["POST"]
+    )
+  end
+
   pipeline :platform_write_rate_limited do
     plug(PaleeWeb.Plugs.RateLimit,
       max: 60,
@@ -315,6 +325,30 @@ defmodule PaleeWeb.Router do
     plug(PaleeWeb.Plugs.ResolveTenantContext)
   end
 
+  # ADR-378: the public API v1. Problem details first, so its own refusals
+  # (no key, rate limited) have the same form as the operations'.
+  pipeline :public_api do
+    plug(:accepts, ["json"])
+    plug(PaleeWeb.Plugs.ProblemDetails)
+    plug(PaleeWeb.Plugs.AuthenticateApiKey)
+
+    plug(PaleeWeb.Plugs.RateLimit,
+      max: 120,
+      interval: 60_000,
+      bucket: "public-api",
+      per_actor: true
+    )
+  end
+
+  # ADR-381: a door controller's own events (Shelly calls with GET).
+  pipeline :door_events do
+    plug(PaleeWeb.Plugs.RateLimit, max: 120, interval: 60_000, bucket: "door-events")
+  end
+
+  pipeline :list_events do
+    plug(PaleeWeb.Plugs.RateLimit, max: 120, interval: 60_000, bucket: "list-events")
+  end
+
   pipeline :organization_admin do
     plug(PaleeWeb.Plugs.RequireRouteCapability)
   end
@@ -363,6 +397,47 @@ defmodule PaleeWeb.Router do
     pipe_through([:api, :public_site_form_rate_limited])
 
     post("/:slug/forms/:kind", PublicSiteController, :submit_form)
+  end
+
+  # ADR-370: programmes without an account (catalogue, a box's own).
+  scope "/api/public", PaleeWeb do
+    pipe_through([:api, :public_box_rate_limited])
+
+    get("/programmes", PublicProgrammeController, :catalogue)
+    get("/boxes/:slug/programmes", PublicProgrammeController, :index)
+    get("/boxes/:slug/programmes/:id", PublicProgrammeController, :show)
+  end
+
+  # ADR-378: the public API v1, one route per registered operation
+  # (ADR-300), and its OpenAPI document (no key).
+  scope "/api/public/v1", PaleeWeb do
+    pipe_through([:api, :public_box_rate_limited])
+
+    get("/openapi.json", PublicApiController, :openapi)
+  end
+
+  scope "/api/public/v1", PaleeWeb do
+    pipe_through([:public_api])
+
+    for {method, path, name} <- Palee.Operations.routes() do
+      match(method, path, PublicApiController, :run, private: %{palee_operation: name})
+    end
+  end
+
+  # ADR-381: door controllers' events, authenticated by the door's token.
+  scope "/api/access/doors", PaleeWeb do
+    pipe_through([:api, :door_events])
+
+    get("/:id/events", DoorAccessController, :ingest)
+    post("/:id/events", DoorAccessController, :ingest)
+  end
+
+  # ADR-380: Mailchimp's and Brevo's unsubscribe webhook, by the connection's token.
+  scope "/api/integrations/email-list", PaleeWeb do
+    pipe_through([:api, :list_events])
+
+    get("/:id/unsubscribe", EmailListHookController, :unsubscribe)
+    post("/:id/unsubscribe", EmailListHookController, :unsubscribe)
   end
 
   # ADR-272: a walk-in's receipt behind the QR on the staff phone.
@@ -481,6 +556,8 @@ defmodule PaleeWeb.Router do
     pipe_through([:payment_provider_webhook])
 
     post("/:organization_id/:token", ChannelWebhookController, :create)
+    # ADR-396: Yuboto (and Vonage when set so) report deliveries with a GET.
+    get("/:organization_id/:token", ChannelWebhookController, :create)
   end
 
   scope "/api/email/unsubscribe", PaleeWeb do
@@ -557,6 +634,22 @@ defmodule PaleeWeb.Router do
     pipe_through([:api, :authenticated, :auth_rate_limited])
 
     post("/account-deletion", AccountDeletionController, :create)
+  end
+
+  # ADR-377 addendum: a coach's own signature for diplomas (owner only).
+  scope "/api/me", PaleeWeb do
+    pipe_through([
+      :api,
+      :authenticated,
+      :authenticated_rate_limited,
+      :user_only,
+      :upload_rate_limited
+    ])
+
+    get("/diploma-signature", DiplomaSignatureController, :show)
+    post("/diploma-signature", DiplomaSignatureController, :create)
+    get("/diploma-signature/image", DiplomaSignatureController, :image)
+    delete("/diploma-signature", DiplomaSignatureController, :delete)
   end
 
   # ADR-267: "Download my data" (GDPR articles 15 and 20).
@@ -641,6 +734,8 @@ defmodule PaleeWeb.Router do
     ])
 
     get("/finance", MyFinanceController, :index)
+    # ADR-470: which optional features the business has switched on.
+    get("/features", MyFeaturesController, :show)
     # ADR-346: my choices about the box's automatic messages.
     get("/automatic-messages", MyAutomationPreferencesController, :show)
     put("/automatic-messages", MyAutomationPreferencesController, :update)
@@ -658,6 +753,12 @@ defmodule PaleeWeb.Router do
     get("/box-reviews", MyBoxReviewsController, :index)
     put("/box-review", MyBoxReviewsController, :save)
     delete("/box-review", MyBoxReviewsController, :delete)
+    # ADR-377: my belts and levels at this box.
+    get("/ranks", MyRanksController, :index)
+    get("/ranks/awards/:id/certificate", MyRanksController, :certificate)
+    # ADR-380: the member's own yes or no to the box's marketing email.
+    get("/marketing-consent", MarketingConsentController, :show)
+    put("/marketing-consent", MarketingConsentController, :update)
     # ADR-246/247: paying invoices online and saved cards.
     get("/invoices/:id/payment-terms", MyPaymentsController, :terms)
     post("/invoices/:id/pay", MyPaymentsController, :pay)
@@ -677,6 +778,13 @@ defmodule PaleeWeb.Router do
     get("/package-requests", MyPaymentsController, :package_requests)
     post("/package-requests/:id/cancel", MyPaymentsController, :cancel_package_request)
     post("/payments/:id/withdraw", MyPaymentsController, :withdraw)
+    # ADR-371: programmes bought online (never in the store apps, ADR-256).
+    get("/programmes/:id/purchase-terms", MyProgrammeController, :terms)
+    post("/programmes/:id/buy", MyProgrammeController, :buy)
+    get("/programme-purchases", MyProgrammeController, :index)
+    get("/programme-purchases/:id", MyProgrammeController, :show)
+    post("/programme-purchases/:id/withdraw", MyProgrammeController, :withdraw)
+    post("/programme-purchases/:id/review", MyProgrammeController, :review)
     post("/shop/orders/:id/pay-online", MyPaymentsController, :pay_shop_order)
     # ADR-252: Box › Documents (sign, certificates, health certificate).
     get("/documents", MyDocumentsController, :index)
@@ -1019,6 +1127,17 @@ defmodule PaleeWeb.Router do
     get("/clients/:user_id/coach-notes", CoachNotesController, :index)
     # ADR-229: a client's weekly goal, set by their coach or full-scope staff.
     get("/clients/:user_id/training-goal", TrainingGoalController, :client_show)
+    # ADR-377: a client's belts and levels; promotions and diplomas.
+    get("/clients/:user_id/ranks", StaffRanksController, :client)
+    post("/clients/:user_id/ranks", StaffRanksController, :award)
+    # ADR-400: tick one skill at a time, between promotions.
+    put("/clients/:user_id/ranks/skills", StaffRanksController, :check_skill)
+    # ADR-400 follow-up: one skill for a class, and who is ready for the next rank.
+    get("/ranks/skills/batch", StaffRanksController, :class_skills)
+    put("/ranks/skills/batch", StaffRanksController, :batch_skills)
+    get("/ranks/ready", StaffRanksController, :ready)
+    post("/rank-awards/:id/revoke", StaffRanksController, :revoke)
+    get("/rank-awards/:id/certificate", StaffRanksController, :certificate)
     put("/clients/:user_id/training-goal", TrainingGoalController, :client_update)
     get("/clients/:user_id/journal", JournalController, :client_journal)
     # ADR-158: shared body snapshots (audited in the client's access log).
@@ -1271,6 +1390,11 @@ defmodule PaleeWeb.Router do
     get("/search", AdminSearchController, :index)
     get("/analytics/summary", AdminAnalyticsController, :summary)
     get("/athletes", AdminUserController, :index_athletes)
+    # ADR-377: belts and levels per discipline.
+    get("/rank-ladders", AdminRankLaddersController, :index)
+    post("/rank-ladders", AdminRankLaddersController, :create)
+    put("/rank-ladders/:id", AdminRankLaddersController, :update)
+    delete("/rank-ladders/:id", AdminRankLaddersController, :delete)
     get("/scale-levels", AdminScaleLevelController, :index)
     put("/scale-levels", AdminScaleLevelController, :update)
     get("/class-types", AdminClassTypeController, :index)
@@ -1367,6 +1491,18 @@ defmodule PaleeWeb.Router do
     post("/trials/:id/accept", AdminTrialController, :accept)
     post("/trials/:id/decline", AdminTrialController, :decline)
     post("/trials/:id/attendance", AdminTrialController, :attendance)
+    # ADR-370/371: programmes the business sells.
+    get("/programmes", AdminProgrammeController, :index)
+    post("/programmes", AdminProgrammeController, :create)
+    get("/programmes/:id", AdminProgrammeController, :show)
+    patch("/programmes/:id", AdminProgrammeController, :update)
+    post("/programmes/:id/publish", AdminProgrammeController, :publish)
+    post("/programmes/:id/archive", AdminProgrammeController, :archive)
+    post("/programmes/:id/restore", AdminProgrammeController, :restore)
+    get("/programmes/:id/purchases", AdminProgrammeController, :purchases)
+    get("/programmes/:id/reviews", AdminProgrammeController, :reviews)
+    post("/programme-purchases/:id/refund", AdminProgrammeController, :refund)
+    post("/programme-reviews/:id/moderate", AdminProgrammeController, :moderate_review)
     # ADR-191: partner perks.
     get("/perks", AdminPerkController, :index)
     post("/perks", AdminPerkController, :create)
@@ -1606,6 +1742,47 @@ defmodule PaleeWeb.Router do
       :sandbox_complete
     )
 
+    # ADR-378..380: «Συνδέσεις»: API keys, webhooks and the email list.
+    get("/integrations/catalog", AdminIntegrationsController, :catalog)
+    get("/integrations/api-keys", AdminIntegrationsController, :keys)
+    post("/integrations/api-keys", AdminIntegrationsController, :create_key)
+    post("/integrations/api-keys/:id/rotate", AdminIntegrationsController, :rotate_key)
+    delete("/integrations/api-keys/:id", AdminIntegrationsController, :revoke_key)
+    get("/integrations/webhooks", AdminIntegrationsController, :webhooks)
+    post("/integrations/webhooks", AdminIntegrationsController, :create_webhook)
+    patch("/integrations/webhooks/:id", AdminIntegrationsController, :update_webhook)
+    delete("/integrations/webhooks/:id", AdminIntegrationsController, :delete_webhook)
+
+    post(
+      "/integrations/webhooks/:id/rotate-secret",
+      AdminIntegrationsController,
+      :rotate_webhook_secret
+    )
+
+    post("/integrations/webhooks/:id/test", AdminIntegrationsController, :test_webhook)
+    get("/integrations/webhooks/:id/deliveries", AdminIntegrationsController, :deliveries)
+    get("/integrations/deliveries/:id", AdminIntegrationsController, :delivery)
+    post("/integrations/deliveries/:id/replay", AdminIntegrationsController, :replay)
+    get("/integrations/email-list", AdminIntegrationsController, :audience)
+    put("/integrations/email-list", AdminIntegrationsController, :save_audience)
+    delete("/integrations/email-list", AdminIntegrationsController, :delete_audience)
+    post("/integrations/email-list/sync", AdminIntegrationsController, :sync_audience)
+
+    post(
+      "/integrations/email-list/unsubscribe-url",
+      AdminIntegrationsController,
+      :rotate_unsubscribe_url
+    )
+
+    # ADR-381: doors, their controllers and the access log.
+    get("/doors/catalog", AdminDoorsController, :catalog)
+    get("/doors", AdminDoorsController, :index)
+    post("/doors", AdminDoorsController, :create)
+    patch("/doors/:id", AdminDoorsController, :update)
+    delete("/doors/:id", AdminDoorsController, :delete)
+    post("/doors/:id/event-token", AdminDoorsController, :rotate_event_token)
+    post("/doors/:id/unlock", AdminDoorsController, :unlock)
+    get("/access-events", AdminDoorsController, :events)
     # ADR-250: Peppol e-invoicing.
     get("/fiscal/peppol-connection", AdminFiscalEInvoicingController, :connection)
     put("/fiscal/peppol-connection", AdminFiscalEInvoicingController, :save_connection)
@@ -2512,6 +2689,34 @@ defmodule PaleeWeb.Router do
     post("/reports", PartnersController, :report)
   end
 
+  # ADR-397: «Αναφορά» on a box review, to the Palee team, by a member or
+  # by the box; hourly cap on top of the service's daily one.
+  scope "/api/org/:organization_slug/me", PaleeWeb do
+    pipe_through([
+      :api,
+      :authenticated,
+      :authenticated_rate_limited,
+      :tenant_member,
+      :tenant_write_rate_limited,
+      :review_report_rate_limited
+    ])
+
+    post("/box-reviews/:id/report", MyBoxReviewsController, :report)
+  end
+
+  scope "/api/org/:organization_slug/admin", PaleeWeb do
+    pipe_through([
+      :api,
+      :authenticated,
+      :authenticated_rate_limited,
+      :admin_only,
+      :tenant_write_rate_limited,
+      :review_report_rate_limited
+    ])
+
+    post("/box-reviews/:id/report", AdminBoxReviewsController, :report)
+  end
+
   # ADR-280 deck: the Palee team's Partners reports queue.
   scope "/api/platform", PaleeWeb do
     pipe_through([
@@ -2524,6 +2729,12 @@ defmodule PaleeWeb.Router do
 
     get("/partner-reports", PlatformPartnerReportController, :index)
     post("/partner-reports/:id/decision", PlatformPartnerReportController, :decide)
+    # ADR-397: reported box reviews, decided only by the Palee team.
+    # ADR-421: barcodes no food source had, per country.
+    get("/food-misses", PlatformFoodMissesController, :index)
+    get("/review-reports", PlatformReviewReportController, :index)
+    post("/review-reports/:review_id/decision", PlatformReviewReportController, :decide)
+    post("/review-reports/:review_id/restore", PlatformReviewReportController, :restore)
   end
 
   # ADR-185: creating an event as yourself or a business has its own budget
@@ -2578,6 +2789,19 @@ defmodule PaleeWeb.Router do
     post("/:id/alt-text-suggestion", MyMediaController, :suggest_alt_text)
   end
 
+  # ADR-421: «Φωτογραφία ετικέτας» shares the AI suggestion budget.
+  scope "/api/me/foods", PaleeWeb do
+    pipe_through([
+      :api,
+      :authenticated,
+      :authenticated_rate_limited,
+      :user_only,
+      :ai_suggestion_rate_limited
+    ])
+
+    post("/label-read", FoodsController, :read_label)
+  end
+
   # ADR-158: body photo uploads share the media upload limits.
   scope "/api/me/body/photos", PaleeWeb do
     pipe_through([
@@ -2602,6 +2826,8 @@ defmodule PaleeWeb.Router do
     ])
 
     post("/check-in/scan", ScanCheckInController, :scan)
+    # ADR-381: open the door with the same proof of presence.
+    post("/access/open", DoorAccessController, :open)
     delete("/check-in/scan/:undo_token", ScanCheckInController, :undo)
     # ADR-173: the arrival reminder's regions for the store apps.
     get("/me/check-in/geofences", ScanCheckInController, :geofences)
@@ -2658,6 +2884,16 @@ defmodule PaleeWeb.Router do
     delete("/devices/phone/:provider", PhoneHealthController, :disconnect)
     post("/device-imports/:id/confirm", DevicesController, :confirm)
     get("/daily-stats", DevicesController, :daily_stats)
+    # ADR-375: paired watches (Apple Watch, Wear OS).
+    get("/devices/watches", WatchController, :index)
+    put("/devices/watches/:platform", WatchController, :pair)
+    delete("/devices/watches/:platform", WatchController, :unpair)
+    # ADR-376: barcode lookups and the person's own foods.
+    get("/foods/barcode/:barcode", FoodsController, :barcode)
+    get("/foods", FoodsController, :index)
+    post("/foods", FoodsController, :create)
+    patch("/foods/:id", FoodsController, :update)
+    delete("/foods/:id", FoodsController, :delete)
   end
 
   # ADR-154: Γύρω μου, «Η περιοχή μου» and the gazetteer; members only.
@@ -2717,6 +2953,15 @@ defmodule PaleeWeb.Router do
     get("/:id", ExecutionController, :show)
     patch("/:id/progress", ExecutionController, :update_progress)
     patch("/:id/complete", ExecutionController, :complete)
+    # ADR-374: race your past self; ADR-375: the watch's plan and heart rate.
+    get("/:id/pacer", ExecutionPacerController, :show)
+    post("/:id/splits", ExecutionPacerController, :splits)
+    get("/:id/watch-plan", WatchController, :plan)
+    # ADR-375 amendment (ANR's D8 rules): ask, start or leave the watch.
+    post("/:id/watch-offer", WatchController, :offer)
+    put("/:id/watch-offer/answer", WatchController, :answer_offer)
+    post("/:id/heart-rate", WatchController, :heart_rate)
+    get("/:id/heart-rate", WatchController, :heart_rate_summary)
   end
 
   # ADR-123: batched client interaction analytics get their own bucket so a

@@ -22,6 +22,7 @@ import {
 import { fetchFinanceQueues, fetchFinanceSummary, type FinanceRecord } from "@/api/finance";
 import { SemanticLabel } from "@/components/semantic-label";
 import { useSession } from "@/components/session-provider";
+import { useBusinessFeatures } from "@/lib/use-business-features";
 import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
 import { PageHeader, pageHeaderActionClass } from "@/components/PageHeader";
 import { BranchFilterControl, BranchSplits, useBranchFilter, type BranchSplit } from "@/components/admin/BranchFilter";
@@ -64,6 +65,7 @@ export function FinanceDashboard({ analyticsMode = false }: { analyticsMode?: bo
   // ADR-186 §7: every figure and list below follows the branch filter.
   const branchFilter = useBranchFilter(analyticsMode ? "finance-analytics" : "finance-dashboard");
   const locationIds = branchFilter.param;
+  const features = useBusinessFeatures({ locationIds });
 
   const summaryQuery = useQuery({
     queryKey: ["admin", "finance", "summary", locationIds ?? "all"],
@@ -208,6 +210,8 @@ export function FinanceDashboard({ analyticsMode = false }: { analyticsMode?: bo
               </>
             )}
           />
+          {/* ADR-470: rewards only with a referral programme, or while some are still owed. */}
+          {features.shows("referrals", (queues.pending_referral_rewards ?? []).length) ? (
           <QueuePanel
             title={i18n("pendingRewardse6d6885")}
             href={adminHref("/admin/finance?tab=referrals", organizationSlug)}
@@ -219,6 +223,7 @@ export function FinanceDashboard({ analyticsMode = false }: { analyticsMode?: bo
               </>
             )}
           />
+          ) : null}
         </section>
 
       </div>

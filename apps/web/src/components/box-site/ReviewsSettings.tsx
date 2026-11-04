@@ -18,11 +18,13 @@ import {
   type ReviewAskSettingsUpdate,
 } from "@/api/box-site";
 import { GoogleReviews, ReviewItem, ReviewSummary } from "@/components/reviews/ReviewParts";
+import { ReviewReportSheet } from "@/components/reviews/ReviewReportSheet";
 import { useSession } from "@/components/session-provider";
 import { AdvancedDisclosure } from "@/components/settings/AdvancedSettings";
 import { inputClass, inputStyle, secondaryButtonClass, secondaryButtonStyle, StatusText } from "@/components/staff/staff-ui";
 import { Dialog } from "@/components/ui/Dialog";
 import { FieldError } from "@/components/ui/ErrorNotice";
+import { MoreMenu } from "@/components/ui/MoreMenu";
 import { localizeError } from "@/i18n/presentation";
 import { useUiTranslations } from "@/i18n/ui";
 import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
@@ -218,6 +220,7 @@ function MemberReviews({ token }: { token: string }) {
   const ui = useUiTranslations();
   const reviews = useQuery({ queryKey: STAFF_BOX_REVIEWS_KEY, enabled: Boolean(token), queryFn: () => fetchStaffBoxReviews(token) });
   const [replying, setReplying] = useState<BoxReview | null>(null);
+  const [reporting, setReporting] = useState<string | null>(null);
   return (
     <section className="flex flex-col gap-3 rounded-3xl p-5" style={{ background: "var(--panel)", border: "1px solid var(--border)" }} data-testid="reviews-members">
       <h2 className="text-lg font-semibold" style={{ color: "var(--text)" }}>{t("settings.membersTitle")}</h2>
@@ -233,7 +236,11 @@ function MemberReviews({ token }: { token: string }) {
               {reviews.data.reviews.map((review) => (
                 <div key={review.id} className="flex flex-col gap-1">
                   <ul>
-                    <ReviewItem review={review} boxName={t("settings.theBox")} />
+                    <ReviewItem
+                      review={review}
+                      boxName={t("settings.theBox")}
+                      menu={<MoreMenu label={t("report.reviewMenu")} items={[{ label: t("report.menuAsBox"), onSelect: () => setReporting(review.id), testId: "reviews-report" }]} />}
+                    />
                   </ul>
                   <button type="button" onClick={() => setReplying(review)} className="self-end text-sm font-bold" style={{ color: "var(--primary-strong)" }} data-testid="reviews-reply">
                     {review.reply ? t("settings.editReply") : t("settings.reply")}
@@ -245,6 +252,7 @@ function MemberReviews({ token }: { token: string }) {
         )
       ) : null}
       {replying ? <ReplyDialog token={token} review={replying} onClose={() => setReplying(null)} /> : null}
+      {reporting ? <ReviewReportSheet token={token} reviewId={reporting} asBox onClose={() => setReporting(null)} /> : null}
     </section>
   );
 }

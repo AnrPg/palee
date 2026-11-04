@@ -86,6 +86,12 @@ config :palee, Palee.Infrastructure.Fiscal.Ed25519JournalSigner,
 # ADR-246: the sandbox payment provider (never enabled in prod).
 config :palee, :payments_sandbox, true
 
+# ADR-378..381: sandbox email lists and doors, local webhooks logged not sent.
+config :palee, :open_platform_sandbox, true
+config :palee, :webhook_transport, Palee.Infrastructure.Integrations.SandboxWebhookTransport
+config :palee, :webhook_urls, allow_http: true, allow_private: true
+config :palee, :api_key_env, "test"
+
 # ADR-280 verification: the SMS code is logged (number masked), not sent.
 config :palee, :sms_sender, Palee.Infrastructure.Sms.LogSmsSender
 
@@ -93,6 +99,7 @@ config :palee, :sms_sender, Palee.Infrastructure.Sms.LogSmsSender
 config :palee, :box_site_lead_intake, Palee.Infrastructure.BoxSite.SandboxLeadIntake
 config :palee, :box_site_dns, Palee.Infrastructure.BoxSite.SandboxDomainDns
 config :palee, :box_site_tls_probe, Palee.Infrastructure.BoxSite.SandboxTlsProbe
+config :palee, :box_site_ingress, Palee.Infrastructure.BoxSite.SandboxSiteIngress
 config :palee, :box_site_conversions_api, Palee.Infrastructure.BoxSite.SandboxConversionsApi
 # ADR-387: no Places API calls in dev.
 config :palee, :google_places, Palee.Infrastructure.ReviewAsks.SandboxPlaces
@@ -105,6 +112,12 @@ config :palee, :channel_email_transport, Palee.Infrastructure.Channels.SandboxEm
 
 # ADR-366: no model calls for status page translations outside production.
 config :palee, :status_translator, Palee.Infrastructure.Status.SandboxTranslator
+# ADR-376: dev looks barcodes up in the sandbox catalogue; set
+# FOOD_DATABASE=open_food_facts (or chain) to ask the real chain of sources
+# (ADR-421; USDA only with USDA_FDC_API_KEY).
+if System.get_env("FOOD_DATABASE") not in ["open_food_facts", "chain"] do
+  config :palee, :food_database, Palee.Infrastructure.Nutrition.SandboxFoodDatabase
+end
 
 # ADR-520: no model calls for website translations outside production.
 config :palee,

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
+import { doorsKey, fetchDoors } from "@/api/doors";
 import { createCheckIn, listAdminLocations, listCheckIns, type FacilityCheckIn } from "@/api/facility";
 import type { FinanceRecord } from "@/api/finance";
 import { localizeCheckInError } from "@/components/admin/facility/check-in-errors";
@@ -35,6 +36,7 @@ const fieldStyle = { background: "var(--panel-muted)", border: "1px solid var(--
 export function CheckInDesk() {
   const i18n = useUiTranslations();
   const tCheckIn = useTranslations("CheckIn");
+  const tDoors = useTranslations("Doors");
   const slug = useOrganizationSlug();
   const { membership } = useSelectedMembershipRole();
   const locale = useLocale();
@@ -47,6 +49,8 @@ export function CheckInDesk() {
   const [locationId, setLocationId] = useState("");
   const [result, setResult] = useState<{ tone: "success" | "info" | "danger"; text: string } | null>(null);
 
+  const doorsQuery = useQuery({ queryKey: doorsKey(), queryFn: () => fetchDoors(token!), enabled: Boolean(token), retry: false });
+  const hasDoors = (doorsQuery.data?.length ?? 0) > 0;
   const locationsQuery = useQuery({
     queryKey: ["admin", "locations"],
     enabled: Boolean(token),
@@ -102,6 +106,17 @@ export function CheckInDesk() {
                     {tCheckIn("doorScreenFor", { name: location.name })}
                   </Link>
                 ))}
+                {/* W10 screen 6 A (ADR-381): the access log, once the box has a door. */}
+                {hasDoors ? (
+                  <Link
+                    href={adminHref("/admin/check-in/access-log", slug)}
+                    className="flex min-h-11 items-center rounded-full px-4 text-sm font-semibold"
+                    style={{ border: "1px solid var(--border)", color: "var(--text)" }}
+                    data-testid="access-log-link"
+                  >
+                    {tDoors("logTitle")}
+                  </Link>
+                ) : null}
                 <Link
                   href={adminHref("/admin/check-in/settings", slug)}
                   className="flex min-h-11 items-center rounded-full px-4 text-sm font-semibold"

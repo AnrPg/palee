@@ -34,6 +34,14 @@ defmodule Palee.BoxSite.BoxSiteStore do
   def due_domains(context, now, limit), do: call(context, :due_domains, [now, limit])
 
   @impl true
+  def queue_ingress_op(context, attrs), do: call(context, :queue_ingress_op, [attrs])
+  @impl true
+  def claim_ingress_ops(context, now, limit), do: call(context, :claim_ingress_ops, [now, limit])
+  @impl true
+  def finish_ingress_op(context, id, changes),
+    do: call(context, :finish_ingress_op, [id, changes])
+
+  @impl true
   def insert_submission(context, attrs), do: call(context, :insert_submission, [attrs])
   @impl true
   def claim_submissions(context, now, limit), do: call(context, :claim_submissions, [now, limit])
@@ -70,4 +78,6 @@ defmodule Palee.BoxSite.BoxSiteStore do
   def domains_for_ops(status), do: adapter().domains_for_ops(status)
   @impl true
   def due_organizations(now), do: adapter().due_organizations(now)
+  @impl true
+  def ingress_hosts, do: adapter().ingress_hosts()
 end

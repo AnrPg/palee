@@ -98,6 +98,25 @@ config :palee, :gemini,
   # ADR-366: status page incidents into English.
   translate_model: System.get_env("GEMINI_TRANSLATE_MODEL", "gemini-2.5-flash-lite")
 
+# ADR-421: USDA FoodData Central (free api.data.gov key); unset, the barcode
+# chain skips it. Tests keep their own fake key.
+if config_env() != :test do
+  config :palee, :usda_food_data_central, api_key: System.get_env("USDA_FDC_API_KEY")
+end
+
+# ADR-421 addendum: Palee's Open Food Facts account (the user name, not the
+# email) for the products members share; unset, nothing is sent to Open Food
+# Facts. OFF_WRITE_BASE_URL=https://world.openfoodfacts.net to try staging.
+# OFF_APP_UUID_SALT keeps the per-member pseudonym (`app_uuid`) stable when
+# the endpoint secret is rotated.
+if config_env() != :test do
+  config :palee, :open_food_facts_contributions,
+    base_url: System.get_env("OFF_WRITE_BASE_URL", "https://world.openfoodfacts.org"),
+    user_id: System.get_env("OFF_USER_ID"),
+    password: System.get_env("OFF_PASSWORD"),
+    uuid_salt: System.get_env("OFF_APP_UUID_SALT")
+end
+
 # ADR-174: AI scaling suggestions call the Claude API with each gym's own key
 # (set in the gym's AI settings); only the default model is configured here.
 config :palee, :anthropic,
@@ -112,6 +131,17 @@ config :palee, :web_push_server_keys,
   public_key: System.get_env("WEB_PUSH_PUBLIC_KEY"),
   private_key: System.get_env("WEB_PUSH_PRIVATE_KEY"),
   subject: System.get_env("WEB_PUSH_SUBJECT")
+
+# ADR-397: the review moderation address (statements of reasons, the box
+# website's footer) and where the daily summary of open reports goes.
+config :palee, :review_moderation,
+  contact_email: System.get_env("REVIEW_MODERATION_EMAIL", "moderation@palee.app"),
+  team_email:
+    System.get_env(
+      "REVIEW_MODERATION_TEAM_EMAIL",
+      System.get_env("REVIEW_MODERATION_EMAIL", "moderation@palee.app")
+    ),
+  team_locale: System.get_env("REVIEW_MODERATION_TEAM_LOCALE", "el")
 
 minio_endpoint =
   System.get_env("MINIO_ENDPOINT") ||
@@ -471,14 +501,28 @@ if config_env() == :prod do
     secret_key_base: secret_key_base
 end
 
-# ADR-352 §5: where custom hosts of box websites must point.
+# ADR-352 §5: where custom hosts of box websites must point. ADR-398
+# (2026-11-03): only a CNAME (or, at an apex, CNAME flattening / ALIAS /
+# ANAME) to this name; its addresses are resolved at each check, never fixed.
 if config_env() == :prod do
   config :palee, :box_site,
     cname_target: System.get_env("BOX_SITE_CNAME_TARGET", "sites.palee.app"),
-    a_records:
-      "BOX_SITE_A_RECORDS"
-      |> System.get_env("")
-      |> String.split(",", trim: true)
-      |> Enum.map(&String.trim/1),
-    refused_suffixes: ["palee.app", "4kq.net", "localhost", "localdomain", "invalid", "local"]
+    refused_suffixes: ["localhost", "localdomain", "invalid", "local"]
+
+  # ADR-398: BOX_SITE_INGRESS=kubernetes lets the API create each verified
+  # host's Ingress with its service account; anything else keeps the list.
+  if System.get_env("BOX_SITE_INGRESS") == "kubernetes" do
+    config :palee, :box_site_ingress, Palee.Infrastructure.BoxSite.KubernetesSiteIngress
+
+    config :palee, :box_site_kubernetes,
+      api_url: System.get_env("BOX_SITE_KUBERNETES_API_URL"),
+      # The cluster allows no namespaced Issuer (ADR-398, 2026-11-03).
+      issuer_kind: System.get_env("BOX_SITE_CERT_ISSUER_KIND", "ClusterIssuer"),
+      issuer_name: System.get_env("BOX_SITE_CERT_ISSUER", "letsencrypt-production"),
+      ingress_class: System.get_env("BOX_SITE_INGRESS_CLASS", "nginx"),
+      api_service: System.get_env("BOX_SITE_API_SERVICE", "palee-api"),
+      api_port: String.to_integer(System.get_env("BOX_SITE_API_PORT", "4000")),
+      web_service: System.get_env("BOX_SITE_WEB_SERVICE", "palee-web"),
+      web_port: String.to_integer(System.get_env("BOX_SITE_WEB_PORT", "3000"))
+  end
 end

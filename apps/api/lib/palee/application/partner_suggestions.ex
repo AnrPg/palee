@@ -327,7 +327,7 @@ defmodule Palee.Application.PartnerSuggestions do
       starts_at: slot.scheduled_at,
       ends_at: DateTime.add(slot.scheduled_at, (slot.duration_minutes || 60) * 60, :second),
       time_zone: time_zone,
-      level: slot.class_type && slot.class_type.level,
+      class_levels: slot.class_type && slot.class_type.levels,
       cancelled: not is_nil(slot.cancelled_at) or not is_nil(Map.get(slot, :paused_at)),
       organiser_id: slot.coach_user_id,
       booked_by:

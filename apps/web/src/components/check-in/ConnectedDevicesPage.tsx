@@ -10,6 +10,7 @@ import { DEVICES_KEY as CONNECTED_DEVICES_KEY, fetchDevices } from "@/api/device
 import { GarminRowItem } from "@/components/devices/GarminRow";
 import { garminReturn, garminRowOf, returnReasonKey } from "@/components/devices/garmin-model";
 import { DeviceDataExport } from "@/components/devices/DeviceDataExport";
+import { WatchRows } from "@/components/body-devices/WatchRow";
 import { PhoneHealthRowItem } from "@/components/devices/PhoneHealthRow";
 import { anyDeviceConnected, isPhoneProvider, phoneRowOf, showsPhoneRow } from "@/components/devices/phone-health-model";
 import { BackToMe } from "@/components/member-app/me/BackToMe";
@@ -280,6 +281,7 @@ function IntegrationsSection({ token, integrations }: { token: string; integrati
           </li>
           );
         })}
+        {token ? <WatchRows token={token} /> : null}
       </ul>
       {message ? <p role="status" className="text-sm" style={{ color: "var(--text-soft)" }}>{message}</p> : null}
       {anyDeviceConnected(integrations) ? <DeviceDataExport token={token} /> : null}

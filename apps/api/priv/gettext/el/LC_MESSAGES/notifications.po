@@ -824,6 +824,45 @@ msgstr "Το «%{title}» άλλαξε αφού το έκανες. Δες το �
 msgid "A WOD you did changed. See it as it was in your Journal."
 msgstr "Ένα WOD που έκανες άλλαξε. Δες το όπως ήταν στο Journal σου."
 
+msgid "Your report was decided"
+msgstr "Η αναφορά σου εξετάστηκε"
+
+msgid "The Palee team hid the review you reported."
+msgstr "Η ομάδα Palee έκρυψε την κριτική που ανέφερες."
+
+msgid "The Palee team removed the review you reported."
+msgstr "Η ομάδα Palee αφαίρεσε την κριτική που ανέφερες."
+
+msgid "The Palee team checked the review you reported and kept it."
+msgstr "Η ομάδα Palee έλεγξε την κριτική που ανέφερες και την κράτησε."
+
+msgid "The Palee team removed your review"
+msgstr "Η ομάδα Palee αφαίρεσε την κριτική σου"
+
+msgid "The Palee team hid your review"
+msgstr "Η ομάδα Palee έκρυψε την κριτική σου"
+
+msgid "See why and what you can do."
+msgstr "Δες γιατί και τι μπορείς να κάνεις."
+
+msgid "The Palee team restored your review"
+msgstr "Η ομάδα Palee επανέφερε την κριτική σου"
+
+msgid "Your review shows again in the box's reviews."
+msgstr "Η κριτική σου φαίνεται ξανά στις κριτικές του box."
+
+msgid "A webhook was turned off"
+msgstr "Ένα webhook απενεργοποιήθηκε"
+
+msgid "Palee stopped sending events to %{host}. Open the webhook to check it and turn it back on."
+msgstr "Το Palee σταμάτησε να στέλνει συμβάντα στο %{host}. Άνοιξε το webhook για να το ελέγξεις και να το ενεργοποιήσεις ξανά."
+
+msgid "New skills"
+msgstr "Νέες δεξιότητες"
+
+msgid "Your coach ticked new skills for %{rank}."
+msgstr "Ο coach σου τσέκαρε νέες δεξιότητες για %{rank}."
+
 msgid "Your subscription ends today"
 msgstr "Η συνδρομή σου λήγει σήμερα"
 

@@ -238,6 +238,8 @@ test("failed charges that need a person wait in Finance › Pending items", asyn
     },
     writes,
   );
+  // ADR-470: the box charges saved cards, so the failed-charges list is offered.
+  await page.route("**/me/features**", (route) => json(route, { features: { online_payments: true, card_autopay: true } }));
   await page.goto("/admin/finance?tab=queues&queue=failed_charges");
 
   const group = page.getByTestId("failed-charges");

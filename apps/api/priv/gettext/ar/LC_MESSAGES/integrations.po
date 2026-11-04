@@ -1,0 +1,50 @@
+msgid ""
+msgstr ""
+"Language: ar\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "A webhook of %{box} was turned off"
+msgstr "تم إيقاف أحد webhooks الخاصة بـ %{box}"
+
+msgid "Open the webhook"
+msgstr "فتح الـ webhook"
+
+msgid "Palee stopped sending events to %{host}."
+msgstr "توقف Palee عن إرسال الأحداث إلى %{host}."
+
+msgid "The receiver answered that the address no longer exists."
+msgstr "أجاب المستقبِل بأن العنوان لم يعد موجودًا."
+
+msgid "The address now points to a private network, which Palee does not call."
+msgstr "يشير العنوان الآن إلى شبكة خاصة، ولا يتصل بها Palee."
+
+msgid "Every delivery failed many times in a row, so Palee stopped trying."
+msgstr "فشلت كل عمليات الإرسال مرات كثيرة متتالية، لذلك توقف Palee عن المحاولة."
+
+msgid "Check the receiver, then turn the webhook back on from its page and resend what failed."
+msgstr "تحقق من المستقبِل، ثم أعد تشغيل الـ webhook من صفحته وأعد إرسال ما فشل."
+
+msgid "New API key for %{box}"
+msgstr "مفتاح API جديد لـ %{box}"
+
+msgid "Open API keys"
+msgstr "فتح مفاتيح API"
+
+msgid "A new API key can now read or change %{box}'s data through Palee's public API."
+msgstr "يمكن الآن لمفتاح API جديد قراءة بيانات %{box} أو تغييرها عبر واجهة Palee البرمجية العامة."
+
+msgid "Key"
+msgstr "المفتاح"
+
+msgid "Access"
+msgstr "الوصول"
+
+msgid "Made by"
+msgstr "أنشأه"
+
+msgid "When"
+msgstr "متى"
+
+msgid "If nobody at the box made it, revoke it now from Settings › Connections."
+msgstr "إذا لم يُنشئه أحد من النادي، فألغِه الآن من الإعدادات › الاتصالات."

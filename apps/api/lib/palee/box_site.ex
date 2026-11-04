@@ -22,6 +22,7 @@ defmodule Palee.BoxSite do
     DomainPolicy,
     FormPolicy,
     Hostname,
+    IngressPolicy,
     SiteSections,
     SiteSettingsPolicy,
     TenantDataPolicy
@@ -40,12 +41,16 @@ defmodule Palee.BoxSite do
   @doc "The configured Conversions API (`BoxSite.Ports.ConversionsApi`)."
   def conversions_api, do: Application.fetch_env!(:palee, :box_site_conversions_api)
 
+  @doc """
+  ADR-398: the configured cluster adapter (`BoxSite.Ports.SiteIngress`), or
+  `nil` when Palee does not create Ingresses itself (ops use the list).
+  """
+  def site_ingress, do: Application.get_env(:palee, :box_site_ingress)
+
   defp domain_config, do: Application.get_env(:palee, :box_site, [])
 
-  @doc "Where a custom host's CNAME must point."
+  @doc "Where a custom host's CNAME (or apex ALIAS) must point."
   def cname_target, do: Keyword.get(domain_config(), :cname_target, "sites.palee.app")
-  @doc "The A records an apex host must have (the ingress addresses)."
-  def a_records, do: Keyword.get(domain_config(), :a_records, [])
   defp refused_suffixes, do: Keyword.get(domain_config(), :refused_suffixes, ["palee.app"])
 
   # ── Settings ────────────────────────────────────────────────────────────
@@ -117,6 +122,24 @@ defmodule Palee.BoxSite do
   defdelegate serving?(status), to: DomainPolicy
   defdelegate after_check(domain, facts, now), to: DomainPolicy
 
+  # ── Ingresses and certificates (ADR-398) ────────────────────────────────
+
+  defdelegate queue_ingress_op(context, attrs), to: BoxSiteStore
+  defdelegate claim_ingress_ops(context, now, limit), to: BoxSiteStore
+  defdelegate finish_ingress_op(context, id, changes), to: BoxSiteStore
+  defdelegate ingress_hosts(), to: BoxSiteStore
+  defdelegate ingress_wanted?(status), to: IngressPolicy, as: :wanted?
+  defdelegate host_not_allowed?(domain), to: IngressPolicy
+  defdelegate ingress_transition(before, after_status), to: IngressPolicy, as: :transition
+  defdelegate ingress_needs_apply?(domain), to: IngressPolicy, as: :needs_apply?
+  defdelegate read_certificate?(domain), to: IngressPolicy
+  defdelegate new_ingress_op(action, domain, now), to: IngressPolicy, as: :new_op
+  defdelegate ingress_queued(action), to: IngressPolicy, as: :queued
+  defdelegate after_ingress_op(result, op, now), to: IngressPolicy, as: :after_op
+  defdelegate certificate_changes(result, now), to: IngressPolicy
+  defdelegate certificate_statuses(), to: IngressPolicy
+  defdelegate certificate_errors(), to: IngressPolicy
+
   @doc "Adds a custom host (up to #{DomainPolicy.max_domains()}); the first one is primary."
   def add_domain(context, host, user_id, now) do
     existing = BoxSiteStore.list_domains(context)
@@ -140,21 +163,53 @@ defmodule Palee.BoxSite do
 
   @doc "The DNS records the owner adds for a host."
   def dns_records(domain) do
-    DomainPolicy.dns_records(domain, Hostname.apex?(domain.host), cname_target(), a_records())
+    DomainPolicy.dns_records(domain, Hostname.apex?(domain.host), cname_target())
   end
 
-  @doc "What DNS says about a host now (TXT proof, routing)."
+  @max_cname_hops 8
+
+  @doc """
+  What DNS says about a host now (TXT proof, routing). The target's
+  addresses are resolved live, since the cluster's change (ADR-398,
+  2026-11-03).
+  """
   def dns_facts(domain) do
     dns = dns()
+    target = cname_target()
 
     DomainPolicy.dns_facts(
       domain.verification_token,
-      dns.lookup(DomainPolicy.challenge_name(domain.host), :txt),
-      dns.lookup(domain.host, :cname),
-      dns.lookup(domain.host, :a),
-      cname_target(),
-      a_records()
+      %{
+        txt: dns.lookup(DomainPolicy.challenge_name(domain.host), :txt),
+        cname_chain: cname_chain(dns, domain.host, target, @max_cname_hops, []),
+        a: dns.lookup(domain.host, :a),
+        aaaa: dns.lookup(domain.host, :aaaa),
+        target_a: dns.lookup(target, :a),
+        target_aaaa: dns.lookup(target, :aaaa)
+      },
+      target
     )
+  end
+
+  # The names `name`'s CNAMEs lead to, hop by hop, stopping at the target.
+  defp cname_chain(_dns, _name, _target, 0, seen), do: {:ok, Enum.reverse(seen)}
+
+  defp cname_chain(dns, name, target, hops, seen) do
+    case dns.lookup(name, :cname) do
+      {:ok, [next | _rest]} ->
+        next = DomainPolicy.normalize_name(next)
+        seen = [next | seen]
+
+        if next == DomainPolicy.normalize_name(target) or next in tl(seen),
+          do: {:ok, Enum.reverse(seen)},
+          else: cname_chain(dns, next, target, hops - 1, seen)
+
+      {:ok, []} ->
+        {:ok, Enum.reverse(seen)}
+
+      {:error, _reason} = error ->
+        error
+    end
   end
 
   # ── Forms ───────────────────────────────────────────────────────────────

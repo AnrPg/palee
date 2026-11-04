@@ -1,7 +1,9 @@
+import { chooseOption } from "./support/select";
 import { expect, test, type Page, type Request } from "./support/test";
 
 // ADR-198 (vision §7.10): a coach finds their coaching work in Box ›
-// «Πελάτες μου»: the reply queue, form reviews, today's check-in desk and
+// «Πελάτες μου»: the reply queue, form reviews, today's check-in desk (with
+// one skill for the class, ADR-400), who meets their rank's requirements and
 // their clients, each part hidden when empty. The API is stubbed; every
 // route not listed answers an empty object.
 
@@ -169,6 +171,68 @@ test.describe("Box › My clients", () => {
     await expect.poll(() => feedback).toEqual({ feedback: "Catch is fine, drive the hips." });
     // With nothing left to review, that part is gone.
     await expect(section.getByRole("button", { name: /Kostas.*Snatch/ })).toHaveCount(0);
+  });
+
+  test("a coach ticks one skill for the class and opens a ready person's promotion (ADR-400)", async ({ page }) => {
+    await common(page, ["coach"]);
+    let batch: Record<string, unknown> | null = null;
+    const blue = { id: "r-blue", position: 1, name: "Blue", color: "blue", max_stripes: 4, requirements: { skills: ["Armbar", "Triangle"], skill_ids: ["s-1", "s-2"] } };
+    const ladder = { id: "ladder-1", name: "BJJ", discipline: "bjj_grappling", style: "belt", class_type_ids: [], ready_criteria: ["classes", "days"], ranks: [blue] };
+    await page.route("**/api/org/box1/schedule?**", (route) => route.fulfill(json({ class_types: [], locations: [], coaches: [], slots: [classSlot(true)] })));
+    await page.route("**/api/org/box1/staff/appointment-slots?**", (route) => route.fulfill(json({ slots: [] })));
+    await page.route("**/api/org/box1/staff/ranks/skills/batch**", (route) => {
+      if (route.request().method() === "PUT") {
+        batch = bodyOf(route.request());
+        return route.fulfill(json({ changed: ["u-1"], skipped: [] }));
+      }
+      return route.fulfill(
+        json({
+          ladders: [ladder],
+          people: [
+            { user_id: "u-1", reachable: true, next_rank_ids: ["r-blue"], checked: [] },
+            { user_id: "u-2", reachable: false, next_rank_ids: ["r-blue"], checked: [] },
+          ],
+        }),
+      );
+    });
+    await page.route("**/api/org/box1/staff/ranks/ready", (route) =>
+      route.fulfill(json({ people: [{ user_id: "u-1", nickname: "Eleni", ladder: { id: "ladder-1", name: "BJJ", style: "belt" }, next: { id: "r-blue", name: "Blue", color: "blue" } }] })),
+    );
+    await page.route("**/api/org/box1/staff/clients/u-1/ranks", (route) =>
+      route.fulfill(
+        json({
+          ladders: [
+            {
+              ladder,
+              current: null,
+              next: blue,
+              progress: { rank_id: "r-blue", classes: { done: 80, needed: 80 }, days: { done: 760, needed: 730 }, skills: ["Armbar", "Triangle"], skills_checked: [], ready: true },
+              history: [],
+            },
+          ],
+        }),
+      ),
+    );
+
+    await page.goto("/box");
+    const section = page.getByTestId("box-coach-clients");
+
+    // «Meets the requirements»: a row opens the promotion sheet; the coach decides.
+    const ready = section.getByTestId("rank-ready-list");
+    await expect(ready).toContainText("Eleni");
+    await ready.getByRole("button", { name: /Eleni/ }).click();
+    await expect(page.getByTestId("promote-sheet")).toBeVisible();
+    await page.getByTestId("promote-sheet").getByRole("button", { name: "Cancel" }).click();
+
+    // Mockup 3B: in the class, one skill for several people; Kostas is not this coach's client.
+    await section.getByRole("button", { name: /WOD 18:00/ }).click();
+    await page.getByTestId("class-skill-open").click();
+    const sheet = page.getByTestId("class-skill-sheet");
+    await chooseOption(page, sheet.getByRole("combobox"), "r-blue:s-1");
+    await expect(sheet.getByRole("button", { name: /Kostas/ })).toBeDisabled();
+    await sheet.getByRole("button", { name: /Eleni/ }).click();
+    await sheet.getByRole("button", { name: "Save" }).click();
+    await expect.poll(() => batch).toEqual({ rank_id: "r-blue", skill_id: "s-1", user_ids: ["u-1"] });
   });
 
   test("someone who does not coach here never sees the section", async ({ page }) => {

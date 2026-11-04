@@ -248,6 +248,8 @@ Terms marked **(proposed)** change today's wording; see §5. Everything else mat
 | Trial class | Δοκιμαστικό τμήμα | `trials` | A newcomer's free class. Short form «Δοκιμαστικό». A trial period of a plan is «Δοκιμαστική περίοδος». | Guest. |
 | Day WOD | WOD ημέρας | `day_workouts` | The WOD set for a whole date: every class (τμήμα) of that day, or only chosen class types (and, with branches, one branch), takes it unless the class has its own WOD. (ADR-230) | A class's own WOD (an override); «WOD σήμερα» (the club channel). |
 | Workout type | Τύπος προπόνησης | `master_workouts.type`, `WorkoutType` | The kind of training a WOD is (CrossFit, Πυγμαχία, Χορός …): one fixed list for the platform, grouped in families (Λειτουργική & CrossFit, Δύναμη, Γυμναστική & σωματικό βάρος, Αντοχή, Σώμα & νους, Μαχητικά αθλήματα, Χορός, Υπαίθριο, Αποκατάσταση) that stats, badges and colours read. The box chooses which ones its editors offer (Ρυθμίσεις › Τύποι προπόνησης). (ADR-275) | Class type (Τύπος τμήματος): the box's own list for its timetable, bookings and credits. |
+| Class level | Επίπεδο | `class_types.levels` (`beginner`, `intermediate`, `advanced`) | The levels a class type suits: «Αρχάριοι», «Μεσαίοι», «Προχωρημένοι», one or more; none chosen is shown as «Όλα τα επίπεδα». It informs and filters, it never blocks a booking. (ADR-490) | Scale level (Rx/Scaled), XP level, rank, Partners level («Αρχάριος / Μέτριος / Προχωρημένος» of a person). |
+| Event class type | Εκδήλωση | `class_types.kind: event` | A class type whose bookings use the package's event visits, for seminars, workshops and open days. Set under «Προχωρημένα». (ADR-097, ADR-490) | Event (`community_events`) of a club or organiser. |
 
 ### 4.5 Relations between people
 
@@ -300,9 +302,9 @@ push is not enough.
 |---|---|---|---|---|
 | Text message (SMS) | Μήνυμα SMS | `channel_messages` channel `sms` | A message the box sends to a person's mobile, outside the app. | Message («Μήνυμα») in Μηνύματα, which stays in the app; push notification. |
 | Messaging channel | Κανάλι μηνυμάτων | `channel` (`sms`, `viber`, `whatsapp`) | How a text message travels. Only SMS is switched on today. | Club channel (§4.4). |
-| SMS provider | Πάροχος SMS | `channel_connections.provider` | The company that delivers the box's SMS (Brevo). | Payment provider, fiscal provider. |
+| SMS provider | Πάροχος SMS | `channel_connections.provider` | The company that delivers the box's SMS: Brevo on Palee's account; on the box's own account Brevo, Twilio, Vonage, Infobip, Yuboto or Apifon (ADR-396). | Payment provider, fiscal provider. |
 | Palee's account | Λογαριασμός Palee | `account_mode: palee` | The box sends through Palee's Brevo account; Palee counts what each box spends. The default. | The box's own account. |
-| The box's own account | Δικός σας λογαριασμός | `account_mode: own` | The box's own Brevo account and key; Brevo bills the box. Under «Προχωρημένα». | |
+| The box's own account | Δικός σας λογαριασμός | `account_mode: own` | The box's own account with an SMS provider it picks, and that provider's keys; the provider bills the box. Under «Προχωρημένα» (ADR-396). | |
 | Mobile for messages | Κινητό για μηνύματα | `channel_contacts` | The person's mobile number for this box, with the language of the messages. | Contact details of the account. |
 | Consent to messages | Συγκατάθεση για μηνύματα | `channel_consents` | Per channel and purpose: «Ενημερώσεις» (service) and «Προσφορές» (marketing). Never assumed. | Privacy terms acceptance (§4.19). |
 | Updates (purpose) | Ενημερώσεις | `purpose: service` | About the person's own bookings, classes and payments. | Offers. |
@@ -322,6 +324,8 @@ push is not enough.
 | Update participants | Ενημέρωση συμμετεχόντων | `POST /admin/channels/class-notices` | From a class in the schedule, staff tell everyone booked what happened (cancelled, new time, own text): the app notification first, SMS only for those without the app who agreed (ADR-385). | Μήνυμα in Μηνύματα; an automation. |
 | SMS for this event | SMS για αυτό το event | `community_events.sms_enabled` | The organiser's per-event switch: on, those who ticked SMS at «Θα έρθω» get the reminder and changes by SMS; off, only the app (ADR-385). | The box's SMS switch in Ρυθμίσεις › Συνδέσεις. |
 | Connections (settings) | Συνδέσεις | `admin-settings#connections` | The settings section that holds «Μηνύματα SMS» and «Δικός μου πάροχος email» (ADR-385). | Fiscal connections in «Στοιχεία τιμολόγησης». |
+| Use my own SMS provider | Χρήση δικού μου παρόχου SMS | `account_mode: own`, `provider` | The «Προχωρημένα» action that opens the provider picker (ui/Select), that provider's step-by-step guide and its fields (ADR-396). | Palee's account. |
+| Provider keys | Κλειδιά παρόχου | `account_id`, `secret`, `webhook_secret`, `base_url` | What the box copies from its provider's console: Twilio Account SID and Auth Token; Vonage API key, API secret and optional signature secret («Μυστικό υπογραφής»); Infobip Base URL and API key; Yuboto OMNI API key; Apifon API token and secret key («Μυστικό κλειδί»). Secrets are encrypted and never shown again (ADR-396). Vendor field names stay as each console spells them. | The box's Palee login. |
 
 ### 4.6a Class booking rules (ADR-226)
 
@@ -627,6 +631,7 @@ and the box members who may be leaving. A lead is never called a «μέλος» 
 | Events (section) | Events | site section `events` | The box's events open to everyone, on the website. | Box events tab (members). |
 | WOD of the day | WOD της ημέρας | `public_wod`, site section `wod` | Today's published WOD on the website. Off until the owner turns it on. | Member WOD card. |
 | English website | Αγγλική ιστοσελίδα | `/b/<slug>/en`, `about_en`, FAQ `question_en`/`answer_en` | The website in English, with the owner's optional English texts; the EL/EN switch remembers the choice. | App language. |
+| Domain not available | Μη διαθέσιμο domain | `certificate_error` `host_not_allowed` | The cluster refused the box's domain (another hosting customer's, or a system domain). Shown on the domain card as «Αυτό το domain δεν είναι διαθέσιμο…» with «γράψε μας στην υποστήριξη»; never retried until the owner removes it. (ADR-398) | Πιστοποιητικό που δεν εκδόθηκε (retried). |
 | Send the instructions | Στείλε τις οδηγίες | `POST /admin/site/domains/:id/instructions` | Emails the DNS records and a status link to whoever runs the box's domain. | |
 
 ### 4.23 Training and floor (ADR-356..359, ADR-394, ADR-395)
@@ -705,6 +710,89 @@ Staff screens only. Never part of a fiscal document: a pay statement is an inter
 | Pay items | Υπερωρίες και επιδόματα | `coach_pay_items` | The box's catalogue of overtime and allowances with the roles each applies to; each is «Κάθε περίοδο» (automatic) or «Μία φορά» (one person, one period); Settings and Οικονομικά › Αμοιβές coaches (ADR-382, ADR-510). | Pay rule (per person). |
 | Gross / Net | Μικτά / Καθαρά | `amount_basis: gross \| net` | Whether an amount is before or after the person's taxes and contributions, as staff say; Palee computes neither. Gross is the default; net lines are marked «Καθαρά» and the two are always shown as separate subtotals («Μικτά X · Καθαρά Y»). (ADR-382) | Total (never one sum of both without labels). |
 | Pay statement (PDF) | Εκκαθαριστικό | `GET …/coach-pay/periods/:id/statements/:user_id/pdf`, `GET …/coach-pay/mine/:period_id/pdf` | One person's approved statement as PDF, headed «Εσωτερική κατάσταση αμοιβής» (Internal pay statement): an internal record, not an official payroll document (ADR-382). | Payslip issued by payroll; receipt. |
+
+### 4.26 Training programmes (ADR-370, ADR-371)
+
+Programmes a box or a coach sells (CP-D4). The prospect assistant of the same workstream (CP-C8, ADR-372/373) moved to v4.
+
+| English | Ελληνικά | Code | What it is | Not to be confused with |
+|---|---|---|---|---|
+| Training programme | Πρόγραμμα προπόνησης | `programmes` | A multi-week plan of structured WODs that a box or coach sells; the buyer gets its WODs on dated days. Always the full name in Greek, never a bare «πρόγραμμα» (that is the class schedule). | Season (dated, with places and a crew); the class schedule («Πρόγραμμα»); Plan (Palee). |
+| Programme version | Έκδοση προγράμματος | `programme_versions` | The frozen days of a programme when it was published; buyers keep the version they bought. | Workout revisions (ADR-031). |
+| Programme store | Αγορά προγραμμάτων | `listing: marketplace`, `/public/programmes` | The catalogue of programmes from every business that lists them there. | Shop (physical goods, ADR-190). |
+| Preview days | Ημέρες προεπισκόπησης | `preview_days` | The first days anyone sees (titles only) before buying. | Trial class. |
+| Start date | Ημερομηνία έναρξης | `starts_on` | The day the buyer's day 0 falls on (today up to 60 days ahead). | Season start. |
+| Refund rule | Κανόνας επιστροφής χρημάτων | `refund_policy` | The seller's rule on top of the law: «Πλήρης επιστροφή μέχρι την έναρξη» (`before_start`), «Μόνο στην προθεσμία υπαναχώρησης» (`withdrawal_only`), «Για τις ημέρες που δεν ήρθαν» (`pro_rata`). | Withdrawal («Υπαναχώρηση», the 14 days the law gives). |
+| Programme review | Κριτική προγράμματος | `programme_reviews` | A buyer's 1–5 stars and text about a programme; the seller may hide it («Απόκρυψη») with a reason, never edit or delete it. Same word as a box review («Κριτική», §4.22), always with «προγράμματος» where both can appear. | Box review (`box_reviews`, §4.22); review questionnaire (ADR feedback, «Ερωτηματολόγιο»). |
+### 4.27 Body and devices (ADR-374..377, v3.2)
+
+| English | Ελληνικά | Code | What it is | Not to be confused with |
+|---|---|---|---|---|
+| Past self | Ο προηγούμενος εαυτός σου | `execution_splits`, `/executions/:id/pacer` | The person's previous attempt at the same WOD or benchmark, running beside the timer as a pace line and compared in the results. Only ever with themself (vision §4.4). (ADR-374) | Leaderboard (others, opt-in, clubs). |
+| Split | Ενδιάμεσος χρόνος | `execution_splits` | When a round or a segment of the WOD ended, in active time from the start. | Section time (the whole section). |
+| Ahead / Behind | Μπροστά / Πίσω | `delta_ms` | Seconds ahead of (negative) or behind the previous attempt at the same split. | |
+| Watch | Ρολόι | `watch_links` | An Apple Watch or Wear OS watch paired through the phone app, showing the timer, round, movements, heart rate and pace. In Εγώ › Συνδεδεμένες συσκευές. (ADR-375) | Garmin (a connected device that syncs finished workouts, ADR-161). |
+| Heart rate | Καρδιακοί παλμοί | `execution_heart_rate_batches` | Beats per minute a watch recorded during a workout; health data, private, only with the health-data consent. | Resting heart rate (Πρόοδος, from devices). |
+| Scan barcode | Σάρωση barcode | `/me/foods/barcode/:barcode` | Inside a meal: reads a product's barcode and names the food with a suggested hand portion. Never calories. (ADR-376) | Check-in QR. |
+| My food | Δικό μου τρόφιμο | `custom_foods` | A food the person wrote down themselves (the manual entry after a scan that found nothing). Theirs only, unless they explicitly share a product with a barcode («Μοιράσου το»). | A coach's nutrition plan. |
+| Rank | Βαθμός | `ranks` | A step on a box's ladder: a belt (martial arts) or a level (gymnastics). (ADR-377) | Scale level (Rx/Scaled); XP level («Επίπεδο XP»). |
+| Belt | Ζώνη | `ranks.color` | A rank shown as a coloured belt, optionally with stripes. | |
+| Stripe | Ρίγα | `rank_awards.stripes` | A mark of progress inside a belt (up to the rank's maximum). | |
+| Rank ladder | Κλίμακα βαθμών | `rank_ladders` | A box's ordered ranks for one discipline (a workout type), e.g. «Ζώνες BJJ», «Ενόργανη γυναικών: επίπεδα». | Class types. |
+| Rank template | Πρότυπο | `LadderTemplates`, `templates[]` (ADR-400) | A ready-made ladder the box copies and then edits freely: a federation's system or Palee's own levels. | Setup recipe; document template. |
+| Palee levels | Επίπεδα Palee | `source: palee` (ADR-400) | A template whose levels Palee built from researched skills because no official levels exist. Shown next to «Επίσημο σύστημα» (`source: federation`). | A federation's grading. |
+| Skill (of a rank) | Δεξιότητα | `ranks.requirements.skills`, `rank_skill_checks` (ADR-400) | One thing a coach ticks for a person on the way to the next rank, one at a time, with a date and an optional note. | Skill of the fitness profile; WOD movement. |
+| Promotion | Προαγωγή | `rank_awards` | A coach gives a person the next rank or a stripe; always the coach's decision. Withdrawn with a reason, never deleted. | |
+| Diploma | Δίπλωμα | `/rank-awards/:id/certificate` | The PDF of a promotion with its number, the box logo and the awarding coach's signature (ADR-377 amendment). | Health certificate («Πιστοποιητικό υγείας», ADR-252). |
+| Diploma signature | Υπογραφή για διπλώματα | `diploma_signatures`, `/me/diploma-signature` | A coach's own signature image, kept privately in Εγώ › Ρυθμίσεις and drawn only inside the diplomas of the promotions they award; a diploma keeps the one current at the award. | A client's document signature («Υπογραφή», ADR-252). |
+| Watch question | Το χρονόμετρο και στο ρολόι; | `POST /executions/:id/watch-offer` | Asked only when a WOD is opened for execution and the phone sees a connected watch; a box class WOD only after check-in. Box members are asked on their first 5 such WODs, then it starts on the watch by itself; free athletes are asked every time. Never a notification (ANR's D8 rules, ADR-375). | Push notifications. |
+| Compare with | Σύγκριση με | `palee:pacer-compare` (this device) | Under «Προχωρημένα» of the timer: «Την προηγούμενη φορά» (default) or «Απόκρυψη». | Leaderboard. |
+| Foods (in a meal) | Τρόφιμα | meal `foods` | What was eaten, as names from a barcode scan or the person's own foods, each with an optional hand portion. Never calories. (ADR-376) | Hand portions («Μερίδες»). |
+| Counts mostly as | Μετράει κυρίως ως | `portion_hint` | The suggested hand portion of a food: 1 παλάμη πρωτεΐνη, 1 χούφτα υδατάνθρακες, 1 γροθιά λαχανικά, 1 αντίχειρας λιπαρά. | Grams. |
+| Share a food | Μοιράσου το (με όλους στο Palee και στο Open Food Facts) | `share`, `custom_foods.shared_at`, `food_product_shares` | The explicit, never pre-ticked choice in «Δικό μου τρόφιμο» to give a product with a barcode (data only, never the person) to every member and to Open Food Facts. First share wins; never over a public source. (ADR-421 addendum) | Sharing with the coach. |
+| From members | από μέλη | source `palee_members` | The badge on a scanned product that members shared rather than a public database. | Open Food Facts. |
+| Store code | Κωδικός του καταστήματος | `reason: in_store_code` | A barcode the shop printed (prefix 02, 20–29), not a product: the person writes what it is. | Product barcode. |
+| Photo of the label | Φωτογραφία ετικέτας | `POST /me/foods/label-read` | In «Δικό μου τρόφιμο» after a scan found nothing: photos of the front and the nutrition table prefill the name, brand, portion and grams per 100 g, which the person checks before saving. The photos are never kept; the food stays theirs. Never calories. (ADR-421) | The meal photo (a picture of what was eaten). |
+| Barcodes not found | Barcode χωρίς προϊόν | `food_barcode_misses`, `/platform/food-misses` | Platform console: barcodes members scanned that no food source had, per country, with how many scans. No person. (ADR-421) | Store code. |
+| Ranks (settings) | Βαθμοί | Ρυθμίσεις › Προχωρημένα › Βαθμοί | Where staff keep the box's ladders. Say «Κλίμακα βαθμών» in full where «Κλίμακα» (Standards, §4.23) could also appear. | Standards («Κλίμακα», §4.23). |
+| Withdraw (a rank) | Ανάκληση | `POST /staff/rank-awards/:id/revoke` | Takes back a promotion with a reason; the award stays in the history as withdrawn. Never «διαγραφή». | Delete. |
+| Ready (for the next rank) | Πληροί τις προϋποθέσεις | `progress.ready` | The counted requirements are met; the coach still decides. | Promotion. |
+### 4.29 Review reports (ADR-397)
+
+A member, or the box, reports a box review to the Palee team; only the Palee team decides. Member and platform-console terms.
+
+| English | Ελληνικά | Code | What it is | Not to be confused with |
+|---|---|---|---|---|
+| Review report | Αναφορά κριτικής | `box_review_reports` | A member's or the box's «Αναφορά» on a review of the box, with a reason and an optional note. The review stays up until the Palee team decides. One open per person and review. | Club report (ADR-143, box staff decide); Partners report (ADR-280). |
+| Report reason | Λόγος αναφοράς | `reason`: `offensive`, `personal_data`, `not_genuine`, `spam`, `illegal`, `other` | «Προσβλητικό ή υβριστικό», «Προσωπικά στοιχεία κάποιου», «Δεν είναι πραγματική εμπειρία», «Διαφήμιση ή άσχετο», «Παράνομο περιεχόμενο», «Κάτι άλλο». A note is required for the last two. | Ground of the decision (same codes plus `no_violation`). |
+| Review reports (console) | Αναφορές κριτικών | `/api/platform/review-reports` | The Palee team's queue in the platform console: one row per reported review across every box, oldest first; «Αποφασισμένες» for the decisions. | «Αναφορές Συναθλητών» (Partners). |
+| Keep | Μένει | `outcome: keep` | The review breaks no rule and stays. | |
+| Hide | Απόκρυψη | `outcome: hide`, `box_reviews.moderation: hidden` | Only the author still sees it, with the reasons; out of the average and the website. Reversible. | The box hiding a review (not possible). |
+| Remove | Αφαίρεση | `outcome: remove`, `box_reviews.moderation: removed` | The text and the box's reply are erased; the author sees «Αφαιρέθηκε από την ομάδα Palee» with the reasons. | The author's «Διαγραφή» of their own review. |
+| Restore | Επαναφορά | `outcome: restore` | The Palee team shows a hidden review again from «Αποφασισμένες», with a statement to the author. Only a hidden review; a removed text is gone. | Undoing the author's own «Διαγραφή» (not possible). |
+| Report contact | Αναφορά περιεχομένου | `site.report_contact`, `review_moderation.contact_email` | Palee's moderation address in the box website's footer and in every statement of reasons. | The box's own contact form. |
+| Statement of reasons | Αιτιολόγηση | `box_review_decisions`, `mine.moderation` | What the author reads when the Palee team hid or removed their review: what changed, why (Palee's terms or the law), that a person decided, where to seek redress (the moderation address, the courts). | The box's reply («Απάντηση από …»). |
+### 4.28 Connections and doors (ADR-378, ADR-379, ADR-380, ADR-381)
+
+What a box connects Palee to (Settings › «Συνδέσεις») and the doors that open from the app.
+
+| English | Ελληνικά | Code | What it is | Not to be confused with |
+|---|---|---|---|---|
+| Connections | Συνδέσεις | Settings › Connections, `/admin/integrations/*` | The settings page for API keys, webhooks and the email list. | Connected devices («Συνδεδεμένες συσκευές», Garmin, ADR-161); fiscal connections (ADR-273). |
+| API key | Κλειδί API | `api_keys`, `palee_live_…` | A secret that lets another system use the box's data through the public API, acting for the staff member who made it and only within its scopes. Shown once. | Password; widget token; the provider keys a box saves for Peppol or payments. |
+| Scope | Δικαίωμα κλειδιού | `members:read`, … | One thing a key may do (read or write one kind of object). Narrows the key; never adds rights. | Capability («Δικαίωμα» of a role, ADR-099). |
+| Public API | Δημόσιο API | `/api/public/v1` | Palee's versioned API for other systems, with its own OpenAPI document. | Palee's own app API (`/api/org/:slug/*`). |
+| Webhook | Webhook | `webhook_endpoints` | An address of another system that Palee notifies when something happens (a booking, a payment). Kept in English in Greek too. | Provider webhooks Palee receives (payments, Peppol, Brevo). |
+| Event | Συμβάν | `booking.created`, … | One kind of change a webhook can be told about. | Community event («Εκδήλωση»); domain event (code only). |
+| Delivery | Αποστολή | `webhook_deliveries` | One try-until-done of telling a webhook about an event; with its attempts in the delivery log («Ιστορικό αποστολών»). | Email delivery. |
+| Signing secret | Μυστικό υπογραφής | `whsec_…` | The secret a receiver uses to check that a delivery came from Palee. Shown once. | API key. |
+| Email list | Λίστα email | `audience_connections` | The box's Mailchimp or Brevo audience that Palee keeps in step with members' consent. Its unsubscribe address («Διαγραφές από τη λίστα») lets an unsubscribe there turn the member's switch off too. | Palee's own emails to members. |
+| Marketing email consent | Ενημερώσεις με email | `integration_marketing_consents` | The member's own yes or no to the box's newsletters and offers. Off by default; only the member changes it, in Box › «Ειδοποιήσεις». | Notification preferences (ADR-199); W3's phone channel consents (SMS, Viber, WhatsApp). |
+| Door | Πόρτα | `door_controllers` | An entrance of a branch whose lock Palee can open, with its controller and entry rules. | Door screen («Οθόνη πόρτας», the check-in QR display, ADR-155); NFC door tag. |
+| Door controller | Ελεγκτής πόρτας | `provider`: `shelly`, `kisi`, `sandbox` | The device or service that opens the lock (a Shelly relay, Kisi). | Payment terminal. |
+| Entry rules | Κανόνες εισόδου | `rules.who`: `booked_or_covered`, `members`, `staff_only` | Who a door opens for and when: staff always, members with a booked class in its window or open-gym cover, opening hours. | Booking rules (ADR-226). |
+| Open the door | Άνοιγμα πόρτας | `POST /api/access/open` | The member's button after the door scan, or «Άνοιγμα» at the desk. | Check-in («Check-in» is recorded separately). |
+| Access log | Ημερολόγιο εισόδων | `access_events` | Every opening, refusal and door event, kept 180 days. | Check-ins list; audit log. |
 
 ## 5. Name clashes found, and proposals
 

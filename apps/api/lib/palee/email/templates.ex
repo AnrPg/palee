@@ -10,18 +10,21 @@ defmodule Palee.Email.Templates do
 
   @templates %{
     account_deletion_confirm: Palee.Email.Templates.AccountDeletionConfirm,
+    api_key_created: Palee.Email.Templates.ApiKeyCreated,
     booking_invite: Palee.Email.Templates.BookingInvite,
     box_automation: Palee.Email.Templates.BoxAutomation,
     box_data_export_ready: Palee.Email.Templates.BoxDataExportReady,
     business_activation_link: Palee.Email.Templates.BusinessActivationLink,
     corporate_invoice_issued: Palee.Email.Templates.CorporateInvoiceIssued,
     corporate_invoice_reminder: Palee.Email.Templates.CorporateInvoiceReminder,
+    debt_reminder: Palee.Email.Templates.DebtReminder,
     email_change_confirm: Palee.Email.Templates.EmailChangeConfirm,
     fiscal_document: Palee.Email.Templates.FiscalDocument,
     organization_invitation: Palee.Email.Templates.OrganizationInvitation,
     owner_invitation: Palee.Email.Templates.OwnerInvitation,
     password_reset: Palee.Email.Templates.PasswordReset,
     personal_data_export_ready: Palee.Email.Templates.PersonalDataExportReady,
+    review_reports_summary: Palee.Email.Templates.ReviewReportsSummary,
     security_account_deleted: Palee.Email.Templates.SecurityAccountDeleted,
     security_account_deletion_scheduled: Palee.Email.Templates.SecurityAccountDeletionScheduled,
     security_email_change_requested: Palee.Email.Templates.SecurityEmailChangeRequested,
@@ -39,7 +42,8 @@ defmodule Palee.Email.Templates do
     site_domain_instructions: Palee.Email.Templates.SiteDomainInstructions,
     status_subscription_confirm: Palee.Email.Templates.StatusSubscriptionConfirm,
     status_update: Palee.Email.Templates.StatusUpdate,
-    verify_email: Palee.Email.Templates.VerifyEmail
+    verify_email: Palee.Email.Templates.VerifyEmail,
+    webhook_disabled: Palee.Email.Templates.WebhookDisabled
   }
 
   @doc "Every kind and its template."

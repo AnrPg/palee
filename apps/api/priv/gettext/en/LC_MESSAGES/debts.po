@@ -1,0 +1,14 @@
+msgid ""
+msgstr ""
+"Language: en\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "You still owe %{box} %{amount}"
+msgstr "You still owe %{box} %{amount}"
+
+msgid "Your Palee account was deleted, but the %{amount} you owe %{box} is still unpaid."
+msgstr "Your Palee account was deleted, but the %{amount} you owe %{box} is still unpaid."
+
+msgid "Please contact %{box} to settle it. Once it is paid, %{box} deletes the name, email and phone number it kept for it."
+msgstr "Please contact %{box} to settle it. Once it is paid, %{box} deletes the name, email and phone number it kept for it."

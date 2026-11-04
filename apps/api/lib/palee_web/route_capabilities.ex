@@ -23,6 +23,11 @@ defmodule PaleeWeb.RouteCapabilities do
 
   @controller_defaults %{
     W.AdminWorkoutController => [:manage_workouts],
+    # ADR-377: belts and levels; promotions follow the coaching scope (ADR-100).
+    # ADR-400 follow-up: ladders are the owner's, admins' and head coaches'
+    # (`RankLadders` refuses a coach with only their own clients).
+    W.AdminRankLaddersController => [:manage_settings, :manage_coaching],
+    W.StaffRanksController => [:manage_coaching],
     # ADR-252: templates, versions, requirement, settings and audit.
     W.AdminDocumentsController => [:manage_settings],
     W.AdminHealthCertificatesController => [:manage_health_certificates],
@@ -305,6 +310,35 @@ defmodule PaleeWeb.RouteCapabilities do
     {W.AdminFiscalTillSigningController, :show} => [:view_finance_reports],
     {W.AdminFiscalTillSigningController, :retry} => [:manage_billing],
     {W.AdminFiscalTillSigningController, :null_receipt} => [:manage_billing],
+    # ADR-378..380: «Συνδέσεις» (keys act for their maker, so owners and admins).
+    {W.AdminIntegrationsController, :catalog} => [:manage_settings],
+    {W.AdminIntegrationsController, :keys} => [:manage_settings],
+    {W.AdminIntegrationsController, :create_key} => [:manage_settings],
+    {W.AdminIntegrationsController, :rotate_key} => [:manage_settings],
+    {W.AdminIntegrationsController, :revoke_key} => [:manage_settings],
+    {W.AdminIntegrationsController, :webhooks} => [:manage_settings],
+    {W.AdminIntegrationsController, :create_webhook} => [:manage_settings],
+    {W.AdminIntegrationsController, :update_webhook} => [:manage_settings],
+    {W.AdminIntegrationsController, :delete_webhook} => [:manage_settings],
+    {W.AdminIntegrationsController, :rotate_webhook_secret} => [:manage_settings],
+    {W.AdminIntegrationsController, :test_webhook} => [:manage_settings],
+    {W.AdminIntegrationsController, :deliveries} => [:manage_settings],
+    {W.AdminIntegrationsController, :delivery} => [:manage_settings],
+    {W.AdminIntegrationsController, :replay} => [:manage_settings],
+    {W.AdminIntegrationsController, :audience} => [:manage_settings],
+    {W.AdminIntegrationsController, :save_audience} => [:manage_settings],
+    {W.AdminIntegrationsController, :delete_audience} => [:manage_settings],
+    {W.AdminIntegrationsController, :sync_audience} => [:manage_settings],
+    {W.AdminIntegrationsController, :rotate_unsubscribe_url} => [:manage_settings],
+    # ADR-381: doors per branch (branch managers too), opening from the desk.
+    {W.AdminDoorsController, :catalog} => [:manage_settings, :manage_locations, :check_in],
+    {W.AdminDoorsController, :index} => [:manage_settings, :manage_locations, :check_in],
+    {W.AdminDoorsController, :create} => [:manage_settings, :manage_locations],
+    {W.AdminDoorsController, :update} => [:manage_settings, :manage_locations],
+    {W.AdminDoorsController, :delete} => [:manage_settings, :manage_locations],
+    {W.AdminDoorsController, :rotate_event_token} => [:manage_settings, :manage_locations],
+    {W.AdminDoorsController, :unlock} => [:check_in],
+    {W.AdminDoorsController, :events} => [:manage_settings, :manage_locations, :check_in],
     # ADR-246/247: online payments.
     {W.AdminPaymentsController, :account} => [:view_finance_reports, :manage_billing],
     {W.AdminPaymentsController, :save_account} => [:manage_billing],
@@ -454,6 +488,18 @@ defmodule PaleeWeb.RouteCapabilities do
     {W.AdminFinanceController, :cleanup_records} => [:manage_billing],
     {W.AdminFinanceController, :purge_record} => [:manage_billing],
     {W.AdminFinanceController, :packages} => [:view_package_catalog],
+    # ADR-370/371: programmes are written from WODs and sold like packages.
+    {W.AdminProgrammeController, :index} => [:manage_workouts, :view_package_catalog],
+    {W.AdminProgrammeController, :show} => [:manage_workouts, :view_package_catalog],
+    {W.AdminProgrammeController, :create} => [:manage_workouts],
+    {W.AdminProgrammeController, :update} => [:manage_workouts],
+    {W.AdminProgrammeController, :publish} => [:manage_packages],
+    {W.AdminProgrammeController, :archive} => [:manage_packages],
+    {W.AdminProgrammeController, :restore} => [:manage_packages],
+    {W.AdminProgrammeController, :purchases} => [:take_payments, :manage_billing],
+    {W.AdminProgrammeController, :refund} => [:manage_billing],
+    {W.AdminProgrammeController, :reviews} => [:manage_workouts, :manage_packages],
+    {W.AdminProgrammeController, :moderate_review} => [:manage_packages],
     # ADR-167: seasons are sold like packages; places are answered like payments.
     {W.AdminSeasonController, :index} => [:view_package_catalog, :take_payments],
     {W.AdminSeasonController, :show} => [:view_package_catalog, :take_payments],

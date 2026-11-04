@@ -212,6 +212,15 @@ describe("FitnessProfileCard (ADR-358, mockup d6 A)", () => {
     expect(within(steps).getByTestId("fitness-step-ratio")).toHaveTextContent("77 fitnessKg ÷ 60 fitnessKg = 1.28 ×");
     expect(within(steps).getByTestId("fitness-scale")).toHaveTextContent("1.35 ×");
     expect(within(steps).getByTestId("fitness-scale-marker")).toHaveStyle({ left: "68%" });
+    // The drawn scale is aria-hidden; its anchors are read out as a list.
+    expect(within(steps).getByTestId("fitness-scale")).toHaveAttribute("aria-hidden", "true");
+    const anchors = within(within(steps).getByTestId("fitness-scale-anchors")).getAllByRole("listitem");
+    expect(anchors.map((item) => item.textContent)).toEqual([
+      "0.70 ×: fitnessStepPoints:20",
+      "1.10 ×: fitnessStepPoints:50",
+      "1.35 ×: fitnessStepPoints:75",
+      "1.70 ×: fitnessStepPoints:95",
+    ]);
     expect(within(steps).getByTestId("fitness-step-next")).toHaveTextContent("fitnessStepNextKg:75,81,4");
     expect(within(steps).queryByTestId("fitness-step-age")).toBeNull();
   });
@@ -340,6 +349,38 @@ describe("FitnessProfileCard (ADR-358, mockup d6 A)", () => {
       expect(putFitnessSettings).toHaveBeenCalledWith("tok", { body_weight_kg: 60.5, display: "progress_only" }),
     );
     await waitFor(() => expect(fetchFitnessProfile).toHaveBeenCalledTimes(2));
+  });
+
+  it("after saving \"60,5\" the field shows the saved 60.5, says saved and has nothing left to save", async () => {
+    const savedProfile = profile({ settings: { body_weight_kg: 60.5, birth_year: null, display: "all" } });
+    fetchFitnessProfile.mockResolvedValueOnce(profile()).mockResolvedValue(savedProfile);
+    putFitnessSettings.mockResolvedValue(savedProfile.settings);
+    renderCard();
+    fireEvent.click((await screen.findByTestId("fitness-profile-advanced")).querySelector("button")!);
+    const weight = screen.getByLabelText("fitnessBodyWeight");
+    fireEvent.change(weight, { target: { value: "60,5" } });
+    fireEvent.click(screen.getByRole("button", { name: "fitnessSave" }));
+    await waitFor(() => expect(weight).toHaveValue("60.5"));
+    expect(await screen.findByRole("status")).toHaveTextContent("fitnessSaved");
+    expect(screen.getByRole("button", { name: "fitnessSave" })).toBeDisabled();
+  });
+
+  it("an edit made while saving stays when the saved settings come back", async () => {
+    const savedProfile = profile({ settings: { body_weight_kg: 60.5, birth_year: null, display: "all" } });
+    fetchFitnessProfile.mockResolvedValueOnce(profile()).mockResolvedValue(savedProfile);
+    let finish: (value: unknown) => void = () => {};
+    putFitnessSettings.mockReturnValue(new Promise((resolve) => (finish = resolve)));
+    renderCard();
+    fireEvent.click((await screen.findByTestId("fitness-profile-advanced")).querySelector("button")!);
+    const weight = screen.getByLabelText("fitnessBodyWeight");
+    fireEvent.change(weight, { target: { value: "60,5" } });
+    fireEvent.click(screen.getByRole("button", { name: "fitnessSave" }));
+    await waitFor(() => expect(putFitnessSettings).toHaveBeenCalled());
+    fireEvent.change(weight, { target: { value: "61" } });
+    finish(savedProfile.settings);
+    await waitFor(() => expect(fetchFitnessProfile).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(screen.getByRole("button", { name: "fitnessSave" })).toBeEnabled());
+    expect(weight).toHaveValue("61");
   });
 
   it("keeps a wrong body weight inside the form, under the field", async () => {

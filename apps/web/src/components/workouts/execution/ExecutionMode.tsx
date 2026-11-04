@@ -11,6 +11,9 @@ import {
   type WorkoutExecution,
 } from "@/api/executions";
 import { useSession } from "@/components/session-provider";
+import { PastSelfLane } from "@/components/body-devices/PastSelfLane";
+import { PastSelfResultCard } from "@/components/body-devices/PastSelfResult";
+import { WatchOfferPrompt } from "@/components/body-devices/WatchOfferPrompt";
 import { LocalizedScore } from "@/components/localized-score";
 import { MyInjuryWarningsPanel } from "@/components/wellbeing/InjuryWarnings";
 import { WodGoalsStrip } from "@/components/wod-goals/WodGoalsStrip";
@@ -707,6 +710,11 @@ export function ExecutionMode() {
       >
         <div className="text-5xl">🏁</div>
         <div className="text-2xl font-bold">{i18n("workoutComplete40f1693")}</div>
+        {executionId ? (
+          <div className="w-full max-w-sm">
+            <PastSelfResultCard executionId={executionId} />
+          </div>
+        ) : null}
         {sectionScores.length > 0 && (
           <div className="w-full max-w-sm space-y-2">
             {sectionScores.map((score, index) => (
@@ -770,6 +778,7 @@ export function ExecutionMode() {
   if (awaitingStart) {
     return (
       <div onPointerDownCapture={primeCueAudio}>
+        {executionId ? <WatchOfferPrompt executionId={executionId} /> : null}
         <ReadyScreen
           segments={segments}
           briefing={briefing}
@@ -897,6 +906,14 @@ export function ExecutionMode() {
           targetReps={targetReps}
           formatLabel={formatLabels[currentSegment.format as SectionFormat] ?? currentSegment.format}
         />
+
+        {executionId ? (
+          <PastSelfLane
+            executionId={executionId}
+            elapsedMs={totalElapsedMs + timer.elapsedMs}
+            marker={`${currentSegmentIndex}:${roundsCompleted ?? 0}`}
+          />
+        ) : null}
 
         {nextSegment ? (
           <div

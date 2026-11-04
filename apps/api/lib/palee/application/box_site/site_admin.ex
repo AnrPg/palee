@@ -5,7 +5,7 @@ defmodule Palee.Application.BoxSite.SiteAdmin do
   """
 
   alias Palee.Application.{PublicURL, SignedToken}
-  alias Palee.Application.BoxSite.{SiteDomainChecks, SiteTranslations}
+  alias Palee.Application.BoxSite.{SiteDomainChecks, SiteIngresses, SiteTranslations}
   alias Palee.{BoxSite, ContentTranslations, Email, Organizations}
   alias Palee.Email.Domain.Address
 
@@ -94,11 +94,14 @@ defmodule Palee.Application.BoxSite.SiteAdmin do
     end
   end
 
-  @doc "Removes a host; the site stays at its Palee address."
+  @doc "Removes a host (and, ADR-398, its Ingress); the site stays at its Palee address."
   def remove_domain(context, id) do
-    case BoxSite.delete_domain(context, id) do
-      :ok -> :ok
+    with %{} = domain <- BoxSite.get_domain(context, id) || {:error, :site_domain_not_found},
+         :ok <- BoxSite.delete_domain(context, id) do
+      SiteIngresses.removed(context, domain, BoxSite.clock().now())
+    else
       {:error, :not_found} -> {:error, :site_domain_not_found}
+      error -> error
     end
   end
 
@@ -232,7 +235,9 @@ defmodule Palee.Application.BoxSite.SiteAdmin do
       :checked_at,
       :next_check_at,
       :verified_at,
-      :active_at
+      :active_at,
+      :certificate_status,
+      :certificate_error
     ])
     |> Map.put(:dns_records, BoxSite.dns_records(domain))
   end

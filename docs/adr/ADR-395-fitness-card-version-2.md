@@ -66,3 +66,24 @@ and sets the age percentages.
 - «Προχωρημένα»: the standards, body weight, birth year (only while `inputs.age_ready`) and
   «Τι να δείχνει». With `set_by = coach` the card says «Το όρισε ο coach σου» and the picker explains
   that the member's own choice is kept but cannot show more than the coach's.
+
+## Follow-up (2026-11-03, review of PR #197)
+- **The change's baseline** is built as of the period's first day: the PRs of then, aged from then
+  (a PR that went stale during the period still counts in full) and the age band of then. `6m` and
+  `1y` start on the same calendar day as Πρόοδος's filter (`ProgressFilter.since/2`), not 182/365
+  days back. Of several history rows on one day, the last one written counts.
+- **`progress_only`** also strips `score`, `others_mean` and `gap` from «Τι να δουλέψεις».
+- **`next`** is chosen from the unrounded points, so a reading shown as 75.0 that is still below the
+  75-point anchor names that anchor as the next step.
+- **A coach's override counts only while the box coaches the client.** Ending the client's last
+  active coaching relationship in the box deletes it, and the client's SELECT policy also asks
+  `palee_client_coached_in(organization_id)` (SECURITY DEFINER, pins only `search_path`), so a
+  stale row never hides the card however the relationship ended (migration `20270518000000`, which
+  also deletes overrides already left without a relationship).
+- **Account deletion** under the runtime role: a profile kept anonymised loses
+  `fitness_profile_settings` (and ADR-394's `palee_leaderboard_consents`) in its own RLS scope, and
+  every box's override through `palee_forget_fitness_overrides(user_id)`, which deletes only for a
+  profile whose deletion is scheduled.
+- **Web:** the settings form follows the saved values after a save («60,5» shows as 60.5, the form is
+  no longer dirty) without overwriting edits made while saving; the anchors of «Πού πέφτει» are
+  read out to screen readers as a list.

@@ -1,0 +1,50 @@
+msgid ""
+msgstr ""
+"Language: bg\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "A webhook of %{box} was turned off"
+msgstr "Уебхук на %{box} беше изключен"
+
+msgid "Open the webhook"
+msgstr "Отваряне на уебхука"
+
+msgid "Palee stopped sending events to %{host}."
+msgstr "Palee спря да изпраща събития към %{host}."
+
+msgid "The receiver answered that the address no longer exists."
+msgstr "Получателят отговори, че адресът вече не съществува."
+
+msgid "The address now points to a private network, which Palee does not call."
+msgstr "Адресът вече сочи към частна мрежа, към която Palee не се обръща."
+
+msgid "Every delivery failed many times in a row, so Palee stopped trying."
+msgstr "Всички доставки се провалиха много пъти подред, затова Palee спря да опитва."
+
+msgid "Check the receiver, then turn the webhook back on from its page and resend what failed."
+msgstr "Проверете получателя, след това включете отново уебхука от страницата му и изпратете повторно неуспешното."
+
+msgid "New API key for %{box}"
+msgstr "Нов API ключ за %{box}"
+
+msgid "Open API keys"
+msgstr "Отваряне на API ключовете"
+
+msgid "A new API key can now read or change %{box}'s data through Palee's public API."
+msgstr "Нов API ключ вече може да чете или променя данните на %{box} чрез публичния API на Palee."
+
+msgid "Key"
+msgstr "Ключ"
+
+msgid "Access"
+msgstr "Достъп"
+
+msgid "Made by"
+msgstr "Създаден от"
+
+msgid "When"
+msgstr "Кога"
+
+msgid "If nobody at the box made it, revoke it now from Settings › Connections."
+msgstr "Ако никой от бокса не го е създал, отменете го сега от Настройки › Връзки."

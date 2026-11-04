@@ -76,6 +76,7 @@ const site = {
   faq: [{ id: "faq-1", question: "Χρειάζομαι εμπειρία;", answer: "Όχι, ξεκινάμε από την αρχή." }],
   forms: { trial: true, contact: true, kinds: ["trial", "contact"] },
   reviews: { palee: { average: 4.5, count: 2, latest: memberReviews }, google, google_reviews_url: google.maps_uri },
+  report_contact: "moderation@palee.app",
   events: [],
   timetable: [],
   wod: [],
@@ -168,6 +169,10 @@ test.describe("the box's public website", () => {
     await expect(page.getByText("I'm interested", { exact: true })).toHaveCount(0);
 
     await expect(page.getByTestId("site-language-switch").getByRole("link", { name: "el" })).toHaveAttribute("aria-current", "page");
+
+    // The footer names Palee's moderation address for reports on content (ADR-397).
+    await expect(page.getByTestId("site-report-contact")).toHaveAttribute("href", "mailto:moderation@palee.app");
+    await expect(page.getByTestId("site-report-contact")).toContainText("moderation@palee.app");
   });
 
   test("the trial request sheet sends the form with an event_id and the privacy yes", async ({ page }) => {
@@ -401,6 +406,87 @@ test.describe("Settings › Website", () => {
     expect(puts).toHaveLength(1);
     expect(puts[0]!.body).toMatchObject({ public_schedule: false, public_wod: false });
     expect((puts[0]!.body as { hidden_sections: string[] }).hidden_sections).not.toContain("trial_form");
+  });
+
+  // ADR-398: Palee creates the Ingress of a verified host; the card shows the certificate's state.
+  test("the domain card says how the automatic certificate is doing", async ({ page }) => {
+    const writes: Write[] = [];
+    const domain = (host: string, extra: object) => ({
+      id: `domain-${host}`,
+      host,
+      primary: host.startsWith("www."),
+      status: "pending_tls",
+      last_error: "tls_not_ready",
+      checked_at: new Date().toISOString(),
+      next_check_at: new Date().toISOString(),
+      verified_at: new Date().toISOString(),
+      active_at: null,
+      certificate_status: "issuing",
+      certificate_error: null,
+      dns_records: [{ type: "CNAME", name: host, value: "sites.palee.app" }],
+      ...extra,
+    });
+    await asOwner(page, writes, (path, method, _body, route) => {
+      if (path === "/api/admin/site" && method === "GET") {
+        return json(route, {
+          settings: siteSettings,
+          domains: [domain("www.kypseli.gr", {}), domain("kypseli.gr", { certificate_status: "failed", certificate_error: "challenge_failed" })],
+        });
+      }
+      if (path === "/api/admin/site/summary") {
+        return json(route, { days: 30, submissions: { total: 0, delivered: 0, failed: 0, waiting: 0 }, consents: { accept_all: 0, custom: 0, reject_all: 0, withdraw: 0 } });
+      }
+      return null;
+    });
+    await page.goto("/admin/settings/website");
+
+    const cards = page.getByTestId("website-domain");
+    await expect(cards).toHaveCount(2);
+    await expect(cards.nth(0).getByTestId("site-domain-certificate")).toHaveText("The certificate is being issued. This usually takes a few minutes.");
+    await expect(cards.nth(1).getByTestId("site-domain-certificate")).toContainText("Let's Encrypt couldn't reach the domain");
+    // Only the background session refresh and the time-zone sync write; the domain card writes nothing.
+    expect(writes.filter((write) => write.path.startsWith("/api/admin/site"))).toEqual([]);
+  });
+
+  // ADR-398 (2026-11-03): a host the cluster refuses, an apex record, and a system domain typed in.
+  test("the domain card says when a domain is not available, and refuses system domains", async ({ page }) => {
+    const writes: Write[] = [];
+    const domain = {
+      id: "domain-kypseli.gr",
+      host: "kypseli.gr",
+      primary: true,
+      status: "pending_tls",
+      last_error: "tls_not_ready",
+      checked_at: new Date().toISOString(),
+      next_check_at: new Date().toISOString(),
+      verified_at: new Date().toISOString(),
+      active_at: null,
+      certificate_status: "failed",
+      certificate_error: "host_not_allowed",
+      dns_records: [
+        { type: "TXT", name: "_palee-challenge.kypseli.gr", value: "palee-site-verification=tok" },
+        { type: "ALIAS", name: "kypseli.gr", value: "sites.palee.app" },
+      ],
+    };
+    await asOwner(page, writes, (path, method, _body, route) => {
+      if (path === "/api/admin/site" && method === "GET") return json(route, { settings: siteSettings, domains: [domain] });
+      if (path === "/api/admin/site/summary") {
+        return json(route, { days: 30, submissions: { total: 0, delivered: 0, failed: 0, waiting: 0 }, consents: { accept_all: 0, custom: 0, reject_all: 0, withdraw: 0 } });
+      }
+      return null;
+    });
+    await page.goto("/admin/settings/website");
+
+    const card = page.getByTestId("website-domain");
+    await expect(card.getByTestId("site-domain-certificate")).toContainText("This domain is not available");
+    await expect(card.getByText("CNAME flattening / ALIAS / ANAME")).toBeVisible();
+    await expect(card.getByTestId("site-dns-alias-hint")).toContainText("our addresses change");
+
+    await page.getByTestId("website-domain-input").fill("shop.milos.4kq.net");
+    await page.getByRole("button", { name: "Add", exact: true }).click();
+    await expect(page.locator("#website-domain-host-error")).toHaveText("This is a Palee or system domain. Enter your own, e.g. www.mybox.gr.");
+    // Refused before it is sent.
+    expect(writes.filter((write) => write.path.startsWith("/api/admin/site/domains"))).toEqual([]);
   });
 });
 

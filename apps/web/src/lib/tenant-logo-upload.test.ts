@@ -4,6 +4,7 @@ import type { OrganizationBranding } from "@/api/organization-branding";
 import {
   TENANT_LOGO_MAX_BYTES,
   TenantLogoUploadError,
+  logoForUpload,
   uploadTenantLogo,
   validateTenantLogoFile,
 } from "@/lib/tenant-logo-upload";
@@ -90,5 +91,35 @@ describe("uploadTenantLogo", () => {
       uploadTenantLogo(logoFile(), api, vi.fn().mockResolvedValue({ ok: false })),
     ).rejects.toMatchObject({ reason: "storageRejected" });
     expect(api.finalize).not.toHaveBeenCalled();
+  });
+});
+
+describe("logoForUpload (ADR-377 amendment: diplomas cannot hold WebP)", () => {
+  it("turns a WebP into a PNG and leaves PNG and JPEG alone", async () => {
+    const toPng = vi.fn().mockResolvedValue(new Blob([new Uint8Array(8)], { type: "image/png" }));
+    const png = await logoForUpload(new File([new Uint8Array(4)], "brand.webp", { type: "image/webp" }), toPng);
+    expect(png.type).toBe("image/png");
+    expect(png.name).toBe("brand.png");
+    const jpeg = logoFile("image/jpeg");
+    expect(await logoForUpload(jpeg, toPng)).toBe(jpeg);
+    expect(toPng).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps the WebP when the browser cannot convert it or the PNG is too large", async () => {
+    const webp = logoFile("image/webp");
+    expect(await logoForUpload(webp, vi.fn().mockResolvedValue(null))).toBe(webp);
+    const huge = new Blob([new Uint8Array(TENANT_LOGO_MAX_BYTES + 1)], { type: "image/png" });
+    expect(await logoForUpload(webp, vi.fn().mockResolvedValue(huge))).toBe(webp);
+  });
+
+  it("uploads the converted PNG", async () => {
+    const api = {
+      requestUpload: vi.fn().mockResolvedValue({ upload_url: "https://media.test/u", key: "k", required_headers: {}, expires_in: 900, max_bytes: 1 }),
+      finalize: vi.fn().mockResolvedValue(branding),
+    };
+    const putObject = vi.fn().mockResolvedValue({ ok: true });
+    const toPng = vi.fn().mockResolvedValue(new Blob([new Uint8Array(8)], { type: "image/png" }));
+    await uploadTenantLogo(logoFile("image/webp"), api, putObject, toPng);
+    expect(api.requestUpload).toHaveBeenCalledWith(expect.objectContaining({ type: "image/png", size: 8 }));
   });
 });

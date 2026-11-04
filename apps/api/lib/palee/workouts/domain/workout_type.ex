@@ -6,19 +6,24 @@ defmodule Palee.Workouts.Domain.WorkoutType do
 
   Keys match the box profile's disciplines (`BoxProfilePolicy`) where both
   name the same training. `aerobics` and `flexibility` are the original kinds
-  and stay valid: stored workouts never change kind.
+  and stay valid: stored workouts never change kind. ADR-400 added the
+  kinds that rank ladders need (artistic and rhythmic gymnastics, judo,
+  karate, ballet, street dance and more); the column is a string, so a new
+  kind needs no migration.
   """
 
   @families [
     {"functional", ~w(crossfit functional_fitness hyrox hiit bootcamp circuit_training)},
     {"strength", ~w(strength powerlifting olympic_lifting bodybuilding strongman kettlebell)},
-    {"gymnastics", ~w(gymnastics calisthenics)},
+    {"gymnastics",
+     ~w(gymnastics calisthenics artistic_gymnastics rhythmic_gymnastics trampoline_tumbling acrobatics parkour)},
     {"endurance", ~w(aerobics running cycling indoor_cycling rowing swimming endurance)},
     {"mind_body", ~w(yoga pilates barre flexibility mobility stretching tai_chi_qigong)},
     {"combat",
-     ~w(boxing kickboxing muay_thai mma bjj_grappling wrestling martial_arts self_defense)},
-    {"dance", ~w(dance dance_fitness pole_aerial)},
-    {"outdoor", ~w(outdoor_training climbing_bouldering)},
+     ~w(boxing kickboxing muay_thai mma bjj_grappling wrestling martial_arts self_defense judo karate taekwondo kung_fu krav_maga)},
+    {"dance",
+     ~w(dance dance_fitness pole_aerial ballet contemporary_dance latin_dance street_dance)},
+    {"outdoor", ~w(outdoor_training climbing_bouldering skateboarding)},
     {"recovery", ~w(recovery)}
   ]
 

@@ -449,6 +449,18 @@ defmodule Palee.Notifications do
         url: "/around?filter=#{field(payload, :filter_id)}"
       })
 
+  # ADR-400 follow-up: the coach's new skill ticks, told once per window.
+  def process_event("rank_skills_checked", payload),
+    do:
+      enqueue_simple(:rank_skills_checked, payload, %{
+        organization_id: field(payload, :organization_id),
+        count: field(payload, :count),
+        rank_name: field(payload, :rank_name),
+        ranks: field(payload, :ranks),
+        dedupe_key: field(payload, :dedupe_key),
+        url: "/box/ranks"
+      })
+
   # ADR-158: the opt-in reminder to take a new body measurement.
   def process_event("body_measure_reminder", payload),
     do:
@@ -716,6 +728,14 @@ defmodule Palee.Notifications do
         dedupe_key: "site_request:#{field(payload, :submission_id)}:#{field(payload, :user_id)}",
         url: "/admin/leads?lead=#{field(payload, :lead_id)}"
       })
+
+  # ADR-397: the Palee team decided on a reported review. The reporter hears
+  # the outcome; the author hears a hide or removal with its reasons.
+  def process_event("box_review_report_decided", payload),
+    do: enqueue_simple(:box_review_report_decided, payload, review_decision_payload(payload))
+
+  def process_event("box_review_moderated", payload),
+    do: enqueue_simple(:box_review_moderated, payload, review_decision_payload(payload))
 
   # ADR-220: a member is leaving the box. The staff who manage billing hear
   # the last day and the reason, once per leave.
@@ -1029,6 +1049,17 @@ defmodule Palee.Notifications do
       enqueue_simple(:fiscal_connection_failed, payload, %{
         connection: field(payload, :connection),
         error_code: field(payload, :error_code),
+        dedupe_key: field(payload, :dedupe_key),
+        url: field(payload, :url)
+      })
+
+  # ADR-379: Palee turned off a failing webhook; to each person who manages
+  # settings, once per turn-off (the dedupe key has the endpoint and time).
+  def process_event("webhook_disabled", payload),
+    do:
+      enqueue_simple(:webhook_disabled, payload, %{
+        host: field(payload, :host),
+        reason: field(payload, :reason),
         dedupe_key: field(payload, :dedupe_key),
         url: field(payload, :url)
       })
@@ -1575,6 +1606,17 @@ defmodule Palee.Notifications do
   end
 
   # ADR-097 notifications with a fixed payload shape.
+  defp review_decision_payload(payload) do
+    %{
+      organization_id: field(payload, :organization_id),
+      review_id: field(payload, :review_id),
+      outcome: field(payload, :outcome),
+      ground: field(payload, :ground),
+      dedupe_key: field(payload, :dedupe_key),
+      url: field(payload, :url)
+    }
+  end
+
   defp enqueue_simple(type, payload, notification_payload) do
     user_id = field(payload, :user_id)
 

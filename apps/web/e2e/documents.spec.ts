@@ -238,7 +238,7 @@ test.describe("signed documents (ADR-252)", () => {
     const classAt = new Date(now);
     classAt.setHours(18);
     const day = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-    const crossfit = { id: "ct-1", name: "CrossFit", kind: "class", level: "all_levels", audiences: [] };
+    const crossfit = { id: "ct-1", name: "CrossFit", kind: "class", levels: [], audiences: [] };
 
     await page.route("**/api/org/*/me/entitlement", (route) => route.fulfill(json({ entitlement: null })));
     await page.route("**/api/me/places**", (route) => route.fulfill(json({ places: [] })));

@@ -128,6 +128,13 @@ config :palee, :channels_http, req_options: [plug: {Req.Test, Palee.ChannelsHttp
 
 # ADR-368: the box's own SMTP provider never leaves the test process.
 config :palee, :channel_email_transport, Palee.Infrastructure.Channels.SandboxEmailTransport
+
+# ADR-378..381: open platform and doors: sandboxes on, provider HTTP stubbed.
+config :palee, :open_platform_sandbox, true
+config :palee, :webhook_http, req_options: [plug: {Req.Test, Palee.WebhookHttp}]
+config :palee, :audience_http, req_options: [plug: {Req.Test, Palee.AudienceHttp}]
+config :palee, :door_http, req_options: [plug: {Req.Test, Palee.DoorHttp}]
+config :palee, :api_key_env, "test"
 # ADR-250/251/266: fiskaly calls go to a test plug.
 config :palee, :fiscal_http, req_options: [plug: {Req.Test, Palee.FiscalHttp}]
 # ADR-273: myDATA (saving a test or production connection checks it) too.
@@ -137,6 +144,7 @@ config :palee, :mydata, req_options: [plug: {Req.Test, Palee.FiscalHttp}, retry:
 config :palee, :box_site_lead_intake, Palee.Infrastructure.BoxSite.SandboxLeadIntake
 config :palee, :box_site_dns, Palee.Infrastructure.BoxSite.SandboxDomainDns
 config :palee, :box_site_tls_probe, Palee.Infrastructure.BoxSite.SandboxTlsProbe
+config :palee, :box_site_ingress, Palee.Infrastructure.BoxSite.SandboxSiteIngress
 config :palee, :box_site_conversions_api, Palee.Infrastructure.BoxSite.SandboxConversionsApi
 # ADR-387: no Places API calls in tests.
 config :palee, :google_places, Palee.Infrastructure.ReviewAsks.SandboxPlaces
@@ -149,6 +157,22 @@ config :palee, :status_http, req_options: [plug: {Req.Test, Palee.StatusHttp}]
 
 # ADR-366: no model calls for status page translations outside production.
 config :palee, :status_translator, Palee.Infrastructure.Status.SandboxTranslator
+# ADR-376: barcode lookups never leave the test run; the Open Food Facts
+# adapter's own tests use a Req.Test plug.
+config :palee, :food_database, Palee.Infrastructure.Nutrition.SandboxFoodDatabase
+config :palee, :open_food_facts, req_options: [plug: {Req.Test, Palee.OpenFoodFacts}]
+
+config :palee, :usda_food_data_central,
+  api_key: "test-usda-key",
+  req_options: [plug: {Req.Test, Palee.UsdaFoodDataCentral}]
+
+config :palee, :open_food_facts_contributions,
+  user_id: "palee-test",
+  password: "test-password",
+  uuid_salt: "test-salt",
+  req_options: [plug: {Req.Test, Palee.OpenFoodFactsWrite}]
+
+config :palee, :food_label_reader, Palee.FakeFoodLabelReader
 
 # ADR-520: no model calls for website translations outside production.
 config :palee,
