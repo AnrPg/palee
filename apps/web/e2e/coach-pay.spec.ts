@@ -359,7 +359,10 @@ test("a recurring allowance is taken off one person for this period and put back
   const lines = detail.getByTestId("pay-statement-lines");
   await expect(lines).toContainText("Επίδομα: 1 × 20,00");
 
-  await lines.getByRole("button", { name: "Ενέργειες γραμμής" }).last().click();
+  // Calculated groups come first and lines added by hand after them (ADR-510),
+  // so the allowance's menu is found by its row, not by position.
+  const allowance = lines.locator(":scope > div").filter({ hasText: "Επίδομα: 1 × 20,00" });
+  await allowance.getByRole("button", { name: "Ενέργειες γραμμής" }).click();
   await page.getByRole("menuitem", { name: "Όχι σε αυτή την περίοδο" }).click();
   await expect(lines.getByTestId("pay-skipped-item")).toContainText("Μετακίνηση: όχι σε αυτή την περίοδο");
   expect(writes.map((write) => `${write.method} ${write.path}`)).toContain("DELETE /api/admin/coach-pay/periods/per-10/adjustments/line-travel");
