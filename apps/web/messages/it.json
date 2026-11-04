@@ -9,10 +9,10 @@
     "capacityLabel": "Posti in ogni nuova lezione",
     "capacityHelp": "Quante persone possono prenotare una nuova lezione. Puoi cambiarlo su ogni lezione.",
     "autoApproveLabel": "Conferma automatica delle prenotazioni",
-    "autoApproveHelp": "Attivo: la prenotazione è confermata subito. Disattivo: ogni prenotazione è una richiesta che qualcuno dello staff deve approvare.",
+    "autoApproveHelp": "Attivo: la prenotazione è confermata subito, senza attese. Disattivo: ogni prenotazione è una richiesta che qualcuno dello staff approva, e scegli tu quanto aspetta una risposta.",
     "approvalWaitLabel": "Tempo per rispondere a una richiesta di prenotazione",
-    "approvalWaitHelp": "Solo per lezioni senza conferma automatica. Se nessuno dello staff risponde entro questo tempo, la richiesta viene annullata, l'ingresso torna al membro e il posto passa alla persona successiva in lista d'attesa. Una richiesta non aspetta mai oltre l'inizio della lezione. Non è quando aprono le prenotazioni: quello è «Apertura prenotazioni».",
-    "approvalWaitClassHelp": "Se nessuno approva la richiesta entro questo tempo, viene annullata automaticamente. Vale solo senza conferma automatica.",
+    "approvalWaitHelp": "Se nessuno dello staff risponde entro questo tempo, la richiesta viene annullata, l'ingresso torna al membro e il posto passa alla persona successiva in lista d'attesa. «Nessun limite»: la richiesta aspetta una risposta fino all'inizio della lezione. Non è quando aprono le prenotazioni: quello è «Apertura prenotazioni».",
+    "approvalWaitClassHelp": "Se nessuno dello staff approva la richiesta entro questo tempo, viene annullata automaticamente e il posto passa alla persona successiva in lista d'attesa. «Nessun limite»: la richiesta aspetta una risposta fino all'inizio della lezione.",
     "approvalWaitNoLimit": "Nessun limite (fino all'inizio)",
     "bookingWindowLabel": "Apertura prenotazioni (giorni prima della lezione)",
     "bookingWindowHelp": "Il prima possibile in cui un membro può prenotare: questi giorni prima della lezione. Le prenotazioni restano aperte fino all'inizio. Con «Nessun limite» si prenota appena la lezione è in calendario. Un pacchetto di abbonamento può fissare il suo.",
@@ -220,7 +220,6 @@
     "scheduledAt": "Data e ora",
     "capacity": "Capacità",
     "timeoutMinutes": "Minuti di timeout",
-    "autoApproveBookingsForThisSlot": "Approva automaticamente le prenotazioni di questa lezione",
     "deleteSlot": "Elimina lezione",
     "saveChanges": "Salva modifiche",
     "createSlot": "Crea lezione",
@@ -785,7 +784,7 @@
     "displayLabeld747868": "Etichetta visualizzata",
     "addLeveld2d215f": "+ Aggiungi livello",
     "reminderIntervalDaysee3ba34": "Intervallo promemoria (giorni)",
-    "howOftenInDaysAMemberWithAn710fa76": "Ogni quanti giorni un socio con un saldo da pagare riceve una notifica di promemoria di pagamento. Il promemoria si ripete finché il saldo non è pagato per intero.",
+    "howOftenInDaysAMemberWithAn710fa76": "Dopo, ogni quanti giorni si ripete il promemoria finché il membro non rinnova o se ne va. Chi deve denaro riceve un promemoria di pagamento con lo stesso ritmo finché non salda.",
     "applicationSettingsIntroduction8f2e9b7": "introduzione alle impostazioni dell'applicazione",
     "appConfigurations1e15749": "Configurazioni dell'app.",
     "globalSettingsForAppearanceEngagementRulesAndWorkout915168c": "Impostazioni globali per aspetto, regole di coinvolgimento e definizioni dei livelli di allenamento. Le modifiche si applicano subito in tutta l'app.",
@@ -2661,7 +2660,6 @@
     "featureOptionalClassSettings": "Impostazioni facoltative della lezione",
     "featureCapacity": "Capienza",
     "featureTimeoutMinutes": "Minuti di timeout",
-    "featureAutoApprove": "Approvazione automatica",
     "featureCreating": "Creazione…",
     "featureReceipt": "Ricevuta",
     "featureReceiptDocumentTitle": "Ricevuta {reference}",
@@ -3049,14 +3047,11 @@
     "classTimerForbidden": "Solo i coach e gli amministratori possono controllare il timer della lezione.",
     "classTimerRejected": "Il timer non può farlo ora.",
     "classTimerOffline": "Server non raggiungibile. Controlla la connessione e riprova.",
-    "classTimerChoosePreset": "Questa lezione non ha un allenamento a tempo. Scegli un timer qui sotto.",
     "classTimerControlsLabel": "Controlli del timer",
     "classTimerStartAgain": "Ricomincia",
     "classTimerFinish": "Termina timer",
     "classTimerReset": "Azzera",
     "classTimerGetReadyLabel": "Conto alla rovescia di partenza",
-    "classTimerPresetTitle": "Timer per questa lezione",
-    "classTimerPresetHint": "Usa un timer predefinito al posto dell'allenamento della lezione, ad es. un EMOM per una sessione di forza.",
     "classTimerUsePreset": "Usa questo timer",
     "classTimerUseWorkout": "Usa l'allenamento della lezione",
     "classTimerJumpTitle": "Vai a una parte",
@@ -3529,8 +3524,6 @@
     "admCheckInAllowanceExhausted": "Questo socio ha esaurito gli ingressi open gym di questo periodo. Puoi concedere ingressi extra dal suo profilo.",
     "admCheckInFrozen": "Il pacchetto di abbonamento di questo socio oggi è sospeso. Annulla la sospensione dal suo profilo per fargli il check-in.",
     "admCheckInLocationNotIncluded": "Il pacchetto di abbonamento di questo socio non include questa sede.",
-    "admClassTypeEvent": "Evento",
-    "admClassTypeRulesHint": "Ingressi per prenotazione: quanti ingressi del pacchetto di abbonamento usa una prenotazione. Segna le sessioni speciali come eventi, così useranno gli ingressi agli eventi del pacchetto di abbonamento.",
     "admVisitsPerBooking": "Ingressi per prenotazione",
     "admDecrease": "Diminuisci",
     "admIncrease": "Aumenta",
@@ -4918,7 +4911,55 @@
     "semanticWorkoutContemporaryDance": "Danza contemporanea",
     "semanticWorkoutLatinDance": "Balli latini (salsa, bachata, reggaeton)",
     "semanticWorkoutStreetDance": "Danza urbana (hip-hop, heels)",
-    "semanticWorkoutSkateboarding": "Skateboard"
+    "semanticWorkoutSkateboarding": "Skateboard",
+    "classTimerHelpToggle": "Cosa fa ogni pulsante",
+    "classTimerLiveHelp": "Tutto ciò che premi qui appare subito su tutti gli schermi di questa lezione.",
+    "classTimerReconnectingHelp": "La connessione si è interrotta. I pulsanti tornano a funzionare appena si ristabilisce.",
+    "classTimerWallScreen": "Schermo a parete",
+    "classTimerWallScreenHelp": "L’orologio a schermo intero per la TV o il computer della sala. Mostra sempre lo stesso tempo di questo telecomando.",
+    "classTimerCopyLinkHelp": "Invia il link al dispositivo della sala e aprilo lì. Il dispositivo deve avere l’accesso con un account del box.",
+    "classTimerOnScreenHelp": "Mostra il timer, la classifica o il WOD di questa lezione su uno schermo del box per oggi.",
+    "classTimerOpenHere": "Apri su questo dispositivo",
+    "classTimerOpenHereHelp": "Se questo dispositivo è lo schermo della sala.",
+    "classTimerSoundHelp": "Bip su questo dispositivo negli ultimi 3 secondi e a ogni cambio di fase. Non cambia l’audio dello schermo a parete.",
+    "classTimerClockHelp": "«—» significa che non c’è ancora un tempo. Il tempo si legge minuti:secondi; quando conta alla rovescia mostra quanto manca. «Prossimo» è la parte successiva.",
+    "classTimerCountdownHelp": "Quanti secondi lo schermo conta alla rovescia prima dell’inizio, per far mettere in posizione gli atleti.",
+    "classTimerCountdownNone": "Nessuno",
+    "classTimerCountdownSeconds": "{seconds} s",
+    "classTimerStartHelp": "Avvia l’orologio su tutti gli schermi dopo il conto alla rovescia.",
+    "classTimerPauseHelp": "Ferma l’orologio su tutti gli schermi. Il tempo resta salvato.",
+    "classTimerResumeHelp": "Riprende da dove si era fermato, dopo un conto alla rovescia di 3 secondi.",
+    "classTimerBackHelp": "Torna alla parte precedente e la fa ripartire dall’inizio.",
+    "classTimerRestart": "Da capo",
+    "classTimerRestartHelp": "È la prima parte, quindi riparte dall’inizio.",
+    "classTimerNextHelp": "Chiude la parte attuale e avvia subito la successiva.",
+    "classTimerComplete": "Completa",
+    "classTimerCompleteHelp": "È l’ultima parte, quindi il timer finisce e gli schermi mostrano «Tempo!».",
+    "classTimerAdjustHelp": "Toglie o aggiunge 30 secondi alla parte attuale, per tutti.",
+    "classTimerFinishHelp": "Termina il timer adesso. Gli schermi mostrano «Tempo!».",
+    "classTimerResetHelp": "Azzera l’orologio su tutti gli schermi e torna a «Pronto».",
+    "classTimerResetConfirmTitle": "Azzerare il timer?",
+    "classTimerResetConfirmBody": "L’orologio si azzera su tutti gli schermi della sala e torna a «Pronto».",
+    "classTimerMore": "Altro",
+    "classTimerChooseTitle": "Scegli un timer",
+    "classTimerOtherTimer": "Un altro timer",
+    "classTimerNoTimedWorkout": "Questa lezione non ha un allenamento a tempo.",
+    "classTimerInsteadOfWorkout": "Al posto dell’allenamento della lezione.",
+    "classTimerOwnTimer": "Il tuo timer",
+    "classTimerOrCommon": "oppure scegli tra i timer più comuni:",
+    "classTimerJumpHelp": "Tocca una parte per andarci subito.",
+    "timerPresetHelp_tabata": "Tabata: 20 secondi di lavoro, 10 di recupero, 8 round (4 minuti).",
+    "timerPresetHelp_emom10": "EMOM (ogni minuto allo scoccare del minuto): all’inizio di ogni minuto fai l’esercizio e recuperi il resto. 10 round.",
+    "timerPresetHelp_e2mom20": "E2MOM: come l’EMOM, ma ogni 2 minuti. 10 round, 20 minuti.",
+    "timerPresetHelp_amrap12": "AMRAP (più round possibili): quanti più round riesci in 12 minuti.",
+    "timerPresetHelp_forTime12": "For Time: finisci il più in fretta possibile. Time cap 12: l’orologio si ferma a 12 minuti.",
+    "timerPresetHelp_deathBy": "Death By: un EMOM in cui aggiungi una ripetizione ogni minuto finché non stai più al passo.",
+    "timerPresetHelp_stopwatch": "Cronometro: conta in avanti senza limite finché non lo fermi.",
+    "subscriptionEndsTodayTitle": "Il tuo abbonamento scade oggi",
+    "subscriptionEndsTodayBody": "{package} scade oggi. Rinnovalo per continuare a prenotare le lezioni.",
+    "subscriptionEndedRenewBody": "{package} è scaduto il {date}. Rinnovalo per prenotare di nuovo le lezioni.",
+    "subscriptionEndDayReminder": "Promemoria il giorno della scadenza",
+    "subscriptionDayAfterReminder": "Promemoria il giorno dopo la scadenza"
   },
   "PrSharing": {
     "gymLabel": "Dove hai stabilito questo PR?",
@@ -6199,7 +6240,8 @@
     "chipFriends": "Amici",
     "friendsOnly": "Solo dove vanno amici",
     "friendsGoing": "{others, plural, =0 {Ci va {name}} other {Ci vanno {name} e altri #}}",
-    "friendsLabel": "Partecipano"
+    "friendsLabel": "Partecipano",
+    "level_intermediate": "Intermedi"
   },
   "LocationPicker": {
     "title": "Sede",
@@ -10000,8 +10042,8 @@
       "title": "Assistente IA",
       "description": "L'assistente WOD, più suggerimenti di scaling e registrazione vocale con la tua chiave. Un coach approva ogni suggerimento.",
       "enable": "Suggerimenti di scaling",
-      "enableHint": "Disattivati per impostazione predefinita. Serve una chiave API.",
-      "key": "Chiave API (Anthropic)",
+      "enableHint": "Per un atleta con un infortunio registrato dal box, l'IA suggerisce come adattare l'allenamento: meno carico, meno ripetizioni o un altro movimento. Un coach approva ogni suggerimento prima che l'atleta lo veda. Serve l'IA perché ogni combinazione di allenamento e infortunio è diversa e regole fisse non bastano.",
+      "key": "Chiave Claude (Anthropic)",
       "keySet": "È impostata una chiave che termina con {last4}.",
       "keyRejected": "Il fornitore ha rifiutato la chiave che termina con {last4}. Inserisci una nuova chiave.",
       "keyMissing": "Nessuna chiave impostata.",
@@ -10010,8 +10052,9 @@
       "removeKey": "Rimuovi chiave",
       "model": "Modello (facoltativo)",
       "saveModel": "Salva modello",
-      "usage": "Questo mese · suggerimenti: {count} · costo: ${cost}",
-      "privacy": "Vengono inviati solo l'allenamento e gli infortuni registrati dal box, senza nomi. La chiave non viene più mostrata."
+      "usage": "Questo mese · {count, plural, one {# suggerimento} other {# suggerimenti}} · {voice, plural, one {# bozza vocale} other {# bozze vocali}} · costo: ${cost}",
+      "privacy": "Non vengono inviati nomi. I suggerimenti inviano l'allenamento e gli infortuni registrati dal box. La registrazione vocale invia solo il testo di ciò che ha detto il membro. La chiave non viene più mostrata.",
+      "keyHint": "Servono i suggerimenti di scaling e la registrazione vocale. L'uso è addebitato sul tuo account Anthropic."
     },
     "queue": {
       "eyebrow": "I miei clienti",
@@ -10075,7 +10118,7 @@
     },
     "settings": {
       "enable": "Registrazione vocale",
-      "enableHint": "I soci registrano l'allenamento a voce e controllano una bozza prima di salvarla. L'audio non viene conservato."
+      "enableHint": "I membri raccontano con parole loro cosa hanno fatto e l'IA lo trasforma in esercizi, serie, ripetizioni e carichi. Il membro controlla la bozza prima di salvare. Serve l'IA per capire il parlato libero, come «tre serie da dieci a 60». L'audio non viene conservato."
     }
   },
   "Pickers": {
@@ -12204,7 +12247,9 @@
     "placementPinRemove": "Rimuovi segnaposto",
     "machineOnPlan": "Sulla planimetria",
     "machinePhotoRemove": "Rimuovi foto",
-    "machinePhotoAdd": "{max, plural, one {Aggiungi una foto} other {Foto (fino a #)}}"
+    "machinePhotoAdd": "{max, plural, one {Aggiungi una foto} other {Foto (fino a #)}}",
+    "introSingle": "Le sale e gli spazi del box: dove si tengono le lezioni, cosa si pulisce e dove si trova l'attrezzatura. Aggiungi una planimetria per disegnarli sopra.",
+    "planAndSpaces": "Planimetria e spazi"
   },
   "emailVerification": {
     "bannerText": "Conferma la tua email. Ti abbiamo inviato un link a {email}.",
@@ -13607,7 +13652,9 @@
         "community_partners_enabled": "Compagni di allenamento",
         "trials_enabled": "Prove",
         "trials_seats_per_class": "Posti di prova per lezione",
-        "trials_approval": "Approvazione delle prove"
+        "trials_approval": "Approvazione delle prove",
+        "finance_subscription_end_day_reminder": "Promemoria il giorno della scadenza",
+        "finance_subscription_day_after_reminder": "Promemoria il giorno dopo la scadenza"
       }
     }
   },
@@ -14906,7 +14953,8 @@
     "noEnd": "Nessuna fine",
     "renews": "si rinnova",
     "dueSince": "scadenza {date}",
-    "debtsQueue": "Debiti"
+    "debtsQueue": "Debiti",
+    "keptContact": "Account eliminato · contatto conservato fino al pagamento"
   },
   "WorkoutTypes": {
     "family": {
@@ -17129,7 +17177,6 @@
       "withdrawReasonRequired": "Scrivi il motivo.",
       "towards": "Per {rank}:",
       "history": "Cronologia",
-      "historyStripe": "{rank} +{stripes}",
       "picker": {
         "count": "{count, plural, one {# modello} other {# modelli}}",
         "step1": "Passo 1 di 2 · Cosa insegni?",
@@ -18438,5 +18485,32 @@
       "unknownPerson": "Sconosciuto",
       "beforeValue": "{value} · {from}–{to}"
     }
+  },
+  "ExplainedSetting": {
+    "about": "Che cos’è «{name}»?"
+  },
+  "ClassTypeOptions": {
+    "eventLabel": "Evento",
+    "whatHeading": "Cosa fa:",
+    "membersHeading": "Cosa vedono i membri:",
+    "whenHeading": "Quando cambiarlo:",
+    "levelNoneChosen": "Tutti i livelli",
+    "audienceNoneChosen": "Tutti",
+    "event_tip": "Le prenotazioni usano gli ingressi eventi del pacchetto, non quelli dei corsi.",
+    "event_what": "Una prenotazione in un corso di questo tipo scala ingressi eventi dal pacchetto di abbonamento del membro. Gli ingressi corsi restano intatti.",
+    "event_members": "Prenotano solo i membri il cui pacchetto include gli eventi. Nel calendario il corso porta l’etichetta «Evento» e il filtro «Eventi» lo trova.",
+    "event_when": "Per ciò che non è l’allenamento quotidiano: seminario, workshop, open day o gara interna. Se ogni abbonamento deve coprire il corso, lascialo come corso normale.",
+    "visits_tip": "Quanti ingressi del pacchetto usa una prenotazione. Di solito 1.",
+    "visits_what": "Ogni prenotazione scala tanti ingressi dal pacchetto del membro, da 1 a 10. Così un corso più lungo o più costoso costa di più senza un pacchetto a parte.",
+    "visits_members": "Prima di prenotare, i membri vedono quanti ingressi usa il corso. Con un pacchetto da 8 ingressi e un corso da 2, ci stanno 4 prenotazioni.",
+    "visits_when": "Per i corsi che ti costano di più: piccoli gruppi, sessioni da 90 minuti, attrezzatura speciale o un coach ospite. I corsi normali restano a 1.",
+    "level_tip": "Per quali livelli è il corso. Senza scelta, per tutti.",
+    "level_what": "Scegline uno o più: Principianti, Intermedi, Avanzati. Senza scelta il corso è per tutti i livelli. Informa; non blocca mai una prenotazione.",
+    "level_members": "Il livello compare nei dettagli del corso. Chi filtra il calendario, la pagina del box o «Intorno a me» per «Principianti» trova i corsi per principianti e quelli per tutti i livelli.",
+    "level_when": "Segna i corsi che un nuovo arrivato non dovrebbe scegliere a caso (sollevamento olimpico solo per Avanzati) e quelli che sono la prima visita ideale (Foundations per Principianti). Un corso scalabile per tutti resta senza scelta.",
+    "audience_tip": "Per quali gruppi è pensato il corso. Senza scelta, per tutti.",
+    "audience_what": "Scegli i gruppi per cui è fatto il corso, per esempio «Adolescenti». Senza scelta è per tutti. Anche questo informa; non blocca mai una prenotazione.",
+    "audience_members": "I gruppi compaiono nei dettagli del corso, e i membri filtrano con essi il calendario e la pagina del box.",
+    "audience_when": "Quando il corso è pensato per persone precise: solo donne, bambini, over 40. I corsi aperti restano senza scelta, perché nessuno pensi che non siano per lui."
   }
 }

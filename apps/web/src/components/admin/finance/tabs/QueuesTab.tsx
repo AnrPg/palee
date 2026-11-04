@@ -14,7 +14,7 @@ import { useTranslations } from "next-intl";
 
 import { fetchFinanceQueues, type FinanceRecord } from "@/api/finance";
 import { formatDateKey } from "@/lib/local-date";
-import { parseFinanceQueue, type FinanceQueue } from "@/components/admin/finance/finance-queues";
+import { offeredQueues, parseFinanceQueue, type FinanceQueue } from "@/components/admin/finance/finance-queues";
 import { FailedChargesList, useFailedCharges } from "@/components/admin/payments/FailedCharges";
 import { DeskPackageRequestRows, PersonLink, useDeskPackageRequests } from "@/components/admin/finance/payments/DeskPackageRequests";
 import { ReceivePaymentDialog } from "@/components/admin/finance/payments/ReceivePaymentDialog";
@@ -24,6 +24,7 @@ import { SemanticLabel } from "@/components/semantic-label";
 import { useSession } from "@/components/session-provider";
 import { useSelectedMembershipRole } from "@/lib/membership-role";
 import { can } from "@/lib/role-navigation";
+import { useBusinessFeatures } from "@/lib/use-business-features";
 
 type QueueKey = FinanceQueue;
 
@@ -53,20 +54,13 @@ export function QueuesTab({ locationIds }: { locationIds?: string } = {}) {
   const statusLabel = useStatusLabel();
   const [receiveFrom, setReceiveFrom] = useState<{ userId: string; nickname: string } | null>(null);
   const { membership } = useSelectedMembershipRole();
+  const features = useBusinessFeatures({ locationIds });
   // ADR-260: saved-card charges that need a person, for whoever handles billing or takes payments.
   const seesFailedCharges = can(membership, "manage_billing") || can(membership, "take_payments");
   // ADR-274: one «Οφειλές» list (one row per person, oldest debt first)
   // replaces the separate pending-payment and overdue-invoice lists.
   // ADR-291: packages asked for in the app, waiting to be paid at the desk.
   const seesAwaiting = seesFailedCharges || can(membership, "view_finance_reports");
-  const CHIPS: Array<{ id: QueueKey; label: string }> = [
-    { id: "debts", label: standingT("debtsQueue") },
-    ...(seesAwaiting ? [{ id: "awaiting" as const, label: deskT("queueChip") }] : []),
-    { id: "expiring", label: i18n("expiringb98d672") },
-    ...(seesFailedCharges ? [{ id: "failed" as const, label: paymentsT("queueChip") }] : []),
-    { id: "rewards", label: i18n("pendingRewardse6d6885") },
-    { id: "promos", label: i18n("promoRedemptions2388269") },
-  ];
   const { tokens } = useSession();
   const token = tokens?.access_token;
   // The open list lives in the address (`?queue=`), so every alert and notice
@@ -75,8 +69,6 @@ export function QueuesTab({ locationIds }: { locationIds?: string } = {}) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const requested = parseFinanceQueue(searchParams.get("queue"));
-  const offered = (id: QueueKey | null): id is QueueKey => id !== null && CHIPS.some((chip) => chip.id === id);
-  const active: QueueKey = offered(requested) ? requested : "debts";
   const setActive = useCallback(
     (queue: QueueKey) => {
       const params = new URLSearchParams(searchParams.toString());
@@ -108,6 +100,23 @@ export function QueuesTab({ locationIds }: { locationIds?: string } = {}) {
     promos: queues.promotion_redemptions ?? [],
   };
 
+  // ADR-470: only the lists that mean something for this business.
+  const labels: Record<QueueKey, string> = {
+    debts: standingT("debtsQueue"),
+    awaiting: deskT("queueChip"),
+    expiring: i18n("expiringb98d672"),
+    failed: paymentsT("queueChip"),
+    rewards: i18n("pendingRewardse6d6885"),
+    promos: i18n("promoRedemptions2388269"),
+  };
+  const CHIPS = offeredQueues({
+    seesFailed: seesFailedCharges,
+    seesAwaiting,
+    counts: Object.fromEntries(Object.entries(rowsByKey).map(([key, list]) => [key, list.length])) as Record<QueueKey, number>,
+    features: features.state,
+  }).map((id) => ({ id, label: labels[id] }));
+  const offered = (id: QueueKey | null): id is QueueKey => id !== null && CHIPS.some((chip) => chip.id === id);
+  const active: QueueKey = offered(requested) ? requested : "debts";
   const rows = rowsByKey[active];
 
   return (
@@ -188,6 +197,7 @@ export function QueuesTab({ locationIds }: { locationIds?: string } = {}) {
                     {row.oldest_due_on ? (
                       <span style={{ color: "var(--muted)" }}> · {standingT("dueSince", { date: dateText(uiLocale, row.oldest_due_on) })}</span>
                     ) : null}
+                    <KeptContact contact={row.kept_contact} note={standingT("keptContact")} />
                   </span>
                   <span className="flex flex-wrap items-center justify-end gap-2">
                     {status ? (
@@ -246,5 +256,32 @@ function QueueRow({ children, last }: { children: React.ReactNode; last: boolean
     >
       {children}
     </div>
+  );
+}
+
+/**
+ * ADR-450: a person who deleted their account while owing the box. The box
+ * keeps the name, email and SMS number only until the debt is paid.
+ */
+function KeptContact({ contact, note }: { contact: unknown; note: string }) {
+  if (!contact || typeof contact !== "object") return null;
+  const { email, phone_e164: phone } = contact as { email?: unknown; phone_e164?: unknown };
+  const link = { color: "var(--text-soft)" };
+  return (
+    <span className="mt-0.5 block text-xs" style={{ color: "var(--muted)" }} data-testid="debt-kept-contact">
+      {note}
+      {typeof email === "string" && email ? (
+        <>
+          {" · "}
+          <a href={`mailto:${email}`} style={link}>{email}</a>
+        </>
+      ) : null}
+      {typeof phone === "string" && phone ? (
+        <>
+          {" · "}
+          <a href={`tel:${phone}`} style={link} dir="ltr">{phone}</a>
+        </>
+      ) : null}
+    </span>
   );
 }

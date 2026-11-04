@@ -518,6 +518,98 @@ defmodule PaleeWeb.TrainingFloorControllerTest do
       assert %{"display" => %{"mode" => "all", "set_by" => "self"}} =
                as.(member) |> get("/api/me/fitness-profile") |> json_response(200)
     end
+
+    test "a coach's choice counts only while the box still coaches the client", ctx do
+      %{as: as, base: base, coach: coach, person: person} = ctx
+      member = person.(:member)
+
+      mode = fn ->
+        (as.(member) |> get("/api/me/fitness-profile") |> json_response(200))["display"]
+      end
+
+      {:ok, relationship} =
+        Palee.Coaching.start_relationship(%{organization_id: ctx.organization.id}, %{
+          coach_user_id: coach.id,
+          client_user_id: member.id,
+          origin: "assigned"
+        })
+
+      as.(coach)
+      |> send_json(:put, "#{base}/staff/clients/#{member.id}/fitness-display", %{display: "none"})
+      |> json_response(200)
+
+      assert %{"mode" => "none", "set_by" => "coach"} = mode.()
+
+      # However the relationship ended, a choice nobody can change any more
+      # no longer hides the card.
+      set_ended = fn ended ->
+        Repo.query!(
+          "UPDATE coaching_relationships SET ended_at = #{ended} WHERE id = $1",
+          [Ecto.UUID.dump!(relationship.id)]
+        )
+      end
+
+      set_ended.("now()")
+      assert %{"mode" => "all", "set_by" => "self"} = mode.()
+      set_ended.("NULL")
+      assert %{"mode" => "none"} = mode.()
+
+      # Ending it from the coaching screen removes the box's choice.
+      as.(coach)
+      |> post("#{base}/staff/coaching-relationships/#{relationship.id}/end")
+      |> json_response(200)
+
+      assert %{rows: [[0]]} =
+               Repo.query!(
+                 "SELECT count(*) FROM fitness_display_overrides WHERE client_user_id = $1",
+                 [Ecto.UUID.dump!(member.id)]
+               )
+
+      assert %{"mode" => "all", "set_by" => "self"} = mode.()
+    end
+
+    test "the change compares with the profile as it stood at the period's first day", ctx do
+      %{as: as, person: person} = ctx
+      member = person.(:member)
+      today = Date.utc_today()
+
+      # Πρόοδος's 6m and 1y are calendar months and years.
+      for {period, from} <- [
+            {"6m", Date.shift(today, month: -6)},
+            {"1y", Date.shift(today, year: -1)},
+            {"4w", Date.add(today, -28)}
+          ] do
+        assert %{"period_from" => iso} =
+                 as.(member)
+                 |> get("/api/me/fitness-profile?period=#{period}")
+                 |> json_response(200)
+
+        assert iso == Date.to_iso8601(from)
+      end
+
+      # A PR 400 days old counts half today (older than a year) but counted in
+      # full at the start of 6 months ago, when it was 7 months old.
+      for {name, kg, days} <- [{"Back squat", 200, 400}, {"Front squat", 60, 300}] do
+        as.(member)
+        |> post("/api/prs", %{
+          "name" => name,
+          "current_score" => kg,
+          "unit" => "kg",
+          "beaten_on" => today |> Date.add(-days) |> Date.to_iso8601()
+        })
+        |> json_response(201)
+      end
+
+      profile =
+        as.(member) |> get("/api/me/fitness-profile?period=6m") |> json_response(200)
+
+      strength = Enum.find(profile["domains"], &(&1["domain"] == "strength"))
+      points = Map.new(strength["reasons"], &{&1["benchmark"], &1["points"]})
+      %{"back_squat" => old, "front_squat" => newer} = points
+
+      assert strength["score"] == round((old * 0.5 + newer) / 1.5)
+      assert strength["previous_score"] == round((old + newer) / 2)
+    end
   end
 
   describe "CP-E5 staff notes" do

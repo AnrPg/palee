@@ -23,6 +23,7 @@ import { useAnalyticsFilter } from "@/components/admin/analytics/use-analytics-f
 import type { AnalyticsDimension } from "@/lib/analytics-filter";
 import { SemanticLabel } from "@/components/semantic-label";
 import { useSession } from "@/components/session-provider";
+import { useBusinessFeatures } from "@/lib/use-business-features";
 import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
 import { PageHeader, pageHeaderActionClass } from "@/components/PageHeader";
 import { BranchFilterControl, BranchSplits, useBranchFilter, type BranchSplit } from "@/components/admin/BranchFilter";
@@ -73,6 +74,7 @@ export function FinanceDashboard({ analyticsMode = false }: { analyticsMode?: bo
   const directory = useAnalyticsDirectory();
   const filterLocations = analyticsFilter.filter.location_ids.length > 0 ? analyticsFilter.filter.location_ids.join(",") : undefined;
   const locationIds = analyticsMode ? filterLocations : branchFilter.param;
+  const features = useBusinessFeatures({ locationIds });
 
   const summaryQuery = useQuery({
     queryKey: analyticsMode
@@ -254,6 +256,8 @@ export function FinanceDashboard({ analyticsMode = false }: { analyticsMode?: bo
               </>
             )}
           />
+          {/* ADR-470: rewards only with a referral programme, or while some are still owed. */}
+          {features.shows("referrals", (queues.pending_referral_rewards ?? []).length) ? (
           <QueuePanel
             title={i18n("pendingRewardse6d6885")}
             help={widgetHelp("pending_rewards", i18n("pendingRewardse6d6885"))}
@@ -266,6 +270,7 @@ export function FinanceDashboard({ analyticsMode = false }: { analyticsMode?: bo
               </>
             )}
           />
+          ) : null}
         </section>
 
       </div>

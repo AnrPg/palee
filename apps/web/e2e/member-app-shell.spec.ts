@@ -226,7 +226,7 @@ async function stubMemberApi(page: Page) {
   );
   await page.route("**/api/org/*/executions", (route) => route.fulfill(json({ executions: [] })));
   await page.route("**/api/org/*/me/training-log/sources", (route) =>
-    route.fulfill(json({ classes: [], assignments: [], library_workouts: [] })),
+    route.fulfill(json({ available_sources: ["class", "freeform"], classes: [], assignments: [], library_workouts: [] })),
   );
   await page.route("**/api/org/*/me/workouts/*/injury-warnings**", (route) =>
     route.fulfill(json({ level: "none", warnings: [], warning_count: 0 })),

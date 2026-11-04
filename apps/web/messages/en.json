@@ -9,10 +9,10 @@
     "capacityLabel": "Places in each new class",
     "capacityHelp": "How many people can book a new class. You can still change it on each class.",
     "autoApproveLabel": "Confirm bookings automatically",
-    "autoApproveHelp": "On: a booking is confirmed at once. Off: each booking is a request that someone on staff must approve.",
+    "autoApproveHelp": "On: a booking is confirmed at once, with no waiting. Off: each booking is a request that someone on staff approves, and you set how long it waits for an answer.",
     "approvalWaitLabel": "Time to answer a booking request",
-    "approvalWaitHelp": "Only for classes without automatic confirmation. If nobody on staff answers a request within this time, it is cancelled, the visit goes back to the member and the place goes to the next person on the waitlist. A request never waits past the class start. This is not when bookings open: that is “Bookings open”.",
-    "approvalWaitClassHelp": "If nobody approves a request within this time, it is cancelled automatically. Applies only without automatic confirmation.",
+    "approvalWaitHelp": "If nobody on staff answers a request within this time, it is cancelled, the visit goes back to the member and the place goes to the next person on the waitlist. “No limit”: the request waits for an answer until the class starts. This is not when bookings open: that is “Bookings open”.",
+    "approvalWaitClassHelp": "If nobody on staff approves a request within this time, it is cancelled automatically and the place goes to the next person on the waitlist. “No limit”: the request waits for an answer until the class starts.",
     "approvalWaitNoLimit": "No limit (until the class starts)",
     "bookingWindowLabel": "Bookings open (days before the class)",
     "bookingWindowHelp": "The earliest a member can book: this many days before the class. Bookings stay open until the class starts. With “No limit” a class can be booked as soon as it is on the schedule. A subscription package can set its own.",
@@ -220,7 +220,6 @@
     "scheduledAt": "Scheduled at",
     "capacity": "Capacity",
     "timeoutMinutes": "Timeout minutes",
-    "autoApproveBookingsForThisSlot": "Auto-approve bookings for this class",
     "deleteSlot": "Delete class",
     "saveChanges": "Save changes",
     "createSlot": "Create class",
@@ -785,7 +784,7 @@
     "displayLabeld747868": "Display label",
     "addLeveld2d215f": "+ Add level",
     "reminderIntervalDaysee3ba34": "Reminder interval (days)",
-    "howOftenInDaysAMemberWithAn710fa76": "How often (in days) a box member with an outstanding balance receives a payment reminder notification. The reminder repeats until the balance is fully settled.",
+    "howOftenInDaysAMemberWithAn710fa76": "After that, how many days apart the reminder repeats until the member renews or leaves. A member who owes money gets a payment reminder at the same pace until the balance is settled.",
     "applicationSettingsIntroduction8f2e9b7": "application settings introduction",
     "appConfigurations1e15749": "App configurations.",
     "globalSettingsForAppearanceEngagementRulesAndWorkout915168c": "Global settings for appearance, engagement rules, and workout level definitions. Changes apply immediately across the app.",
@@ -2661,7 +2660,6 @@
     "featureOptionalClassSettings": "Optional class settings",
     "featureCapacity": "Capacity",
     "featureTimeoutMinutes": "Timeout minutes",
-    "featureAutoApprove": "Auto approve",
     "featureCreating": "Creating…",
     "featureReceipt": "Receipt",
     "featureReceiptDocumentTitle": "Receipt {reference}",
@@ -3049,14 +3047,11 @@
     "classTimerForbidden": "Only coaches and admins can control the class timer.",
     "classTimerRejected": "The timer can't do that right now.",
     "classTimerOffline": "Couldn't reach the server. Check the connection and try again.",
-    "classTimerChoosePreset": "This class has no timed workout. Pick a timer below.",
     "classTimerControlsLabel": "Timer controls",
     "classTimerStartAgain": "Start again",
     "classTimerFinish": "End timer",
     "classTimerReset": "Reset",
     "classTimerGetReadyLabel": "Get-ready countdown",
-    "classTimerPresetTitle": "Timer for this class",
-    "classTimerPresetHint": "Use a preset instead of the class workout, e.g. an EMOM clock for a strength session.",
     "classTimerUsePreset": "Use this timer",
     "classTimerUseWorkout": "Use the class workout",
     "classTimerJumpTitle": "Jump to a part",
@@ -3529,8 +3524,6 @@
     "admCheckInAllowanceExhausted": "This box member has used all open-gym visits for this period. You can grant extra visits in their profile.",
     "admCheckInFrozen": "This member's subscription package is frozen today. Cancel the freeze in their profile to check them in.",
     "admCheckInLocationNotIncluded": "This member's subscription package does not include this branch.",
-    "admClassTypeEvent": "Event",
-    "admClassTypeRulesHint": "Visits per booking: how many visits one booking uses from a subscription package. Mark special sessions as events so they use the subscription package's event visits.",
     "admVisitsPerBooking": "Visits per booking",
     "admDecrease": "Decrease",
     "admIncrease": "Increase",
@@ -4918,7 +4911,55 @@
     "semanticWorkoutContemporaryDance": "Contemporary & modern dance",
     "semanticWorkoutLatinDance": "Latin dance (salsa, bachata, reggaeton)",
     "semanticWorkoutStreetDance": "Street dance (hip-hop, heels)",
-    "semanticWorkoutSkateboarding": "Skateboarding"
+    "semanticWorkoutSkateboarding": "Skateboarding",
+    "classTimerHelpToggle": "What each button does",
+    "classTimerLiveHelp": "Everything you press here shows at once on every screen following this class.",
+    "classTimerReconnectingHelp": "The connection dropped. The buttons work again as soon as it is back.",
+    "classTimerWallScreen": "Wall screen",
+    "classTimerWallScreenHelp": "The clock in full screen for the room’s TV or computer. It always shows the same time as this remote.",
+    "classTimerCopyLinkHelp": "Send the link to the room’s device and open it there. That device needs to be signed in to an account of the box.",
+    "classTimerOnScreenHelp": "Show this class’s timer, leaderboard or WOD on one of the box’s screens for today.",
+    "classTimerOpenHere": "Open on this device",
+    "classTimerOpenHereHelp": "When this device is the room’s screen.",
+    "classTimerSoundHelp": "Beeps on this device in the last 3 seconds and at every phase change. It does not change the wall screen’s sound.",
+    "classTimerClockHelp": "“—” means there is no time yet. Time reads minutes:seconds; when it counts down, it shows what is left. “Next” is the part that follows.",
+    "classTimerCountdownHelp": "How many seconds the screen counts down before the start, so athletes can get in place.",
+    "classTimerCountdownNone": "None",
+    "classTimerCountdownSeconds": "{seconds} s",
+    "classTimerStartHelp": "Starts the clock on every screen after the countdown.",
+    "classTimerPauseHelp": "Stops the clock on every screen. The time is kept.",
+    "classTimerResumeHelp": "Carries on where it stopped, after a 3-second countdown.",
+    "classTimerBackHelp": "Goes to the previous part and starts it from the beginning.",
+    "classTimerRestart": "Restart part",
+    "classTimerRestartHelp": "This is the first part, so it starts again from the beginning.",
+    "classTimerNextHelp": "Ends the current part and starts the next one at once.",
+    "classTimerComplete": "Complete",
+    "classTimerCompleteHelp": "This is the last part, so the timer ends and the screens show “Time!”.",
+    "classTimerAdjustHelp": "Takes 30 seconds off or adds 30 seconds to the current part, for everyone.",
+    "classTimerFinishHelp": "Ends the timer now. The screens show “Time!”.",
+    "classTimerResetHelp": "Clears the clock on every screen and goes back to “Ready”.",
+    "classTimerResetConfirmTitle": "Reset the timer?",
+    "classTimerResetConfirmBody": "The clock clears on every screen in the room and goes back to “Ready”.",
+    "classTimerMore": "More",
+    "classTimerChooseTitle": "Choose a timer",
+    "classTimerOtherTimer": "Another timer",
+    "classTimerNoTimedWorkout": "This class has no timed workout.",
+    "classTimerInsteadOfWorkout": "Instead of the class’s workout.",
+    "classTimerOwnTimer": "Your own timer",
+    "classTimerOrCommon": "or choose a common timer:",
+    "classTimerJumpHelp": "Tap a part to go straight to it.",
+    "timerPresetHelp_tabata": "Tabata: 20 seconds of work, 10 of rest, 8 rounds (4 minutes).",
+    "timerPresetHelp_emom10": "EMOM (Every Minute On the Minute): at the start of every minute you do the work and rest for what is left. 10 rounds.",
+    "timerPresetHelp_e2mom20": "E2MOM: like EMOM, but every 2 minutes. 10 rounds, 20 minutes.",
+    "timerPresetHelp_amrap12": "AMRAP (As Many Rounds As Possible): as many rounds as you can in 12 minutes.",
+    "timerPresetHelp_forTime12": "For Time: finish as fast as you can. Time cap 12: the clock stops at 12 minutes.",
+    "timerPresetHelp_deathBy": "Death By: an EMOM where you add one rep every minute until you can’t keep up.",
+    "timerPresetHelp_stopwatch": "Stopwatch: counts up with no limit until you stop it.",
+    "subscriptionEndsTodayTitle": "Your subscription ends today",
+    "subscriptionEndsTodayBody": "{package} ends today. Renew to keep booking classes.",
+    "subscriptionEndedRenewBody": "{package} ended on {date}. Renew to book classes again.",
+    "subscriptionEndDayReminder": "Reminder on the day it ends",
+    "subscriptionDayAfterReminder": "Reminder on the day after it ends"
   },
   "PrSharing": {
     "gymLabel": "Where did you set this PR?",
@@ -6199,7 +6240,8 @@
     "chipFriends": "Friends",
     "friendsOnly": "Only where friends go",
     "friendsGoing": "{others, plural, =0 {{name} is going} other {{name} and # more are going}}",
-    "friendsLabel": "Going"
+    "friendsLabel": "Going",
+    "level_intermediate": "Intermediate"
   },
   "LocationPicker": {
     "title": "Location",
@@ -10000,8 +10042,8 @@
       "title": "AI assistant",
       "description": "The WOD assistant, plus scaling suggestions and voice logging with your own key. A coach approves every suggestion.",
       "enable": "Scaling suggestions",
-      "enableHint": "Off by default. Needs an API key.",
-      "key": "API key (Anthropic)",
+      "enableHint": "For an athlete with an injury the box recorded, AI suggests how to adapt the workout: a lighter load, fewer reps or another movement. A coach approves every suggestion before the athlete sees it. It needs AI because every workout and injury combination is different and fixed rules can't cover them.",
+      "key": "Claude key (Anthropic)",
       "keySet": "A key ending in {last4} is set.",
       "keyRejected": "The provider rejected the key ending in {last4}. Add a new key.",
       "keyMissing": "No key set.",
@@ -10010,8 +10052,9 @@
       "removeKey": "Remove key",
       "model": "Model (optional)",
       "saveModel": "Save model",
-      "usage": "This month · suggestions: {count} · cost: ${cost}",
-      "privacy": "Only the workout and the injuries the box recorded are sent, without names. The key is never shown again."
+      "usage": "This month · {count, plural, one {# suggestion} other {# suggestions}} · {voice, plural, one {# voice draft} other {# voice drafts}} · cost: ${cost}",
+      "privacy": "No names are sent. Suggestions send the workout and the injuries the box recorded. Voice logging sends only the text of what the member said. The key is never shown again.",
+      "keyHint": "Scaling suggestions and voice logging need it. Usage is billed to your own Anthropic account."
     },
     "queue": {
       "eyebrow": "My clients",
@@ -10075,7 +10118,7 @@
     },
     "settings": {
       "enable": "Voice logging",
-      "enableHint": "Box members record their workout and review a draft before saving. Audio is not kept."
+      "enableHint": "Members say in their own words what they did, and AI turns it into exercises, sets, reps and loads. The member checks the draft before saving. It needs AI to understand free speech like “three sets of ten at 60”. Audio is not kept."
     }
   },
   "Pickers": {
@@ -12204,7 +12247,9 @@
     "placementPinRemove": "Remove pin",
     "machineOnPlan": "On the floor plan",
     "machinePhotoRemove": "Remove photo",
-    "machinePhotoAdd": "{max, plural, one {Add a photo} other {Photos (up to #)}}"
+    "machinePhotoAdd": "{max, plural, one {Add a photo} other {Photos (up to #)}}",
+    "introSingle": "The box's rooms and spaces: where classes happen, what gets cleaned and where the equipment is. Add a floor plan to draw them on it.",
+    "planAndSpaces": "Floor plan and spaces"
   },
   "emailVerification": {
     "bannerText": "Confirm your email. We sent a link to {email}.",
@@ -13607,7 +13652,9 @@
         "community_partners_enabled": "Training partners",
         "trials_enabled": "Trials",
         "trials_seats_per_class": "Trial places per class",
-        "trials_approval": "Trial approval"
+        "trials_approval": "Trial approval",
+        "finance_subscription_end_day_reminder": "Reminder on the day it ends",
+        "finance_subscription_day_after_reminder": "Reminder on the day after it ends"
       }
     }
   },
@@ -14906,7 +14953,8 @@
     "noEnd": "No end",
     "renews": "renews",
     "dueSince": "since {date}",
-    "debtsQueue": "Debts"
+    "debtsQueue": "Debts",
+    "keptContact": "Account deleted · contact kept until this is paid"
   },
   "WorkoutTypes": {
     "family": {
@@ -17129,7 +17177,6 @@
       "withdrawReasonRequired": "Write the reason.",
       "towards": "For {rank}:",
       "history": "History",
-      "historyStripe": "{rank} +{stripes}",
       "picker": {
         "count": "{count, plural, one {# template} other {# templates}}",
         "step1": "Step 1 of 2 · What do you teach?",
@@ -18438,5 +18485,32 @@
       "unknownPerson": "Unknown",
       "beforeValue": "{value} · {from}–{to}"
     }
+  },
+  "ExplainedSetting": {
+    "about": "What is «{name}»?"
+  },
+  "ClassTypeOptions": {
+    "eventLabel": "Event",
+    "whatHeading": "What it does:",
+    "membersHeading": "What members see:",
+    "whenHeading": "When to change it:",
+    "levelNoneChosen": "All levels",
+    "audienceNoneChosen": "Everyone",
+    "event_tip": "Bookings use the package's event visits, not its class visits.",
+    "event_what": "A booking in a class of this type takes event visits from the member's subscription package. Their class visits stay untouched.",
+    "event_members": "Only members whose package includes events can book. On the schedule the class carries an «Event» tag, and the «Events» filter finds it.",
+    "event_when": "For anything that is not everyday training: a seminar, workshop, open day or in-house competition. If every subscription should cover the class, leave it a regular class.",
+    "visits_tip": "How many package visits one booking uses. Usually 1.",
+    "visits_what": "Each booking takes this many visits from the member's package, from 1 to 10. A longer or costlier class can cost more without a separate package.",
+    "visits_members": "Before booking, members see how many visits the class uses. With an 8-visit package and a 2-visit class, they can book it 4 times.",
+    "visits_when": "For classes that cost you more: small groups, 90-minute sessions, special equipment or a guest coach. Regular classes stay at 1.",
+    "level_tip": "Which levels the class suits. With none chosen, all levels.",
+    "level_what": "Pick one or more: Beginners, Intermediate, Advanced. With none chosen the class is for all levels. It informs; it never blocks a booking.",
+    "level_members": "The level shows in the class details. Anyone who filters the schedule, the box page or «Around me» by «Beginners» finds the classes for beginners and those for all levels.",
+    "level_when": "Mark the classes a newcomer should not pick by chance (Olympic lifting for Advanced only) and those that make the best first visit (Foundations for Beginners). A class scaled for everyone stays with none chosen.",
+    "audience_tip": "Which groups the class is made for. With none chosen, everyone.",
+    "audience_what": "Pick the groups the class is built for, such as «Teens». With none chosen it is for everyone. This also informs; it never blocks a booking.",
+    "audience_members": "The groups show in the class details, and members filter the schedule and the box page by them.",
+    "audience_when": "When the class is designed for particular people: women only, kids, over 40. Open classes stay with none chosen, so nobody thinks they are not for them."
   }
 }

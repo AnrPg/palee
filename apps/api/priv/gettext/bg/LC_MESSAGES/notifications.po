@@ -850,6 +850,7 @@ msgstr "Екипът на Palee възстанови твоя отзив"
 
 msgid "Your review shows again in the box's reviews."
 msgstr "Отзивът ти отново се вижда сред отзивите за бокса."
+
 msgid "A webhook was turned off"
 msgstr "Уебхук беше изключен"
 
@@ -861,3 +862,12 @@ msgstr "Нови умения"
 
 msgid "Your coach ticked new skills for %{rank}."
 msgstr "Треньорът ти отбеляза нови умения за %{rank}."
+
+msgid "Your subscription ends today"
+msgstr "Абонаментът ти изтича днес"
+
+msgid "%{package} ends today. Renew to keep booking classes."
+msgstr "%{package} изтича днес. Поднови го, за да продължиш да записваш часове."
+
+msgid "%{package} ended on %{date}. Renew to book classes again."
+msgstr "%{package} изтече на %{date}. Поднови го, за да записваш часове отново."

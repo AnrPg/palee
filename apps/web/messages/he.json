@@ -9,10 +9,10 @@
     "capacityLabel": "מקומות בכל שיעור חדש",
     "capacityHelp": "כמה אנשים יכולים להזמין שיעור חדש. אפשר לשנות את זה בכל שיעור.",
     "autoApproveLabel": "אישור הזמנות אוטומטי",
-    "autoApproveHelp": "מופעל: ההזמנה מאושרת מיד. כבוי: כל הזמנה היא בקשה שמישהו מהצוות צריך לאשר.",
+    "autoApproveHelp": "מופעל: ההזמנה מאושרת מיד, בלי המתנה. כבוי: כל הזמנה היא בקשה שמישהו מהצוות מאשר, ואתה קובע כמה זמן היא מחכה לתשובה.",
     "approvalWaitLabel": "זמן למענה על בקשת הזמנה",
-    "approvalWaitHelp": "רק לשיעורים בלי אישור אוטומטי. אם אף אחד מהצוות לא עונה בזמן הזה, הבקשה מבוטלת, הביקור חוזר לחבר והמקום עובר לבא ברשימת ההמתנה. בקשה אף פעם לא מחכה אחרי תחילת השיעור. זה לא מתי נפתחות ההזמנות: זה «פתיחת הזמנות».",
-    "approvalWaitClassHelp": "אם אף אחד לא מאשר את הבקשה בזמן הזה, היא מבוטלת אוטומטית. חל רק בלי אישור אוטומטי.",
+    "approvalWaitHelp": "אם אף אחד מהצוות לא עונה בזמן הזה, הבקשה מבוטלת, הביקור חוזר לחבר והמקום עובר לבא ברשימת ההמתנה. «ללא הגבלה»: הבקשה מחכה לתשובה עד תחילת השיעור. זה לא מתי נפתחות ההזמנות: זה «פתיחת הזמנות».",
+    "approvalWaitClassHelp": "אם אף אחד מהצוות לא מאשר את הבקשה בזמן הזה, היא מבוטלת אוטומטית והמקום עובר לבא ברשימת ההמתנה. «ללא הגבלה»: הבקשה מחכה לתשובה עד תחילת השיעור.",
     "approvalWaitNoLimit": "ללא הגבלה (עד תחילת השיעור)",
     "bookingWindowLabel": "פתיחת הזמנות (ימים לפני השיעור)",
     "bookingWindowHelp": "המוקדם ביותר שחבר יכול להזמין: כמה ימים לפני השיעור. ההזמנות נשארות פתוחות עד תחילת השיעור. עם «ללא הגבלה» אפשר להזמין ברגע שהשיעור בלוח. חבילת מנוי יכולה לקבוע ערך משלה.",
@@ -220,7 +220,6 @@
     "scheduledAt": "מתוכנן בשעה",
     "capacity": "קיבולת",
     "timeoutMinutes": "דקות פסק זמן",
-    "autoApproveBookingsForThisSlot": "אישור אוטומטי של הרשמות לשיעור הזה",
     "deleteSlot": "מחיקת שיעור",
     "saveChanges": "שמור שינויים",
     "createSlot": "יצירת שיעור",
@@ -785,7 +784,7 @@
     "displayLabeld747868": "תווית תצוגה",
     "addLeveld2d215f": "+ הוסף רמה",
     "reminderIntervalDaysee3ba34": "מרווח תזכורות (ימים)",
-    "howOftenInDaysAMemberWithAn710fa76": "באיזו תדירות (בימים) חבר עם יתרת חוב מקבל הודעת תזכורת לתשלום. התזכורת חוזרת על עצמה עד להסדרה מלאה של היתרה.",
+    "howOftenInDaysAMemberWithAn710fa76": "לאחר מכן: כל כמה ימים התזכורת חוזרת, עד שהחבר מחדש או עוזב. מי שחייב כסף מקבל תזכורת תשלום באותו קצב עד שהיתרה נפרעת.",
     "applicationSettingsIntroduction8f2e9b7": "מבוא הגדרות אפליקציה",
     "appConfigurations1e15749": "תצורות אפליקציה.",
     "globalSettingsForAppearanceEngagementRulesAndWorkout915168c": "הגדרות גלובליות למראה, כללי מעורבות והגדרות רמת האימון. השינויים יחולו באופן מיידי בכל האפליקציה.",
@@ -2661,7 +2660,6 @@
     "featureOptionalClassSettings": "הגדרות נוספות לשיעור",
     "featureCapacity": "קיבולת",
     "featureTimeoutMinutes": "דקות פסק זמן",
-    "featureAutoApprove": "אישור אוטומטי",
     "featureCreating": "יוצר...",
     "featureReceipt": "קבלה",
     "featureReceiptDocumentTitle": "קבלה {reference}",
@@ -3049,14 +3047,11 @@
     "classTimerForbidden": "רק מאמנים ומנהלים יכולים לשלוט בטיימר של השיעור.",
     "classTimerRejected": "הטיימר לא יכול לעשות זאת כרגע.",
     "classTimerOffline": "לא ניתן להגיע לשרת. בדוק את החיבור ונסה שוב.",
-    "classTimerChoosePreset": "לשיעור אין אימון מתוזמן. בחר טיימר למטה.",
     "classTimerControlsLabel": "פקדי הטיימר",
     "classTimerStartAgain": "התחל שוב",
     "classTimerFinish": "סיים טיימר",
     "classTimerReset": "איפוס",
     "classTimerGetReadyLabel": "ספירה לאחור להתחלה",
-    "classTimerPresetTitle": "טיימר לשיעור זה",
-    "classTimerPresetHint": "השתמש בתבנית במקום אימון השיעור, למשל EMOM לאימון כוח.",
     "classTimerUsePreset": "השתמש בטיימר זה",
     "classTimerUseWorkout": "השתמש באימון השיעור",
     "classTimerJumpTitle": "קפוץ לחלק",
@@ -3529,8 +3524,6 @@
     "admCheckInAllowanceExhausted": "מנוי זה ניצל את כל כניסות האימון החופשי לתקופה זו. אפשר להעניק כניסות נוספות בפרופיל שלו.",
     "admCheckInFrozen": "חבילת המנוי של חבר הבוקס הזה מוקפאת היום. בטל את ההקפאה בפרופיל שלו כדי לעשות לו צ'ק-אין.",
     "admCheckInLocationNotIncluded": "חבילת המנוי של חבר הבוקס הזה אינה כוללת את הסניף הזה.",
-    "admClassTypeEvent": "אירוע",
-    "admClassTypeRulesHint": "כניסות להזמנה: כמה כניסות מחבילת המנוי מנצלת הזמנה אחת. סמן מפגשים מיוחדים כאירועים כדי שינצלו את כניסות האירועים של חבילת המנוי.",
     "admVisitsPerBooking": "כניסות להזמנה",
     "admDecrease": "הפחתה",
     "admIncrease": "הגדלה",
@@ -4918,7 +4911,55 @@
     "semanticWorkoutContemporaryDance": "מחול עכשווי",
     "semanticWorkoutLatinDance": "ריקודים לטיניים (סלסה, בצ'אטה, רגאטון)",
     "semanticWorkoutStreetDance": "ריקודי רחוב (היפ הופ, היילס)",
-    "semanticWorkoutSkateboarding": "סקייטבורד"
+    "semanticWorkoutSkateboarding": "סקייטבורד",
+    "classTimerHelpToggle": "מה עושה כל כפתור",
+    "classTimerLiveHelp": "כל מה שתלחץ כאן מופיע מיד בכל המסכים של השיעור.",
+    "classTimerReconnectingHelp": "החיבור נותק. הכפתורים יעבדו שוב ברגע שהוא יחזור.",
+    "classTimerWallScreen": "מסך קיר",
+    "classTimerWallScreenHelp": "השעון במסך מלא לטלוויזיה או למחשב של האולם. הוא תמיד מציג את אותו זמן כמו השלט הזה.",
+    "classTimerCopyLinkHelp": "שלח את הקישור למכשיר של האולם ופתח אותו שם. המכשיר צריך להיות מחובר לחשבון של ה-box.",
+    "classTimerOnScreenHelp": "הצג את הטיימר, הדירוג או ה-WOD של השיעור באחד המסכים של ה-box להיום.",
+    "classTimerOpenHere": "פתח במכשיר הזה",
+    "classTimerOpenHereHelp": "אם המכשיר הזה הוא המסך של האולם.",
+    "classTimerSoundHelp": "צפצופים במכשיר הזה ב-3 השניות האחרונות ובכל החלפת שלב. לא משנה את הצליל של מסך הקיר.",
+    "classTimerClockHelp": "„—” אומר שעדיין אין זמן. הזמן נכתב דקות:שניות; כשהוא סופר לאחור הוא מציג כמה נשאר. „הבא” הוא החלק שבא אחר כך.",
+    "classTimerCountdownHelp": "כמה שניות המסך סופר לאחור לפני ההתחלה, כדי שהספורטאים יתמקמו.",
+    "classTimerCountdownNone": "בלי",
+    "classTimerCountdownSeconds": "{seconds} שנ׳",
+    "classTimerStartHelp": "מפעיל את השעון בכל המסכים אחרי הספירה לאחור.",
+    "classTimerPauseHelp": "עוצר את השעון בכל המסכים. הזמן נשמר.",
+    "classTimerResumeHelp": "ממשיך מהמקום שבו נעצר, אחרי ספירה לאחור של 3 שניות.",
+    "classTimerBackHelp": "עובר לחלק הקודם ומתחיל אותו מההתחלה.",
+    "classTimerRestart": "מההתחלה",
+    "classTimerRestartHelp": "זה החלק הראשון, אז הוא מתחיל שוב מההתחלה.",
+    "classTimerNextHelp": "מסיים את החלק הנוכחי ומתחיל מיד את הבא.",
+    "classTimerComplete": "סיום",
+    "classTimerCompleteHelp": "זה החלק האחרון, אז הטיימר מסתיים והמסכים מציגים „הזמן!”.",
+    "classTimerAdjustHelp": "מוריד או מוסיף 30 שניות לחלק הנוכחי, לכולם.",
+    "classTimerFinishHelp": "מסיים את הטיימר עכשיו. המסכים מציגים „הזמן!”.",
+    "classTimerResetHelp": "מאפס את השעון בכל המסכים וחוזר ל„מוכן”.",
+    "classTimerResetConfirmTitle": "לאפס את הטיימר?",
+    "classTimerResetConfirmBody": "השעון מתאפס בכל המסכים באולם וחוזר ל„מוכן”.",
+    "classTimerMore": "עוד",
+    "classTimerChooseTitle": "בחר טיימר",
+    "classTimerOtherTimer": "טיימר אחר",
+    "classTimerNoTimedWorkout": "לשיעור הזה אין אימון עם זמן.",
+    "classTimerInsteadOfWorkout": "במקום האימון של השיעור.",
+    "classTimerOwnTimer": "טיימר משלך",
+    "classTimerOrCommon": "או בחר מהטיימרים הנפוצים:",
+    "classTimerJumpHelp": "הקש על חלק כדי לעבור אליו ישירות.",
+    "timerPresetHelp_tabata": "טבטה: 20 שניות עבודה, 10 מנוחה, 8 סבבים (4 דקות).",
+    "timerPresetHelp_emom10": "EMOM (כל דקה בתחילת הדקה): בתחילת כל דקה מבצעים את התרגיל ונחים בזמן שנשאר. 10 סבבים.",
+    "timerPresetHelp_e2mom20": "E2MOM: כמו EMOM, אבל כל 2 דקות. 10 סבבים, 20 דקות.",
+    "timerPresetHelp_amrap12": "AMRAP (כמה שיותר סבבים): כמה סבבים שתספיק ב-12 דקות.",
+    "timerPresetHelp_forTime12": "For Time: מסיימים הכי מהר שאפשר. Time cap 12: השעון נעצר אחרי 12 דקות.",
+    "timerPresetHelp_deathBy": "Death By: EMOM שבו מוסיפים חזרה אחת בכל דקה עד שלא עומדים בקצב.",
+    "timerPresetHelp_stopwatch": "סטופר: סופר קדימה בלי הגבלה עד שתעצור אותו.",
+    "subscriptionEndsTodayTitle": "המנוי שלך מסתיים היום",
+    "subscriptionEndsTodayBody": "{package} מסתיים היום. חדשו אותו כדי להמשיך להזמין שיעורים.",
+    "subscriptionEndedRenewBody": "{package} הסתיים ב-{date}. חדשו אותו כדי להזמין שיעורים שוב.",
+    "subscriptionEndDayReminder": "תזכורת ביום הסיום",
+    "subscriptionDayAfterReminder": "תזכורת ביום שאחרי הסיום"
   },
   "PrSharing": {
     "gymLabel": "איפה קבעת את השיא הזה?",
@@ -6199,7 +6240,8 @@
     "chipFriends": "חברים",
     "friendsOnly": "רק איפה שחברים הולכים",
     "friendsGoing": "{others, plural, =0 {הולך/ת: {name}} other {הולכים: {name} ועוד #}}",
-    "friendsLabel": "הולכים"
+    "friendsLabel": "הולכים",
+    "level_intermediate": "בינוניים"
   },
   "LocationPicker": {
     "title": "מיקום",
@@ -10000,8 +10042,8 @@
       "title": "עוזר AI",
       "description": "עוזר ה-WOD, וגם הצעות התאמה ורישום קולי עם מפתח משלכם. מאמן מאשר כל הצעה.",
       "enable": "הצעות התאמה",
-      "enableHint": "כבויות כברירת מחדל. נדרש מפתח API.",
-      "key": "מפתח API (Anthropic)",
+      "enableHint": "לספורטאי עם פציעה שתיעד המכון, ה-AI מציע איך להתאים את האימון: פחות משקל, פחות חזרות או תרגיל אחר. מאמן מאשר כל הצעה לפני שהספורטאי רואה אותה. צריך AI כי כל שילוב של אימון ופציעה שונה, וכללים קבועים לא מכסים אותם.",
+      "key": "מפתח Claude (Anthropic)",
       "keySet": "הוגדר מפתח שמסתיים ב-{last4}.",
       "keyRejected": "הספק דחה את המפתח שמסתיים ב-{last4}. הזינו מפתח חדש.",
       "keyMissing": "לא הוגדר מפתח.",
@@ -10010,8 +10052,9 @@
       "removeKey": "הסרת מפתח",
       "model": "מודל (אופציונלי)",
       "saveModel": "שמירת מודל",
-      "usage": "החודש · הצעות: {count} · עלות: ${cost}",
-      "privacy": "נשלחים רק האימון והפציעות שתיעד המכון, ללא שמות. המפתח לא יוצג שוב."
+      "usage": "החודש · {count, plural, one {הצעה אחת} two {# הצעות} other {# הצעות}} · {voice, plural, one {טיוטה קולית אחת} two {# טיוטות קוליות} other {# טיוטות קוליות}} · עלות: ${cost}",
+      "privacy": "לא נשלחים שמות. ההצעות שולחות את האימון ואת הפציעות שתיעד המכון. הרישום בקול שולח רק את הטקסט של מה שאמר המנוי. המפתח לא יוצג שוב.",
+      "keyHint": "הצעות ההתאמה והרישום בקול צריכים אותו. השימוש מחויב בחשבון Anthropic שלך."
     },
     "queue": {
       "eyebrow": "הלקוחות שלי",
@@ -10075,7 +10118,7 @@
     },
     "settings": {
       "enable": "רישום בקול",
-      "enableHint": "חברים מקליטים את האימון ובודקים טיוטה לפני השמירה. השמע לא נשמר."
+      "enableHint": "המנויים אומרים במילים שלהם מה עשו, וה-AI הופך את זה לתרגילים, סטים, חזרות ומשקלים. המנוי בודק את הטיוטה לפני השמירה. צריך AI כדי להבין דיבור חופשי כמו „שלושה סטים של עשר עם 60”. האודיו לא נשמר."
     }
   },
   "Pickers": {
@@ -12204,7 +12247,9 @@
     "placementPinRemove": "הסר נעץ",
     "machineOnPlan": "בתוכנית הקומה",
     "machinePhotoRemove": "הסר תמונה",
-    "machinePhotoAdd": "{max, plural, one {הוסף תמונה} two {תמונות (עד שתיים)} other {תמונות (עד #)}}"
+    "machinePhotoAdd": "{max, plural, one {הוסף תמונה} two {תמונות (עד שתיים)} other {תמונות (עד #)}}",
+    "introSingle": "החדרים והחללים של הבוקס: איפה מתקיימים השיעורים, מה מנוקה ואיפה נמצא הציוד. הוסף תוכנית קומה כדי לשרטט אותם עליה.",
+    "planAndSpaces": "תוכנית קומה וחללים"
   },
   "emailVerification": {
     "bannerText": "כדאי לאשר את המייל. שלחנו קישור אל {email}.",
@@ -13607,7 +13652,9 @@
         "community_partners_enabled": "שותפי אימון",
         "trials_enabled": "שיעורי ניסיון",
         "trials_seats_per_class": "מקומות לניסיון בכל שיעור",
-        "trials_approval": "אישור שיעורי ניסיון"
+        "trials_approval": "אישור שיעורי ניסיון",
+        "finance_subscription_end_day_reminder": "תזכורת ביום הסיום",
+        "finance_subscription_day_after_reminder": "תזכורת ביום שאחרי הסיום"
       }
     }
   },
@@ -14906,7 +14953,8 @@
     "noEnd": "ללא סיום",
     "renews": "מתחדש",
     "dueSince": "לתשלום {date}",
-    "debtsQueue": "חובות"
+    "debtsQueue": "חובות",
+    "keptContact": "החשבון נמחק · פרטי הקשר נשמרים עד התשלום"
   },
   "WorkoutTypes": {
     "family": {
@@ -17129,7 +17177,6 @@
       "withdrawReasonRequired": "כתבו את הסיבה.",
       "towards": "לקראת {rank}:",
       "history": "היסטוריה",
-      "historyStripe": "{rank} +{stripes}",
       "picker": {
         "count": "{count, plural, one {תבנית אחת} other {# תבניות}}",
         "step1": "שלב 1 מתוך 2 · מה את/ה מלמד/ת?",
@@ -18438,5 +18485,32 @@
       "unknownPerson": "לא ידוע",
       "beforeValue": "{value} · {from}–{to}"
     }
+  },
+  "ExplainedSetting": {
+    "about": "מה זה «{name}»?"
+  },
+  "ClassTypeOptions": {
+    "eventLabel": "אירוע",
+    "whatHeading": "מה זה עושה:",
+    "membersHeading": "מה החברים רואים:",
+    "whenHeading": "מתי לשנות:",
+    "levelNoneChosen": "כל הרמות",
+    "audienceNoneChosen": "כולם",
+    "event_tip": "הזמנות נספרות מכניסות האירועים של החבילה, לא מכניסות השיעורים.",
+    "event_what": "הזמנה לשיעור מסוג זה מורידה כניסות אירועים מחבילת המנוי של החבר. כניסות השיעורים לא נפגעות.",
+    "event_members": "רק חברים שהחבילה שלהם כוללת אירועים יכולים להזמין. בלוח הזמנים השיעור מסומן «אירוע» והמסנן «אירועים» מוצא אותו.",
+    "event_when": "לכל מה שאינו אימון יומיומי: סמינר, סדנה, יום פתוח או תחרות פנימית. אם כל מנוי צריך לכסות את השיעור, השאר אותו שיעור רגיל.",
+    "visits_tip": "כמה כניסות מהחבילה הזמנה אחת מנצלת. בדרך כלל 1.",
+    "visits_what": "כל הזמנה מורידה כמספר הזה כניסות מחבילת החבר, מ-1 עד 10. כך שיעור ארוך או יקר יותר עולה יותר בלי חבילה נפרדת.",
+    "visits_members": "לפני ההזמנה החברים רואים כמה כניסות השיעור מנצל. עם חבילה של 8 כניסות ושיעור של 2, נכנסות 4 הזמנות.",
+    "visits_when": "לשיעורים שעולים לך יותר: קבוצות קטנות, אימונים של 90 דקות, ציוד מיוחד או מאמן אורח. שיעורים רגילים נשארים על 1.",
+    "level_tip": "לאילו רמות השיעור מתאים. בלי בחירה, לכולן.",
+    "level_what": "בחר אחת או יותר: מתחילים, בינוניים, מתקדמים. בלי בחירה השיעור לכל הרמות. זה מידע בלבד ולעולם לא חוסם הזמנה.",
+    "level_members": "הרמה מופיעה בפרטי השיעור. מי שמסנן את לוח הזמנים, את עמוד הבוקס או את «סביבי» לפי «מתחילים» מוצא את השיעורים למתחילים ואת אלה לכל הרמות.",
+    "level_when": "סמן שיעורים שמתאמן חדש לא צריך לבחור במקרה (הרמת משקולות אולימפית למתקדמים בלבד) ואת אלה שהם הביקור הראשון הטוב ביותר (Foundations למתחילים). שיעור שמותאם לכולם נשאר בלי בחירה.",
+    "audience_tip": "לאילו קבוצות השיעור מיועד. בלי בחירה, לכולם.",
+    "audience_what": "בחר את הקבוצות שהשיעור נבנה עבורן, למשל «בני נוער». בלי בחירה הוא לכולם. גם זה מידע בלבד ולעולם לא חוסם הזמנה.",
+    "audience_members": "הקבוצות מופיעות בפרטי השיעור, והחברים מסננים לפיהן את לוח הזמנים ואת עמוד הבוקס.",
+    "audience_when": "כשהשיעור מתוכנן לאנשים מסוימים: נשים בלבד, ילדים, 40+. שיעורים פתוחים נשארים בלי בחירה, כדי שאף אחד לא יחשוב שהם לא בשבילו."
   }
 }

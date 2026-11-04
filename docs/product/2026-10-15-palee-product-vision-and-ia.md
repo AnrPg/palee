@@ -90,6 +90,7 @@ Researched Oct 2026. Many figures come from interested parties (vendors, Strava,
 8. **No "More" drawer.** Secondary things live in `Εγώ`. Gym things live in `Box`'s action row.
 9. **The journal belongs to the athlete, not to the gym.** It follows them across gyms and coaches.
 10. **Do no harm with body and food data** (§8.6).
+11. **Show only what this business has switched on** (ANR 2026-11-04, ADR-470). A chip, menu entry, widget, KPI, column, toggle or settings section that depends on a feature the gym, branch or solo coach has not activated is not shown: failed charges need saved-card payments, rewards a referral programme, promo uses a running promotion, the «Παράρτημα» picker and labels two or more branches, floor-plan toggles an uploaded plan. One answer for every screen: `GET /api/org/:slug/me/features` through `useBusinessFeatures()`. A work list stays while it still holds rows (owed is still owed). The page where a feature is switched on always stays, and an action that needs a missing feature offers to set it up (e.g. «Προσθήκη χώρου» without a plan offers «Προσθήκη κάτοψης»).
 
 ---
 
@@ -287,6 +288,12 @@ Why swipe works for people and not for clubs: swipe makes sense when **both side
 
 ### 7.7 Journal [EXISTS + NEW]
 **`Νέα καταχώρηση`** (grouped sheet): Προπόνηση · PR · Μέτρηση · Νερό/Ύπνος/Γεύμα · Πώς νιώθω (mood, energy, stress) · Λιγούρα · Τραυματισμός · Βίντεο τεχνικής (form review, quota) · Αξιολόγηση (rating) · Σημείωση (technique, thought, mood, goal; can link to a workout).
+
+**«Καταγραφή προπόνησης» sources (ANR 2026-11-04, ADR-451):** the chips follow the person's role and package in the club chosen in Box ▾, and the API refuses what is hidden.
+- **Τμήμα:** a box member whose package covers classes (the box's rollout mode decides, as for booking), an athlete only with an explicit class grant, or anyone with a booked class of the last 30 days still to log. Never from a package in a solo coach's club.
+- **Προπόνηση που ανατέθηκε:** a package with online programming or personal training (ADR-225), or an assignment of the last 30 days still to log.
+- **Προπόνηση από τη βιβλιοθήκη:** owner, admin or coach; a member whose package includes the WOD library; an athlete only with an explicit library grant. The club must have at least one published WOD.
+- **Ελεύθερη:** always. When it is the only source, the chip row is not shown.
 
 **Visibility ladder** (shown as a badge on every entry):
 1. **Μόνο εγώ**: default for notes, mood, body, cravings, and personal workouts outside a gym.

@@ -14764,6 +14764,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/me/features": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Which optional features this business has on
+         * @description ADR-470. With `location_ids` (a branch filter) a feature a branch can have on its own (promotions, a floor plan) counts only when it covers one of those branches or the whole box.
+         */
+        get: operations["PaleeWeb.MyFeaturesController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/me/finance": {
         parameters: {
             query?: never;
@@ -21797,8 +21817,8 @@ export interface components {
             /** @description Default events, boxes, clubs */
             kinds?: ("events" | "boxes" | "clubs" | "posts")[];
             languages?: string[];
-            /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-            levels?: ("beginner" | "all_levels" | "advanced")[];
+            /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+            levels?: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
             max_price_cents?: number | null;
             min_price_cents?: number | null;
             /** @description Gazetteer places to search from, at most 5 */
@@ -21830,8 +21850,8 @@ export interface components {
                 /** @description Default events, boxes, clubs */
                 kinds?: ("events" | "boxes" | "clubs" | "posts")[];
                 languages?: string[];
-                /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-                levels?: ("beginner" | "all_levels" | "advanced")[];
+                /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                levels?: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                 max_price_cents?: number | null;
                 min_price_cents?: number | null;
                 /** @description Gazetteer places to search from, at most 5 */
@@ -22445,8 +22465,8 @@ export interface components {
             /** @description Default events, boxes, clubs */
             kinds: ("events" | "boxes" | "clubs" | "posts")[];
             languages: string[];
-            /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-            levels: ("beginner" | "all_levels" | "advanced")[];
+            /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+            levels: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
             max_price_cents: number | null;
             min_price_cents: number | null;
             /** @description Gazetteer places to search from, at most 5 */
@@ -22526,8 +22546,8 @@ export interface components {
                 /** @description Default events, boxes, clubs */
                 kinds?: ("events" | "boxes" | "clubs" | "posts")[];
                 languages?: string[];
-                /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-                levels?: ("beginner" | "all_levels" | "advanced")[];
+                /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                levels?: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                 max_price_cents?: number | null;
                 min_price_cents?: number | null;
                 /** @description Gazetteer places to search from, at most 5 */
@@ -23168,8 +23188,8 @@ export interface components {
                 /** @description Default events, boxes, clubs */
                 kinds?: ("events" | "boxes" | "clubs" | "posts")[];
                 languages?: string[];
-                /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-                levels?: ("beginner" | "all_levels" | "advanced")[];
+                /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                levels?: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                 max_price_cents?: number | null;
                 min_price_cents?: number | null;
                 /** @description Gazetteer places to search from, at most 5 */
@@ -23225,8 +23245,8 @@ export interface components {
                 /** @description Default events, boxes, clubs */
                 kinds: ("events" | "boxes" | "clubs" | "posts")[];
                 languages: string[];
-                /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-                levels: ("beginner" | "all_levels" | "advanced")[];
+                /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                levels: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                 max_price_cents: number | null;
                 min_price_cents: number | null;
                 /** @description Gazetteer places to search from, at most 5 */
@@ -27972,6 +27992,32 @@ export interface components {
                 section: string;
                 seeded: boolean;
             }[];
+        };
+        /** BusinessFeatures */
+        BusinessFeatures: {
+            /** @description ADR-470: every feature key with whether it is on */
+            features: {
+                branches: boolean;
+                card_autopay: boolean;
+                floor_plan: boolean;
+                module_corporate_clients: boolean;
+                module_digital_content: boolean;
+                module_events: boolean;
+                module_group_classes: boolean;
+                module_online_coaching: boolean;
+                module_open_gym: boolean;
+                module_personal_training: boolean;
+                online_drop_in: boolean;
+                online_packages: boolean;
+                online_payments: boolean;
+                online_personal_training: boolean;
+                online_programmes: boolean;
+                online_shop: boolean;
+                perks: boolean;
+                promotions: boolean;
+                referrals: boolean;
+                trials: boolean;
+            };
         };
         /** BusinessOrganization */
         BusinessOrganization: {
@@ -36569,10 +36615,13 @@ export interface components {
             scaling_enabled: boolean;
             /** GymAiUsage */
             usage: {
+                /** @description What the gym's key paid this month: suggestions plus voice drafts */
                 cost_usd: number;
                 /** Format: date-time */
                 since: string;
                 suggestions: number;
+                /** @description Voice drafts written with the gym's key this month */
+                voice_drafts: number;
             };
             voice_enabled: boolean;
         };
@@ -36591,10 +36640,13 @@ export interface components {
                 scaling_enabled: boolean;
                 /** GymAiUsage */
                 usage: {
+                    /** @description What the gym's key paid this month: suggestions plus voice drafts */
                     cost_usd: number;
                     /** Format: date-time */
                     since: string;
                     suggestions: number;
+                    /** @description Voice drafts written with the gym's key this month */
+                    voice_drafts: number;
                 };
                 voice_enabled: boolean;
             };
@@ -36609,10 +36661,13 @@ export interface components {
         };
         /** GymAiUsage */
         GymAiUsage: {
+            /** @description What the gym's key paid this month: suggestions plus voice drafts */
             cost_usd: number;
             /** Format: date-time */
             since: string;
             suggestions: number;
+            /** @description Voice drafts written with the gym's key this month */
+            voice_drafts: number;
         };
         /** HealthConsents */
         HealthConsents: {
@@ -44469,7 +44524,8 @@ export interface components {
                 audiences: string[];
                 /** Format: uuid */
                 id: string;
-                level?: string | null;
+                /** @description Levels the class suits; empty means all levels (ADR-490) */
+                levels: ("beginner" | "intermediate" | "advanced")[];
                 name: string;
             } | null;
             coach?: {
@@ -45012,7 +45068,8 @@ export interface components {
                     audiences: string[];
                     /** Format: uuid */
                     id: string;
-                    level?: string | null;
+                    /** @description Levels the class suits; empty means all levels (ADR-490) */
+                    levels: ("beginner" | "intermediate" | "advanced")[];
                     name: string;
                 } | null;
                 coach?: {
@@ -53310,6 +53367,8 @@ export interface components {
                 workout_id?: string | null;
                 workout_title?: string | null;
             }[];
+            /** @description ADR-451: the source types this person may log here, in display order (freeform is always last). */
+            available_sources: ("class" | "assigned_workout" | "library_workout" | "freeform")[];
             classes: {
                 /** Format: uuid */
                 booking_id?: string | null;
@@ -55693,8 +55752,8 @@ export interface operations {
                         /** @description Default events, boxes, clubs */
                         kinds?: ("events" | "boxes" | "clubs" | "posts")[];
                         languages?: string[];
-                        /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-                        levels?: ("beginner" | "all_levels" | "advanced")[];
+                        /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                        levels?: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                         max_price_cents?: number | null;
                         min_price_cents?: number | null;
                         /** @description Gazetteer places to search from, at most 5 */
@@ -55765,8 +55824,8 @@ export interface operations {
                         /** @description Default events, boxes, clubs */
                         kinds?: ("events" | "boxes" | "clubs" | "posts")[];
                         languages?: string[];
-                        /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-                        levels?: ("beginner" | "all_levels" | "advanced")[];
+                        /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                        levels?: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                         max_price_cents?: number | null;
                         min_price_cents?: number | null;
                         /** @description Gazetteer places to search from, at most 5 */
@@ -55830,8 +55889,8 @@ export interface operations {
                             /** @description Default events, boxes, clubs */
                             kinds: ("events" | "boxes" | "clubs" | "posts")[];
                             languages: string[];
-                            /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-                            levels: ("beginner" | "all_levels" | "advanced")[];
+                            /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                            levels: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                             max_price_cents: number | null;
                             min_price_cents: number | null;
                             /** @description Gazetteer places to search from, at most 5 */
@@ -56472,8 +56531,8 @@ export interface operations {
                         /** @description Default events, boxes, clubs */
                         kinds?: ("events" | "boxes" | "clubs" | "posts")[];
                         languages?: string[];
-                        /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-                        levels?: ("beginner" | "all_levels" | "advanced")[];
+                        /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                        levels?: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                         max_price_cents?: number | null;
                         min_price_cents?: number | null;
                         /** @description Gazetteer places to search from, at most 5 */
@@ -60491,7 +60550,8 @@ export interface operations {
                                 audiences: string[];
                                 /** Format: uuid */
                                 id: string;
-                                level?: string | null;
+                                /** @description Levels the class suits; empty means all levels (ADR-490) */
+                                levels: ("beginner" | "intermediate" | "advanced")[];
                                 name: string;
                             } | null;
                             coach?: {
@@ -81931,10 +81991,13 @@ export interface operations {
                             scaling_enabled: boolean;
                             /** GymAiUsage */
                             usage: {
+                                /** @description What the gym's key paid this month: suggestions plus voice drafts */
                                 cost_usd: number;
                                 /** Format: date-time */
                                 since: string;
                                 suggestions: number;
+                                /** @description Voice drafts written with the gym's key this month */
+                                voice_drafts: number;
                             };
                             voice_enabled: boolean;
                         };
@@ -81982,10 +82045,13 @@ export interface operations {
                             scaling_enabled: boolean;
                             /** GymAiUsage */
                             usage: {
+                                /** @description What the gym's key paid this month: suggestions plus voice drafts */
                                 cost_usd: number;
                                 /** Format: date-time */
                                 since: string;
                                 suggestions: number;
+                                /** @description Voice drafts written with the gym's key this month */
+                                voice_drafts: number;
                             };
                             voice_enabled: boolean;
                         };
@@ -86708,8 +86774,7 @@ export interface operations {
                             inserted_at?: string;
                             /** @enum {string} */
                             kind: "class" | "event";
-                            /** @enum {string} */
-                            level: "beginner" | "all_levels" | "advanced";
+                            levels: ("beginner" | "intermediate" | "advanced")[];
                             name: string;
                             slug: string;
                             sort_order: number;
@@ -86740,11 +86805,8 @@ export interface operations {
                      * @enum {string}
                      */
                     kind?: "class" | "event";
-                    /**
-                     * @description Who the class suits, for the schedule's level filter
-                     * @enum {string}
-                     */
-                    level?: "beginner" | "all_levels" | "advanced";
+                    /** @description Levels the class suits, for the schedule's level filter; empty means all levels (ADR-490) */
+                    levels?: ("beginner" | "intermediate" | "advanced")[];
                     name: string;
                     /** @default 0 */
                     sort_order?: number;
@@ -86771,8 +86833,7 @@ export interface operations {
                             inserted_at?: string;
                             /** @enum {string} */
                             kind: "class" | "event";
-                            /** @enum {string} */
-                            level: "beginner" | "all_levels" | "advanced";
+                            levels: ("beginner" | "intermediate" | "advanced")[];
                             name: string;
                             slug: string;
                             sort_order: number;
@@ -86816,8 +86877,7 @@ export interface operations {
                             inserted_at?: string;
                             /** @enum {string} */
                             kind: "class" | "event";
-                            /** @enum {string} */
-                            level: "beginner" | "all_levels" | "advanced";
+                            levels: ("beginner" | "intermediate" | "advanced")[];
                             name: string;
                             slug: string;
                             sort_order: number;
@@ -86859,11 +86919,8 @@ export interface operations {
                      * @enum {string}
                      */
                     kind?: "class" | "event";
-                    /**
-                     * @description Who the class suits, for the schedule's level filter
-                     * @enum {string}
-                     */
-                    level?: "beginner" | "all_levels" | "advanced";
+                    /** @description Levels the class suits, for the schedule's level filter; empty means all levels (ADR-490) */
+                    levels?: ("beginner" | "intermediate" | "advanced")[];
                     name: string;
                     /** @default 0 */
                     sort_order?: number;
@@ -86890,8 +86947,7 @@ export interface operations {
                             inserted_at?: string;
                             /** @enum {string} */
                             kind: "class" | "event";
-                            /** @enum {string} */
-                            level: "beginner" | "all_levels" | "advanced";
+                            levels: ("beginner" | "intermediate" | "advanced")[];
                             name: string;
                             slug: string;
                             sort_order: number;
@@ -115576,6 +115632,10 @@ export interface operations {
                             inserted_at?: string | null;
                             package_modules?: string[];
                             payment_reminder_interval_days: number;
+                            /** @description Also remind the member on the day after it ended; then every payment_reminder_interval_days until they renew or leave */
+                            subscription_day_after_reminder: boolean;
+                            /** @description Also remind the member on the day the subscription ends */
+                            subscription_end_day_reminder: boolean;
                             /** @description Days before a subscription ends to remind the member (0 = no reminder) */
                             subscription_expiry_reminder_days: number;
                             /** @description Slack days after a subscription ends or an invoice falls overdue before the member loses access */
@@ -115653,6 +115713,10 @@ export interface operations {
                         document_mode?: "invoice" | "receipt";
                         package_modules?: ("group_classes" | "online_coaching" | "open_gym" | "events" | "personal_training" | "digital_content" | "corporate_clients")[];
                         payment_reminder_interval_days?: number;
+                        /** @description Also remind the member on the day after it ended; then every payment_reminder_interval_days until they renew or leave */
+                        subscription_day_after_reminder?: boolean;
+                        /** @description Also remind the member on the day the subscription ends */
+                        subscription_end_day_reminder?: boolean;
                         /** @description Days before a subscription ends to remind the member (0 = no reminder) */
                         subscription_expiry_reminder_days?: number;
                         /** @description Slack days after a subscription ends or an invoice falls overdue before the member loses access */
@@ -115709,6 +115773,10 @@ export interface operations {
                             inserted_at?: string | null;
                             package_modules?: string[];
                             payment_reminder_interval_days: number;
+                            /** @description Also remind the member on the day after it ended; then every payment_reminder_interval_days until they renew or leave */
+                            subscription_day_after_reminder: boolean;
+                            /** @description Also remind the member on the day the subscription ends */
+                            subscription_end_day_reminder: boolean;
                             /** @description Days before a subscription ends to remind the member (0 = no reminder) */
                             subscription_expiry_reminder_days: number;
                             /** @description Slack days after a subscription ends or an invoice falls overdue before the member loses access */
@@ -132214,6 +132282,53 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.MyFeaturesController.show": {
+        parameters: {
+            query?: {
+                /** @description ADR-186: comma-separated branch ids to filter by */
+                location_ids?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Features */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description ADR-470: every feature key with whether it is on */
+                        features: {
+                            branches: boolean;
+                            card_autopay: boolean;
+                            floor_plan: boolean;
+                            module_corporate_clients: boolean;
+                            module_digital_content: boolean;
+                            module_events: boolean;
+                            module_group_classes: boolean;
+                            module_online_coaching: boolean;
+                            module_open_gym: boolean;
+                            module_personal_training: boolean;
+                            online_drop_in: boolean;
+                            online_packages: boolean;
+                            online_payments: boolean;
+                            online_personal_training: boolean;
+                            online_programmes: boolean;
+                            online_shop: boolean;
+                            perks: boolean;
+                            promotions: boolean;
+                            referrals: boolean;
+                            trials: boolean;
+                        };
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.MyFinanceController.index": {
         parameters: {
             query?: never;
@@ -138039,6 +138154,8 @@ export interface operations {
                             workout_id?: string | null;
                             workout_title?: string | null;
                         }[];
+                        /** @description ADR-451: the source types this person may log here, in display order (freeform is always last). */
+                        available_sources: ("class" | "assigned_workout" | "library_workout" | "freeform")[];
                         classes: {
                             /** Format: uuid */
                             booking_id?: string | null;

@@ -857,4 +857,12 @@ msgid "New skills"
 msgstr ""
 
 msgid "Your coach ticked new skills for %{rank}."
+
+msgid "Your subscription ends today"
+msgstr ""
+
+msgid "%{package} ends today. Renew to keep booking classes."
+msgstr ""
+
+msgid "%{package} ended on %{date}. Renew to book classes again."
 msgstr ""

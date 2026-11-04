@@ -1,4 +1,4 @@
-import type { ClassAudience, ClassLevel, ScheduleSlot, WorkoutFocus } from "@/api/schedule";
+import { suitsLevels, type ClassAudience, type ClassLevel, type ScheduleSlot, type WorkoutFocus } from "@/api/schedule";
 
 /**
  * Box › Πρόγραμμα filters (plan §5a). Pure: the screen keeps the state, this
@@ -114,7 +114,7 @@ export function matchesScheduleFilters(slot: ScheduleSlot, filters: ScheduleFilt
     (filters.kind === "all" || filters.kind === kind) &&
     matchesSpots(slot, filters.spots, now) &&
     (!filters.packageOnly || slot.covered_by_package !== false) &&
-    (filters.levels.length === 0 || filters.levels.includes(classType?.level ?? "all_levels")) &&
+    suitsLevels(classType?.levels, filters.levels) &&
     (filters.coachIds.length === 0 || (slot.coach_user_id != null && filters.coachIds.includes(slot.coach_user_id))) &&
     matchesTime(slot, filters.time) &&
     matchesBooked(slot, filters.booked) &&

@@ -13,9 +13,11 @@ defmodule Palee.Places.Domain.AroundFilter do
     `languages` and `amenities` from the box-profile vocabularies
     (ADR-142). Accessibility is the amenities `wheelchair_accessible` and
     `accessible_restroom`.
-  * **Επίπεδο:** `levels` among the class levels (`beginner all_levels
-    advanced`, ADR-197): a host matches when it runs a current class type
-    at one of them; like the tags, a person's post has no host and drops out.
+  * **Επίπεδο:** `levels` among the class levels (`beginner intermediate
+    advanced`, ADR-197, ADR-490): a host matches when it runs a current class
+    type that suits one of them (a type with no levels suits all); like the
+    tags, a person's post has no host and drops out. The retired
+    `all_levels` is dropped, so older clients keep working.
   * **Πότε:** `when` (`today tomorrow weekend week range`, with `date_from`
     and `date_to` for a range of at most 62 days) and `times`
     (`morning midday evening`); they narrow events only.
@@ -92,7 +94,7 @@ defmodule Palee.Places.Domain.AroundFilter do
          {:ok, disciplines} <- tags(:disciplines, params["disciplines"], vocabulary),
          {:ok, audiences} <- tags(:audiences, params["audiences"], vocabulary),
          {:ok, amenities} <- tags(:amenities, params["amenities"], vocabulary),
-         {:ok, levels} <- tags(:levels, params["levels"], vocabulary),
+         {:ok, levels} <- tags(:levels, legacy_levels(params["levels"]), vocabulary),
          {:ok, languages} <- languages(params["languages"]),
          {:ok, {when_, date_from, date_to}} <-
            when_(params["when"], params["date_from"], params["date_to"]),
@@ -215,6 +217,10 @@ defmodule Palee.Places.Domain.AroundFilter do
       other -> other
     end
   end
+
+  # ADR-490: «Όλα τα επίπεδα» stopped being a level of its own.
+  defp legacy_levels(values) when is_list(values), do: Enum.reject(values, &(&1 == "all_levels"))
+  defp legacy_levels(values), do: values
 
   defp tags(_field, nil, _vocabulary), do: {:ok, []}
 

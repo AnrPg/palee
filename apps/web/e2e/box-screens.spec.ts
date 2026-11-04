@@ -170,7 +170,14 @@ async function signIn(page: Page) {
   await page.route("**/api/memberships", (route) => route.fulfill(json([membership])));
   await page.route("**/api/notifications?**", (route) => route.fulfill(json({ notifications: [] })));
   await page.route("**/api/org/box1/admin/locations", (route) =>
-    route.fulfill(json({ locations: [{ id: "kyp", name: "Kypseli", address: null, archived_at: null }] })),
+    route.fulfill(
+      json({
+        locations: [
+          { id: "kyp", name: "Kypseli", address: null, archived_at: null },
+          { id: "pat", name: "Patisia", address: null, archived_at: null },
+        ],
+      }),
+    ),
   );
 }
 

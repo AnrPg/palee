@@ -9,10 +9,10 @@
     "capacityLabel": "Plätze in jedem neuen Kurs",
     "capacityHelp": "Wie viele Personen einen neuen Kurs buchen können. Du kannst es bei jedem Kurs ändern.",
     "autoApproveLabel": "Buchungen automatisch bestätigen",
-    "autoApproveHelp": "An: Eine Buchung ist sofort bestätigt. Aus: Jede Buchung ist eine Anfrage, die jemand vom Team freigeben muss.",
+    "autoApproveHelp": "An: Eine Buchung ist sofort bestätigt, ohne Wartezeit. Aus: Jede Buchung ist eine Anfrage, die jemand vom Team freigibt, und du legst fest, wie lange sie auf eine Antwort wartet.",
     "approvalWaitLabel": "Zeit für die Antwort auf eine Buchungsanfrage",
-    "approvalWaitHelp": "Nur für Kurse ohne automatische Bestätigung. Antwortet niemand vom Team in dieser Zeit, wird die Anfrage storniert, der Besuch geht an das Mitglied zurück und der Platz an die nächste Person auf der Warteliste. Eine Anfrage wartet nie über den Kursbeginn hinaus. Das ist nicht, wann Buchungen öffnen: Das ist „Buchungen öffnen“.",
-    "approvalWaitClassHelp": "Gibt niemand die Anfrage in dieser Zeit frei, wird sie automatisch storniert. Gilt nur ohne automatische Bestätigung.",
+    "approvalWaitHelp": "Antwortet niemand vom Team in dieser Zeit, wird die Anfrage storniert, der Besuch geht an das Mitglied zurück und der Platz an die nächste Person auf der Warteliste. „Keine Begrenzung“: Die Anfrage wartet bis Kursbeginn auf eine Antwort. Das ist nicht, wann Buchungen öffnen: Das ist „Buchungen öffnen“.",
+    "approvalWaitClassHelp": "Gibt niemand vom Team die Anfrage in dieser Zeit frei, wird sie automatisch storniert und der Platz geht an die nächste Person auf der Warteliste. „Keine Begrenzung“: Die Anfrage wartet bis Kursbeginn auf eine Antwort.",
     "approvalWaitNoLimit": "Keine Begrenzung (bis Kursbeginn)",
     "bookingWindowLabel": "Buchungen öffnen (Tage vor dem Kurs)",
     "bookingWindowHelp": "Frühestens so viele Tage vor dem Kurs kann ein Mitglied buchen. Buchungen bleiben bis Kursbeginn offen. Mit „Keine Begrenzung“ ist ein Kurs buchbar, sobald er im Plan steht. Ein Abo-Paket kann eigene Werte setzen.",
@@ -220,7 +220,6 @@
     "scheduledAt": "Geplant für",
     "capacity": "Kapazität",
     "timeoutMinutes": "Timeout (Minuten)",
-    "autoApproveBookingsForThisSlot": "Buchungen für diesen Kurs automatisch bestätigen",
     "deleteSlot": "Kurs löschen",
     "saveChanges": "Änderungen speichern",
     "createSlot": "Kurs erstellen",
@@ -785,7 +784,7 @@
     "displayLabeld747868": "Anzeigename",
     "addLeveld2d215f": "+ Level hinzufügen",
     "reminderIntervalDaysee3ba34": "Erinnerungsintervall (Tage)",
-    "howOftenInDaysAMemberWithAn710fa76": "Wie oft (in Tagen) ein Mitglied mit offenem Betrag eine Zahlungserinnerung erhält. Die Erinnerung wiederholt sich, bis der Betrag vollständig beglichen ist.",
+    "howOftenInDaysAMemberWithAn710fa76": "Danach: in welchem Abstand (Tage) die Erinnerung wiederholt wird, bis das Mitglied verlängert oder geht. Wer Geld schuldet, erhält im gleichen Rhythmus eine Zahlungserinnerung, bis der Betrag beglichen ist.",
     "applicationSettingsIntroduction8f2e9b7": "Einführung in die App-Einstellungen",
     "appConfigurations1e15749": "App-Konfigurationen.",
     "globalSettingsForAppearanceEngagementRulesAndWorkout915168c": "Globale Einstellungen für Darstellung, Engagement-Regeln und Workout-Level. Änderungen gelten sofort in der ganzen App.",
@@ -2661,7 +2660,6 @@
     "featureOptionalClassSettings": "Optionale Kurseinstellungen",
     "featureCapacity": "Kapazität",
     "featureTimeoutMinutes": "Timeout (Minuten)",
-    "featureAutoApprove": "Automatisch genehmigen",
     "featureCreating": "Wird erstellt …",
     "featureReceipt": "Quittung",
     "featureReceiptDocumentTitle": "Quittung {reference}",
@@ -3049,14 +3047,11 @@
     "classTimerForbidden": "Nur Coaches und Admins können den Kurs-Timer steuern.",
     "classTimerRejected": "Das kann der Timer gerade nicht.",
     "classTimerOffline": "Der Server ist nicht erreichbar. Prüfe die Verbindung und versuch es erneut.",
-    "classTimerChoosePreset": "Dieser Kurs hat kein Workout mit Timer. Wähle unten einen Timer.",
     "classTimerControlsLabel": "Timer-Steuerung",
     "classTimerStartAgain": "Neu starten",
     "classTimerFinish": "Timer beenden",
     "classTimerReset": "Zurücksetzen",
     "classTimerGetReadyLabel": "Start-Countdown",
-    "classTimerPresetTitle": "Timer für diesen Kurs",
-    "classTimerPresetHint": "Nutze eine Vorlage statt des Kurs-Workouts, z. B. eine EMOM-Uhr für eine Krafteinheit.",
     "classTimerUsePreset": "Diesen Timer verwenden",
     "classTimerUseWorkout": "Kurs-Workout verwenden",
     "classTimerJumpTitle": "Zu einem Teil springen",
@@ -3529,8 +3524,6 @@
     "admCheckInAllowanceExhausted": "Dieses Mitglied hat alle Open-Gym-Besuche für diesen Zeitraum verbraucht. Zusätzliche Besuche kannst du in seinem Profil vergeben.",
     "admCheckInFrozen": "Das Abo-Paket dieses Mitglieds ist heute pausiert. Heb die Pause in seinem Profil auf, um es einzuchecken.",
     "admCheckInLocationNotIncluded": "Das Abo-Paket dieses Mitglieds gilt nicht für diesen Standort.",
-    "admClassTypeEvent": "Event",
-    "admClassTypeRulesHint": "Besuche pro Buchung: wie viele Besuche eines Abo-Pakets eine Buchung verbraucht. Markiere Sonderkurse als Events, damit sie die Event-Besuche des Abo-Pakets nutzen.",
     "admVisitsPerBooking": "Besuche pro Buchung",
     "admDecrease": "Verringern",
     "admIncrease": "Erhöhen",
@@ -4918,7 +4911,55 @@
     "semanticWorkoutContemporaryDance": "Zeitgenössischer Tanz",
     "semanticWorkoutLatinDance": "Lateinamerikanischer Tanz (Salsa, Bachata, Reggaeton)",
     "semanticWorkoutStreetDance": "Streetdance (Hip-Hop, Heels)",
-    "semanticWorkoutSkateboarding": "Skateboarding"
+    "semanticWorkoutSkateboarding": "Skateboarding",
+    "classTimerHelpToggle": "Was jede Taste macht",
+    "classTimerLiveHelp": "Alles, was du hier drückst, erscheint sofort auf allen Bildschirmen dieses Kurses.",
+    "classTimerReconnectingHelp": "Die Verbindung ist unterbrochen. Die Tasten funktionieren wieder, sobald sie zurück ist.",
+    "classTimerWallScreen": "Wandbildschirm",
+    "classTimerWallScreenHelp": "Die Uhr im Vollbild für den Fernseher oder Computer im Raum. Sie zeigt immer dieselbe Zeit wie diese Fernbedienung.",
+    "classTimerCopyLinkHelp": "Schick den Link an das Gerät im Raum und öffne ihn dort. Das Gerät muss mit einem Konto der Box angemeldet sein.",
+    "classTimerOnScreenHelp": "Zeig Timer, Rangliste oder WOD dieses Kurses heute auf einem Bildschirm der Box.",
+    "classTimerOpenHere": "Auf diesem Gerät öffnen",
+    "classTimerOpenHereHelp": "Wenn dieses Gerät der Bildschirm im Raum ist.",
+    "classTimerSoundHelp": "Pieptöne auf diesem Gerät in den letzten 3 Sekunden und bei jedem Phasenwechsel. Der Ton des Wandbildschirms ändert sich nicht.",
+    "classTimerClockHelp": "„—“ heißt, dass es noch keine Zeit gibt. Die Zeit steht als Minuten:Sekunden; zählt sie rückwärts, zeigt sie, was noch bleibt. „Als Nächstes“ ist der Teil, der danach kommt.",
+    "classTimerCountdownHelp": "Wie viele Sekunden der Bildschirm vor dem Start herunterzählt, damit die Athleten sich aufstellen können.",
+    "classTimerCountdownNone": "Keine",
+    "classTimerCountdownSeconds": "{seconds} s",
+    "classTimerStartHelp": "Startet die Uhr auf allen Bildschirmen nach dem Countdown.",
+    "classTimerPauseHelp": "Hält die Uhr auf allen Bildschirmen an. Die Zeit bleibt erhalten.",
+    "classTimerResumeHelp": "Macht dort weiter, wo sie angehalten hat, nach einem Countdown von 3 Sekunden.",
+    "classTimerBackHelp": "Geht zum vorherigen Teil und startet ihn von vorn.",
+    "classTimerRestart": "Von vorn",
+    "classTimerRestartHelp": "Das ist der erste Teil, also startet er wieder von vorn.",
+    "classTimerNextHelp": "Beendet den aktuellen Teil und startet sofort den nächsten.",
+    "classTimerComplete": "Abschließen",
+    "classTimerCompleteHelp": "Das ist der letzte Teil, also endet der Timer und die Bildschirme zeigen „Zeit!“.",
+    "classTimerAdjustHelp": "Nimmt dem aktuellen Teil 30 Sekunden weg oder gibt 30 dazu, für alle.",
+    "classTimerFinishHelp": "Beendet den Timer jetzt. Die Bildschirme zeigen „Zeit!“.",
+    "classTimerResetHelp": "Setzt die Uhr auf allen Bildschirmen zurück auf „Bereit“.",
+    "classTimerResetConfirmTitle": "Timer zurücksetzen?",
+    "classTimerResetConfirmBody": "Die Uhr wird auf allen Bildschirmen im Raum auf „Bereit“ zurückgesetzt.",
+    "classTimerMore": "Mehr",
+    "classTimerChooseTitle": "Timer wählen",
+    "classTimerOtherTimer": "Anderer Timer",
+    "classTimerNoTimedWorkout": "Dieser Kurs hat kein Workout mit Zeit.",
+    "classTimerInsteadOfWorkout": "Statt des Workouts des Kurses.",
+    "classTimerOwnTimer": "Eigener Timer",
+    "classTimerOrCommon": "oder wähle einen gängigen Timer:",
+    "classTimerJumpHelp": "Tippe auf einen Teil, um direkt dorthin zu springen.",
+    "timerPresetHelp_tabata": "Tabata: 20 Sekunden Arbeit, 10 Pause, 8 Runden (4 Minuten).",
+    "timerPresetHelp_emom10": "EMOM (Every Minute On the Minute): zu Beginn jeder Minute machst du die Übung und ruhst den Rest. 10 Runden.",
+    "timerPresetHelp_e2mom20": "E2MOM: wie EMOM, aber alle 2 Minuten. 10 Runden, 20 Minuten.",
+    "timerPresetHelp_amrap12": "AMRAP (so viele Runden wie möglich): so viele Runden, wie du in 12 Minuten schaffst.",
+    "timerPresetHelp_forTime12": "For Time: so schnell wie möglich fertig werden. Time Cap 12: die Uhr stoppt nach 12 Minuten.",
+    "timerPresetHelp_deathBy": "Death By: ein EMOM, bei dem du jede Minute eine Wiederholung dazunimmst, bis du nicht mehr mitkommst.",
+    "timerPresetHelp_stopwatch": "Stoppuhr: zählt ohne Limit hoch, bis du sie anhältst.",
+    "subscriptionEndsTodayTitle": "Dein Abo endet heute",
+    "subscriptionEndsTodayBody": "{package} endet heute. Verlängere es, um weiter Kurse zu buchen.",
+    "subscriptionEndedRenewBody": "{package} ist am {date} abgelaufen. Verlängere es, um wieder Kurse zu buchen.",
+    "subscriptionEndDayReminder": "Erinnerung am Tag des Ablaufs",
+    "subscriptionDayAfterReminder": "Erinnerung am Tag nach dem Ablauf"
   },
   "PrSharing": {
     "gymLabel": "Wo hast du diesen PR aufgestellt?",
@@ -6199,7 +6240,8 @@
     "chipFriends": "Freunde",
     "friendsOnly": "Nur wo Freunde hingehen",
     "friendsGoing": "{others, plural, =0 {{name} geht hin} other {{name} und # weitere gehen hin}}",
-    "friendsLabel": "Dabei"
+    "friendsLabel": "Dabei",
+    "level_intermediate": "Mittelstufe"
   },
   "LocationPicker": {
     "title": "Standort",
@@ -10000,8 +10042,8 @@
       "title": "KI-Assistent",
       "description": "Der WOD-Assistent sowie Skalierungsvorschläge und Spracheingabe mit deinem eigenen Schlüssel. Jeden Vorschlag gibt ein Coach frei.",
       "enable": "Skalierungsvorschläge",
-      "enableHint": "Standardmäßig aus. Braucht einen API-Schlüssel.",
-      "key": "API-Schlüssel (Anthropic)",
+      "enableHint": "Für Athleten mit einer von der Box erfassten Verletzung schlägt die KI vor, wie das Workout angepasst wird: weniger Gewicht, weniger Wiederholungen oder eine andere Übung. Ein Coach gibt jeden Vorschlag frei, bevor der Athlet ihn sieht. Dafür braucht es KI, weil jede Kombination aus Workout und Verletzung anders ist und feste Regeln sie nicht abdecken.",
+      "key": "Claude-Schlüssel (Anthropic)",
       "keySet": "Ein Schlüssel mit Endung {last4} ist gesetzt.",
       "keyRejected": "Der Anbieter hat den Schlüssel mit Endung {last4} abgelehnt. Neuen Schlüssel eingeben.",
       "keyMissing": "Kein Schlüssel gesetzt.",
@@ -10010,8 +10052,9 @@
       "removeKey": "Schlüssel entfernen",
       "model": "Modell (optional)",
       "saveModel": "Modell speichern",
-      "usage": "Diesen Monat · Vorschläge: {count} · Kosten: ${cost}",
-      "privacy": "Gesendet werden nur das Workout und die von der Box erfassten Verletzungen, ohne Namen. Der Schlüssel wird nie wieder angezeigt."
+      "usage": "Diesen Monat · {count, plural, one {# Vorschlag} other {# Vorschläge}} · {voice, plural, one {# Sprachentwurf} other {# Sprachentwürfe}} · Kosten: ${cost}",
+      "privacy": "Es werden keine Namen gesendet. Vorschläge senden das Workout und die von der Box erfassten Verletzungen. Die Spracherfassung sendet nur den Text dessen, was das Mitglied gesagt hat. Der Schlüssel wird nie wieder angezeigt.",
+      "keyHint": "Skalierungsvorschläge und Spracherfassung brauchen ihn. Die Kosten gehen an dein eigenes Anthropic-Konto."
     },
     "queue": {
       "eyebrow": "Meine Kunden",
@@ -10075,7 +10118,7 @@
     },
     "settings": {
       "enable": "Spracherfassung",
-      "enableHint": "Mitglieder sprechen ihr Workout ein und prüfen einen Entwurf vor dem Speichern. Audio wird nicht gespeichert."
+      "enableHint": "Mitglieder sagen in eigenen Worten, was sie gemacht haben, und die KI macht daraus Übungen, Sätze, Wiederholungen und Gewichte. Das Mitglied prüft den Entwurf vor dem Speichern. Dafür braucht es KI, um freie Sprache wie „drei Sätze à zehn mit 60“ zu verstehen. Audio wird nicht gespeichert."
     }
   },
   "Pickers": {
@@ -12204,7 +12247,9 @@
     "placementPinRemove": "Markierung entfernen",
     "machineOnPlan": "Auf dem Grundriss",
     "machinePhotoRemove": "Foto entfernen",
-    "machinePhotoAdd": "{max, plural, one {Foto hinzufügen} other {Fotos (bis zu #)}}"
+    "machinePhotoAdd": "{max, plural, one {Foto hinzufügen} other {Fotos (bis zu #)}}",
+    "introSingle": "Die Räume und Bereiche der Box: wo Kurse stattfinden, was gereinigt wird und wo die Geräte stehen. Füge einen Grundriss hinzu, um sie darauf einzuzeichnen.",
+    "planAndSpaces": "Grundriss und Räume"
   },
   "emailVerification": {
     "bannerText": "Bestätige deine E-Mail-Adresse. Wir haben einen Link an {email} geschickt.",
@@ -13607,7 +13652,9 @@
         "community_partners_enabled": "Trainingspartner",
         "trials_enabled": "Probetrainings",
         "trials_seats_per_class": "Probeplätze pro Kurs",
-        "trials_approval": "Freigabe von Probetrainings"
+        "trials_approval": "Freigabe von Probetrainings",
+        "finance_subscription_end_day_reminder": "Erinnerung am Tag des Ablaufs",
+        "finance_subscription_day_after_reminder": "Erinnerung am Tag nach dem Ablauf"
       }
     }
   },
@@ -14906,7 +14953,8 @@
     "noEnd": "Kein Ende",
     "renews": "verlängert sich",
     "dueSince": "fällig seit {date}",
-    "debtsQueue": "Offene Beträge"
+    "debtsQueue": "Offene Beträge",
+    "keptContact": "Konto gelöscht · Kontakt bleibt bis zur Zahlung gespeichert"
   },
   "WorkoutTypes": {
     "family": {
@@ -17129,7 +17177,6 @@
       "withdrawReasonRequired": "Gib den Grund an.",
       "towards": "Für {rank}:",
       "history": "Verlauf",
-      "historyStripe": "{rank} +{stripes}",
       "picker": {
         "count": "{count, plural, one {# Vorlage} other {# Vorlagen}}",
         "step1": "Schritt 1 von 2 · Was unterrichtest du?",
@@ -18438,5 +18485,32 @@
       "unknownPerson": "Unbekannt",
       "beforeValue": "{value} · {from}–{to}"
     }
+  },
+  "ExplainedSetting": {
+    "about": "Was ist «{name}»?"
+  },
+  "ClassTypeOptions": {
+    "eventLabel": "Event",
+    "whatHeading": "Was es bewirkt:",
+    "membersHeading": "Was Mitglieder sehen:",
+    "whenHeading": "Wann ändern:",
+    "levelNoneChosen": "Alle Level",
+    "audienceNoneChosen": "Alle",
+    "event_tip": "Buchungen zählen gegen die Event-Besuche des Pakets, nicht gegen die Kursbesuche.",
+    "event_what": "Eine Buchung in einem Kurs dieses Typs zieht Event-Besuche vom Mitgliedschaftspaket ab. Die Kursbesuche bleiben unberührt.",
+    "event_members": "Buchen können nur Mitglieder, deren Paket Events enthält. Im Stundenplan trägt der Kurs die Markierung «Event», und der Filter «Events» findet ihn.",
+    "event_when": "Für alles, was kein tägliches Training ist: Seminar, Workshop, Tag der offenen Tür oder interner Wettkampf. Soll jede Mitgliedschaft den Kurs abdecken, bleibt er ein normaler Kurs.",
+    "visits_tip": "Wie viele Besuche des Pakets eine Buchung verbraucht. Meist 1.",
+    "visits_what": "Jede Buchung zieht so viele Besuche vom Paket ab, von 1 bis 10. So kostet ein längerer oder teurerer Kurs mehr, ohne eigenes Paket.",
+    "visits_members": "Vor dem Buchen sehen Mitglieder, wie viele Besuche der Kurs verbraucht. Mit einem 8er-Paket und einem Kurs zu 2 Besuchen passen 4 Buchungen.",
+    "visits_when": "Für Kurse, die dich mehr kosten: kleine Gruppen, 90-Minuten-Einheiten, Spezialausrüstung oder ein Gastcoach. Normale Kurse bleiben bei 1.",
+    "level_tip": "Für welche Level der Kurs passt. Ohne Auswahl für alle.",
+    "level_what": "Wähle eines oder mehrere: Einsteiger, Mittelstufe, Fortgeschrittene. Ohne Auswahl ist der Kurs für alle Level. Die Angabe informiert, sie sperrt keine Buchung.",
+    "level_members": "Das Level steht in den Kursdetails. Wer den Stundenplan, die Box-Seite oder «In der Nähe» nach «Einsteiger» filtert, findet Kurse für Einsteiger und Kurse für alle Level.",
+    "level_when": "Markiere Kurse, die Neue nicht zufällig wählen sollten (Olympic Lifting nur für Fortgeschrittene), und solche, die der beste erste Besuch sind (Foundations für Einsteiger). Ein für alle skalierter Kurs bleibt ohne Auswahl.",
+    "audience_tip": "Für welche Gruppen der Kurs gedacht ist. Ohne Auswahl für alle.",
+    "audience_what": "Wähle die Gruppen, für die der Kurs gemacht ist, etwa «Jugendliche». Ohne Auswahl ist er für alle. Auch das informiert nur und sperrt keine Buchung.",
+    "audience_members": "Die Gruppen stehen in den Kursdetails, und Mitglieder filtern Stundenplan und Box-Seite danach.",
+    "audience_when": "Wenn der Kurs für bestimmte Menschen gedacht ist: nur Frauen, Kinder, 40+. Offene Kurse bleiben ohne Auswahl, damit sich niemand ausgeschlossen fühlt."
   }
 }

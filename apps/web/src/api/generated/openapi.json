@@ -4632,12 +4632,13 @@
             "type": "array"
           },
           "levels": {
-            "description": "Class levels (ADR-197): hosts running a current class type at one of them",
+            "description": "Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
             "items": {
               "enum": [
                 "beginner",
-                "all_levels",
-                "advanced"
+                "intermediate",
+                "advanced",
+                "all_levels"
               ],
               "type": "string"
             },
@@ -4765,12 +4766,13 @@
                 "type": "array"
               },
               "levels": {
-                "description": "Class levels (ADR-197): hosts running a current class type at one of them",
+                "description": "Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
                 "items": {
                   "enum": [
                     "beginner",
-                    "all_levels",
-                    "advanced"
+                    "intermediate",
+                    "advanced",
+                    "all_levels"
                   ],
                   "type": "string"
                 },
@@ -6672,12 +6674,13 @@
             "type": "array"
           },
           "levels": {
-            "description": "Class levels (ADR-197): hosts running a current class type at one of them",
+            "description": "Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
             "items": {
               "enum": [
                 "beginner",
-                "all_levels",
-                "advanced"
+                "intermediate",
+                "advanced",
+                "all_levels"
               ],
               "type": "string"
             },
@@ -6961,12 +6964,13 @@
                 "type": "array"
               },
               "levels": {
-                "description": "Class levels (ADR-197): hosts running a current class type at one of them",
+                "description": "Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
                 "items": {
                   "enum": [
                     "beginner",
-                    "all_levels",
-                    "advanced"
+                    "intermediate",
+                    "advanced",
+                    "all_levels"
                   ],
                   "type": "string"
                 },
@@ -8911,12 +8915,13 @@
                 "type": "array"
               },
               "levels": {
-                "description": "Class levels (ADR-197): hosts running a current class type at one of them",
+                "description": "Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
                 "items": {
                   "enum": [
                     "beginner",
-                    "all_levels",
-                    "advanced"
+                    "intermediate",
+                    "advanced",
+                    "all_levels"
                   ],
                   "type": "string"
                 },
@@ -9093,12 +9098,13 @@
                 "type": "array"
               },
               "levels": {
-                "description": "Class levels (ADR-197): hosts running a current class type at one of them",
+                "description": "Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
                 "items": {
                   "enum": [
                     "beginner",
-                    "all_levels",
-                    "advanced"
+                    "intermediate",
+                    "advanced",
+                    "all_levels"
                   ],
                   "type": "string"
                 },
@@ -25379,6 +25385,103 @@
           "sections"
         ],
         "title": "BusinessDemoStatus",
+        "type": "object"
+      },
+      "BusinessFeatures": {
+        "properties": {
+          "features": {
+            "description": "ADR-470: every feature key with whether it is on",
+            "properties": {
+              "branches": {
+                "type": "boolean"
+              },
+              "card_autopay": {
+                "type": "boolean"
+              },
+              "floor_plan": {
+                "type": "boolean"
+              },
+              "module_corporate_clients": {
+                "type": "boolean"
+              },
+              "module_digital_content": {
+                "type": "boolean"
+              },
+              "module_events": {
+                "type": "boolean"
+              },
+              "module_group_classes": {
+                "type": "boolean"
+              },
+              "module_online_coaching": {
+                "type": "boolean"
+              },
+              "module_open_gym": {
+                "type": "boolean"
+              },
+              "module_personal_training": {
+                "type": "boolean"
+              },
+              "online_drop_in": {
+                "type": "boolean"
+              },
+              "online_packages": {
+                "type": "boolean"
+              },
+              "online_payments": {
+                "type": "boolean"
+              },
+              "online_personal_training": {
+                "type": "boolean"
+              },
+              "online_programmes": {
+                "type": "boolean"
+              },
+              "online_shop": {
+                "type": "boolean"
+              },
+              "perks": {
+                "type": "boolean"
+              },
+              "promotions": {
+                "type": "boolean"
+              },
+              "referrals": {
+                "type": "boolean"
+              },
+              "trials": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "online_payments",
+              "card_autopay",
+              "online_drop_in",
+              "online_packages",
+              "online_personal_training",
+              "online_programmes",
+              "online_shop",
+              "referrals",
+              "promotions",
+              "perks",
+              "trials",
+              "branches",
+              "floor_plan",
+              "module_group_classes",
+              "module_online_coaching",
+              "module_open_gym",
+              "module_events",
+              "module_personal_training",
+              "module_digital_content",
+              "module_corporate_clients"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "features"
+        ],
+        "title": "BusinessFeatures",
         "type": "object"
       },
       "BusinessOrganization": {
@@ -52141,6 +52244,7 @@
           "usage": {
             "properties": {
               "cost_usd": {
+                "description": "What the gym's key paid this month: suggestions plus voice drafts",
                 "type": "number"
               },
               "since": {
@@ -52149,11 +52253,16 @@
               },
               "suggestions": {
                 "type": "integer"
+              },
+              "voice_drafts": {
+                "description": "Voice drafts written with the gym's key this month",
+                "type": "integer"
               }
             },
             "required": [
               "since",
               "suggestions",
+              "voice_drafts",
               "cost_usd"
             ],
             "title": "GymAiUsage",
@@ -52212,6 +52321,7 @@
               "usage": {
                 "properties": {
                   "cost_usd": {
+                    "description": "What the gym's key paid this month: suggestions plus voice drafts",
                     "type": "number"
                   },
                   "since": {
@@ -52220,11 +52330,16 @@
                   },
                   "suggestions": {
                     "type": "integer"
+                  },
+                  "voice_drafts": {
+                    "description": "Voice drafts written with the gym's key this month",
+                    "type": "integer"
                   }
                 },
                 "required": [
                   "since",
                   "suggestions",
+                  "voice_drafts",
                   "cost_usd"
                 ],
                 "title": "GymAiUsage",
@@ -52282,6 +52397,7 @@
       "GymAiUsage": {
         "properties": {
           "cost_usd": {
+            "description": "What the gym's key paid this month: suggestions plus voice drafts",
             "type": "number"
           },
           "since": {
@@ -52290,11 +52406,16 @@
           },
           "suggestions": {
             "type": "integer"
+          },
+          "voice_drafts": {
+            "description": "Voice drafts written with the gym's key this month",
+            "type": "integer"
           }
         },
         "required": [
           "since",
           "suggestions",
+          "voice_drafts",
           "cost_usd"
         ],
         "title": "GymAiUsage",
@@ -79433,18 +79554,27 @@
                 "format": "uuid",
                 "type": "string"
               },
-              "level": {
-                "nullable": true,
-                "type": "string"
+              "levels": {
+                "description": "Levels the class suits; empty means all levels (ADR-490)",
+                "items": {
+                  "enum": [
+                    "beginner",
+                    "intermediate",
+                    "advanced"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
               },
               "name": {
                 "type": "string"
               }
             },
             "required": [
+              "audiences",
               "id",
-              "name",
-              "audiences"
+              "levels",
+              "name"
             ],
             "type": "object"
           },
@@ -81215,18 +81345,27 @@
                       "format": "uuid",
                       "type": "string"
                     },
-                    "level": {
-                      "nullable": true,
-                      "type": "string"
+                    "levels": {
+                      "description": "Levels the class suits; empty means all levels (ADR-490)",
+                      "items": {
+                        "enum": [
+                          "beginner",
+                          "intermediate",
+                          "advanced"
+                        ],
+                        "type": "string"
+                      },
+                      "type": "array"
                     },
                     "name": {
                       "type": "string"
                     }
                   },
                   "required": [
+                    "audiences",
                     "id",
-                    "name",
-                    "audiences"
+                    "levels",
+                    "name"
                   ],
                   "type": "object"
                 },
@@ -108709,6 +108848,19 @@
             },
             "type": "array"
           },
+          "available_sources": {
+            "description": "ADR-451: the source types this person may log here, in display order (freeform is always last).",
+            "items": {
+              "enum": [
+                "class",
+                "assigned_workout",
+                "library_workout",
+                "freeform"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          },
           "classes": {
             "items": {
               "properties": {
@@ -108799,6 +108951,7 @@
           }
         },
         "required": [
+          "available_sources",
           "classes",
           "assignments",
           "library_workouts"
@@ -116595,12 +116748,13 @@
                         "type": "array"
                       },
                       "levels": {
-                        "description": "Class levels (ADR-197): hosts running a current class type at one of them",
+                        "description": "Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
                         "items": {
                           "enum": [
                             "beginner",
-                            "all_levels",
-                            "advanced"
+                            "intermediate",
+                            "advanced",
+                            "all_levels"
                           ],
                           "type": "string"
                         },
@@ -116824,12 +116978,13 @@
                         "type": "array"
                       },
                       "levels": {
-                        "description": "Class levels (ADR-197): hosts running a current class type at one of them",
+                        "description": "Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
                         "items": {
                           "enum": [
                             "beginner",
-                            "all_levels",
-                            "advanced"
+                            "intermediate",
+                            "advanced",
+                            "all_levels"
                           ],
                           "type": "string"
                         },
@@ -117014,12 +117169,13 @@
                           "type": "array"
                         },
                         "levels": {
-                          "description": "Class levels (ADR-197): hosts running a current class type at one of them",
+                          "description": "Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
                           "items": {
                             "enum": [
                               "beginner",
-                              "all_levels",
-                              "advanced"
+                              "intermediate",
+                              "advanced",
+                              "all_levels"
                             ],
                             "type": "string"
                           },
@@ -119043,12 +119199,13 @@
                         "type": "array"
                       },
                       "levels": {
-                        "description": "Class levels (ADR-197): hosts running a current class type at one of them",
+                        "description": "Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored.",
                         "items": {
                           "enum": [
                             "beginner",
-                            "all_levels",
-                            "advanced"
+                            "intermediate",
+                            "advanced",
+                            "all_levels"
                           ],
                           "type": "string"
                         },
@@ -129129,18 +129286,27 @@
                                 "format": "uuid",
                                 "type": "string"
                               },
-                              "level": {
-                                "nullable": true,
-                                "type": "string"
+                              "levels": {
+                                "description": "Levels the class suits; empty means all levels (ADR-490)",
+                                "items": {
+                                  "enum": [
+                                    "beginner",
+                                    "intermediate",
+                                    "advanced"
+                                  ],
+                                  "type": "string"
+                                },
+                                "type": "array"
                               },
                               "name": {
                                 "type": "string"
                               }
                             },
                             "required": [
+                              "audiences",
                               "id",
-                              "name",
-                              "audiences"
+                              "levels",
+                              "name"
                             ],
                             "type": "object"
                           },
@@ -185103,6 +185269,7 @@
                         "usage": {
                           "properties": {
                             "cost_usd": {
+                              "description": "What the gym's key paid this month: suggestions plus voice drafts",
                               "type": "number"
                             },
                             "since": {
@@ -185111,11 +185278,16 @@
                             },
                             "suggestions": {
                               "type": "integer"
+                            },
+                            "voice_drafts": {
+                              "description": "Voice drafts written with the gym's key this month",
+                              "type": "integer"
                             }
                           },
                           "required": [
                             "since",
                             "suggestions",
+                            "voice_drafts",
                             "cost_usd"
                           ],
                           "title": "GymAiUsage",
@@ -185238,6 +185410,7 @@
                         "usage": {
                           "properties": {
                             "cost_usd": {
+                              "description": "What the gym's key paid this month: suggestions plus voice drafts",
                               "type": "number"
                             },
                             "since": {
@@ -185246,11 +185419,16 @@
                             },
                             "suggestions": {
                               "type": "integer"
+                            },
+                            "voice_drafts": {
+                              "description": "Voice drafts written with the gym's key this month",
+                              "type": "integer"
                             }
                           },
                           "required": [
                             "since",
                             "suggestions",
+                            "voice_drafts",
                             "cost_usd"
                           ],
                           "title": "GymAiUsage",
@@ -197533,13 +197711,16 @@
                             ],
                             "type": "string"
                           },
-                          "level": {
-                            "enum": [
-                              "beginner",
-                              "all_levels",
-                              "advanced"
-                            ],
-                            "type": "string"
+                          "levels": {
+                            "items": {
+                              "enum": [
+                                "beginner",
+                                "intermediate",
+                                "advanced"
+                              ],
+                              "type": "string"
+                            },
+                            "type": "array"
                           },
                           "name": {
                             "type": "string"
@@ -197562,7 +197743,7 @@
                           "sort_order",
                           "credit_cost",
                           "kind",
-                          "level",
+                          "levels",
                           "audiences",
                           "archived_at"
                         ],
@@ -197631,14 +197812,18 @@
                     ],
                     "type": "string"
                   },
-                  "level": {
-                    "description": "Who the class suits, for the schedule's level filter",
-                    "enum": [
-                      "beginner",
-                      "all_levels",
-                      "advanced"
-                    ],
-                    "type": "string"
+                  "levels": {
+                    "description": "Levels the class suits, for the schedule's level filter; empty means all levels (ADR-490)",
+                    "items": {
+                      "enum": [
+                        "beginner",
+                        "intermediate",
+                        "advanced"
+                      ],
+                      "type": "string"
+                    },
+                    "type": "array",
+                    "uniqueItems": true
                   },
                   "name": {
                     "maxLength": 80,
@@ -197711,13 +197896,16 @@
                           ],
                           "type": "string"
                         },
-                        "level": {
-                          "enum": [
-                            "beginner",
-                            "all_levels",
-                            "advanced"
-                          ],
-                          "type": "string"
+                        "levels": {
+                          "items": {
+                            "enum": [
+                              "beginner",
+                              "intermediate",
+                              "advanced"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
                         },
                         "name": {
                           "type": "string"
@@ -197740,7 +197928,7 @@
                         "sort_order",
                         "credit_cost",
                         "kind",
-                        "level",
+                        "levels",
                         "audiences",
                         "archived_at"
                       ],
@@ -197843,13 +198031,16 @@
                           ],
                           "type": "string"
                         },
-                        "level": {
-                          "enum": [
-                            "beginner",
-                            "all_levels",
-                            "advanced"
-                          ],
-                          "type": "string"
+                        "levels": {
+                          "items": {
+                            "enum": [
+                              "beginner",
+                              "intermediate",
+                              "advanced"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
                         },
                         "name": {
                           "type": "string"
@@ -197872,7 +198063,7 @@
                         "sort_order",
                         "credit_cost",
                         "kind",
-                        "level",
+                        "levels",
                         "audiences",
                         "archived_at"
                       ],
@@ -197959,14 +198150,18 @@
                     ],
                     "type": "string"
                   },
-                  "level": {
-                    "description": "Who the class suits, for the schedule's level filter",
-                    "enum": [
-                      "beginner",
-                      "all_levels",
-                      "advanced"
-                    ],
-                    "type": "string"
+                  "levels": {
+                    "description": "Levels the class suits, for the schedule's level filter; empty means all levels (ADR-490)",
+                    "items": {
+                      "enum": [
+                        "beginner",
+                        "intermediate",
+                        "advanced"
+                      ],
+                      "type": "string"
+                    },
+                    "type": "array",
+                    "uniqueItems": true
                   },
                   "name": {
                     "maxLength": 80,
@@ -198039,13 +198234,16 @@
                           ],
                           "type": "string"
                         },
-                        "level": {
-                          "enum": [
-                            "beginner",
-                            "all_levels",
-                            "advanced"
-                          ],
-                          "type": "string"
+                        "levels": {
+                          "items": {
+                            "enum": [
+                              "beginner",
+                              "intermediate",
+                              "advanced"
+                            ],
+                            "type": "string"
+                          },
+                          "type": "array"
                         },
                         "name": {
                           "type": "string"
@@ -198068,7 +198266,7 @@
                         "sort_order",
                         "credit_cost",
                         "kind",
-                        "level",
+                        "levels",
                         "audiences",
                         "archived_at"
                       ],
@@ -278921,6 +279119,14 @@
                           "minimum": 1,
                           "type": "integer"
                         },
+                        "subscription_day_after_reminder": {
+                          "description": "Also remind the member on the day after it ended; then every payment_reminder_interval_days until they renew or leave",
+                          "type": "boolean"
+                        },
+                        "subscription_end_day_reminder": {
+                          "description": "Also remind the member on the day the subscription ends",
+                          "type": "boolean"
+                        },
                         "subscription_expiry_reminder_days": {
                           "description": "Days before a subscription ends to remind the member (0 = no reminder)",
                           "maximum": 60,
@@ -278942,6 +279148,8 @@
                       "required": [
                         "payment_reminder_interval_days",
                         "subscription_expiry_reminder_days",
+                        "subscription_end_day_reminder",
+                        "subscription_day_after_reminder",
                         "subscription_grace_days",
                         "document_mode"
                       ],
@@ -279238,6 +279446,14 @@
                         "minimum": 1,
                         "type": "integer"
                       },
+                      "subscription_day_after_reminder": {
+                        "description": "Also remind the member on the day after it ended; then every payment_reminder_interval_days until they renew or leave",
+                        "type": "boolean"
+                      },
+                      "subscription_end_day_reminder": {
+                        "description": "Also remind the member on the day the subscription ends",
+                        "type": "boolean"
+                      },
                       "subscription_expiry_reminder_days": {
                         "description": "Days before a subscription ends to remind the member (0 = no reminder)",
                         "maximum": 60,
@@ -279451,6 +279667,14 @@
                           "minimum": 1,
                           "type": "integer"
                         },
+                        "subscription_day_after_reminder": {
+                          "description": "Also remind the member on the day after it ended; then every payment_reminder_interval_days until they renew or leave",
+                          "type": "boolean"
+                        },
+                        "subscription_end_day_reminder": {
+                          "description": "Also remind the member on the day the subscription ends",
+                          "type": "boolean"
+                        },
                         "subscription_expiry_reminder_days": {
                           "description": "Days before a subscription ends to remind the member (0 = no reminder)",
                           "maximum": 60,
@@ -279472,6 +279696,8 @@
                       "required": [
                         "payment_reminder_interval_days",
                         "subscription_expiry_reminder_days",
+                        "subscription_end_day_reminder",
+                        "subscription_day_after_reminder",
                         "subscription_grace_days",
                         "document_mode"
                       ],
@@ -328388,6 +328614,140 @@
         ]
       }
     },
+    "/api/org/{organization_slug}/me/features": {
+      "get": {
+        "callbacks": {},
+        "description": "ADR-470. With `location_ids` (a branch filter) a feature a branch can have on its own (promotions, a floor plan) counts only when it covers one of those branches or the whole box.",
+        "operationId": "PaleeWeb.MyFeaturesController.show",
+        "parameters": [
+          {
+            "description": "ADR-186: comma-separated branch ids to filter by",
+            "in": "query",
+            "name": "location_ids",
+            "required": false,
+            "schema": {
+              "maxLength": 7400,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "features": {
+                      "description": "ADR-470: every feature key with whether it is on",
+                      "properties": {
+                        "branches": {
+                          "type": "boolean"
+                        },
+                        "card_autopay": {
+                          "type": "boolean"
+                        },
+                        "floor_plan": {
+                          "type": "boolean"
+                        },
+                        "module_corporate_clients": {
+                          "type": "boolean"
+                        },
+                        "module_digital_content": {
+                          "type": "boolean"
+                        },
+                        "module_events": {
+                          "type": "boolean"
+                        },
+                        "module_group_classes": {
+                          "type": "boolean"
+                        },
+                        "module_online_coaching": {
+                          "type": "boolean"
+                        },
+                        "module_open_gym": {
+                          "type": "boolean"
+                        },
+                        "module_personal_training": {
+                          "type": "boolean"
+                        },
+                        "online_drop_in": {
+                          "type": "boolean"
+                        },
+                        "online_packages": {
+                          "type": "boolean"
+                        },
+                        "online_payments": {
+                          "type": "boolean"
+                        },
+                        "online_personal_training": {
+                          "type": "boolean"
+                        },
+                        "online_programmes": {
+                          "type": "boolean"
+                        },
+                        "online_shop": {
+                          "type": "boolean"
+                        },
+                        "perks": {
+                          "type": "boolean"
+                        },
+                        "promotions": {
+                          "type": "boolean"
+                        },
+                        "referrals": {
+                          "type": "boolean"
+                        },
+                        "trials": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "online_payments",
+                        "card_autopay",
+                        "online_drop_in",
+                        "online_packages",
+                        "online_personal_training",
+                        "online_programmes",
+                        "online_shop",
+                        "referrals",
+                        "promotions",
+                        "perks",
+                        "trials",
+                        "branches",
+                        "floor_plan",
+                        "module_group_classes",
+                        "module_online_coaching",
+                        "module_open_gym",
+                        "module_events",
+                        "module_personal_training",
+                        "module_digital_content",
+                        "module_corporate_clients"
+                      ],
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "features"
+                  ],
+                  "title": "BusinessFeatures",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Features"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Which optional features this business has on",
+        "tags": [
+          "Organizations"
+        ]
+      }
+    },
     "/api/org/{organization_slug}/me/finance": {
       "get": {
         "callbacks": {},
@@ -343521,6 +343881,19 @@
                       },
                       "type": "array"
                     },
+                    "available_sources": {
+                      "description": "ADR-451: the source types this person may log here, in display order (freeform is always last).",
+                      "items": {
+                        "enum": [
+                          "class",
+                          "assigned_workout",
+                          "library_workout",
+                          "freeform"
+                        ],
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
                     "classes": {
                       "items": {
                         "properties": {
@@ -343611,6 +343984,7 @@
                     }
                   },
                   "required": [
+                    "available_sources",
                     "classes",
                     "assignments",
                     "library_workouts"

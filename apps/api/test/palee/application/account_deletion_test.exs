@@ -277,15 +277,41 @@ defmodule Palee.Application.AccountDeletionTest do
         [Ecto.UUID.dump!(account.id)]
       )
 
+      # ADR-395: their body weight and birth year, and a coach's choice of
+      # what their fitness card shows.
+      Palee.Repo.query!(
+        "INSERT INTO fitness_profile_settings (user_id, body_weight_kg, birth_year, display, inserted_at, updated_at) VALUES ($1, 72.5, 1985, 'all', now(), now())",
+        [Ecto.UUID.dump!(account.id)]
+      )
+
+      Palee.Repo.query!(
+        "INSERT INTO fitness_display_overrides (id, organization_id, client_user_id, display, inserted_at, updated_at) VALUES (gen_random_uuid(), $1, $2, 'none', now(), now())",
+        [Ecto.UUID.dump!(organization.id), Ecto.UUID.dump!(account.id)]
+      )
+
       {:ok, _} = AccountDeletion.request(account, %{scope: "login", password: @password}, @now)
       {_message, token} = confirmation_token(account.email)
       {:ok, %{scheduled_for: at}} = AccountDeletion.confirm(token, @now)
-      assert AccountDeletion.execute_due(at) == 1
 
-      # The kept profile leaves every Palee-wide board.
+      # The sweep runs like the hourly job in production: no session scope,
+      # under the runtime role's row-level security.
+      assert with_clean_session(fn ->
+               with_runtime_role(fn -> AccountDeletion.execute_due(at) end)
+             end) ==
+               1
+
+      # The kept profile leaves every Palee-wide board and keeps no fitness
+      # settings or coach's choice.
+      for table <- ~w(palee_leaderboard_consents fitness_profile_settings) do
+        assert %{rows: [[0]]} =
+                 Palee.Repo.query!("SELECT count(*) FROM #{table} WHERE user_id = $1", [
+                   Ecto.UUID.dump!(account.id)
+                 ])
+      end
+
       assert %{rows: [[0]]} =
                Palee.Repo.query!(
-                 "SELECT count(*) FROM palee_leaderboard_consents WHERE user_id = $1",
+                 "SELECT count(*) FROM fitness_display_overrides WHERE client_user_id = $1",
                  [Ecto.UUID.dump!(account.id)]
                )
 

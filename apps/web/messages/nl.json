@@ -9,10 +9,10 @@
     "capacityLabel": "Plaatsen in elke nieuwe les",
     "capacityHelp": "Hoeveel mensen een nieuwe les kunnen boeken. Je kunt het per les aanpassen.",
     "autoApproveLabel": "Boekingen automatisch bevestigen",
-    "autoApproveHelp": "Aan: een boeking is meteen bevestigd. Uit: elke boeking is een aanvraag die iemand van het team moet goedkeuren.",
+    "autoApproveHelp": "Aan: een boeking is meteen bevestigd, zonder wachten. Uit: elke boeking is een aanvraag die iemand van het team goedkeurt, en jij bepaalt hoe lang die op een antwoord wacht.",
     "approvalWaitLabel": "Tijd om een boekingsaanvraag te beantwoorden",
-    "approvalWaitHelp": "Alleen voor lessen zonder automatische bevestiging. Antwoordt niemand van het team binnen deze tijd, dan wordt de aanvraag geannuleerd, gaat het bezoek terug naar het lid en gaat de plaats naar de volgende op de wachtlijst. Een aanvraag wacht nooit langer dan de start van de les. Dit is niet wanneer boekingen openen: dat is ‘Boekingen openen’.",
-    "approvalWaitClassHelp": "Keurt niemand de aanvraag binnen deze tijd goed, dan wordt hij automatisch geannuleerd. Geldt alleen zonder automatische bevestiging.",
+    "approvalWaitHelp": "Antwoordt niemand van het team binnen deze tijd, dan wordt de aanvraag geannuleerd, gaat het bezoek terug naar het lid en gaat de plaats naar de volgende op de wachtlijst. ‘Geen limiet’: de aanvraag wacht tot de start van de les op een antwoord. Dit is niet wanneer boekingen openen: dat is ‘Boekingen openen’.",
+    "approvalWaitClassHelp": "Keurt niemand van het team de aanvraag binnen deze tijd goed, dan wordt hij automatisch geannuleerd en gaat de plaats naar de volgende op de wachtlijst. ‘Geen limiet’: de aanvraag wacht tot de start van de les op een antwoord.",
     "approvalWaitNoLimit": "Geen limiet (tot de start)",
     "bookingWindowLabel": "Boekingen openen (dagen voor de les)",
     "bookingWindowHelp": "Het vroegst dat een lid kan boeken: zoveel dagen voor de les. Boekingen blijven open tot de start. Met ‘Geen limiet’ is een les te boeken zodra hij op het rooster staat. Een abonnementspakket kan een eigen waarde hebben.",
@@ -220,7 +220,6 @@
     "scheduledAt": "Gepland om",
     "capacity": "Capaciteit",
     "timeoutMinutes": "Time-out minuten",
-    "autoApproveBookingsForThisSlot": "Boekingen voor deze les automatisch goedkeuren",
     "deleteSlot": "Les verwijderen",
     "saveChanges": "Wijzigingen opslaan",
     "createSlot": "Les aanmaken",
@@ -785,7 +784,7 @@
     "displayLabeld747868": "Etiket weergeven",
     "addLeveld2d215f": "+ Niveau toevoegen",
     "reminderIntervalDaysee3ba34": "Herinneringsinterval (dagen)",
-    "howOftenInDaysAMemberWithAn710fa76": "Hoe vaak (in dagen) een lid met een openstaand saldo een betalingsherinnering ontvangt. De herinnering wordt herhaald totdat het saldo volledig is vereffend.",
+    "howOftenInDaysAMemberWithAn710fa76": "Daarna: om de hoeveel dagen de herinnering terugkomt, tot het lid verlengt of vertrekt. Wie geld schuldig is, krijgt in hetzelfde ritme een betalingsherinnering tot het saldo is betaald.",
     "applicationSettingsIntroduction8f2e9b7": "introductie van applicatie-instellingen",
     "appConfigurations1e15749": "App-configuraties.",
     "globalSettingsForAppearanceEngagementRulesAndWorkout915168c": "Algemene instellingen voor uiterlijk, betrokkenheidsregels en definities van trainingsniveaus. Wijzigingen zijn onmiddellijk van toepassing in de hele app.",
@@ -2661,7 +2660,6 @@
     "featureOptionalClassSettings": "Optionele lesinstellingen",
     "featureCapacity": "Capaciteit",
     "featureTimeoutMinutes": "Time-out minuten",
-    "featureAutoApprove": "Automatisch goedkeuren",
     "featureCreating": "Creëren…",
     "featureReceipt": "Ontvangst",
     "featureReceiptDocumentTitle": "Ontvangstbewijs {reference}",
@@ -3049,14 +3047,11 @@
     "classTimerForbidden": "Alleen coaches en beheerders kunnen de lestimer bedienen.",
     "classTimerRejected": "De timer kan dat nu niet.",
     "classTimerOffline": "Server niet bereikbaar. Controleer de verbinding en probeer opnieuw.",
-    "classTimerChoosePreset": "Deze les heeft geen getimede workout. Kies hieronder een timer.",
     "classTimerControlsLabel": "Timerbediening",
     "classTimerStartAgain": "Opnieuw starten",
     "classTimerFinish": "Timer beëindigen",
     "classTimerReset": "Resetten",
     "classTimerGetReadyLabel": "Aftellen voor de start",
-    "classTimerPresetTitle": "Timer voor deze les",
-    "classTimerPresetHint": "Gebruik een vooraf ingestelde timer in plaats van de training van de les, bv. een EMOM voor een krachttraining.",
     "classTimerUsePreset": "Deze timer gebruiken",
     "classTimerUseWorkout": "Lesworkout gebruiken",
     "classTimerJumpTitle": "Naar een deel springen",
@@ -3529,8 +3524,6 @@
     "admCheckInAllowanceExhausted": "Dit lid heeft alle bezoeken voor vrij trainen in deze periode gebruikt. Je kunt extra bezoeken toekennen in het profiel.",
     "admCheckInFrozen": "Het abonnementspakket van dit lid is vandaag gepauzeerd. Annuleer de pauze in het profiel om in te checken.",
     "admCheckInLocationNotIncluded": "Het abonnementspakket van dit lid geldt niet voor deze vestiging.",
-    "admClassTypeEvent": "Evenement",
-    "admClassTypeRulesHint": "Bezoeken per boeking: hoeveel bezoeken één boeking van een abonnementspakket gebruikt. Markeer speciale sessies als evenement, zodat ze de evenementbezoeken van het abonnementspakket gebruiken.",
     "admVisitsPerBooking": "Bezoeken per boeking",
     "admDecrease": "Verlagen",
     "admIncrease": "Verhogen",
@@ -4918,7 +4911,55 @@
     "semanticWorkoutContemporaryDance": "Hedendaagse dans",
     "semanticWorkoutLatinDance": "Latin dans (salsa, bachata, reggaeton)",
     "semanticWorkoutStreetDance": "Streetdance (hiphop, heels)",
-    "semanticWorkoutSkateboarding": "Skateboarden"
+    "semanticWorkoutSkateboarding": "Skateboarden",
+    "classTimerHelpToggle": "Wat elke knop doet",
+    "classTimerLiveHelp": "Alles wat je hier indrukt, verschijnt meteen op alle schermen van deze les.",
+    "classTimerReconnectingHelp": "De verbinding is weggevallen. De knoppen werken weer zodra ze terug is.",
+    "classTimerWallScreen": "Wandscherm",
+    "classTimerWallScreenHelp": "De klok schermvullend voor de tv of computer in de zaal. Hij toont altijd dezelfde tijd als deze afstandsbediening.",
+    "classTimerCopyLinkHelp": "Stuur de link naar het apparaat in de zaal en open hem daar. Dat apparaat moet ingelogd zijn met een account van de box.",
+    "classTimerOnScreenHelp": "Toon de timer, het klassement of de WOD van deze les vandaag op een scherm van de box.",
+    "classTimerOpenHere": "Op dit apparaat openen",
+    "classTimerOpenHereHelp": "Als dit apparaat het scherm van de zaal is.",
+    "classTimerSoundHelp": "Piepjes op dit apparaat in de laatste 3 seconden en bij elke fasewissel. Het geluid van het wandscherm verandert niet.",
+    "classTimerClockHelp": "‘—’ betekent dat er nog geen tijd is. De tijd staat als minuten:seconden; telt hij af, dan toont hij wat er overblijft. ‘Volgende’ is het deel dat volgt.",
+    "classTimerCountdownHelp": "Hoeveel seconden het scherm aftelt voor de start, zodat de atleten hun plek kunnen innemen.",
+    "classTimerCountdownNone": "Geen",
+    "classTimerCountdownSeconds": "{seconds} sec",
+    "classTimerStartHelp": "Start de klok op alle schermen na het aftellen.",
+    "classTimerPauseHelp": "Zet de klok op alle schermen stil. De tijd blijft bewaard.",
+    "classTimerResumeHelp": "Gaat verder waar hij stopte, na 3 seconden aftellen.",
+    "classTimerBackHelp": "Gaat naar het vorige deel en start het vanaf het begin.",
+    "classTimerRestart": "Opnieuw",
+    "classTimerRestartHelp": "Dit is het eerste deel, dus het begint opnieuw vanaf het begin.",
+    "classTimerNextHelp": "Sluit het huidige deel af en start meteen het volgende.",
+    "classTimerComplete": "Afronden",
+    "classTimerCompleteHelp": "Dit is het laatste deel, dus de timer stopt en de schermen tonen ‘Tijd!’.",
+    "classTimerAdjustHelp": "Haalt 30 seconden van het huidige deel af of telt er 30 bij, voor iedereen.",
+    "classTimerFinishHelp": "Stopt de timer nu. De schermen tonen ‘Tijd!’.",
+    "classTimerResetHelp": "Zet de klok op alle schermen terug naar ‘Klaar’.",
+    "classTimerResetConfirmTitle": "Timer resetten?",
+    "classTimerResetConfirmBody": "De klok gaat op alle schermen in de zaal terug naar ‘Klaar’.",
+    "classTimerMore": "Meer",
+    "classTimerChooseTitle": "Kies een timer",
+    "classTimerOtherTimer": "Andere timer",
+    "classTimerNoTimedWorkout": "Deze les heeft geen workout met tijd.",
+    "classTimerInsteadOfWorkout": "In plaats van de workout van de les.",
+    "classTimerOwnTimer": "Eigen timer",
+    "classTimerOrCommon": "of kies een veelgebruikte timer:",
+    "classTimerJumpHelp": "Tik op een deel om er meteen heen te gaan.",
+    "timerPresetHelp_tabata": "Tabata: 20 seconden werk, 10 rust, 8 rondes (4 minuten).",
+    "timerPresetHelp_emom10": "EMOM (elke minuut op de minuut): aan het begin van elke minuut doe je de oefening en rust je de rest. 10 rondes.",
+    "timerPresetHelp_e2mom20": "E2MOM: zoals EMOM, maar elke 2 minuten. 10 rondes, 20 minuten.",
+    "timerPresetHelp_amrap12": "AMRAP (zoveel mogelijk rondes): zoveel rondes als je haalt in 12 minuten.",
+    "timerPresetHelp_forTime12": "For Time: zo snel mogelijk klaar. Time cap 12: de klok stopt na 12 minuten.",
+    "timerPresetHelp_deathBy": "Death By: een EMOM waarbij je elke minuut één herhaling toevoegt tot je het niet meer bijhoudt.",
+    "timerPresetHelp_stopwatch": "Stopwatch: telt op zonder limiet tot je hem stopt.",
+    "subscriptionEndsTodayTitle": "Je abonnement eindigt vandaag",
+    "subscriptionEndsTodayBody": "{package} eindigt vandaag. Verleng het om lessen te blijven boeken.",
+    "subscriptionEndedRenewBody": "{package} is geëindigd op {date}. Verleng het om weer lessen te boeken.",
+    "subscriptionEndDayReminder": "Herinnering op de dag dat het eindigt",
+    "subscriptionDayAfterReminder": "Herinnering de dag na het einde"
   },
   "PrSharing": {
     "gymLabel": "Waar heb je dit PR neergezet?",
@@ -6199,7 +6240,8 @@
     "chipFriends": "Vrienden",
     "friendsOnly": "Alleen waar vrienden gaan",
     "friendsGoing": "{others, plural, =0 {{name} gaat} other {{name} en # anderen gaan}}",
-    "friendsLabel": "Gaan"
+    "friendsLabel": "Gaan",
+    "level_intermediate": "Gemiddeld"
   },
   "LocationPicker": {
     "title": "Locatie",
@@ -10000,8 +10042,8 @@
       "title": "AI-assistent",
       "description": "De WOD-assistent, plus scalingvoorstellen en spraakinvoer met je eigen sleutel. Een coach keurt elk voorstel goed.",
       "enable": "Scalingvoorstellen",
-      "enableHint": "Standaard uit. Vereist een API-sleutel.",
-      "key": "API-sleutel (Anthropic)",
+      "enableHint": "Voor een sporter met een blessure die de gym vastlegde, stelt AI voor hoe de training aangepast wordt: minder gewicht, minder herhalingen of een andere oefening. Een coach keurt elk voorstel goed voordat de sporter het ziet. Hiervoor is AI nodig, omdat elke combinatie van training en blessure anders is en vaste regels die niet dekken.",
+      "key": "Claude-sleutel (Anthropic)",
       "keySet": "Er is een sleutel ingesteld die eindigt op {last4}.",
       "keyRejected": "De aanbieder heeft de sleutel die eindigt op {last4} geweigerd. Voer een nieuwe sleutel in.",
       "keyMissing": "Geen sleutel ingesteld.",
@@ -10010,8 +10052,9 @@
       "removeKey": "Sleutel verwijderen",
       "model": "Model (optioneel)",
       "saveModel": "Model opslaan",
-      "usage": "Deze maand · voorstellen: {count} · kosten: ${cost}",
-      "privacy": "Alleen de training en de door de gym vastgelegde blessures worden verstuurd, zonder namen. De sleutel wordt nooit meer getoond."
+      "usage": "Deze maand · {count, plural, one {# voorstel} other {# voorstellen}} · {voice, plural, one {# spraakconcept} other {# spraakconcepten}} · kosten: ${cost}",
+      "privacy": "Er worden geen namen verstuurd. Voorstellen sturen de training en de door de gym vastgelegde blessures. Inspreken stuurt alleen de tekst van wat het lid zei. De sleutel wordt nooit meer getoond.",
+      "keyHint": "Scalingvoorstellen en inspreken hebben hem nodig. Het gebruik wordt op je eigen Anthropic-account gefactureerd."
     },
     "queue": {
       "eyebrow": "Mijn klanten",
@@ -10075,7 +10118,7 @@
     },
     "settings": {
       "enable": "Inspreken",
-      "enableHint": "Leden spreken hun training in en controleren een concept voor het opslaan. Audio wordt niet bewaard."
+      "enableHint": "Leden zeggen in eigen woorden wat ze deden en AI maakt er oefeningen, sets, herhalingen en gewichten van. Het lid controleert het concept voor het opslaan. Hiervoor is AI nodig om vrije spraak te begrijpen, zoals „drie sets van tien met 60”. Audio wordt niet bewaard."
     }
   },
   "Pickers": {
@@ -12204,7 +12247,9 @@
     "placementPinRemove": "Speld verwijderen",
     "machineOnPlan": "Op de plattegrond",
     "machinePhotoRemove": "Foto weghalen",
-    "machinePhotoAdd": "{max, plural, one {Foto toevoegen} other {Foto's (tot #)}}"
+    "machinePhotoAdd": "{max, plural, one {Foto toevoegen} other {Foto's (tot #)}}",
+    "introSingle": "De zalen en ruimtes van de box: waar lessen plaatsvinden, wat wordt schoongemaakt en waar de apparatuur staat. Voeg een plattegrond toe om ze erop te tekenen.",
+    "planAndSpaces": "Plattegrond en ruimtes"
   },
   "emailVerification": {
     "bannerText": "Bevestig je e-mailadres. We hebben een link gestuurd naar {email}.",
@@ -13607,7 +13652,9 @@
         "community_partners_enabled": "Trainingspartners",
         "trials_enabled": "Proeflessen",
         "trials_seats_per_class": "Proefplaatsen per les",
-        "trials_approval": "Goedkeuring van proeflessen"
+        "trials_approval": "Goedkeuring van proeflessen",
+        "finance_subscription_end_day_reminder": "Herinnering op de dag dat het eindigt",
+        "finance_subscription_day_after_reminder": "Herinnering de dag na het einde"
       }
     }
   },
@@ -14906,7 +14953,8 @@
     "noEnd": "Geen einde",
     "renews": "wordt verlengd",
     "dueSince": "vervalt {date}",
-    "debtsQueue": "Schulden"
+    "debtsQueue": "Schulden",
+    "keptContact": "Account verwijderd · contact bewaard tot dit betaald is"
   },
   "WorkoutTypes": {
     "family": {
@@ -17129,7 +17177,6 @@
       "withdrawReasonRequired": "Vul de reden in.",
       "towards": "Voor {rank}:",
       "history": "Geschiedenis",
-      "historyStripe": "{rank} +{stripes}",
       "picker": {
         "count": "{count, plural, one {# sjabloon} other {# sjablonen}}",
         "step1": "Stap 1 van 2 · Wat geef je?",
@@ -18438,5 +18485,32 @@
       "unknownPerson": "Onbekend",
       "beforeValue": "{value} · {from}–{to}"
     }
+  },
+  "ExplainedSetting": {
+    "about": "Wat is «{name}»?"
+  },
+  "ClassTypeOptions": {
+    "eventLabel": "Evenement",
+    "whatHeading": "Wat het doet:",
+    "membersHeading": "Wat leden zien:",
+    "whenHeading": "Wanneer aanpassen:",
+    "levelNoneChosen": "Alle niveaus",
+    "audienceNoneChosen": "Iedereen",
+    "event_tip": "Boekingen gaan van de eventbezoeken van het pakket af, niet van de lesbezoeken.",
+    "event_what": "Een boeking in een les van dit type haalt eventbezoeken van het abonnementspakket van het lid af. De lesbezoeken blijven onaangeroerd.",
+    "event_members": "Alleen leden met een pakket dat events bevat kunnen boeken. In het rooster draagt de les het label «Evenement» en het filter «Events» vindt haar.",
+    "event_when": "Voor alles wat geen dagelijkse training is: seminar, workshop, open dag of interne wedstrijd. Moet elk abonnement de les dekken, laat het dan een gewone les.",
+    "visits_tip": "Hoeveel bezoeken van het pakket één boeking gebruikt. Meestal 1.",
+    "visits_what": "Elke boeking haalt zoveel bezoeken van het pakket van het lid af, van 1 tot 10. Zo kost een langere of duurdere les meer zonder apart pakket.",
+    "visits_members": "Voor het boeken zien leden hoeveel bezoeken de les gebruikt. Met een pakket van 8 bezoeken en een les van 2 passen er 4 boekingen in.",
+    "visits_when": "Voor lessen die jou meer kosten: kleine groepen, sessies van 90 minuten, speciaal materiaal of een gastcoach. Gewone lessen blijven op 1.",
+    "level_tip": "Voor welke niveaus de les is. Zonder keuze voor alle.",
+    "level_what": "Kies er een of meer: Beginners, Gemiddeld, Gevorderden. Zonder keuze is de les voor alle niveaus. Het informeert; het blokkeert nooit een boeking.",
+    "level_members": "Het niveau staat in de lesdetails. Wie het rooster, de boxpagina of «In de buurt» filtert op «Beginners» vindt de lessen voor beginners en die voor alle niveaus.",
+    "level_when": "Markeer lessen die een nieuweling niet toevallig moet kiezen (olympisch gewichtheffen alleen voor Gevorderden) en lessen die het beste eerste bezoek zijn (Foundations voor Beginners). Een les die voor iedereen schaalbaar is blijft zonder keuze.",
+    "audience_tip": "Voor welke groepen de les bedoeld is. Zonder keuze voor iedereen.",
+    "audience_what": "Kies de groepen waarvoor de les gemaakt is, zoals «Tieners». Zonder keuze is ze voor iedereen. Ook dit informeert; het blokkeert nooit een boeking.",
+    "audience_members": "De groepen staan in de lesdetails, en leden filteren er het rooster en de boxpagina mee.",
+    "audience_when": "Als de les voor bepaalde mensen ontworpen is: alleen vrouwen, kinderen, 40+. Open lessen blijven zonder keuze, zodat niemand denkt dat ze niet voor hem zijn."
   }
 }

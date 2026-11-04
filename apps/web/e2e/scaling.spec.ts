@@ -56,7 +56,7 @@ const offSettings = {
   key_status: "unknown",
   model: null,
   default_model: "default-model",
-  usage: { suggestions: 0, cost_usd: 0 },
+  usage: { suggestions: 0, voice_drafts: 1, cost_usd: 0.004 },
 };
 
 const suggestion = {
@@ -125,18 +125,20 @@ test("the owner switches suggestions on with the gym's key", async ({ page }) =>
   await page.getByTestId("advanced-settings").getByRole("button", { name: /Advanced/ }).click();
   const panel = page.getByTestId("ai-scaling-settings");
   await expect(panel.getByText("No key set.")).toBeVisible();
+  // The key says which features use it and who pays (owners asked what it was for).
+  await expect(panel.getByText("Scaling suggestions and voice logging need it.", { exact: false })).toBeVisible();
   const toggle = panel.getByRole("switch", { name: "Scaling suggestions" });
   await expect(toggle).toBeDisabled();
 
-  await panel.getByLabel("API key (Anthropic)").fill("sk-test-key-0123456789-abcd");
+  await panel.getByLabel("Claude key (Anthropic)").fill("sk-test-key-0123456789-abcd");
   await panel.getByRole("button", { name: "Save key" }).click();
   await expect(panel.getByText("A key ending in abcd is set.")).toBeVisible();
-  await expect(panel.getByLabel("API key (Anthropic)")).toHaveValue("");
+  await expect(panel.getByLabel("Claude key (Anthropic)")).toHaveValue("");
 
   await toggle.check();
   await expect(toggle).toBeChecked();
   expect(puts).toEqual([{ api_key: "sk-test-key-0123456789-abcd" }, { scaling_enabled: true }]);
-  await expect(panel.getByTestId("ai-usage")).toContainText("suggestions: 0");
+  await expect(panel.getByTestId("ai-usage")).toHaveText("This month · 0 suggestions · 1 voice draft · cost: $0.00");
 });
 
 test("a coach approves a suggestion with an edit and drops one change", async ({ page }) => {

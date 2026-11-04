@@ -238,7 +238,7 @@ async function stubMember(page: Page, extra: (route: Route, path: string, method
     }
     if (path === "/api/my-workouts") return json(route, { start_date: localToday(), end_date: localToday(), assignments: [] });
     if (path === "/api/executions") return json(route, { executions: [] });
-    if (path === "/api/me/training-log/sources") return json(route, { classes: [], assignments: [], library_workouts: [] });
+    if (path === "/api/me/training-log/sources") return json(route, { available_sources: ["class", "freeform"], classes: [], assignments: [], library_workouts: [] });
     // ADR-461: exercise-name suggestions under the training-log, PR and note fields.
     if (path === "/api/me/exercise-suggestions") return json(route, { groups: [] });
     if (/\/injury-warnings$/.test(path)) return json(route, { level: "none", warnings: [], warning_count: 0 });

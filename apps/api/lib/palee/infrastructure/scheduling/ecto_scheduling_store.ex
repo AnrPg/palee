@@ -1787,7 +1787,7 @@ defmodule Palee.Infrastructure.Scheduling.EctoSchedulingStore do
       archived_at: class_type.archived_at,
       credit_cost: class_type.credit_cost,
       kind: class_type.kind,
-      level: class_type.level,
+      levels: class_type.levels,
       audiences: class_type.audiences,
       inserted_at: class_type.inserted_at,
       updated_at: class_type.updated_at

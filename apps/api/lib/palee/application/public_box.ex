@@ -281,7 +281,7 @@ defmodule Palee.Application.PublicBox do
           %{
             id: class_type.id,
             name: class_type.name,
-            level: Map.get(class_type, :level),
+            levels: Map.get(class_type, :levels) || [],
             audiences: Map.get(class_type, :audiences) || []
           }
     }

@@ -441,12 +441,19 @@ export function useNotificationText() {
     if (notification.type === "subscription_expiring" || notification.type === "subscription_grace") {
       const payload = notification.payload;
       const packageName = typeof payload.package_name === "string" ? payload.package_name : i18n("yourSubscription");
+      if (notification.type === "subscription_expiring" && payload.days_left === 0) {
+        return i18n("subscriptionEndsTodayBody", { package: packageName });
+      }
       if (notification.type === "subscription_expiring") {
         return i18n("subscriptionEndsSoonBody", {
           package: packageName,
           date: formatDay(payload.ends_on),
           days: typeof payload.days_left === "number" ? payload.days_left : 0,
         });
+      }
+      // ADR-500: after the slack (or with none) there is no access date.
+      if (typeof payload.grace_until !== "string" || payload.grace_until === "") {
+        return i18n("subscriptionEndedRenewBody", { package: packageName, date: formatDay(payload.ends_on) });
       }
       return i18n("subscriptionEndedBody", {
         package: packageName,
@@ -612,10 +619,10 @@ export function useNotificationText() {
       }
     }
   
-    return notificationTitle(notification.type);
+    return notificationTitle(notification.type, notification.payload);
   }
 
-  function notificationTitle(type: string) {
+  function notificationTitle(type: string, payload: NotificationRecord["payload"] = {}) {
     switch (type) {
       case "booking_pending":
         return i18n("newBookingRequest457ca72");
@@ -692,7 +699,7 @@ export function useNotificationText() {
       case "inventory_digest":
         return i18n("ntfDigestTitle");
       case "subscription_expiring":
-        return i18n("subscriptionEndsSoonTitle");
+        return payload?.days_left === 0 ? i18n("subscriptionEndsTodayTitle") : i18n("subscriptionEndsSoonTitle");
       case "subscription_grace":
         return i18n("subscriptionEndedTitle");
       case "access_ended":
