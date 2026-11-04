@@ -128,6 +128,8 @@ export type DraftExercise = {
   localId: string;
   itemType: WorkoutItemType;
   name: string;
+  /** ADR-461: the Palee catalog slug of a picked suggestion (`exercise_ref`); the name stays as typed. */
+  exerciseRef?: string | null;
   sets: number;
   setPrescriptions: SetPrescription[];
   prescriptionValue: number;

@@ -419,6 +419,11 @@ function SessionExpiredDialog({
   );
 }
 
+/** The session, or `null` outside a SessionProvider (widgets that also render in isolation). */
+export function useOptionalSession() {
+  return useContext(SessionContext);
+}
+
 export function useSession() {
   const i18n = useUiTranslations();
   const context = useContext(SessionContext);
