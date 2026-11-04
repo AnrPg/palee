@@ -13,6 +13,9 @@ import { dateKeyInZone } from "@/lib/zoned-time";
 import { MetricHelp, type HelpContent } from "./MetricHelp";
 import type { AnalyticsDirectory } from "./use-analytics-directory";
 
+/** Midday of a gym-local day parsed as UTC midnight, so formatting never slips a day. */
+export const NOON_MS = 12 * 60 * 60 * 1000;
+
 /** The registry key as a message path: `metrics.training.no_show_rate`. */
 export const metricPath = (key: string) => `metrics.${key}`;
 
@@ -61,7 +64,7 @@ export function useSinceLabel() {
   return (since: string | null) => {
     if (!since || Number.isNaN(Date.parse(since))) return null;
     const day = dateKeyInZone(since, zone);
-    const date = new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(`${day}T12:00:00Z`));
+    const date = new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(Date.parse(day) + NOON_MS));
     return t("kpi.since", { date });
   };
 }
@@ -361,7 +364,7 @@ export function useBreakdownRows(directory: AnalyticsDirectory) {
         const dimension = kpi.key === "demographics.age_bands" ? "age_bands" : "genders";
         return kpi.rows.map((row, index) => ({
           id: id(row, index),
-          label: t.has(`values.${dimension}.${row.key}`) ? t(`values.${dimension}.${row.key}`) : String(row.key ?? ""),
+          label: t.has(["values", dimension, row.key].join(".")) ? t(["values", dimension, row.key].join(".")) : String(row.key ?? ""),
           value: rowNumber(row, "people"),
           text: t("kpi.people", { count: rowNumber(row, "people") ?? 0 }),
           suppressed: row.suppressed,
@@ -383,7 +386,7 @@ export function useBreakdownRows(directory: AnalyticsDirectory) {
  * A breakdown metric in one card: its headline figure (when it has one,
  * e.g. the average rating) with the change, then its rows.
  */
-export function BreakdownCard({ kpi, directory, headline = false, chart = "bars" }: { kpi: Kpi; directory: AnalyticsDirectory; headline?: boolean; chart?: "bars" | "columns" }) {
+export function BreakdownCard({ kpi, directory, headline = false, columns = false }: { kpi: Kpi; directory: AnalyticsDirectory; headline?: boolean; columns?: boolean }) {
   const t = useTranslations("StaffAnalytics");
   const rowsOf = useBreakdownRows(directory);
   const label = t(`${metricPath(kpi.key)}.label`);
@@ -402,7 +405,7 @@ export function BreakdownCard({ kpi, directory, headline = false, chart = "bars"
       ) : null}
       {kpi.suppressed ? (
         <p className="text-sm" style={{ color: "var(--muted)" }}>{t("kpi.suppressedReason")}</p>
-      ) : chart === "columns" ? (
+      ) : columns ? (
         <ColumnChart rows={rows} ariaLabel={label} />
       ) : (
         <BarList rows={rows} />
@@ -465,7 +468,7 @@ export function KpiSections({
               kpi={kpi}
               directory={directory}
               headline={HEADLINE.has(kpi.key)}
-              chart={COLUMN_CHARTS.has(kpi.key) ? "columns" : "bars"}
+              columns={COLUMN_CHARTS.has(kpi.key)}
             />
           ))}
         </section>

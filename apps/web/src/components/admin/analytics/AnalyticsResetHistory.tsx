@@ -14,7 +14,7 @@ import { useUiLocale } from "@/i18n/use-ui-locale";
 import { STAFF_METRICS } from "@/lib/analytics-kpi";
 import { useOrganizationTimeZone } from "@/lib/organization-slug";
 
-import { useKpiFormat } from "./KpiWidgets";
+import { NOON_MS, useKpiFormat } from "./KpiWidgets";
 import { useAnalyticsDirectory } from "./use-analytics-directory";
 
 const PER_PAGE = 20;
@@ -58,9 +58,12 @@ export function AnalyticsResetHistory() {
   };
   const shortDay = (value: unknown) =>
     typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)
-      ? new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(`${value}T12:00:00Z`))
+      ? new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(Date.parse(value) + NOON_MS))
       : "";
-  const label = (key: string) => (t.has(`metrics.${key}.label`) ? t(`metrics.${key}.label`) : key);
+  const label = (key: string) => {
+    const path = ["metrics", key, "label"].join(".");
+    return t.has(path) ? t(path) : key;
+  };
   const person = (id: string | null) => (id && directory.staffName.get(id)) || t("history.unknownPerson");
   const before = (entry: Entry) => {
     const data = record(entry.before);
