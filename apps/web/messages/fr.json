@@ -17218,7 +17218,8 @@
         "programme_day_not_found": "Ce jour ne fait pas partie du programme d’entraînement.",
         "programme_schedule_limit": "Impossible de décaler davantage : le programme d’entraînement finirait trop tard. Tu peux le passer.",
         "programme_purchase_not_active": "Ce programme d’entraînement n’est plus actif."
-      }
+      },
+      "byCoach": "coach {name}"
     }
   },
   "BodyDevices": {

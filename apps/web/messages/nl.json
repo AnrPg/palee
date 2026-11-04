@@ -17218,7 +17218,8 @@
         "programme_day_not_found": "Deze dag hoort niet bij het trainingsprogramma.",
         "programme_schedule_limit": "Verder verschuiven kan niet: het trainingsprogramma zou te laat eindigen. Je kunt hem overslaan.",
         "programme_purchase_not_active": "Dit trainingsprogramma is niet meer actief."
-      }
+      },
+      "byCoach": "coach {name}"
     }
   },
   "BodyDevices": {

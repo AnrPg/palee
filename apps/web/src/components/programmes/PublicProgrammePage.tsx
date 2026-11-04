@@ -10,6 +10,7 @@ import { buyProgramme, fetchProgrammeTerms, fetchPublicProgramme, type Programme
 import { Icon } from "@/components/box-page/Icon";
 import { useStartCheckout } from "@/components/payments/PayParts";
 import { useSession } from "@/components/session-provider";
+import { useWorkoutTypeLabels } from "@/components/workouts/WorkoutTypeSelect";
 import { BackLink } from "@/components/ui/BackLink";
 import { DateInput } from "@/components/ui/DateInput";
 import { Dialog } from "@/components/ui/Dialog";
@@ -22,7 +23,7 @@ import { FRESHNESS } from "@/lib/query-policy";
 import { newIdempotencyKey } from "@/lib/training-log";
 
 import { needsStartRequest } from "./programme-grid";
-import { coverUrl, previewDays, programmeFacts, refundPolicy, weekOutline, type OutlineWeek, type RefundPolicy } from "./programme-page-model";
+import { coverUrl, previewDays, programmeFacts, refundPolicy, weekOutline, type OutlineRow, type OutlineWeek, type RefundPolicy } from "./programme-page-model";
 import { programmeMoney, ratingStars, useProgrammeError, useProgrammeLabels } from "./programme-ui";
 import { ProgrammeCover } from "./ProgrammeTile";
 
@@ -59,6 +60,8 @@ export function PublicProgrammePage({ slug, id }: { slug: string; id: string }) 
 
   const box = page.data?.box;
   const boxName = typeof box?.name === "string" ? box.name : slug;
+  const coachName = (programme as { coach_name?: unknown }).coach_name;
+  const coach = typeof coachName === "string" && coachName.trim() ? coachName.trim() : null;
   const facts = programmeFacts(programme);
   const outline = weekOutline(programme);
   const freeDays = previewDays(programme).length;
@@ -102,7 +105,7 @@ export function PublicProgrammePage({ slug, id }: { slug: string; id: string }) 
               {kind && coverUrl(programme) ? <p className="text-xs font-bold uppercase tracking-[0.12em]" style={{ color: "var(--dim)" }}>{kind}</p> : null}
               <h1 className="break-words text-2xl font-extrabold lg:text-3xl" style={{ color: "var(--text)" }}>{programme.title}</h1>
               <p className="text-sm" style={{ color: "var(--text-soft)" }}>
-                {[boxName, stars ? `${stars} · ${t("buyer2.reviewsCount", { count: reviewCount })}` : t("newBadge")].join(" · ")}
+                {[boxName, coach ? t("buyer2.byCoach", { name: coach }) : null, stars ? `${stars} · ${t("buyer2.reviewsCount", { count: reviewCount })}` : t("newBadge")].filter(Boolean).join(" · ")}
               </p>
             </div>
           </header>
@@ -249,14 +252,9 @@ function WeekAccordion({ week, minutes, open, onToggle }: { week: OutlineWeek; m
         ) : null}
       </summary>
       <ul className="flex flex-col px-4 pb-3">
-        {week.open.map((day) => (
-          <li key={day.day} className="flex min-h-11 items-center gap-3 py-1.5 text-sm" style={{ borderTop: "1px solid var(--border)" }}>
-            <span className="w-12 shrink-0 text-xs font-bold" style={{ color: "var(--dim)" }}>{t("dayShort", { day: day.dayOfWeek })}</span>
-            <b className="min-w-0 flex-1 break-words" style={{ color: "var(--text)" }}>{day.titles.join(" · ") || t("unknownWod")}</b>
-            <span className="shrink-0 text-xs font-bold" style={{ color: "var(--success)" }}>{t("buyer2.free")}</span>
-          </li>
-        ))}
-        {week.locked > 0 ? (
+        {week.days ? week.days.map((row) => <OutlineDayRow key={row.day} row={row} />) : null}
+        {!week.days ? week.open.map((day) => <OutlineDayRow key={day.day} row={{ day: day.day, dayOfWeek: day.dayOfWeek, kind: "free", titles: day.titles, workoutType: null, minutes: null }} />) : null}
+        {!week.days && week.locked > 0 ? (
           <li className="flex min-h-11 items-center gap-3 py-1.5 text-sm" style={{ borderTop: "1px solid var(--border)", color: "var(--muted)" }}>
             <span className="w-12 shrink-0" aria-hidden="true"><Icon name="lock" size={16} /></span>
             <span className="min-w-0 flex-1">
@@ -266,11 +264,40 @@ function WeekAccordion({ week, minutes, open, onToggle }: { week: OutlineWeek; m
             <span className="shrink-0 text-xs">{t("buyer2.lockedHint")}</span>
           </li>
         ) : null}
-        {week.open.length === 0 && week.locked === 0 ? (
+        {!week.days && week.open.length === 0 && week.locked === 0 ? (
           <li className="py-2 text-sm" style={{ borderTop: "1px solid var(--border)", color: "var(--dim)" }}>{t("rest")}</li>
         ) : null}
       </ul>
     </details>
+  );
+}
+
+/** «Ημ. 1 · Back squat 5×5 · Δωρεάν», «Ημ. 4 · Δύναμη · ~50′ 🔒» (parts the API does not know are left out) or «Ημ. 3 · Ξεκούραση». */
+function OutlineDayRow({ row }: { row: OutlineRow }) {
+  const t = useTranslations("Programmes");
+  const types = useWorkoutTypeLabels();
+  const lockedText = [types.type(row.workoutType) || null, row.minutes ? `~${t("buyer2.minutes", { minutes: row.minutes })}` : null].filter(Boolean).join(" · ");
+  return (
+    <li
+      className="flex min-h-11 items-center gap-3 py-1.5 text-sm"
+      style={{ borderTop: "1px solid var(--border)", color: row.kind === "free" ? "var(--text)" : row.kind === "rest" ? "var(--dim)" : "var(--muted)" }}
+      data-testid={`programme-outline-day-${row.day}`}
+    >
+      <span className="w-12 shrink-0 text-xs font-bold" style={{ color: "var(--dim)" }}>{t("dayShort", { day: row.dayOfWeek })}</span>
+      {row.kind === "free" ? (
+        <>
+          <b className="min-w-0 flex-1 break-words">{row.titles.join(" · ") || t("unknownWod")}</b>
+          <span className="shrink-0 text-xs font-bold" style={{ color: "var(--success)" }}>{t("buyer2.free")}</span>
+        </>
+      ) : row.kind === "rest" ? (
+        <span className="min-w-0 flex-1">{t("rest")}</span>
+      ) : (
+        <>
+          <span className="min-w-0 flex-1 break-words">{lockedText || t("unknownWod")}</span>
+          <span className="shrink-0" role="img" aria-label={t("buyer2.lockedHint")}><Icon name="lock" size={16} /></span>
+        </>
+      )}
+    </li>
   );
 }
 

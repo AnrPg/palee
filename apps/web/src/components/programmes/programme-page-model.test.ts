@@ -67,6 +67,28 @@ describe("programme page model", () => {
       [2, 2, 3],
     ]);
     expect(weekOutline({})).toEqual([]);
-    expect(weekOutline({ weeks: 1, preview: "nope", week_outline: {} })).toEqual([{ from: 1, to: 1, open: [], locked: 0 }]);
+    expect(weekOutline({ weeks: 1, preview: "nope", week_outline: {} })).toEqual([{ from: 1, to: 1, open: [], locked: 0, days: null }]);
+  });
+
+  it("lists a week's seven days from the outline: free by name, locked with type and minutes, rest (ADR-542)", () => {
+    const day = (n: number, extra: Record<string, unknown>) => ({ day: n, weekday: n % 7, rest: false, preview: false, workout_type: null, minutes: null, ...extra });
+    const outline = weekOutline({
+      ...programme,
+      week_outline: [
+        { week: 1, sessions: 4, days: [day(0, { preview: true }), day(1, { preview: true }), day(2, { rest: true }), day(3, { workout_type: "strength", minutes: 50 }), day(4, { rest: true }), day(5, { workout_type: null, minutes: null }), day(6, { rest: true })] },
+        { week: 2, sessions: 4 },
+      ],
+    });
+    expect(outline[0].days?.map(({ dayOfWeek, kind, titles, workoutType, minutes }) => [dayOfWeek, kind, titles, workoutType, minutes])).toEqual([
+      [1, "free", ["Back squat 5×5"], null, null],
+      [2, "free", ["Fran"], null, null],
+      [3, "rest", [], null, null],
+      [4, "locked", [], "strength", 50],
+      [5, "rest", [], null, null],
+      [6, "locked", [], null, null],
+      [7, "rest", [], null, null],
+    ]);
+    expect(outline[1].days).toBeNull();
+    expect(outline[2].days).toBeNull();
   });
 });

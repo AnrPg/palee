@@ -17218,7 +17218,8 @@
         "programme_day_not_found": "هذا اليوم ليس جزءًا من برنامج التدريب.",
         "programme_schedule_limit": "لا يمكن التأجيل أكثر: سينتهي برنامج التدريب متأخرًا جدًا. يمكنك تخطيه.",
         "programme_purchase_not_active": "برنامج التدريب هذا لم يعد نشطًا."
-      }
+      },
+      "byCoach": "المدرب {name}"
     }
   },
   "BodyDevices": {

@@ -17218,7 +17218,8 @@
         "programme_day_not_found": "Diesen Tag gibt es im Trainingsprogramm nicht.",
         "programme_schedule_limit": "Weiter verschieben geht nicht: Das Trainingsprogramm würde zu spät enden. Du kannst ihn überspringen.",
         "programme_purchase_not_active": "Dieses Trainingsprogramm ist nicht mehr aktiv."
-      }
+      },
+      "byCoach": "Coach {name}"
     }
   },
   "BodyDevices": {

@@ -17218,7 +17218,8 @@
         "programme_day_not_found": "היום הזה אינו חלק מתוכנית האימון.",
         "programme_schedule_limit": "אי אפשר לדחות יותר: תוכנית האימון הייתה מסתיימת מאוחר מדי. אפשר לדלג עליו.",
         "programme_purchase_not_active": "תוכנית האימון הזו כבר לא פעילה."
-      }
+      },
+      "byCoach": "מאמן: {name}"
     }
   },
   "BodyDevices": {

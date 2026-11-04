@@ -32,7 +32,16 @@ const programme = {
     { day: 0, week: 1, weekday: 0, title: "Back squat 5×5" },
     { day: 1, week: 1, weekday: 1, title: "Fran" },
   ],
-  week_outline: [1, 2, 3, 4, 5, 6].map((week) => ({ week, sessions: 4 })),
+  coach_name: "Μαρία Κ.",
+  week_outline: [1, 2, 3, 4, 5, 6].map((week) => ({
+    week,
+    sessions: 4,
+    days: [0, 1, 2, 3, 4, 5, 6].map((weekday) => {
+      const day = (week - 1) * 7 + weekday;
+      const rest = [2, 4, 6].includes(weekday);
+      return { day, weekday, rest, preview: day < 2, workout_type: rest ? null : weekday === 3 ? "strength" : null, minutes: rest ? null : weekday === 3 ? 50 : null };
+    }),
+  })),
 };
 
 function wrap() {
@@ -58,7 +67,7 @@ describe("PublicProgrammePage", () => {
     api.fetchPublicProgramme.mockResolvedValue({ box: { name: "CrossFit Ακρόπολη", slug: "akropoli" }, programme });
     wrap();
     expect(await screen.findByRole("heading", { name: "Δύναμη σε 6 εβδομάδες", level: 1 })).toBeTruthy();
-    expect(screen.getByText("CrossFit Ακρόπολη · ★ 4,8 · 23 κριτικές")).toBeTruthy();
+    expect(screen.getByText("CrossFit Ακρόπολη · coach Μαρία Κ. · ★ 4,8 · 23 κριτικές")).toBeTruthy();
     expect(screen.getByText("Δύναμη · Μεσαίοι")).toBeTruthy();
     expect(within(screen.getByTestId("programme-fact-minutes")).getByText("45′")).toBeTruthy();
     expect(within(screen.getByTestId("programme-fact-minutes")).getByText("περίπου ανά προπόνηση")).toBeTruthy();
@@ -71,8 +80,12 @@ describe("PublicProgrammePage", () => {
     const first = screen.getByTestId("programme-week-1");
     expect(first.hasAttribute("open")).toBe(true);
     expect(within(first).getByText("Fran")).toBeTruthy();
-    expect(within(first).getByText("2 WOD κλειδωμένα · ~45′ το καθένα")).toBeTruthy();
+    expect(within(screen.getByTestId("programme-outline-day-2")).getByText("Ξεκούραση")).toBeTruthy();
+    expect(within(screen.getByTestId("programme-outline-day-3")).getByText("Δύναμη · ~50′")).toBeTruthy();
+    expect(within(screen.getByTestId("programme-outline-day-5")).getByText("WOD")).toBeTruthy();
+    expect(screen.getByTestId("programme-week-2").querySelectorAll("li")).toHaveLength(7);
     expect(within(screen.getByTestId("programme-week-3")).getByText("Εβδομάδες 3–6")).toBeTruthy();
+    expect(within(screen.getByTestId("programme-week-3")).getByText(/16 WOD κλειδωμένα/)).toBeTruthy();
     expect(within(screen.getByTestId("programme-faq")).getByText("Παίρνεις πίσω όλη την τιμή μέχρι τη μέρα έναρξης.")).toBeTruthy();
 
     const bar = screen.getByTestId("programme-buy-bar");
@@ -91,6 +104,18 @@ describe("PublicProgrammePage", () => {
     fireEvent.click(screen.getAllByRole("button", { name: "Δες δωρεάν τις 2 πρώτες μέρες" })[0]);
     expect(first.hasAttribute("open")).toBe(true);
     expect(Element.prototype.scrollIntoView).toHaveBeenCalled();
+  });
+
+  it("counts the locked WODs per week when the outline has no days (older API)", async () => {
+    api.fetchPublicProgramme.mockResolvedValue({
+      box: { name: "Box" },
+      programme: { ...programme, coach_name: null, week_outline: [1, 2, 3, 4, 5, 6].map((week) => ({ week, sessions: 4 })) },
+    });
+    wrap();
+    const first = await screen.findByTestId("programme-week-1");
+    expect(within(first).getByText("Fran")).toBeTruthy();
+    expect(within(first).getByText("2 WOD κλειδωμένα · ~45′ το καθένα")).toBeTruthy();
+    expect(screen.getByText("Box · ★ 4,8 · 23 κριτικές")).toBeTruthy();
   });
 
   it("hides the minutes and the equipment the API does not know, and survives a bare payload", async () => {

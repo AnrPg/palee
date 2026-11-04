@@ -17218,7 +17218,8 @@
         "programme_day_not_found": "This day isn't part of the training programme.",
         "programme_schedule_limit": "It can't move any further: the training programme would end too late. You can skip it.",
         "programme_purchase_not_active": "This training programme is no longer active."
-      }
+      },
+      "byCoach": "coach {name}"
     }
   },
   "BodyDevices": {

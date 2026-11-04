@@ -102,6 +102,24 @@ export type OutlineWeek = {
   open: OutlineDay[];
   /** WODs behind the lock in these weeks. */
   locked: number;
+  /**
+   * A single week's seven days from the API's outline (free days with their
+   * WODs, locked days with type and length, rest); null when the payload has
+   * no day outline (older API) or the accordion covers several weeks.
+   */
+  days: OutlineRow[] | null;
+};
+
+export type OutlineRow = {
+  day: number;
+  /** 1-based day within its week («Ημ. 3»); day 1 is the start date's weekday. */
+  dayOfWeek: number;
+  kind: "free" | "locked" | "rest";
+  /** A free day's WOD titles. */
+  titles: string[];
+  /** A locked day's workout type (ADR-275 key) and approximate minutes, when known. */
+  workoutType: string | null;
+  minutes: number | null;
 };
 
 type PreviewRow = { day: number; title: string | null };
@@ -114,6 +132,33 @@ function previewRows(value: unknown): PreviewRow[] {
     if (typeof day !== "number" || !Number.isInteger(day) || day < 0) return [];
     return [{ day, title: typeof title === "string" && title.trim() ? title.trim() : null }];
   });
+}
+
+/** The outline's days of one week, or null when it has none (an older API or stub). */
+function outlineDays(value: unknown, week: number, open: OutlineDay[]): OutlineRow[] | null {
+  if (!Array.isArray(value)) return null;
+  const entry = value.find((row) => row && typeof row === "object" && (row as { week?: unknown }).week === week) as { days?: unknown } | undefined;
+  if (!entry || !Array.isArray(entry.days)) return null;
+  const titles = new Map(open.map((day) => [day.day, day.titles]));
+  const rows = entry.days.flatMap((raw): OutlineRow[] => {
+    if (!raw || typeof raw !== "object") return [];
+    const row = raw as { day?: unknown; weekday?: unknown; rest?: unknown; preview?: unknown; workout_type?: unknown; minutes?: unknown };
+    if (typeof row.day !== "number" || !Number.isInteger(row.day) || row.day < 0) return [];
+    const weekday = typeof row.weekday === "number" && row.weekday >= 0 && row.weekday < 7 ? row.weekday : row.day % 7;
+    const free = row.preview === true || titles.has(row.day);
+    const kind = row.rest === true ? "rest" : free ? "free" : "locked";
+    return [
+      {
+        day: row.day,
+        dayOfWeek: weekday + 1,
+        kind,
+        titles: kind === "free" ? (titles.get(row.day) ?? []) : [],
+        workoutType: kind === "locked" && typeof row.workout_type === "string" && row.workout_type ? row.workout_type : null,
+        minutes: kind === "locked" ? positiveInt(row.minutes) : null,
+      },
+    ];
+  });
+  return rows.length ? rows.sort((a, b) => a.day - b.day) : null;
 }
 
 function outlineCounts(value: unknown): Map<number, number> {
@@ -161,12 +206,13 @@ export function weekOutline(programme: ProgrammeShape | null | undefined): Outli
   const single = Math.min(weeks, Math.max(lastPreview, 1) + 1);
   const result: OutlineWeek[] = [];
   for (let week = 1; week <= single; week += 1) {
-    result.push({ from: week, to: week, open: open.filter((day) => day.week === week), locked: lockedIn(week) });
+    const weekOpen = open.filter((day) => day.week === week);
+    result.push({ from: week, to: week, open: weekOpen, locked: lockedIn(week), days: outlineDays(programme?.week_outline, week, weekOpen) });
   }
   if (single < weeks) {
     let locked = 0;
     for (let week = single + 1; week <= weeks; week += 1) locked += lockedIn(week);
-    result.push({ from: single + 1, to: weeks, open: [], locked });
+    result.push({ from: single + 1, to: weeks, open: [], locked, days: null });
   }
   return result;
 }

@@ -17218,7 +17218,8 @@
         "programme_day_not_found": "Este día no forma parte del programa de entrenamiento.",
         "programme_schedule_limit": "No se puede mover más: el programa de entrenamiento terminaría demasiado tarde. Puedes saltarlo.",
         "programme_purchase_not_active": "Este programa de entrenamiento ya no está activo."
-      }
+      },
+      "byCoach": "coach {name}"
     }
   },
   "BodyDevices": {

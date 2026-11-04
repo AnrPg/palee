@@ -227,7 +227,17 @@ const publicProgramme = {
     { day: 0, week: 1, weekday: 0, title: "Back squat 5×5" },
     { day: 1, week: 1, weekday: 1, title: "Fran" },
   ],
-  week_outline: [1, 2, 3, 4, 5, 6].map((week) => ({ week, sessions: 4 })),
+  coach_name: "Maria K.",
+  // ADR-542: each week's seven days, locked ones with their type and length.
+  week_outline: [1, 2, 3, 4, 5, 6].map((week) => ({
+    week,
+    sessions: 4,
+    days: [0, 1, 2, 3, 4, 5, 6].map((weekday) => {
+      const day = (week - 1) * 7 + weekday;
+      const rest = [2, 4, 6].includes(weekday);
+      return { day, weekday, rest, preview: day < 2, workout_type: rest ? null : "strength", minutes: rest ? null : 50 };
+    }),
+  })),
 };
 
 test.describe("programme page (public)", () => {
@@ -243,7 +253,9 @@ test.describe("programme page (public)", () => {
     await expect(page.getByTestId("programme-fact-equipment")).toContainText("Barbell");
     await expect(page.getByTestId("programme-reviews")).toContainText("Added 15 kg to my squat.");
     await expect(page.getByTestId("programme-week-1")).toContainText("Fran");
-    await expect(page.getByTestId("programme-week-1")).toContainText("2 locked WODs");
+    await expect(page.getByTestId("programme-outline-day-2")).toContainText("Rest");
+    await expect(page.getByTestId("programme-outline-day-3")).toContainText("Strength · ~50′");
+    await expect(page.getByText("Box Kypseli · coach Maria K. · ★ 4.8 · 23 reviews")).toBeVisible();
     await expect(page.getByTestId("programme-week-3")).toContainText("Weeks 3–6");
     await expect(page.getByTestId("programme-faq")).toContainText("When do I start?");
     await expect(page.locator('[data-testid^="programme-buy-open"]:visible')).toHaveText("Buy");
