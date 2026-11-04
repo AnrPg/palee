@@ -759,6 +759,12 @@ msgstr "Фискална връзка се нуждае от внимание"
 msgid "%{connection} stopped working. Open Billing details › Connections to fix it."
 msgstr "%{connection} спря да работи. Отворете Данни за фактуриране › Връзки, за да го оправите."
 
+msgid "Documents did not reach the tax authority"
+msgstr "Документи не стигнаха до данъчните"
+
+msgid "Some documents were not accepted by %{connection}. Open Finance › Documents to see why and send them again."
+msgstr "%{connection} не прие някои документи. Отвори Финанси › Документи, за да видиш защо и да ги изпратиш отново."
+
 # ADR-280 verification: sponsors and the Palee check of Partners.
 
 msgid "Vouch for %{nickname}?"

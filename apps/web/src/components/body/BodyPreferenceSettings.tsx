@@ -63,6 +63,27 @@ function SaveError({ error }: { error: unknown }) {
   return <ErrorLine message={error ? bodyErrorMessage(error, t, tUi) : null} />;
 }
 
+/**
+ * «Μετρικό (kg, cm)» on two lines: the system's name, then its units. Every
+ * locale writes the units in a trailing parenthesis, so the split needs no
+ * second message; a label without one stays on a single line.
+ */
+export function splitUnitsLabel(text: string): { name: string; units: string | null } {
+  const match = /^(.*\S)\s*(\([^()]*\))$/u.exec(text.trim());
+  return match ? { name: match[1], units: match[2] } : { name: text, units: null };
+}
+
+function UnitsLabel({ text }: { text: string }) {
+  const { name, units } = splitUnitsLabel(text);
+  return (
+    <span className="flex flex-col">
+      <span>{name}</span>
+      {units ? " " : null}
+      {units ? <span data-testid="units-detail">{units}</span> : null}
+    </span>
+  );
+}
+
 /** Ρυθμίσεις › Μονάδες (vision §7.11, ADR-196): metric or imperial, everywhere measurements show. */
 export function UnitsSetting() {
   const t = useTranslations("Body");
@@ -74,7 +95,7 @@ export function UnitsSetting() {
       <div role="radiogroup" aria-label={t("unitsLabel")} className="flex gap-2">
         {(["metric", "imperial"] as BodyUnits[]).map((item) => (
           <ChoicePill key={item} selected={prefs.units === item} onSelect={() => save({ units: item })}>
-            {t(key("units", item))}
+            <UnitsLabel text={t(key("units", item))} />
           </ChoicePill>
         ))}
       </div>

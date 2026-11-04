@@ -135,7 +135,7 @@ function Checklist({ token, status, profiles }: { token: string; status: Identit
       ) : null}
 
       <Card>
-        <ol className="grid gap-1" data-testid="fiscal-identity-checklist">
+        <ol className="grid grid-cols-1 gap-1" data-testid="fiscal-identity-checklist">
           <Row
             testId="fiscal-row-country"
             status={country ? "done" : "next"}

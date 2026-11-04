@@ -24,7 +24,7 @@ function tokenFor() {
 const json = (body: unknown, status = 200) => ({ status, contentType: "application/json", body: JSON.stringify(body) });
 const rows = (count: number) => Array.from({ length: count }, (_, index) => ({ id: `row-${index}` }));
 
-async function stubApi(page: Page, locale: string, counts: { expiring: number; overdue: number; pending: number }) {
+async function stubApi(page: Page, locale: string, counts: { expiring: number; overdue: number; pending: number; notReported?: number }) {
   await page.route("**/api/**", (route) => route.fulfill(json({})));
   await page.route("**/api/auth/refresh", (route) => route.fulfill(json({ access_token: tokenFor(), refresh_token: "refresh" })));
   await page.route("**/api/auth/me", (route) => route.fulfill(json({ ...user, preferred_locale: locale })));
@@ -49,17 +49,25 @@ async function stubApi(page: Page, locale: string, counts: { expiring: number; o
   await page.route("**/admin/finance/queues**", (route) =>
     route.fulfill(json({ queues: { overdue_invoices: rows(counts.overdue), pending_payments: rows(counts.pending), pending_referral_rewards: [] } })),
   );
+  // ADR-452: documents the tax authority refused or that ran out of attempts.
+  await page.route("**/admin/fiscal/transmissions**", (route) =>
+    route.fulfill(json({ transmissions: [], total: 0, counts: { accepted: 9, rejected: counts.notReported ?? 0, failed: 0 } })),
+  );
 }
 
 test.describe("staff home attention counts", () => {
   test("Greek: one is singular, more are plural, always with a space", async ({ page, context, baseURL }) => {
     await context.addCookies([{ name: "palee_locale", value: "el", url: baseURL! }]);
-    await stubApi(page, "el", { expiring: 1, overdue: 1, pending: 3 });
+    await stubApi(page, "el", { expiring: 1, overdue: 1, pending: 3, notReported: 2 });
     await page.goto("/org/kypseli/admin");
 
     await expect(page.getByRole("link", { name: "1 συνδρομή λήγει μέσα σε 30 ημέρες" })).toBeVisible();
     await expect(page.getByRole("link", { name: "1 ληξιπρόθεσμο τιμολόγιο" })).toBeVisible();
     await expect(page.getByRole("link", { name: "3 εκκρεμείς πληρωμές" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "2 παραστατικά δεν έφτασαν στην ΑΑΔΕ" })).toHaveAttribute(
+      "href",
+      "/org/kypseli/admin/finance?tab=documents",
+    );
   });
 
   test("English plural forms", async ({ page, context, baseURL }) => {

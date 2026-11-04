@@ -84,6 +84,66 @@ defmodule Palee.Infrastructure.Fiscal.MyData.XmlCodec do
 
   def parse_response(_body), do: {:error, :invalid_response}
 
+  @doc """
+  ADR-452: the invoices of a `RequestedDoc` (`GET /RequestTransmittedDocs`)
+  with the keys that identify a document, and the continuation token of the
+  next page: `{:ok, %{invoices: [%{mark, uid, authentication_code, qr_url,
+  issuer_vat, series, aa, issue_date, invoice_type}], next: nil |
+  %{partition_key, row_key}}}` or `{:error, :invalid_response}`.
+  """
+  def parse_transmitted(body) when is_binary(body) and byte_size(body) <= @max_response_bytes do
+    {document, _rest} =
+      body
+      |> :binary.bin_to_list()
+      |> :xmerl_scan.string(allow_entities: false, quiet: true, fetch_fun: &no_fetch/2)
+
+    invoices =
+      document
+      |> xpath("//*[local-name()='invoicesDoc']/*[local-name()='invoice']")
+      |> Enum.map(fn invoice ->
+        [header] = take_one(invoice, "invoiceHeader")
+        issuer = take_one(invoice, "issuer")
+
+        %{
+          mark: text(invoice, "mark"),
+          cancelled_by_mark: text(invoice, "cancelledByMark"),
+          uid: text(invoice, "uid"),
+          authentication_code: text(invoice, "authenticationCode"),
+          qr_url: text(invoice, "qrCodeUrl") || text(invoice, "qrUrl"),
+          issuer_vat: Enum.find_value(issuer, &text(&1, "vatNumber")),
+          series: text(header, "series"),
+          aa: text(header, "aa"),
+          issue_date: text(header, "issueDate"),
+          invoice_type: text(header, "invoiceType")
+        }
+      end)
+
+    next =
+      case xpath(document, "//*[local-name()='continuationToken']") do
+        [token | _rest] ->
+          case {text(token, "nextPartitionKey"), text(token, "nextRowKey")} do
+            {nil, _row} -> nil
+            {partition, row} -> %{partition_key: partition, row_key: row}
+          end
+
+        [] ->
+          nil
+      end
+
+    {:ok, %{invoices: invoices, next: next}}
+  catch
+    _kind, _reason -> {:error, :invalid_response}
+  end
+
+  def parse_transmitted(_body), do: {:error, :invalid_response}
+
+  defp take_one(node, name) do
+    case xpath(node, "./*[local-name()='#{name}']") do
+      [] -> [node]
+      found -> found
+    end
+  end
+
   defp no_fetch(_uri, _state), do: {:error, :external_entities_disabled}
 
   defp xpath(node, path), do: :xmerl_xpath.string(String.to_charlist(path), node)

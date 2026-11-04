@@ -303,6 +303,229 @@ defmodule Palee.Fiscal.ReportingTest do
     assert context |> Reporting.transmissions_for([other.id]) == %{}
   end
 
+  # ── ADR-452 ─────────────────────────────────────────────────────────────
+
+  defmodule Notifier do
+    @moduledoc false
+    @behaviour Palee.Fiscal.Ports.ConnectionNotifier
+
+    @impl true
+    def connection_failed(_context, kind, code),
+      do: send(self(), {:connection_failed, kind, code}) && :ok
+
+    @impl true
+    def documents_not_reported(_context, kind, count),
+      do: send(self(), {:documents_not_reported, kind, count}) && :ok
+  end
+
+  defp use_notifier(_context) do
+    previous = Application.fetch_env!(:palee, :fiscal_connection_notifier)
+    Application.put_env(:palee, :fiscal_connection_notifier, Notifier)
+    on_exit(fn -> Application.put_env(:palee, :fiscal_connection_notifier, previous) end)
+    :ok
+  end
+
+  defp responses(entries) do
+    body =
+      Enum.map_join(entries, fn
+        {index, :ok, mark} ->
+          "<response><index>#{index}</index><invoiceUid>U#{index}</invoiceUid>" <>
+            "<invoiceMark>#{mark}</invoiceMark><qrUrl>https://q/#{index}</qrUrl>" <>
+            "<statusCode>Success</statusCode></response>"
+
+        {index, :error, code} ->
+          "<response><index>#{index}</index><statusCode>ValidationError</statusCode>" <>
+            "<errors><error><message>e#{code}</message><code>#{code}</code></error></errors></response>"
+      end)
+
+    ~s(<?xml version="1.0" encoding="utf-8"?><ResponseDoc>#{body}</ResponseDoc>)
+  end
+
+  defp transmitted(document, mark) do
+    ~s(<?xml version="1.0" encoding="utf-8"?><RequestedDoc><invoicesDoc><invoice>) <>
+      "<uid>UID-FOUND</uid><mark>#{mark}</mark>" <>
+      "<issuer><vatNumber>090000045</vatNumber></issuer><invoiceHeader>" <>
+      "<series>#{document.series}</series><aa>#{document.sequence}</aa>" <>
+      "<issueDate>#{Date.to_iso8601(document.issue_date)}</issueDate>" <>
+      "<invoiceType>11.2</invoiceType></invoiceHeader></invoice></invoicesDoc></RequestedDoc>"
+  end
+
+  describe "ADR-452" do
+    setup :use_notifier
+
+    test "due documents go to AADE in one InvoicesDoc, each with its own result", %{
+      context: context,
+      owner: owner
+    } do
+      test_pid = self()
+
+      Req.Test.stub(__MODULE__, fn conn ->
+        {:ok, body, conn} = Plug.Conn.read_body(conn)
+        send(test_pid, {:sent, conn.request_path, body})
+
+        Plug.Conn.send_resp(
+          conn,
+          200,
+          responses([
+            {1, :ok, "400000000000001"},
+            {2, :error, "102"},
+            {3, :ok, "400000000000003"}
+          ])
+        )
+      end)
+
+      connect(context, owner, "production", %{user_id: "u", subscription_key: "k"})
+      [first, second, third] = for key <- ~w(b-1 b-2 b-3), do: issue(context, owner, key)
+
+      assert {:ok, %{accepted: 2, rejected: 1}} = Reporting.transmit(context, :due, @now)
+      assert_received {:sent, "/SendInvoices", body}
+      refute_received {:sent, _path, _body}
+      assert body |> String.split("<invoice>") |> length() == 4
+
+      assert %{status: "accepted", mark: "400000000000001"} = transmission(context, first)
+      assert %{status: "rejected", last_error_code: "102"} = transmission(context, second)
+      assert %{status: "accepted", mark: "400000000000003"} = transmission(context, third)
+
+      # Each attempt keeps only its own document.
+      %{attempts_log: [attempt]} = Reporting.get(context, transmission(context, second).id)
+      assert attempt.request_body |> String.split("<invoice>") |> length() == 2
+
+      assert_received {:documents_not_reported, "mydata", 1}
+    end
+
+    test "after a lost answer the document is looked up at AADE, never sent twice", %{
+      context: context,
+      owner: owner
+    } do
+      test_pid = self()
+      connect(context, owner, "production", %{user_id: "u", subscription_key: "k"})
+      document = issue(context, owner, "lost-1")
+
+      # AADE registers the document, but the answer is lost.
+      Req.Test.stub(__MODULE__, fn conn -> Plug.Conn.send_resp(conn, 504, "") end)
+      assert {:ok, %{retrying: 1}} = Reporting.transmit(context, :due, @now)
+      assert %{status: "pending", last_error_code: "transient"} = transmission(context, document)
+
+      Req.Test.stub(__MODULE__, fn conn ->
+        send(test_pid, {:request, conn.method, conn.request_path, conn.query_string})
+
+        Plug.Conn.send_resp(conn, 200, transmitted(document, "400000000000777"))
+      end)
+
+      later = DateTime.add(@now, 120, :second)
+      assert {:ok, %{accepted: 1}} = Reporting.transmit(context, :due, later)
+
+      assert_received {:request, "GET", "/RequestTransmittedDocs", query}
+      assert query =~ "dateFrom=01%2F02%2F2027"
+      refute_received {:request, "POST", _path, _query}
+
+      assert %{status: "accepted", mark: "400000000000777", uid: "UID-FOUND"} =
+               transmission(context, document)
+    end
+
+    test "a row whose worker died mid-call is looked up before it is sent again", %{
+      context: context,
+      owner: owner
+    } do
+      test_pid = self()
+      connect(context, owner, "production", %{user_id: "u", subscription_key: "k"})
+      document = issue(context, owner, "dead-1")
+
+      # A worker claims the row and dies while AADE registers it: nothing
+      # is recorded, and the claim expires.
+      bypass_rls(fn ->
+        Palee.Infrastructure.Fiscal.EctoTransmissionStore.claim(context, :due, @now, 25)
+      end)
+
+      Req.Test.stub(__MODULE__, fn conn ->
+        send(test_pid, {:request, conn.method, conn.request_path})
+        Plug.Conn.send_resp(conn, 200, transmitted(document, "400000000000555"))
+      end)
+
+      stale =
+        DateTime.add(@now, Palee.Fiscal.Domain.TransmissionPolicy.claim_timeout_seconds() + 1)
+
+      assert {:ok, %{accepted: 1}} = Reporting.transmit(context, :due, stale)
+
+      assert_received {:request, "GET", "/RequestTransmittedDocs"}
+      refute_received {:request, "POST", _path}
+      assert %{status: "accepted", mark: "400000000000555"} = transmission(context, document)
+    end
+
+    test "a lookup that finds nothing sends the document again", %{context: context, owner: owner} do
+      connect(context, owner, "production", %{user_id: "u", subscription_key: "k"})
+      document = issue(context, owner, "lost-2")
+      Req.Test.stub(__MODULE__, fn conn -> Plug.Conn.send_resp(conn, 503, "") end)
+      Reporting.transmit(context, :due, @now)
+
+      Req.Test.stub(__MODULE__, fn
+        %{method: "GET"} = conn ->
+          Plug.Conn.send_resp(conn, 200, "<RequestedDoc><invoicesDoc/></RequestedDoc>")
+
+        conn ->
+          Plug.Conn.send_resp(conn, 200, responses([{1, :ok, "400000000000888"}]))
+      end)
+
+      assert {:ok, %{accepted: 1}} = Reporting.transmit(context, :due, DateTime.add(@now, 120))
+      assert %{mark: "400000000000888"} = transmission(context, document)
+    end
+
+    test "AADE's 'already sent' answer takes the registered MARK; unknown stays rejected", %{
+      context: context,
+      owner: owner
+    } do
+      connect(context, owner, "production", %{user_id: "u", subscription_key: "k"})
+      found = issue(context, owner, "dup-1")
+
+      Req.Test.stub(__MODULE__, fn
+        %{method: "GET"} = conn ->
+          Plug.Conn.send_resp(conn, 200, transmitted(found, "400000000000999"))
+
+        conn ->
+          Plug.Conn.send_resp(conn, 200, responses([{1, :error, "233"}]))
+      end)
+
+      assert {:ok, %{accepted: 1}} = Reporting.transmit(context, :due, @now)
+      assert %{status: "accepted", mark: "400000000000999"} = transmission(context, found)
+      refute_received {:documents_not_reported, _kind, _count}
+
+      missing = issue(context, owner, "dup-2")
+
+      Req.Test.stub(__MODULE__, fn
+        %{method: "GET"} = conn ->
+          Plug.Conn.send_resp(conn, 200, "<RequestedDoc><invoicesDoc/></RequestedDoc>")
+
+        conn ->
+          Plug.Conn.send_resp(conn, 200, responses([{1, :error, "233"}]))
+      end)
+
+      assert {:ok, %{rejected: 1}} = Reporting.transmit(context, :due, @now)
+      assert %{status: "rejected", last_error_code: "233"} = transmission(context, missing)
+      assert_received {:documents_not_reported, "mydata", 1}
+    end
+
+    test "a claim always outlives the longest call to AADE" do
+      config = Application.get_env(:palee, :mydata, [])
+      claim_ms = Palee.Fiscal.Domain.TransmissionPolicy.claim_timeout_seconds() * 1_000
+
+      # Every call starts with a fresh claim; the longest is one send or a
+      # look-up through all its pages.
+      assert Keyword.get(config, :receive_timeout, 30_000) < claim_ms
+
+      assert Keyword.get(config, :check_timeout, 15_000) *
+               Palee.Infrastructure.Fiscal.MyDataGateway.max_lookup_pages() < claim_ms
+    end
+  end
+
+  test "the cron sweep hands each box to its own run (ADR-452)", %{context: context, owner: owner} do
+    # Background jobs are off in tests, so each box's run happens inline.
+    connect(context, owner, "sandbox")
+    document = issue(context, owner, "k-cron", %{}, DateTime.utc_now())
+
+    assert :ok = Palee.Workers.TransmitFiscalDocumentsJob.perform(%Oban.Job{args: %{}})
+    assert %{status: "accepted"} = transmission(context, document)
+  end
+
   test "the worker sends one tenant's due documents", %{context: context, owner: owner} do
     connect(context, owner, "sandbox")
     document = issue(context, owner, "k-1", %{}, DateTime.utc_now())

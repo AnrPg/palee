@@ -97,6 +97,22 @@ defmodule Palee.Workers.CheckFiscalConnectionsJobTest do
     Enum.map(rows, &hd/1)
   end
 
+  test "documents AADE did not accept reach the billing staff once a day (ADR-452)", ctx do
+    notices = Palee.Application.Fiscal.ConnectionFailureNotices
+    context = %{organization_id: ctx.organization.id}
+
+    assert :ok = notices.documents_not_reported(context, "mydata", 2)
+    assert :ok = notices.documents_not_reported(context, "mydata", 1)
+
+    %{rows: rows} =
+      Repo.query!(
+        "SELECT payload FROM notifications WHERE user_id = $1 AND type = 'fiscal_documents_not_reported'",
+        [Ecto.UUID.dump!(ctx.owner.id)]
+      )
+
+    assert [[%{"connection" => "myDATA", "url" => "/admin/finance?tab=documents"}]] = rows
+  end
+
   test "a connection that is not due is left alone", ctx do
     Req.Test.stub(Palee.FiscalHttp, fn conn -> Plug.Conn.send_resp(conn, 401, "denied") end)
 
