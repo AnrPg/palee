@@ -114,6 +114,11 @@ defmodule Palee.Execution do
     to: ExecutionAnalytics,
     as: :completion_facts
 
+  @doc "ADR-549: the flat Παραίτηση facts of a completed execution, for analytics events."
+  defdelegate retirement_analytics_facts(execution),
+    to: ExecutionAnalytics,
+    as: :retirement_facts
+
   defdelegate abandonment_analytics_facts(execution, segments, now),
     to: ExecutionAnalytics,
     as: :abandonment_facts

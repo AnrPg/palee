@@ -26,6 +26,12 @@ export type RunState = {
   completed: string[];
   /** Interrupt work steps done: which interruption (1-based), in which phase. */
   completedInterrupts: InterruptDone[];
+  /**
+   * ADR-549 (Παραίτηση): the clock ms of every work step the athlete marked
+   * done, ascending; how long the clock ran on after the last one tells an
+   * idle athlete from a working one.
+   */
+  workTaps: number[];
   /** When the athlete finished every step (For Time), in clock ms. */
   finishedAtMs: number | null;
   /** The clock ran out before the work was done (cap, last window or slot). */
@@ -59,6 +65,7 @@ export const initialRunState = (): RunState => ({
   interruptsFired: 0,
   completed: [],
   completedInterrupts: [],
+  workTaps: [],
   finishedAtMs: null,
   timeUp: false,
 });
@@ -160,6 +167,13 @@ function advanceInterrupt(seq: RunSequence, state: RunState, at = state.elapsedM
   return { ...state, completedInterrupts, interrupt: { step: next, stepStartMs: at } };
 }
 
+/** Records a work step marked done at the clock time it was done. */
+function withWorkTap(before: RunState, after: RunState, step: RunStep | undefined): RunState {
+  if (step?.kind !== "work") return after;
+  const taps = before.workTaps ?? [];
+  return taps.at(-1) === before.elapsedMs ? after : { ...after, workTaps: [...taps, before.elapsedMs] };
+}
+
 export function runReducer(seq: RunSequence, state: RunState, action: RunAction): RunState {
   switch (action.type) {
     case "start":
@@ -175,12 +189,12 @@ export function runReducer(seq: RunSequence, state: RunState, action: RunAction)
       return onClock(seq, { ...state, elapsedMs: action.elapsedMs });
     case "next": {
       if (state.status !== "running") return state;
-      if (state.interrupt) return onClock(seq, advanceInterrupt(seq, state));
+      if (state.interrupt) return onClock(seq, withWorkTap(state, advanceInterrupt(seq, state), seq.interrupt?.steps[state.interrupt.step]));
       const phase = seq.phases[state.phase];
       // Waiting for the clock, or in a timed rest between slots: the clock decides.
       if (!phase || state.step >= phase.steps.length) return state;
       if (phase.kind === "rest" && phase.secs != null) return state;
-      return onClock(seq, advanceMain(seq, state));
+      return onClock(seq, withWorkTap(state, advanceMain(seq, state), phase.steps[state.step]));
     }
     case "prev": {
       if (state.status !== "running" && state.status !== "paused") return state;

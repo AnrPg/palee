@@ -84,6 +84,8 @@ type ApiRequestOptions = {
   responseType?: "json" | "text" | "blob";
   /** Cancels the request (react-query passes one so stale searches stop). */
   signal?: AbortSignal;
+  /** Lets the request outlive the page (a last analytics batch sent while the tab closes). */
+  keepalive?: boolean;
   /**
    * `"account"` sends the path as is, never under `/org/:slug`: the account
    * read model (ADR-162) shares paths such as `/me/history` and
@@ -411,6 +413,7 @@ export async function apiRequest<T>(
     body: multipart ? (options.body as FormData) : options.body ? JSON.stringify(options.body) : undefined,
     credentials: "same-origin",
     signal: options.signal,
+    ...(options.keepalive ? { keepalive: true } : {}),
   });
 
   rememberCanonicalOrganizationSlug(response, organizationSlug);

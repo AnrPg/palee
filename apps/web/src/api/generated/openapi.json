@@ -46726,6 +46726,7 @@
                     "segment_restarted",
                     "segment_skipped",
                     "time_adjusted",
+                    "timer_closed",
                     "workout_launched"
                   ],
                   "type": "string"
@@ -46894,6 +46895,7 @@
               "segment_restarted",
               "segment_skipped",
               "time_adjusted",
+              "timer_closed",
               "workout_launched"
             ],
             "type": "string"
@@ -136073,7 +136075,22 @@
                       "minimum": 0,
                       "type": "integer"
                     },
-                    "description": "Device-observed execution KPIs (skips, countdown_skips, countdown_segments, pauses, paused_ms, finish_wizard_opens, first_started_at_ms). Counters never decrease.",
+                    "description": "Device-observed execution KPIs (skips, countdown_skips, countdown_segments, pauses, paused_ms, finish_wizard_opens, first_started_at_ms). Counters never decrease. `activity` (ADR-549): per time-set section, the active section times (ms) of the athlete's work taps; taps only accumulate.",
+                    "properties": {
+                      "activity": {
+                        "additionalProperties": {
+                          "items": {
+                            "maximum": 86400000,
+                            "minimum": 0,
+                            "type": "integer"
+                          },
+                          "maxItems": 300,
+                          "type": "array"
+                        },
+                        "description": "Section id => active section times (ms) of work taps, ascending.",
+                        "type": "object"
+                      }
+                    },
                     "type": "object"
                   },
                   "plan_actuals": {
@@ -136773,6 +136790,7 @@
                             "segment_restarted",
                             "segment_skipped",
                             "time_adjusted",
+                            "timer_closed",
                             "workout_launched"
                           ],
                           "type": "string"
@@ -137265,7 +137283,22 @@
                       "minimum": 0,
                       "type": "integer"
                     },
-                    "description": "Device-observed execution KPIs (skips, countdown_skips, countdown_segments, pauses, paused_ms, finish_wizard_opens, first_started_at_ms). Counters never decrease.",
+                    "description": "Device-observed execution KPIs (skips, countdown_skips, countdown_segments, pauses, paused_ms, finish_wizard_opens, first_started_at_ms). Counters never decrease. `activity` (ADR-549): per time-set section, the active section times (ms) of the athlete's work taps; taps only accumulate.",
+                    "properties": {
+                      "activity": {
+                        "additionalProperties": {
+                          "items": {
+                            "maximum": 86400000,
+                            "minimum": 0,
+                            "type": "integer"
+                          },
+                          "maxItems": 300,
+                          "type": "array"
+                        },
+                        "description": "Section id => active section times (ms) of work taps, ascending.",
+                        "type": "object"
+                      }
+                    },
                     "type": "object"
                   },
                   "operation_id": {

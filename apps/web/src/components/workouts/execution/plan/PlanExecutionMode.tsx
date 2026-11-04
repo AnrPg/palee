@@ -12,7 +12,13 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 
-import { completeExecution, fetchExecution, type PlanSetActual, type SectionScore } from "@/api/executions";
+import {
+  completeExecution,
+  fetchExecution,
+  planKpiCounters,
+  type PlanSetActual,
+  type SectionScore,
+} from "@/api/executions";
 import type { JournalComment } from "@/api/journal-comments";
 import { listPRs } from "@/api/gamification";
 import { fetchWorkout } from "@/api/workouts";
@@ -48,6 +54,7 @@ export function PlanExecutionMode({ executionId }: { executionId: string }) {
   const [scores, setScores] = useState<SectionScore[]>(restored?.scores ?? []);
   const [elapsed, setElapsed] = useState<Record<string, number>>(restored?.elapsed ?? {});
   const [actuals, setActuals] = useState<Record<string, PlanSetActual[]>>(restored?.actuals ?? {});
+  const [workTaps, setWorkTaps] = useState<Record<string, number[]>>(restored?.workTaps ?? {});
   const [comments, setComments] = useState<JournalComment[]>([]);
   const [finishing, setFinishing] = useState(restored?.finishing ?? false);
   const [oneRepMax, setOneRepMax] = useState<OneRepMaxLookup | undefined>(undefined);
@@ -56,12 +63,12 @@ export function PlanExecutionMode({ executionId }: { executionId: string }) {
     snapshot: restored?.current ?? null,
   });
   const [initialSnapshot] = useState(() => restored?.current ?? null);
-  const baseRef = useRef({ index, scores, elapsed, actuals, finishing });
+  const baseRef = useRef({ index, scores, elapsed, actuals, workTaps, finishing });
   useEffect(() => {
-    baseRef.current = { index, scores, elapsed, actuals, finishing };
+    baseRef.current = { index, scores, elapsed, actuals, workTaps, finishing };
     if (currentRef.current.index !== index) currentRef.current = { index, snapshot: null };
     storePlanProgress(executionId, { ...baseRef.current, current: currentRef.current.snapshot });
-  }, [actuals, elapsed, executionId, finishing, index, scores]);
+  }, [actuals, elapsed, executionId, finishing, index, scores, workTaps]);
 
   function saveSnapshot(sectionIndex: number, snapshot: PlanRunSnapshot) {
     if (sectionIndex !== baseRef.current.index) return;
@@ -142,6 +149,7 @@ export function PlanExecutionMode({ executionId }: { executionId: string }) {
     if (result.score) setScores((current) => [...current.filter((s) => s.section_id !== section.id), result.score!]);
     setElapsed((current) => ({ ...current, [section.id]: result.elapsedMs }));
     setActuals((current) => ({ ...current, [section.id]: result.actuals }));
+    setWorkTaps((current) => ({ ...current, [section.id]: result.workTaps }));
     if (loaded && index + 1 < loaded.sections.length) setIndex(index + 1);
     else setFinishing(true);
   }
@@ -162,6 +170,7 @@ export function PlanExecutionMode({ executionId }: { executionId: string }) {
         section_elapsed_ms: elapsed,
         segment_cycle_counts: {},
         plan_actuals: (loaded?.sections ?? []).flatMap((s) => actuals[s.id] ?? []),
+        kpi_counters: planKpiCounters(workTaps),
       });
       storePlanProgress(executionId, null);
       router.push("/");

@@ -10,6 +10,7 @@ import type {
   WorkoutExecution,
 } from "@/api/executions";
 import type { JournalComment } from "@/api/journal-comments";
+import { addWorkTap } from "@/api/executions";
 import { removeComment, sortComments, upsertComment } from "@/lib/journal-comments";
 import { hasMarkChanges, type ProgressMarks, rebaseProgressMarks } from "@/lib/execution-rebase";
 import { liveElapsedMs } from "@/lib/timer-engine";
@@ -119,7 +120,9 @@ type ExecutionState = {
   setSegments: (segments: TimerSegment[]) => void;
   setBriefing: (briefing: TimerBriefing | null) => void;
   /** Adds to a KPI counter. */
-  countKpi: (key: Exclude<keyof KpiCounters, "first_started_at_ms">, amount?: number) => void;
+  countKpi: (key: Exclude<keyof KpiCounters, "first_started_at_ms" | "activity">, amount?: number) => void;
+  /** ADR-549: a work tap (round done, exercise checked) at the current section's active time. */
+  recordWorkTap: (now?: number) => void;
   /** Records the athlete's pause (for pause count and paused time). */
   recordPauseKpi: (at?: number) => void;
   recordResumeKpi: (at?: number) => void;
@@ -547,6 +550,15 @@ export const useExecutionStore = create<ExecutionState>()(
         set((state) => ({
           kpiCounters: { ...state.kpiCounters, [key]: Math.max(0, Math.round((state.kpiCounters[key] ?? 0) + amount)) },
         })),
+
+      recordWorkTap: (now = Date.now()) =>
+        set((state) => {
+          const segment = state.segments[state.currentSegmentIndex];
+          const key = sectionTimeKey(segment);
+          if (key === null || state.status === "completed") return state;
+          const ms = (state.sectionElapsedMs[key] ?? 0) + state.currentElapsedMs(now);
+          return { kpiCounters: addWorkTap(state.kpiCounters, key, ms) };
+        }),
 
       recordPauseKpi: (at = Date.now()) =>
         set((state) => ({

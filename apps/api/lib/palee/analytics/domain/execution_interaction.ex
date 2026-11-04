@@ -75,6 +75,9 @@ defmodule Palee.Analytics.Domain.ExecutionInteraction do
     "finish_wizard_opened" => ~w(surface segment_index),
     "finish_wizard_saved" => ~w(step duration_ms scored_section_count),
     "finish_wizard_abandoned" => ~w(step duration_ms),
+    # ADR-549: the athlete left a workout that was not finished (tab closed,
+    # screen left): where, how long the segment had run and what was left.
+    "timer_closed" => @position ++ ~w(elapsed_ms remaining_ms),
     # Landscape / cast mode (audit U13) and cue toggles (U1)
     "cast_mode_toggled" => ~w(enabled orientation surface),
     "cues_toggled" => ~w(enabled cue_channel surface)

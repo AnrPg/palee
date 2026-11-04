@@ -10,6 +10,8 @@ defmodule Palee.Execution.Domain.ExecutionAnalytics do
   interaction ingestion instead.
   """
 
+  alias Palee.Execution.Domain.Retirement
+
   @doc """
   Completion facts. A section counts as manually scored when its final
   `section_scores` entry did not come from the automatic snapshotter
@@ -76,6 +78,40 @@ defmodule Palee.Execution.Domain.ExecutionAnalytics do
   defp number(%Decimal{} = value), do: Decimal.to_float(value)
   defp number(value) when is_number(value), do: value
   defp number(_value), do: nil
+
+  @doc """
+  ADR-549: the flat Παραίτηση facts stored with a completed execution
+  (`kpi_counters["retirement"]`, `Retirement.assess/3`): the overall verdict,
+  how many time-set sections it has and how many were given up, and the
+  time left on the clock or run idle. Nothing for a workout without a
+  time-set section.
+  """
+  def retirement_facts(execution) do
+    counters = value(execution, :kpi_counters) || %{}
+
+    case counters["retirement"] || counters[:retirement] do
+      %{"sections" => [_ | _] = sections, "verdict" => verdict} ->
+        retired = Enum.filter(sections, &Retirement.retired?(&1["verdict"]))
+
+        %{
+          retirement_verdict: verdict,
+          time_set_section_count: length(sections),
+          retired_section_count: length(retired),
+          stopped_early_ms: sum(sections, "stopped_early", "stopped_early_ms"),
+          idle_tail_ms: sum(sections, "idle", "idle_tail_ms")
+        }
+
+      _none ->
+        %{}
+    end
+  end
+
+  defp sum(sections, verdict, key) do
+    sections
+    |> Enum.filter(&(&1["verdict"] == verdict))
+    |> Enum.map(&(&1[key] || 0))
+    |> Enum.sum()
+  end
 
   @doc """
   Abandon point for a started, never-completed execution: the segment index,

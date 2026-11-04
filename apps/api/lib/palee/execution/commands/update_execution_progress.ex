@@ -5,7 +5,8 @@ defmodule Palee.Execution.Commands.UpdateExecutionProgress do
     DurationAdjustments,
     ExecutionKpis,
     ProgressSnapshotter,
-    ProgressValidator
+    ProgressValidator,
+    Retirement
   }
 
   alias Palee.Execution.ExecutionStore
@@ -123,6 +124,10 @@ defmodule Palee.Execution.Commands.UpdateExecutionProgress do
              Map.get(params, :segments, Map.get(params, "segments", [])),
              current_segment_index,
              total_elapsed_ms
+           )
+           |> Retirement.merge_activity(
+             incoming_activity(params),
+             Map.get(params, :segments, Map.get(params, "segments", []))
            ),
          duration_adjustments:
            DurationAdjustments.normalize(
@@ -270,4 +275,12 @@ defmodule Palee.Execution.Commands.UpdateExecutionProgress do
   end
 
   defp parse_datetime(_value), do: {:error, :bad_request}
+
+  # ADR-549: the device's work taps per time-set section (`kpi_counters.activity`).
+  defp incoming_activity(params) do
+    case params[:kpi_counters] || params["kpi_counters"] do
+      %{} = counters -> counters[:activity] || counters["activity"]
+      _none -> nil
+    end
+  end
 end

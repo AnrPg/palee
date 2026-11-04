@@ -25,7 +25,20 @@ defmodule PaleeWeb.ExecutionController do
     type: :object,
     description:
       "Device-observed execution KPIs (skips, countdown_skips, countdown_segments, pauses, " <>
-        "paused_ms, finish_wizard_opens, first_started_at_ms). Counters never decrease.",
+        "paused_ms, finish_wizard_opens, first_started_at_ms). Counters never decrease. " <>
+        "`activity` (ADR-549): per time-set section, the active section times (ms) of the " <>
+        "athlete's work taps; taps only accumulate.",
+    properties: %{
+      activity: %Schema{
+        type: :object,
+        description: "Section id => active section times (ms) of work taps, ascending.",
+        additionalProperties: %Schema{
+          type: :array,
+          maxItems: 300,
+          items: %Schema{type: :integer, minimum: 0, maximum: 86_400_000}
+        }
+      }
+    },
     additionalProperties: %Schema{type: :integer, minimum: 0}
   }
 

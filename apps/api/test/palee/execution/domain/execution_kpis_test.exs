@@ -72,6 +72,14 @@ defmodule Palee.Execution.Domain.ExecutionKpisTest do
       assert counters["formats"] == ["free_text"]
     end
 
+    test "keeps the work taps and the retirement facts across merges (ADR-549)" do
+      counters = %{"activity" => %{"a" => [1_000]}, "retirement" => %{"verdict" => "full"}}
+      merged = ExecutionKpis.merge_counters(counters, %{"pauses" => 1})
+
+      assert merged["activity"] == %{"a" => [1_000]}
+      assert merged["retirement"] == %{"verdict" => "full"}
+    end
+
     test "survives counter merges" do
       counters = ExecutionKpis.put_position(%{}, [], 0, 1_000)
 
@@ -177,6 +185,59 @@ defmodule Palee.Execution.Domain.ExecutionKpisTest do
              ]
     end
 
+    test "reports Παραίτηση per time-set section of completed executions (ADR-549)" do
+      section = fn verdict, format, extra ->
+        Map.merge(%{"verdict" => verdict, "format" => format}, extra)
+      end
+
+      executions = [
+        %{
+          status: :completed,
+          kpi_counters: %{
+            "retirement" => %{
+              "verdict" => "stopped_early",
+              "sections" => [
+                section.("stopped_early", "amrap", %{"stopped_early_ms" => 300_000}),
+                section.("full", "emom", %{})
+              ]
+            }
+          }
+        },
+        %{
+          status: :completed,
+          kpi_counters: %{
+            "retirement" => %{
+              "verdict" => "idle",
+              "sections" => [section.("idle", "amrap", %{"idle_tail_ms" => 240_000})]
+            }
+          }
+        },
+        %{status: :completed, kpi_counters: %{}},
+        # never completed: an abandoned run, not a retirement
+        %{
+          status: :active,
+          kpi_counters: %{
+            "retirement" => %{"sections" => [section.("stopped_early", "amrap", %{})]}
+          }
+        }
+      ]
+
+      retirement = ExecutionKpis.summarize(executions).retirement
+
+      assert retirement.time_set_sections == 3
+      assert retirement.stopped_early == 1
+      assert retirement.idle == 1
+      assert retirement.full == 1
+      assert retirement.retired_rate == 0.6667
+      assert retirement.median_stopped_early_ms == 300_000
+      assert retirement.median_idle_tail_ms == 240_000
+
+      assert retirement.by_format == [
+               %{format: "amrap", time_set_sections: 2, retired: 2, retired_rate: 1.0},
+               %{format: "emom", time_set_sections: 1, retired: 0, retired_rate: 0.0}
+             ]
+    end
+
     test "has no rates without data" do
       report = ExecutionKpis.summarize([])
 
@@ -184,6 +245,7 @@ defmodule Palee.Execution.Domain.ExecutionKpisTest do
       assert report.skip_rate_on_countdowns == nil
       assert report.finish_wizard_drop_off_rate == nil
       assert report.daily == []
+      assert report.retirement.retired_rate == nil
     end
   end
 end

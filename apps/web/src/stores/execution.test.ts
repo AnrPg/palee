@@ -84,6 +84,21 @@ describe("execution elapsed-time model", () => {
     expect(useExecutionStore.getState().sectionElapsedMs).toEqual({ a: 15_000 });
   });
 
+  it("records work taps at the section's active time and sends them with progress (ADR-549)", () => {
+    const store = useExecutionStore.getState();
+    store.recordWorkTap(12_000);
+    store.moveToSegment(1, { elapsedMs: 30_000, startedAt: 30_000 });
+    // between-section rest: no section to tap in
+    useExecutionStore.getState().recordWorkTap(40_000);
+    useExecutionStore.getState().moveToSegment(2, { elapsedMs: 60_000, startedAt: 90_000 });
+    useExecutionStore.getState().recordWorkTap(95_000);
+
+    expect(useExecutionStore.getState().buildProgressPayload()!.kpi_counters?.activity).toEqual({
+      a: [12_000],
+      b: [5_000],
+    });
+  });
+
   it("keeps between-section rest out of section time but in the workout total", () => {
     useExecutionStore.getState().moveToSegment(1, { elapsedMs: 30_000, startedAt: 30_000 });
     useExecutionStore.getState().moveToSegment(2, { elapsedMs: 60_000, startedAt: 90_000 });

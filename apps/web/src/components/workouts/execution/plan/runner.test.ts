@@ -28,6 +28,13 @@ const name = (seq: RunSequence, s: RunState) => {
 };
 
 describe("runReducer", () => {
+  it("records the clock time of every work step marked done (ADR-549)", () => {
+    const seq = buildSequence(section("amrap", { dur: "10" }, [[ex("Thruster", "10"), ex("Pull-up", "10")]]));
+    const s = run(seq, { type: "start" }, at(40), NEXT, at(95), NEXT, NEXT, { type: "pause" }, NEXT);
+    // the third tap is at the same clock time as the second one: kept once; a paused tap is ignored
+    expect(s.workTaps).toEqual([40_000, 95_000]);
+  });
+
   it("waits for start, then steps through and finishes For Time with its time", () => {
     const seq = buildSequence(section("for_time", { rounds: "2" }, [[ex("Row", "250 m"), ex("Burpee", "10")]]));
     let s = run(seq, NEXT);
