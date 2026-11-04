@@ -52,6 +52,8 @@ import {
   type When,
 } from "./around";
 import { useMyInterests } from "@/components/interests/InterestsEditor";
+import { useSession } from "@/components/session-provider";
+import { usesAppAsAthlete } from "@/lib/athlete-use";
 
 import { PlaceOption, PlacesAttribution, useAroundError, useNeighbourhoodName } from "./AreaPicker";
 import { useAround, useAroundArea, useNeighbourhoodSearch, useResolvePlace, useSavedFilterActions } from "./use-around";
@@ -78,7 +80,9 @@ export function AroundChipRow({ resultCount, onShowMap }: { resultCount: number;
   const [managing, setManaging] = useState<SavedFilter | null>(null);
   const count = activeFilterCount(filter);
   // ADR-183: what the person does is one tap away, never applied on its own.
-  const mine = useMyInterests().data?.disciplines ?? [];
+  // ADR-463: not for someone who said they only work, not train.
+  const interests = useMyInterests().data?.disciplines ?? [];
+  const mine = usesAppAsAthlete(useSession().currentUser) ? interests : [];
 
   const modelChips: FilterChip[] = chipModel(filter).map((chip) =>
     chip.kind === "toggle"

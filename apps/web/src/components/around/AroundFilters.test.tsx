@@ -12,6 +12,7 @@ const state = vi.hoisted(() => ({
   filter: null as unknown as AroundFilter,
   setFilter: vi.fn(),
   mine: [] as string[],
+  trains: null as boolean | null,
   saved: [] as Array<{ id: string; name: string; params: unknown; alert: boolean }>,
 }));
 
@@ -25,6 +26,10 @@ vi.mock("./use-around", () => ({
 
 vi.mock("@/components/interests/InterestsEditor", () => ({
   useMyInterests: () => ({ data: { disciplines: state.mine } }),
+}));
+
+vi.mock("@/components/session-provider", () => ({
+  useSession: () => ({ currentUser: { id: "u1", trains_with_palee: state.trains } }),
 }));
 
 vi.mock("@/api/public-profile", () => ({
@@ -51,6 +56,7 @@ beforeEach(() => {
   state.filter = DEFAULT_FILTER;
   state.setFilter = vi.fn();
   state.mine = [];
+  state.trains = null;
   state.saved = [];
 });
 
@@ -69,6 +75,15 @@ describe("AroundChipRow", () => {
     expect(within(row).queryByRole("button", { name: "Trial" })).toBeNull();
     expect(within(row).queryByRole("button", { name: "Posts" })).toBeNull();
     expect(within(row).queryByText(/km/)).toBeNull();
+  });
+
+  it("leaves My sports out for staff who said they do not train (ADR-463)", () => {
+    state.mine = ["hyrox"];
+    state.trains = false;
+    fakeLayout({ container: 600, chip: 90 });
+    renderRow(<AroundChipRow resultCount={3} />);
+    expect(screen.queryByRole("button", { name: "My sports" })).toBeNull();
+    expect(screen.getByRole("button", { name: "Free" })).toBeTruthy();
   });
 
   it("leaves My sports out for someone without interests", () => {
