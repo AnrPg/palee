@@ -3409,6 +3409,8 @@ defmodule PaleeWeb.FallbackController do
     no_day_workout: {:conflict, "No day WOD covers this class"},
     day_class_started: {:conflict, "This class has started; its WOD stays as it was"},
     invalid_time_zone: {:unprocessable_entity, "Choose a known time zone"},
+    # ADR-463: "do you train with Palee too?" is yes or no.
+    invalid_trains_with_palee: {:unprocessable_entity, "Answer yes or no"},
     time_zone_required: {:unprocessable_entity, "The gym's time zone must be set"},
     invalid_guest_name: {:unprocessable_entity, "Enter the guest's name"},
     guest_already_booked: {:conflict, "A guest is already booked for this class"},

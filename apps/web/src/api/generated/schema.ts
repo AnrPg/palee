@@ -4722,6 +4722,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/me/trains-with-palee": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Say whether you also train with Palee (ADR-463)
+         * @description Staff answer it in the first run and in Settings. false hides the prompts aimed at athletes; null (never asked) reads as true.
+         */
+        put: operations["PaleeWeb.MeController.update_trains_with_palee"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me/trials": {
         parameters: {
             query?: never;
@@ -52684,6 +52704,14 @@ export interface components {
             expected_version?: number;
             reason?: string | null;
         };
+        /** TrainsWithPaleeResponse */
+        TrainsWithPaleeResponse: {
+            trains_with_palee: boolean;
+        };
+        /** TrainsWithPaleeUpdate */
+        TrainsWithPaleeUpdate: {
+            trains_with_palee: boolean;
+        };
         /** TrialAsk */
         TrialAsk: {
             /** Format: uuid */
@@ -56446,6 +56474,8 @@ export interface operations {
                             role: string;
                             /** @description ADR-179: the zone this account's device last reported */
                             time_zone?: string | null;
+                            /** @description ADR-463: staff's answer to «do you train with Palee too?»; null = never asked, read as true */
+                            trains_with_palee?: boolean | null;
                             vendor: boolean;
                         } | null;
                     };
@@ -57220,6 +57250,8 @@ export interface operations {
                             role: string;
                             /** @description ADR-179: the zone this account's device last reported */
                             time_zone?: string | null;
+                            /** @description ADR-463: staff's answer to «do you train with Palee too?»; null = never asked, read as true */
+                            trains_with_palee?: boolean | null;
                             vendor: boolean;
                         };
                     };
@@ -57337,6 +57369,8 @@ export interface operations {
                         role: string;
                         /** @description ADR-179: the zone this account's device last reported */
                         time_zone?: string | null;
+                        /** @description ADR-463: staff's answer to «do you train with Palee too?»; null = never asked, read as true */
+                        trains_with_palee?: boolean | null;
                         vendor: boolean;
                     };
                 };
@@ -57719,6 +57753,8 @@ export interface operations {
                             role: string;
                             /** @description ADR-179: the zone this account's device last reported */
                             time_zone?: string | null;
+                            /** @description ADR-463: staff's answer to «do you train with Palee too?»; null = never asked, read as true */
+                            trains_with_palee?: boolean | null;
                             vendor: boolean;
                         };
                     };
@@ -78222,6 +78258,43 @@ export interface operations {
                     "application/json": {
                         completed_tours: string[];
                     };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MeController.update_trains_with_palee": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    trains_with_palee: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Stored answer */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        trains_with_palee: boolean;
+                    };
+                };
+            };
+            /** @description Validation errors */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
                 };
             };
         };
