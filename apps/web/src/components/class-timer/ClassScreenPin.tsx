@@ -2,7 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useState, type CSSProperties, type ReactNode } from "react";
 
 import {
   type BoxScreen,
@@ -25,7 +25,20 @@ import { FRESHNESS } from "@/lib/query-policy";
 
 const COACH_VIEWS: BoxScreenOverrideView[] = ["timer", "leaderboard", "wod"];
 
-export function ClassScreenPin({ token, slotId }: { token: string | undefined; slotId: string }) {
+export function ClassScreenPin({
+  token,
+  slotId,
+  className = "min-h-11 rounded-xl px-3 text-sm font-semibold",
+  style = { border: "1px solid var(--border)", color: "var(--text-soft)" },
+  hint,
+}: {
+  token: string | undefined;
+  slotId: string;
+  className?: string;
+  style?: CSSProperties;
+  /** A line under the label, e.g. in the remote's «Οθόνη τοίχου» sheet. */
+  hint?: ReactNode;
+}) {
   const t = useTranslations("BoxScreens");
   const [open, setOpen] = useState(false);
   const screens = useQuery({
@@ -36,7 +49,9 @@ export function ClassScreenPin({ token, slotId }: { token: string | undefined; s
     queryFn: () => listClassScreens(token as string, slotId),
   });
 
-  if (!token || !screens.data || screens.data.screens.length === 0) return null;
+  // A malformed answer (no `screens` list) shows nothing rather than crashing the remote.
+  const data = screens.data;
+  if (!token || !data || !Array.isArray(data.screens) || data.screens.length === 0) return null;
 
   return (
     <>
@@ -44,17 +59,18 @@ export function ClassScreenPin({ token, slotId }: { token: string | undefined; s
         type="button"
         onClick={() => setOpen(true)}
         data-testid="class-screen-open"
-        className="min-h-11 rounded-xl px-3 text-sm font-semibold"
-        style={{ border: "1px solid var(--border)", color: "var(--text-soft)" }}
+        className={className}
+        style={style}
       >
-        {t("onScreen")}
+        <span>{t("onScreen")}</span>
+        {hint}
       </button>
       {open ? (
         <ClassScreenDialog
           token={token}
           slotId={slotId}
-          screens={screens.data.screens}
-          views={COACH_VIEWS.filter((view) => screens.data.views.includes(view))}
+          screens={data.screens}
+          views={COACH_VIEWS.filter((view) => (data.views ?? []).includes(view))}
           onClose={() => setOpen(false)}
         />
       ) : null}

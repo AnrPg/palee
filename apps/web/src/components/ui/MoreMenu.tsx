@@ -9,6 +9,8 @@ export type MoreMenuItem = {
   onSelect: () => void;
   /** Destructive items (cancel, delete) show in the danger colour, after a divider. */
   tone?: "danger";
+  /** One line under the label saying what the item does; shown when the menu has `showHints`. */
+  hint?: string;
   disabled?: boolean;
   testId?: string;
 };
@@ -24,13 +26,16 @@ export function MoreMenu({
   items,
   testId,
   variant = "plain",
+  showHints = false,
 }: {
   /** Accessible name of the ⋯ button and of the menu. */
   label: string;
   items: MoreMenuItem[];
   testId?: string;
-  /** `pill` matches the rounded action buttons next to it on a card. */
-  variant?: "plain" | "pill";
+  /** `pill` matches the rounded action buttons next to it on a card; `tile` the big square controls of a dock. */
+  variant?: "plain" | "pill" | "tile";
+  /** Show each item's `hint` under its label (a screen's «?» help mode). */
+  showHints?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -53,6 +58,11 @@ export function MoreMenu({
         style={{ color: item.tone === "danger" ? "var(--danger)" : "var(--text)" }}
       >
         {item.label}
+        {showHints && item.hint ? (
+          <span className="block pb-1.5 text-xs font-normal" style={{ color: "var(--muted)" }}>
+            {item.hint}
+          </span>
+        ) : null}
       </button>
     </li>
   );
@@ -70,9 +80,17 @@ export function MoreMenu({
         className={
           variant === "pill"
             ? "flex h-10 min-w-10 items-center justify-center rounded-full px-3 text-lg font-bold leading-none"
-            : "flex h-11 w-11 items-center justify-center rounded-full text-lg font-bold"
+            : variant === "tile"
+              ? "flex h-full min-h-14 w-14 items-center justify-center rounded-2xl text-xl font-bold"
+              : "flex h-11 w-11 items-center justify-center rounded-full text-lg font-bold"
         }
-        style={variant === "pill" ? { background: "var(--card)", color: "var(--text-soft)" } : { color: "var(--dim)" }}
+        style={
+          variant === "pill"
+            ? { background: "var(--card)", color: "var(--text-soft)" }
+            : variant === "tile"
+              ? { background: "var(--panel)", border: "1px solid var(--border)", color: "var(--text)" }
+              : { color: "var(--dim)" }
+        }
       >
         <span aria-hidden="true">⋯</span>
       </button>
@@ -81,7 +99,7 @@ export function MoreMenu({
         open={open}
         onClose={() => setOpen(false)}
         align="end"
-        minWidth={180}
+        minWidth={showHints ? 240 : 180}
         className="rounded-2xl py-1 shadow-lg"
         style={{ background: "var(--panel)", border: "1px solid var(--border)" }}
       >
