@@ -19,6 +19,7 @@ import { FeltStep } from "@/components/wod-goals/FeltStep";
 import { useUiTranslations } from "@/i18n/ui";
 import { useUiLocale } from "@/i18n/use-ui-locale";
 import {
+  availableSourceTypes,
   buildCreatePayload,
   buildUpdatePayload,
   commentDraftFromForm,
@@ -260,9 +261,11 @@ function VoiceDraftNotice({ transcript }: { transcript?: string }) {
 function SourcePicker({ token, onSelect }: { token: string; onSelect: (source: SelectedTrainingSource) => void }) {
   const i18n = useUiTranslations();
   const uiLocale = useUiLocale();
-  const [tab, setTab] = useState<TrainingLogSourceType>("class");
+  const [chosenTab, setTab] = useState<TrainingLogSourceType | null>(null);
   const sourcesQuery = useQuery({ queryKey: SOURCES_KEY, queryFn: () => fetchTrainingLogSources(token) });
-  const tabs: TrainingLogSourceType[] = ["class", "assigned_workout", "library_workout", "freeform"];
+  // ADR-451: only the chips this person's role and package allow; «Ελεύθερη» always.
+  const tabs = availableSourceTypes(sourcesQuery.data);
+  const tab: TrainingLogSourceType = chosenTab && tabs.includes(chosenTab) ? chosenTab : tabs[0];
 
   const optionButton = (key: string, title: string, subtitle: string | null, source: SelectedTrainingSource) => (
     <li key={key}>
@@ -279,6 +282,9 @@ function SourcePicker({ token, onSelect }: { token: string; onSelect: (source: S
   );
 
   const renderList = () => {
+    // No chip is offered before the answer, so one the person may not have never flashes in.
+    if (sourcesQuery.isPending) return <p className="text-sm" style={{ color: "var(--muted)" }}>{i18n("trainingLogLoading")}</p>;
+
     if (tab === "freeform") {
       return (
         <div className="grid gap-3">
@@ -352,24 +358,26 @@ function SourcePicker({ token, onSelect }: { token: string; onSelect: (source: S
   return (
     <div className="grid gap-4">
       <p className="text-sm font-semibold" style={{ color: "var(--text)" }}>{i18n("trainingLogChooseSource")}</p>
-      <div className="flex flex-wrap gap-2" role="tablist">
-        {tabs.map((value) => (
-          <button
-            key={value}
-            type="button"
-            role="tab"
-            aria-selected={tab === value}
-            className="rounded-full px-3 py-1.5 text-sm font-semibold"
-            style={{
-              background: tab === value ? "var(--primary)" : "var(--panel-muted)",
-              color: tab === value ? "var(--primary-contrast)" : "var(--muted)",
-            }}
-            onClick={() => setTab(value)}
-          >
-            {i18n(SOURCE_LABEL_KEYS[value])}
-          </button>
-        ))}
-      </div>
+      {sourcesQuery.isSuccess && tabs.length > 1 ? (
+        <div className="flex flex-wrap gap-2" role="tablist">
+          {tabs.map((value) => (
+            <button
+              key={value}
+              type="button"
+              role="tab"
+              aria-selected={tab === value}
+              className="rounded-full px-3 py-1.5 text-sm font-semibold"
+              style={{
+                background: tab === value ? "var(--primary)" : "var(--panel-muted)",
+                color: tab === value ? "var(--primary-contrast)" : "var(--muted)",
+              }}
+              onClick={() => setTab(value)}
+            >
+              {i18n(SOURCE_LABEL_KEYS[value])}
+            </button>
+          ))}
+        </div>
+      ) : null}
       {renderList()}
     </div>
   );

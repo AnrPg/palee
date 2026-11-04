@@ -52623,6 +52623,8 @@ export interface components {
                 workout_id?: string | null;
                 workout_title?: string | null;
             }[];
+            /** @description ADR-451: the source types this person may log here, in display order (freeform is always last). */
+            available_sources: ("class" | "assigned_workout" | "library_workout" | "freeform")[];
             classes: {
                 /** Format: uuid */
                 booking_id?: string | null;
@@ -136755,6 +136757,8 @@ export interface operations {
                             workout_id?: string | null;
                             workout_title?: string | null;
                         }[];
+                        /** @description ADR-451: the source types this person may log here, in display order (freeform is always last). */
+                        available_sources: ("class" | "assigned_workout" | "library_workout" | "freeform")[];
                         classes: {
                             /** Format: uuid */
                             booking_id?: string | null;

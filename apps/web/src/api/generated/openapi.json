@@ -107317,6 +107317,19 @@
             },
             "type": "array"
           },
+          "available_sources": {
+            "description": "ADR-451: the source types this person may log here, in display order (freeform is always last).",
+            "items": {
+              "enum": [
+                "class",
+                "assigned_workout",
+                "library_workout",
+                "freeform"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          },
           "classes": {
             "items": {
               "properties": {
@@ -107407,6 +107420,7 @@
           }
         },
         "required": [
+          "available_sources",
           "classes",
           "assignments",
           "library_workouts"
@@ -340517,6 +340531,19 @@
                       },
                       "type": "array"
                     },
+                    "available_sources": {
+                      "description": "ADR-451: the source types this person may log here, in display order (freeform is always last).",
+                      "items": {
+                        "enum": [
+                          "class",
+                          "assigned_workout",
+                          "library_workout",
+                          "freeform"
+                        ],
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
                     "classes": {
                       "items": {
                         "properties": {
@@ -340607,6 +340634,7 @@
                     }
                   },
                   "required": [
+                    "available_sources",
                     "classes",
                     "assignments",
                     "library_workouts"
