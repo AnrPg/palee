@@ -269,13 +269,14 @@ export function SitePreview({ token, slug, look }: { token: string; slug: string
   const scale = width > 0 ? Math.min(1, width / DESK_WIDTH) : 0.5;
   const devices = ["phone", "desk"] as const;
 
-  const site = preview.data ? { ...preview.data, ...look } : null;
+  // An answer without the site's shape (an older API) shows the note instead of a broken page.
+  const site = preview.data && Array.isArray(preview.data.sections) ? { ...preview.data, ...look } : null;
   const body =
-    site && box.data ? (
+    site && box.data?.box ? (
       <BoxWebsite page={box.data} site={site} language="box" basePath="" standalone={false} pageKey={pageKey} preview={{ device, onNavigate: setPageKey }} />
     ) : (
       <p className="p-6 text-sm" style={{ color: "var(--muted)" }}>
-        {preview.isError || box.isError ? t("preview.unavailable") : t("preview.loading")}
+        {preview.isPending || box.isPending ? t("preview.loading") : t("preview.unavailable")}
       </p>
     );
 
