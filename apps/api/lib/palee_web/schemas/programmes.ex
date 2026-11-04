@@ -52,7 +52,13 @@ defmodule PaleeWeb.Schemas.Programmes do
     }
   end
 
-  defp equipment_key, do: %Schema{type: :string, enum: Palee.Workouts.equipment_keys()}
+  defp equipment_key,
+    do: %Schema{
+      title: "EquipmentKey",
+      type: :string,
+      enum: Palee.Workouts.equipment_keys(),
+      description: "ADR-542: an equipment key (labels: web messages `Equipment.<key>`)"
+    }
 
   defp equipment_list(description),
     do: %Schema{type: :array, items: equipment_key(), description: description}
