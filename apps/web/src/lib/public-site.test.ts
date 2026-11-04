@@ -3,14 +3,15 @@ import { describe, expect, it } from "vitest";
 import {
   attribution,
   contactFields,
-  faqFor,
   preferredLanguage,
+  preferredSiteLanguage,
   rememberedSiteLanguage,
-  shouldOpenEnglish,
   siteBasePath,
   siteLanguageCookie,
-  siteText,
+  siteLanguageFromSegment,
+  siteLanguagePath,
   timetableByDay,
+  translatedPage,
 } from "./public-site";
 
 // ADR-388: the box's language first, English on /en; the first visit follows the browser.
@@ -21,13 +22,24 @@ describe("website language", () => {
     expect(preferredLanguage(null)).toBeNull();
   });
 
-  it("opens English only on a first visit from another language", () => {
-    const base = { boxLanguage: "el", siteChoice: null, appLocaleChosen: false };
-    expect(shouldOpenEnglish({ ...base, acceptLanguage: "de-DE" })).toBe(true);
-    expect(shouldOpenEnglish({ ...base, acceptLanguage: "el-GR" })).toBe(false);
-    expect(shouldOpenEnglish({ ...base, acceptLanguage: "de", siteChoice: "el" })).toBe(false);
-    expect(shouldOpenEnglish({ ...base, acceptLanguage: "de", appLocaleChosen: true })).toBe(false);
-    expect(shouldOpenEnglish({ ...base, boxLanguage: "en", acceptLanguage: "de" })).toBe(false);
+  it("opens a translation only on a first visit from another language", () => {
+    const base = { boxLanguage: "el", languages: ["el", "en", "de"], siteChoice: null, appLocaleChosen: false };
+    // ADR-500: the browser's language when the box shows it, English otherwise.
+    expect(preferredSiteLanguage({ ...base, acceptLanguage: "de-DE" })).toBe("de");
+    expect(preferredSiteLanguage({ ...base, acceptLanguage: "fr-FR" })).toBe("en");
+    expect(preferredSiteLanguage({ ...base, languages: ["el", "de"], acceptLanguage: "fr" })).toBeNull();
+    expect(preferredSiteLanguage({ ...base, acceptLanguage: "el-GR" })).toBeNull();
+    expect(preferredSiteLanguage({ ...base, acceptLanguage: "de", siteChoice: "el" })).toBeNull();
+    expect(preferredSiteLanguage({ ...base, acceptLanguage: "de", appLocaleChosen: true })).toBeNull();
+    expect(preferredSiteLanguage({ ...base, boxLanguage: "en", languages: ["en"], acceptLanguage: "de" })).toBeNull();
+  });
+
+  it("names a translation by its path segment", () => {
+    expect(siteLanguageFromSegment("pt-pt")).toBe("pt-PT");
+    expect(siteLanguageFromSegment("EN")).toBe("en");
+    expect(siteLanguageFromSegment("xx")).toBeNull();
+    expect(siteLanguagePath("/b/kypseli", "pt-PT")).toBe("/b/kypseli/pt-pt");
+    expect(siteLanguagePath("", "box")).toBe("/");
   });
 
   it("remembers the EL/EN choice per site", () => {
@@ -39,22 +51,24 @@ describe("website language", () => {
     expect(rememberedSiteLanguage(undefined, "crossfit-kypseli")).toBeNull();
   });
 
-  it("uses the owner's English text on /en and the original elsewhere or when empty", () => {
-    expect(siteText("en", "Γεια", "Hello")).toBe("Hello");
-    expect(siteText("en", "Γεια", "  ")).toBe("Γεια");
-    expect(siteText("box", "Γεια", "Hello")).toBe("Γεια");
-  });
-
-  it("keeps an English FAQ entry only when both halves are there", () => {
-    const entries = [
-      { question: "Ερώτηση;", answer: "Απάντηση", question_en: "Question?", answer_en: "Answer" },
-      { question: "Μόνο ελληνικά;", answer: "Ναι", question_en: "Only Greek?" },
-    ];
-    expect(faqFor("en", entries)).toEqual([
-      { question: "Question?", answer: "Answer" },
-      { question: "Μόνο ελληνικά;", answer: "Ναι" },
-    ]);
-    expect(faqFor("box", entries)[0]).toEqual({ question: "Ερώτηση;", answer: "Απάντηση" });
+  it("puts the owner's translations into the box page and keeps the rest", () => {
+    const page = {
+      profile: { about: "Γεια", coaches: [{ id: "c", class_types: ["Αρχάριοι", "Yoga"] }] },
+      rooms: [{ id: "r", name: "Αίθουσα", description: null, photos: [] }],
+      locations: [{ id: "l", name: "Κυψέλη" }],
+    } as unknown as Parameters<typeof translatedPage>[0];
+    const site = {
+      translation: "en",
+      about: "Hello",
+      texts: { "space:r:name": "Main room", "location:l:name": " " },
+      class_type_names: { Αρχάριοι: "Beginners" },
+    } as unknown as Parameters<typeof translatedPage>[1];
+    const translated = translatedPage(page, site);
+    expect(translated.profile.about).toBe("Hello");
+    expect(translated.profile.coaches[0]!.class_types).toEqual(["Beginners", "Yoga"]);
+    expect(translated.rooms[0]!.name).toBe("Main room");
+    expect(translated.locations[0]!.name).toBe("Κυψέλη");
+    expect(translatedPage(page, { ...site, translation: null })).toBe(page);
   });
 });
 

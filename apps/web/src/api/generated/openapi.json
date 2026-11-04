@@ -1142,6 +1142,76 @@
             },
             "type": "array"
           },
+          "languages": {
+            "description": "The site's own language, the ones it can add and each translation's progress",
+            "properties": {
+              "available": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "machine_available": {
+                "type": "boolean"
+              },
+              "progress": {
+                "items": {
+                  "properties": {
+                    "counts": {
+                      "properties": {
+                        "machine": {
+                          "type": "integer"
+                        },
+                        "missing": {
+                          "type": "integer"
+                        },
+                        "ok": {
+                          "type": "integer"
+                        },
+                        "stale": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "missing",
+                        "stale",
+                        "machine",
+                        "ok"
+                      ],
+                      "title": "SiteTranslationCounts",
+                      "type": "object"
+                    },
+                    "locale": {
+                      "type": "string"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "counts",
+                    "locale",
+                    "total"
+                  ],
+                  "title": "SiteLanguageProgress",
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "source": {
+                "description": "The box's own language (the source)",
+                "type": "string"
+              }
+            },
+            "required": [
+              "available",
+              "machine_available",
+              "progress",
+              "source"
+            ],
+            "title": "SiteLanguages",
+            "type": "object"
+          },
           "section_keys": {
             "items": {
               "enum": [
@@ -1164,11 +1234,6 @@
           },
           "settings": {
             "properties": {
-              "about_en": {
-                "maxLength": 4000,
-                "nullable": true,
-                "type": "string"
-              },
               "banner_version": {
                 "type": "integer"
               },
@@ -1182,17 +1247,12 @@
                       "maxLength": 1000,
                       "type": "string"
                     },
-                    "answer_en": {
-                      "description": "Optional English text (ADR-388)",
-                      "maxLength": 1000,
+                    "id": {
+                      "description": "Stable id (ADR-500); a new entry gets one when saved",
+                      "format": "uuid",
                       "type": "string"
                     },
                     "question": {
-                      "maxLength": 200,
-                      "type": "string"
-                    },
-                    "question_en": {
-                      "description": "Optional English text (ADR-388)",
                       "maxLength": 200,
                       "type": "string"
                     }
@@ -1275,10 +1335,27 @@
                   "type": "string"
                 },
                 "type": "array"
+              },
+              "translation_locales": {
+                "description": "Languages the box translates its texts into (ADR-500)",
+                "items": {
+                  "maxLength": 10,
+                  "type": "string"
+                },
+                "maxItems": 11,
+                "type": "array"
+              },
+              "visible_locales": {
+                "description": "Translations visitors can pick on the site (ADR-500)",
+                "items": {
+                  "maxLength": 10,
+                  "type": "string"
+                },
+                "maxItems": 11,
+                "type": "array"
               }
             },
             "required": [
-              "about_en",
               "banner_version",
               "conversions_api_enabled",
               "faq",
@@ -1291,7 +1368,9 @@
               "meta_pixel_id",
               "public_schedule",
               "public_wod",
-              "section_order"
+              "section_order",
+              "translation_locales",
+              "visible_locales"
             ],
             "title": "SiteSettings",
             "type": "object"
@@ -1299,6 +1378,7 @@
         },
         "required": [
           "domains",
+          "languages",
           "section_keys",
           "settings"
         ],
@@ -73868,12 +73948,20 @@
       },
       "PublicSiteResponse": {
         "properties": {
-          "about_en": {
+          "about": {
+            "description": "The translated «Σχετικά», null when there is none",
             "nullable": true,
             "type": "string"
           },
           "canonical_url": {
             "type": "string"
+          },
+          "class_type_names": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Translated class names by the box's own name",
+            "type": "object"
           },
           "events": {
             "items": {
@@ -73930,17 +74018,12 @@
                   "maxLength": 1000,
                   "type": "string"
                 },
-                "answer_en": {
-                  "description": "Optional English text (ADR-388)",
-                  "maxLength": 1000,
+                "id": {
+                  "description": "Stable id (ADR-500); a new entry gets one when saved",
+                  "format": "uuid",
                   "type": "string"
                 },
                 "question": {
-                  "maxLength": 200,
-                  "type": "string"
-                },
-                "question_en": {
-                  "description": "Optional English text (ADR-388)",
                   "maxLength": 200,
                   "type": "string"
                 }
@@ -73986,7 +74069,7 @@
             "type": "string"
           },
           "languages": {
-            "description": "The site's languages: the box's own and English",
+            "description": "The site's languages: the box's own first, then its visible translations",
             "items": {
               "type": "string"
             },
@@ -74152,6 +74235,13 @@
           "slug": {
             "type": "string"
           },
+          "texts": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Translations of texts served by other reads, keyed kind:id:field",
+            "type": "object"
+          },
           "time_zone": {
             "type": "string"
           },
@@ -74253,6 +74343,11 @@
             ],
             "type": "object"
           },
+          "translation": {
+            "description": "The translation this answer is in (ADR-500), null for the box's own",
+            "nullable": true,
+            "type": "string"
+          },
           "wod": {
             "items": {
               "properties": {
@@ -74290,8 +74385,9 @@
           }
         },
         "required": [
-          "about_en",
+          "about",
           "canonical_url",
+          "class_type_names",
           "events",
           "faq",
           "forms",
@@ -74300,9 +74396,11 @@
           "reviews",
           "sections",
           "slug",
+          "texts",
           "time_zone",
           "timetable",
           "tracking",
+          "translation",
           "wod"
         ],
         "title": "PublicSiteResponse",
@@ -84132,17 +84230,12 @@
             "maxLength": 1000,
             "type": "string"
           },
-          "answer_en": {
-            "description": "Optional English text (ADR-388)",
-            "maxLength": 1000,
+          "id": {
+            "description": "Stable id (ADR-500); a new entry gets one when saved",
+            "format": "uuid",
             "type": "string"
           },
           "question": {
-            "maxLength": 200,
-            "type": "string"
-          },
-          "question_en": {
-            "description": "Optional English text (ADR-388)",
             "maxLength": 200,
             "type": "string"
           }
@@ -84283,6 +84376,117 @@
           "status"
         ],
         "title": "SiteFormResponse",
+        "type": "object"
+      },
+      "SiteLanguageProgress": {
+        "properties": {
+          "counts": {
+            "properties": {
+              "machine": {
+                "type": "integer"
+              },
+              "missing": {
+                "type": "integer"
+              },
+              "ok": {
+                "type": "integer"
+              },
+              "stale": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "missing",
+              "stale",
+              "machine",
+              "ok"
+            ],
+            "title": "SiteTranslationCounts",
+            "type": "object"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "total": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "counts",
+          "locale",
+          "total"
+        ],
+        "title": "SiteLanguageProgress",
+        "type": "object"
+      },
+      "SiteLanguages": {
+        "description": "The site's own language, the ones it can add and each translation's progress",
+        "properties": {
+          "available": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "machine_available": {
+            "type": "boolean"
+          },
+          "progress": {
+            "items": {
+              "properties": {
+                "counts": {
+                  "properties": {
+                    "machine": {
+                      "type": "integer"
+                    },
+                    "missing": {
+                      "type": "integer"
+                    },
+                    "ok": {
+                      "type": "integer"
+                    },
+                    "stale": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "missing",
+                    "stale",
+                    "machine",
+                    "ok"
+                  ],
+                  "title": "SiteTranslationCounts",
+                  "type": "object"
+                },
+                "locale": {
+                  "type": "string"
+                },
+                "total": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "counts",
+                "locale",
+                "total"
+              ],
+              "title": "SiteLanguageProgress",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "source": {
+            "description": "The box's own language (the source)",
+            "type": "string"
+          }
+        },
+        "required": [
+          "available",
+          "machine_available",
+          "progress",
+          "source"
+        ],
+        "title": "SiteLanguages",
         "type": "object"
       },
       "SiteOpsDomainsResponse": {
@@ -84560,11 +84764,6 @@
       },
       "SiteSettings": {
         "properties": {
-          "about_en": {
-            "maxLength": 4000,
-            "nullable": true,
-            "type": "string"
-          },
           "banner_version": {
             "type": "integer"
           },
@@ -84578,17 +84777,12 @@
                   "maxLength": 1000,
                   "type": "string"
                 },
-                "answer_en": {
-                  "description": "Optional English text (ADR-388)",
-                  "maxLength": 1000,
+                "id": {
+                  "description": "Stable id (ADR-500); a new entry gets one when saved",
+                  "format": "uuid",
                   "type": "string"
                 },
                 "question": {
-                  "maxLength": 200,
-                  "type": "string"
-                },
-                "question_en": {
-                  "description": "Optional English text (ADR-388)",
                   "maxLength": 200,
                   "type": "string"
                 }
@@ -84671,10 +84865,27 @@
               "type": "string"
             },
             "type": "array"
+          },
+          "translation_locales": {
+            "description": "Languages the box translates its texts into (ADR-500)",
+            "items": {
+              "maxLength": 10,
+              "type": "string"
+            },
+            "maxItems": 11,
+            "type": "array"
+          },
+          "visible_locales": {
+            "description": "Translations visitors can pick on the site (ADR-500)",
+            "items": {
+              "maxLength": 10,
+              "type": "string"
+            },
+            "maxItems": 11,
+            "type": "array"
           }
         },
         "required": [
-          "about_en",
           "banner_version",
           "conversions_api_enabled",
           "faq",
@@ -84687,20 +84898,87 @@
           "meta_pixel_id",
           "public_schedule",
           "public_wod",
-          "section_order"
+          "section_order",
+          "translation_locales",
+          "visible_locales"
         ],
         "title": "SiteSettings",
         "type": "object"
       },
       "SiteSettingsResponse": {
         "properties": {
+          "languages": {
+            "description": "The site's own language, the ones it can add and each translation's progress",
+            "properties": {
+              "available": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "machine_available": {
+                "type": "boolean"
+              },
+              "progress": {
+                "items": {
+                  "properties": {
+                    "counts": {
+                      "properties": {
+                        "machine": {
+                          "type": "integer"
+                        },
+                        "missing": {
+                          "type": "integer"
+                        },
+                        "ok": {
+                          "type": "integer"
+                        },
+                        "stale": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "missing",
+                        "stale",
+                        "machine",
+                        "ok"
+                      ],
+                      "title": "SiteTranslationCounts",
+                      "type": "object"
+                    },
+                    "locale": {
+                      "type": "string"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "counts",
+                    "locale",
+                    "total"
+                  ],
+                  "title": "SiteLanguageProgress",
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "source": {
+                "description": "The box's own language (the source)",
+                "type": "string"
+              }
+            },
+            "required": [
+              "available",
+              "machine_available",
+              "progress",
+              "source"
+            ],
+            "title": "SiteLanguages",
+            "type": "object"
+          },
           "settings": {
             "properties": {
-              "about_en": {
-                "maxLength": 4000,
-                "nullable": true,
-                "type": "string"
-              },
               "banner_version": {
                 "type": "integer"
               },
@@ -84714,17 +84992,12 @@
                       "maxLength": 1000,
                       "type": "string"
                     },
-                    "answer_en": {
-                      "description": "Optional English text (ADR-388)",
-                      "maxLength": 1000,
+                    "id": {
+                      "description": "Stable id (ADR-500); a new entry gets one when saved",
+                      "format": "uuid",
                       "type": "string"
                     },
                     "question": {
-                      "maxLength": 200,
-                      "type": "string"
-                    },
-                    "question_en": {
-                      "description": "Optional English text (ADR-388)",
                       "maxLength": 200,
                       "type": "string"
                     }
@@ -84807,10 +85080,27 @@
                   "type": "string"
                 },
                 "type": "array"
+              },
+              "translation_locales": {
+                "description": "Languages the box translates its texts into (ADR-500)",
+                "items": {
+                  "maxLength": 10,
+                  "type": "string"
+                },
+                "maxItems": 11,
+                "type": "array"
+              },
+              "visible_locales": {
+                "description": "Translations visitors can pick on the site (ADR-500)",
+                "items": {
+                  "maxLength": 10,
+                  "type": "string"
+                },
+                "maxItems": 11,
+                "type": "array"
               }
             },
             "required": [
-              "about_en",
               "banner_version",
               "conversions_api_enabled",
               "faq",
@@ -84823,13 +85113,16 @@
               "meta_pixel_id",
               "public_schedule",
               "public_wod",
-              "section_order"
+              "section_order",
+              "translation_locales",
+              "visible_locales"
             ],
             "title": "SiteSettings",
             "type": "object"
           }
         },
         "required": [
+          "languages",
           "settings"
         ],
         "title": "SiteSettingsResponse",
@@ -84837,11 +85130,6 @@
       },
       "SiteSettingsUpdate": {
         "properties": {
-          "about_en": {
-            "maxLength": 4000,
-            "nullable": true,
-            "type": "string"
-          },
           "conversions_api_enabled": {
             "type": "boolean"
           },
@@ -84858,17 +85146,12 @@
                   "maxLength": 1000,
                   "type": "string"
                 },
-                "answer_en": {
-                  "description": "Optional English text (ADR-388)",
-                  "maxLength": 1000,
+                "id": {
+                  "description": "Stable id (ADR-500); a new entry gets one when saved",
+                  "format": "uuid",
                   "type": "string"
                 },
                 "question": {
-                  "maxLength": 200,
-                  "type": "string"
-                },
-                "question_en": {
-                  "description": "Optional English text (ADR-388)",
                   "maxLength": 200,
                   "type": "string"
                 }
@@ -84945,6 +85228,24 @@
               ],
               "type": "string"
             },
+            "type": "array"
+          },
+          "translation_locales": {
+            "description": "Languages to translate into; the box's own is left out",
+            "items": {
+              "maxLength": 10,
+              "type": "string"
+            },
+            "maxItems": 11,
+            "type": "array"
+          },
+          "visible_locales": {
+            "description": "Translations visitors can pick; a subset of translation_locales",
+            "items": {
+              "maxLength": 10,
+              "type": "string"
+            },
+            "maxItems": 11,
             "type": "array"
           }
         },
@@ -85074,6 +85375,398 @@
           "scheduled_at"
         ],
         "title": "SiteTimetableClass",
+        "type": "object"
+      },
+      "SiteTranslationCounts": {
+        "properties": {
+          "machine": {
+            "type": "integer"
+          },
+          "missing": {
+            "type": "integer"
+          },
+          "ok": {
+            "type": "integer"
+          },
+          "stale": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "missing",
+          "stale",
+          "machine",
+          "ok"
+        ],
+        "title": "SiteTranslationCounts",
+        "type": "object"
+      },
+      "SiteTranslationEdit": {
+        "properties": {
+          "field": {
+            "maxLength": 40,
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "box_profile",
+              "class_type",
+              "event",
+              "location",
+              "package",
+              "site_faq",
+              "space"
+            ],
+            "type": "string"
+          },
+          "text": {
+            "description": "Empty or null removes the translation",
+            "maxLength": 4000,
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "field",
+          "id",
+          "kind",
+          "text"
+        ],
+        "title": "SiteTranslationEdit",
+        "type": "object"
+      },
+      "SiteTranslationItem": {
+        "properties": {
+          "field": {
+            "type": "string"
+          },
+          "group": {
+            "enum": [
+              "about",
+              "rooms",
+              "faq",
+              "packages",
+              "classes",
+              "events",
+              "locations"
+            ],
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "key": {
+            "description": "kind:id:field",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "box_profile",
+              "class_type",
+              "event",
+              "location",
+              "package",
+              "site_faq",
+              "space"
+            ],
+            "type": "string"
+          },
+          "label": {
+            "description": "What the text belongs to (a package's name, an FAQ number)",
+            "nullable": true,
+            "type": "string"
+          },
+          "origin": {
+            "enum": [
+              "manual",
+              "machine"
+            ],
+            "nullable": true,
+            "type": "string"
+          },
+          "source": {
+            "description": "The box's own text",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "missing",
+              "stale",
+              "machine",
+              "ok"
+            ],
+            "type": "string"
+          },
+          "text": {
+            "description": "The translation",
+            "nullable": true,
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "field",
+          "group",
+          "id",
+          "key",
+          "kind",
+          "label",
+          "origin",
+          "source",
+          "status",
+          "text",
+          "updated_at"
+        ],
+        "title": "SiteTranslationItem",
+        "type": "object"
+      },
+      "SiteTranslationsKeep": {
+        "properties": {
+          "keys": {
+            "items": {
+              "maxLength": 200,
+              "type": "string"
+            },
+            "maxItems": 500,
+            "minItems": 1,
+            "type": "array"
+          },
+          "locale": {
+            "maxLength": 10,
+            "type": "string"
+          }
+        },
+        "required": [
+          "keys",
+          "locale"
+        ],
+        "title": "SiteTranslationsKeep",
+        "type": "object"
+      },
+      "SiteTranslationsMachine": {
+        "properties": {
+          "locale": {
+            "maxLength": 10,
+            "type": "string"
+          }
+        },
+        "required": [
+          "locale"
+        ],
+        "title": "SiteTranslationsMachine",
+        "type": "object"
+      },
+      "SiteTranslationsResponse": {
+        "properties": {
+          "counts": {
+            "properties": {
+              "machine": {
+                "type": "integer"
+              },
+              "missing": {
+                "type": "integer"
+              },
+              "ok": {
+                "type": "integer"
+              },
+              "stale": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "missing",
+              "stale",
+              "machine",
+              "ok"
+            ],
+            "title": "SiteTranslationCounts",
+            "type": "object"
+          },
+          "items": {
+            "items": {
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "group": {
+                  "enum": [
+                    "about",
+                    "rooms",
+                    "faq",
+                    "packages",
+                    "classes",
+                    "events",
+                    "locations"
+                  ],
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "key": {
+                  "description": "kind:id:field",
+                  "type": "string"
+                },
+                "kind": {
+                  "enum": [
+                    "box_profile",
+                    "class_type",
+                    "event",
+                    "location",
+                    "package",
+                    "site_faq",
+                    "space"
+                  ],
+                  "type": "string"
+                },
+                "label": {
+                  "description": "What the text belongs to (a package's name, an FAQ number)",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "origin": {
+                  "enum": [
+                    "manual",
+                    "machine"
+                  ],
+                  "nullable": true,
+                  "type": "string"
+                },
+                "source": {
+                  "description": "The box's own text",
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "missing",
+                    "stale",
+                    "machine",
+                    "ok"
+                  ],
+                  "type": "string"
+                },
+                "text": {
+                  "description": "The translation",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "updated_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "field",
+                "group",
+                "id",
+                "key",
+                "kind",
+                "label",
+                "origin",
+                "source",
+                "status",
+                "text",
+                "updated_at"
+              ],
+              "title": "SiteTranslationItem",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "machine_available": {
+            "type": "boolean"
+          },
+          "source_language": {
+            "type": "string"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "written": {
+            "description": "Texts the machine wrote (machine only)",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "counts",
+          "items",
+          "locale",
+          "machine_available",
+          "source_language",
+          "total"
+        ],
+        "title": "SiteTranslationsResponse",
+        "type": "object"
+      },
+      "SiteTranslationsSave": {
+        "properties": {
+          "entries": {
+            "items": {
+              "properties": {
+                "field": {
+                  "maxLength": 40,
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "kind": {
+                  "enum": [
+                    "box_profile",
+                    "class_type",
+                    "event",
+                    "location",
+                    "package",
+                    "site_faq",
+                    "space"
+                  ],
+                  "type": "string"
+                },
+                "text": {
+                  "description": "Empty or null removes the translation",
+                  "maxLength": 4000,
+                  "nullable": true,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "field",
+                "id",
+                "kind",
+                "text"
+              ],
+              "title": "SiteTranslationEdit",
+              "type": "object"
+            },
+            "maxItems": 200,
+            "minItems": 1,
+            "type": "array"
+          },
+          "locale": {
+            "maxLength": 10,
+            "type": "string"
+          }
+        },
+        "required": [
+          "entries",
+          "locale"
+        ],
+        "title": "SiteTranslationsSave",
         "type": "object"
       },
       "SiteWod": {
@@ -255577,6 +256270,76 @@
                       },
                       "type": "array"
                     },
+                    "languages": {
+                      "description": "The site's own language, the ones it can add and each translation's progress",
+                      "properties": {
+                        "available": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "machine_available": {
+                          "type": "boolean"
+                        },
+                        "progress": {
+                          "items": {
+                            "properties": {
+                              "counts": {
+                                "properties": {
+                                  "machine": {
+                                    "type": "integer"
+                                  },
+                                  "missing": {
+                                    "type": "integer"
+                                  },
+                                  "ok": {
+                                    "type": "integer"
+                                  },
+                                  "stale": {
+                                    "type": "integer"
+                                  }
+                                },
+                                "required": [
+                                  "missing",
+                                  "stale",
+                                  "machine",
+                                  "ok"
+                                ],
+                                "title": "SiteTranslationCounts",
+                                "type": "object"
+                              },
+                              "locale": {
+                                "type": "string"
+                              },
+                              "total": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "counts",
+                              "locale",
+                              "total"
+                            ],
+                            "title": "SiteLanguageProgress",
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
+                        "source": {
+                          "description": "The box's own language (the source)",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "available",
+                        "machine_available",
+                        "progress",
+                        "source"
+                      ],
+                      "title": "SiteLanguages",
+                      "type": "object"
+                    },
                     "section_keys": {
                       "items": {
                         "enum": [
@@ -255599,11 +256362,6 @@
                     },
                     "settings": {
                       "properties": {
-                        "about_en": {
-                          "maxLength": 4000,
-                          "nullable": true,
-                          "type": "string"
-                        },
                         "banner_version": {
                           "type": "integer"
                         },
@@ -255617,17 +256375,12 @@
                                 "maxLength": 1000,
                                 "type": "string"
                               },
-                              "answer_en": {
-                                "description": "Optional English text (ADR-388)",
-                                "maxLength": 1000,
+                              "id": {
+                                "description": "Stable id (ADR-500); a new entry gets one when saved",
+                                "format": "uuid",
                                 "type": "string"
                               },
                               "question": {
-                                "maxLength": 200,
-                                "type": "string"
-                              },
-                              "question_en": {
-                                "description": "Optional English text (ADR-388)",
                                 "maxLength": 200,
                                 "type": "string"
                               }
@@ -255710,10 +256463,27 @@
                             "type": "string"
                           },
                           "type": "array"
+                        },
+                        "translation_locales": {
+                          "description": "Languages the box translates its texts into (ADR-500)",
+                          "items": {
+                            "maxLength": 10,
+                            "type": "string"
+                          },
+                          "maxItems": 11,
+                          "type": "array"
+                        },
+                        "visible_locales": {
+                          "description": "Translations visitors can pick on the site (ADR-500)",
+                          "items": {
+                            "maxLength": 10,
+                            "type": "string"
+                          },
+                          "maxItems": 11,
+                          "type": "array"
                         }
                       },
                       "required": [
-                        "about_en",
                         "banner_version",
                         "conversions_api_enabled",
                         "faq",
@@ -255726,7 +256496,9 @@
                         "meta_pixel_id",
                         "public_schedule",
                         "public_wod",
-                        "section_order"
+                        "section_order",
+                        "translation_locales",
+                        "visible_locales"
                       ],
                       "title": "SiteSettings",
                       "type": "object"
@@ -255734,6 +256506,7 @@
                   },
                   "required": [
                     "domains",
+                    "languages",
                     "section_keys",
                     "settings"
                   ],
@@ -255764,11 +256537,6 @@
             "application/json": {
               "schema": {
                 "properties": {
-                  "about_en": {
-                    "maxLength": 4000,
-                    "nullable": true,
-                    "type": "string"
-                  },
                   "conversions_api_enabled": {
                     "type": "boolean"
                   },
@@ -255785,17 +256553,12 @@
                           "maxLength": 1000,
                           "type": "string"
                         },
-                        "answer_en": {
-                          "description": "Optional English text (ADR-388)",
-                          "maxLength": 1000,
+                        "id": {
+                          "description": "Stable id (ADR-500); a new entry gets one when saved",
+                          "format": "uuid",
                           "type": "string"
                         },
                         "question": {
-                          "maxLength": 200,
-                          "type": "string"
-                        },
-                        "question_en": {
-                          "description": "Optional English text (ADR-388)",
                           "maxLength": 200,
                           "type": "string"
                         }
@@ -255873,6 +256636,24 @@
                       "type": "string"
                     },
                     "type": "array"
+                  },
+                  "translation_locales": {
+                    "description": "Languages to translate into; the box's own is left out",
+                    "items": {
+                      "maxLength": 10,
+                      "type": "string"
+                    },
+                    "maxItems": 11,
+                    "type": "array"
+                  },
+                  "visible_locales": {
+                    "description": "Translations visitors can pick; a subset of translation_locales",
+                    "items": {
+                      "maxLength": 10,
+                      "type": "string"
+                    },
+                    "maxItems": 11,
+                    "type": "array"
                   }
                 },
                 "required": [
@@ -255891,13 +256672,78 @@
               "application/json": {
                 "schema": {
                   "properties": {
+                    "languages": {
+                      "description": "The site's own language, the ones it can add and each translation's progress",
+                      "properties": {
+                        "available": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "machine_available": {
+                          "type": "boolean"
+                        },
+                        "progress": {
+                          "items": {
+                            "properties": {
+                              "counts": {
+                                "properties": {
+                                  "machine": {
+                                    "type": "integer"
+                                  },
+                                  "missing": {
+                                    "type": "integer"
+                                  },
+                                  "ok": {
+                                    "type": "integer"
+                                  },
+                                  "stale": {
+                                    "type": "integer"
+                                  }
+                                },
+                                "required": [
+                                  "missing",
+                                  "stale",
+                                  "machine",
+                                  "ok"
+                                ],
+                                "title": "SiteTranslationCounts",
+                                "type": "object"
+                              },
+                              "locale": {
+                                "type": "string"
+                              },
+                              "total": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "counts",
+                              "locale",
+                              "total"
+                            ],
+                            "title": "SiteLanguageProgress",
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
+                        "source": {
+                          "description": "The box's own language (the source)",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "available",
+                        "machine_available",
+                        "progress",
+                        "source"
+                      ],
+                      "title": "SiteLanguages",
+                      "type": "object"
+                    },
                     "settings": {
                       "properties": {
-                        "about_en": {
-                          "maxLength": 4000,
-                          "nullable": true,
-                          "type": "string"
-                        },
                         "banner_version": {
                           "type": "integer"
                         },
@@ -255911,17 +256757,12 @@
                                 "maxLength": 1000,
                                 "type": "string"
                               },
-                              "answer_en": {
-                                "description": "Optional English text (ADR-388)",
-                                "maxLength": 1000,
+                              "id": {
+                                "description": "Stable id (ADR-500); a new entry gets one when saved",
+                                "format": "uuid",
                                 "type": "string"
                               },
                               "question": {
-                                "maxLength": 200,
-                                "type": "string"
-                              },
-                              "question_en": {
-                                "description": "Optional English text (ADR-388)",
                                 "maxLength": 200,
                                 "type": "string"
                               }
@@ -256004,10 +256845,27 @@
                             "type": "string"
                           },
                           "type": "array"
+                        },
+                        "translation_locales": {
+                          "description": "Languages the box translates its texts into (ADR-500)",
+                          "items": {
+                            "maxLength": 10,
+                            "type": "string"
+                          },
+                          "maxItems": 11,
+                          "type": "array"
+                        },
+                        "visible_locales": {
+                          "description": "Translations visitors can pick on the site (ADR-500)",
+                          "items": {
+                            "maxLength": 10,
+                            "type": "string"
+                          },
+                          "maxItems": 11,
+                          "type": "array"
                         }
                       },
                       "required": [
-                        "about_en",
                         "banner_version",
                         "conversions_api_enabled",
                         "faq",
@@ -256020,13 +256878,16 @@
                         "meta_pixel_id",
                         "public_schedule",
                         "public_wod",
-                        "section_order"
+                        "section_order",
+                        "translation_locales",
+                        "visible_locales"
                       ],
                       "title": "SiteSettings",
                       "type": "object"
                     }
                   },
                   "required": [
+                    "languages",
                     "settings"
                   ],
                   "title": "SiteSettingsResponse",
@@ -256889,6 +257750,867 @@
           }
         ],
         "summary": "What the website brought in over the last 30 days (counts only)",
+        "tags": [
+          "Box website"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/site/translations": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminSiteController.translations",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "locale",
+            "required": true,
+            "schema": {
+              "description": "A language of the app, e.g. en, de, pt-PT",
+              "maxLength": 10,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "counts": {
+                      "properties": {
+                        "machine": {
+                          "type": "integer"
+                        },
+                        "missing": {
+                          "type": "integer"
+                        },
+                        "ok": {
+                          "type": "integer"
+                        },
+                        "stale": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "missing",
+                        "stale",
+                        "machine",
+                        "ok"
+                      ],
+                      "title": "SiteTranslationCounts",
+                      "type": "object"
+                    },
+                    "items": {
+                      "items": {
+                        "properties": {
+                          "field": {
+                            "type": "string"
+                          },
+                          "group": {
+                            "enum": [
+                              "about",
+                              "rooms",
+                              "faq",
+                              "packages",
+                              "classes",
+                              "events",
+                              "locations"
+                            ],
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "key": {
+                            "description": "kind:id:field",
+                            "type": "string"
+                          },
+                          "kind": {
+                            "enum": [
+                              "box_profile",
+                              "class_type",
+                              "event",
+                              "location",
+                              "package",
+                              "site_faq",
+                              "space"
+                            ],
+                            "type": "string"
+                          },
+                          "label": {
+                            "description": "What the text belongs to (a package's name, an FAQ number)",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "origin": {
+                            "enum": [
+                              "manual",
+                              "machine"
+                            ],
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "source": {
+                            "description": "The box's own text",
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "missing",
+                              "stale",
+                              "machine",
+                              "ok"
+                            ],
+                            "type": "string"
+                          },
+                          "text": {
+                            "description": "The translation",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "updated_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "field",
+                          "group",
+                          "id",
+                          "key",
+                          "kind",
+                          "label",
+                          "origin",
+                          "source",
+                          "status",
+                          "text",
+                          "updated_at"
+                        ],
+                        "title": "SiteTranslationItem",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "locale": {
+                      "type": "string"
+                    },
+                    "machine_available": {
+                      "type": "boolean"
+                    },
+                    "source_language": {
+                      "type": "string"
+                    },
+                    "total": {
+                      "type": "integer"
+                    },
+                    "written": {
+                      "description": "Texts the machine wrote (machine only)",
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "counts",
+                    "items",
+                    "locale",
+                    "machine_available",
+                    "source_language",
+                    "total"
+                  ],
+                  "title": "SiteTranslationsResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Translations"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "«Μεταφράσεις»: every text of the website with its translation and status",
+        "tags": [
+          "Box website"
+        ]
+      },
+      "put": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminSiteController.save_translations",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "entries": {
+                    "items": {
+                      "properties": {
+                        "field": {
+                          "maxLength": 40,
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "kind": {
+                          "enum": [
+                            "box_profile",
+                            "class_type",
+                            "event",
+                            "location",
+                            "package",
+                            "site_faq",
+                            "space"
+                          ],
+                          "type": "string"
+                        },
+                        "text": {
+                          "description": "Empty or null removes the translation",
+                          "maxLength": 4000,
+                          "nullable": true,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "field",
+                        "id",
+                        "kind",
+                        "text"
+                      ],
+                      "title": "SiteTranslationEdit",
+                      "type": "object"
+                    },
+                    "maxItems": 200,
+                    "minItems": 1,
+                    "type": "array"
+                  },
+                  "locale": {
+                    "maxLength": 10,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "entries",
+                  "locale"
+                ],
+                "title": "SiteTranslationsSave",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "counts": {
+                      "properties": {
+                        "machine": {
+                          "type": "integer"
+                        },
+                        "missing": {
+                          "type": "integer"
+                        },
+                        "ok": {
+                          "type": "integer"
+                        },
+                        "stale": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "missing",
+                        "stale",
+                        "machine",
+                        "ok"
+                      ],
+                      "title": "SiteTranslationCounts",
+                      "type": "object"
+                    },
+                    "items": {
+                      "items": {
+                        "properties": {
+                          "field": {
+                            "type": "string"
+                          },
+                          "group": {
+                            "enum": [
+                              "about",
+                              "rooms",
+                              "faq",
+                              "packages",
+                              "classes",
+                              "events",
+                              "locations"
+                            ],
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "key": {
+                            "description": "kind:id:field",
+                            "type": "string"
+                          },
+                          "kind": {
+                            "enum": [
+                              "box_profile",
+                              "class_type",
+                              "event",
+                              "location",
+                              "package",
+                              "site_faq",
+                              "space"
+                            ],
+                            "type": "string"
+                          },
+                          "label": {
+                            "description": "What the text belongs to (a package's name, an FAQ number)",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "origin": {
+                            "enum": [
+                              "manual",
+                              "machine"
+                            ],
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "source": {
+                            "description": "The box's own text",
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "missing",
+                              "stale",
+                              "machine",
+                              "ok"
+                            ],
+                            "type": "string"
+                          },
+                          "text": {
+                            "description": "The translation",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "updated_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "field",
+                          "group",
+                          "id",
+                          "key",
+                          "kind",
+                          "label",
+                          "origin",
+                          "source",
+                          "status",
+                          "text",
+                          "updated_at"
+                        ],
+                        "title": "SiteTranslationItem",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "locale": {
+                      "type": "string"
+                    },
+                    "machine_available": {
+                      "type": "boolean"
+                    },
+                    "source_language": {
+                      "type": "string"
+                    },
+                    "total": {
+                      "type": "integer"
+                    },
+                    "written": {
+                      "description": "Texts the machine wrote (machine only)",
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "counts",
+                    "items",
+                    "locale",
+                    "machine_available",
+                    "source_language",
+                    "total"
+                  ],
+                  "title": "SiteTranslationsResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Translations"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Save translations a person wrote (an empty text removes one); live at once",
+        "tags": [
+          "Box website"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/site/translations/keep": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminSiteController.keep_translations",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "keys": {
+                    "items": {
+                      "maxLength": 200,
+                      "type": "string"
+                    },
+                    "maxItems": 500,
+                    "minItems": 1,
+                    "type": "array"
+                  },
+                  "locale": {
+                    "maxLength": 10,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "keys",
+                  "locale"
+                ],
+                "title": "SiteTranslationsKeep",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "counts": {
+                      "properties": {
+                        "machine": {
+                          "type": "integer"
+                        },
+                        "missing": {
+                          "type": "integer"
+                        },
+                        "ok": {
+                          "type": "integer"
+                        },
+                        "stale": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "missing",
+                        "stale",
+                        "machine",
+                        "ok"
+                      ],
+                      "title": "SiteTranslationCounts",
+                      "type": "object"
+                    },
+                    "items": {
+                      "items": {
+                        "properties": {
+                          "field": {
+                            "type": "string"
+                          },
+                          "group": {
+                            "enum": [
+                              "about",
+                              "rooms",
+                              "faq",
+                              "packages",
+                              "classes",
+                              "events",
+                              "locations"
+                            ],
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "key": {
+                            "description": "kind:id:field",
+                            "type": "string"
+                          },
+                          "kind": {
+                            "enum": [
+                              "box_profile",
+                              "class_type",
+                              "event",
+                              "location",
+                              "package",
+                              "site_faq",
+                              "space"
+                            ],
+                            "type": "string"
+                          },
+                          "label": {
+                            "description": "What the text belongs to (a package's name, an FAQ number)",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "origin": {
+                            "enum": [
+                              "manual",
+                              "machine"
+                            ],
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "source": {
+                            "description": "The box's own text",
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "missing",
+                              "stale",
+                              "machine",
+                              "ok"
+                            ],
+                            "type": "string"
+                          },
+                          "text": {
+                            "description": "The translation",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "updated_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "field",
+                          "group",
+                          "id",
+                          "key",
+                          "kind",
+                          "label",
+                          "origin",
+                          "source",
+                          "status",
+                          "text",
+                          "updated_at"
+                        ],
+                        "title": "SiteTranslationItem",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "locale": {
+                      "type": "string"
+                    },
+                    "machine_available": {
+                      "type": "boolean"
+                    },
+                    "source_language": {
+                      "type": "string"
+                    },
+                    "total": {
+                      "type": "integer"
+                    },
+                    "written": {
+                      "description": "Texts the machine wrote (machine only)",
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "counts",
+                    "items",
+                    "locale",
+                    "machine_available",
+                    "source_language",
+                    "total"
+                  ],
+                  "title": "SiteTranslationsResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Translations"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "«Εντάξει, κράτα το»: keep machine or out-of-date translations as they are",
+        "tags": [
+          "Box website"
+        ]
+      }
+    },
+    "/api/org/{organization_slug}/admin/site/translations/machine": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.AdminSiteController.machine_translations",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "locale": {
+                    "maxLength": 10,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "locale"
+                ],
+                "title": "SiteTranslationsMachine",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "counts": {
+                      "properties": {
+                        "machine": {
+                          "type": "integer"
+                        },
+                        "missing": {
+                          "type": "integer"
+                        },
+                        "ok": {
+                          "type": "integer"
+                        },
+                        "stale": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "missing",
+                        "stale",
+                        "machine",
+                        "ok"
+                      ],
+                      "title": "SiteTranslationCounts",
+                      "type": "object"
+                    },
+                    "items": {
+                      "items": {
+                        "properties": {
+                          "field": {
+                            "type": "string"
+                          },
+                          "group": {
+                            "enum": [
+                              "about",
+                              "rooms",
+                              "faq",
+                              "packages",
+                              "classes",
+                              "events",
+                              "locations"
+                            ],
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "key": {
+                            "description": "kind:id:field",
+                            "type": "string"
+                          },
+                          "kind": {
+                            "enum": [
+                              "box_profile",
+                              "class_type",
+                              "event",
+                              "location",
+                              "package",
+                              "site_faq",
+                              "space"
+                            ],
+                            "type": "string"
+                          },
+                          "label": {
+                            "description": "What the text belongs to (a package's name, an FAQ number)",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "origin": {
+                            "enum": [
+                              "manual",
+                              "machine"
+                            ],
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "source": {
+                            "description": "The box's own text",
+                            "type": "string"
+                          },
+                          "status": {
+                            "enum": [
+                              "missing",
+                              "stale",
+                              "machine",
+                              "ok"
+                            ],
+                            "type": "string"
+                          },
+                          "text": {
+                            "description": "The translation",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "updated_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "field",
+                          "group",
+                          "id",
+                          "key",
+                          "kind",
+                          "label",
+                          "origin",
+                          "source",
+                          "status",
+                          "text",
+                          "updated_at"
+                        ],
+                        "title": "SiteTranslationItem",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "locale": {
+                      "type": "string"
+                    },
+                    "machine_available": {
+                      "type": "boolean"
+                    },
+                    "source_language": {
+                      "type": "string"
+                    },
+                    "total": {
+                      "type": "integer"
+                    },
+                    "written": {
+                      "description": "Texts the machine wrote (machine only)",
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "counts",
+                    "items",
+                    "locale",
+                    "machine_available",
+                    "source_language",
+                    "total"
+                  ],
+                  "title": "SiteTranslationsResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Translations"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "«Αυτόματη μετάφραση»: fill every missing or out-of-date text by machine",
         "tags": [
           "Box website"
         ]
@@ -373095,6 +374817,17 @@
               "maxLength": 120,
               "type": "string"
             }
+          },
+          {
+            "description": "One of the site's translations (ADR-500); the box's own language when absent",
+            "in": "query",
+            "name": "lang",
+            "required": false,
+            "schema": {
+              "description": "A language of the app, e.g. en, de, pt-PT",
+              "maxLength": 10,
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -373103,12 +374836,20 @@
               "application/json": {
                 "schema": {
                   "properties": {
-                    "about_en": {
+                    "about": {
+                      "description": "The translated «Σχετικά», null when there is none",
                       "nullable": true,
                       "type": "string"
                     },
                     "canonical_url": {
                       "type": "string"
+                    },
+                    "class_type_names": {
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "description": "Translated class names by the box's own name",
+                      "type": "object"
                     },
                     "events": {
                       "items": {
@@ -373165,17 +374906,12 @@
                             "maxLength": 1000,
                             "type": "string"
                           },
-                          "answer_en": {
-                            "description": "Optional English text (ADR-388)",
-                            "maxLength": 1000,
+                          "id": {
+                            "description": "Stable id (ADR-500); a new entry gets one when saved",
+                            "format": "uuid",
                             "type": "string"
                           },
                           "question": {
-                            "maxLength": 200,
-                            "type": "string"
-                          },
-                          "question_en": {
-                            "description": "Optional English text (ADR-388)",
                             "maxLength": 200,
                             "type": "string"
                           }
@@ -373221,7 +374957,7 @@
                       "type": "string"
                     },
                     "languages": {
-                      "description": "The site's languages: the box's own and English",
+                      "description": "The site's languages: the box's own first, then its visible translations",
                       "items": {
                         "type": "string"
                       },
@@ -373387,6 +375123,13 @@
                     "slug": {
                       "type": "string"
                     },
+                    "texts": {
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "description": "Translations of texts served by other reads, keyed kind:id:field",
+                      "type": "object"
+                    },
                     "time_zone": {
                       "type": "string"
                     },
@@ -373488,6 +375231,11 @@
                       ],
                       "type": "object"
                     },
+                    "translation": {
+                      "description": "The translation this answer is in (ADR-500), null for the box's own",
+                      "nullable": true,
+                      "type": "string"
+                    },
                     "wod": {
                       "items": {
                         "properties": {
@@ -373525,8 +375273,9 @@
                     }
                   },
                   "required": [
-                    "about_en",
+                    "about",
                     "canonical_url",
+                    "class_type_names",
                     "events",
                     "faq",
                     "forms",
@@ -373535,9 +375284,11 @@
                     "reviews",
                     "sections",
                     "slug",
+                    "texts",
                     "time_zone",
                     "timetable",
                     "tracking",
+                    "translation",
                     "wod"
                   ],
                   "title": "PublicSiteResponse",
