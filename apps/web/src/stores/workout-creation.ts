@@ -216,6 +216,7 @@ function parseDraftExercise(src: unknown): DraftExercise {
     localId: crypto.randomUUID(),
     itemType: e.item_type === "header" ? "header" : "exercise",
     name: typeof e.name === "string" ? e.name : "",
+    exerciseRef: typeof (e as { exercise_ref?: unknown }).exercise_ref === "string" ? (e as { exercise_ref: string }).exercise_ref : null,
     sets:
       grouped && groupConfig?.sets != null
         ? Number(groupConfig.sets)
@@ -987,6 +988,7 @@ export const useWorkoutCreationStore = create<WorkoutCreationStore>((set, get) =
         exercises: section.exercises.map((exercise) => ({
           item_type: exercise.itemType,
           name: exercise.name,
+          exercise_ref: exercise.exerciseRef ?? null,
           sets: exercise.sets,
           set_prescriptions: concreteSetPrescriptions(exercise).map((set) => ({
             set_index: set.setIndex,

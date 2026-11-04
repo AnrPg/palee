@@ -669,6 +669,23 @@ defmodule Palee.Infrastructure.Identity.EctoUserStore do
   end
 
   @impl true
+  def update_trains_with_palee(user_id, trains?) do
+    case Repo.get(User, user_id) do
+      nil ->
+        {:error, :not_found}
+
+      %User{trains_with_palee: ^trains?} = user ->
+        {:ok, load_account(user.id)}
+
+      %User{} = user ->
+        user
+        |> User.trains_with_palee_changeset(trains?)
+        |> Repo.update()
+        |> wrap_result()
+    end
+  end
+
+  @impl true
   def search_users(nil), do: search_users("")
 
   def search_users("") do
@@ -903,6 +920,7 @@ defmodule Palee.Infrastructure.Identity.EctoUserStore do
       preferred_locale: user.preferred_locale || "en",
       preferred_theme_slug: user.preferred_theme_slug,
       time_zone: user.time_zone,
+      trains_with_palee: user.trains_with_palee,
       email: login.email,
       email_verified_at: login.email_verified_at,
       inserted_at: user.inserted_at,

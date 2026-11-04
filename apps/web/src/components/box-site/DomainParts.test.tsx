@@ -69,7 +69,7 @@ describe("not available, system domains and apex records", () => {
         <DnsRecords records={[{ type: "ALIAS", name: "mybox.gr", value: "sites.palee.app" }]} />
       </NextIntlClientProvider>,
     );
-    expect(screen.getByText("CNAME flattening / ALIAS / ANAME")).toBeTruthy();
+    expect(screen.getByText(/CNAME \/ ALIAS \/ ANAME/)).toBeTruthy();
     expect(screen.getByTestId("site-dns-alias-hint").textContent).toContain("οι διευθύνσεις μας αλλάζουν");
   });
 });

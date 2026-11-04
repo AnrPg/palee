@@ -15,6 +15,8 @@ defmodule Palee.Workouts.Domain.TenantDataPolicy do
             basis:
               "Workout programming is tenant content with no retention obligation; purged last because classes and executions reference it.",
             tables: [
+              # ADR-461: a box's remembered exercise names (its `org` rows).
+              %{table: "exercise_names"},
               %{table: "assigned_workout_athletes"},
               %{table: "assigned_workouts"},
               # ADR-357: after assigned_workouts, which reference it.

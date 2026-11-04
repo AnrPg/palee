@@ -5,6 +5,7 @@ defmodule Palee.Infrastructure.Scheduling.EctoSchedulingStore do
 
   alias Ecto.Multi
   alias Palee.Repo
+  alias Palee.Infrastructure.Analytics.DimensionSnapshot
   alias Palee.Infrastructure.Tenancy.GymClock
   alias Palee.TimeZones.ZonedTime
 
@@ -747,6 +748,7 @@ defmodule Palee.Infrastructure.Scheduling.EctoSchedulingStore do
       |> string_key_map()
       |> Map.put("organization_id", organization_id)
       |> Map.put_new("marked_at", DateTime.utc_now())
+      |> put_attendance_dimensions()
 
     %ClassAttendanceRecord{}
     |> ClassAttendanceRecord.changeset(params)
@@ -768,6 +770,20 @@ defmodule Palee.Infrastructure.Scheduling.EctoSchedulingStore do
         normalize_attendance_result(result)
     end
   end
+
+  # ADR-462 §2: the class's branch, type, level, coach and start, and the
+  # person's package family, as they are when the attendance is first
+  # recorded (a later re-mark keeps them: they are not in the replace list).
+  defp put_attendance_dimensions(
+         %{"scheduled_class_id" => class_id, "user_id" => user_id} = params
+       )
+       when is_binary(class_id) and is_binary(user_id) do
+    class_id
+    |> DimensionSnapshot.attendance(user_id, GymClock.today())
+    |> Map.merge(params)
+  end
+
+  defp put_attendance_dimensions(params), do: params
 
   # ADR-155: a roster mark keeps the method of the check-in it confirms.
   defp attendance_replace_fields(params) do

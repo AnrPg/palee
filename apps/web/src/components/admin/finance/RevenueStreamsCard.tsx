@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 
 import type { FinanceRecord } from "@/api/finance";
+import { MetricHelp } from "@/components/admin/analytics/MetricHelp";
 import { formatMoney } from "@/components/inventory/inventory-helpers";
 import { useRecentShopSales, useShopAccess } from "@/components/shop/console/use-shop";
 import { useUiLocale } from "@/i18n/use-ui-locale";
@@ -24,7 +25,16 @@ const STREAM_COLOR: Record<string, string> = {
  * shop's reports, and the latest shop sales link to their order and product.
  * Hidden until the finance summary carries the breakdown.
  */
-export function RevenueStreamsCard({ summary, locationIds }: { summary: FinanceRecord | null | undefined; locationIds?: string }) {
+export function RevenueStreamsCard({
+  summary,
+  locationIds,
+  helpPath,
+}: {
+  summary: FinanceRecord | null | undefined;
+  locationIds?: string;
+  /** «Στατιστικά»: the card's own infobox (`StaffAnalytics` path). */
+  helpPath?: string;
+}) {
   const t = useTranslations("ShopConsole.finance");
   const locale = useUiLocale();
   const organizationSlug = useOrganizationSlug();
@@ -37,7 +47,10 @@ export function RevenueStreamsCard({ summary, locationIds }: { summary: FinanceR
   return (
     <section className="rounded-[2.2rem] p-6" style={{ background: "var(--panel)", border: "1px solid var(--border)" }} aria-labelledby="revenue-streams-title" data-testid="revenue-streams">
       <p className="text-sm font-semibold uppercase tracking-[0.24em]" style={{ color: "var(--dim)" }}>{t("eyebrow")}</p>
-      <h2 id="revenue-streams-title" className="mt-2 text-xl font-semibold tracking-tight" style={{ color: "var(--text)" }}>{t("title")}</h2>
+      <div className="mt-2 flex min-w-0 items-center gap-2">
+        <h2 id="revenue-streams-title" className="min-w-0 text-xl font-semibold tracking-tight" style={{ color: "var(--text)" }}>{t("title")}</h2>
+        {helpPath ? <MetricHelp label={t("title")} path={helpPath} /> : null}
+      </div>
       <ul className="mt-5 flex flex-col gap-3">
         {rows.map((row) => {
           const label = t(`streams.${row.stream}`);

@@ -83,3 +83,27 @@ export function heatStrips(weeks: HeatWeek[], max = MAX_STRIP_WEEKS): HeatWeek[]
     (strip) => strip.length > 0,
   );
 }
+
+/**
+ * ADR-462 §5: after the member reset Συνέπεια, it counts from the reset's
+ * day on. Weeks that ended before it leave the grid, and the week of the
+ * reset keeps only the sessions of its days from then on.
+ */
+export function sinceBaseline<
+  W extends { week_start: string; sessions: number },
+  D extends { date: string; sessions: number },
+>(weekly: W[], days: D[], since: string | null): { weekly: W[]; days: D[] } {
+  if (!since) return { weekly, days };
+  const kept = days.filter((day) => day.date >= since);
+  const keptWeekly = weekly
+    .filter((week) => addDays(week.week_start, 6) >= since)
+    .map((week) => {
+      if (week.week_start >= since) return week;
+      const end = addDays(week.week_start, 6);
+      const sessions = kept
+        .filter((day) => day.date >= week.week_start && day.date <= end)
+        .reduce((sum, day) => sum + day.sessions, 0);
+      return { ...week, sessions };
+    });
+  return { weekly: keptWeekly, days: kept };
+}

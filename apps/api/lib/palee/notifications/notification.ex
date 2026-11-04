@@ -149,6 +149,8 @@ defmodule Palee.Notifications.Notification do
     field :payload, :map, default: %{}
     field :dedupe_key, :string
     field :read_at, :utc_datetime
+    # ADR-460: deleted by the person; kept for the GDPR export only.
+    field :deleted_at, :utc_datetime_usec
 
     timestamps(updated_at: false)
   end

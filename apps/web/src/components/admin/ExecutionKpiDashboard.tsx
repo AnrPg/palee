@@ -1,18 +1,15 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import React, { useMemo, useState } from "react";
 
-import { fetchAdminAnalyticsSummary } from "@/api/analytics";
-import { HelpTooltip } from "@/components/HelpTooltip";
+import { useSinceLabel } from "@/components/admin/analytics/KpiWidgets";
+import { MetricHelp, type HelpContent } from "@/components/admin/analytics/MetricHelp";
 import { SemanticLabel } from "@/components/semantic-label";
-import { useSession } from "@/components/session-provider";
 import { formatClock } from "@/components/workouts/execution/TimerDisplay";
-import { localizeError } from "@/i18n/presentation";
 import { useUiTranslations } from "@/i18n/ui";
 import { useUiLocale } from "@/i18n/use-ui-locale";
 import { getFormatLabels, type SectionFormat } from "@/types/workout";
-import { ErrorNotice } from "@/components/ui/ErrorNotice";
 
 /** Shape of the `execution` block of the admin analytics summary. */
 export type ExecutionKpiReport = {
@@ -36,8 +33,6 @@ export type ExecutionKpiReport = {
   free_text: { started: number; completed: number; completion_rate: number | null; median_abandon_elapsed_ms: number | null };
   daily: { date: string; started: number; completed: number }[];
 };
-
-const PERIODS = [7, 30, 90] as const;
 
 /** An ISO date ("2026-10-12") as midnight UTC. */
 function utcDay(isoDate: string) {
@@ -74,18 +69,28 @@ export function readExecutionKpis(payload: unknown): ExecutionKpiReport | null {
   };
 }
 
-/** Workout execution health (audit §1.3): where athletes finish, skip, pause and stop. */
-export function ExecutionKpiDashboard() {
+/**
+ * Workout execution health (audit §1.3): where athletes finish, skip, pause
+ * and stop. It reads the page's summary (ADR-462: the page's period and
+ * filters apply; there is no picker of its own).
+ */
+export function ExecutionKpiDashboard({
+  payload,
+  loading = false,
+  since = null,
+}: {
+  payload: unknown;
+  loading?: boolean;
+  /** The active reset of `training.execution_kpis`. */
+  since?: string | null;
+}) {
   const i18n = useUiTranslations();
+  const t = useTranslations("StaffAnalytics");
   const uiLocale = useUiLocale();
-  const { tokens } = useSession();
-  const [days, setDays] = useState<(typeof PERIODS)[number]>(30);
-  const query = useQuery({
-    queryKey: ["admin", "analytics", "summary", days],
-    enabled: Boolean(tokens?.access_token),
-    queryFn: () => fetchAdminAnalyticsSummary(tokens!.access_token, days),
-  });
-  const report = readExecutionKpis(query.data);
+  const sinceLabel = useSinceLabel()(since);
+  const report = readExecutionKpis(payload);
+  const help = (what: string, name: string): HelpContent => ({ what, change: t(`widgets.execution.${name}.change`) });
+  const widgetHelp = (name: string): HelpContent => ({ what: t(`widgets.execution.${name}.what`), change: t(`widgets.execution.${name}.change`) });
   const formatLabels = useMemo(() => getFormatLabels(i18n), [i18n]);
 
   const percent = (value: number | null) =>
@@ -103,40 +108,22 @@ export function ExecutionKpiDashboard() {
   return (
     <section
       aria-labelledby="execution-kpis-title"
-      className="rounded-[1.6rem] border border-[color:var(--border)] bg-[var(--panel)] p-6"
+      className="min-w-0 rounded-[1.6rem] border border-[color:var(--border)] bg-[var(--panel)] p-4 sm:p-6"
     >
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--primary)]">{i18n("kpiEyebrow")}</p>
-          <h2 id="execution-kpis-title" className="mt-2 text-xl font-black">{i18n("kpiTitle")}</h2>
-          <p className="mt-1 max-w-2xl text-sm text-[var(--muted)]">{i18n("kpiDescription")}</p>
-        </div>
-        <div role="group" aria-label={i18n("kpiPeriodLabel")} className="flex gap-1 rounded-full bg-[var(--panel-muted)] p-1">
-          {PERIODS.map((period) => (
-            <button
-              key={period}
-              type="button"
-              aria-pressed={days === period}
-              onClick={() => setDays(period)}
-              className="min-h-9 rounded-full px-3 text-sm font-semibold"
-              style={
-                days === period
-                  ? { background: "var(--primary)", color: "var(--primary-contrast)" }
-                  : { color: "var(--text-soft)" }
-              }
-            >
-              {i18n("kpiLastDays", { days: period })}
-            </button>
-          ))}
-        </div>
+      <div className="flex min-w-0 items-center gap-2">
+        <h2 id="execution-kpis-title" className="min-w-0 text-xl font-black">
+          {i18n("kpiTitle")}
+          {sinceLabel ? (
+            <span className="ms-2 text-xs font-semibold" style={{ color: "var(--dim)" }} data-testid="metric-since">
+              {sinceLabel}
+            </span>
+          ) : null}
+        </h2>
+        <MetricHelp label={i18n("kpiTitle")} path="metrics.training.execution_kpis" metricKey="training.execution_kpis" />
       </div>
 
-      {query.error instanceof Error ? (
-        <ErrorNotice className="mt-4">{localizeError(query.error, i18n)}</ErrorNotice>
-      ) : null}
-
       {!report ? (
-        <p className="mt-6 text-sm text-[var(--muted)]">{query.isLoading ? i18n("kpiLoading") : i18n("noCapturedFactsInThisReportingWindowdc344c7")}</p>
+        <p className="mt-6 text-sm text-[var(--muted)]">{loading ? i18n("kpiLoading") : i18n("noCapturedFactsInThisReportingWindowdc344c7")}</p>
       ) : (
         <>
           <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -144,47 +131,47 @@ export function ExecutionKpiDashboard() {
               label={i18n("kpiCompletionRate")}
               value={percent(report.completion_rate)}
               detail={i18n("kpiCompletedOfStarted", { completed: report.completed, started: report.started })}
-              help={i18n("kpiCompletionRateHelp")}
+              help={help(i18n("kpiCompletionRateHelp"), "completion_rate")}
             />
-            <StatTile label={i18n("kpiScoreCapture")} value={percent(report.score_capture_rate)} help={i18n("kpiScoreCaptureHelp")} />
+            <StatTile label={i18n("kpiScoreCapture")} value={percent(report.score_capture_rate)} help={help(i18n("kpiScoreCaptureHelp"), "score_capture")} />
             <StatTile
               label={i18n("kpiSkipRate")}
               value={percent(report.skip_rate_on_countdowns)}
               detail={i18n("kpiSkipsTotal", { count: report.skips })}
-              help={i18n("kpiSkipRateHelp")}
+              help={help(i18n("kpiSkipRateHelp"), "skip_rate")}
             />
             <StatTile
               label={i18n("kpiTimeToStart")}
               value={duration(report.median_time_to_first_start_ms)}
-              help={i18n("kpiTimeToStartHelp")}
+              help={help(i18n("kpiTimeToStartHelp"), "time_to_start")}
             />
             <StatTile
               label={i18n("kpiPauses")}
               value={decimal(report.pauses_per_execution)}
               detail={i18n("kpiAveragePaused", { time: duration(report.average_paused_ms) })}
-              help={i18n("kpiPausesHelp")}
+              help={help(i18n("kpiPausesHelp"), "pauses")}
             />
             <StatTile
               label={i18n("kpiReviewDropOff")}
               value={percent(report.finish_wizard_drop_off_rate)}
-              help={i18n("kpiReviewDropOffHelp")}
+              help={help(i18n("kpiReviewDropOffHelp"), "review_drop_off")}
             />
             <StatTile
               label={i18n("kpiMedianDuration")}
               value={duration(report.median_completed_duration_ms)}
-              help={i18n("kpiMedianDurationHelp")}
+              help={help(i18n("kpiMedianDurationHelp"), "median_duration")}
             />
             <StatTile
               label={i18n("kpiClockAdjusted")}
               value={percent(report.clock_adjustment_rate)}
-              help={i18n("kpiClockAdjustedHelp")}
+              help={help(i18n("kpiClockAdjustedHelp"), "clock_adjusted")}
             />
           </div>
 
-          <DailyTrend daily={report.daily} />
+          <DailyTrend daily={report.daily} help={widgetHelp("daily_trend")} />
 
           <div className="mt-6 grid gap-4 lg:grid-cols-2">
-            <Panel title={i18n("kpiAbandonByFormat")} help={i18n("kpiAbandonByFormatHelp")}>
+            <Panel title={i18n("kpiAbandonByFormat")} help={help(i18n("kpiAbandonByFormatHelp"), "abandon_by_format")}>
               {report.abandon_by_format.length === 0 ? (
                 <Empty />
               ) : (
@@ -204,7 +191,7 @@ export function ExecutionKpiDashboard() {
               )}
             </Panel>
 
-            <Panel title={i18n("kpiAbandonPoints")} help={i18n("kpiAbandonPointsHelp")}>
+            <Panel title={i18n("kpiAbandonPoints")} help={help(i18n("kpiAbandonPointsHelp"), "abandon_points")}>
               {report.abandon_points.length === 0 ? (
                 <Empty />
               ) : (
@@ -234,11 +221,13 @@ export function ExecutionKpiDashboard() {
 
             <RatesTable
               title={i18n("kpiCompletionByFormat")}
+              help={widgetHelp("completion_by_format")}
               rows={report.by_format.map((row) => ({ ...row, label: formatName(row.key) }))}
               percent={percent}
             />
             <RatesTable
               title={i18n("kpiCompletionBySource")}
+              help={widgetHelp("completion_by_source")}
               rows={report.by_source.map((row) => ({ ...row, label: <SemanticLabel value={row.key} /> }))}
               percent={percent}
             />
@@ -247,13 +236,14 @@ export function ExecutionKpiDashboard() {
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             <StatTile
               label={i18n("kpiStructuredWorkouts")}
+              help={widgetHelp("structured")}
               value={i18n("kpiCompletedOfStarted", { completed: report.structured.completed, started: report.structured.started })}
             />
             <StatTile
               label={i18n("authoringModeFreeText")}
               value={i18n("kpiCompletedOfStarted", { completed: report.free_text.completed, started: report.free_text.started })}
               detail={i18n("kpiFreeTextAbandonedAt", { time: duration(report.free_text.median_abandon_elapsed_ms) })}
-              help={i18n("kpiFreeTextHelp")}
+              help={help(i18n("kpiFreeTextHelp"), "free_text")}
             />
           </div>
         </>
@@ -262,12 +252,12 @@ export function ExecutionKpiDashboard() {
   );
 }
 
-function StatTile({ label, value, detail, help }: { label: string; value: string; detail?: string; help?: string }) {
+function StatTile({ label, value, detail, help }: { label: string; value: string; detail?: string; help?: HelpContent }) {
   return (
-    <div className="rounded-2xl border border-[color:var(--border)] bg-[var(--bg)] p-4">
-      <div className="flex items-center gap-2">
-        <p className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--muted)]">{label}</p>
-        {help ? <HelpTooltip label={label}>{help}</HelpTooltip> : null}
+    <div className="min-w-0 rounded-2xl border border-[color:var(--border)] bg-[var(--bg)] p-4">
+      <div className="flex min-w-0 items-center gap-2">
+        <p className="min-w-0 truncate text-xs font-bold uppercase tracking-[0.14em] text-[var(--muted)]" title={label}>{label}</p>
+        {help ? <MetricHelp label={label} content={help} /> : null}
       </div>
       <p className="mt-2 text-2xl font-black tabular-nums">{value}</p>
       {detail ? <p className="mt-1 text-xs text-[var(--muted)]">{detail}</p> : null}
@@ -275,12 +265,12 @@ function StatTile({ label, value, detail, help }: { label: string; value: string
   );
 }
 
-function Panel({ title, help, children }: { title: string; help?: string; children: React.ReactNode }) {
+function Panel({ title, help, children }: { title: string; help?: HelpContent; children: React.ReactNode }) {
   return (
-    <article className="rounded-2xl border border-[color:var(--border)] bg-[var(--bg)] p-5">
-      <div className="mb-4 flex items-center gap-2">
-        <h3 className="text-base font-black">{title}</h3>
-        {help ? <HelpTooltip label={title}>{help}</HelpTooltip> : null}
+    <article className="min-w-0 rounded-2xl border border-[color:var(--border)] bg-[var(--bg)] p-4 sm:p-5">
+      <div className="mb-4 flex min-w-0 items-center gap-2">
+        <h3 className="min-w-0 text-base font-black">{title}</h3>
+        {help ? <MetricHelp label={title} content={help} /> : null}
       </div>
       {children}
     </article>
@@ -310,16 +300,18 @@ function Meter({ value, color, label }: { value: number; color: string; label: s
 
 function RatesTable({
   title,
+  help,
   rows,
   percent,
 }: {
   title: string;
+  help?: HelpContent;
   rows: { key: string; label: React.ReactNode; started: number; completed: number; completion_rate: number | null }[];
   percent: (value: number | null) => string;
 }) {
   const i18n = useUiTranslations();
   return (
-    <Panel title={title}>
+    <Panel title={title} help={help}>
       {rows.length === 0 ? (
         <Empty />
       ) : (
@@ -350,7 +342,7 @@ function RatesTable({
 }
 
 /** Started executions per day, split into completed and not completed. */
-function DailyTrend({ daily }: { daily: ExecutionKpiReport["daily"] }) {
+function DailyTrend({ daily, help }: { daily: ExecutionKpiReport["daily"]; help?: HelpContent }) {
   const i18n = useUiTranslations();
   const uiLocale = useUiLocale();
   const [hovered, setHovered] = useState<number | null>(null);
@@ -360,7 +352,7 @@ function DailyTrend({ daily }: { daily: ExecutionKpiReport["daily"] }) {
     new Intl.DateTimeFormat(uiLocale, { day: "numeric", month: "short", timeZone: "UTC" }).format(utcDay(date));
 
   return (
-    <Panel title={i18n("kpiDailyTrend")}>
+    <Panel title={i18n("kpiDailyTrend")} help={help}>
       <div className="mb-3 flex flex-wrap items-center justify-between gap-3 text-xs text-[var(--text-soft)]">
         <div className="flex gap-4" aria-hidden="true">
           <span className="flex items-center gap-1.5">

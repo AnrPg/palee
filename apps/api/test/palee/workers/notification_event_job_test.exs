@@ -84,6 +84,11 @@ defmodule Palee.Workers.NotificationEventJobTest do
     def list_for_user(_user_id), do: []
     def list_inbox_page(_user_id, _opts), do: %{notifications: [], next_cursor: nil}
     def count_unread_inbox(_user_id), do: 0
+    def count_inbox(_user_id, _filter), do: 0
+    def soft_delete(_user_id, _notification_id, _at), do: false
+    def soft_delete_ids(_user_id, _ids, _at), do: 0
+    def soft_delete_matching(_user_id, _filter, _at), do: 0
+    def restore(_user_id, _notification_id, _deleted_since), do: false
     def mark_all_read(_user_id), do: 0
     def mark_read(_user_id, _notification_id), do: false
     def get_notification_organization_id(_user_id, _notification_id), do: nil

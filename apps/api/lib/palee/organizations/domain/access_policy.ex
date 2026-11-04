@@ -57,6 +57,10 @@ defmodule Palee.Organizations.Domain.AccessPolicy do
     broadcast: :all,
     view_business_analytics: :all,
     view_coaching_analytics: :all,
+    # ADR-462 (product owner, 2026-11-04): resetting a box metric (a stored
+    # baseline, never a deletion) is the owner's and admins' only; it is
+    # deliberately not in `@grantable`.
+    reset_analytics: :all,
     record_cleaning: :all,
     review_cleaning: :all,
     manage_cleaning_areas: :all,

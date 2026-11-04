@@ -29,11 +29,24 @@ export function fetchUnreadNotificationCount(token: string) {
   return apiRequest<{ unread_count: number }>("/notifications/unread-count", { token });
 }
 
+/**
+ * ADR-460: which notifications a list or a bulk delete covers. Every part is
+ * optional; an empty filter is every notification of the inbox.
+ */
+export type NotificationFilter = {
+  state?: "all" | "read";
+  older_than_days?: number;
+  category?: NotificationCategory;
+};
+
 export async function fetchNotifications(
   token: string,
   params: {
     limit?: number;
     cursor?: string | null;
+    filter?: NotificationFilter;
+    /** Also answer `matching_count`: how many match the filter in all. */
+    includeCount?: boolean;
   } = {},
 ) {
   const search = new URLSearchParams();
@@ -45,6 +58,13 @@ export async function fetchNotifications(
   if (params.cursor) {
     search.set("cursor", params.cursor);
   }
+
+  if (params.filter?.state) search.set("state", params.filter.state);
+  if (typeof params.filter?.older_than_days === "number") {
+    search.set("older_than_days", String(params.filter.older_than_days));
+  }
+  if (params.filter?.category) search.set("category", params.filter.category);
+  if (params.includeCount) search.set("include_count", "true");
 
   const suffix = search.size > 0 ? `?${search.toString()}` : "";
   return apiRequest<NotificationsResponse>(`/notifications${suffix}`, { token });
@@ -61,6 +81,33 @@ export async function markNotificationRead(token: string, notificationId: string
   return apiRequest<{ read: boolean }>(`/notifications/${notificationId}/read`, {
     method: "POST",
     token,
+  });
+}
+
+/** ADR-460: delete for the person (soft); «Αναίρεση» may restore it for a moment. */
+export async function deleteNotification(token: string, notificationId: string) {
+  return apiRequest<{ deleted: boolean; restorable_for_seconds: number }>(`/notifications/${notificationId}`, {
+    method: "DELETE",
+    token,
+  });
+}
+
+export async function restoreNotification(token: string, notificationId: string) {
+  return apiRequest<{ restored: boolean }>(`/notifications/${notificationId}/restore`, {
+    method: "POST",
+    token,
+  });
+}
+
+/** ADR-460: the ids picked, or every notification a filter matches. Not undoable. */
+export async function deleteNotifications(
+  token: string,
+  target: { ids: string[] } | { filter: NotificationFilter },
+) {
+  return apiRequest<{ deleted_count: number }>("/notifications/delete", {
+    method: "POST",
+    token,
+    body: target,
   });
 }
 

@@ -334,6 +334,7 @@ defmodule Palee.Infrastructure.Pantheon.EctoPRStore do
       user_id: pr.user_id,
       organization_id: pr.organization_id,
       name: pr.name,
+      exercise_ref: pr.exercise_ref,
       current_score: Decimal.to_float(pr.current_score),
       unit: pr.unit,
       higher_is_better: pr.higher_is_better,

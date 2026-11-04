@@ -31,6 +31,7 @@ import {
 } from "@/components/admin/staff-home-agenda";
 import { useSession } from "@/components/session-provider";
 import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
+import { MARKETING_ROUTES } from "@/lib/marketing-routes";
 import { PageHeader, pageHeaderActionClass } from "@/components/PageHeader";
 import { InviteClientsButton } from "@/components/invites/InviteClients";
 import { can, membershipRoles, staffNavItems, type MembershipLike } from "@/lib/role-navigation";
@@ -255,7 +256,7 @@ export function AdminDashboard({
         { label: i18n("overview0efc2e6"), href: "/admin/metrics", icon: "chart", show: fullAnalytics },
         { label: i18n("rhCoachingReports"), href: "/admin/metrics/coaching", icon: "chart", show: !fullAnalytics && has("view_coaching_analytics") },
         { label: i18n("rhFinanceReports"), href: "/admin/metrics/finance", icon: "file", show: !fullAnalytics && has("view_finance_reports") },
-        { label: i18n("challengesff38765"), href: "/admin/challenges", icon: "trophy", show: has("manage_challenges") },
+        { label: i18n("challengesff38765"), href: MARKETING_ROUTES.challenges, icon: "trophy", show: has("manage_challenges") },
         { label: i18n("reviewsb83c4cd"), href: "/admin/reviews", icon: "star", show: has("view_feedback") },
         { label: i18n("healthIncidentsb8da1fe"), href: "/admin/wellbeing", icon: "heart", show: has("view_health") },
       ],
@@ -409,7 +410,7 @@ export function AdminDashboard({
 
   const operationalKpis: Array<[string, string, boolean, string, boolean]> = [
     // ADR-470: referral approvals only with a referral programme, or while some still wait.
-    [i18n("pendingApprovals6ac383a"), String(adminMetrics?.pending_referral_approvals ?? 0), Number(adminMetrics?.pending_referral_approvals ?? 0) > 0, "/admin/finance?tab=referrals", canFinanceReports && features.shows("referrals", Number(adminMetrics?.pending_referral_approvals ?? 0))],
+    [i18n("pendingApprovals6ac383a"), String(adminMetrics?.pending_referral_approvals ?? 0), Number(adminMetrics?.pending_referral_approvals ?? 0) > 0, MARKETING_ROUTES.referrals, canFinanceReports && features.shows("referrals", Number(adminMetrics?.pending_referral_approvals ?? 0))],
     [i18n("totalOutstandingefd930a"), money(uiLocale, adminMetrics?.total_outstanding_cents ?? 0), Number(adminMetrics?.total_outstanding_cents ?? 0) > 0, "/admin/finance", canFinanceReports],
     [i18n("members1cb449c"), String(adminMetrics?.member_count ?? 0), false, "/admin/users", has("view_directory", "view_billing_contacts")],
   ];
@@ -440,7 +441,7 @@ export function AdminDashboard({
     [(queues.overdue_invoices ?? []).length, "adminAlertOverdueInvoices", financeQueueHref("debts"), dueSince(queues.overdue_invoices, "due_date")],
     [(queues.pending_payments ?? []).length, "adminAlertPendingPayments", financeQueueHref("debts")],
     [notReportedCount(transmissionsQuery.data), "adminAlertFiscalNotReported", "/admin/finance?tab=documents"],
-    [(queues.pending_referral_rewards ?? []).length, "adminAlertPendingReferralRewards", "/admin/finance?tab=referrals"],
+    [(queues.pending_referral_rewards ?? []).length, "adminAlertPendingReferralRewards", MARKETING_ROUTES.referrals],
   ]);
 
   const coachingAlerts = alertsFor([
@@ -761,7 +762,7 @@ export function AdminDashboard({
           <DashboardCard
             eyebrow={i18n("seasonalChallengesfd69ec6")}
             title={i18n("activeChallengeCount", { count: activeChallenges.length })}
-            action={<CardLink href={adminHref("/admin/challenges", organizationSlug)}>{i18n("managebfa0df1")}</CardLink>}
+            action={<CardLink href={adminHref(MARKETING_ROUTES.challenges, organizationSlug)}>{i18n("managebfa0df1")}</CardLink>}
           >
             <div className="grid gap-3 sm:grid-cols-2">
               {activeChallenges.map((c) => (

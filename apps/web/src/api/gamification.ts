@@ -40,6 +40,8 @@ export type PRRecord = {
   /** ADR-129 provenance: the gym the PR was set in, or null for a personal PR. */
   organization_id?: string | null;
   name: string;
+  /** ADR-461: the Palee catalog slug of a picked suggestion; the name stays as typed. */
+  exercise_ref?: string | null;
   current_score: number;
   unit: PRUnit;
   higher_is_better: boolean;
@@ -135,6 +137,7 @@ export async function createPR(
   token: string,
   params: {
     name: string;
+    exercise_ref?: string | null;
     current_score: number;
     unit: PRUnit;
     higher_is_better?: boolean;
@@ -159,6 +162,7 @@ export async function updatePR(
   id: string,
   params: Partial<{
     name: string;
+    exercise_ref: string | null;
     current_score: number;
     unit: PRUnit;
     higher_is_better: boolean;
@@ -180,6 +184,7 @@ export async function editPR(
   id: string,
   params: Partial<{
     name: string;
+    exercise_ref: string | null;
     current_score: number;
     unit: PRUnit;
     higher_is_better: boolean;

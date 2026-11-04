@@ -16,6 +16,7 @@ import {
   type JournalNoteTopic,
 } from "@/api/journal";
 import { needsQuestion } from "@/components/journal/visibility";
+import { ExerciseSuggestingTextarea } from "@/components/exercises/ExerciseSuggestingTextarea";
 import { VisibilityChoices } from "@/components/journal/VisibilityBadge";
 import { PRGymField, prGymSlugForSubmit, usePRGymOptions } from "@/components/pantheon/PRGymField";
 import { useSession } from "@/components/session-provider";
@@ -164,13 +165,13 @@ export function NoteSheet({
 
         <label className="flex flex-col gap-1.5 text-xs font-semibold uppercase tracking-[0.18em]" style={{ color: "var(--muted)" }}>
           {t("note.bodyLabel")}
-          <textarea
+          <ExerciseSuggestingTextarea
             value={body}
-            onChange={(event) => setBody(event.target.value)}
+            onValueChange={setBody}
             maxLength={BODY_MAX}
             rows={5}
             placeholder={t("note.bodyPlaceholder")}
-            className="rounded-xl px-4 py-2.5 text-sm normal-case tracking-normal outline-none"
+            className="w-full rounded-xl px-4 py-2.5 text-sm normal-case tracking-normal outline-none"
             style={{ background: "var(--panel-muted)", border: "1px solid var(--border)", color: "var(--text)" }}
           />
         </label>

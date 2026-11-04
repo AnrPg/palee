@@ -142,7 +142,12 @@
     "syncOffline": "Offline",
     "syncPending": "Waiting: {count}",
     "syncAllDone": "All synced",
-    "syncNow": "Sync now"
+    "syncNow": "Sync now",
+    "athleteUseTitle": "I train with Palee too",
+    "athleteUseDescription": "For people who work at a box: if you don't train, we hide the suggestions meant for athletes.",
+    "athleteUseOn": "You also see the suggestions for athletes: find a box, sports, weekly goal.",
+    "athleteUseOff": "You don't see suggestions for athletes. Your work tools stay the same.",
+    "athleteUseError": "Not saved. Try again."
   },
   "Session": {
     "required": "Authentication required",
@@ -3050,49 +3055,6 @@
     "classTimerUsePreset": "Use this timer",
     "classTimerUseWorkout": "Use the class workout",
     "classTimerJumpTitle": "Jump to a part",
-    "classTimerHelpToggle": "What each button does",
-    "classTimerLiveHelp": "Everything you press here shows at once on every screen following this class.",
-    "classTimerReconnectingHelp": "The connection dropped. The buttons work again as soon as it is back.",
-    "classTimerWallScreen": "Wall screen",
-    "classTimerWallScreenHelp": "The clock in full screen for the room’s TV or computer. It always shows the same time as this remote.",
-    "classTimerCopyLinkHelp": "Send the link to the room’s device and open it there. That device needs to be signed in to an account of the box.",
-    "classTimerOnScreenHelp": "Show this class’s timer, leaderboard or WOD on one of the box’s screens for today.",
-    "classTimerOpenHere": "Open on this device",
-    "classTimerOpenHereHelp": "When this device is the room’s screen.",
-    "classTimerSoundHelp": "Beeps on this device in the last 3 seconds and at every phase change. It does not change the wall screen’s sound.",
-    "classTimerClockHelp": "“—” means there is no time yet. Time reads minutes:seconds; when it counts down, it shows what is left. “Next” is the part that follows.",
-    "classTimerCountdownHelp": "How many seconds the screen counts down before the start, so athletes can get in place.",
-    "classTimerCountdownNone": "None",
-    "classTimerCountdownSeconds": "{seconds} s",
-    "classTimerStartHelp": "Starts the clock on every screen after the countdown.",
-    "classTimerPauseHelp": "Stops the clock on every screen. The time is kept.",
-    "classTimerResumeHelp": "Carries on where it stopped, after a 3-second countdown.",
-    "classTimerBackHelp": "Goes to the previous part and starts it from the beginning.",
-    "classTimerRestart": "Restart part",
-    "classTimerRestartHelp": "This is the first part, so it starts again from the beginning.",
-    "classTimerNextHelp": "Ends the current part and starts the next one at once.",
-    "classTimerComplete": "Complete",
-    "classTimerCompleteHelp": "This is the last part, so the timer ends and the screens show “Time!”.",
-    "classTimerAdjustHelp": "Takes 30 seconds off or adds 30 seconds to the current part, for everyone.",
-    "classTimerFinishHelp": "Ends the timer now. The screens show “Time!”.",
-    "classTimerResetHelp": "Clears the clock on every screen and goes back to “Ready”.",
-    "classTimerResetConfirmTitle": "Reset the timer?",
-    "classTimerResetConfirmBody": "The clock clears on every screen in the room and goes back to “Ready”.",
-    "classTimerMore": "More",
-    "classTimerChooseTitle": "Choose a timer",
-    "classTimerOtherTimer": "Another timer",
-    "classTimerNoTimedWorkout": "This class has no timed workout.",
-    "classTimerInsteadOfWorkout": "Instead of the class’s workout.",
-    "classTimerOwnTimer": "Your own timer",
-    "classTimerOrCommon": "or choose a common timer:",
-    "classTimerJumpHelp": "Tap a part to go straight to it.",
-    "timerPresetHelp_tabata": "Tabata: 20 seconds of work, 10 of rest, 8 rounds (4 minutes).",
-    "timerPresetHelp_emom10": "EMOM (Every Minute On the Minute): at the start of every minute you do the work and rest for what is left. 10 rounds.",
-    "timerPresetHelp_e2mom20": "E2MOM: like EMOM, but every 2 minutes. 10 rounds, 20 minutes.",
-    "timerPresetHelp_amrap12": "AMRAP (As Many Rounds As Possible): as many rounds as you can in 12 minutes.",
-    "timerPresetHelp_forTime12": "For Time: finish as fast as you can. Time cap 12: the clock stops at 12 minutes.",
-    "timerPresetHelp_deathBy": "Death By: an EMOM where you add one rep every minute until you can’t keep up.",
-    "timerPresetHelp_stopwatch": "Stopwatch: counts up with no limit until you stop it.",
     "pkgTypeMembership": "Membership",
     "pkgTypeMembershipHint": "Renews every month, quarter or year",
     "pkgTypeMembershipExample": "e.g. Unlimited monthly · €60 / month",
@@ -4951,6 +4913,49 @@
     "semanticWorkoutLatinDance": "Latin dance (salsa, bachata, reggaeton)",
     "semanticWorkoutStreetDance": "Street dance (hip-hop, heels)",
     "semanticWorkoutSkateboarding": "Skateboarding",
+    "classTimerHelpToggle": "What each button does",
+    "classTimerLiveHelp": "Everything you press here shows at once on every screen following this class.",
+    "classTimerReconnectingHelp": "The connection dropped. The buttons work again as soon as it is back.",
+    "classTimerWallScreen": "Wall screen",
+    "classTimerWallScreenHelp": "The clock in full screen for the room’s TV or computer. It always shows the same time as this remote.",
+    "classTimerCopyLinkHelp": "Send the link to the room’s device and open it there. That device needs to be signed in to an account of the box.",
+    "classTimerOnScreenHelp": "Show this class’s timer, leaderboard or WOD on one of the box’s screens for today.",
+    "classTimerOpenHere": "Open on this device",
+    "classTimerOpenHereHelp": "When this device is the room’s screen.",
+    "classTimerSoundHelp": "Beeps on this device in the last 3 seconds and at every phase change. It does not change the wall screen’s sound.",
+    "classTimerClockHelp": "“—” means there is no time yet. Time reads minutes:seconds; when it counts down, it shows what is left. “Next” is the part that follows.",
+    "classTimerCountdownHelp": "How many seconds the screen counts down before the start, so athletes can get in place.",
+    "classTimerCountdownNone": "None",
+    "classTimerCountdownSeconds": "{seconds} s",
+    "classTimerStartHelp": "Starts the clock on every screen after the countdown.",
+    "classTimerPauseHelp": "Stops the clock on every screen. The time is kept.",
+    "classTimerResumeHelp": "Carries on where it stopped, after a 3-second countdown.",
+    "classTimerBackHelp": "Goes to the previous part and starts it from the beginning.",
+    "classTimerRestart": "Restart part",
+    "classTimerRestartHelp": "This is the first part, so it starts again from the beginning.",
+    "classTimerNextHelp": "Ends the current part and starts the next one at once.",
+    "classTimerComplete": "Complete",
+    "classTimerCompleteHelp": "This is the last part, so the timer ends and the screens show “Time!”.",
+    "classTimerAdjustHelp": "Takes 30 seconds off or adds 30 seconds to the current part, for everyone.",
+    "classTimerFinishHelp": "Ends the timer now. The screens show “Time!”.",
+    "classTimerResetHelp": "Clears the clock on every screen and goes back to “Ready”.",
+    "classTimerResetConfirmTitle": "Reset the timer?",
+    "classTimerResetConfirmBody": "The clock clears on every screen in the room and goes back to “Ready”.",
+    "classTimerMore": "More",
+    "classTimerChooseTitle": "Choose a timer",
+    "classTimerOtherTimer": "Another timer",
+    "classTimerNoTimedWorkout": "This class has no timed workout.",
+    "classTimerInsteadOfWorkout": "Instead of the class’s workout.",
+    "classTimerOwnTimer": "Your own timer",
+    "classTimerOrCommon": "or choose a common timer:",
+    "classTimerJumpHelp": "Tap a part to go straight to it.",
+    "timerPresetHelp_tabata": "Tabata: 20 seconds of work, 10 of rest, 8 rounds (4 minutes).",
+    "timerPresetHelp_emom10": "EMOM (Every Minute On the Minute): at the start of every minute you do the work and rest for what is left. 10 rounds.",
+    "timerPresetHelp_e2mom20": "E2MOM: like EMOM, but every 2 minutes. 10 rounds, 20 minutes.",
+    "timerPresetHelp_amrap12": "AMRAP (As Many Rounds As Possible): as many rounds as you can in 12 minutes.",
+    "timerPresetHelp_forTime12": "For Time: finish as fast as you can. Time cap 12: the clock stops at 12 minutes.",
+    "timerPresetHelp_deathBy": "Death By: an EMOM where you add one rep every minute until you can’t keep up.",
+    "timerPresetHelp_stopwatch": "Stopwatch: counts up with no limit until you stop it.",
     "subscriptionEndsTodayTitle": "Your subscription ends today",
     "subscriptionEndsTodayBody": "{package} ends today. Renew to keep booking classes.",
     "subscriptionEndedRenewBody": "{package} ended on {date}. Renew to book classes again.",
@@ -6171,7 +6176,6 @@
     "package": "Subscription package",
     "chipLevel": "Level",
     "level_beginner": "Beginners",
-    "level_intermediate": "Intermediate",
     "level_all_levels": "All levels",
     "level_advanced": "Advanced",
     "coach": "Coach",
@@ -6237,7 +6241,8 @@
     "chipFriends": "Friends",
     "friendsOnly": "Only where friends go",
     "friendsGoing": "{others, plural, =0 {{name} is going} other {{name} and # more are going}}",
-    "friendsLabel": "Going"
+    "friendsLabel": "Going",
+    "level_intermediate": "Intermediate"
   },
   "LocationPicker": {
     "title": "Location",
@@ -9768,6 +9773,98 @@
       "sharedOnly": "Only from entries the client shares with the box's coaches."
     }
   },
+  "ProgressResets": {
+    "what": "What it measures:",
+    "how": "How it's calculated:",
+    "change": "If it changes:",
+    "reset": "Reset from today",
+    "confirmTitle": "Reset “{metric}” from today?",
+    "confirmBody": "It will count from today. Nothing old is deleted: you'll find it in Me › Settings › Your data › Reset history.",
+    "confirm": "Reset",
+    "cancel": "Cancel",
+    "resetting": "Resetting…",
+    "since": "since {date}",
+    "sinceTitle": "Counts from {date}",
+    "countingSince": "Counts from {date}.",
+    "metric": {
+      "totals": "Totals",
+      "weekly": "Weekly volume",
+      "consistency": "Consistency",
+      "scoreHistory": "Score history",
+      "exerciseLoads": "Exercise loads",
+      "bySource": "Sessions by source",
+      "prTimeline": "PR timeline",
+      "depthCoverage": "Muscle coverage",
+      "depthQualities": "Fitness qualities",
+      "depthLoad": "Training load",
+      "other": "Another Progress stat"
+    },
+    "info": {
+      "totals": {
+        "what": "How much you trained in the chosen period: completed sessions, their minutes and how many different workouts they were.",
+        "how": "Every completed workout of the period, from the sources you picked, counts once. Minutes are each workout's recorded duration; a workout you repeated counts once among the different workouts.",
+        "change": "Each workout you finish adds to the numbers. A shorter period or fewer sources lowers them."
+      },
+      "weekly": {
+        "what": "Your training per calendar week, as sessions or minutes.",
+        "how": "Completed workouts go into the week they were finished in, Monday first. Each bar is one week of the period; a week without training stays empty.",
+        "change": "A bar grows with every workout you finish that week. Switching between sessions and minutes changes only what the bars show."
+      },
+      "consistency": {
+        "what": "How regularly you train: the weeks of the period that reached your weekly target (or, without a target, had any training), the days you trained and your streak.",
+        "how": "Each column is a week and each square a day, darker with more sessions. A week counts when its sessions reach your weekly target; the percentage is those weeks out of all weeks of the period.",
+        "change": "It rises with every week you reach your target and falls when a week stays below it. A new weekly target changes which weeks count."
+      },
+      "scoreHistory": {
+        "what": "How your score moved in the sections you logged more than once.",
+        "how": "Every score of the same section of the same workout, from any source, makes one line, oldest to newest. The figure next to it is your latest score.",
+        "change": "Each new score in that section adds a point to its line."
+      },
+      "bySource": {
+        "what": "Where the sessions of the period came from: your box, training on your own or a device.",
+        "how": "Completed sessions are counted per source; each bar is that source's share of all of them.",
+        "change": "Training more with one source makes its share grow; the shares always add up to the whole."
+      },
+      "prTimeline": {
+        "what": "The personal records you beat in the period, month by month.",
+        "how": "Each entry is a new record on the day you set it, with how much it improved on the one before; a first record has nothing to compare with.",
+        "change": "A new entry appears every time you beat a record. A shorter period hides older ones; nothing is deleted."
+      },
+      "depthCoverage": {
+        "what": "Which muscles your training of the period worked most and least, and the balance of push and pull and of the front and back of the thigh.",
+        "how": "The sets of each exercise the app recognises count for the muscles it trains, per week of the period. The levels compare those weekly sets; exercises it does not recognise are left out.",
+        "change": "A muscle rises when you add sets for it. More recognised exercises in your log make the picture more complete."
+      },
+      "depthQualities": {
+        "what": "Which of the ten fitness qualities, from endurance and strength to balance and accuracy, your training of the period worked.",
+        "how": "The sets of each recognised exercise count for the qualities it trains. The shape compares the qualities with each other: the most trained one sets the outer edge.",
+        "change": "Training a quality more pushes it outwards. The shape shows the balance between qualities, not a level."
+      },
+      "depthLoad": {
+        "what": "How demanding this week was compared with your usual week.",
+        "how": "A session's load is its RPE (1–10) times its minutes; sessions without RPE or duration do not count. The last 7 days are compared with your weekly average of the last 28.",
+        "change": "It rises when this week is harder than usual and falls when it is lighter. It is an indicator, not medical advice."
+      }
+    },
+    "history": {
+      "title": "Reset history",
+      "hint": "The Progress stats you reset, with undo",
+      "back": "Settings",
+      "intro": "A reset changes only what you see in Progress; your box and your coach see the same as before. An undo brings the older figures back.",
+      "empty": "You haven't reset anything yet. You can do it from a card's «?» in Progress.",
+      "openProgress": "Open Progress",
+      "total": "{count, plural, one {# reset} other {# resets}}",
+      "resetOn": "Reset on {date}",
+      "active": "Active",
+      "undone": "Undone",
+      "undoneOn": "Undone on {date}",
+      "before": "Before: {value}",
+      "undo": "Undo",
+      "undoTitle": "Undo the reset of “{metric}”?",
+      "undoBody": "Progress will count everything again, including what came before {date}.",
+      "undoing": "Undoing…"
+    }
+  },
   "Insights": {
     "title": "Insights",
     "dismiss": "Hide",
@@ -9948,7 +10045,6 @@
       "enable": "Scaling suggestions",
       "enableHint": "For an athlete with an injury the box recorded, AI suggests how to adapt the workout: a lighter load, fewer reps or another movement. A coach approves every suggestion before the athlete sees it. It needs AI because every workout and injury combination is different and fixed rules can't cover them.",
       "key": "Claude key (Anthropic)",
-      "keyHint": "Scaling suggestions and voice logging need it. Usage is billed to your own Anthropic account.",
       "keySet": "A key ending in {last4} is set.",
       "keyRejected": "The provider rejected the key ending in {last4}. Add a new key.",
       "keyMissing": "No key set.",
@@ -9958,7 +10054,8 @@
       "model": "Model (optional)",
       "saveModel": "Save model",
       "usage": "This month · {count, plural, one {# suggestion} other {# suggestions}} · {voice, plural, one {# voice draft} other {# voice drafts}} · cost: ${cost}",
-      "privacy": "No names are sent. Suggestions send the workout and the injuries the box recorded. Voice logging sends only the text of what the member said. The key is never shown again."
+      "privacy": "No names are sent. Suggestions send the workout and the injuries the box recorded. Voice logging sends only the text of what the member said. The key is never shown again.",
+      "keyHint": "Scaling suggestions and voice logging need it. Usage is billed to your own Anthropic account."
     },
     "queue": {
       "eyebrow": "My clients",
@@ -10291,7 +10388,14 @@
     "saveInterests": "Save",
     "interestsSaved": "Saved.",
     "interestsHubHint": "Disciplines and level, for suggestions",
-    "photoAddLabel": "Add photo"
+    "photoAddLabel": "Add photo",
+    "athleteTitle": "Will you train with Palee too?",
+    "athleteLead": "You joined {box} as {role}.",
+    "athleteYes": "Yes, I train too",
+    "athleteYesHint": "We carry on with sports and area.",
+    "athleteNo": "No, just for work",
+    "athleteNoHint": "You're done now. You won't see suggestions meant for athletes.",
+    "athleteNote": "Change it any time in Me › Settings."
   },
   "Business": {
     "common": {
@@ -11242,7 +11346,7 @@
       "preview": "Preview",
       "cardCta": "View",
       "code": "Discount code",
-      "codeHint": "A code for this product only, in Finance › Offers.",
+      "codeHint": "A code for this product only, in Marketing › Box promotions.",
       "codeValue": "Code",
       "percent": "Discount (%)",
       "endsOn": "Valid until",
@@ -11779,7 +11883,7 @@
       },
       "partners": {
         "title": "Partner perks",
-        "body": "Tap «{label}»."
+        "body": "They have their own page in Marketing: discounts and gifts from partner shops for your clients."
       },
       "perkNew": {
         "title": "Add a perk",
@@ -11967,11 +12071,40 @@
       "hint": "One email when you book a class, and when it moves or is cancelled, with the invite for your calendar"
     }
   },
+  "NotificationActions": {
+    "delete": "Delete this notification",
+    "hide": "Hide this notification",
+    "alreadyHidden": "Already in Read",
+    "deleted": "Notification deleted",
+    "undo": "Undo",
+    "dismiss": "Close",
+    "deleteFailed": "The notification wasn't deleted. Try again.",
+    "undoFailed": "It can no longer be brought back.",
+    "hideFailed": "The notification wasn't hidden. Try again.",
+    "cleanupTitle": "Delete notifications",
+    "cleanupHint": "Delete the notifications you no longer need. Deleted notifications cannot be brought back on any device.",
+    "filterLabel": "Which notifications",
+    "filterAll": "All",
+    "filterRead": "Read",
+    "filterOld": "{days, plural, one {Older than # day} other {Older than # days}}",
+    "categoryLabel": "Category",
+    "allCategories": "All categories",
+    "listError": "Your notifications aren't available right now.",
+    "empty": "No notifications here.",
+    "selectAll": "{count, plural, one {Select all (#)} other {Select all (#)}}",
+    "unread": "unread",
+    "loadMore": "Show more",
+    "deletedCount": "{count, plural, one {# notification deleted.} other {# notifications deleted.}}",
+    "deleteMany": "{count, plural, =0 {Delete notifications} one {Delete # notification} other {Delete # notifications}}",
+    "confirmTitle": "{count, plural, one {Delete # notification?} other {Delete # notifications?}}",
+    "confirmBody": "You won't see them again on any device. This cannot be undone.",
+    "cancel": "Cancel",
+    "deleteManyFailed": "Nothing was deleted. Try again."
+  },
   "Spaces": {
     "eyebrow": "Settings",
     "title": "Spaces",
     "intro": "The rooms and areas of each branch: where classes take place, what is cleaned and where the equipment stands. Add a floor plan to draw them on it.",
-    "introSingle": "The box's rooms and spaces: where classes happen, what gets cleaned and where the equipment is. Add a floor plan to draw them on it.",
     "navHint": "Rooms and areas per branch, floor plans and closures",
     "add": "Add space",
     "branch": "Branch",
@@ -12009,7 +12142,6 @@
     "tasks": "Cleaning checklist (one per line)",
     "floorPlan": "Floor plan",
     "floorPlans": "Floor plans",
-    "planAndSpaces": "Floor plan and spaces",
     "noPlan": "No floor plan",
     "noPlans": "No floor plan yet. Upload one to draw the spaces on it.",
     "addPlan": "Add floor plan",
@@ -12120,7 +12252,9 @@
     "placementPinRemove": "Remove pin",
     "machineOnPlan": "On the floor plan",
     "machinePhotoRemove": "Remove photo",
-    "machinePhotoAdd": "{max, plural, one {Add a photo} other {Photos (up to #)}}"
+    "machinePhotoAdd": "{max, plural, one {Add a photo} other {Photos (up to #)}}",
+    "introSingle": "The box's rooms and spaces: where classes happen, what gets cleaned and where the equipment is. Add a floor plan to draw them on it.",
+    "planAndSpaces": "Floor plan and spaces"
   },
   "emailVerification": {
     "bannerText": "Confirm your email. We sent a link to {email}.",
@@ -18322,6 +18456,752 @@
     "errorDimensions": "The image is too large: at most {width}×{height} pixels.",
     "errorSave": "The signature was not saved. Try again.",
     "errorRemove": "The signature was not removed. Try again."
+  },
+  "MarketingHub": {
+    "back": "Marketing",
+    "boxPromotions": "Box promotions",
+    "partnerPerks": "Partner perks",
+    "partnerPerksDescription": "Discounts and gifts from partner shops for your clients.",
+    "challengesStat": "{active, plural, one {# active} other {# active}} · {participants, plural, one {# participant} other {# participants}}",
+    "promotionsStat": "{active, plural, one {# active} other {# active}}",
+    "perksStat": "{active, plural, one {# active} other {# active}} · {uses, plural, one {# redemption} other {# redemptions}}",
+    "referralsStat": "{count, plural, one {# referral counted} other {# referrals counted}} in the last 90 days",
+    "inFinance": "In Finance",
+    "empty": "There is nothing in Marketing you can open yet.",
+    "movedLine": "Promotions are now in Marketing."
+  },
+  "ExerciseNameInput": {
+    "listLabel": "Exercise suggestions",
+    "group": {
+      "mine": "You wrote",
+      "box": "Your box",
+      "palee": "Palee"
+    },
+    "keep": "Keep «{text}» as I wrote it",
+    "keepKey": "Esc",
+    "usesMine": "{count, plural, one {# time} other {# times}}",
+    "usesBox": "{count, plural, one {in # WOD} other {in # WODs}}",
+    "category": {
+      "strength": "Strength",
+      "bodyweight": "Bodyweight",
+      "cardio": "Cardio",
+      "mobility": "Mobility",
+      "skill": "Skill"
+    },
+    "textHint": "Enter or Tab to use it, Esc to keep writing"
+  },
+  "PlatformExerciseCandidates": {
+    "title": "Exercises to review",
+    "subtitle": "Exercise names people and boxes typed that match no entry of the catalog the WOD editors use, most typed first. Approve one as a new entry or as another name of an existing one, or reject it; only approved names are suggested as Palee exercises. Every decision is logged. The list holds no person.",
+    "back": "Businesses",
+    "status": "Status",
+    "statuses": {
+      "pending": "Waiting",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "minOwners": "Typed by at least",
+    "minOwnersValue": "{count, plural, one {# person or box} other {# people or boxes}}",
+    "privacyNote": "A name only one person typed may be personal; it is hidden unless you lower the threshold.",
+    "forbidden": "Only the Palee team sees this list.",
+    "loadError": "The list did not load.",
+    "loading": "Loading…",
+    "empty": "Nothing to review.",
+    "counts": "{owners, plural, one {# person or box} other {# people or boxes}} · {uses, plural, one {# use} other {# uses}}",
+    "lastSeen": "last {date}",
+    "asEntry": "As a new exercise",
+    "label": "Name",
+    "category": "Category",
+    "categories": {
+      "strength": "Strength",
+      "bodyweight": "Bodyweight",
+      "cardio": "Cardio",
+      "mobility": "Mobility",
+      "skill": "Skill"
+    },
+    "approveEntry": "Add to the catalog",
+    "asAlias": "As another name of",
+    "aliasOf": "Exercise of the catalog",
+    "approveAlias": "Add as another name",
+    "reject": "Reject",
+    "conflict": "This name was already decided or is already in the catalog.",
+    "decideError": "The decision was not saved. Try again."
+  },
+  "AnalyticsEvents": {
+    "categories": {
+      "classes": "Classes",
+      "trials": "Trial classes",
+      "wod": "WODs",
+      "training": "Training",
+      "notifications": "Notifications",
+      "payments": "Payments",
+      "referrals": "Bring a friend",
+      "messages": "Messages",
+      "shop": "Shop",
+      "perks": "Partner perks",
+      "health": "Health",
+      "feedback": "Reviews",
+      "analytics": "Statistics",
+      "other": "Other"
+    },
+    "events": {
+      "analytics_metric_reset": "Metric reset",
+      "analytics_metric_reset_undone": "Metric reset undone",
+      "class_attendance_recorded": "Attendance recorded",
+      "class_booking_approved": "Booking confirmed",
+      "class_booking_cancelled": "Booking cancelled",
+      "class_booking_rejected": "Booking declined",
+      "class_booking_requested": "Booking requested",
+      "class_booking_timed_out": "Booking request expired",
+      "class_series_created": "Recurring class created",
+      "class_slot_cancelled": "Class cancelled",
+      "class_slot_created": "Class created",
+      "class_state_changed": "Class paused or resumed",
+      "class_workout_linked": "WOD linked to a class",
+      "execution_interaction": "Timer interaction",
+      "finance_credit_applied_to_invoice": "Credit applied to invoice",
+      "finance_credit_applied_to_payment": "Credit applied to payment",
+      "finance_credit_granted": "Credit granted",
+      "finance_credit_reversed": "Credit reversed",
+      "finance_invoice_created": "Invoice created",
+      "finance_invoice_issued": "Invoice issued",
+      "finance_invoice_voided": "Invoice voided",
+      "finance_payment_reversed": "Payment reversed",
+      "finance_receipt_issued": "Receipt issued",
+      "finance_record_soft_deleted": "Finance record removed",
+      "finance_renewal_invoice_generated": "Renewal invoice created",
+      "injury_healed": "Injury healed",
+      "injury_reopened": "Injury reopened",
+      "injury_reported": "Injury reported",
+      "injury_updated": "Injury updated",
+      "injury_warning_acknowledged": "Injury warning acknowledged",
+      "injury_warning_shown": "Injury warning shown",
+      "messaging_first_staff_response": "First staff reply",
+      "messaging_message_sent": "Message sent",
+      "messaging_thread_created": "Conversation started",
+      "notification_clicked": "Notification opened",
+      "notification_in_app_delivered": "Notification delivered in the app",
+      "notification_push_outcome": "Push notification result",
+      "notification_read": "Notification read",
+      "payment_recorded": "Payment recorded",
+      "perk_claim_revoked": "Perk claim revoked",
+      "perk_claimed": "Perk claimed",
+      "perk_claims_exported": "Perk claims exported",
+      "perk_codes_added": "Perk codes added",
+      "perk_created": "Perk created",
+      "perk_expired": "Perk expired",
+      "perk_paused": "Perk paused",
+      "perk_pool_low": "Perk codes running low",
+      "perk_published": "Perk published",
+      "perk_redeemed": "Perk used",
+      "perk_versioned": "Perk updated",
+      "promotion_redeemed": "Promotion used",
+      "referral_event_created": "Friend invited",
+      "referral_reward_created": "Referral reward created",
+      "referral_reward_status_changed": "Referral reward updated",
+      "referral_status_changed": "Referral updated",
+      "review_submitted": "Review submitted",
+      "shop_order_cancelled": "Order cancelled",
+      "shop_order_paid": "Order paid",
+      "shop_order_picked_up": "Order picked up",
+      "shop_order_placed": "Order placed",
+      "shop_order_ready": "Order ready for pickup",
+      "shop_order_refunded": "Order refunded",
+      "shop_product_created": "Product created",
+      "shop_product_promoted": "Product promoted",
+      "shop_product_status_changed": "Product status changed",
+      "shop_stock_moved": "Stock moved",
+      "shop_stock_status_changed": "Stock status changed",
+      "shop_variant_price_changed": "Price changed",
+      "training_log_entry_logged": "Training logged",
+      "training_log_entry_voided": "Training entry removed",
+      "trial_requested": "Trial class requested",
+      "trial_status_changed": "Trial class updated",
+      "workout_assignment_created": "Workout assigned",
+      "workout_assignment_deleted": "Assignment removed",
+      "workout_assignment_opened": "Assigned workout opened",
+      "workout_assignment_rejected": "Assigned workout declined",
+      "workout_assignment_rescheduled": "Assigned workout moved",
+      "workout_created": "WOD created",
+      "workout_deleted": "WOD deleted",
+      "workout_duplicated": "WOD duplicated",
+      "workout_execution_abandoned": "Workout left unfinished",
+      "workout_execution_completed": "Workout completed",
+      "workout_execution_started": "Workout started",
+      "workout_published": "WOD published",
+      "workout_republished": "WOD published again"
+    }
+  },
+  "StaffAnalytics": {
+    "period": {
+      "label": "Period",
+      "options": {
+        "7": "7 days",
+        "30": "30 days",
+        "90": "90 days",
+        "ytd": "This year",
+        "custom": "From…to"
+      },
+      "compare": "compared with the previous {count, plural, one {day} other {# days}}",
+      "from": "From",
+      "to": "To"
+    },
+    "filters": {
+      "region": "Period and filters",
+      "button": "{count, plural, =0 {Filters} other {Filters (#)}}",
+      "title": "Filters",
+      "active": "Filters in use",
+      "chip": "{group}: {value}",
+      "remove": "Remove {label}",
+      "all": "All",
+      "clear": "Clear filters",
+      "done": "Done",
+      "unknownValue": "Unknown",
+      "demographicsNote": "* Age and gender come only from people who chose to share them for the leaderboards. A figure that covers fewer than 5 people is hidden."
+    },
+    "groups": {
+      "location_ids": "Branch",
+      "class_type_ids": "Class type",
+      "levels": "Level",
+      "coach_ids": "Coach",
+      "time_of_day": "Time",
+      "package_ids": "Subscription package",
+      "tenure_bands": "Time with the box",
+      "age_bands": "Age",
+      "genders": "Gender"
+    },
+    "values": {
+      "levels": {
+        "beginner": "Beginners",
+        "all_levels": "All levels",
+        "advanced": "Advanced"
+      },
+      "time_of_day": {
+        "morning": "Morning",
+        "midday": "Midday",
+        "afternoon": "Afternoon",
+        "evening": "Evening"
+      },
+      "tenure_bands": {
+        "lt_3m": "Under 3 months",
+        "3_12m": "3–12 months",
+        "gt_12m": "Over a year"
+      },
+      "age_bands": {
+        "under_18": "Under 18",
+        "18_34": "18–34",
+        "35_44": "35–44",
+        "45_54": "45–54",
+        "55_64": "55–64",
+        "65_plus": "65+",
+        "unknown": "Unknown"
+      },
+      "genders": {
+        "women": "Women",
+        "men": "Men",
+        "unknown": "Unknown"
+      }
+    },
+    "help": {
+      "open": "About: {label}",
+      "what": "What it measures",
+      "how": "How it is calculated",
+      "good": "A good number",
+      "change": "If it changes"
+    },
+    "reset": {
+      "action": "Reset from today",
+      "title": "Reset «{label}»?",
+      "body": "The figure will start counting from today. Old data is not deleted: you will find it in Settings › Data › Reset history.",
+      "confirm": "Reset from today",
+      "cancel": "Cancel"
+    },
+    "kpi": {
+      "days": "{count, plural, one {# day} other {# days}}",
+      "points": "{value} pts",
+      "daysChange": "{sign}{count, plural, one {# day} other {# days}}",
+      "since": "from {date}",
+      "suppressed": "—",
+      "suppressedReason": "Hidden: fewer than 5 people",
+      "noPrevious": "Nothing to compare with",
+      "noValue": "Not enough data",
+      "unchanged": "No change",
+      "previous": "(before: {value})",
+      "noData": "No data for this period yet.",
+      "unknownCoach": "Unknown coach",
+      "classesAttendances": "{classes, plural, one {# class} other {# classes}} · {attendances} attended",
+      "athletes": "{count, plural, one {# athlete} other {# athletes}}",
+      "rating": "{rating} ★ · {count, plural, one {# review} other {# reviews}}",
+      "people": "{count, plural, one {# person} other {# people}}",
+      "noPackage": "No subscription package",
+      "more": "More figures",
+      "loading": "Loading…",
+      "teamWorkouts": "Team and solo workouts"
+    },
+    "pages": {
+      "overview": {
+        "title": "Overview",
+        "what": "The health of the box in one page: box members, newcomers, who left and who may leave.",
+        "how": "Every figure covers the period you pick and is compared with the period of the same length just before it. The filters narrow every figure on the page."
+      },
+      "training": {
+        "title": "Training",
+        "what": "How classes are used: fill, no-shows, cancellations, busy hours and how workouts are finished.",
+        "how": "Counted from bookings and attendance in the period, compared with the period of the same length before it. The filters apply to the whole page."
+      },
+      "coaching": {
+        "title": "Coaching",
+        "what": "The coaches' work: classes led, athletes followed, programmes done and ratings.",
+        "how": "Counted from the classes, coaching and reviews of the period, compared with the period before it. The filters apply to the whole page."
+      },
+      "engagement": {
+        "title": "Engagement",
+        "what": "How much box members use Palee: weekly active people, challenges, streaks and activity.",
+        "how": "Counted from what box members did in the app and at the box in the period, compared with the period before it. Staff actions are left out."
+      },
+      "health": {
+        "title": "Health",
+        "what": "Injuries and recovery: how often they happen, how long they last and where.",
+        "how": "Counted from the injury reports of the period, compared with the period before it. The filters apply to the whole page."
+      },
+      "finance": {
+        "title": "Finance",
+        "what": "The money side of the box: monthly recurring revenue, revenue per box member and collections.",
+        "how": "Counted from subscriptions, invoices and payments of the period, compared with the period before it. The filters apply to the whole page."
+      }
+    },
+    "metrics": {
+      "overview": {
+        "active_members": {
+          "label": "Active box members",
+          "what": "Box members with an active subscription package.",
+          "how": "Counted on the last day of the period.",
+          "change": "A fall usually follows expiring packages that were not renewed: check the renewals list."
+        },
+        "net_member_change": {
+          "label": "Net change",
+          "what": "How many box members you gained or lost overall.",
+          "how": "Active box members at the end of the period minus those the day before it started.",
+          "change": "Below zero means more people left than joined: look at churn and new box members together."
+        },
+        "new_members": {
+          "label": "New box members",
+          "what": "People who took their first subscription package in the period.",
+          "how": "Counted by the start of each person's first non-trial package.",
+          "change": "A drop often follows fewer trial classes or fewer trials that convert."
+        },
+        "churn_rate": {
+          "label": "Churn",
+          "what": "The share of box members who left during the period.",
+          "how": "Active the day before the period and without an active package at its end, divided by all active the day before.",
+          "change": "If it rises, contact the box members at risk and check what changed (schedule, prices, coaches)."
+        },
+        "trial_conversion": {
+          "label": "Trial conversion",
+          "what": "How many trial visitors became box members.",
+          "how": "Trial requests of the period that were later converted, divided by all trial requests of the period.",
+          "change": "If it falls, follow up sooner after the trial class and check the offer you give."
+        },
+        "members_at_risk": {
+          "label": "Box members at risk",
+          "what": "Box members Palee sees as likely to leave.",
+          "how": "Medium or high retention risk on the period's last day, without the ones you snoozed.",
+          "change": "A rise is a call to act: message them or invite them to a class."
+        }
+      },
+      "training": {
+        "class_fill_rate": {
+          "label": "Class fill",
+          "what": "How full the classes were.",
+          "how": "Approved bookings divided by the capacity of the classes in the period (classes without a capacity are left out).",
+          "change": "Low fill on certain hours may mean too many classes at that time; high fill means people may not find a place."
+        },
+        "no_show_rate": {
+          "label": "No-shows",
+          "what": "Bookings where the person did not come.",
+          "how": "Missed attendances divided by missed plus attended ones.",
+          "change": "If it rises, remind people before class or review the late cancellation rule."
+        },
+        "late_cancellations": {
+          "label": "Late cancellations",
+          "what": "Bookings cancelled after the late cancellation time.",
+          "how": "Counted from the attendance records of the period.",
+          "change": "Many late cancellations take places from others: check the cancellation time and reminders."
+        },
+        "waitlist_conversion": {
+          "label": "From the waitlist",
+          "what": "How many people on a waitlist finally got a place.",
+          "how": "Waitlisted bookings that were approved, divided by all waitlisted bookings.",
+          "change": "If it is low, those classes are too small for the demand: consider another class at that time."
+        },
+        "visits_per_member_week": {
+          "label": "Visits per week",
+          "what": "How often a person who trains comes, on average.",
+          "how": "Attended classes divided by the people who attended and by the weeks of the period.",
+          "change": "A fall is an early sign of lower motivation, often before people leave."
+        },
+        "attendance_by_hour": {
+          "label": "Attendance by hour",
+          "what": "When people come to class, by hour of the day.",
+          "how": "Attended classes by the start hour, in the box's time.",
+          "change": "Move or add classes towards the busy hours."
+        },
+        "attendance_by_weekday": {
+          "label": "Attendance by day",
+          "what": "Which days people come to class.",
+          "how": "Attended classes by the day of the week, in the box's time.",
+          "change": "Busy days may need more classes; quiet days may need fewer."
+        },
+        "execution_kpis": {
+          "label": "Workout execution",
+          "what": "How athletes run their workouts in the app: what they finish, skip, pause and stop.",
+          "how": "From the workout executions started in the period.",
+          "change": "If completion falls, look at where people stop below and simplify those parts."
+        }
+      },
+      "coaching": {
+        "classes_per_coach": {
+          "label": "Classes per coach",
+          "what": "How many classes each coach led and how many people attended them.",
+          "how": "Classes of the period by their coach, with the attended places.",
+          "change": "A big gap between coaches may need a fairer schedule."
+        },
+        "athletes_per_coach": {
+          "label": "Athletes per coach",
+          "what": "How many athletes each coach follows personally.",
+          "how": "Active coaching relationships on the period's last day; the figure is the average per coach.",
+          "change": "A coach with many more athletes may need help or a limit."
+        },
+        "programme_adherence": {
+          "label": "Programme adherence",
+          "what": "How many assigned workouts athletes actually did.",
+          "how": "Assigned workouts finished from a day before to seven days after their date, divided by all assigned ones up to today.",
+          "change": "If it falls, check with the athletes whether the programme suits them."
+        },
+        "review_rating_per_coach": {
+          "label": "Ratings per coach",
+          "what": "The average class rating per coach.",
+          "how": "Reviews of the period by the coach of the class; the figure is the average of all reviews.",
+          "change": "Read the low reviews of a coach together with them."
+        }
+      },
+      "engagement": {
+        "weekly_active_users": {
+          "label": "Active per week",
+          "what": "People who used the app or came to class, per week.",
+          "how": "Different people each week, averaged over the weeks of the period. Staff are left out.",
+          "change": "A fall is often the first sign of lower interest."
+        },
+        "challenge_participation": {
+          "label": "Challenge participation",
+          "what": "The share of box members who took part in a challenge.",
+          "how": "People with progress in a challenge of the period, divided by the active box members.",
+          "change": "If it is low, make challenges simpler or announce them better."
+        },
+        "booking_streaks": {
+          "label": "Booking streaks",
+          "what": "People who train week after week.",
+          "how": "People with 4 or more weeks in a row with a class, up to the end of the period.",
+          "change": "More long streaks mean steadier habits; a fall needs reminders."
+        },
+        "event_mix": {
+          "label": "Activity mix",
+          "what": "What people did in Palee, by kind of activity.",
+          "how": "The recorded events of the period, grouped by category.",
+          "change": "Compare kinds: a rise in one may come from a new feature or a campaign."
+        }
+      },
+      "health": {
+        "injuries_per_1000_attendances": {
+          "label": "Injuries per 1,000 visits",
+          "what": "How often injuries happen compared with how much people train.",
+          "how": "Injuries reported in the period for every 1,000 attended classes.",
+          "change": "If it rises, look at the body areas below and the programming of those weeks."
+        },
+        "mean_recovery_days": {
+          "label": "Recovery time",
+          "what": "How long an injury lasts, on average.",
+          "how": "Days from start to healing, for the injuries that healed in the period.",
+          "change": "Longer recoveries may need closer follow-up from the coaches."
+        },
+        "top_body_areas": {
+          "label": "Body areas",
+          "what": "Where the injuries are.",
+          "how": "Injuries of the period by body area.",
+          "change": "One area rising may point to an exercise or technique to work on."
+        }
+      },
+      "finance": {
+        "mrr": {
+          "label": "Monthly recurring revenue",
+          "what": "What the active subscriptions bring in per month.",
+          "how": "The price of every active recurring subscription on the period's last day, turned into a monthly amount.",
+          "change": "A fall comes from cancelled or cheaper subscriptions: compare with churn."
+        },
+        "arpm": {
+          "label": "Revenue per box member",
+          "what": "What a box member brings in per month, on average.",
+          "how": "Paid revenue of the period divided by the active box members and by the months of the period.",
+          "change": "A rise means better packages or extras; a fall may mean more discounts."
+        },
+        "ltv": {
+          "label": "Lifetime value",
+          "what": "An estimate of what a box member brings in over the whole time they stay.",
+          "how": "Revenue per box member divided by the monthly churn. Empty when nobody left.",
+          "change": "It moves with churn: keeping people longer raises it the most."
+        },
+        "on_time_collection": {
+          "label": "Paid on time",
+          "what": "The share of invoices paid by their due date.",
+          "how": "Invoices due in the period and paid in full by the due date, divided by all invoices due in the period.",
+          "change": "If it falls, send reminders before the due date."
+        },
+        "days_sales_outstanding": {
+          "label": "Days to get paid",
+          "what": "How long an invoice waits to be paid, on average.",
+          "how": "Days from issue to the last payment, for invoices paid in full in the period.",
+          "change": "If it grows, ask for payment at the desk or turn on online payment."
+        },
+        "revenue_per_package": {
+          "label": "Revenue per subscription package",
+          "what": "Which subscription packages bring in the money.",
+          "how": "Paid revenue of the period by subscription package, minus refunds.",
+          "change": "Promote the packages that work and review the ones that bring little."
+        }
+      },
+      "demographics": {
+        "age_bands": {
+          "label": "Age",
+          "what": "The ages of the box members who chose to share them.",
+          "how": "Active box members by the age they gave for the leaderboards. Groups of fewer than 5 people are hidden.",
+          "change": "Use it to shape classes and messages for the groups you have."
+        },
+        "genders": {
+          "label": "Gender",
+          "what": "The gender of the box members who chose to share it.",
+          "how": "Active box members by the division they chose for the leaderboards. Groups of fewer than 5 people are hidden.",
+          "change": "Use it to see who your classes reach."
+        }
+      }
+    },
+    "widgets": {
+      "overview": {
+        "paid_revenue": {
+          "what": "Money actually paid in the period.",
+          "change": "Open Finance to see which payments are missing."
+        },
+        "reviews": {
+          "what": "Reviews box members left in the period.",
+          "change": "Many reviews at once usually follow a change: read the newest ones."
+        },
+        "active_injuries": {
+          "what": "Injuries that are not healed yet.",
+          "change": "Open Health to see who needs a scaled programme."
+        },
+        "notification_clicks": {
+          "what": "Times people opened a notification from the box.",
+          "change": "Few clicks mean the messages are not useful enough: try fewer and clearer ones."
+        },
+        "operational_status": {
+          "what": "A few things that need attention: finance, low ratings, expiring memberships and coaching.",
+          "change": "Each line is a task: open the page it belongs to."
+        }
+      },
+      "training": {
+        "team_completions": {
+          "what": "Team workouts finished in the period.",
+          "change": "More team workouts usually mean a stronger community."
+        },
+        "individual_completions": {
+          "what": "Workouts finished alone in the period.",
+          "change": "Compare with team workouts to see how people like to train."
+        },
+        "total_completions": {
+          "what": "All workouts finished in the period, team and alone.",
+          "change": "A fall here often comes before a fall in attendance."
+        },
+        "attendance_status": {
+          "what": "Attendance records by what happened: attended, missed, cancelled.",
+          "change": "Many missed or late-cancelled places need reminders."
+        }
+      },
+      "engagement": {
+        "push_delivery": {
+          "what": "App notifications by what happened to them: sent, failed and so on.",
+          "change": "Many failures may mean old devices: ask people to open the app again."
+        },
+        "communication": {
+          "what": "Messages between the box and box members, by direction.",
+          "change": "Many messages to the box may point to a question you can answer once for everyone."
+        },
+        "review_ratings": {
+          "what": "Reviews by the stars given.",
+          "change": "Read the low ratings first."
+        }
+      },
+      "coaching": {
+        "active_athletes": {
+          "what": "Athletes with personal coaching right now.",
+          "change": "Compare with the coaches you have to see how full they are."
+        },
+        "captured_events": {
+          "what": "Coaching actions recorded in the period.",
+          "change": "Few actions may mean athletes are not followed closely."
+        },
+        "reviews": {
+          "what": "Reviews of coaching in the period.",
+          "change": "Read them with the coach they are about."
+        }
+      },
+      "health": {
+        "active_injuries": {
+          "what": "Injuries reported and not healed yet.",
+          "change": "Check that each one has a scaled programme."
+        },
+        "total_reports": {
+          "what": "All injury reports of the period, healed or not.",
+          "change": "Compare with the injuries per 1,000 visits to see if more training explains it."
+        },
+        "recent_injury_flags": {
+          "what": "Injuries flagged recently in coaching.",
+          "change": "Talk to the athletes flagged before their next workout."
+        }
+      },
+      "execution": {
+        "completion_rate": {
+          "change": "If it falls, see below where people stop."
+        },
+        "score_capture": {
+          "change": "Remind people to log their score at the end."
+        },
+        "skip_rate": {
+          "change": "Many skips may mean the countdowns are too long."
+        },
+        "time_to_start": {
+          "change": "A long wait may mean the workout is hard to read before starting."
+        },
+        "pauses": {
+          "change": "Many pauses may mean the workout is too long or hard."
+        },
+        "review_drop_off": {
+          "change": "Make the finish steps shorter if many stop there."
+        },
+        "median_duration": {
+          "change": "Compare with the time you planned for the workout."
+        },
+        "clock_adjusted": {
+          "change": "Many adjustments may mean the planned times are wrong."
+        },
+        "abandon_by_format": {
+          "change": "Simplify the formats where most people stop."
+        },
+        "abandon_points": {
+          "change": "Look at these parts: they may be too long or unclear."
+        },
+        "free_text": {
+          "change": "If free text workouts stop early, write them as structured ones."
+        },
+        "daily_trend": {
+          "what": "Workouts started each day, finished or not.",
+          "change": "Quiet days may follow the schedule or the programming."
+        },
+        "completion_by_format": {
+          "what": "How often workouts are finished, by format (AMRAP, EMOM…).",
+          "change": "A format with low completion may need a shorter time."
+        },
+        "completion_by_source": {
+          "what": "How often workouts are finished, by where they came from (class, coach, own choice).",
+          "change": "Compare sources to see which workouts people stick with."
+        },
+        "structured": {
+          "what": "Workouts written step by step, started and finished.",
+          "change": "Compare with free text workouts to see which kind people finish."
+        }
+      },
+      "finance": {
+        "active_memberships": {
+          "what": "Memberships active today.",
+          "change": "A fall usually means renewals were missed."
+        },
+        "expiring": {
+          "what": "Memberships that end in the next 30 days.",
+          "change": "Contact these people before the end to renew."
+        },
+        "revenue": {
+          "what": "Money paid in the period.",
+          "change": "Compare with the pending invoices to see what is still to come."
+        },
+        "credit_balance": {
+          "what": "Credit box members have with the box, still unused.",
+          "change": "A large balance is money you owe in classes or products."
+        },
+        "pending_invoices": {
+          "what": "Invoices not yet paid in full.",
+          "change": "Ask for payment at the desk or with a reminder."
+        },
+        "overdue_invoices": {
+          "what": "Unpaid invoices past their due date.",
+          "change": "Contact these people first."
+        },
+        "renewal_rate": {
+          "what": "The share of memberships renewed when they ended.",
+          "change": "If it falls, contact people before their membership ends."
+        },
+        "credit_offsets": {
+          "what": "Invoice amounts covered by credit instead of money.",
+          "change": "Many offsets lower the cash you collect."
+        },
+        "monthly_revenue": {
+          "what": "Revenue per month: paid and still pending.",
+          "how": "Payments and open invoices grouped by month.",
+          "change": "A growing pending line means payments are late."
+        },
+        "revenue_streams": {
+          "what": "Where the revenue comes from: subscriptions, products, events and more.",
+          "change": "Grow the streams that work best."
+        },
+        "expiring_soon": {
+          "what": "The people whose membership ends soon.",
+          "change": "Contact them before the end."
+        },
+        "overdue_list": {
+          "what": "Invoices past their due date, with the days overdue.",
+          "change": "Start with the oldest ones."
+        },
+        "pending_payments": {
+          "what": "Payments waiting to be confirmed.",
+          "change": "Confirm or reject them so the figures stay right."
+        },
+        "pending_rewards": {
+          "what": "Referral rewards waiting to be given.",
+          "change": "Give them soon, so people keep inviting friends."
+        }
+      }
+    },
+    "history": {
+      "sectionTitle": "Data",
+      "sectionDescription": "Reset history of the box statistics.",
+      "title": "Reset history",
+      "description": "Every figure you reset, with who did it and its value before. Nothing was deleted: undo a reset to count the old data again.",
+      "empty": "No figure has been reset yet.",
+      "metric": "Figure",
+      "date": "Date",
+      "who": "By",
+      "before": "Before",
+      "status": "Status",
+      "active": "Active",
+      "undone": "Undone {date}",
+      "undo": "Undo",
+      "undoTitle": "Undo the reset of «{label}»?",
+      "undoBody": "The figure will count its older data again, as before the reset.",
+      "undoConfirm": "Undo reset",
+      "cancel": "Cancel",
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page {page} of {pages}",
+      "unknownPerson": "Unknown",
+      "beforeValue": "{value} · {from}–{to}"
+    }
   },
   "ExplainedSetting": {
     "about": "What is «{name}»?"

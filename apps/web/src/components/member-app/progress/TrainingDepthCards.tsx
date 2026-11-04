@@ -3,8 +3,10 @@
 import Link from "next/link";
 import { useFormatter, useTranslations } from "next-intl";
 
+import type { MemberMetricKey, MetricBaselines } from "@/api/progress-resets";
 import type { DepthCoverage, DepthLoad, DepthQualities } from "@/api/training-depth";
 import { ClientCard, EmptyLine, LoadingLine, QueryProblem } from "@/components/client/ClientPage";
+import { baselineOf, MetricTitleAside } from "@/components/member-app/progress/MetricInfo";
 import { formatDay } from "@/components/client/format";
 import { useUiLocale } from "@/i18n/use-ui-locale";
 import { atlasHref, COVERAGE_LEVELS, type CoverageLevel } from "@/lib/anatomy/atlas";
@@ -73,36 +75,55 @@ export function TrainingDepthCards({
   load,
   audience = "member",
   hideEmpty = false,
+  baselines,
 }: {
   coverage: Section<DepthCoverage>;
   qualities: Section<DepthQualities>;
   load: Section<DepthLoad>;
   audience?: "member" | "coach";
   hideEmpty?: boolean;
+  /**
+   * ADR-462 §5: the member's own reset baselines. Given only on the member's
+   * Πρόοδος: each slot then gets its «?» with «Μηδενισμός από σήμερα».
+   */
+  baselines?: MetricBaselines;
 }) {
+  const info = (key: MemberMetricKey, title: string) =>
+    baselines ? <MetricTitleAside metricKey={key} title={title} since={baselineOf(baselines, key)} /> : undefined;
   const showCoverage = shown(coverage, hideEmpty, depthEmpty.coverage);
   const showQualities = shown(qualities, hideEmpty, depthEmpty.qualities);
   const showLoad = shown(load, hideEmpty, depthEmpty.load);
   if (!showCoverage && !showQualities && !showLoad) return null;
   return (
     <div className="flex flex-col gap-4" data-testid="training-depth">
-      {showCoverage ? <CoverageCard section={coverage} audience={audience} /> : null}
+      {showCoverage ? <CoverageCard section={coverage} audience={audience} info={info} /> : null}
       {showQualities || showLoad ? (
         <div className="grid gap-4 md:grid-cols-2">
-          {showQualities ? <QualitiesCard section={qualities} /> : null}
-          {showLoad ? <LoadCard section={load} /> : null}
+          {showQualities ? <QualitiesCard section={qualities} info={info} /> : null}
+          {showLoad ? <LoadCard section={load} info={info} /> : null}
         </div>
       ) : null}
     </div>
   );
 }
 
-function CoverageCard({ section, audience }: { section: Section<DepthCoverage>; audience: "member" | "coach" }) {
+type InfoSlot = (key: MemberMetricKey, title: string) => React.ReactNode;
+
+function CoverageCard({
+  section,
+  audience,
+  info,
+}: {
+  section: Section<DepthCoverage>;
+  audience: "member" | "coach";
+  info: InfoSlot;
+}) {
   const t = useTranslations("Depth");
   return (
     <ClientCard
       id="muscle-coverage"
       title={t("coverage.title")}
+      titleAside={info("progress.depth.coverage", t("coverage.title"))}
       aside={
         audience === "member" ? (
           <Link href={atlasHref()} className="text-sm font-semibold" style={{ color: "var(--primary)" }}>
@@ -197,10 +218,10 @@ function Ratio({ label, value }: { label: string; value: string | null }) {
   );
 }
 
-function QualitiesCard({ section }: { section: Section<DepthQualities> }) {
+function QualitiesCard({ section, info }: { section: Section<DepthQualities>; info: InfoSlot }) {
   const t = useTranslations("Depth");
   return (
-    <ClientCard id="qualities" title={t("qualities.title")}>
+    <ClientCard id="qualities" title={t("qualities.title")} titleAside={info("progress.depth.qualities", t("qualities.title"))}>
       <SlotState section={section}>{(qualities) => <QualitiesBody qualities={qualities} />}</SlotState>
     </ClientCard>
   );
@@ -282,10 +303,10 @@ const BAND_STYLE: Record<LoadBand, { background: string; color: string }> = {
   well_above: { background: "color-mix(in srgb, var(--warning) 30%, transparent)", color: "var(--text)" },
 };
 
-function LoadCard({ section }: { section: Section<DepthLoad> }) {
+function LoadCard({ section, info }: { section: Section<DepthLoad>; info: InfoSlot }) {
   const t = useTranslations("Depth");
   return (
-    <ClientCard id="training-load" title={t("load.title")}>
+    <ClientCard id="training-load" title={t("load.title")} titleAside={info("progress.depth.load", t("load.title"))}>
       <SlotState section={section}>{(load) => <LoadBody load={load} />}</SlotState>
     </ClientCard>
   );

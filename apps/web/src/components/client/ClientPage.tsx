@@ -36,11 +36,14 @@ export function ClientCard({
   title,
   children,
   aside,
+  titleAside,
   id,
 }: {
   title?: string;
   children: React.ReactNode;
   aside?: React.ReactNode;
+  /** Small things right after the title (a «?», a «since» badge); they never make the header wrap. */
+  titleAside?: React.ReactNode;
   id?: string;
 }) {
   return (
@@ -52,7 +55,14 @@ export function ClientCard({
     >
       {title || aside ? (
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-          {title ? (
+          {title && titleAside ? (
+            <div className="flex min-w-0 grow items-center gap-1.5">
+              <h2 className="text-sm font-semibold uppercase tracking-[0.18em]" style={{ color: "var(--dim)" }}>
+                {title}
+              </h2>
+              {titleAside}
+            </div>
+          ) : title ? (
             <h2 className="text-sm font-semibold uppercase tracking-[0.18em]" style={{ color: "var(--dim)" }}>
               {title}
             </h2>

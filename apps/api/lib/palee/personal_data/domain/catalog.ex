@@ -111,6 +111,8 @@ defmodule Palee.PersonalData.Domain.Catalog do
       account("training", "workout_executions", @me),
       account("training", "training_log_entries", @me),
       account("training", "user_pr_records", @me),
+      # ADR-461: the exercise names a person typed (their suggestions).
+      account("training", "exercise_names", @me),
       account("training", "user_achievements", @me),
       account("training", "user_stats", @me),
       account("training", "training_goals", @me),

@@ -64,9 +64,9 @@ export function useRefreshPerkLink() {
 
 // Staff -----------------------------------------------------------------------
 
-export function useStaffPerks() {
+export function useStaffPerks(enabled = true) {
   const token = useToken();
-  return useQuery({ queryKey: perkKeys.staff, enabled: Boolean(token), queryFn: () => fetchStaffPerks(token) });
+  return useQuery({ queryKey: perkKeys.staff, enabled: Boolean(token) && enabled, queryFn: () => fetchStaffPerks(token) });
 }
 
 export function useSavePerk() {

@@ -88,6 +88,8 @@ config :palee, :tenant_object_store, Palee.TestSupport.MemoryObjectStore
 # ADR-280 verification: text messages are kept in memory.
 config :palee, :sms_sender, Palee.TestSupport.MemorySmsSender
 config :palee, :workout_text_analyzer, Palee.Test.FakeWorkoutTextAnalyzer
+# ADR-461: exercise-name suggestions straight from Postgres (no Meilisearch in test).
+config :palee, :exercise_name_index, Palee.Infrastructure.Search.PostgresExerciseNameIndex
 
 # ADR-155: Wallet platforms are told about changes through recording fakes;
 # a box logo is never fetched.

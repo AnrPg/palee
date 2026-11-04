@@ -7,6 +7,12 @@ defmodule Palee.Notifications.Ports.NotificationStore do
               next_cursor: String.t() | nil
             }
   @callback count_unread_inbox(Ecto.UUID.t()) :: non_neg_integer()
+  # ADR-460: `filter` is a `Domain.NotificationFilter`; deleted rows are never counted.
+  @callback count_inbox(Ecto.UUID.t(), map()) :: non_neg_integer()
+  @callback soft_delete(Ecto.UUID.t(), Ecto.UUID.t(), DateTime.t()) :: boolean()
+  @callback soft_delete_ids(Ecto.UUID.t(), [Ecto.UUID.t()], DateTime.t()) :: non_neg_integer()
+  @callback soft_delete_matching(Ecto.UUID.t(), map(), DateTime.t()) :: non_neg_integer()
+  @callback restore(Ecto.UUID.t(), Ecto.UUID.t(), DateTime.t()) :: boolean()
   @callback mark_all_read(Ecto.UUID.t()) :: non_neg_integer()
   @callback mark_read(Ecto.UUID.t(), Ecto.UUID.t()) :: boolean()
   @callback get_notification_organization_id(Ecto.UUID.t(), Ecto.UUID.t()) ::

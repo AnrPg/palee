@@ -6,6 +6,8 @@ defmodule PaleeWeb.NotificationController do
 
   alias Palee.Application.{
     DeleteNativePushToken,
+    DeleteNotification,
+    DeleteNotifications,
     DeletePushSubscription,
     GetNotifications,
     GetPushNotificationConfig,
@@ -20,6 +22,7 @@ defmodule PaleeWeb.NotificationController do
 
   alias OpenApiSpex.{MediaType, Parameter, RequestBody, Schema}
   alias PaleeWeb.ParamExtractor
+  alias PaleeWeb.Schemas.Notifications, as: S
 
   action_fallback PaleeWeb.FallbackController
 
@@ -36,7 +39,10 @@ defmodule PaleeWeb.NotificationController do
               :create_native_push_token,
               :delete_native_push_token,
               :mark_clicked,
-              :mark_read
+              :mark_read,
+              :delete,
+              :restore,
+              :bulk_delete
             ]
 
   @notification_schema %Schema{
@@ -147,6 +153,7 @@ defmodule PaleeWeb.NotificationController do
         required: false,
         schema: %Schema{type: :string}
       }
+      | S.filter_params()
     ],
     responses: [
       ok:
@@ -156,7 +163,12 @@ defmodule PaleeWeb.NotificationController do
            properties: %{
              notifications: %Schema{type: :array, items: @notification_schema},
              unread_count: %Schema{type: :integer},
-             next_cursor: %Schema{type: :string, nullable: true}
+             next_cursor: %Schema{type: :string, nullable: true},
+             matching_count: %Schema{
+               type: :integer,
+               nullable: true,
+               description: "With include_count: how many notifications match the filter."
+             }
            },
            required: [:notifications, :unread_count, :next_cursor]
          }}
@@ -218,6 +230,29 @@ defmodule PaleeWeb.NotificationController do
            required: [:error]
          }}
     ]
+  )
+
+  operation(:delete,
+    summary: "Delete a notification for the current user",
+    description:
+      "ADR-460: soft delete; no client shows it again. «Αναίρεση» may restore it for " <>
+        "`restorable_for_seconds`.",
+    parameters: [S.id_param()],
+    responses: [ok: S.deleted_response(), not_found: S.error_response("Not found")]
+  )
+
+  operation(:restore,
+    summary: "Restore a notification the current user deleted moments ago",
+    description: "ADR-460: only within the restore window; afterwards 410.",
+    parameters: [S.id_param()],
+    responses: [ok: S.restored_response(), gone: S.error_response("No longer restorable")]
+  )
+
+  operation(:bulk_delete,
+    summary: "Delete the notifications picked, or every one a filter matches",
+    description: "ADR-460: «Διαγραφή ειδοποιήσεων» in Ρυθμίσεις. Not undoable.",
+    request_body: S.bulk_delete_request(),
+    responses: [ok: S.deleted_count_response(), bad_request: S.error_response("Bad request")]
   )
 
   operation(:mark_clicked,
@@ -412,6 +447,30 @@ defmodule PaleeWeb.NotificationController do
 
     with :ok <- MarkNotificationRead.call(actor.id, notification_id) do
       json(conn, %{read: true})
+    end
+  end
+
+  def delete(conn, %{id: notification_id}) do
+    actor = GuardianPlug.current_resource(conn)
+
+    with {:ok, restorable_for_seconds} <- DeleteNotification.call(actor.id, notification_id) do
+      json(conn, %{deleted: true, restorable_for_seconds: restorable_for_seconds})
+    end
+  end
+
+  def restore(conn, %{id: notification_id}) do
+    actor = GuardianPlug.current_resource(conn)
+
+    with :ok <- DeleteNotification.restore(actor.id, notification_id) do
+      json(conn, %{restored: true})
+    end
+  end
+
+  def bulk_delete(conn, _params) do
+    actor = GuardianPlug.current_resource(conn)
+
+    with {:ok, count} <- DeleteNotifications.call(actor.id, conn.body_params) do
+      json(conn, %{deleted_count: count})
     end
   end
 

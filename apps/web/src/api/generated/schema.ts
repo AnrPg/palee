@@ -3010,6 +3010,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/me/exercise-suggestions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Exercise-name suggestions: your own, your box's, Palee's */
+        get: operations["PaleeWeb.ExerciseSuggestionsController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me/feed": {
         parameters: {
             query?: never;
@@ -4443,6 +4460,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/me/progress/metrics/{metric_key}/reset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reset one of my Πρόοδος stats: count only from now on (ADR-462) */
+        post: operations["PaleeWeb.ProgressMetricResetController.reset"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/progress/resets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My Πρόοδος reset history (ADR-462) */
+        get: operations["PaleeWeb.ProgressMetricResetController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/progress/resets/{id}/undo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Undo one of my Πρόοδος resets (ADR-462) */
+        post: operations["PaleeWeb.ProgressMetricResetController.undo"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me/providers": {
         parameters: {
             query?: never;
@@ -4716,6 +4784,26 @@ export interface paths {
         put?: never;
         /** Record that the current account finished a product tour */
         post: operations["PaleeWeb.MeController.complete_tour"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/trains-with-palee": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Say whether you also train with Palee (ADR-463)
+         * @description Staff answer it in the first run and in Settings. false hides the prompts aimed at athletes; null (never asked) reads as true.
+         */
+        put: operations["PaleeWeb.MeController.update_trains_with_palee"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -5135,6 +5223,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/notifications/delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Delete the notifications picked, or every one a filter matches
+         * @description ADR-460: «Διαγραφή ειδοποιήσεων» in Ρυθμίσεις. Not undoable.
+         */
+        post: operations["PaleeWeb.NotificationController.bulk_delete"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/notifications/native-push-tokens": {
         parameters: {
             query?: never;
@@ -5298,6 +5406,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/notifications/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete a notification for the current user
+         * @description ADR-460: soft delete; no client shows it again. «Αναίρεση» may restore it for `restorable_for_seconds`.
+         */
+        delete: operations["PaleeWeb.NotificationController.delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/notifications/{id}/click": {
         parameters: {
             query?: never;
@@ -5326,6 +5454,26 @@ export interface paths {
         put?: never;
         /** Mark a single notification as read for the current user */
         post: operations["PaleeWeb.NotificationController.mark_read"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/notifications/{id}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Restore a notification the current user deleted moments ago
+         * @description ADR-460: only within the restore window; afterwards 410.
+         */
+        post: operations["PaleeWeb.NotificationController.restore"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5367,6 +5515,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/analytics/metrics/{metric_key}/reset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reset one box metric: count only data from now on (owner and admins, ADR-462) */
+        post: operations["PaleeWeb.AdminAnalyticsController.reset_metric"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/analytics/resets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box's metric reset history, with each metric before its reset (ADR-462) */
+        get: operations["PaleeWeb.AdminAnalyticsController.resets"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/analytics/resets/{id}/undo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Undo a box metric reset (owner and admins, ADR-462) */
+        post: operations["PaleeWeb.AdminAnalyticsController.undo_reset"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/analytics/summary": {
         parameters: {
             query?: never;
@@ -5374,7 +5573,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Fetch Phase 8 analytics summary from persisted facts and aggregates */
+        /** Στατιστικά: KPIs of a period with the previous one, filtered (ADR-462) */
         get: operations["PaleeWeb.AdminAnalyticsController.summary"];
         put?: never;
         post?: never;
@@ -18594,6 +18793,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/platform/exercise-candidates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Exercise names waiting for the catalog (vendors) */
+        get: operations["PaleeWeb.PlatformExerciseCatalogController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/platform/exercise-candidates/{id}/decision": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Approve a name as a new entry or an alias, or reject it (vendors) */
+        post: operations["PaleeWeb.PlatformExerciseCatalogController.decide"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/platform/exercise-catalog-audit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The latest exercise catalog decisions (vendors) */
+        get: operations["PaleeWeb.PlatformExerciseCatalogController.audit"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/platform/food-misses": {
         parameters: {
             query?: never;
@@ -20576,6 +20826,10 @@ export interface components {
             filter: {
                 [key: string]: unknown;
             };
+            /** @description ADR-462: metric key → the active reset baseline (counted only after it) */
+            metric_baselines?: {
+                [key: string]: string;
+            };
             pr_timeline: ({
                 /**
                  * EntrySource
@@ -20663,6 +20917,10 @@ export interface components {
                 }[];
                 filter: {
                     [key: string]: unknown;
+                };
+                /** @description ADR-462: metric key → the active reset baseline (counted only after it) */
+                metric_baselines?: {
+                    [key: string]: string;
                 };
                 pr_timeline: ({
                     /**
@@ -20785,6 +21043,108 @@ export interface components {
                 title: string | null;
                 workout_type?: string | null;
             }[];
+        };
+        /** AdminAnalyticsResetHistory */
+        AdminAnalyticsResetHistory: {
+            entries: {
+                active: boolean;
+                /** @description Box history: the metric over the days before the reset (`from`, `to`, `value`, `rows`) */
+                before?: {
+                    [key: string]: unknown;
+                } | null;
+                /** Format: uuid */
+                id: string;
+                metric_key: string;
+                /** Format: date-time */
+                reset_at: string;
+                /** Format: uuid */
+                reset_by: string | null;
+                /** @enum {string} */
+                scope: "organization" | "member";
+                /** Format: date-time */
+                undone_at: string | null;
+                /** Format: uuid */
+                undone_by: string | null;
+            }[];
+            page: number;
+            per_page: number;
+            total: number;
+        };
+        /** AdminAnalyticsSummary */
+        AdminAnalyticsSummary: {
+            /** AnalyticsFilter */
+            filter: {
+                age_bands: string[];
+                class_type_ids: string[];
+                coach_ids: string[];
+                days: number;
+                /** Format: date */
+                from: string;
+                genders: string[];
+                levels: string[];
+                location_ids: string[];
+                package_families: string[];
+                package_ids: string[];
+                /** Format: date */
+                previous_from: string;
+                /** Format: date */
+                previous_to: string;
+                tenure_bands: string[];
+                time_of_day: string[];
+                /** Format: date */
+                to: string;
+                v: number;
+            };
+            /** @description ADR-462: every KPI by its registry key */
+            kpis: {
+                [key: string]: {
+                    delta: number | null;
+                    key: string;
+                    /** @enum {string} */
+                    kind: "flow" | "snapshot" | "breakdown";
+                    /** @description The previous equal-length period */
+                    previous: number | null;
+                    previous_rows: ({
+                        key?: (string | number) | null;
+                        suppressed?: boolean;
+                    } & {
+                        [key: string]: unknown;
+                    })[];
+                    previous_suppressed: boolean;
+                    rows: ({
+                        key?: (string | number) | null;
+                        suppressed?: boolean;
+                    } & {
+                        [key: string]: unknown;
+                    })[];
+                    /**
+                     * Format: date-time
+                     * @description The active reset baseline: only data after it counts
+                     */
+                    since: string | null;
+                    /** @description k-anonymity: fewer than 5 people; no number is returned */
+                    suppressed: boolean;
+                    /** @enum {string} */
+                    unit: "count" | "percent" | "ratio" | "cents" | "days" | "per_1000" | "rows";
+                    /** @description Nil when not computable or suppressed */
+                    value: number | null;
+                };
+            };
+            /** AnalyticsPeriod */
+            period: {
+                days: number;
+                /** Format: date */
+                from: string;
+                /** Format: date */
+                previous_from: string;
+                /** Format: date */
+                previous_to: string;
+                time_zone: string;
+                /** Format: date */
+                to: string;
+            };
+        } & {
+            [key: string]: unknown;
         };
         /** AdminOnboardingChecklist */
         AdminOnboardingChecklist: {
@@ -20941,6 +21301,110 @@ export interface components {
                 /** @description Translations visitors can pick on the site (ADR-520) */
                 visible_locales: string[];
             };
+        };
+        /** AnalyticsFilter */
+        AnalyticsFilter: {
+            age_bands: string[];
+            class_type_ids: string[];
+            coach_ids: string[];
+            days: number;
+            /** Format: date */
+            from: string;
+            genders: string[];
+            levels: string[];
+            location_ids: string[];
+            package_families: string[];
+            package_ids: string[];
+            /** Format: date */
+            previous_from: string;
+            /** Format: date */
+            previous_to: string;
+            tenure_bands: string[];
+            time_of_day: string[];
+            /** Format: date */
+            to: string;
+            v: number;
+        };
+        /** AnalyticsKpi */
+        AnalyticsKpi: {
+            delta: number | null;
+            key: string;
+            /** @enum {string} */
+            kind: "flow" | "snapshot" | "breakdown";
+            /** @description The previous equal-length period */
+            previous: number | null;
+            previous_rows: ({
+                key?: (string | number) | null;
+                suppressed?: boolean;
+            } & {
+                [key: string]: unknown;
+            })[];
+            previous_suppressed: boolean;
+            rows: ({
+                key?: (string | number) | null;
+                suppressed?: boolean;
+            } & {
+                [key: string]: unknown;
+            })[];
+            /**
+             * Format: date-time
+             * @description The active reset baseline: only data after it counts
+             */
+            since: string | null;
+            /** @description k-anonymity: fewer than 5 people; no number is returned */
+            suppressed: boolean;
+            /** @enum {string} */
+            unit: "count" | "percent" | "ratio" | "cents" | "days" | "per_1000" | "rows";
+            /** @description Nil when not computable or suppressed */
+            value: number | null;
+        };
+        /** AnalyticsMetricReset */
+        AnalyticsMetricReset: {
+            /** Format: uuid */
+            id: string;
+            metric_key: string;
+            /** Format: date-time */
+            reset_at: string;
+            /** Format: uuid */
+            reset_by: string | null;
+            /** @enum {string} */
+            scope: "organization" | "member";
+            /** Format: date-time */
+            undone_at: string | null;
+            /** Format: uuid */
+            undone_by: string | null;
+        };
+        /** AnalyticsMetricResetResponse */
+        AnalyticsMetricResetResponse: {
+            /** AnalyticsMetricReset */
+            reset: {
+                /** Format: uuid */
+                id: string;
+                metric_key: string;
+                /** Format: date-time */
+                reset_at: string;
+                /** Format: uuid */
+                reset_by: string | null;
+                /** @enum {string} */
+                scope: "organization" | "member";
+                /** Format: date-time */
+                undone_at: string | null;
+                /** Format: uuid */
+                undone_by: string | null;
+            };
+        };
+        /** AnalyticsPeriod */
+        AnalyticsPeriod: {
+            days: number;
+            /** Format: date */
+            from: string;
+            /** Format: date */
+            previous_from: string;
+            /** Format: date */
+            previous_to: string;
+            time_zone: string;
+            /** Format: date */
+            to: string;
         };
         /** AnatomyNode */
         AnatomyNode: {
@@ -34842,6 +35306,142 @@ export interface components {
                 [key: string]: unknown;
             };
         };
+        /** ExerciseCatalogAudit */
+        ExerciseCatalogAudit: {
+            events: {
+                /** @enum {string} */
+                action: "approve_entry" | "approve_alias" | "reject";
+                /** Format: uuid */
+                actor_user_id?: string | null;
+                /** Format: date-time */
+                at: string;
+                /** Format: uuid */
+                candidate_id?: string | null;
+                catalog_slug?: string | null;
+                /** Format: uuid */
+                id: string;
+                metadata?: Record<string, never>;
+            }[];
+        };
+        /** ExerciseNameCandidate */
+        ExerciseNameCandidate: {
+            catalog_slug: string | null;
+            /** Format: date-time */
+            decided_at?: string | null;
+            /** Format: date-time */
+            first_seen_at?: string;
+            /** Format: uuid */
+            id: string;
+            /** Format: date-time */
+            last_seen_at?: string;
+            name: string;
+            owners_count: number;
+            /** @enum {string} */
+            status: "pending" | "approved" | "rejected";
+            uses_count: number;
+        };
+        /** ExerciseNameCandidateDecided */
+        ExerciseNameCandidateDecided: {
+            /** ExerciseNameCandidate */
+            candidate: {
+                catalog_slug: string | null;
+                /** Format: date-time */
+                decided_at?: string | null;
+                /** Format: date-time */
+                first_seen_at?: string;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                last_seen_at?: string;
+                name: string;
+                owners_count: number;
+                /** @enum {string} */
+                status: "pending" | "approved" | "rejected";
+                uses_count: number;
+            };
+        };
+        /** ExerciseNameCandidateDecision */
+        ExerciseNameCandidateDecision: {
+            /** @description For an alias: the entry it joins */
+            catalog_slug?: string;
+            /** @enum {string} */
+            category?: "strength" | "bodyweight" | "cardio" | "mobility" | "skill";
+            /** @enum {string} */
+            decision: "entry" | "alias" | "reject";
+            /** @description Defaults to the typed name */
+            label?: string;
+        };
+        /** ExerciseNameCandidateQueue */
+        ExerciseNameCandidateQueue: {
+            candidates: {
+                catalog_slug: string | null;
+                /** Format: date-time */
+                decided_at?: string | null;
+                /** Format: date-time */
+                first_seen_at?: string;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                last_seen_at?: string;
+                name: string;
+                owners_count: number;
+                /** @enum {string} */
+                status: "pending" | "approved" | "rejected";
+                uses_count: number;
+            }[];
+            /** @description The catalog entries an alias can join */
+            catalog: {
+                catalog_slug: string;
+                category: string | null;
+                name: string;
+            }[];
+        };
+        /** ExerciseSuggestion */
+        ExerciseSuggestion: {
+            /** @description The Palee catalog entry the name links to, if any */
+            catalog_slug: string | null;
+            /** @description For a palee item, the catalog category (strength, bodyweight, cardio, mobility, skill) */
+            hint: string | null;
+            /** @description The name to put in the field */
+            name: string;
+            /** @description How often the person (mine) or the box (box) used the name; 0 for palee */
+            uses_count: number;
+        };
+        /** ExerciseSuggestionGroup */
+        ExerciseSuggestionGroup: {
+            items: {
+                /** @description The Palee catalog entry the name links to, if any */
+                catalog_slug: string | null;
+                /** @description For a palee item, the catalog category (strength, bodyweight, cardio, mobility, skill) */
+                hint: string | null;
+                /** @description The name to put in the field */
+                name: string;
+                /** @description How often the person (mine) or the box (box) used the name; 0 for palee */
+                uses_count: number;
+            }[];
+            /** @enum {string} */
+            source: "mine" | "box" | "palee";
+        };
+        /**
+         * ExerciseSuggestionsResponse
+         * @description Groups in order mine, box, palee; a name appears once; empty groups are left out
+         */
+        ExerciseSuggestionsResponse: {
+            groups: {
+                items: {
+                    /** @description The Palee catalog entry the name links to, if any */
+                    catalog_slug: string | null;
+                    /** @description For a palee item, the catalog category (strength, bodyweight, cardio, mobility, skill) */
+                    hint: string | null;
+                    /** @description The name to put in the field */
+                    name: string;
+                    /** @description How often the person (mine) or the box (box) used the name; 0 for palee */
+                    uses_count: number;
+                }[];
+                /** @enum {string} */
+                source: "mine" | "box" | "palee";
+            }[];
+        };
         /** FacilityCheckIn */
         FacilityCheckIn: {
             already_checked_in?: boolean;
@@ -38217,6 +38817,32 @@ export interface components {
             /** @description Weeks the rules look back */
             window_weeks: number;
         };
+        /** MyProgressResetHistory */
+        MyProgressResetHistory: {
+            entries: {
+                active: boolean;
+                /** @description Box history: the metric over the days before the reset (`from`, `to`, `value`, `rows`) */
+                before?: {
+                    [key: string]: unknown;
+                } | null;
+                /** Format: uuid */
+                id: string;
+                metric_key: string;
+                /** Format: date-time */
+                reset_at: string;
+                /** Format: uuid */
+                reset_by: string | null;
+                /** @enum {string} */
+                scope: "organization" | "member";
+                /** Format: date-time */
+                undone_at: string | null;
+                /** Format: uuid */
+                undone_by: string | null;
+            }[];
+            page: number;
+            per_page: number;
+            total: number;
+        };
         /** MyProviders */
         MyProviders: {
             former: {
@@ -38377,6 +39003,10 @@ export interface components {
                     /** Format: date */
                     week_start: string;
                 }[];
+            };
+            /** @description ADR-462: metric key → the active reset baseline (counted only after it) */
+            metric_baselines?: {
+                [key: string]: string;
             };
             /** DepthQualities */
             qualities: {
@@ -38770,6 +39400,59 @@ export interface components {
              */
             remote: "ok" | "unavailable" | "skipped";
         };
+        /**
+         * NotificationBulkDelete
+         * @description Either `ids` (the notifications picked) or `filter` (every notification it matches, as the list shows them), never both. Not undoable.
+         */
+        NotificationBulkDelete: {
+            /**
+             * NotificationFilter
+             * @description Which notifications a bulk delete covers; an empty filter covers all.
+             */
+            filter?: {
+                /**
+                 * @description Only notifications of this category (ADR-199).
+                 * @enum {string}
+                 */
+                category?: "bookings" | "messages" | "community" | "coach" | "partners" | "journal" | "staff" | "account";
+                /** @description Only notifications received more than this many days ago. */
+                older_than_days?: number;
+                /**
+                 * @description `read`: only notifications already read. Default `all`.
+                 * @enum {string}
+                 */
+                state?: "all" | "read";
+            };
+            ids?: string[];
+        };
+        /** NotificationDeleted */
+        NotificationDeleted: {
+            deleted: boolean;
+            /** @description How long «Αναίρεση» may still restore it. */
+            restorable_for_seconds: number;
+        };
+        /** NotificationDeletedCount */
+        NotificationDeletedCount: {
+            deleted_count: number;
+        };
+        /**
+         * NotificationFilter
+         * @description Which notifications a bulk delete covers; an empty filter covers all.
+         */
+        NotificationFilter: {
+            /**
+             * @description Only notifications of this category (ADR-199).
+             * @enum {string}
+             */
+            category?: "bookings" | "messages" | "community" | "coach" | "partners" | "journal" | "staff" | "account";
+            /** @description Only notifications received more than this many days ago. */
+            older_than_days?: number;
+            /**
+             * @description `read`: only notifications already read. Default `all`.
+             * @enum {string}
+             */
+            state?: "all" | "read";
+        };
         /** NotificationPreference */
         NotificationPreference: {
             /**
@@ -38822,6 +39505,10 @@ export interface components {
             email?: boolean;
             in_app?: boolean;
             push?: boolean;
+        };
+        /** NotificationRestored */
+        NotificationRestored: {
+            restored: boolean;
         };
         /** NutritionPlan */
         NutritionPlan: {
@@ -54172,6 +54859,14 @@ export interface components {
             expected_version?: number;
             reason?: string | null;
         };
+        /** TrainsWithPaleeResponse */
+        TrainsWithPaleeResponse: {
+            trains_with_palee: boolean;
+        };
+        /** TrainsWithPaleeUpdate */
+        TrainsWithPaleeUpdate: {
+            trains_with_palee: boolean;
+        };
         /** TrialAsk */
         TrialAsk: {
             /** Format: uuid */
@@ -57952,6 +58647,8 @@ export interface operations {
                             role: string;
                             /** @description ADR-179: the zone this account's device last reported */
                             time_zone?: string | null;
+                            /** @description ADR-463: staff's answer to «do you train with Palee too?»; null = never asked, read as true */
+                            trains_with_palee?: boolean | null;
                             vendor: boolean;
                         } | null;
                     };
@@ -58726,6 +59423,8 @@ export interface operations {
                             role: string;
                             /** @description ADR-179: the zone this account's device last reported */
                             time_zone?: string | null;
+                            /** @description ADR-463: staff's answer to «do you train with Palee too?»; null = never asked, read as true */
+                            trains_with_palee?: boolean | null;
                             vendor: boolean;
                         };
                     };
@@ -58843,6 +59542,8 @@ export interface operations {
                         role: string;
                         /** @description ADR-179: the zone this account's device last reported */
                         time_zone?: string | null;
+                        /** @description ADR-463: staff's answer to «do you train with Palee too?»; null = never asked, read as true */
+                        trains_with_palee?: boolean | null;
                         vendor: boolean;
                     };
                 };
@@ -59225,6 +59926,8 @@ export interface operations {
                             role: string;
                             /** @description ADR-179: the zone this account's device last reported */
                             time_zone?: string | null;
+                            /** @description ADR-463: staff's answer to «do you train with Palee too?»; null = never asked, read as true */
+                            trains_with_palee?: boolean | null;
                             vendor: boolean;
                         };
                     };
@@ -73024,6 +73727,48 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.ExerciseSuggestionsController.index": {
+        parameters: {
+            query?: {
+                /** @description What the person typed so far (up to 80 characters are used) */
+                q?: string;
+                /** @description The box whose WOD names to include; ignored unless the person belongs to it */
+                organization_id?: string;
+                /** @description Suggestions per group, 1 to 10 (default 5) */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Exercise suggestions */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        groups: {
+                            items: {
+                                /** @description The Palee catalog entry the name links to, if any */
+                                catalog_slug: string | null;
+                                /** @description For a palee item, the catalog category (strength, bodyweight, cardio, mobility, skill) */
+                                hint: string | null;
+                                /** @description The name to put in the field */
+                                name: string;
+                                /** @description How often the person (mine) or the box (box) used the name; 0 for palee */
+                                uses_count: number;
+                            }[];
+                            /** @enum {string} */
+                            source: "mine" | "box" | "palee";
+                        }[];
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.CommunityPostController.feed": {
         parameters: {
             query?: {
@@ -78555,6 +79300,10 @@ export interface operations {
                             filter: {
                                 [key: string]: unknown;
                             };
+                            /** @description ADR-462: metric key → the active reset baseline (counted only after it) */
+                            metric_baselines?: {
+                                [key: string]: string;
+                            };
                             pr_timeline: ({
                                 /**
                                  * EntrySource
@@ -78714,6 +79463,10 @@ export interface operations {
                                 week_start: string;
                             }[];
                         };
+                        /** @description ADR-462: metric key → the active reset baseline (counted only after it) */
+                        metric_baselines?: {
+                            [key: string]: string;
+                        };
                         /** DepthQualities */
                         qualities: {
                             felt_entries: number;
@@ -78735,6 +79488,135 @@ export interface operations {
                         /** Format: date */
                         to: string;
                         weeks: number;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.ProgressMetricResetController.reset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A metric key of the registry, e.g. training.class_fill_rate */
+                metric_key: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reset */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** AnalyticsMetricReset */
+                        reset: {
+                            /** Format: uuid */
+                            id: string;
+                            metric_key: string;
+                            /** Format: date-time */
+                            reset_at: string;
+                            /** Format: uuid */
+                            reset_by: string | null;
+                            /** @enum {string} */
+                            scope: "organization" | "member";
+                            /** Format: date-time */
+                            undone_at: string | null;
+                            /** Format: uuid */
+                            undone_by: string | null;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.ProgressMetricResetController.index": {
+        parameters: {
+            query?: {
+                page?: number;
+                per_page?: number;
+                metric_key?: string;
+                /** @description Box history: the days before each reset its `before` values cover */
+                days?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reset history */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        entries: {
+                            active: boolean;
+                            /** @description Box history: the metric over the days before the reset (`from`, `to`, `value`, `rows`) */
+                            before?: {
+                                [key: string]: unknown;
+                            } | null;
+                            /** Format: uuid */
+                            id: string;
+                            metric_key: string;
+                            /** Format: date-time */
+                            reset_at: string;
+                            /** Format: uuid */
+                            reset_by: string | null;
+                            /** @enum {string} */
+                            scope: "organization" | "member";
+                            /** Format: date-time */
+                            undone_at: string | null;
+                            /** Format: uuid */
+                            undone_by: string | null;
+                        }[];
+                        page: number;
+                        per_page: number;
+                        total: number;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.ProgressMetricResetController.undo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reset */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** AnalyticsMetricReset */
+                        reset: {
+                            /** Format: uuid */
+                            id: string;
+                            metric_key: string;
+                            /** Format: date-time */
+                            reset_at: string;
+                            /** Format: uuid */
+                            reset_by: string | null;
+                            /** @enum {string} */
+                            scope: "organization" | "member";
+                            /** Format: date-time */
+                            undone_at: string | null;
+                            /** Format: uuid */
+                            undone_by: string | null;
+                        };
                     };
                 };
             };
@@ -79729,6 +80611,43 @@ export interface operations {
                     "application/json": {
                         completed_tours: string[];
                     };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MeController.update_trains_with_palee": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    trains_with_palee: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Stored answer */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        trains_with_palee: boolean;
+                    };
+                };
+            };
+            /** @description Validation errors */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
                 };
             };
         };
@@ -81778,6 +82697,11 @@ export interface operations {
             query?: {
                 limit?: number;
                 cursor?: string;
+                state?: "all" | "read";
+                older_than_days?: number;
+                category?: "bookings" | "messages" | "community" | "coach" | "partners" | "journal" | "staff" | "account";
+                /** @description Also answer `matching_count`: how many notifications match the filter. */
+                include_count?: boolean;
             };
             header?: never;
             path?: never;
@@ -81792,6 +82716,8 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** @description With include_count: how many notifications match the filter. */
+                        matching_count?: number | null;
                         next_cursor: string | null;
                         notifications: {
                             /** Format: uuid */
@@ -81810,6 +82736,64 @@ export interface operations {
                             user_id: string;
                         }[];
                         unread_count: number;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.NotificationController.bulk_delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * NotificationFilter
+                     * @description Which notifications a bulk delete covers; an empty filter covers all.
+                     */
+                    filter?: {
+                        /**
+                         * @description Only notifications of this category (ADR-199).
+                         * @enum {string}
+                         */
+                        category?: "bookings" | "messages" | "community" | "coach" | "partners" | "journal" | "staff" | "account";
+                        /** @description Only notifications received more than this many days ago. */
+                        older_than_days?: number;
+                        /**
+                         * @description `read`: only notifications already read. Default `all`.
+                         * @enum {string}
+                         */
+                        state?: "all" | "read";
+                    };
+                    ids?: string[];
+                };
+            };
+        };
+        responses: {
+            /** @description Deleted count */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        deleted_count: number;
+                    };
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code?: string;
+                        error: string;
                     };
                 };
             };
@@ -82224,6 +83208,45 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.NotificationController.delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Notification ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Delete result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        deleted: boolean;
+                        /** @description How long «Αναίρεση» may still restore it. */
+                        restorable_for_seconds: number;
+                    };
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code?: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.NotificationController.mark_clicked": {
         parameters: {
             query?: never;
@@ -82289,6 +83312,43 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.NotificationController.restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Notification ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Restore result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        restored: boolean;
+                    };
+                };
+            };
+            /** @description No longer restorable */
+            410: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code?: string;
                         error: string;
                     };
                 };
@@ -82458,12 +83518,164 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminAnalyticsController.reset_metric": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A metric key of the registry, e.g. training.class_fill_rate */
+                metric_key: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reset */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** AnalyticsMetricReset */
+                        reset: {
+                            /** Format: uuid */
+                            id: string;
+                            metric_key: string;
+                            /** Format: date-time */
+                            reset_at: string;
+                            /** Format: uuid */
+                            reset_by: string | null;
+                            /** @enum {string} */
+                            scope: "organization" | "member";
+                            /** Format: date-time */
+                            undone_at: string | null;
+                            /** Format: uuid */
+                            undone_by: string | null;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminAnalyticsController.resets": {
+        parameters: {
+            query?: {
+                page?: number;
+                per_page?: number;
+                metric_key?: string;
+                /** @description Box history: the days before each reset its `before` values cover */
+                days?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reset history */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        entries: {
+                            active: boolean;
+                            /** @description Box history: the metric over the days before the reset (`from`, `to`, `value`, `rows`) */
+                            before?: {
+                                [key: string]: unknown;
+                            } | null;
+                            /** Format: uuid */
+                            id: string;
+                            metric_key: string;
+                            /** Format: date-time */
+                            reset_at: string;
+                            /** Format: uuid */
+                            reset_by: string | null;
+                            /** @enum {string} */
+                            scope: "organization" | "member";
+                            /** Format: date-time */
+                            undone_at: string | null;
+                            /** Format: uuid */
+                            undone_by: string | null;
+                        }[];
+                        page: number;
+                        per_page: number;
+                        total: number;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminAnalyticsController.undo_reset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reset */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** AnalyticsMetricReset */
+                        reset: {
+                            /** Format: uuid */
+                            id: string;
+                            metric_key: string;
+                            /** Format: date-time */
+                            reset_at: string;
+                            /** Format: uuid */
+                            reset_by: string | null;
+                            /** @enum {string} */
+                            scope: "organization" | "member";
+                            /** Format: date-time */
+                            undone_at: string | null;
+                            /** Format: uuid */
+                            undone_by: string | null;
+                        };
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminAnalyticsController.summary": {
         parameters: {
             query?: {
-                days?: number;
                 /** @description ADR-186: comma-separated branch ids to filter by */
                 location_ids?: string;
+                /** @description First gym-local day of the period (included) */
+                from?: string;
+                /** @description Last gym-local day of the period (included; default today) */
+                to?: string;
+                /** @description Without from: the period's length in days, ending at `to` (default 30) */
+                days?: number;
+                /** @description Comma-separated class type ids */
+                class_type_ids?: string;
+                /** @description Comma-separated class levels: beginner, all_levels, advanced */
+                levels?: string;
+                /** @description Comma-separated coach user ids */
+                coach_ids?: string;
+                /** @description Gym-local start: morning, midday, afternoon, evening */
+                time_of_day?: string;
+                /** @description Comma-separated package families */
+                package_families?: string;
+                /** @description Comma-separated package ids */
+                package_ids?: string;
+                /** @description Time since joining: lt_3m, 3_12m, gt_12m */
+                tenure_bands?: string;
+                /** @description Opt-in age bands (k-anonymous): under_18, 18_34, 35_44, 45_54, 55_64, 65_plus, unknown */
+                age_bands?: string;
+                /** @description Opt-in gender (k-anonymous): women, men, unknown */
+                genders?: string;
             };
             header?: never;
             path?: never;
@@ -82478,6 +83690,78 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
+                        /** AnalyticsFilter */
+                        filter: {
+                            age_bands: string[];
+                            class_type_ids: string[];
+                            coach_ids: string[];
+                            days: number;
+                            /** Format: date */
+                            from: string;
+                            genders: string[];
+                            levels: string[];
+                            location_ids: string[];
+                            package_families: string[];
+                            package_ids: string[];
+                            /** Format: date */
+                            previous_from: string;
+                            /** Format: date */
+                            previous_to: string;
+                            tenure_bands: string[];
+                            time_of_day: string[];
+                            /** Format: date */
+                            to: string;
+                            v: number;
+                        };
+                        /** @description ADR-462: every KPI by its registry key */
+                        kpis: {
+                            [key: string]: {
+                                delta: number | null;
+                                key: string;
+                                /** @enum {string} */
+                                kind: "flow" | "snapshot" | "breakdown";
+                                /** @description The previous equal-length period */
+                                previous: number | null;
+                                previous_rows: ({
+                                    key?: (string | number) | null;
+                                    suppressed?: boolean;
+                                } & {
+                                    [key: string]: unknown;
+                                })[];
+                                previous_suppressed: boolean;
+                                rows: ({
+                                    key?: (string | number) | null;
+                                    suppressed?: boolean;
+                                } & {
+                                    [key: string]: unknown;
+                                })[];
+                                /**
+                                 * Format: date-time
+                                 * @description The active reset baseline: only data after it counts
+                                 */
+                                since: string | null;
+                                /** @description k-anonymity: fewer than 5 people; no number is returned */
+                                suppressed: boolean;
+                                /** @enum {string} */
+                                unit: "count" | "percent" | "ratio" | "cents" | "days" | "per_1000" | "rows";
+                                /** @description Nil when not computable or suppressed */
+                                value: number | null;
+                            };
+                        };
+                        /** AnalyticsPeriod */
+                        period: {
+                            days: number;
+                            /** Format: date */
+                            from: string;
+                            /** Format: date */
+                            previous_from: string;
+                            /** Format: date */
+                            previous_to: string;
+                            time_zone: string;
+                            /** Format: date */
+                            to: string;
+                        };
+                    } & {
                         [key: string]: unknown;
                     };
                 };
@@ -156898,6 +158182,168 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.PlatformExerciseCatalogController.index": {
+        parameters: {
+            query?: {
+                status?: "pending" | "approved" | "rejected";
+                /** @description Only names at least this many people or boxes typed (default 2) */
+                min_owners?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Candidates */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        candidates: {
+                            catalog_slug: string | null;
+                            /** Format: date-time */
+                            decided_at?: string | null;
+                            /** Format: date-time */
+                            first_seen_at?: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            last_seen_at?: string;
+                            name: string;
+                            owners_count: number;
+                            /** @enum {string} */
+                            status: "pending" | "approved" | "rejected";
+                            uses_count: number;
+                        }[];
+                        /** @description The catalog entries an alias can join */
+                        catalog: {
+                            catalog_slug: string;
+                            category: string | null;
+                            name: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PlatformExerciseCatalogController.decide": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description For an alias: the entry it joins */
+                    catalog_slug?: string;
+                    /** @enum {string} */
+                    category?: "strength" | "bodyweight" | "cardio" | "mobility" | "skill";
+                    /** @enum {string} */
+                    decision: "entry" | "alias" | "reject";
+                    /** @description Defaults to the typed name */
+                    label?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Decided */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** ExerciseNameCandidate */
+                        candidate: {
+                            catalog_slug: string | null;
+                            /** Format: date-time */
+                            decided_at?: string | null;
+                            /** Format: date-time */
+                            first_seen_at?: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            last_seen_at?: string;
+                            name: string;
+                            owners_count: number;
+                            /** @enum {string} */
+                            status: "pending" | "approved" | "rejected";
+                            uses_count: number;
+                        };
+                    };
+                };
+            };
+            /** @description Error */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.PlatformExerciseCatalogController.audit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Audit */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        events: {
+                            /** @enum {string} */
+                            action: "approve_entry" | "approve_alias" | "reject";
+                            /** Format: uuid */
+                            actor_user_id?: string | null;
+                            /** Format: date-time */
+                            at: string;
+                            /** Format: uuid */
+                            candidate_id?: string | null;
+                            catalog_slug?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            metadata?: Record<string, never>;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.PlatformFoodMissesController.index": {
         parameters: {
             query?: {
@@ -161374,6 +162820,8 @@ export interface operations {
                     beaten_on: string;
                     comments?: components["schemas"]["JournalCommentInput"][];
                     current_score: number;
+                    /** @description Palee catalog slug of a picked suggestion (ADR-461); the name stays as typed */
+                    exercise_ref?: string | null;
                     higher_is_better?: boolean;
                     name: string;
                     /** @description Gym the PR was achieved in (ADR-129). Must be one of the caller's active memberships; the gym's coaches can then read it. Omit for a personal PR. */
@@ -161528,6 +162976,8 @@ export interface operations {
                     beaten_on?: string;
                     comments?: components["schemas"]["JournalCommentInput"][];
                     current_score?: number;
+                    /** @description Palee catalog slug of a picked suggestion (ADR-461); the name stays as typed */
+                    exercise_ref?: string | null;
                     higher_is_better?: boolean;
                     name?: string;
                     /** @description Optional typed result context. Accepted keys: reps, sets, load_kg, duration_seconds, distance_m, calories, rounds, variation. */
@@ -161585,6 +163035,8 @@ export interface operations {
                     beaten_on?: string;
                     comments?: components["schemas"]["JournalCommentInput"][];
                     current_score?: number;
+                    /** @description Palee catalog slug of a picked suggestion (ADR-461); the name stays as typed */
+                    exercise_ref?: string | null;
                     higher_is_better?: boolean;
                     name?: string;
                     /** @description Optional typed result context. Accepted keys: reps, sets, load_kg, duration_seconds, distance_m, calories, rounds, variation. */

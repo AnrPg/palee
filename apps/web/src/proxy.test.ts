@@ -93,6 +93,29 @@ describe("retired organization slugs (ADR-122)", () => {
   });
 });
 
+describe("pages that moved to Μάρκετινγκ (ANR 2026-11-04)", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  test("an old promotions link opens the campaign at its new home, keeping the business", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response(JSON.stringify({ code: "organization_slug_alias_not_found" }), { status: 404 })),
+    );
+    const response = await proxy(new NextRequest("https://gym.example/org/box/admin/finance?tab=promotions&campaign=c1"));
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toBe("https://gym.example/org/box/admin/marketing/promotions?campaign=c1");
+  });
+
+  test("the old challenges page moves; a finance tab that stayed does not", async () => {
+    const moved = await proxy(new NextRequest("http://localhost/admin/challenges"));
+    expect(moved.headers.get("location")).toBe("http://localhost/admin/marketing/challenges");
+    const stayed = await proxy(new NextRequest("http://localhost/admin/finance?tab=packages"));
+    expect(stayed.headers.get("location")).toBeNull();
+  });
+});
+
 describe("map origins", () => {
   test("allow the map style's origin plus any extra tile origins", async () => {
     const { configuredMapOrigins } = await import("@/lib/map-style");

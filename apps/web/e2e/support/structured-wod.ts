@@ -132,6 +132,8 @@ export async function stubCoach(page: Page, workout: Record<string, unknown> = f
       server.saves.push(body);
       return json(route, { workout: { ...server.workout, ...body, status: "published" } });
     }
+    // ADR-461: the exercise-name field asks for suggestions while typing.
+    if (path === "/api/me/exercise-suggestions") return json(route, { groups: [] });
     if (path === "/api/admin/workouts/dsl/manual") {
       return json(route, { version: 1, markdown: "", templates: { workout: "", sections: {} }, vocabulary: { version: 1, exercise_catalog: exerciseCatalog } });
     }
@@ -355,6 +357,7 @@ export async function stubMember(page: Page) {
     const path = tenantless(new URL(route.request().url()).pathname);
     if (path === "/api/auth/refresh") return json(route, { access_token: memberToken(), refresh_token: "refresh" });
     if (path === "/api/auth/me") return json(route, member);
+    if (path === "/api/me/exercise-suggestions") return json(route, { groups: [] });
     if (path === "/api/memberships") {
       return json(route, [
         {

@@ -4,8 +4,8 @@ import type { components } from "@/api/generated/schema";
 /**
  * Partner perks (ADR-191): offers of partner businesses that the box
  * publishes for its own clients (never in Γύρω μου). Members claim them in
- * Εγώ › Πληρωμές › Προσφορές; staff manage them in Οικονομικά › Προσφορές ›
- * Συνεργατών. How the store redeems one is up to the partner
+ * Εγώ › Πληρωμές › Προσφορές; staff manage them in Μάρκετινγκ › Προσφορές
+ * συνεργατών. How the store redeems one is up to the partner
  * (`redemption_method`):
  *   - partner-issued, checked in the partner's own system: `shared_code`
  *     (one code for everybody, the default), `code_pool` (the partner's
@@ -95,7 +95,7 @@ export async function refreshPerkLink(token: string, claimId: string) {
   return data.claim;
 }
 
-// Staff (Οικονομικά › Προσφορές › Συνεργατών) --------------------------------
+// Staff (Μάρκετινγκ › Προσφορές συνεργατών) ---------------------------------
 
 /** GET /api/org/{slug}/admin/perks */
 export async function fetchStaffPerks(token: string) {

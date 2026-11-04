@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { configuredMapOrigins } from "@/lib/map-style";
+import { movedAdminPageRedirect } from "@/lib/marketing-routes";
 import { retiredOrganizationSlugRedirect } from "@/lib/organization-slug-alias";
 import { statusHostRewrite } from "@/lib/service-status";
 import { appPageRedirect, isAppHost, isSitePath, lookupSiteHost, SITE_TAG_ORIGINS, siteRewritePath } from "@/lib/site-host";
@@ -22,6 +23,11 @@ export async function proxy(request: NextRequest) {
   if (retiredSlugTarget) {
     return applySecurityHeaders(NextResponse.redirect(retiredSlugTarget, 308));
   }
+
+  // ANR 2026-11-04: challenges, promotions, partner perks and referrals moved
+  // to Στατιστικά & Μάρκετινγκ › Μάρκετινγκ; their old addresses follow them.
+  const movedPage = request.method === "GET" || request.method === "HEAD" ? movedAdminPageRedirect(request.nextUrl) : null;
+  if (movedPage) return applySecurityHeaders(NextResponse.redirect(movedPage, 307));
 
   // ADR-354, ADR-388: a box's own domain serves its website from the root.
   const host = request.headers.get("host") ?? request.nextUrl.host;

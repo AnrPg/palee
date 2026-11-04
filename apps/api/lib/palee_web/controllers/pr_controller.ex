@@ -32,6 +32,12 @@ defmodule PaleeWeb.PRController do
 
   @pr_fields %{
     name: %Schema{type: :string},
+    exercise_ref: %Schema{
+      type: :string,
+      nullable: true,
+      maxLength: 120,
+      description: "Palee catalog slug of a picked suggestion (ADR-461); the name stays as typed"
+    },
     current_score: %Schema{type: :number},
     unit: %Schema{
       type: :string,

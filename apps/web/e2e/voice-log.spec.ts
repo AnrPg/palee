@@ -82,6 +82,8 @@ async function stubMember(page: Page, extra: Handler) {
     }
     if (path.startsWith("/api/notifications")) return json(route, { notifications: [] });
     if (path === "/api/me/training-log/sources") return json(route, { available_sources: ["class", "freeform"], classes: [], assignments: [], library_workouts: [] });
+    // ADR-461: exercise-name suggestions under the training-log, PR and note fields.
+    if (path === "/api/me/exercise-suggestions") return json(route, { groups: [] });
     if (path === "/api/me/journal") return json(route, { items: [], next_cursor: null });
     return json(route, {});
   });

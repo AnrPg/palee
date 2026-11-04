@@ -125,7 +125,7 @@ export function AdminHome() {
             { label: i18n("workoutList1f538d5"), route: "/admin/workouts", href: "/admin/workouts" },
             { label: i18n("workoutCreation3d2fe38"), route: "/admin/workouts/new", href: "/admin/workouts/new" },
             { label: i18n("schedule0a8adac"), route: "/admin/schedule", href: "/admin/schedule" },
-            { label: i18n("challengesff38765"), route: "/admin/challenges", href: "/admin/challenges" },
+            { label: i18n("challengesff38765"), route: "/admin/marketing/challenges", href: "/admin/marketing/challenges" },
             { label: i18n("settingsc7f73bb"), route: "/admin/settings", href: "/admin/settings" },
             { label: i18n("coachingfd8b79f"), route: "/admin/coaching", href: "/admin/coaching" },
             { label: i18n("metricsddf6a1f"), route: "/admin/metrics", href: "/admin/metrics" },

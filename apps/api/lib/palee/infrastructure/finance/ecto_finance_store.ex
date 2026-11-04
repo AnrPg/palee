@@ -3704,12 +3704,15 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
   @impl true
   def financial_summary(params) do
     params = string_key_map(params || %{})
-    since = summary_since(params["days"])
+    # ADR-462: an explicit period (`since`/`until`, gym-local dates, both
+    # included) wins over `days` for the paid revenue of the window.
+    since = summary_since(params["since"] || params["days"])
     users = branch_users(params)
     scope = %{users: users, location_ids: branch_location_ids(params)}
+    window_scope = Map.put(scope, :until, summary_until(params["until"]))
     renewal_metrics = renewal_invoice_metrics(users)
     first_month = GymClock.today() |> Date.beginning_of_month() |> Date.shift(month: -23)
-    streams = revenue_by_stream(since, scope)
+    streams = revenue_by_stream(since, window_scope)
 
     {aggregate_status, aggregate_error, aggregate_rows} =
       case RepoContext.current_setting("app.organization_id") do
@@ -3765,7 +3768,7 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
       totals: %{
         active_memberships: active_membership_count(users),
         expiring_memberships: length(list_expiring_memberships(30, users)),
-        paid_revenue_cents: total_paid_revenue_cents(since, scope),
+        paid_revenue_cents: total_paid_revenue_cents(since, window_scope),
         revenue_by_stream: streams.net_by_stream,
         credit_balance_cents: total_credit_balance_cents(users),
         outstanding_invoice_balance_cents: total_outstanding_invoice_balance_cents(users),
@@ -5918,6 +5921,7 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
     |> for_payment_scope(scope)
     |> where([payment], payment.payment_status == "paid")
     |> where([payment], payment.paid_on >= type(^since, :date))
+    |> paid_until(Map.get(scope, :until))
     |> where([payment], is_nil(payment.deleted_at))
     |> join(:left, [payment], invoice in FinanceInvoice,
       on: invoice.id == payment.finance_invoice_id
@@ -6311,6 +6315,15 @@ defmodule Palee.Infrastructure.Finance.EctoFinanceStore do
     |> Enum.map(&Ecto.UUID.dump!/1)
   end
 
+  defp paid_until(query, nil), do: query
+
+  defp paid_until(query, %Date{} = until),
+    do: where(query, [payment], payment.paid_on <= type(^until, :date))
+
+  defp summary_until(%Date{} = until), do: until
+  defp summary_until(_until), do: nil
+
+  defp summary_since(%Date{} = since), do: since
   defp summary_since(nil), do: Date.add(GymClock.today(), -30)
 
   defp summary_since(days) when is_integer(days) do

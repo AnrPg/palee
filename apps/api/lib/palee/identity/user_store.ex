@@ -82,6 +82,10 @@ defmodule Palee.Identity.UserStore do
   def update_time_zone(user_id, time_zone), do: impl().update_time_zone(user_id, time_zone)
 
   @impl true
+  def update_trains_with_palee(user_id, trains?),
+    do: impl().update_trains_with_palee(user_id, trains?)
+
+  @impl true
   def search_users(query), do: impl().search_users(query)
 
   @impl true

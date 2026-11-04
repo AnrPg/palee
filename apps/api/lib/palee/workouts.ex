@@ -40,7 +40,7 @@ defmodule Palee.Workouts do
     MaterializeWorkout
   }
 
-  alias Palee.Workouts.{GoalStore, WorkoutStore}
+  alias Palee.Workouts.{ExerciseCatalogStore, GoalStore, WorkoutStore}
 
   def with_tenant_context(context, fun) when is_function(fun, 0),
     do: WorkoutStore.with_tenant_context(context, fun)
@@ -93,6 +93,69 @@ defmodule Palee.Workouts do
     as: :same?
 
   def exercise_exists?(context, id), do: WorkoutStore.exercise_exists?(context, id)
+
+  # ADR-461: exercise names are free text with suggestions.
+  defdelegate exercise_name_rows(workout),
+    to: Palee.Workouts.Domain.ExerciseNames,
+    as: :workout_rows
+
+  defdelegate group_exercise_suggestions(hits, limit),
+    to: Palee.Workouts.Domain.ExerciseNames,
+    as: :group
+
+  @doc "ADR-461: the Palee catalog for suggestions (built-in entries and approved additions)."
+  def exercise_catalog_documents,
+    do: Palee.Workouts.Domain.ExerciseNames.catalog_documents(ExerciseCatalogStore.additions())
+
+  def exercise_catalog_slug?(slug, docs \\ exercise_catalog_documents()),
+    do: is_binary(slug) and Enum.any?(docs, &(&1.catalog_slug == slug))
+
+  @doc "ADR-461: the Quick Text manual with the approved catalog additions in its vocabulary."
+  def dsl_manual_with_additions do
+    manual = Manual.export()
+
+    put_in(
+      manual,
+      [:vocabulary, :exercise_catalog],
+      Palee.Workouts.Domain.WorkoutDsl.ExerciseCatalog.export(ExerciseCatalogStore.additions())
+    )
+  end
+
+  defdelegate exercise_name_entries(rows, catalog),
+    to: Palee.Workouts.Domain.ExerciseNames,
+    as: :entries
+
+  defdelegate note_exercise_name_candidates(entries, now),
+    to: ExerciseCatalogStore,
+    as: :note_candidates
+
+  def list_exercise_name_candidates(status, min_owners, limit),
+    do: ExerciseCatalogStore.list_candidates(status, min_owners, limit)
+
+  defdelegate exercise_catalog_audit_events(limit), to: ExerciseCatalogStore, as: :audit_events
+
+  @doc """
+  ADR-461: the Palee team's decision on a candidate: checked against the
+  current catalog, then written with its audit event in one transaction.
+  """
+  def decide_exercise_name_candidate(candidate_id, params, actor_user_id, now) do
+    with %{} = candidate <-
+           ExerciseCatalogStore.get_candidate(candidate_id) || {:error, :not_found},
+         {:ok, decision} <-
+           Palee.Workouts.Domain.ExerciseCatalogReview.decide(
+             candidate,
+             params,
+             exercise_catalog_documents()
+           ) do
+      ExerciseCatalogStore.record_decision(
+        candidate.id,
+        decision,
+        actor_user_id,
+        Map.take(params, ["decision", "label", "category", "catalog_slug"]),
+        now
+      )
+    end
+  end
 
   defdelegate list_assigned_workouts_for_admin(context, start_date, end_date),
     to: GetAthleteWeekView,

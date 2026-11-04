@@ -62,3 +62,12 @@ export async function reportMyTimeZone(token: string, timeZone: string) {
     body: { time_zone: timeZone },
   });
 }
+
+/** ADR-463: staff say whether they also train with Palee (first run, Settings). */
+export async function setTrainsWithPalee(token: string, trainsWithPalee: boolean) {
+  return apiRequest<{ trains_with_palee: boolean }>("/me/trains-with-palee", {
+    method: "PUT",
+    token,
+    body: { trains_with_palee: trainsWithPalee },
+  });
+}

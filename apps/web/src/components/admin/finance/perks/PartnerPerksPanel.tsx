@@ -24,7 +24,7 @@ const PHASE_TONE: Record<string, string> = {
 };
 
 /**
- * Οικονομικά › Προσφορές › Συνεργατών (ADR-191): the box's partner perks
+ * Μάρκετινγκ › Προσφορές συνεργατών (ADR-191; was Οικονομικά until 2026-11-04): the box's partner perks
  * with how many members claimed the code and how many used it, and for a
  * code pool how many were handed out. A row opens the form.
  * Partner perks never appear in Γύρω μου: only the box's clients see them.
@@ -42,12 +42,12 @@ export function PartnerPerksPanel() {
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-4">
         <p className="text-sm font-semibold uppercase tracking-[0.22em]" style={{ color: "var(--dim)" }}>{t("listTitle", { count: list.length })}</p>
-        <button type="button" className="rounded-full px-4 py-2 text-sm font-semibold" style={SPARK_CREATE_STYLE} onClick={() => setOpen("new")} data-testid="perk-new" {...guideAnchor("finance.perks.new")}>
+        <button type="button" className="rounded-full px-4 py-2 text-sm font-semibold" style={SPARK_CREATE_STYLE} onClick={() => setOpen("new")} data-testid="perk-new" {...guideAnchor("marketing.perks.new")}>
           {t("new")}
         </button>
       </div>
 
-      <div {...guideAnchor("finance.perks.list")} className="overflow-hidden rounded-[2rem]" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
+      <div {...guideAnchor("marketing.perks.list")} className="overflow-hidden rounded-[2rem]" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
         {perks.isLoading ? (
           <p className="px-6 py-8 text-sm" style={{ color: "var(--dim)" }}>{t("loading")}</p>
         ) : perks.isError ? (

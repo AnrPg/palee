@@ -23,6 +23,9 @@ defmodule Palee.Analytics.Domain.TenantDataPolicy do
               %{table: "communication_threads"},
               %{table: "notification_click_events"},
               %{table: "push_dispatch_attempts"},
+              # ADR-462: the box's metric baselines (a member's own rows
+              # carry no organization and are theirs, not the box's).
+              %{table: "analytics_metric_resets"},
               %{table: "analytics_events"}
             ]
           })

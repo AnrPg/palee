@@ -1,5 +1,6 @@
 "use client";
 
+import { BackButton } from "@/components/ui/BackLink";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -19,7 +20,7 @@ import {
 } from "@/api/box-site";
 import { useSession } from "@/components/session-provider";
 import { inputClass, inputStyle, primaryButtonClass, primaryButtonStyle, secondaryButtonClass, secondaryButtonStyle, StatusText } from "@/components/staff/staff-ui";
-import { BackButton, BackLink } from "@/components/ui/BackLink";
+import { BackLink } from "@/components/ui/BackLink";
 import { localizeError } from "@/i18n/presentation";
 import { useUiTranslations } from "@/i18n/ui";
 import { adminHref, useOrganizationSlug } from "@/lib/organization-slug";
@@ -365,7 +366,7 @@ function OneByOne({ token, page, onPage, onClose }: { token: string; page: Page;
   return (
     <div className="mx-auto flex w-full max-w-xl flex-col gap-4" data-testid="site-translations-one-by-one-view">
       <div className="flex items-center justify-between gap-3 text-sm">
-        <BackButton onClick={onClose} className="min-h-11 font-semibold" style={{ color: "var(--text-soft)" }}>
+        <BackButton onClick={onClose} className="font-semibold" style={{ color: "var(--text-soft)" }}>
           {t("backToList")}
         </BackButton>
         <span style={{ color: "var(--dim)" }}>{t("left", { left: queue.length - index, total: queue.length })}</span>
