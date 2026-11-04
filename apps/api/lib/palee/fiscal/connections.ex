@@ -266,7 +266,7 @@ defmodule Palee.Fiscal.Connections do
   end
 
   @doc """
-  ADR-451: tells the staff who manage billing that `count` documents of
+  ADR-530: tells the staff who manage billing that `count` documents of
   connection `kind` were not reported (refused, or out of attempts). The
   notifier sends it at most once a day per person.
   """

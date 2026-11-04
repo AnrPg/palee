@@ -97,7 +97,7 @@ defmodule Palee.Workers.CheckFiscalConnectionsJobTest do
     Enum.map(rows, &hd/1)
   end
 
-  test "documents AADE did not accept reach the billing staff once a day (ADR-451)", ctx do
+  test "documents AADE did not accept reach the billing staff once a day (ADR-530)", ctx do
     notices = Palee.Application.Fiscal.ConnectionFailureNotices
     context = %{organization_id: ctx.organization.id}
 

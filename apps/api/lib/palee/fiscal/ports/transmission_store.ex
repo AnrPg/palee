@@ -26,7 +26,7 @@ defmodule Palee.Fiscal.Ports.TransmissionStore do
   @callback get_transmission(context(), id()) :: map() | nil
   @callback transmissions_for_documents(context(), [id()]) :: %{id() => map()}
   @doc """
-  ADR-451: renews the claim of rows still being sent (`sending`), so a
+  ADR-530: renews the claim of rows still being sent (`sending`), so a
   slow authority never lets another worker take them over.
   """
   @callback touch_claims(context(), [id()], DateTime.t()) :: :ok

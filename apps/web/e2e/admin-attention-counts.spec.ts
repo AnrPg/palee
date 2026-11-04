@@ -49,7 +49,7 @@ async function stubApi(page: Page, locale: string, counts: { expiring: number; o
   await page.route("**/admin/finance/queues**", (route) =>
     route.fulfill(json({ queues: { overdue_invoices: rows(counts.overdue), pending_payments: rows(counts.pending), pending_referral_rewards: [] } })),
   );
-  // ADR-451: documents the tax authority refused or that ran out of attempts.
+  // ADR-530: documents the tax authority refused or that ran out of attempts.
   await page.route("**/admin/fiscal/transmissions**", (route) =>
     route.fulfill(json({ transmissions: [], total: 0, counts: { accepted: 9, rejected: counts.notReported ?? 0, failed: 0 } })),
   );

@@ -1480,7 +1480,7 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
     }
   end
 
-  # ADR-451: documents the tax authority refused or that ran out of attempts.
+  # ADR-530: documents the tax authority refused or that ran out of attempts.
   def build("fiscal_documents_not_reported", payload, localize) do
     %{
       title: localize.("Documents did not reach the tax authority", %{}),

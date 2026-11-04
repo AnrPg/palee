@@ -1053,7 +1053,7 @@ defmodule Palee.Notifications do
         url: field(payload, :url)
       })
 
-  # ADR-451: documents that did not reach the tax authority (refused or out
+  # ADR-530: documents that did not reach the tax authority (refused or out
   # of attempts); to the staff who manage billing, once a day at most.
   def process_event("fiscal_documents_not_reported", payload),
     do:
