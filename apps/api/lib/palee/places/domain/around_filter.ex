@@ -219,7 +219,7 @@ defmodule Palee.Places.Domain.AroundFilter do
   end
 
   # ADR-490: «Όλα τα επίπεδα» stopped being a level of its own.
-  defp legacy_levels(values) when is_list(values), do: List.delete(values, "all_levels")
+  defp legacy_levels(values) when is_list(values), do: Enum.reject(values, &(&1 == "all_levels"))
   defp legacy_levels(values), do: values
 
   defp tags(_field, nil, _vocabulary), do: {:ok, []}

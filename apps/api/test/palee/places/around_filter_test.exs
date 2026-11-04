@@ -79,7 +79,9 @@ defmodule Palee.Places.Domain.AroundFilterTest do
     assert {:error, [levels: _]} = AroundFilter.parse(%{levels: ["expert"]}, @vocabulary)
 
     # ADR-490: the retired all_levels from older clients and saved filters is dropped.
-    assert {:ok, legacy} = AroundFilter.parse(%{levels: ["all_levels", "beginner"]}, @vocabulary)
+    assert {:ok, legacy} =
+             AroundFilter.parse(%{levels: ["all_levels", "beginner", "all_levels"]}, @vocabulary)
+
     assert legacy.levels == ["beginner"]
 
     viewer = %{user_id: Ecto.UUID.generate(), organization_ids: []}
