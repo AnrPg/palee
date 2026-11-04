@@ -10,7 +10,7 @@ defmodule Palee.CoachPay.PayItem do
 
   @primary_key {:id, :binary_id, autogenerate: true}
 
-  @fields ~w(kind name amount_cents unit roles weekly_threshold currency amount_basis archived_at
+  @fields ~w(kind name amount_cents unit roles weekly_threshold frequency currency amount_basis archived_at
              created_by_id)a
 
   schema "coach_pay_items" do
@@ -21,6 +21,7 @@ defmodule Palee.CoachPay.PayItem do
     field :unit, :string
     field :roles, {:array, :string}, default: []
     field :weekly_threshold, :integer
+    field :frequency, :string
     field :currency, :string
     field :amount_basis, :string, default: "gross"
     field :archived_at, :utc_datetime_usec
@@ -36,6 +37,7 @@ defmodule Palee.CoachPay.PayItem do
     |> check_constraint(:unit, name: :coach_pay_items_unit_check)
     |> check_constraint(:amount_cents, name: :coach_pay_items_amount_check)
     |> check_constraint(:weekly_threshold, name: :coach_pay_items_threshold_check)
+    |> check_constraint(:frequency, name: :coach_pay_items_frequency_check)
     |> check_constraint(:roles, name: :coach_pay_items_roles_check)
     |> check_constraint(:amount_basis, name: :coach_pay_items_basis_check)
   end

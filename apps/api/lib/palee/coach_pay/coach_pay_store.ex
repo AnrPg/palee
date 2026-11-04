@@ -55,6 +55,14 @@ defmodule Palee.CoachPay.CoachPayStore do
   @impl true
   def delete_adjustment(period_id, line_id), do: adapter().delete_adjustment(period_id, line_id)
   @impl true
+  def item_skips(period_id), do: adapter().item_skips(period_id)
+  @impl true
+  def skip_pay_item_line(period_id, line_id, actor_id),
+    do: adapter().skip_pay_item_line(period_id, line_id, actor_id)
+
+  @impl true
+  def delete_skip(period_id, skip_id), do: adapter().delete_skip(period_id, skip_id)
+  @impl true
   def list_items(filters), do: adapter().list_items(filters)
   @impl true
   def get_item(id), do: adapter().get_item(id)

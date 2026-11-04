@@ -135,3 +135,15 @@ stable. Separate gross and net subtotals avoid a figure that mixes bases.
   POST `:id/archive`), `periods/:id/pay-items`, `periods/:id/lines/:line_id`,
   `periods/:id/statements/:user_id/pdf`, `people/:user_id/statements`,
   `summary`, `mine/:period_id/pdf`.
+
+## Addendum 2026-11-04: one-off overtime
+The product owner asked for overtime that is not counted from classes (a
+competition, a cleaning shift). `POST periods/:id/pay-items` with an
+overtime item now takes `minutes` (1 to 10 080) and an optional
+`unit_cents` (the rate for this line; the item's otherwise) with a required
+`note`. The line is `source_type: manual`, `quantity` minutes over divisor
+60, so it joins the item's group next to the computed overtime and
+survives recalculation. Allowances refuse `minutes` and `unit_cents`. The
+web adds «Υπερωρία» to «+ Προσθήκη γραμμής» when the box has an overtime
+item: hours (2,5 or 2:30), an optional rate, the reason and a live total.
+No migration.

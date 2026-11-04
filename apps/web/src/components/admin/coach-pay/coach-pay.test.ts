@@ -14,10 +14,22 @@ import {
   groupSentence,
   itemBody,
   itemErrors,
+  defaultDraftPeriod,
+  emptyOneOffDraft,
+  itemDraftFrom,
+  itemMode,
   lineErrors,
+  OTHER_AMOUNT,
+  oneOffErrors,
+  oneOffItemBody,
+  oneOffTotal,
   nextPeriodRange,
+  overtimeItems,
+  overtimeLineBody,
+  overtimeTotal,
   parseBps,
   parseCents,
+  parseHours,
   payFileName,
   payPeople,
   payslipLanguage,
@@ -142,9 +154,11 @@ describe("pay periods", () => {
   });
 
   it("keys a line the way the API groups it, basis included", () => {
-    expect(groupKeyOf({ rule_id: "r1", pay_item_id: null, kind: "clawback", amount_basis: "gross" })).toBe("rule:r1:gross");
-    expect(groupKeyOf({ rule_id: null, pay_item_id: "i1", kind: "allowance", amount_basis: "net" })).toBe("pay_item:i1:allowance:net");
-    expect(groupKeyOf({ rule_id: null, pay_item_id: null, kind: "ad_hoc", amount_basis: "gross" })).toBe("manual:ad_hoc:gross");
+    expect(groupKeyOf({ rule_id: "r1", pay_item_id: null, kind: "clawback", amount_basis: "gross", source_type: "finance_reversal" })).toBe("rule:r1:gross");
+    expect(groupKeyOf({ rule_id: null, pay_item_id: "i1", kind: "allowance", amount_basis: "net", source_type: "pay_item" })).toBe("pay_item:i1:allowance:net");
+    expect(groupKeyOf({ rule_id: null, pay_item_id: null, kind: "ad_hoc", amount_basis: "gross", source_type: "manual" })).toBe("manual:ad_hoc:gross");
+    // One-off overtime and allowances (ADR-510) group apart from what was calculated.
+    expect(groupKeyOf({ rule_id: null, pay_item_id: "i1", kind: "overtime", amount_basis: "gross", source_type: "manual" })).toBe("manual:overtime:gross");
   });
 
   it("names files and picks the payslip's language", () => {
@@ -171,6 +185,33 @@ describe("lines added by hand", () => {
     expect(lineErrors({ ...draft, kind: "allowance", quantity: "0" }, item({ unit: "per_occurrence" }))).toEqual({ quantity: "errorWholeNumber" });
   });
 
+  it("checks one-off overtime: an overtime item, hours, an optional rate and a reason", () => {
+    const draft = { ...emptyLineDraft(), kind: "overtime" as const };
+    const overtime = item({ id: "o1", kind: "overtime", unit: "per_hour", amount_cents: 1200 });
+    expect(lineErrors(draft, null)).toEqual({ itemId: "errorOvertimeItem", hours: "errorHours", note: "errorNoteRequired" });
+    expect(lineErrors({ ...draft, hours: "2,5", note: "Αγώνας" }, overtime)).toEqual({});
+    expect(lineErrors({ ...draft, hours: "2,5", rate: "0", note: "Αγώνας" }, overtime)).toEqual({ rate: "errorAmount" });
+  });
+
+  it("reads hours as decimals or h:mm, up to a week", () => {
+    expect(parseHours("2")).toBe(120);
+    expect(parseHours("2,5")).toBe(150);
+    expect(parseHours("2.25")).toBe(135);
+    expect(parseHours("2:30")).toBe(150);
+    expect(parseHours("168")).toBe(10080);
+    for (const bad of ["", "0", "0:00", "169", "2:75", "abc", "-1"]) expect(parseHours(bad)).toBeNull();
+  });
+
+  it("pays one-off overtime at the item's rate unless another is typed", () => {
+    const overtime = item({ id: "o1", kind: "overtime", unit: "per_hour", amount_cents: 1200 });
+    const draft = { ...emptyLineDraft(), kind: "overtime" as const, itemId: "o1", hours: "2:30", note: " Αγώνας " };
+    expect(overtimeTotal(draft, overtime)).toBe(3000);
+    expect(overtimeLineBody(draft, "u1", overtime)).toEqual({ user_id: "u1", pay_item_id: "o1", minutes: 150, note: "Αγώνας", amount_basis: "gross" });
+    expect(overtimeLineBody({ ...draft, rate: "15" }, "u1", overtime)).toMatchObject({ minutes: 150, unit_cents: 1500 });
+    expect(overtimeTotal({ ...draft, rate: "15" }, overtime)).toBe(3750);
+    expect(overtimeItems([overtime, item(), item({ id: "o2", kind: "overtime", archived_at: "2026-10-01T00:00:00Z" })])).toEqual([overtime]);
+  });
+
   it("sends a correction with its sign, note and basis", () => {
     expect(adjustmentBody({ ...emptyLineDraft(), amount: "-20", note: " Λάθος ", basis: "net" }, "u1")).toEqual({
       coach_user_id: "u1",
@@ -183,20 +224,64 @@ describe("lines added by hand", () => {
 });
 
 describe("overtime and allowances", () => {
-  it("needs a weekly threshold for overtime and at least one role", () => {
+  it("needs a weekly threshold only for recurring overtime, and at least one role", () => {
     const overtime = emptyItemDraft("overtime");
-    expect(overtime.unit).toBe("per_hour");
+    expect(overtime.mode).toBe("recurring");
     expect(itemErrors({ ...overtime, name: "Υπερωρία", amount: "12" })).toEqual({ threshold: "errorThreshold" });
+    expect(itemErrors({ ...emptyItemDraft("overtime", "oneOff"), name: "Αγώνας", amount: "12" })).toEqual({});
     expect(itemErrors({ ...emptyItemDraft(), name: "Μετακίνηση", amount: "20", roles: [] })).toEqual({ roles: "errorRoles" });
   });
 
-  it("sends roles in a fixed order and no threshold for an allowance", () => {
-    const body = itemBody({ ...emptyItemDraft(), name: " Μετακίνηση ", amount: "20", roles: ["janitor", "coach"] });
-    expect(body).toMatchObject({ kind: "allowance", name: "Μετακίνηση", amount_cents: 2000, weekly_threshold: null, roles: ["coach", "janitor"] });
-    expect(itemBody({ ...emptyItemDraft("overtime"), name: "Υ", amount: "12", threshold: "20" })).toMatchObject({ unit: "per_hour", weekly_threshold: 20 });
+  it("sends each workflow as its unit, threshold and frequency", () => {
+    const body = itemBody({ ...emptyItemDraft(), name: " Μετακίνηση ", amount: "20", roles: ["janitor", "coach"], frequency: "monthly" });
+    expect(body).toMatchObject({ kind: "allowance", name: "Μετακίνηση", amount_cents: 2000, unit: "per_period", frequency: "monthly", weekly_threshold: null, roles: ["coach", "janitor"] });
+    expect(itemBody({ ...emptyItemDraft("allowance", "oneOff"), name: "Κριτής", amount: "20" })).toMatchObject({ unit: "per_occurrence", frequency: null });
+    expect(itemBody({ ...emptyItemDraft("overtime"), name: "Υ", amount: "12", threshold: "20" })).toMatchObject({ unit: "per_hour", weekly_threshold: 20, frequency: null });
+    expect(itemBody({ ...emptyItemDraft("overtime", "oneOff"), name: "Υ", amount: "12", threshold: "20" })).toMatchObject({ unit: "per_hour", weekly_threshold: null });
   });
 
-  it("offers only active allowances by hand", () => {
-    expect(addableItems([item(), item({ id: "i2", kind: "overtime" }), item({ id: "i3", archived_at: "2026-10-01T00:00:00Z" })]).map((entry) => entry.id)).toEqual(["i1"]);
+  it("reads each item's workflow back", () => {
+    expect(itemMode(item())).toBe("recurring");
+    expect(itemMode(item({ unit: "per_occurrence" }))).toBe("oneOff");
+    expect(itemMode(item({ kind: "overtime", unit: "per_hour", weekly_threshold: 30 }))).toBe("recurring");
+    expect(itemMode(item({ kind: "overtime", unit: "per_hour", weekly_threshold: null }))).toBe("oneOff");
+    expect(itemDraftFrom(item({ frequency: "weekly" }))).toMatchObject({ mode: "recurring", frequency: "weekly" });
+  });
+
+  it("offers by hand only active per-occurrence allowances that apply to the person's roles", () => {
+    const items = [
+      item({ id: "i1", unit: "per_occurrence" }),
+      item({ id: "i2", kind: "overtime" }),
+      item({ id: "i3", unit: "per_occurrence", archived_at: "2026-10-01T00:00:00Z" }),
+      item({ id: "i4" }),
+      item({ id: "i5", unit: "per_occurrence", roles: ["front_desk"] }),
+    ];
+    expect(addableItems(items).map((entry) => entry.id)).toEqual(["i1", "i5"]);
+    expect(addableItems(items, ["coach"]).map((entry) => entry.id)).toEqual(["i1"]);
+    expect(overtimeItems(items, ["front_desk"])).toEqual([]);
+  });
+
+  it("checks a one-off from the catalogue and keeps a new rate when asked", () => {
+    const draft = { ...emptyOneOffDraft("p1"), userId: "u1" };
+    const rate = item({ id: "o1", kind: "overtime", unit: "per_hour", amount_cents: 1200, weekly_threshold: null });
+    expect(oneOffErrors("overtime", { ...draft, itemId: "o1" }, rate)).toEqual({ hours: "errorHours", note: "errorNoteRequired" });
+    expect(oneOffErrors("overtime", { ...draft, itemId: OTHER_AMOUNT, hours: "2", note: "x" }, null)).toEqual({ rate: "errorAmount", name: "errorName" });
+    expect(oneOffTotal("overtime", { ...draft, itemId: "o1", hours: "1:30" }, rate)).toBe(1800);
+    expect(oneOffErrors("allowance", { ...draft, itemId: OTHER_AMOUNT, amount: "25" }, null)).toEqual({ note: "errorNoteRequired" });
+    expect(oneOffErrors("allowance", { ...draft, itemId: OTHER_AMOUNT, amount: "25", note: "x", keep: true }, null)).toEqual({ name: "errorName" });
+    expect(oneOffTotal("allowance", { ...draft, itemId: "i1", quantity: "3" }, item({ unit: "per_occurrence" }))).toBe(6000);
+    expect(oneOffErrors("allowance", emptyOneOffDraft(), null)).toEqual({ userId: "errorPerson", periodId: "errorPeriod", itemId: "errorItem" });
+    expect(oneOffItemBody("allowance", { ...draft, name: "Κριτής", amount: "20" }, ["coach", "head_coach"])).toMatchObject({ unit: "per_occurrence", amount_cents: 2000, roles: ["head_coach", "coach"] });
+  });
+
+  it("sends a one-off to the open period covering today, else the latest one", () => {
+    const periods = [
+      { id: "a", status: "draft" as const, starts_on: "2026-10-01", ends_on: "2026-10-31" },
+      { id: "b", status: "draft" as const, starts_on: "2026-11-01", ends_on: "2026-11-30" },
+      { id: "c", status: "approved" as const, starts_on: "2026-12-01", ends_on: "2026-12-31" },
+    ];
+    expect(defaultDraftPeriod(periods, "2026-10-15")?.id).toBe("a");
+    expect(defaultDraftPeriod(periods, "2027-01-15")?.id).toBe("b");
+    expect(defaultDraftPeriod([periods[2]], "2026-12-15")).toBeNull();
   });
 });
