@@ -14565,6 +14565,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/me/features": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Which optional features this business has on
+         * @description ADR-470. With `location_ids` (a branch filter) a feature a branch can have on its own (promotions, a floor plan) counts only when it covers one of those branches or the whole box.
+         */
+        get: operations["PaleeWeb.MyFeaturesController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/me/finance": {
         parameters: {
             query?: never;
@@ -27508,6 +27528,32 @@ export interface components {
                 section: string;
                 seeded: boolean;
             }[];
+        };
+        /** BusinessFeatures */
+        BusinessFeatures: {
+            /** @description ADR-470: every feature key with whether it is on */
+            features: {
+                branches: boolean;
+                card_autopay: boolean;
+                floor_plan: boolean;
+                module_corporate_clients: boolean;
+                module_digital_content: boolean;
+                module_events: boolean;
+                module_group_classes: boolean;
+                module_online_coaching: boolean;
+                module_open_gym: boolean;
+                module_personal_training: boolean;
+                online_drop_in: boolean;
+                online_packages: boolean;
+                online_payments: boolean;
+                online_personal_training: boolean;
+                online_programmes: boolean;
+                online_shop: boolean;
+                perks: boolean;
+                promotions: boolean;
+                referrals: boolean;
+                trials: boolean;
+            };
         };
         /** BusinessOrganization */
         BusinessOrganization: {
@@ -130927,6 +130973,53 @@ export interface operations {
                 content: {
                     "application/json": {
                         [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyFeaturesController.show": {
+        parameters: {
+            query?: {
+                /** @description ADR-186: comma-separated branch ids to filter by */
+                location_ids?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Features */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description ADR-470: every feature key with whether it is on */
+                        features: {
+                            branches: boolean;
+                            card_autopay: boolean;
+                            floor_plan: boolean;
+                            module_corporate_clients: boolean;
+                            module_digital_content: boolean;
+                            module_events: boolean;
+                            module_group_classes: boolean;
+                            module_online_coaching: boolean;
+                            module_open_gym: boolean;
+                            module_personal_training: boolean;
+                            online_drop_in: boolean;
+                            online_packages: boolean;
+                            online_payments: boolean;
+                            online_personal_training: boolean;
+                            online_programmes: boolean;
+                            online_shop: boolean;
+                            perks: boolean;
+                            promotions: boolean;
+                            referrals: boolean;
+                            trials: boolean;
+                        };
                     };
                 };
             };

@@ -45,6 +45,7 @@ import { useUiTranslations } from "@/i18n/ui";
 import { useUiLocale } from "@/i18n/use-ui-locale";
 import { classesOnScreen, untilFromTime } from "@/lib/box-screen";
 import { fieldBorder, invalidFieldProps } from "@/lib/form-errors";
+import { hasSeveralBranches } from "@/lib/location-scope";
 import { adminHref, useOrganizationSlug, useOrganizationTimeZone } from "@/lib/organization-slug";
 import { FRESHNESS } from "@/lib/query-policy";
 import { useHydrated, useNow } from "@/components/box-screen/useBoxScreen";
@@ -192,7 +193,7 @@ function ScreenCard({
         <div className="min-w-0 flex-1">
           <h2 className="truncate text-base font-bold" style={{ color: "var(--text)" }}>{screen.name}</h2>
           <p className="text-sm" style={{ color: "var(--muted)" }}>
-            {screen.location_id ? t("followsBranch", { branch: branchLabel(t, branches, screen.location_id) }) : t("followsBox")}
+            {screen.location_id && hasSeveralBranches(branches) ? t("followsBranch", { branch: branchLabel(t, branches, screen.location_id) }) : t("followsBox")}
           </p>
           <div className="mt-2">
             {screen.paired ? <Pill tone="success">{t("paired")}</Pill> : pending ? <Pill tone="warning">{t("waiting")}</Pill> : <Pill tone="neutral">{t("notPaired")}</Pill>}
@@ -331,7 +332,8 @@ function AddScreenDialog({
           />
           <FieldError id="box-screen-error-name">{nameError}</FieldError>
         </label>
-        {branches.length > 0 ? (
+        {/* ADR-470: «where» means something only with two or more branches. */}
+        {hasSeveralBranches(branches) ? (
           <fieldset className="grid gap-2" {...invalidFieldProps(branchError, "box-screen-error-branch")}>
             <legend className="mb-1 text-sm font-semibold" style={{ color: "var(--text)" }}>{t("where")}</legend>
             {options.map((option) => (

@@ -90,6 +90,7 @@ Researched Oct 2026. Many figures come from interested parties (vendors, Strava,
 8. **No "More" drawer.** Secondary things live in `Εγώ`. Gym things live in `Box`'s action row.
 9. **The journal belongs to the athlete, not to the gym.** It follows them across gyms and coaches.
 10. **Do no harm with body and food data** (§8.6).
+11. **Show only what this business has switched on** (ANR 2026-11-04, ADR-470). A chip, menu entry, widget, KPI, column, toggle or settings section that depends on a feature the gym, branch or solo coach has not activated is not shown: failed charges need saved-card payments, rewards a referral programme, promo uses a running promotion, the «Παράρτημα» picker and labels two or more branches, floor-plan toggles an uploaded plan. One answer for every screen: `GET /api/org/:slug/me/features` through `useBusinessFeatures()`. A work list stays while it still holds rows (owed is still owed). The page where a feature is switched on always stays, and an action that needs a missing feature offers to set it up (e.g. «Προσθήκη χώρου» without a plan offers «Προσθήκη κάτοψης»).
 
 ---
 
