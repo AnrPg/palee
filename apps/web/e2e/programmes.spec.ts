@@ -1,7 +1,8 @@
 import { expect, test, type Page, type Route } from "./support/test";
 
 // W8 / CP-D4 programme marketplace (ADR-370/371): the staff list of
-// «Προγράμματα προπόνησης» with «Νέο πρόγραμμα», and the public
+// «Προγράμματα προπόνησης» with «Νέο πρόγραμμα», the editor (board
+// 2026-11-04 screens 1κ A and 1μ A, ADR-544), and the public
 // «Αγορά προγραμμάτων» catalogue with its goal chips. The API is stubbed.
 
 const json = (route: Route, body: unknown, status = 200) =>
@@ -127,6 +128,54 @@ test.describe("programmes (staff)", () => {
     await expect(page).toHaveURL(/\/admin\/programmes\/prog-3$/);
     const created = writes.find((write) => write.path === "/api/admin/programmes" && write.method === "POST");
     expect(created?.body).toEqual({ title: "Gymnastics basics", draft_weeks: 4 });
+  });
+
+  test("the editor fills a day from the WOD library (a grid on large screens, a day sheet on phones) and saves the draft", async ({ page }) => {
+    const writes: Write[] = [];
+    const draft = staffProgramme("prog-2", "Summer engine", "draft", {
+      draft_weeks: 2,
+      draft_days: [{ day: 0, workout_id: "w-squat" }],
+      level: "intermediate",
+      goal: "strength",
+      listing: "box",
+      preview_days: 3,
+      refund_policy: "before_start",
+      readiness: [],
+      facts: { equipment: ["barbell"], minutes_per_session: null },
+      equipment: [],
+      equipment_removed: [],
+    });
+    const workouts = [
+      { id: "w-squat", title: "Back squat 5×5", type: "strength", status: "published", available_scale_levels: [], sections: [] },
+      { id: "w-row", title: "Row 5×500 m", type: "rowing", status: "published", available_scale_levels: [], sections: [] },
+    ];
+    await stubApi(page, writes, (path, method, route) => {
+      if (path === "/api/admin/programmes/prog-2" && method === "GET") return json(route, { programme: draft });
+      if (path === "/api/admin/programmes/prog-2" && method === "PATCH") {
+        return json(route, { programme: { ...draft, ...(route.request().postDataJSON() as object) } });
+      }
+      if (path === "/api/admin/workouts") return json(route, { workouts });
+      return null;
+    });
+    await page.goto("/admin/programmes/prog-2");
+
+    const desktop = (page.viewportSize()?.width ?? 0) >= 1024;
+    if (desktop) {
+      await expect(page.getByRole("grid", { name: "Weeks and days of the training programme" })).toBeVisible();
+      await expect(page.getByTestId("programme-readiness-banner")).toContainText("Before publishing:");
+      await page.getByTestId("programme-cell-3").click();
+      await page.getByTestId("programme-library-w-row").click();
+      await expect(page.getByTestId("programme-cell-3")).toContainText("Row 5×500 m");
+    } else {
+      await expect(page.getByTestId("programme-readiness-bar")).toContainText("2 things missing");
+      await page.getByTestId("programme-day-3").click();
+      await page.getByTestId("programme-day-sheet").getByTestId("programme-pick-w-row").click();
+      await expect(page.getByTestId("programme-day-3")).toContainText("Row 5×500 m");
+    }
+
+    await expect
+      .poll(() => writes.find((write) => write.path === "/api/admin/programmes/prog-2" && write.method === "PATCH")?.body)
+      .toEqual({ draft_days: [{ day: 0, workout_id: "w-squat" }, { day: 3, workout_id: "w-row" }] });
   });
 });
 

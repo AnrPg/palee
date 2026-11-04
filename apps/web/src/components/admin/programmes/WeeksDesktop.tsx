@@ -229,7 +229,7 @@ export function WeeksDesktop({
                     <span className="text-xs" style={{ color: training ? "var(--muted)" : "var(--warning)" }}>
                       {training ? t("trainingCount", { count: training }) : t("emptyWeekShort")}
                     </span>
-                    <span className="flex items-center gap-1 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">
+                    <span className="flex items-center gap-1 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 [@media(hover:none)]:opacity-100">
                       {week + 1 < MAX_WEEKS ? (
                         <button
                           type="button"

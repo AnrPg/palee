@@ -46,8 +46,8 @@ export function ReadinessBar({
   if (items.length === 0 && !publishLabel) return null;
   return (
     <div
-      className="sticky bottom-0 z-10 -mx-4 flex items-center gap-3 px-4 py-3"
-      style={{ background: "var(--panel)", borderTop: "1px solid var(--border)", paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
+      className="sticky z-10 -mx-4 flex items-center gap-3 px-4 py-3"
+      style={{ bottom: "var(--bottom-nav-space, 0px)", background: "var(--panel)", borderTop: "1px solid var(--border)", paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
       data-testid="programme-readiness-bar"
     >
       <div className="min-w-0 flex-1">

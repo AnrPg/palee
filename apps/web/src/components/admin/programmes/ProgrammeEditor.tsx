@@ -227,8 +227,8 @@ function Editor({ programme, token, slug }: { programme: StaffProgramme; token: 
       {notice ? (
         <p
           aria-hidden="true"
-          className="pointer-events-none fixed inset-x-0 bottom-24 z-(--z-toast) mx-auto w-max max-w-[90vw] rounded-full px-4 py-2 text-sm font-semibold shadow-lg lg:bottom-8"
-          style={{ background: "var(--text)", color: "var(--bg)" }}
+          className="pointer-events-none fixed inset-x-0 z-(--z-toast) mx-auto w-max max-w-[90vw] rounded-full px-4 py-2 text-sm font-semibold shadow-lg"
+          style={{ bottom: desktop ? "2rem" : "calc(var(--bottom-float-inset, 0px) + 5.5rem)", background: "var(--text)", color: "var(--bg)" }}
         >
           {notice}
         </p>
