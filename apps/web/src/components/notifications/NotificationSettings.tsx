@@ -24,6 +24,8 @@ import { ErrorNotice } from "@/components/ui/ErrorNotice";
 
 // The columns; the booking email (ADR-392) is its own switch under its row.
 const CHANNELS: NotificationChannel[] = ["in_app", "push"];
+// One width for a column's head and its switches, so they stay aligned.
+const COLUMN = "flex w-16 shrink-0 justify-center";
 
 /**
  * Εγώ › Ρυθμίσεις › Ειδοποιήσεις (ADR-199): push on this device, then one row
@@ -83,9 +85,23 @@ export function NotificationSettings() {
           <p className="text-sm font-semibold" style={{ color: "var(--danger)" }}>{t("loadError")}</p>
         ) : (
           <div role="group" aria-label={t("title")} data-testid="notification-categories">
-            <div className="flex justify-end gap-3 pb-2 text-[0.68rem] font-semibold uppercase tracking-[0.14em]" style={{ color: "var(--dim)" }}>
+            {/* ANR 2026-11-04: what each column means, in plain words. */}
+            <dl
+              className="mb-3 grid gap-2 rounded-2xl px-3 py-2.5 text-xs leading-5"
+              style={{ background: "var(--panel-muted)", border: "1px solid var(--border)" }}
+              data-testid="notification-channel-help"
+            >
               {CHANNELS.map((channel) => (
-                <span key={channel} className="w-12 text-center">{t(`channel.${channel}`)}</span>
+                <div key={channel}>
+                  <dt className="inline font-semibold" style={{ color: "var(--text)" }}>{t(`channel.${channel}`)}: </dt>
+                  <dd className="inline" style={{ color: "var(--muted)" }}>{t(`channelHelp.${channel}`)}</dd>
+                </div>
+              ))}
+            </dl>
+            {/* Column heads wrap by word inside the switch's own column, never past it. */}
+            <div className="flex justify-end gap-1 pb-2 text-[11px] font-semibold leading-tight" style={{ color: "var(--dim)" }} data-testid="notification-channel-heads">
+              {CHANNELS.map((channel) => (
+                <span key={channel} className={`${COLUMN} text-center [overflow-wrap:anywhere]`}>{t(`channel.${channel}`)}</span>
               ))}
             </div>
             {rows.map((row) => (
@@ -144,21 +160,22 @@ function CategoryRow({
             {t("locked")}
           </span>
         ) : (
-          <div className="flex shrink-0 gap-3">
+          <div className="flex shrink-0 gap-1">
             {CHANNELS.map((channel) => {
               const offered = channel in row.channels;
               const on = Boolean(row.channels[channel]);
               const needsBell = channel === "push" && row.channels.in_app === false;
               return offered ? (
-                <Switch
-                  key={channel}
-                  on={on}
-                  disabled={pending || needsBell}
-                  label={`${title} · ${t(`channel.${channel}`)}`}
-                  onChange={(next) => onChange(channel, next)}
-                />
+                <span key={channel} className={COLUMN}>
+                  <Switch
+                    on={on}
+                    disabled={pending || needsBell}
+                    label={`${title} · ${t(`channel.${channel}`)}`}
+                    onChange={(next) => onChange(channel, next)}
+                  />
+                </span>
               ) : (
-                <span key={channel} className="w-12" aria-hidden="true" />
+                <span key={channel} className={COLUMN} aria-hidden="true" />
               );
             })}
           </div>
@@ -171,12 +188,14 @@ function CategoryRow({
             <p className="text-sm font-semibold" style={{ color: "var(--text)" }}>{t("bookingEmail.title")}</p>
             <p className="mt-0.5 text-xs leading-5" style={{ color: "var(--muted)" }}>{t("bookingEmail.hint")}</p>
           </div>
-          <Switch
-            on={email.on}
-            disabled={pending}
-            label={t("bookingEmail.title")}
-            onChange={(next) => onChange("email", next)}
-          />
+          <span className={COLUMN}>
+            <Switch
+              on={email.on}
+              disabled={pending}
+              label={t("bookingEmail.title")}
+              onChange={(next) => onChange("email", next)}
+            />
+          </span>
         </div>
       ) : null}
     </div>

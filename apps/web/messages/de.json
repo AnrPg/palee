@@ -11880,6 +11880,10 @@
       "in_app": "In der App",
       "push": "Push"
     },
+    "channelHelp": {
+      "in_app": "In Palee: an der Glocke und in deiner Benachrichtigungsliste, wenn du die App öffnest.",
+      "push": "Auf dem Bildschirm deines Handys oder Computers, auch wenn Palee geschlossen ist. Geht nur zusammen mit «In der App»."
+    },
     "category": {
       "bookings": {
         "title": "Buchungen & Kurse",

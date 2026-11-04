@@ -11880,6 +11880,10 @@
       "in_app": "In app",
       "push": "Push"
     },
+    "channelHelp": {
+      "in_app": "Inside Palee: on the bell and in your notifications list, when you open the app.",
+      "push": "On your phone or computer screen, even when Palee is closed. It turns on only together with «In app»."
+    },
     "category": {
       "bookings": {
         "title": "Bookings & classes",

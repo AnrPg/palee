@@ -11880,6 +11880,10 @@
       "in_app": "In de app",
       "push": "Push"
     },
+    "channelHelp": {
+      "in_app": "In Palee: bij de bel en in je meldingenlijst, als je de app opent.",
+      "push": "Op het scherm van je telefoon of computer, ook als Palee gesloten is. Werkt alleen samen met «In de app»."
+    },
     "category": {
       "bookings": {
         "title": "Boekingen en lessen",

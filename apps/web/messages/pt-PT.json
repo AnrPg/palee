@@ -11880,6 +11880,10 @@
       "in_app": "Na app",
       "push": "Push"
     },
+    "channelHelp": {
+      "in_app": "Dentro da Palee: no sino e na tua lista de notificações, quando abres a app.",
+      "push": "No ecrã do telemóvel ou do computador, mesmo com a Palee fechada. Só se ativa junto com «Na app»."
+    },
     "category": {
       "bookings": {
         "title": "Reservas e aulas",

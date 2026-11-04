@@ -11880,6 +11880,10 @@
       "in_app": "Nell’app",
       "push": "Push"
     },
+    "channelHelp": {
+      "in_app": "Dentro Palee: sulla campanella e nell’elenco delle notifiche, quando apri l’app.",
+      "push": "Sullo schermo del telefono o del computer, anche quando Palee è chiusa. Si attiva solo insieme a «Nell’app»."
+    },
     "category": {
       "bookings": {
         "title": "Prenotazioni e lezioni",
