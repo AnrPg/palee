@@ -9730,6 +9730,98 @@
       "sharedOnly": "Only from entries the client shares with the box's coaches."
     }
   },
+  "ProgressResets": {
+    "what": "What it measures:",
+    "how": "How it's calculated:",
+    "change": "If it changes:",
+    "reset": "Reset from today",
+    "confirmTitle": "Reset “{metric}” from today?",
+    "confirmBody": "It will count from today. Nothing old is deleted: you'll find it in Me › Settings › Your data › Reset history.",
+    "confirm": "Reset",
+    "cancel": "Cancel",
+    "resetting": "Resetting…",
+    "since": "since {date}",
+    "sinceTitle": "Counts from {date}",
+    "countingSince": "Counts from {date}.",
+    "metric": {
+      "totals": "Totals",
+      "weekly": "Weekly volume",
+      "consistency": "Consistency",
+      "scoreHistory": "Score history",
+      "exerciseLoads": "Exercise loads",
+      "bySource": "Sessions by source",
+      "prTimeline": "PR timeline",
+      "depthCoverage": "Muscle coverage",
+      "depthQualities": "Fitness qualities",
+      "depthLoad": "Training load",
+      "other": "Another Progress stat"
+    },
+    "info": {
+      "totals": {
+        "what": "How much you trained in the chosen period: completed sessions, their minutes and how many different workouts they were.",
+        "how": "Every completed workout of the period, from the sources you picked, counts once. Minutes are each workout's recorded duration; a workout you repeated counts once among the different workouts.",
+        "change": "Each workout you finish adds to the numbers. A shorter period or fewer sources lowers them."
+      },
+      "weekly": {
+        "what": "Your training per calendar week, as sessions or minutes.",
+        "how": "Completed workouts go into the week they were finished in, Monday first. Each bar is one week of the period; a week without training stays empty.",
+        "change": "A bar grows with every workout you finish that week. Switching between sessions and minutes changes only what the bars show."
+      },
+      "consistency": {
+        "what": "How regularly you train: the weeks of the period that reached your weekly target (or, without a target, had any training), the days you trained and your streak.",
+        "how": "Each column is a week and each square a day, darker with more sessions. A week counts when its sessions reach your weekly target; the percentage is those weeks out of all weeks of the period.",
+        "change": "It rises with every week you reach your target and falls when a week stays below it. A new weekly target changes which weeks count."
+      },
+      "scoreHistory": {
+        "what": "How your score moved in the sections you logged more than once.",
+        "how": "Every score of the same section of the same workout, from any source, makes one line, oldest to newest. The figure next to it is your latest score.",
+        "change": "Each new score in that section adds a point to its line."
+      },
+      "bySource": {
+        "what": "Where the sessions of the period came from: your box, training on your own or a device.",
+        "how": "Completed sessions are counted per source; each bar is that source's share of all of them.",
+        "change": "Training more with one source makes its share grow; the shares always add up to the whole."
+      },
+      "prTimeline": {
+        "what": "The personal records you beat in the period, month by month.",
+        "how": "Each entry is a new record on the day you set it, with how much it improved on the one before; a first record has nothing to compare with.",
+        "change": "A new entry appears every time you beat a record. A shorter period hides older ones; nothing is deleted."
+      },
+      "depthCoverage": {
+        "what": "Which muscles your training of the period worked most and least, and the balance of push and pull and of the front and back of the thigh.",
+        "how": "The sets of each exercise the app recognises count for the muscles it trains, per week of the period. The levels compare those weekly sets; exercises it does not recognise are left out.",
+        "change": "A muscle rises when you add sets for it. More recognised exercises in your log make the picture more complete."
+      },
+      "depthQualities": {
+        "what": "Which of the ten fitness qualities, from endurance and strength to balance and accuracy, your training of the period worked.",
+        "how": "The sets of each recognised exercise count for the qualities it trains. The shape compares the qualities with each other: the most trained one sets the outer edge.",
+        "change": "Training a quality more pushes it outwards. The shape shows the balance between qualities, not a level."
+      },
+      "depthLoad": {
+        "what": "How demanding this week was compared with your usual week.",
+        "how": "A session's load is its RPE (1–10) times its minutes; sessions without RPE or duration do not count. The last 7 days are compared with your weekly average of the last 28.",
+        "change": "It rises when this week is harder than usual and falls when it is lighter. It is an indicator, not medical advice."
+      }
+    },
+    "history": {
+      "title": "Reset history",
+      "hint": "The Progress stats you reset, with undo",
+      "back": "Settings",
+      "intro": "A reset changes only what you see in Progress; your box and your coach see the same as before. An undo brings the older figures back.",
+      "empty": "You haven't reset anything yet. You can do it from a card's «?» in Progress.",
+      "openProgress": "Open Progress",
+      "total": "{count, plural, one {# reset} other {# resets}}",
+      "resetOn": "Reset on {date}",
+      "active": "Active",
+      "undone": "Undone",
+      "undoneOn": "Undone on {date}",
+      "before": "Before: {value}",
+      "undo": "Undo",
+      "undoTitle": "Undo the reset of “{metric}”?",
+      "undoBody": "Progress will count everything again, including what came before {date}.",
+      "undoing": "Undoing…"
+    }
+  },
   "Insights": {
     "title": "Insights",
     "dismiss": "Hide",

@@ -12,6 +12,7 @@ import {
   requestDataExport,
   type DataExport,
 } from "@/api/data-exports";
+import { RESET_HISTORY_HREF } from "@/components/member-app/progress/MetricInfo";
 import { CollapsibleSection } from "@/components/profile/CollapsibleSection";
 import { useSession } from "@/components/session-provider";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
@@ -33,6 +34,7 @@ const linkStyle = { color: "var(--primary)" } as const;
  */
 export function YourDataSection() {
   const t = useTranslations("legal");
+  const tResets = useTranslations("ProgressResets");
   const i18n = useUiTranslations();
   const format = useFormatter();
   const locale = useLocale();
@@ -110,6 +112,23 @@ export function YourDataSection() {
           </p>
         ) : null}
         {error ? <ErrorNotice>{error}</ErrorNotice> : null}
+
+        {/* ADR-462 §5: the member's own Πρόοδος resets, with undo. */}
+        <Link
+          href={RESET_HISTORY_HREF}
+          className="flex items-center justify-between gap-4 border-t pt-4"
+          style={{ borderColor: "var(--border)" }}
+        >
+          <span className="min-w-0">
+            <span className="block text-sm font-semibold" style={{ color: "var(--text)" }}>
+              {tResets("history.title")}
+            </span>
+            <span className="mt-0.5 block text-sm" style={{ color: "var(--muted)" }}>
+              {tResets("history.hint")}
+            </span>
+          </span>
+          <span aria-hidden="true" className="text-xl" style={{ color: "var(--dim)" }}>›</span>
+        </Link>
 
         <p className="flex flex-wrap gap-x-5 gap-y-1 border-t pt-4 text-sm" style={{ borderColor: "var(--border)" }}>
           <Link href="/privacy" className="font-semibold" style={linkStyle}>

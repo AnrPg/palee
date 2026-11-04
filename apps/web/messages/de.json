@@ -9730,6 +9730,98 @@
       "sharedOnly": "Nur aus Einträgen, die der Kunde mit den Coaches der Box teilt."
     }
   },
+  "ProgressResets": {
+    "what": "Was es misst:",
+    "how": "Wie es berechnet wird:",
+    "change": "Wenn es sich ändert:",
+    "reset": "Ab heute zurücksetzen",
+    "confirmTitle": "„{metric}“ ab heute zurücksetzen?",
+    "confirmBody": "Es zählt ab heute. Nichts Altes wird gelöscht: Du findest es unter Ich › Einstellungen › Deine Daten › Verlauf der Zurücksetzungen.",
+    "confirm": "Zurücksetzen",
+    "cancel": "Abbrechen",
+    "resetting": "Wird zurückgesetzt…",
+    "since": "seit {date}",
+    "sinceTitle": "Zählt ab {date}",
+    "countingSince": "Zählt ab {date}.",
+    "metric": {
+      "totals": "Summen",
+      "weekly": "Wöchentliches Volumen",
+      "consistency": "Beständigkeit",
+      "scoreHistory": "Ergebnisverlauf",
+      "exerciseLoads": "Übungslasten",
+      "bySource": "Einheiten nach Quelle",
+      "prTimeline": "PR-Verlauf",
+      "depthCoverage": "Muskelabdeckung",
+      "depthQualities": "Fitnessqualitäten",
+      "depthLoad": "Trainingsbelastung",
+      "other": "Ein anderer Fortschrittswert"
+    },
+    "info": {
+      "totals": {
+        "what": "Wie viel du im gewählten Zeitraum trainiert hast: abgeschlossene Einheiten, ihre Minuten und wie viele verschiedene Workouts es waren.",
+        "how": "Jedes abgeschlossene Workout des Zeitraums aus den gewählten Quellen zählt einmal. Die Minuten sind die erfasste Dauer; ein wiederholtes Workout zählt bei den verschiedenen Workouts einmal.",
+        "change": "Jedes Workout, das du abschließt, erhöht die Zahlen. Ein kürzerer Zeitraum oder weniger Quellen senken sie."
+      },
+      "weekly": {
+        "what": "Dein Training pro Kalenderwoche, als Einheiten oder Minuten.",
+        "how": "Abgeschlossene Workouts zählen in der Woche, in der sie beendet wurden, mit Montag als erstem Tag. Jeder Balken ist eine Woche des Zeitraums; eine Woche ohne Training bleibt leer.",
+        "change": "Ein Balken wächst mit jedem Workout, das du in dieser Woche abschließt. Der Wechsel zwischen Einheiten und Minuten ändert nur, was die Balken zeigen."
+      },
+      "consistency": {
+        "what": "Wie regelmäßig du trainierst: die Wochen des Zeitraums, die dein Wochenziel erreicht haben (ohne Ziel: mit mindestens einem Training), die Trainingstage und deine Serie.",
+        "how": "Jede Spalte ist eine Woche, jedes Quadrat ein Tag, dunkler mit mehr Einheiten. Eine Woche zählt, wenn ihre Einheiten dein Wochenziel erreichen; der Prozentwert ist der Anteil dieser Wochen an allen Wochen des Zeitraums.",
+        "change": "Er steigt mit jeder Woche, in der du dein Ziel erreichst, und sinkt, wenn eine Woche darunter bleibt. Ein neues Wochenziel ändert, welche Wochen zählen."
+      },
+      "scoreHistory": {
+        "what": "Wie sich dein Ergebnis in Abschnitten entwickelt hat, die du mehr als einmal eingetragen hast.",
+        "how": "Alle Ergebnisse desselben Abschnitts desselben Workouts, aus jeder Quelle, bilden eine Linie, vom ältesten zum neuesten. Die Zahl daneben ist dein letztes Ergebnis.",
+        "change": "Jedes neue Ergebnis in diesem Abschnitt fügt seiner Linie einen Punkt hinzu."
+      },
+      "bySource": {
+        "what": "Woher die Einheiten des Zeitraums kamen: deine Box, freies Training oder ein Gerät.",
+        "how": "Abgeschlossene Einheiten werden pro Quelle gezählt; jeder Balken ist der Anteil dieser Quelle an allen.",
+        "change": "Trainierst du mehr mit einer Quelle, wächst ihr Anteil; die Anteile ergeben zusammen immer das Ganze."
+      },
+      "prTimeline": {
+        "what": "Die persönlichen Rekorde, die du im Zeitraum verbessert hast, Monat für Monat.",
+        "how": "Jeder Eintrag ist ein neuer Rekord an dem Tag, an dem du ihn aufgestellt hast, mit der Verbesserung gegenüber dem vorherigen; ein erster Rekord hat keinen Vergleich.",
+        "change": "Jedes Mal, wenn du einen Rekord verbesserst, kommt ein Eintrag hinzu. Ein kürzerer Zeitraum blendet ältere aus; nichts wird gelöscht."
+      },
+      "depthCoverage": {
+        "what": "Welche Muskeln dein Training im Zeitraum am meisten und am wenigsten beansprucht hat, und das Verhältnis von Drücken und Ziehen sowie von vorderem und hinterem Oberschenkel.",
+        "how": "Die Sätze jeder Übung, die die App erkennt, zählen für die Muskeln, die sie trainiert, pro Woche des Zeitraums. Die Stufen vergleichen diese wöchentlichen Sätze; nicht erkannte Übungen bleiben außen vor.",
+        "change": "Ein Muskel steigt, wenn du Sätze für ihn hinzufügst. Mehr erkannte Übungen im Journal machen das Bild vollständiger."
+      },
+      "depthQualities": {
+        "what": "Welche der zehn Fitnessqualitäten, von Ausdauer und Kraft bis Gleichgewicht und Genauigkeit, dein Training im Zeitraum beansprucht hat.",
+        "how": "Die Sätze jeder erkannten Übung zählen für die Qualitäten, die sie trainiert. Die Form vergleicht die Qualitäten miteinander: Die am meisten trainierte bildet den äußeren Rand.",
+        "change": "Trainierst du eine Qualität mehr, wandert sie nach außen. Die Form zeigt das Gleichgewicht zwischen den Qualitäten, kein Niveau."
+      },
+      "depthLoad": {
+        "what": "Wie fordernd diese Woche im Vergleich zu deiner üblichen Woche war.",
+        "how": "Die Belastung einer Einheit ist ihr RPE (1–10) mal ihre Minuten; Einheiten ohne RPE oder Dauer zählen nicht. Die letzten 7 Tage werden mit deinem Wochendurchschnitt der letzten 28 verglichen.",
+        "change": "Sie steigt, wenn diese Woche härter ist als üblich, und sinkt, wenn sie leichter ist. Sie ist ein Hinweis, kein medizinischer Rat."
+      }
+    },
+    "history": {
+      "title": "Verlauf der Zurücksetzungen",
+      "hint": "Die Fortschrittswerte, die du zurückgesetzt hast, mit Rückgängig",
+      "back": "Einstellungen",
+      "intro": "Eine Zurücksetzung ändert nur, was du im Fortschritt siehst; deine Box und dein Coach sehen dasselbe wie vorher. Rückgängig bringt die älteren Zahlen zurück.",
+      "empty": "Du hast noch nichts zurückgesetzt. Das geht über das «?» einer Karte im Fortschritt.",
+      "openProgress": "Fortschritt öffnen",
+      "total": "{count, plural, one {# Zurücksetzung} other {# Zurücksetzungen}}",
+      "resetOn": "Zurückgesetzt am {date}",
+      "active": "Aktiv",
+      "undone": "Rückgängig gemacht",
+      "undoneOn": "Rückgängig gemacht am {date}",
+      "before": "Vorher: {value}",
+      "undo": "Rückgängig",
+      "undoTitle": "Zurücksetzung von „{metric}“ rückgängig machen?",
+      "undoBody": "Der Fortschritt zählt wieder alles, auch was vor dem {date} war.",
+      "undoing": "Wird rückgängig gemacht…"
+    }
+  },
   "Insights": {
     "title": "Insights",
     "dismiss": "Ausblenden",

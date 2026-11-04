@@ -9730,6 +9730,98 @@
       "sharedOnly": "Solo de las entradas que el cliente comparte con los coaches del box."
     }
   },
+  "ProgressResets": {
+    "what": "Qué mide:",
+    "how": "Cómo se calcula:",
+    "change": "Si cambia:",
+    "reset": "Poner a cero desde hoy",
+    "confirmTitle": "¿Poner a cero «{metric}» desde hoy?",
+    "confirmBody": "Contará desde hoy. Nada antiguo se borra: lo encontrarás en Yo › Ajustes › Tus datos › Historial de puestas a cero.",
+    "confirm": "Poner a cero",
+    "cancel": "Cancelar",
+    "resetting": "Poniendo a cero…",
+    "since": "desde el {date}",
+    "sinceTitle": "Cuenta desde el {date}",
+    "countingSince": "Cuenta desde el {date}.",
+    "metric": {
+      "totals": "Totales",
+      "weekly": "Volumen semanal",
+      "consistency": "Constancia",
+      "scoreHistory": "Historial de resultados",
+      "exerciseLoads": "Cargas por ejercicio",
+      "bySource": "Sesiones por origen",
+      "prTimeline": "Cronología de PR",
+      "depthCoverage": "Cobertura muscular",
+      "depthQualities": "Cualidades físicas",
+      "depthLoad": "Carga de entrenamiento",
+      "other": "Otra estadística de Progreso"
+    },
+    "info": {
+      "totals": {
+        "what": "Cuánto entrenaste en el periodo elegido: sesiones completadas, sus minutos y cuántos entrenamientos distintos fueron.",
+        "how": "Cada entrenamiento completado del periodo, de los orígenes elegidos, cuenta una vez. Los minutos son la duración registrada; un entrenamiento repetido cuenta una vez entre los distintos.",
+        "change": "Cada entrenamiento que terminas sube las cifras. Un periodo más corto o menos orígenes las bajan."
+      },
+      "weekly": {
+        "what": "Tu entrenamiento por semana natural, en sesiones o minutos.",
+        "how": "Los entrenamientos completados van a la semana en que terminaron, con el lunes primero. Cada barra es una semana del periodo; una semana sin entrenar queda vacía.",
+        "change": "Una barra crece con cada entrenamiento que terminas esa semana. Cambiar entre sesiones y minutos solo cambia lo que muestran las barras."
+      },
+      "consistency": {
+        "what": "Con qué regularidad entrenas: las semanas del periodo que alcanzaron tu objetivo semanal (o, sin objetivo, con algún entrenamiento), los días que entrenaste y tu racha.",
+        "how": "Cada columna es una semana y cada cuadrado un día, más oscuro con más sesiones. Una semana cuenta cuando sus sesiones alcanzan tu objetivo semanal; el porcentaje es esas semanas sobre todas las del periodo.",
+        "change": "Sube con cada semana en que alcanzas tu objetivo y baja cuando una semana se queda por debajo. Un nuevo objetivo semanal cambia qué semanas cuentan."
+      },
+      "scoreHistory": {
+        "what": "Cómo evolucionó tu resultado en las secciones que registraste más de una vez.",
+        "how": "Todos los resultados de la misma sección del mismo entrenamiento, de cualquier origen, forman una línea, del más antiguo al más reciente. La cifra de al lado es tu último resultado.",
+        "change": "Cada nuevo resultado en esa sección añade un punto a su línea."
+      },
+      "bySource": {
+        "what": "De dónde vinieron las sesiones del periodo: tu box, el entrenamiento libre o un dispositivo.",
+        "how": "Las sesiones completadas se cuentan por origen; cada barra es la parte de ese origen sobre el total.",
+        "change": "Cuanto más entrenas con un origen, más crece su parte; las partes siempre suman el total."
+      },
+      "prTimeline": {
+        "what": "Los récords personales que superaste en el periodo, mes a mes.",
+        "how": "Cada entrada es un nuevo récord el día en que lo lograste, con cuánto mejoró el anterior; el primer récord no tiene con qué compararse.",
+        "change": "Aparece una entrada cada vez que superas un récord. Un periodo más corto oculta los más antiguos; nada se borra."
+      },
+      "depthCoverage": {
+        "what": "Qué músculos trabajó más y menos tu entrenamiento del periodo, y el equilibrio entre empuje y tracción y entre la parte delantera y trasera del muslo.",
+        "how": "Las series de cada ejercicio que la app reconoce cuentan para los músculos que trabaja, por semana del periodo. Los niveles comparan esas series semanales; los ejercicios no reconocidos quedan fuera.",
+        "change": "Un músculo sube cuando añades series para él. Más ejercicios reconocidos en tu diario completan la imagen."
+      },
+      "depthQualities": {
+        "what": "Cuáles de las diez cualidades físicas, de la resistencia y la fuerza al equilibrio y la precisión, trabajó tu entrenamiento del periodo.",
+        "how": "Las series de cada ejercicio reconocido cuentan para las cualidades que trabaja. La forma compara las cualidades entre sí: la más trabajada marca el borde exterior.",
+        "change": "Trabajar más una cualidad la empuja hacia fuera. La forma muestra el equilibrio entre cualidades, no un nivel."
+      },
+      "depthLoad": {
+        "what": "Lo exigente que fue esta semana comparada con tu semana habitual.",
+        "how": "La carga de una sesión es su RPE (1–10) por sus minutos; las sesiones sin RPE o duración no cuentan. Los últimos 7 días se comparan con tu media semanal de los últimos 28.",
+        "change": "Sube cuando la semana es más dura de lo habitual y baja cuando es más ligera. Es un indicador, no un consejo médico."
+      }
+    },
+    "history": {
+      "title": "Historial de puestas a cero",
+      "hint": "Las estadísticas de Progreso que pusiste a cero, con deshacer",
+      "back": "Ajustes",
+      "intro": "Una puesta a cero solo cambia lo que ves tú en Progreso; tu box y tu coach ven lo mismo que antes. Al deshacerla vuelven las cifras antiguas.",
+      "empty": "Aún no has puesto nada a cero. Puedes hacerlo desde el «?» de una tarjeta en Progreso.",
+      "openProgress": "Abrir Progreso",
+      "total": "{count, plural, one {# puesta a cero} other {# puestas a cero}}",
+      "resetOn": "Puesta a cero el {date}",
+      "active": "Activa",
+      "undone": "Deshecha",
+      "undoneOn": "Deshecha el {date}",
+      "before": "Antes: {value}",
+      "undo": "Deshacer",
+      "undoTitle": "¿Deshacer la puesta a cero de «{metric}»?",
+      "undoBody": "Progreso volverá a contarlo todo, también lo anterior al {date}.",
+      "undoing": "Deshaciendo…"
+    }
+  },
   "Insights": {
     "title": "Insights",
     "dismiss": "Ocultar",
