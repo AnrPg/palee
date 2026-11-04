@@ -9730,6 +9730,98 @@
       "sharedOnly": "Alleen uit items die de klant met de coaches van de box deelt."
     }
   },
+  "ProgressResets": {
+    "what": "Wat het meet:",
+    "how": "Hoe het berekend wordt:",
+    "change": "Als het verandert:",
+    "reset": "Vanaf vandaag op nul zetten",
+    "confirmTitle": "„{metric}” vanaf vandaag op nul zetten?",
+    "confirmBody": "Het telt vanaf vandaag. Niets ouds wordt gewist: je vindt het onder Ik › Instellingen › Je gegevens › Geschiedenis van nulstellingen.",
+    "confirm": "Op nul zetten",
+    "cancel": "Annuleren",
+    "resetting": "Bezig met nulstellen…",
+    "since": "sinds {date}",
+    "sinceTitle": "Telt vanaf {date}",
+    "countingSince": "Telt vanaf {date}.",
+    "metric": {
+      "totals": "Totalen",
+      "weekly": "Wekelijks volume",
+      "consistency": "Regelmaat",
+      "scoreHistory": "Scoregeschiedenis",
+      "exerciseLoads": "Gewichten per oefening",
+      "bySource": "Sessies per bron",
+      "prTimeline": "PR-tijdlijn",
+      "depthCoverage": "Spierdekking",
+      "depthQualities": "Fitnesskwaliteiten",
+      "depthLoad": "Trainingsbelasting",
+      "other": "Een andere Voortgang-statistiek"
+    },
+    "info": {
+      "totals": {
+        "what": "Hoeveel je in de gekozen periode trainde: afgeronde sessies, hun minuten en hoeveel verschillende workouts het waren.",
+        "how": "Elke afgeronde workout van de periode, uit de gekozen bronnen, telt één keer. De minuten zijn de vastgelegde duur; een herhaalde workout telt één keer bij de verschillende workouts.",
+        "change": "Elke workout die je afrondt, verhoogt de getallen. Een kortere periode of minder bronnen verlagen ze."
+      },
+      "weekly": {
+        "what": "Je training per kalenderweek, in sessies of minuten.",
+        "how": "Afgeronde workouts tellen in de week waarin ze klaar waren, met maandag als eerste dag. Elke balk is een week van de periode; een week zonder training blijft leeg.",
+        "change": "Een balk groeit met elke workout die je die week afrondt. Wisselen tussen sessies en minuten verandert alleen wat de balken tonen."
+      },
+      "consistency": {
+        "what": "Hoe regelmatig je traint: de weken van de periode die je weekdoel haalden (of, zonder doel, met minstens één training), de dagen dat je trainde en je reeks.",
+        "how": "Elke kolom is een week en elk vakje een dag, donkerder met meer sessies. Een week telt als de sessies je weekdoel halen; het percentage is het aandeel van die weken in alle weken van de periode.",
+        "change": "Het stijgt met elke week waarin je je doel haalt en daalt als een week eronder blijft. Een nieuw weekdoel verandert welke weken tellen."
+      },
+      "scoreHistory": {
+        "what": "Hoe je score veranderde in onderdelen die je meer dan eens vastlegde.",
+        "how": "Alle scores van hetzelfde onderdeel van dezelfde workout, uit elke bron, vormen één lijn, van oudste naar nieuwste. Het getal ernaast is je laatste score.",
+        "change": "Elke nieuwe score in dat onderdeel voegt een punt toe aan de lijn."
+      },
+      "bySource": {
+        "what": "Waar de sessies van de periode vandaan kwamen: je box, vrije training of een apparaat.",
+        "how": "Afgeronde sessies worden per bron geteld; elke balk is het aandeel van die bron in het geheel.",
+        "change": "Train je meer met een bron, dan groeit het aandeel ervan; de aandelen vormen samen altijd het geheel."
+      },
+      "prTimeline": {
+        "what": "De persoonlijke records die je in de periode verbeterde, maand per maand.",
+        "how": "Elk item is een nieuw record op de dag dat je het neerzette, met hoeveel het het vorige verbeterde; een eerste record heeft geen vergelijking.",
+        "change": "Er komt een item bij telkens als je een record verbetert. Een kortere periode verbergt oudere; niets wordt gewist."
+      },
+      "depthCoverage": {
+        "what": "Welke spieren je training in de periode het meest en het minst belastte, en de balans tussen duwen en trekken en tussen voor- en achterkant van het bovenbeen.",
+        "how": "De sets van elke oefening die de app herkent, tellen voor de spieren die ze traint, per week van de periode. De niveaus vergelijken die wekelijkse sets; oefeningen die niet herkend worden, vallen erbuiten.",
+        "change": "Een spier stijgt als je er sets voor toevoegt. Meer herkende oefeningen in je logboek maken het beeld vollediger."
+      },
+      "depthQualities": {
+        "what": "Welke van de tien fitnesskwaliteiten, van uithoudingsvermogen en kracht tot balans en precisie, je training in de periode belastte.",
+        "how": "De sets van elke herkende oefening tellen voor de kwaliteiten die ze traint. De vorm vergelijkt de kwaliteiten met elkaar: de meest getrainde bepaalt de buitenrand.",
+        "change": "Train je een kwaliteit meer, dan schuift die naar buiten. De vorm toont de balans tussen kwaliteiten, geen niveau."
+      },
+      "depthLoad": {
+        "what": "Hoe zwaar deze week was vergeleken met je gebruikelijke week.",
+        "how": "De belasting van een sessie is de RPE (1–10) maal de minuten; sessies zonder RPE of duur tellen niet. De laatste 7 dagen worden vergeleken met je weekgemiddelde van de laatste 28.",
+        "change": "Ze stijgt als deze week zwaarder is dan gewoonlijk en daalt als ze lichter is. Het is een indicatie, geen medisch advies."
+      }
+    },
+    "history": {
+      "title": "Geschiedenis van nulstellingen",
+      "hint": "De Voortgang-statistieken die je op nul zette, met ongedaan maken",
+      "back": "Instellingen",
+      "intro": "Een nulstelling verandert alleen wat jij in Voortgang ziet; je box en je coach zien hetzelfde als eerder. Ongedaan maken brengt de oudere cijfers terug.",
+      "empty": "Je hebt nog niets op nul gezet. Dat kan via het «?» van een kaart in Voortgang.",
+      "openProgress": "Voortgang openen",
+      "total": "{count, plural, one {# nulstelling} other {# nulstellingen}}",
+      "resetOn": "Op nul gezet op {date}",
+      "active": "Actief",
+      "undone": "Ongedaan gemaakt",
+      "undoneOn": "Ongedaan gemaakt op {date}",
+      "before": "Eerder: {value}",
+      "undo": "Ongedaan maken",
+      "undoTitle": "Nulstelling van „{metric}” ongedaan maken?",
+      "undoBody": "Voortgang telt weer alles, ook wat vóór {date} kwam.",
+      "undoing": "Bezig met ongedaan maken…"
+    }
+  },
   "Insights": {
     "title": "Insights",
     "dismiss": "Verbergen",

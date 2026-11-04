@@ -9730,6 +9730,98 @@
       "sharedOnly": "Uniquement à partir des entrées que le client partage avec les coachs de la box."
     }
   },
+  "ProgressResets": {
+    "what": "Ce que ça mesure :",
+    "how": "Comment c’est calculé :",
+    "change": "Si ça change :",
+    "reset": "Remettre à zéro dès aujourd’hui",
+    "confirmTitle": "Remettre « {metric} » à zéro dès aujourd’hui ?",
+    "confirmBody": "Le compte reprendra à partir d’aujourd’hui. Rien d’ancien n’est supprimé : tu le retrouveras dans Moi › Réglages › Tes données › Historique des remises à zéro.",
+    "confirm": "Remettre à zéro",
+    "cancel": "Annuler",
+    "resetting": "Remise à zéro…",
+    "since": "depuis le {date}",
+    "sinceTitle": "Compte à partir du {date}",
+    "countingSince": "Compte à partir du {date}.",
+    "metric": {
+      "totals": "Totaux",
+      "weekly": "Volume hebdomadaire",
+      "consistency": "Régularité",
+      "scoreHistory": "Historique des scores",
+      "exerciseLoads": "Charges par exercice",
+      "bySource": "Séances par source",
+      "prTimeline": "Chronologie des PR",
+      "depthCoverage": "Couverture musculaire",
+      "depthQualities": "Qualités physiques",
+      "depthLoad": "Charge d’entraînement",
+      "other": "Une autre statistique de Progression"
+    },
+    "info": {
+      "totals": {
+        "what": "Combien tu t’es entraîné·e sur la période choisie : séances terminées, leurs minutes et le nombre d’entraînements différents.",
+        "how": "Chaque entraînement terminé de la période, des sources choisies, compte une fois. Les minutes sont la durée enregistrée ; un entraînement répété compte une fois parmi les entraînements différents.",
+        "change": "Chaque entraînement terminé fait monter les chiffres. Une période plus courte ou moins de sources les fait baisser."
+      },
+      "weekly": {
+        "what": "Ton entraînement par semaine calendaire, en séances ou en minutes.",
+        "how": "Les entraînements terminés vont dans la semaine où ils ont été finis, le lundi en premier. Chaque barre est une semaine de la période ; une semaine sans entraînement reste vide.",
+        "change": "Une barre grandit à chaque entraînement terminé cette semaine-là. Passer des séances aux minutes change seulement ce que montrent les barres."
+      },
+      "consistency": {
+        "what": "Ta régularité : les semaines de la période qui ont atteint ton objectif hebdomadaire (ou, sans objectif, avec au moins un entraînement), les jours entraînés et ta série.",
+        "how": "Chaque colonne est une semaine et chaque carré un jour, plus foncé avec plus de séances. Une semaine compte quand ses séances atteignent ton objectif ; le pourcentage est la part de ces semaines sur toutes celles de la période.",
+        "change": "Il monte à chaque semaine où tu atteins ton objectif et baisse quand une semaine reste en dessous. Un nouvel objectif hebdomadaire change les semaines qui comptent."
+      },
+      "scoreHistory": {
+        "what": "L’évolution de ton score dans les sections que tu as enregistrées plus d’une fois.",
+        "how": "Tous les scores d’une même section d’un même entraînement, de toute source, forment une ligne, du plus ancien au plus récent. Le chiffre à côté est ton dernier score.",
+        "change": "Chaque nouveau score dans cette section ajoute un point à sa ligne."
+      },
+      "bySource": {
+        "what": "D’où venaient les séances de la période : ta box, l’entraînement libre ou un appareil.",
+        "how": "Les séances terminées sont comptées par source ; chaque barre est la part de cette source dans le total.",
+        "change": "Plus tu t’entraînes avec une source, plus sa part grandit ; les parts font toujours le total."
+      },
+      "prTimeline": {
+        "what": "Les records personnels que tu as battus sur la période, mois par mois.",
+        "how": "Chaque entrée est un nouveau record le jour où tu l’as établi, avec l’amélioration par rapport au précédent ; un premier record n’a rien à comparer.",
+        "change": "Une entrée apparaît chaque fois que tu bats un record. Une période plus courte masque les plus anciennes ; rien n’est supprimé."
+      },
+      "depthCoverage": {
+        "what": "Les muscles que ton entraînement de la période a le plus et le moins sollicités, et l’équilibre entre poussée et tirage et entre l’avant et l’arrière de la cuisse.",
+        "how": "Les séries de chaque exercice reconnu par l’app comptent pour les muscles qu’il travaille, par semaine de la période. Les niveaux comparent ces séries hebdomadaires ; les exercices non reconnus sont exclus.",
+        "change": "Un muscle monte quand tu ajoutes des séries pour lui. Plus d’exercices reconnus dans ton journal rendent l’image plus complète."
+      },
+      "depthQualities": {
+        "what": "Lesquelles des dix qualités physiques, de l’endurance et la force à l’équilibre et la précision, ton entraînement de la période a travaillées.",
+        "how": "Les séries de chaque exercice reconnu comptent pour les qualités qu’il travaille. La forme compare les qualités entre elles : la plus travaillée fixe le bord extérieur.",
+        "change": "Travailler davantage une qualité la pousse vers l’extérieur. La forme montre l’équilibre entre les qualités, pas un niveau."
+      },
+      "depthLoad": {
+        "what": "À quel point cette semaine a été exigeante par rapport à ta semaine habituelle.",
+        "how": "La charge d’une séance est son RPE (1–10) multiplié par ses minutes ; les séances sans RPE ni durée ne comptent pas. Les 7 derniers jours sont comparés à ta moyenne hebdomadaire des 28 derniers.",
+        "change": "Elle monte quand la semaine est plus dure que d’habitude et baisse quand elle est plus légère. C’est un indicateur, pas un avis médical."
+      }
+    },
+    "history": {
+      "title": "Historique des remises à zéro",
+      "hint": "Les statistiques de Progression remises à zéro, avec annulation",
+      "back": "Réglages",
+      "intro": "Une remise à zéro change seulement ce que tu vois dans Progression ; ta box et ton coach voient la même chose qu’avant. L’annulation ramène les anciens chiffres.",
+      "empty": "Tu n’as encore rien remis à zéro. Tu peux le faire depuis le «?» d’une carte dans Progression.",
+      "openProgress": "Ouvrir Progression",
+      "total": "{count, plural, one {# remise à zéro} other {# remises à zéro}}",
+      "resetOn": "Remise à zéro le {date}",
+      "active": "Active",
+      "undone": "Rétablie",
+      "undoneOn": "Rétablie le {date}",
+      "before": "Avant : {value}",
+      "undo": "Rétablir",
+      "undoTitle": "Annuler la remise à zéro de « {metric} » ?",
+      "undoBody": "Progression comptera de nouveau tout, y compris ce qui précède le {date}.",
+      "undoing": "Rétablissement…"
+    }
+  },
   "Insights": {
     "title": "Insights",
     "dismiss": "Masquer",

@@ -36,6 +36,7 @@ export function ProgressDepthSections({ filter }: { filter: ProgressQuery }) {
       qualities={{ ...base, data: query.data?.qualities }}
       load={{ ...base, data: query.data?.load }}
       hideEmpty
+      baselines={query.data?.metric_baselines ?? {}}
     />
   );
 }

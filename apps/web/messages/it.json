@@ -9730,6 +9730,98 @@
       "sharedOnly": "Solo dalle voci che il cliente condivide con i coach del box."
     }
   },
+  "ProgressResets": {
+    "what": "Cosa misura:",
+    "how": "Come si calcola:",
+    "change": "Se cambia:",
+    "reset": "Azzera da oggi",
+    "confirmTitle": "Azzerare «{metric}» da oggi?",
+    "confirmBody": "Conterà da oggi. Niente di vecchio viene cancellato: lo trovi in Io › Impostazioni › I tuoi dati › Cronologia degli azzeramenti.",
+    "confirm": "Azzera",
+    "cancel": "Annulla",
+    "resetting": "Azzeramento…",
+    "since": "dal {date}",
+    "sinceTitle": "Conta dal {date}",
+    "countingSince": "Conta dal {date}.",
+    "metric": {
+      "totals": "Totali",
+      "weekly": "Volume settimanale",
+      "consistency": "Costanza",
+      "scoreHistory": "Storico dei punteggi",
+      "exerciseLoads": "Carichi per esercizio",
+      "bySource": "Sessioni per fonte",
+      "prTimeline": "Cronologia dei record",
+      "depthCoverage": "Copertura muscolare",
+      "depthQualities": "Qualità fisiche",
+      "depthLoad": "Carico di allenamento",
+      "other": "Un'altra statistica dei Progressi"
+    },
+    "info": {
+      "totals": {
+        "what": "Quanto ti sei allenato nel periodo scelto: sessioni completate, i loro minuti e quanti allenamenti diversi erano.",
+        "how": "Ogni allenamento completato del periodo, dalle fonti scelte, conta una volta. I minuti sono la durata registrata; un allenamento ripetuto conta una volta tra quelli diversi.",
+        "change": "Ogni allenamento che completi fa salire i numeri. Un periodo più breve o meno fonti li abbassano."
+      },
+      "weekly": {
+        "what": "Il tuo allenamento per settimana di calendario, in sessioni o minuti.",
+        "how": "Gli allenamenti completati vanno nella settimana in cui sono finiti, a partire dal lunedì. Ogni barra è una settimana del periodo; una settimana senza allenamento resta vuota.",
+        "change": "Una barra cresce con ogni allenamento che completi in quella settimana. Passare da sessioni a minuti cambia solo ciò che mostrano le barre."
+      },
+      "consistency": {
+        "what": "Quanto ti alleni con regolarità: le settimane del periodo che hanno raggiunto il tuo obiettivo settimanale (o, senza obiettivo, con almeno un allenamento), i giorni di allenamento e la tua serie.",
+        "how": "Ogni colonna è una settimana e ogni quadrato un giorno, più scuro con più sessioni. Una settimana conta quando le sue sessioni raggiungono l'obiettivo settimanale; la percentuale è la quota di queste settimane su tutte quelle del periodo.",
+        "change": "Sale con ogni settimana in cui raggiungi l'obiettivo e scende quando una settimana resta sotto. Un nuovo obiettivo settimanale cambia quali settimane contano."
+      },
+      "scoreHistory": {
+        "what": "Come si è mosso il tuo punteggio nelle sezioni che hai registrato più di una volta.",
+        "how": "Tutti i punteggi della stessa sezione dello stesso allenamento, da qualsiasi fonte, formano una linea, dal più vecchio al più recente. Il numero accanto è il tuo ultimo punteggio.",
+        "change": "Ogni nuovo punteggio in quella sezione aggiunge un punto alla sua linea."
+      },
+      "bySource": {
+        "what": "Da dove venivano le sessioni del periodo: il tuo box, l'allenamento libero o un dispositivo.",
+        "how": "Le sessioni completate si contano per fonte; ogni barra è la quota di quella fonte sul totale.",
+        "change": "Più ti alleni con una fonte, più cresce la sua quota; le quote fanno sempre il totale."
+      },
+      "prTimeline": {
+        "what": "I record personali che hai battuto nel periodo, mese per mese.",
+        "how": "Ogni voce è un nuovo record nel giorno in cui l'hai stabilito, con quanto ha migliorato il precedente; il primo record non ha un confronto.",
+        "change": "Compare una voce ogni volta che batti un record. Un periodo più breve nasconde quelli più vecchi; niente viene cancellato."
+      },
+      "depthCoverage": {
+        "what": "Quali muscoli il tuo allenamento del periodo ha lavorato di più e di meno, e l'equilibrio tra spinta e tirata e tra parte anteriore e posteriore della coscia.",
+        "how": "Le serie di ogni esercizio che l'app riconosce contano per i muscoli che allena, per settimana del periodo. I livelli confrontano queste serie settimanali; gli esercizi non riconosciuti restano fuori.",
+        "change": "Un muscolo sale quando aggiungi serie per lui. Più esercizi riconosciuti nel diario rendono il quadro più completo."
+      },
+      "depthQualities": {
+        "what": "Quali delle dieci qualità fisiche, dalla resistenza e la forza all'equilibrio e la precisione, il tuo allenamento del periodo ha lavorato.",
+        "how": "Le serie di ogni esercizio riconosciuto contano per le qualità che allena. La forma confronta le qualità tra loro: la più allenata segna il bordo esterno.",
+        "change": "Allenare di più una qualità la spinge verso l'esterno. La forma mostra l'equilibrio tra le qualità, non un livello."
+      },
+      "depthLoad": {
+        "what": "Quanto è stata impegnativa questa settimana rispetto alla tua settimana abituale.",
+        "how": "Il carico di una sessione è il suo RPE (1–10) per i suoi minuti; le sessioni senza RPE o durata non contano. Gli ultimi 7 giorni si confrontano con la tua media settimanale degli ultimi 28.",
+        "change": "Sale quando la settimana è più dura del solito e scende quando è più leggera. È un indicatore, non un consiglio medico."
+      }
+    },
+    "history": {
+      "title": "Cronologia degli azzeramenti",
+      "hint": "Le statistiche dei Progressi che hai azzerato, con annullamento",
+      "back": "Impostazioni",
+      "intro": "Un azzeramento cambia solo ciò che vedi tu nei Progressi; il tuo box e il tuo coach vedono lo stesso di prima. Annullandolo tornano i numeri precedenti.",
+      "empty": "Non hai ancora azzerato nulla. Puoi farlo dal «?» di una scheda nei Progressi.",
+      "openProgress": "Apri Progressi",
+      "total": "{count, plural, one {# azzeramento} other {# azzeramenti}}",
+      "resetOn": "Azzerato il {date}",
+      "active": "Attivo",
+      "undone": "Annullato",
+      "undoneOn": "Annullato il {date}",
+      "before": "Prima: {value}",
+      "undo": "Ripristina",
+      "undoTitle": "Annullare l'azzeramento di «{metric}»?",
+      "undoBody": "I Progressi conteranno di nuovo tutto, anche ciò che è venuto prima del {date}.",
+      "undoing": "Ripristino…"
+    }
+  },
   "Insights": {
     "title": "Insights",
     "dismiss": "Nascondi",

@@ -11,18 +11,17 @@ import {
   type AccountScoreSeries,
   type ProgressQuery,
 } from "@/api/account-training";
-import type { ProgressStats } from "@/api/content";
 import { listPRs, type PRRecord } from "@/api/gamification";
 import { PRHistoryModal } from "@/components/pantheon/PRHistoryModal";
 import { formatPRScore, groupPRTimelineByMonth, prImprovement } from "@/components/client/pr-timeline";
 import { semanticLabel } from "@/i18n/presentation";
 import { useSession } from "@/components/session-provider";
-import { HelpIcon, InfoModal } from "@/components/InfoModal";
 import { ClientCard, LoadingLine, QueryProblem } from "@/components/client/ClientPage";
 import {
   consistencyGrid,
   heatStrips,
   localToday,
+  sinceBaseline,
   weeksOnTarget,
   type HeatLevel,
 } from "@/components/client/consistency";
@@ -32,6 +31,7 @@ import { InsightsCard } from "@/components/member-app/progress/InsightsCard";
 import { ProgressDepthSections } from "@/components/member-app/progress/ProgressDepthSections";
 import { ProgressOverview } from "@/components/member-app/progress/ProgressOverview";
 import { FitnessProfileCard } from "@/components/member-app/progress/FitnessProfileCard";
+import { baselineOf, MetricTitleAside } from "@/components/member-app/progress/MetricInfo";
 import { useLanding } from "@/components/member-app/progress/use-landing";
 import { weeklyTarget } from "@/components/training-goal/training-goal";
 import { useTrainingGoal } from "@/components/training-goal/use-training-goal";
@@ -108,8 +108,14 @@ export function ProgressConsole() {
             <RestingHeartRateCard range={dailyStatsRange(filter.range)} />
             {progress ? (
               <>
-                <PRTimeline entries={progress.pr_timeline ?? []} />
-                <ScoreHistory series={progress.score_history ?? []} />
+                <PRTimeline
+                  entries={progress.pr_timeline ?? []}
+                  since={baselineOf(progress.metric_baselines, "progress.pr_timeline")}
+                />
+                <ScoreHistory
+                  series={progress.score_history ?? []}
+                  since={baselineOf(progress.metric_baselines, "progress.score_history")}
+                />
               </>
             ) : null}
             <ProgressDepthSections filter={filter} />
@@ -189,29 +195,39 @@ function ProgressFilters({
   );
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
+function Stat({ label, value, aside }: { label: string; value: string; aside?: React.ReactNode }) {
   return (
     <div className="rounded-2xl px-4 py-3" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
-      <p className="text-xs uppercase tracking-[0.18em]" style={{ color: "var(--dim)" }}>{label}</p>
+      <div className="flex min-h-5 min-w-0 items-center gap-1.5">
+        <p className="text-xs uppercase tracking-[0.18em]" style={{ color: "var(--dim)" }}>{label}</p>
+        {aside}
+      </div>
       <p className="mt-1 text-2xl font-semibold tabular-nums" style={{ color: "var(--text)" }}>{value}</p>
     </div>
   );
 }
 
-function Totals({ progress }: { progress: ProgressStats }) {
+/** Totals have no card title: the «?» and the «since» badge sit in the first tile's label row. */
+function Totals({ progress }: { progress: AccountProgress }) {
   const i18n = useUiTranslations();
+  const t = useTranslations("ProgressResets");
   const locale = useUiLocale();
   const number = new Intl.NumberFormat(locale);
+  const since = baselineOf(progress.metric_baselines, "progress.totals");
   return (
     <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-3">
-      <Stat label={i18n("clProgressSessions")} value={number.format(progress.totals.sessions)} />
+      <Stat
+        label={i18n("clProgressSessions")}
+        value={number.format(progress.totals.sessions)}
+        aside={<MetricTitleAside metricKey="progress.totals" title={t("metric.totals")} since={since} />}
+      />
       <Stat label={i18n("clProgressMinutes")} value={number.format(progress.totals.minutes)} />
       <Stat label={i18n("clProgressWorkouts")} value={number.format(progress.totals.workouts)} />
     </div>
   );
 }
 
-function WeeklyChart({ progress }: { progress: ProgressStats }) {
+function WeeklyChart({ progress }: { progress: AccountProgress }) {
   const i18n = useUiTranslations();
   const locale = useUiLocale();
   const [metric, setMetric] = useState<WeeklyMetric>("sessions");
@@ -222,6 +238,13 @@ function WeeklyChart({ progress }: { progress: ProgressStats }) {
   return (
     <ClientCard
       title={i18n("clProgressWeekly")}
+      titleAside={
+        <MetricTitleAside
+          metricKey="progress.weekly"
+          title={i18n("clProgressWeekly")}
+          since={baselineOf(progress.metric_baselines, "progress.weekly")}
+        />
+      }
       aside={
         <div role="group" aria-label={i18n("clProgressMetric")} className="flex gap-1 rounded-full p-0.5" style={{ background: "var(--panel-muted)" }}>
           {(["sessions", "minutes"] as const).map((value) => (
@@ -293,17 +316,20 @@ function Consistency({ progress }: { progress: AccountProgress }) {
   const i18n = useUiTranslations();
   const locale = useUiLocale();
   const landing = useLanding();
-  const [explain, setExplain] = useState(false);
   const gamification = landing.data?.gamification;
   // ADR-229: my own weekly goal, with or without a gym.
   const goal = useTrainingGoal();
   const target = goal.data ? weeklyTarget(goal.data) : null;
-  const dayStreak = gamification?.stats?.current_streak;
+  const since = baselineOf(progress.metric_baselines, "progress.consistency");
+  // ADR-462 §5: after a reset the gym's day streak (never reset) gives way to
+  // the weeks streak, which counts only from the reset.
+  const dayStreak = since ? undefined : gamification?.stats?.current_streak;
   const today = localToday();
-  const weeks = useMemo(
-    () => consistencyGrid(progress.weekly, progress.days ?? [], today, target),
-    [progress.weekly, progress.days, today, target],
-  );
+  const sinceDay = since ? localToday(since) : null;
+  const weeks = useMemo(() => {
+    const kept = sinceBaseline(progress.weekly, progress.days ?? [], sinceDay);
+    return consistencyGrid(kept.weekly, kept.days, today, target);
+  }, [progress.weekly, progress.days, sinceDay, today, target]);
   const onTarget = weeksOnTarget(weeks);
   const percent = weeks.length > 0 ? Math.round((onTarget * 100) / weeks.length) : 0;
   const shortDate = (day: string) => formatDay(day, locale, { weekday: undefined, year: undefined, month: "short" });
@@ -315,6 +341,26 @@ function Consistency({ progress }: { progress: AccountProgress }) {
   return (
     <ClientCard
       title={i18n("clProgressConsistency")}
+      titleAside={
+        <MetricTitleAside metricKey="progress.consistency" title={i18n("clProgressConsistency")} since={since}>
+          {target ? (
+            <>
+              <p>
+                <strong style={{ color: "var(--text)" }}>{i18n("currentStreak031c4ed")}:</strong>{" "}
+                {i18n("theNumberOfConsecutiveUserRelativeTrainingWeeks23b79ed")} {i18n("workoutCount", { count: target })}.
+              </p>
+              <p>
+                <strong style={{ color: "var(--text)" }}>{i18n("howToImprove1fadc66")}</strong> {i18n("completeAtLeastfd38f65")}{" "}
+                {i18n("workoutCount", { count: target })} {i18n("eachTrainingWeekAStreakShieldCanProtecte2b0f06")}
+              </p>
+              <p>
+                <strong style={{ color: "var(--text)" }}>{i18n("whyItMatterscdfa2a6")}</strong>{" "}
+                {i18n("streaksBuildTheHabitOfRegularWeeklyTraining48e3b44")}
+              </p>
+            </>
+          ) : null}
+        </MetricTitleAside>
+      }
       aside={
         <span className="flex flex-wrap items-center gap-2 text-xs font-semibold" style={{ color: "var(--muted)" }}>
           {/* THEME.md: the streak is Spark, a fill with dark text. */}
@@ -322,7 +368,6 @@ function Consistency({ progress }: { progress: AccountProgress }) {
             {i18n("clProgressStreak")}: {streak}
           </span>
           {target ? <span>{i18n("clProgressTarget", { count: target })}</span> : null}
-          {target ? <HelpIcon tooltip={i18n("currentStreak031c4ed")} onClick={() => setExplain(true)} /> : null}
         </span>
       }
     >
@@ -386,22 +431,6 @@ function Consistency({ progress }: { progress: AccountProgress }) {
           <span>{shortDate(weeks[weeks.length - 1].week_start)}</span>
         </div>
       ) : null}
-      {explain && target ? (
-        <InfoModal title={i18n("currentStreak031c4ed")} onClose={() => setExplain(false)}>
-          <p>
-            <strong style={{ color: "var(--text)" }}>{i18n("whatItMeasuresbbab752")}</strong>{" "}
-            {i18n("theNumberOfConsecutiveUserRelativeTrainingWeeks23b79ed")} {i18n("workoutCount", { count: target })}.
-          </p>
-          <p>
-            <strong style={{ color: "var(--text)" }}>{i18n("howToImprove1fadc66")}</strong> {i18n("completeAtLeastfd38f65")}{" "}
-            {i18n("workoutCount", { count: target })} {i18n("eachTrainingWeekAStreakShieldCanProtecte2b0f06")}
-          </p>
-          <p>
-            <strong style={{ color: "var(--text)" }}>{i18n("whyItMatterscdfa2a6")}</strong>{" "}
-            {i18n("streaksBuildTheHabitOfRegularWeeklyTraining48e3b44")}
-          </p>
-        </InfoModal>
-      ) : null}
     </ClientCard>
   );
 }
@@ -415,7 +444,16 @@ function BySource({ progress }: { progress: AccountProgress }) {
   const total = bySource.reduce((sum, row) => sum + row.sessions, 0);
   if (bySource.length === 0 || total === 0) return null;
   return (
-    <ClientCard title={t("progress.bySource")}>
+    <ClientCard
+      title={t("progress.bySource")}
+      titleAside={
+        <MetricTitleAside
+          metricKey="progress.by_source"
+          title={t("progress.bySource")}
+          since={baselineOf(progress.metric_baselines, "progress.by_source")}
+        />
+      }
+    >
       <ul className="flex flex-col gap-2">
         {bySource.map((row) => {
           const percent = Math.round((row.sessions / total) * 100);
@@ -438,11 +476,14 @@ function BySource({ progress }: { progress: AccountProgress }) {
   );
 }
 
-function ScoreHistory({ series }: { series: AccountScoreSeries[] }) {
+function ScoreHistory({ series, since }: { series: AccountScoreSeries[]; since: Date | null }) {
   const i18n = useUiTranslations();
   if (series.length === 0) return null;
   return (
-    <ClientCard title={i18n("clProgressScores")}>
+    <ClientCard
+      title={i18n("clProgressScores")}
+      titleAside={<MetricTitleAside metricKey="progress.score_history" title={i18n("clProgressScores")} since={since} />}
+    >
       <p className="mb-3 text-sm" style={{ color: "var(--muted)" }}>{i18n("clProgressScoresIntro")}</p>
       <ul className="flex flex-col gap-3">
         {series.map((item) => (
@@ -515,7 +556,7 @@ function ScoreSeries({ series }: { series: AccountScoreSeries }) {
   );
 }
 
-function PRTimeline({ entries }: { entries: AccountProgress["pr_timeline"] }) {
+function PRTimeline({ entries, since }: { entries: AccountProgress["pr_timeline"]; since: Date | null }) {
   const i18n = useUiTranslations();
   const locale = useUiLocale();
   const { tokens } = useSession();
@@ -531,7 +572,10 @@ function PRTimeline({ entries }: { entries: AccountProgress["pr_timeline"] }) {
 
   if (months.length === 0) return null;
   return (
-    <ClientCard title={i18n("clPrTimelineTitle")}>
+    <ClientCard
+      title={i18n("clPrTimelineTitle")}
+      titleAside={<MetricTitleAside metricKey="progress.pr_timeline" title={i18n("clPrTimelineTitle")} since={since} />}
+    >
       <ol className="flex flex-col gap-4">
         {months.map((month) => (
           <li key={month.month}>
