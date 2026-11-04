@@ -2,6 +2,7 @@
 
 import {useUiTranslations} from "@/i18n/ui";
 import { Dialog } from "@/components/ui/Dialog";
+import { HELP_ICON_CLASS, HELP_ICON_STYLE } from "@/components/HelpTooltip";
 
 type InfoModalProps = {
   title: string;
@@ -28,8 +29,8 @@ export function HelpIcon({ tooltip, onClick }: HelpIconProps) {
   const i18n = useUiTranslations();
   return (
     <button
-      className="hit-area flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold transition-colors hover:opacity-80"
-      style={{ background: "var(--border)", color: "var(--dim)", border: "1px solid var(--border-strong)" }}
+      className={`hit-area ${HELP_ICON_CLASS}`}
+      style={HELP_ICON_STYLE}
       title={tooltip}
       onClick={onClick}
       type="button"

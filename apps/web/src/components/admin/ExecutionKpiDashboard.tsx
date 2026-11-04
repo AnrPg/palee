@@ -125,8 +125,10 @@ export function ExecutionKpiDashboard({
       {!report ? (
         <p className="mt-6 text-sm text-[var(--muted)]">{loading ? i18n("kpiLoading") : i18n("noCapturedFactsInThisReportingWindowdc344c7")}</p>
       ) : (
-        <>
-          <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        // One stack owns the spacing between the sections, so no section can
+        // sit flush against the one above it.
+        <div className="mt-6 flex flex-col gap-6">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <StatTile
               label={i18n("kpiCompletionRate")}
               value={percent(report.completion_rate)}
@@ -170,7 +172,7 @@ export function ExecutionKpiDashboard({
 
           <DailyTrend daily={report.daily} help={widgetHelp("daily_trend")} />
 
-          <div className="mt-6 grid gap-4 lg:grid-cols-2">
+          <div className="grid gap-4 lg:grid-cols-2">
             <Panel title={i18n("kpiAbandonByFormat")} help={help(i18n("kpiAbandonByFormatHelp"), "abandon_by_format")}>
               {report.abandon_by_format.length === 0 ? (
                 <Empty />
@@ -233,7 +235,7 @@ export function ExecutionKpiDashboard({
             />
           </div>
 
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-3 sm:grid-cols-2">
             <StatTile
               label={i18n("kpiStructuredWorkouts")}
               help={widgetHelp("structured")}
@@ -246,7 +248,7 @@ export function ExecutionKpiDashboard({
               help={help(i18n("kpiFreeTextHelp"), "free_text")}
             />
           </div>
-        </>
+        </div>
       )}
     </section>
   );

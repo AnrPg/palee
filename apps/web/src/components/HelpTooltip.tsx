@@ -4,11 +4,18 @@ import { useId, useRef, useState, type ReactNode } from "react";
 
 import { Popover } from "@/components/ui/Popover";
 
-const HELP_BUTTON_CLASS = "inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold";
-const HELP_BUTTON_STYLE = {
-  background: "color-mix(in srgb, var(--primary) 12%, transparent)",
-  border: "1px solid color-mix(in srgb, var(--primary) 28%, transparent)",
-  color: "var(--primary)",
+/**
+ * Every «?» infobox trigger looks the same and stays quiet (ANR 2026-11-04):
+ * no fill and no accent colour, only a hairline ring and a muted glyph from
+ * the theme, so it never competes with the number or title it explains.
+ * Hover and keyboard focus raise it to the soft text colour.
+ */
+export const HELP_ICON_CLASS =
+  "inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold " +
+  "text-[var(--muted)] transition-colors hover:text-[var(--text-soft)] focus-visible:text-[var(--text-soft)]";
+export const HELP_ICON_STYLE = {
+  background: "transparent",
+  border: "1px solid var(--border-strong)",
 };
 
 /**
@@ -46,8 +53,8 @@ export function HelpPopover({
         aria-controls={open ? id : undefined}
         data-help-key={helpKey}
         onClick={() => setOpen((current) => !current)}
-        className={HELP_BUTTON_CLASS}
-        style={HELP_BUTTON_STYLE}
+        className={HELP_ICON_CLASS}
+        style={HELP_ICON_STYLE}
       >
         ?
       </button>
@@ -83,16 +90,12 @@ export function HelpTooltip({ label, children }: { label: string; children: Reac
         aria-describedby={open ? id : undefined}
         aria-expanded={open}
         aria-label={label}
-        className="inline-flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold"
+        className={HELP_ICON_CLASS}
         onBlur={() => setOpen(false)}
         onClick={() => setOpen((current) => !current)}
         onFocus={() => setOpen(true)}
         type="button"
-        style={{
-          background: "color-mix(in srgb, var(--primary) 12%, transparent)",
-          border: "1px solid color-mix(in srgb, var(--primary) 28%, transparent)",
-          color: "var(--primary)",
-        }}
+        style={HELP_ICON_STYLE}
       >
         ?
       </button>

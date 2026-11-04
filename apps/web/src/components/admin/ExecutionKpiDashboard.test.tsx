@@ -72,6 +72,17 @@ describe("ExecutionKpiDashboard", () => {
     expect(screen.getAllByTestId("help").some((node) => node.dataset.metric === "training.execution_kpis")).toBe(true);
   });
 
+  it("spaces every section from the one above it, the daily trend included", () => {
+    renderDashboard();
+
+    const trend = screen.getByRole("heading", { name: "kpiDailyTrend" }).closest("article")!;
+    const stack = trend.parentElement!;
+    // One flex column with a gap owns the spacing, so no section sits flush.
+    expect(stack.className).toMatch(/\bflex-col\b/);
+    expect(stack.className).toMatch(/\bgap-6\b/);
+    expect(stack.children.length).toBeGreaterThan(2);
+  });
+
   it("shows the empty state without an execution block", () => {
     render(<ExecutionKpiDashboard payload={{}} />);
     expect(screen.getByText("noCapturedFactsInThisReportingWindowdc344c7")).toBeInTheDocument();
