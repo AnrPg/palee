@@ -16305,7 +16305,10 @@
       "reviews": "Reseñas",
       "faq": "Preguntas frecuentes",
       "trial_form": "Solicitud de prueba",
-      "contact_form": "Formulario de contacto"
+      "contact_form": "Formulario de contacto",
+      "photos": "Fotos",
+      "stats": "La comunidad en cifras",
+      "programmes": "Programas"
     },
     "form": {
       "trial": {
@@ -16425,16 +16428,11 @@
       "back": "Ajustes",
       "title": "Web",
       "navHint": "Secciones, idiomas, dominio y cookies de la web del box",
-      "intro": "La web del box se llena sola desde Palee. Activa o desactiva secciones y ordénalas.",
+      "intro": "La web del box se llena sola desde Palee. Elige su aspecto y sus secciones y publícala cuando esté lista.",
       "open": "Abrir la web",
       "requests": "{count, plural, one {# solicitud} other {# solicitudes}} en los últimos {days} días",
       "loading": "Cargando…",
       "stale": "Otra persona cambió estos ajustes. Recarga e inténtalo de nuevo.",
-      "sectionsTitle": "Secciones",
-      "sectionsHint": "Los visitantes ven las secciones activas en este orden.",
-      "heroAlways": "Siempre la primera",
-      "moveUp": "Subir {section}",
-      "moveDown": "Bajar {section}",
       "question": "Pregunta",
       "answer": "Respuesta",
       "required": "Rellénalo o quita la pregunta.",
@@ -16525,6 +16523,139 @@
       "left": "Quedan {left} de {total}",
       "skip": "Saltar",
       "saveNext": "Guardar y siguiente"
+    }
+  },
+  "WebsiteLook": {
+    "notice": "Tu web tiene un aspecto nuevo: {template}. Mira las otras plantillas y cámbiala cuando quieras.",
+    "noticeClose": "Cerrar aviso",
+    "lookTitle": "Aspecto",
+    "template": "Plantilla",
+    "templates": {
+      "arena": {
+        "name": "Arena",
+        "hint": "Energía, tipografía grande. CrossFit."
+      },
+      "tiles": {
+        "name": "Mosaico",
+        "hint": "Mosaicos vivos. Encaja en todo."
+      },
+      "stories": {
+        "name": "Historias",
+        "hint": "Historias, como una app. Sobre todo móvil."
+      },
+      "atelier": {
+        "name": "Atelier",
+        "hint": "Editorial y premium. Pilates, yoga."
+      }
+    },
+    "colors": "Colores",
+    "palettes": {
+      "palee": "Palee",
+      "electric": "Eléctrico",
+      "flame": "Llama",
+      "sun": "Sol",
+      "amber": "Ámbar",
+      "emerald": "Esmeralda",
+      "aegean": "Egeo",
+      "violet": "Violeta",
+      "fuchsia": "Fucsia",
+      "olive": "Oliva",
+      "navy": "Marino",
+      "mono": "Mono"
+    },
+    "contrast": "Contraste del texto {ratio}:1.",
+    "contrastAa": "Contraste del texto {ratio}:1 · AA ✓.",
+    "contrastHint": "Si un color no se lee bien, Palee usa un tono más oscuro.",
+    "appearanceTitle": "Clara u oscura",
+    "appearance": {
+      "auto": "Automático",
+      "light": "Siempre clara",
+      "dark": "Siempre oscura"
+    },
+    "appearanceHint": "«Automático» sigue el dispositivo del visitante.",
+    "motionTitle": "Movimiento",
+    "calm": "Menos movimiento",
+    "calmHint": "Quita los efectos y los movimientos automáticos para todos los visitantes. Quien lo pidió en su dispositivo ya ve menos movimiento.",
+    "sectionsTitle": "Qué muestra la web",
+    "sectionsHint": "Cada sección se llena sola desde Palee. Lo que no tiene datos se oculta, aunque esté activado. El Inicio se ve siempre.",
+    "quickAll": "Todo",
+    "quickBasic": "Solo lo básico",
+    "groups": {
+      "basics": "Básico",
+      "training": "Entrenamiento",
+      "shop": "Tienda",
+      "team": "Equipo y espacio",
+      "forms": "Formularios"
+    },
+    "new": "nuevo",
+    "sectionHints": {
+      "about": "El texto «Sobre nosotros» de la página del box.",
+      "photos": "Hasta 12 fotos y 1 vídeo de hasta 15″. Sin ellas, los «Espacios» con 🌐.",
+      "stats": "Solo totales: clases por semana, PR este año, años abiertos.",
+      "schedule": "Las clases de la semana, sin plazas ni nombres.",
+      "wod": "El WOD de hoy, cuando se publique.",
+      "events": "Los eventos del box abiertos a todos.",
+      "programmes": "Los programas que venden tus coaches.",
+      "packages": "Los bonos que vendes online.",
+      "coaches": "Los coaches del box con sus certificaciones.",
+      "location": "Dirección, mapa y horario.",
+      "reviews": "Reseñas de los miembros y tu puntuación en Google.",
+      "faq": "Hasta 12 preguntas que escribes tú.",
+      "trial_form": "Se convierte en Interesado en Leads.",
+      "contact_form": "Se convierte en Interesado en Leads."
+    },
+    "seoTitle": "Te encuentran en Google y en las respuestas de IA",
+    "seoIntro": "Palee lo hace todo solo, en cada página y en cada idioma:",
+    "seo": {
+      "google": {
+        "label": "Google (SEO):",
+        "text": "título, descripción y dirección propios en cada página, sitemap, imagen para compartir."
+      },
+      "data": {
+        "label": "Datos estructurados:",
+        "text": "el box, los bonos, las clases, los eventos y las preguntas en schema.org, para que los buscadores los lean bien."
+      },
+      "ai": {
+        "label": "Respuestas de IA (GEO):",
+        "text": "la misma dirección, teléfono y horario en todas partes, textos con fecha y un archivo llms.txt, para que ChatGPT, Gemini y Perplexity te citen bien."
+      },
+      "speed": {
+        "label": "Velocidad:",
+        "text": "las páginas abren en menos de 2,5 segundos en el móvil, algo que también cuenta para Google."
+      },
+      "reviews": {
+        "label": "Reseñas:",
+        "text": "«Escribe una reseña en Google» después de las clases te sube en las búsquedas locales."
+      }
+    },
+    "seoTip": "Para subir aún más: completa la ficha de Google del box y pon <domain>tu propio dominio</domain>.",
+    "publish": {
+      "allPublished": "Todo publicado.",
+      "pending": "Cambios sin publicar: {list}.",
+      "published": "Publicado. Los visitantes lo ven en unos segundos.",
+      "publish": "Publicar",
+      "publishing": "Publicando…",
+      "discard": "Descartar",
+      "discardTitle": "¿Descartar los cambios?",
+      "discardText": "Se perderán los cambios en {list}. La web se queda como está publicada.",
+      "keep": "Conservarlos",
+      "groups": {
+        "template": "plantilla",
+        "colors": "colores",
+        "appearance": "clara u oscura",
+        "motion": "movimiento",
+        "sections": "secciones"
+      }
+    },
+    "preview": {
+      "title": "Vista previa",
+      "hint": "Así la verán los visitantes después de «Publicar».",
+      "device": "Dispositivo",
+      "phone": "Móvil",
+      "desk": "Ordenador",
+      "open": "Vista previa",
+      "loading": "Cargando la vista previa…",
+      "unavailable": "La vista previa no está disponible ahora."
     }
   },
   "BoxReviews": {

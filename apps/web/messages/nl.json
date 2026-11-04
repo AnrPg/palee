@@ -16305,7 +16305,10 @@
       "reviews": "Reviews",
       "faq": "Veelgestelde vragen",
       "trial_form": "Aanvraag proefles",
-      "contact_form": "Contactformulier"
+      "contact_form": "Contactformulier",
+      "photos": "Foto's",
+      "stats": "Community in cijfers",
+      "programmes": "Programma's"
     },
     "form": {
       "trial": {
@@ -16425,16 +16428,11 @@
       "back": "Instellingen",
       "title": "Website",
       "navHint": "Secties, talen, domein en cookies van de website van de box",
-      "intro": "De website van de box vult zichzelf vanuit Palee. Zet secties aan of uit en zet ze op volgorde.",
+      "intro": "De website van de box vult zichzelf vanuit Palee. Kies het uiterlijk en de secties en publiceer als hij klaar is.",
       "open": "Website openen",
       "requests": "{count, plural, one {# aanvraag} other {# aanvragen}} in de afgelopen {days} dagen",
       "loading": "Laden…",
       "stale": "Iemand anders heeft deze instellingen gewijzigd. Herlaad en probeer opnieuw.",
-      "sectionsTitle": "Secties",
-      "sectionsHint": "Bezoekers zien de actieve secties in deze volgorde.",
-      "heroAlways": "Altijd als eerste",
-      "moveUp": "{section} omhoog",
-      "moveDown": "{section} omlaag",
       "question": "Vraag",
       "answer": "Antwoord",
       "required": "Vul dit in of verwijder de vraag.",
@@ -16525,6 +16523,139 @@
       "left": "Nog {left} van {total}",
       "skip": "Overslaan",
       "saveNext": "Opslaan en volgende"
+    }
+  },
+  "WebsiteLook": {
+    "notice": "Je website heeft een nieuw uiterlijk: {template}. Bekijk de andere sjablonen en wissel wanneer je wilt.",
+    "noticeClose": "Melding sluiten",
+    "lookTitle": "Uiterlijk",
+    "template": "Sjabloon",
+    "templates": {
+      "arena": {
+        "name": "Arena",
+        "hint": "Energie, grote letters. CrossFit."
+      },
+      "tiles": {
+        "name": "Tegels",
+        "hint": "Levendige tegels. Past overal."
+      },
+      "stories": {
+        "name": "Verhalen",
+        "hint": "Stories, zoals een app. Vooral mobiel."
+      },
+      "atelier": {
+        "name": "Atelier",
+        "hint": "Redactioneel, premium. Pilates, yoga."
+      }
+    },
+    "colors": "Kleuren",
+    "palettes": {
+      "palee": "Palee",
+      "electric": "Elektrisch",
+      "flame": "Vlam",
+      "sun": "Zon",
+      "amber": "Amber",
+      "emerald": "Smaragd",
+      "aegean": "Egeïsch",
+      "violet": "Violet",
+      "fuchsia": "Fuchsia",
+      "olive": "Olijf",
+      "navy": "Marine",
+      "mono": "Mono"
+    },
+    "contrast": "Tekstcontrast {ratio}:1.",
+    "contrastAa": "Tekstcontrast {ratio}:1 · AA ✓.",
+    "contrastHint": "Is een kleur slecht leesbaar, dan gebruikt Palee een donkerdere tint.",
+    "appearanceTitle": "Licht of donker",
+    "appearance": {
+      "auto": "Automatisch",
+      "light": "Altijd licht",
+      "dark": "Altijd donker"
+    },
+    "appearanceHint": "«Automatisch» volgt het apparaat van de bezoeker.",
+    "motionTitle": "Beweging",
+    "calm": "Minder beweging",
+    "calmHint": "Zet effecten en automatische bewegingen uit voor alle bezoekers. Wie het op zijn apparaat heeft gevraagd, ziet al minder beweging.",
+    "sectionsTitle": "Wat de website toont",
+    "sectionsHint": "Elke sectie vult zichzelf vanuit Palee. Wat geen gegevens heeft, blijft verborgen, ook als het aan staat. Het Begin staat er altijd.",
+    "quickAll": "Alles",
+    "quickBasic": "Alleen de basis",
+    "groups": {
+      "basics": "Basis",
+      "training": "Training",
+      "shop": "Winkel",
+      "team": "Team en ruimte",
+      "forms": "Formulieren"
+    },
+    "new": "nieuw",
+    "sectionHints": {
+      "about": "De tekst «Over ons» van de boxpagina.",
+      "photos": "Tot 12 foto's en 1 video tot 15″. Zonder foto's de «Ruimtes» met 🌐.",
+      "stats": "Alleen totalen: lessen per week, PR's dit jaar, jaren open.",
+      "schedule": "De lessen van de week, zonder plaatsen of namen.",
+      "wod": "De WOD van vandaag, zodra die gepubliceerd is.",
+      "events": "De events van de box die voor iedereen open zijn.",
+      "programmes": "De programma's die je coaches verkopen.",
+      "packages": "De abonnementen die je online verkoopt.",
+      "coaches": "De coaches van de box met hun certificaten.",
+      "location": "Adres, kaart en openingstijden.",
+      "reviews": "Reviews van leden en je Google-score.",
+      "faq": "Tot 12 vragen die je zelf schrijft.",
+      "trial_form": "Wordt een Geïnteresseerde in Leads.",
+      "contact_form": "Wordt een Geïnteresseerde in Leads."
+    },
+    "seoTitle": "Vindbaar in Google en in AI-antwoorden",
+    "seoIntro": "Palee doet dit allemaal zelf, op elke pagina en in elke taal:",
+    "seo": {
+      "google": {
+        "label": "Google (SEO):",
+        "text": "eigen titel, beschrijving en adres op elke pagina, sitemap, afbeelding om te delen."
+      },
+      "data": {
+        "label": "Gestructureerde gegevens:",
+        "text": "de box, pakketten, lessen, events en vragen in schema.org, zodat zoekmachines ze goed lezen."
+      },
+      "ai": {
+        "label": "AI-antwoorden (GEO):",
+        "text": "overal hetzelfde adres, telefoonnummer en dezelfde openingstijden, gedateerde teksten en een llms.txt-bestand, zodat ChatGPT, Gemini en Perplexity je juist noemen."
+      },
+      "speed": {
+        "label": "Snelheid:",
+        "text": "pagina's openen op een telefoon in minder dan 2,5 seconden, wat ook telt voor Google."
+      },
+      "reviews": {
+        "label": "Reviews:",
+        "text": "«Schrijf een Google-review» na de lessen tilt je hoger in lokale zoekresultaten."
+      }
+    },
+    "seoTip": "Nog hoger komen: vul de Google-vermelding van de box aan en gebruik <domain>je eigen domein</domain>.",
+    "publish": {
+      "allPublished": "Alles is gepubliceerd.",
+      "pending": "Nog niet gepubliceerd: {list}.",
+      "published": "Gepubliceerd. Bezoekers zien het binnen een paar seconden.",
+      "publish": "Publiceren",
+      "publishing": "Publiceren…",
+      "discard": "Verwerpen",
+      "discardTitle": "Wijzigingen verwerpen?",
+      "discardText": "De wijzigingen in {list} gaan verloren. De website blijft zoals hij gepubliceerd is.",
+      "keep": "Bewaren",
+      "groups": {
+        "template": "sjabloon",
+        "colors": "kleuren",
+        "appearance": "licht of donker",
+        "motion": "beweging",
+        "sections": "secties"
+      }
+    },
+    "preview": {
+      "title": "Voorbeeld",
+      "hint": "Zo zien bezoekers hem na «Publiceren».",
+      "device": "Apparaat",
+      "phone": "Mobiel",
+      "desk": "Computer",
+      "open": "Voorbeeld",
+      "loading": "Voorbeeld laden…",
+      "unavailable": "Het voorbeeld is nu niet beschikbaar."
     }
   },
   "BoxReviews": {

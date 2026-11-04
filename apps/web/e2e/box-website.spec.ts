@@ -302,12 +302,31 @@ const siteLanguages = {
   progress: [{ locale: "en", counts: { ok: 1, missing: 2, stale: 1, machine: 0 }, total: 4 }],
 };
 
+const DRAFT_FIELDS = ["template", "palette", "appearance", "calm_motion", "hidden_sections", "public_schedule", "public_wod"];
+
 test.describe("Settings › Website", () => {
-  test("switches sections and their order as a draft, and the save bar sends one PUT", async ({ page }) => {
+  test("keeps the look and the section switches as a draft until «Publish» (ADR-530)", async ({ page }) => {
     const writes: Write[] = [];
+    let server: Record<string, unknown> = { ...siteSettings, template: "arena", palette: "palee", appearance: "auto", calm_motion: false, draft: null, published_at: null, template_notice: true };
     await asOwner(page, writes, (path, method, body, route) => {
-      if (path === "/api/admin/site" && method === "GET") return json(route, { settings: siteSettings, domains: [], languages: siteLanguages });
-      if (path === "/api/admin/site" && method === "PUT") return json(route, { settings: { ...siteSettings, ...(body as object), lock_version: 4 }, languages: siteLanguages });
+      if (path === "/api/admin/site" && method === "GET") return json(route, { settings: server, domains: [], languages: siteLanguages });
+      if (path === "/api/admin/site" && method === "PUT") {
+        // The API keeps the publishable fields as a draft; the rest saves at once.
+        const draft = { ...((server.draft as object | null) ?? {}) } as Record<string, unknown>;
+        const rest: Record<string, unknown> = {};
+        for (const [key, value] of Object.entries(body as object)) (DRAFT_FIELDS.includes(key) ? draft : rest)[key] = value;
+        server = { ...server, ...rest, draft, lock_version: (server.lock_version as number) + 1 };
+        return json(route, { settings: server, languages: siteLanguages });
+      }
+      if (path === "/api/admin/site/publish" && method === "POST") {
+        server = { ...server, ...((server.draft as object | null) ?? {}), draft: null, template_notice: false };
+        return json(route, { settings: server });
+      }
+      if (path === "/api/admin/site/notice" && method === "DELETE") {
+        server = { ...server, template_notice: false };
+        return json(route, { settings: server });
+      }
+      if (path === "/api/admin/site/preview") return json(route, { detail: "not_found" }, 404);
       if (path === "/api/admin/site/summary") {
         return json(route, { days: 30, submissions: { total: 7, delivered: 7, failed: 0, waiting: 0 }, consents: { accept_all: 0, custom: 0, reject_all: 0, withdraw: 0 } });
       }
@@ -318,37 +337,70 @@ test.describe("Settings › Website", () => {
     await expect(page.getByRole("heading", { name: "Website", level: 1 })).toBeVisible();
     await expect(page.getByTestId("website-summary")).toHaveText("7 requests in the last 30 days");
     await expect(page.getByTestId("website-open")).toHaveAttribute("href", "/b/kypseli");
+    await expect(page.getByTestId("website-notice")).toContainText("Your website has a new look: Arena.");
+    await expect(page.getByTestId("website-publish-status")).toHaveText("Everything is published.");
+    // From 1100px the preview sits beside the settings; narrower, «Preview» opens it as a sheet.
+    if ((page.viewportSize()?.width ?? 0) >= 1100) {
+      await expect(page.getByTestId("website-preview")).toBeVisible();
+      await expect(page.getByTestId("website-preview-open")).toHaveCount(0);
+    } else {
+      await page.getByTestId("website-preview-open").click();
+      await expect(page.getByTestId("website-preview-sheet").getByTestId("website-preview")).toBeVisible();
+      await page.keyboard.press("Escape");
+      await expect(page.getByTestId("website-preview-sheet")).toHaveCount(0);
+    }
 
+    // Four templates and twelve palettes; the arrow keys move within each group.
+    const look = page.getByTestId("website-look");
+    await expect(look.getByRole("radiogroup", { name: "Template" }).getByRole("radio")).toHaveCount(4);
+    await expect(look.getByRole("radiogroup", { name: "Colours" }).getByRole("radio")).toHaveCount(12);
+    await look.getByRole("radio", { name: /Arena/ }).focus();
+    await page.keyboard.press("ArrowRight");
+    await expect(look.getByRole("radio", { name: /Tiles/ })).toHaveAttribute("aria-checked", "true");
+    await expect(look.getByRole("radio", { name: /Tiles/ })).toBeFocused();
+    await expect(page.getByTestId("website-publish-status")).toHaveText("Not published yet: template.");
+
+    // One switch per section, in groups, without order arrows. «Timetable» is on (public_schedule) only when switched on.
     const sections = page.getByTestId("website-sections");
-    await expect(sections.getByTestId("website-section-hero")).toContainText("Always shown first");
-    // «Timetable» is off until the owner switches it on (public_schedule).
+    await expect(sections.getByRole("button", { name: /^Move / })).toHaveCount(0);
     const timetable = sections.getByRole("switch", { name: "Timetable" });
     await expect(timetable).not.toBeChecked();
-    await expect(sections.getByRole("switch", { name: "Contact form" })).toBeChecked();
+    await timetable.click();
+    await expect(timetable).toBeChecked();
+    await sections.getByRole("switch", { name: "Contact form" }).click();
+    await expect(page.getByTestId("website-publish-status")).toHaveText("Not published yet: template, sections.");
+    // Nothing for the save bar: every click went to the server as a draft.
     await expect(page.getByTestId("website-save-bar-save")).toHaveCount(0);
+    const puts = writes.filter((write) => write.path === "/api/admin/site" && write.method === "PUT");
+    expect(puts.map((write) => write.body)).toEqual([
+      { lock_version: 3, template: "tiles" },
+      { lock_version: 4, hidden_sections: [], public_schedule: true },
+      { lock_version: 5, hidden_sections: ["contact_form"] },
+    ]);
 
-    await timetable.check();
-    await sections.getByRole("switch", { name: "Contact form" }).uncheck();
-    await sections.getByRole("button", { name: "Move Reviews up" }).click();
-    await expect(sections.locator("li")).toHaveText([/^Top/, /^About/, /^Reviews/, /^Timetable/, /^Trial class request/, /^Contact form/, /^FAQ/]);
-    await expect(page.getByTestId("website-save-bar-count")).toHaveText("3 unsaved changes");
-    expect(writes.filter((write) => write.path === "/api/admin/site")).toEqual([]);
+    await page.getByTestId("website-publish").click();
+    await expect(page.getByTestId("website-publish-status")).toHaveText("Published. Visitors see it in a few seconds.");
+    expect(writes.filter((write) => write.path === "/api/admin/site/publish")).toHaveLength(1);
+    await expect(page.getByTestId("website-notice")).toHaveCount(0);
+  });
 
-    await page.getByTestId("website-save-bar-save").click();
-    await expect(page.getByTestId("website-save-bar")).toContainText("Changes saved.");
+  test("«Just the basics» keeps about, packages, location and the trial form", async ({ page }) => {
+    const writes: Write[] = [];
+    await asOwner(page, writes, (path, method, body, route) => {
+      if (path === "/api/admin/site" && method === "GET") return json(route, { settings: siteSettings, domains: [], languages: siteLanguages });
+      if (path === "/api/admin/site" && method === "PUT") return json(route, { settings: { ...siteSettings, lock_version: 4, draft: body }, languages: siteLanguages });
+      if (path === "/api/admin/site/preview") return json(route, { detail: "not_found" }, 404);
+      return null;
+    });
+    await page.goto("/admin/settings/website");
+    const sections = page.getByTestId("website-sections");
+    await sections.getByRole("button", { name: "Just the basics" }).click();
+    await expect(sections.getByRole("switch", { name: "Packages" })).toBeChecked();
+    await expect(sections.getByRole("switch", { name: "Coaches" })).not.toBeChecked();
     const puts = writes.filter((write) => write.path === "/api/admin/site" && write.method === "PUT");
     expect(puts).toHaveLength(1);
-    expect(puts[0]!.body).toMatchObject({
-      lock_version: 3,
-      public_schedule: true,
-      public_wod: false,
-      forms_enabled: true,
-      hidden_sections: ["contact_form"],
-      section_order: ["hero", "about", "reviews", "schedule", "trial_form", "contact_form", "faq"],
-      faq: [],
-      translation_locales: ["en"],
-      visible_locales: [],
-    });
+    expect(puts[0]!.body).toMatchObject({ public_schedule: false, public_wod: false });
+    expect((puts[0]!.body as { hidden_sections: string[] }).hidden_sections).not.toContain("trial_form");
   });
 });
 
