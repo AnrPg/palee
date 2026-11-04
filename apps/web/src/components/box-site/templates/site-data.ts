@@ -372,13 +372,6 @@ export function packagesInOrder(packages: PublicPackage[]): PublicPackage[] {
   return [...packages.filter((pkg) => pkg.package_type === "trial"), ...packages.filter((pkg) => pkg.package_type !== "trial")];
 }
 
-/** The package most people would pick: the cheapest monthly one, else the first paid one. */
-export function featuredPackageId(packages: PublicPackage[]): string | null {
-  const monthly = packages.filter((pkg) => pkg.package_type !== "trial" && pkg.billing_period === "monthly" && pkg.base_price_cents > 0);
-  if (monthly.length < 2) return null;
-  return monthly.sort((a, b) => b.base_price_cents - a.base_price_cents)[0]!.id;
-}
-
 export function cheapestProgramme(programmes: SiteProgramme[]) {
   const priced = programmes.filter((programme) => (programme.price_cents ?? 0) > 0);
   return priced.sort((a, b) => (a.price_cents ?? 0) - (b.price_cents ?? 0))[0] ?? null;
