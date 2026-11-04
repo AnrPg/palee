@@ -206,8 +206,21 @@ defmodule Palee.Partners.Domain.SuggestionPolicy do
     do: Enum.map(people, &distance_km(&1.point, Map.get(candidate, :point)))
 
   defp levels(%{levels: levels}) when is_list(levels), do: levels
+
+  defp levels(%{class_levels: class_levels}) when is_list(class_levels),
+    do: admitted(class_levels)
+
   defp levels(%{level: level}) when is_binary(level), do: Map.get(@class_levels, level, [level])
   defp levels(_candidate), do: nil
+
+  # ADR-490: a class type suits several levels (none = every level); it admits
+  # the people each of them admits.
+  defp admitted([]), do: @person_levels
+
+  defp admitted(class_levels) do
+    admitted = Enum.flat_map(class_levels, &Map.get(@class_levels, &1, [&1]))
+    Enum.filter(@person_levels, &(&1 in admitted))
+  end
 
   defp eligible?(item, [a, b], blocked, now) do
     candidate = item.candidate

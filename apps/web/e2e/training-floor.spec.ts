@@ -280,7 +280,7 @@ test.describe("training floor (v3.1 W5)", () => {
     await page.clock.setFixedTime(now);
     const start = new Date(now);
     start.setHours(19, 0, 0, 0);
-    const crossfit = { id: "ct-1", name: "CrossFit", kind: "class", level: "all_levels", audiences: [] };
+    const crossfit = { id: "ct-1", name: "CrossFit", kind: "class", levels: [], audiences: [] };
     await page.route("**/api/me/places**", (route) => route.fulfill(json({ places: [] })));
     await page.route("**/api/me/filters/box_schedule", (route) => route.fulfill(json({ surface: "box_schedule", last_used: null, saved: [] })));
     await page.route("**/api/org/*/schedule?**", (route) =>

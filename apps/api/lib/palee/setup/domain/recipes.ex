@@ -74,7 +74,7 @@ defmodule Palee.Setup.Domain.Recipes do
         %{
           slug: "foundations",
           names: %{"en" => "Foundations", "el" => "Βασικές κινήσεις"},
-          level: "beginner"
+          levels: ["beginner"]
         },
         %{slug: "weightlifting", names: %{"en" => "Weightlifting", "el" => "Άρση βαρών"}},
         %{slug: "open-gym", names: %{"en" => "Open gym", "el" => "Ελεύθερη προπόνηση"}}

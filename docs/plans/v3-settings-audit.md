@@ -32,8 +32,8 @@ The setup recipes (CP-H2, same ADR) set most of the «Derive» rows in one step 
 
 | Verdict | Count | What it means for the screen |
 |---|---|---|
-| Basic | 17 | The main settings screen |
-| Advanced | 36 | One «Προχωρημένα» section per area, closed by default |
+| Basic | 16 | The main settings screen |
+| Advanced | 37 | One «Προχωρημένα» section per area, closed by default |
 | Derive | 10 | Set by the app or by a setup recipe |
 | Remove (UI) | 4 | Hidden from owners; kept for the Palee team or internal use |
 | **Total business settings** | **67** | including the 5 class-type fields (§J); plus ≈50 per-package fields (§K) |
@@ -173,8 +173,8 @@ Table `referral_programs` (ADR-156).
 | Field | Default | Verdict |
 |---|---|---|
 | name | — | **Basic** |
-| kind (class / event) | class | **Basic** |
-| level | all levels | **Advanced** |
+| kind (class / event) | class | **Advanced** (ADR-490: rare, so under «Προχωρημένα») |
+| levels (multi-select; none = all levels) | all levels | **Advanced** |
 | audiences | open to everyone | **Advanced** |
 | credit_cost | 1 | **Advanced** |
 

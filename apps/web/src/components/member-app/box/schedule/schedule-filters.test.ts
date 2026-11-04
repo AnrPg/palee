@@ -31,7 +31,7 @@ function slot(overrides: Partial<ScheduleSlot> = {}): ScheduleSlot {
     duration_minutes: 60,
     scheduled_at: "2026-10-20T15:00:00Z",
     class_type_id: "type-1",
-    class_type: { id: "type-1", name: "WOD", slug: "wod", sort_order: 0, archived_at: null, kind: "class", level: "all_levels", audiences: [] },
+    class_type: { id: "type-1", name: "WOD", slug: "wod", sort_order: 0, archived_at: null, kind: "class", levels: [], audiences: [] },
     capacity: 10,
     auto_approve: true,
     booking_timeout_minutes: 60,
@@ -84,13 +84,17 @@ describe("matchesScheduleFilters", () => {
 
   it("matches level, audience, focus, coach, kind and duration", () => {
     const tagged = slot({
-      class_type: { id: "type-1", name: "Ladies", slug: "ladies", sort_order: 0, archived_at: null, kind: "event", level: "beginner", audiences: ["women_only"] },
+      class_type: { id: "type-1", name: "Ladies", slug: "ladies", sort_order: 0, archived_at: null, kind: "event", levels: ["beginner", "intermediate"], audiences: ["women_only"] },
       coach_user_id: "coach-1",
       duration_minutes: 30,
       workout: { id: "w", title: "W", type: "wod", sections: [], focus: ["strength", "legs"] },
     });
     expect(matches(tagged, { levels: ["beginner"], audiences: ["women_only"], focus: ["legs"], coachIds: ["coach-1"], kind: "event", durations: ["short"] })).toBe(true);
     expect(matches(tagged, { levels: ["advanced"] })).toBe(false);
+    // ADR-490: several levels on one class type, and none set means every level.
+    expect(matches(tagged, { levels: ["intermediate"] })).toBe(true);
+    expect(matches(tagged, { levels: ["advanced", "intermediate"] })).toBe(true);
+    expect(matches(slot(), { levels: ["advanced"] })).toBe(true);
     expect(matches(tagged, { audiences: ["teens"] })).toBe(false);
     expect(matches(tagged, { focus: ["mobility"] })).toBe(false);
     expect(matches(slot(), { focus: ["legs"] })).toBe(false);
