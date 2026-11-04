@@ -9869,8 +9869,9 @@
       "title": "Asistente de IA",
       "description": "El asistente de WOD, además de sugerencias de escalado y registro por voz con tu propia clave. Un coach aprueba cada sugerencia.",
       "enable": "Sugerencias de escalado",
-      "enableHint": "Desactivadas por defecto. Necesitan una clave API.",
-      "key": "Clave API (Anthropic)",
+      "enableHint": "Para un atleta con una lesión registrada por el box, la IA sugiere cómo adaptar el entrenamiento: menos carga, menos repeticiones u otro ejercicio. Un coach aprueba cada sugerencia antes de que la vea el atleta. Hace falta IA porque cada combinación de entrenamiento y lesión es distinta y las reglas fijas no las cubren.",
+      "key": "Clave de Claude (Anthropic)",
+      "keyHint": "La necesitan las sugerencias de escalado y el registro por voz. El uso se cobra en tu propia cuenta de Anthropic.",
       "keySet": "Hay una clave que termina en {last4}.",
       "keyRejected": "El proveedor rechazó la clave que termina en {last4}. Añade una nueva.",
       "keyMissing": "No hay clave.",
@@ -9879,8 +9880,8 @@
       "removeKey": "Quitar clave",
       "model": "Modelo (opcional)",
       "saveModel": "Guardar modelo",
-      "usage": "Este mes · sugerencias: {count} · coste: ${cost}",
-      "privacy": "Solo se envían el entrenamiento y las lesiones registradas por el box, sin nombres. La clave no se vuelve a mostrar."
+      "usage": "Este mes · {count, plural, one {# sugerencia} other {# sugerencias}} · {voice, plural, one {# borrador por voz} other {# borradores por voz}} · coste: ${cost}",
+      "privacy": "No se envían nombres. Las sugerencias envían el entrenamiento y las lesiones registradas por el box. El registro por voz envía solo el texto de lo que dijo el miembro. La clave no se vuelve a mostrar."
     },
     "queue": {
       "eyebrow": "Mis clientes",
@@ -9944,7 +9945,7 @@
     },
     "settings": {
       "enable": "Registro por voz",
-      "enableHint": "Los socios graban su entrenamiento y revisan un borrador antes de guardarlo. El audio no se guarda."
+      "enableHint": "Los miembros cuentan con sus palabras lo que hicieron y la IA lo convierte en ejercicios, series, repeticiones y cargas. El miembro revisa el borrador antes de guardarlo. Hace falta IA para entender el habla libre, como «tres series de diez con 60». El audio no se guarda."
     }
   },
   "Pickers": {

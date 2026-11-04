@@ -9869,8 +9869,9 @@
       "title": "Assistente IA",
       "description": "L'assistente WOD, più suggerimenti di scaling e registrazione vocale con la tua chiave. Un coach approva ogni suggerimento.",
       "enable": "Suggerimenti di scaling",
-      "enableHint": "Disattivati per impostazione predefinita. Serve una chiave API.",
-      "key": "Chiave API (Anthropic)",
+      "enableHint": "Per un atleta con un infortunio registrato dal box, l'IA suggerisce come adattare l'allenamento: meno carico, meno ripetizioni o un altro movimento. Un coach approva ogni suggerimento prima che l'atleta lo veda. Serve l'IA perché ogni combinazione di allenamento e infortunio è diversa e regole fisse non bastano.",
+      "key": "Chiave Claude (Anthropic)",
+      "keyHint": "Servono i suggerimenti di scaling e la registrazione vocale. L'uso è addebitato sul tuo account Anthropic.",
       "keySet": "È impostata una chiave che termina con {last4}.",
       "keyRejected": "Il fornitore ha rifiutato la chiave che termina con {last4}. Inserisci una nuova chiave.",
       "keyMissing": "Nessuna chiave impostata.",
@@ -9879,8 +9880,8 @@
       "removeKey": "Rimuovi chiave",
       "model": "Modello (facoltativo)",
       "saveModel": "Salva modello",
-      "usage": "Questo mese · suggerimenti: {count} · costo: ${cost}",
-      "privacy": "Vengono inviati solo l'allenamento e gli infortuni registrati dal box, senza nomi. La chiave non viene più mostrata."
+      "usage": "Questo mese · {count, plural, one {# suggerimento} other {# suggerimenti}} · {voice, plural, one {# bozza vocale} other {# bozze vocali}} · costo: ${cost}",
+      "privacy": "Non vengono inviati nomi. I suggerimenti inviano l'allenamento e gli infortuni registrati dal box. La registrazione vocale invia solo il testo di ciò che ha detto il membro. La chiave non viene più mostrata."
     },
     "queue": {
       "eyebrow": "I miei clienti",
@@ -9944,7 +9945,7 @@
     },
     "settings": {
       "enable": "Registrazione vocale",
-      "enableHint": "I soci registrano l'allenamento a voce e controllano una bozza prima di salvarla. L'audio non viene conservato."
+      "enableHint": "I membri raccontano con parole loro cosa hanno fatto e l'IA lo trasforma in esercizi, serie, ripetizioni e carichi. Il membro controlla la bozza prima di salvare. Serve l'IA per capire il parlato libero, come «tre serie da dieci a 60». L'audio non viene conservato."
     }
   },
   "Pickers": {
