@@ -34,6 +34,23 @@ export type SiteTranslationItem = components["schemas"]["SiteTranslationItem"];
 export type SiteTranslationStatus = SiteTranslationItem["status"];
 export type SiteTranslationEdit = components["schemas"]["SiteTranslationEdit"];
 
+// ── ADR-530: templates, palettes, draft and publish ─────────────────────────
+// These shapes mirror the API (ADR-530). Until the generated schema carries
+// them they are spelled out here; once it does, the intersections are no-ops.
+export type SiteTemplateKey = "arena" | "tiles" | "stories" | "atelier";
+export type SitePaletteKey = "palee" | "electric" | "flame" | "sun" | "amber" | "emerald" | "aegean" | "violet" | "fuchsia" | "olive" | "navy" | "mono";
+export type SiteAppearance = "auto" | "light" | "dark";
+export type SiteLook = { template: SiteTemplateKey; palette: SitePaletteKey; appearance: SiteAppearance; calm_motion: boolean };
+export type SitePhoto = { id: string; url: string; width: number | null; height: number | null; caption: string | null };
+export type SitePhotos = { items: SitePhoto[]; video: { url: string; poster_url: string | null } | null };
+/** Aggregates only; a null or zero number is not shown. */
+export type SiteStats = { classes_per_week: number | null; prs_this_year: number | null; years_open: number | null };
+export type SiteProgramme = { id: string; title: string; summary: string | null; weeks: number | null; price_cents: number | null; currency: string | null; cover_url: string | null; url: string | null };
+export type PublicSiteV2 = PublicSite & SiteLook & { photos: SitePhotos; stats: SiteStats | null; programmes: SiteProgramme[]; phone?: string | null };
+/** The fields that go live only with «Δημοσίευση». */
+export type SiteDraft = Partial<SiteLook & Pick<SiteSettings, "hidden_sections" | "public_schedule" | "public_wod">>;
+export type SiteSettingsV2 = SiteSettings & SiteLook & { draft: SiteDraft | null; published_at: string | null; template_notice: boolean };
+
 const SITE = "/admin/site";
 const REVIEWS = "/admin/review-asks";
 const publicSite = (slug: string) => `/public/sites/${encodeURIComponent(slug)}`;
@@ -89,6 +106,26 @@ export function keepSiteTranslations(token: string, locale: string, keys: string
 /** «Αυτόματη μετάφραση»: a machine fills what is missing or out of date. */
 export function machineTranslateSite(token: string, locale: string) {
   return apiRequest<SiteTranslations>(`${SITE}/translations/machine`, { method: "POST", token, body: { locale } });
+}
+
+/** ADR-530: the draft goes live. */
+export function publishSite(token: string) {
+  return apiRequest<{ settings: SiteSettingsV2 }>(`${SITE}/publish`, { method: "POST", token });
+}
+
+/** ADR-530: «Απόρριψη αλλαγών». */
+export function discardSiteDraft(token: string) {
+  return apiRequest<{ settings: SiteSettingsV2 }>(`${SITE}/draft`, { method: "DELETE", token });
+}
+
+/** ADR-530: the public site as it will look with the draft applied. */
+export function fetchSitePreview(token: string, lang?: string | null) {
+  return apiRequest<PublicSiteV2>(`${SITE}/preview${lang ? `?lang=${encodeURIComponent(lang)}` : ""}`, { token });
+}
+
+/** ADR-530: hides «Η ιστοσελίδα σου πήρε νέα όψη». */
+export function dismissSiteNotice(token: string) {
+  return apiRequest<{ settings: SiteSettingsV2 }>(`${SITE}/notice`, { method: "DELETE", token });
 }
 
 export function getSiteSummary(token: string) {
