@@ -86,7 +86,8 @@ export function BoxWebsite({ page: rawPage, site: rawSite, language, basePath, s
   const stories = useMemo(() => storyKinds(visible), [visible]);
   const cta = siteCta({ trial: visible.includes("trial_form"), contact: visible.includes("contact_form") }, site.phone);
   const contentLanguage = siteLanguageCode(language, site.language);
-  const locale = contentLanguage || appLocale;
+  // Dates and numbers follow the language the visitor reads the buttons in.
+  const locale = appLocale || contentLanguage;
   const direction = isAppLocale(contentLanguage) ? localeDirection(contentLanguage) : "ltr";
   const calm = site.calm_motion;
 
