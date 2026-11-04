@@ -40,6 +40,35 @@ defmodule PaleeWeb.ExecutionInteractionsControllerTest do
   end
 
   describe "POST /api/executions/:id/interactions" do
+    test "ADR-549: timer_closed is stored on the unfinished execution", %{conn: conn} do
+      %{member: member, execution: execution} = started_execution()
+
+      metadata = %{
+        "segment_index" => 1,
+        "format" => "amrap",
+        "elapsed_ms" => 61_000,
+        "remaining_ms" => 59_000
+      }
+
+      assert %{"accepted" => 1} =
+               conn
+               |> post_interactions(member, execution.id, [interaction("timer_closed", metadata)])
+               |> json_response(202)
+
+      counters = Palee.Repo.get!(Palee.Execution.WorkoutExecution, execution.id).kpi_counters
+
+      assert %{
+               "segment_index" => 1,
+               "format" => "amrap",
+               "elapsed_ms" => 61_000,
+               "remaining_ms" => 59_000,
+               "at" => at
+             } =
+               counters["closed"]
+
+      assert {:ok, _at, _offset} = DateTime.from_iso8601(at)
+    end
+
     test "records allowlisted interactions in the execution's tenant and dedupes retries",
          %{conn: conn} do
       %{organization: organization, member: member, execution: execution} = started_execution()

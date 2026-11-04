@@ -487,3 +487,19 @@ export function buildSequence(section: PlanSection, words: ShowWords = SHOW_WORD
 
 /** Every step of a sequence in order (interrupt rows excluded). */
 export const allSteps = (seq: RunSequence): RunStep[] => seq.phases.flatMap((p) => p.steps);
+
+/**
+ * ADR-549 (Παραίτηση): the full length of a time-set section's clock in ms,
+ * or null when the section is not time-set. Mirrors the server's
+ * `Retirement.time_set_sections/1` on `PlanTimer` segments: AMRAP windows,
+ * EMOM with a set number of times and intervals with a set number of rounds,
+ * every phase with a fixed length, not scored by time.
+ */
+export function timeSetMs(seq: RunSequence, scoreKey: string | null | undefined): number | null {
+  if (scoreKey === "time" || seq.clock !== "down") return null;
+  if (seq.flow !== "amrap" && seq.flow !== "emom" && seq.flow !== "intervals") return null;
+  if (seq.flow !== "amrap" && seq.open) return null;
+  if (seq.phases.length === 0 || seq.phases.some((phase) => phase.secs == null)) return null;
+  const ms = seq.phases.reduce((total, phase) => total + (phase.secs ?? 0) * 1000, 0);
+  return ms > 0 ? ms : null;
+}

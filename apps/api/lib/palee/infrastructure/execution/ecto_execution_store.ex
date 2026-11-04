@@ -237,6 +237,28 @@ defmodule Palee.Infrastructure.Execution.EctoExecutionStore do
     end
   end
 
+  # ADR-549: the athlete left an unfinished workout. Kept in the execution's
+  # KPI counters (`closed`) without touching its lock version, so a progress
+  # write never conflicts with it; the latest close wins.
+  @impl true
+  def record_timer_closed(execution_id, %{} = closed) do
+    WorkoutExecution
+    |> where([e], e.id == ^execution_id and is_nil(e.completed_at_utc))
+    |> update([e],
+      set: [
+        kpi_counters:
+          fragment(
+            "coalesce(?, '{}'::jsonb) || jsonb_build_object('closed', ?::jsonb)",
+            e.kpi_counters,
+            ^closed
+          )
+      ]
+    )
+    |> Repo.update_all([])
+
+    :ok
+  end
+
   # Progress operations are owner-scoped rows, so callers read this inside the
   # execution owner's session.
   @impl true

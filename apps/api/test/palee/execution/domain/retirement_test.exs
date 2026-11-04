@@ -191,6 +191,20 @@ defmodule Palee.Execution.Domain.RetirementTest do
       assert facts["verdict"] == "unknown"
     end
 
+    test "the athlete's answer turns a stopped section shortened or confirms it" do
+      segments = [amrap("a", 600), amrap("b", 600), amrap("c", 600)]
+      ran = %{"a" => 300_000, "b" => 300_000, "c" => 600_000}
+      answers = %{"a" => "chose_shorter", "b" => "gave_up", "c" => "chose_shorter"}
+
+      facts = Retirement.assess(segments, %{section_elapsed_ms: ran, answers: answers}, 3)
+      by_id = Map.new(facts["sections"], &{&1["section_id"], &1})
+
+      assert %{"verdict" => "shortened", "answer" => "chose_shorter"} = by_id["a"]
+      assert %{"verdict" => "stopped_early", "answer" => "gave_up"} = by_id["b"]
+      # an answer for a section that ran its full time changes nothing
+      refute Map.has_key?(by_id["c"], "answer")
+    end
+
     test "shortened when the athlete took time off the clock and ran the rest" do
       adjustments = %{"segment:a" => %{"delta_seconds" => -120, "section_id" => "a"}}
 
@@ -203,6 +217,44 @@ defmodule Palee.Execution.Domain.RetirementTest do
 
       assert [%{"verdict" => "shortened", "adjusted_ms" => 480_000, "stopped_early_ms" => 0}] =
                facts["sections"]
+    end
+  end
+
+  describe "part_of_time/2" do
+    test "the first section run short, or the one asked for; nil for a full run" do
+      counters = %{
+        "retirement" => %{
+          "sections" => [
+            %{
+              "section_id" => "a",
+              "verdict" => "full",
+              "ran_ms" => 600_000,
+              "planned_ms" => 600_000
+            },
+            %{
+              "section_id" => "b",
+              "verdict" => "stopped_early",
+              "ran_ms" => 360_000,
+              "planned_ms" => 600_000
+            },
+            %{
+              "section_id" => "c",
+              "verdict" => "shortened",
+              "ran_ms" => 480_000,
+              "planned_ms" => 600_000
+            }
+          ]
+        }
+      }
+
+      assert Retirement.part_of_time(counters) == %{ran_ms: 360_000, planned_ms: 600_000}
+      assert Retirement.part_of_time(counters, "c") == %{ran_ms: 480_000, planned_ms: 600_000}
+
+      assert Retirement.part_of_time(%{
+               "retirement" => %{"sections" => [hd(counters["retirement"]["sections"])]}
+             }) == nil
+
+      assert Retirement.part_of_time(nil) == nil
     end
   end
 

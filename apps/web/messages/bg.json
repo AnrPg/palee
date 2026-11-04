@@ -4963,7 +4963,17 @@
     "subscriptionEndsTodayBody": "{package} изтича днес. Поднови го, за да продължиш да записваш часове.",
     "subscriptionEndedRenewBody": "{package} изтече на {date}. Поднови го, за да записваш часове отново.",
     "subscriptionEndDayReminder": "Напомняне в деня на изтичане",
-    "subscriptionDayAfterReminder": "Напомняне на следващия ден след изтичане"
+    "subscriptionDayAfterReminder": "Напомняне на следващия ден след изтичане",
+    "stoppedEarlyAt": "Спря на {ran} от {planned}.",
+    "stoppedEarlyQuestionLabel": "Защо таймерът спря по-рано?",
+    "stoppedEarlyGaveUp": "Спрях по-рано",
+    "stoppedEarlyChoseShorter": "Исках по-кратък WOD",
+    "historyPartOfTime": "Изпълнено {ran} от {planned}",
+    "kpiRetirement": "Отказване",
+    "kpiRetirementHelp": "Части с фиксирано време (AMRAP, EMOM, интервали) от завършени тренировки, в които атлетът е спрял преди края на таймера или таймерът е вървял дълго след последното му докосване (3× собственото му време за рунд). «Исках по-кратък WOD» се брои като скъсено време, не като отказване.",
+    "kpiRetirementOf": "{retired} от {count, plural, one {# част с фиксирано време} other {# части с фиксирано време}}",
+    "kpiRetirementStopped": "Спрели преди края",
+    "kpiRetirementIdle": "Останали неактивни"
   },
   "PrSharing": {
     "gymLabel": "Къде постигна този рекорд?",
@@ -15788,7 +15798,8 @@
     "fitnessCoachLimitLooser": "Твоят избор се пази и важи отново, ако треньорът махне своя.",
     "fitnessSave": "Запази",
     "fitnessSaved": "Запазено",
-    "fitnessKg": "кг"
+    "fitnessKg": "кг",
+    "lbPartOfTime": "Изпълнено {ran} от {planned}"
   },
   "ServiceStatus": {
     "metaTitle": "Състояние на услугата Palee",
@@ -19119,6 +19130,9 @@
         "structured": {
           "what": "Тренировки, написани стъпка по стъпка, започнати и завършени.",
           "change": "Сравни с тези със свободен текст, за да видиш кой вид се завършва."
+        },
+        "retirement": {
+          "change": "Много откази в един Поток може да значат, че таймерът му е твърде дълъг за членовете ти."
         }
       },
       "finance": {

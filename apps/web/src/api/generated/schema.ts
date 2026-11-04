@@ -20737,6 +20737,11 @@ export interface components {
                     elapsed_ms?: number | null;
                     /** Format: uuid */
                     execution_id?: string;
+                    /** @description ADR-549: the run used only part of a time-set section's clock: ran and planned ms */
+                    part_of_time?: {
+                        planned_ms: number;
+                        ran_ms: number;
+                    } | null;
                     scale_level_slug?: string | null;
                     scores?: {
                         section_id?: string | null;
@@ -54563,6 +54568,11 @@ export interface components {
                     completed_at?: string | null;
                     elapsed_ms?: number | null;
                     execution_id: string;
+                    /** @description ADR-549: the run used only part of a time-set section's clock: ran and planned ms */
+                    part_of_time?: {
+                        planned_ms: number;
+                        ran_ms: number;
+                    } | null;
                     scale_level_slug?: string | null;
                     scores: {
                         score_type?: string | null;
@@ -56201,6 +56211,11 @@ export interface components {
             nickname?: string | null;
             /** @description False only on your own row before you opt in to leaderboards */
             opted_in: boolean;
+            /** @description ADR-549: the result ran only part of its clock (stopped early or a shorter clock): ran and planned ms */
+            part_of_time?: {
+                planned_ms: number;
+                ran_ms: number;
+            } | null;
             rank: number;
             scale_level_slug?: string | null;
             unit?: string | null;
@@ -56226,6 +56241,11 @@ export interface components {
                 nickname?: string | null;
                 /** @description False only on your own row before you opt in to leaderboards */
                 opted_in: boolean;
+                /** @description ADR-549: the result ran only part of its clock (stopped early or a shorter clock): ran and planned ms */
+                part_of_time?: {
+                    planned_ms: number;
+                    ran_ms: number;
+                } | null;
                 rank: number;
                 scale_level_slug?: string | null;
                 unit?: string | null;
@@ -56856,6 +56876,11 @@ export interface components {
                 box_name?: string | null;
                 me: boolean;
                 nickname?: string | null;
+                /** @description ADR-549: the result ran only part of its clock (stopped early or a shorter clock): ran and planned ms */
+                part_of_time?: {
+                    planned_ms: number;
+                    ran_ms: number;
+                } | null;
                 /** @description Share of the other results of the slice this one beat (0-100) */
                 percentile: number | null;
                 rank: number | null;
@@ -56897,6 +56922,11 @@ export interface components {
                 box_name?: string | null;
                 me: boolean;
                 nickname?: string | null;
+                /** @description ADR-549: the result ran only part of its clock (stopped early or a shorter clock): ran and planned ms */
+                part_of_time?: {
+                    planned_ms: number;
+                    ran_ms: number;
+                } | null;
                 /** @description Share of the other results of the slice this one beat (0-100) */
                 percentile: number | null;
                 rank: number | null;
@@ -56928,6 +56958,11 @@ export interface components {
             box_name?: string | null;
             me: boolean;
             nickname?: string | null;
+            /** @description ADR-549: the result ran only part of its clock (stopped early or a shorter clock): ran and planned ms */
+            part_of_time?: {
+                planned_ms: number;
+                ran_ms: number;
+            } | null;
             /** @description Share of the other results of the slice this one beat (0-100) */
             percentile: number | null;
             rank: number | null;
@@ -63037,6 +63072,10 @@ export interface operations {
                         /** Format: uuid */
                         section_id: string;
                     }[];
+                    /** @description ADR-549: per time-set section stopped before its clock ran out, the athlete's own answer: `gave_up` (Σταμάτησα νωρίτερα) or `chose_shorter` (Ήθελα μικρότερο WOD). */
+                    retirement_answers?: {
+                        [key: string]: "gave_up" | "chose_shorter";
+                    };
                     section_elapsed_ms?: {
                         [key: string]: number;
                     };
@@ -63453,6 +63492,12 @@ export interface operations {
                     paused_elapsed_ms: number;
                     /** Format: date-time */
                     resume_countdown_ends_at_utc?: string | null;
+                    /** @description ADR-549: the device's own times of its round taps (active ms since the start), so rounds saved together keep their own split times. */
+                    round_marks?: {
+                        elapsed_ms: number;
+                        round: number;
+                        segment_key: string;
+                    }[];
                     section_elapsed_ms?: {
                         [key: string]: number;
                     };
@@ -75762,6 +75807,11 @@ export interface operations {
                                 elapsed_ms?: number | null;
                                 /** Format: uuid */
                                 execution_id?: string;
+                                /** @description ADR-549: the run used only part of a time-set section's clock: ran and planned ms */
+                                part_of_time?: {
+                                    planned_ms: number;
+                                    ran_ms: number;
+                                } | null;
                                 scale_level_slug?: string | null;
                                 scores?: {
                                     section_id?: string | null;
@@ -122565,6 +122615,11 @@ export interface operations {
                                 completed_at?: string | null;
                                 elapsed_ms?: number | null;
                                 execution_id: string;
+                                /** @description ADR-549: the run used only part of a time-set section's clock: ran and planned ms */
+                                part_of_time?: {
+                                    planned_ms: number;
+                                    ran_ms: number;
+                                } | null;
                                 scale_level_slug?: string | null;
                                 scores: {
                                     score_type?: string | null;
@@ -134133,6 +134188,11 @@ export interface operations {
                             nickname?: string | null;
                             /** @description False only on your own row before you opt in to leaderboards */
                             opted_in: boolean;
+                            /** @description ADR-549: the result ran only part of its clock (stopped early or a shorter clock): ran and planned ms */
+                            part_of_time?: {
+                                planned_ms: number;
+                                ran_ms: number;
+                            } | null;
                             rank: number;
                             scale_level_slug?: string | null;
                             unit?: string | null;
@@ -136452,6 +136512,11 @@ export interface operations {
                                 completed_at?: string | null;
                                 elapsed_ms?: number | null;
                                 execution_id: string;
+                                /** @description ADR-549: the run used only part of a time-set section's clock: ran and planned ms */
+                                part_of_time?: {
+                                    planned_ms: number;
+                                    ran_ms: number;
+                                } | null;
                                 scale_level_slug?: string | null;
                                 scores: {
                                     score_type?: string | null;
@@ -153934,6 +153999,11 @@ export interface operations {
                             box_name?: string | null;
                             me: boolean;
                             nickname?: string | null;
+                            /** @description ADR-549: the result ran only part of its clock (stopped early or a shorter clock): ran and planned ms */
+                            part_of_time?: {
+                                planned_ms: number;
+                                ran_ms: number;
+                            } | null;
                             /** @description Share of the other results of the slice this one beat (0-100) */
                             percentile: number | null;
                             rank: number | null;
@@ -153975,6 +154045,11 @@ export interface operations {
                             box_name?: string | null;
                             me: boolean;
                             nickname?: string | null;
+                            /** @description ADR-549: the result ran only part of its clock (stopped early or a shorter clock): ran and planned ms */
+                            part_of_time?: {
+                                planned_ms: number;
+                                ran_ms: number;
+                            } | null;
                             /** @description Share of the other results of the slice this one beat (0-100) */
                             percentile: number | null;
                             rank: number | null;

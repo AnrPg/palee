@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import type { TrainingHistoryEntry, TrainingHistoryKind, TrainingHistoryPage } from "@/api/training-history";
 import { exerciseText } from "@/lib/training-history";
 import { LocalizedScore } from "@/components/localized-score";
+import { formatClock } from "@/components/workouts/execution/TimerDisplay";
 import { SourceLabel } from "@/components/providers/SourceLabel";
 import { SemanticLabel } from "@/components/semantic-label";
 import { useUiLocale } from "@/i18n/use-ui-locale";
@@ -173,6 +174,17 @@ function LogEntry({ entry, kind }: { entry: TrainingHistoryEntry; kind: Training
           {kind === "classes" && entry.class?.attendance ? <Badge><SemanticLabel value={entry.class.attendance} /></Badge> : null}
           {performance ? <Badge tone="primary"><SemanticLabel value={performance.status} /></Badge> : null}
           {minutes ? <Badge>{i18n("historyMinutes", { minutes })}</Badge> : null}
+          {performance?.part_of_time ? (
+            // ADR-549 (2B): a neutral fact on the athlete's own result, never a judgement.
+            <Badge>
+              <span data-testid="history-part-of-time">
+                {i18n("historyPartOfTime", {
+                  ran: formatClock(Math.floor(performance.part_of_time.ran_ms / 1000)),
+                  planned: formatClock(Math.round(performance.part_of_time.planned_ms / 1000)),
+                })}
+              </span>
+            </Badge>
+          ) : null}
           {performance?.scale_level_slug ? <Badge>{performance.scale_level_slug}</Badge> : null}
         </div>
       </header>

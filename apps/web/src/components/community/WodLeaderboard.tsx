@@ -19,6 +19,7 @@ import { clubInitials } from "@/components/community/community";
 import { SegmentPicker } from "@/components/filters/SegmentPicker";
 import { useSession } from "@/components/session-provider";
 import { AdvancedDisclosure } from "@/components/settings/AdvancedSettings";
+import { formatClock } from "@/components/workouts/execution/TimerDisplay";
 import { Dialog } from "@/components/ui/Dialog";
 import { useSelectedMembershipRole } from "@/lib/membership-role";
 import {
@@ -351,7 +352,29 @@ function Row({
           {t("lbTopPercent", { percent: row.top_percent })}
         </span>
       ) : null}
+      {row.part_of_time ? <PartOfTimePill part={row.part_of_time} /> : null}
       <span className="font-mono text-sm" style={{ color: "var(--text)" }}>{value}</span>
     </li>
+  );
+}
+
+/**
+ * ADR-549 (2B): the result ran only part of its clock. A neutral time mark,
+ * never a judgement: the full sentence is read out and shown on hover.
+ */
+function PartOfTimePill({ part }: { part: { ran_ms: number; planned_ms: number } }) {
+  const t = useTranslations("TrainingFloor");
+  const ran = formatClock(Math.floor(part.ran_ms / 1000));
+  const label = t("lbPartOfTime", { ran, planned: formatClock(Math.round(part.planned_ms / 1000)) });
+  return (
+    <span
+      className="shrink-0 rounded-full px-2 py-0.5 font-mono text-xs"
+      style={{ background: "var(--panel-raised)", color: "var(--text-soft)" }}
+      title={label}
+      aria-label={label}
+      data-testid="wod-leaderboard-part-of-time"
+    >
+      {ran}
+    </span>
   );
 }

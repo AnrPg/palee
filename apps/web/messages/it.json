@@ -4963,7 +4963,17 @@
     "subscriptionEndsTodayBody": "{package} scade oggi. Rinnovalo per continuare a prenotare le lezioni.",
     "subscriptionEndedRenewBody": "{package} è scaduto il {date}. Rinnovalo per prenotare di nuovo le lezioni.",
     "subscriptionEndDayReminder": "Promemoria il giorno della scadenza",
-    "subscriptionDayAfterReminder": "Promemoria il giorno dopo la scadenza"
+    "subscriptionDayAfterReminder": "Promemoria il giorno dopo la scadenza",
+    "stoppedEarlyAt": "Ti sei fermato a {ran} su {planned}.",
+    "stoppedEarlyQuestionLabel": "Perché il timer si è fermato prima?",
+    "stoppedEarlyGaveUp": "Mi sono fermato prima",
+    "stoppedEarlyChoseShorter": "Volevo un WOD più corto",
+    "historyPartOfTime": "Svolto {ran} su {planned}",
+    "kpiRetirement": "Ritiro",
+    "kpiRetirementHelp": "Sezioni a tempo fisso (AMRAP, EMOM, intervalli) di allenamenti completati in cui l’atleta si è fermato prima della fine del timer, o il timer è andato avanti a lungo dopo il suo ultimo tocco (3× il suo tempo per round). «Volevo un WOD più corto» conta come tempo accorciato, non come ritiro.",
+    "kpiRetirementOf": "{retired} su {count, plural, one {# sezione a tempo fisso} other {# sezioni a tempo fisso}}",
+    "kpiRetirementStopped": "Fermati prima della fine",
+    "kpiRetirementIdle": "Rimasti inattivi"
   },
   "PrSharing": {
     "gymLabel": "Dove hai stabilito questo PR?",
@@ -15788,7 +15798,8 @@
     "fitnessCoachLimitLooser": "La tua scelta resta salvata e torna a valere se il tuo coach toglie la sua.",
     "fitnessSave": "Salva",
     "fitnessSaved": "Salvato",
-    "fitnessKg": "kg"
+    "fitnessKg": "kg",
+    "lbPartOfTime": "Svolto {ran} su {planned}"
   },
   "ServiceStatus": {
     "metaTitle": "Stato del servizio Palee",
@@ -19119,6 +19130,9 @@
         "structured": {
           "what": "Allenamenti scritti passo per passo, iniziati e finiti.",
           "change": "Confronta con quelli a testo libero per vedere quale tipo viene finito."
+        },
+        "retirement": {
+          "change": "Molti ritiri in un Flusso possono indicare un timer troppo lungo per i tuoi membri."
         }
       },
       "finance": {

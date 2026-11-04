@@ -10,7 +10,10 @@ import type {
   WorkoutExecution,
 } from "@/api/executions";
 import type { JournalComment } from "@/api/journal-comments";
-import { addWorkTap } from "@/api/executions";
+import { addWorkTap, type RoundMark } from "@/api/executions";
+
+/** Round taps kept for the next saves (the server needs only the new ones). */
+const MAX_ROUND_MARKS = 100;
 import { removeComment, sortComments, upsertComment } from "@/lib/journal-comments";
 import { hasMarkChanges, type ProgressMarks, rebaseProgressMarks } from "@/lib/execution-rebase";
 import { liveElapsedMs } from "@/lib/timer-engine";
@@ -62,6 +65,12 @@ type ExecutionState = {
   durationAdjustments: Record<string, number>;
   /** Execution KPIs only this device can observe (see `KpiCounters`). */
   kpiCounters: KpiCounters;
+  /**
+   * ADR-549: when each round tap happened (active ms since the start), so the
+   * server's split marks keep their own times even when one save carries
+   * several rounds. The latest ones only.
+   */
+  roundMarks: RoundMark[];
   /** When the athlete paused, for `paused_ms`. */
   kpiPausedAt: number | null;
   initExecution: (params: {
@@ -127,7 +136,7 @@ type ExecutionState = {
   recordPauseKpi: (at?: number) => void;
   recordResumeKpi: (at?: number) => void;
   recordFirstStartKpi: (at?: number) => void;
-  incrementSegmentCycle: (segmentKey: string) => void;
+  incrementSegmentCycle: (segmentKey: string, now?: number) => void;
   decrementSegmentCycle: (segmentKey: string) => void;
   setCheckedExerciseIds: (exerciseIds: string[]) => void;
   upsertScore: (score: SectionScore) => void;
@@ -165,6 +174,7 @@ const initialState = {
   syncedMarks: null as ProgressMarks | null,
   durationAdjustments: {} as Record<string, number>,
   kpiCounters: {} as KpiCounters,
+  roundMarks: [] as RoundMark[],
   kpiPausedAt: null as number | null,
 };
 
@@ -379,6 +389,7 @@ export const useExecutionStore = create<ExecutionState>()(
             syncedMarks: serverMarks(execution),
             durationAdjustments,
             kpiCounters: sameExecution ? state.kpiCounters : {},
+            roundMarks: sameExecution ? state.roundMarks : [],
             kpiPausedAt: sameExecution ? state.kpiPausedAt : null,
           };
         }),
@@ -586,13 +597,18 @@ export const useExecutionStore = create<ExecutionState>()(
             : { kpiCounters: { ...state.kpiCounters, first_started_at_ms: Math.round(at) } },
         ),
 
-      incrementSegmentCycle: (segmentKey) =>
-        set((state) => ({
-          segmentCycleCounts: {
-            ...state.segmentCycleCounts,
-            [segmentKey]: (state.segmentCycleCounts[segmentKey] ?? 0) + 1,
-          },
-        })),
+      incrementSegmentCycle: (segmentKey, now = Date.now()) =>
+        set((state) => {
+          const round = (state.segmentCycleCounts[segmentKey] ?? 0) + 1;
+          const elapsed = Math.max(0, Math.round(state.totalElapsedMs + state.currentElapsedMs(now)));
+          return {
+            segmentCycleCounts: { ...state.segmentCycleCounts, [segmentKey]: round },
+            roundMarks: [
+              ...state.roundMarks.filter((mark) => !(mark.segment_key === segmentKey && mark.round === round)),
+              { segment_key: segmentKey, round, elapsed_ms: elapsed },
+            ].slice(-MAX_ROUND_MARKS),
+          };
+        }),
 
       decrementSegmentCycle: (segmentKey) =>
         set((state) => ({
@@ -673,6 +689,7 @@ export const useExecutionStore = create<ExecutionState>()(
             ? new Date(state.resumeCountdownEndsAt).toISOString()
             : null,
           kpi_counters: state.kpiCounters,
+          ...(state.roundMarks.length > 0 ? { round_marks: state.roundMarks } : {}),
           duration_adjustments: state.durationAdjustments,
         };
       },
@@ -708,6 +725,7 @@ export const useExecutionStore = create<ExecutionState>()(
         syncedMarks: state.syncedMarks,
         durationAdjustments: state.durationAdjustments,
         kpiCounters: state.kpiCounters,
+        roundMarks: state.roundMarks,
         kpiPausedAt: state.kpiPausedAt,
       }),
     },

@@ -25,6 +25,7 @@ defmodule Palee.Application.IngestExecutionInteractions do
            Analytics.validate_execution_interactions(events, DateTime.utc_now()),
          {:ok, rows} <- build_rows(execution, user_id, interactions),
          {:ok, result} <- record(execution.organization_id, rows) do
+      record_timer_closed(user_context, user_id, execution, interactions)
       {:ok, %{accepted: result.inserted, duplicates: result.duplicates}}
     end
   end
@@ -72,6 +73,27 @@ defmodule Palee.Application.IngestExecutionInteractions do
     Analytics.with_tenant_context(%{organization_id: organization_id}, fn ->
       Analytics.record_events(rows)
     end)
+  end
+
+  # ADR-549: the latest `timer_closed` of the batch is kept on the execution,
+  # so the abandonment sweep knows where and when the athlete left.
+  defp record_timer_closed(user_context, user_id, execution, interactions) do
+    case interactions
+         |> Enum.filter(&(&1.kind == "timer_closed"))
+         |> Enum.max_by(& &1.occurred_at, DateTime, fn -> nil end) do
+      nil ->
+        :ok
+
+      closed ->
+        Execution.with_execution_context(scope(user_context, user_id), fn ->
+          Execution.record_timer_closed(
+            execution.id,
+            closed.metadata
+            |> Map.take(~w(segment_index section_id format elapsed_ms remaining_ms))
+            |> Map.put("at", DateTime.to_iso8601(closed.occurred_at))
+          )
+        end)
+    end
   end
 
   defp scope(%{user_id: user_id} = context, user_id), do: context

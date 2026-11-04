@@ -22,14 +22,14 @@ defmodule Palee.Application.UpdateExecutionProgress do
              user_id,
              Map.put(params, :segments, segments)
            ) do
-      record_implied_splits(current_execution, execution, segments)
+      record_implied_splits(current_execution, execution, segments, round_marks(params))
       broadcast_progress_updated(execution)
       {:ok, execution}
     end
   end
 
-  defp record_implied_splits(previous, execution, segments) do
-    case Execution.split_marks_from_progress(previous, execution, segments) do
+  defp record_implied_splits(previous, execution, segments, round_marks) do
+    case Execution.split_marks_from_progress(previous, execution, segments, round_marks) do
       [] ->
         :ok
 
@@ -39,6 +39,14 @@ defmodule Palee.Application.UpdateExecutionProgress do
     end
 
     :ok
+  end
+
+  # ADR-549: the device's own times of its round taps.
+  defp round_marks(params) do
+    case params[:round_marks] || params["round_marks"] do
+      marks when is_list(marks) -> marks
+      _none -> []
+    end
   end
 
   defp fetch_execution(execution_id, user_id) do

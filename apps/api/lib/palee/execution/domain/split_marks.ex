@@ -61,20 +61,26 @@ defmodule Palee.Execution.Domain.SplitMarks do
     * every new count of a segment's rounds (`segment_cycle_counts`, the
       AMRAP «Γύρος» taps) finished that round.
 
-  Each takes the update's `total_elapsed_ms`. Marks the segments do not
+  Each takes the update's `total_elapsed_ms`, except a round the device
+  timed itself (`device_marks`, the progress payload's `round_marks`). Marks the segments do not
   allow are dropped, never an error: progress must save regardless. Marks
   the timer or a watch sent itself win, because the store keeps the first
   mark of a segment and round.
   """
-  def from_progress(previous, updated, segments) when is_list(segments) do
+  def from_progress(previous, updated, segments, device_marks \\ [])
+
+  def from_progress(previous, updated, segments, device_marks) when is_list(segments) do
     elapsed = get(updated, :total_elapsed_ms)
 
     if is_integer(elapsed) and segments != [] do
       ended = ended_segments(get(previous, :current_segment_index), updated, segments)
       rounds = finished_rounds(previous, updated, segments)
+      exact = device_times(device_marks, segments, elapsed)
 
       (ended ++ rounds)
-      |> Enum.map(&Map.put(&1, :elapsed_ms, elapsed))
+      |> Enum.map(
+        &Map.put(&1, :elapsed_ms, Map.get(exact, {&1.segment_index, &1.round}, elapsed))
+      )
       |> Enum.flat_map(fn mark ->
         case cast([mark], segments) do
           {:ok, rows} -> rows
@@ -88,7 +94,35 @@ defmodule Palee.Execution.Domain.SplitMarks do
     end
   end
 
-  def from_progress(_previous, _updated, _segments), do: []
+  def from_progress(_previous, _updated, _segments, _device_marks), do: []
+
+  # ADR-549: the times the device itself saw for its round taps
+  # (`round_marks`: `%{segment_key, round, elapsed_ms}`, active ms since the
+  # start), so rounds saved together keep their own times. A time after the
+  # update's own elapsed time is not believed.
+  defp device_times(marks, segments, elapsed) when is_list(marks) do
+    index_by_key =
+      segments
+      |> Enum.with_index()
+      |> Map.new(fn {segment, index} -> {to_string(get(segment, :segment_key)), index} end)
+
+    marks
+    |> Enum.take(@max_marks)
+    |> Enum.flat_map(fn mark ->
+      with %{} <- mark,
+           index when is_integer(index) <-
+             Map.get(index_by_key, to_string(get(mark, :segment_key))),
+           round when is_integer(round) and round >= 1 <- get(mark, :round),
+           ms when is_integer(ms) and ms >= 0 and ms <= elapsed <- get(mark, :elapsed_ms) do
+        [{{index, round}, ms}]
+      else
+        _invalid -> []
+      end
+    end)
+    |> Map.new()
+  end
+
+  defp device_times(_marks, _segments, _elapsed), do: %{}
 
   defp ended_segments(from, updated, segments) do
     to = get(updated, :current_segment_index)

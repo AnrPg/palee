@@ -4963,7 +4963,17 @@
     "subscriptionEndsTodayBody": "{package} заканчивается сегодня. Продлите, чтобы и дальше записываться на занятия.",
     "subscriptionEndedRenewBody": "{package} закончилась {date}. Продлите, чтобы снова записываться на занятия.",
     "subscriptionEndDayReminder": "Напоминание в день окончания",
-    "subscriptionDayAfterReminder": "Напоминание на следующий день после окончания"
+    "subscriptionDayAfterReminder": "Напоминание на следующий день после окончания",
+    "stoppedEarlyAt": "Вы остановились на {ran} из {planned}.",
+    "stoppedEarlyQuestionLabel": "Почему таймер остановился раньше?",
+    "stoppedEarlyGaveUp": "Я остановился раньше",
+    "stoppedEarlyChoseShorter": "Хотел более короткий WOD",
+    "historyPartOfTime": "Пройдено {ran} из {planned}",
+    "kpiRetirement": "Сход",
+    "kpiRetirementHelp": "Части с фиксированным временем (AMRAP, EMOM, интервалы) в завершённых тренировках, где спортсмен остановился до конца таймера или таймер долго шёл после последнего нажатия (3× его собственное время раунда). «Хотел более короткий WOD» считается сокращённым временем, а не сходом.",
+    "kpiRetirementOf": "{retired} из {count, plural, one {# части с фиксированным временем} few {# частей с фиксированным временем} many {# частей с фиксированным временем} other {# части с фиксированным временем}}",
+    "kpiRetirementStopped": "Остановились до конца",
+    "kpiRetirementIdle": "Стали неактивны"
   },
   "PrSharing": {
     "gymLabel": "Где ты установил этот PR?",
@@ -15788,7 +15798,8 @@
     "fitnessCoachLimitLooser": "Твой выбор сохраняется и снова начнёт действовать, когда коуч снимет свой.",
     "fitnessSave": "Сохранить",
     "fitnessSaved": "Сохранено",
-    "fitnessKg": "кг"
+    "fitnessKg": "кг",
+    "lbPartOfTime": "Пройдено {ran} из {planned}"
   },
   "ServiceStatus": {
     "metaTitle": "Статус сервиса Palee",
@@ -19119,6 +19130,9 @@
         "structured": {
           "what": "Тренировки, расписанные по шагам, начатые и завершённые.",
           "change": "Сравни с тренировками свободным текстом, чтобы понять, какие завершают."
+        },
+        "retirement": {
+          "change": "Много сходов в одном Потоке может значить, что его таймер слишком длинный для ваших участников."
         }
       },
       "finance": {

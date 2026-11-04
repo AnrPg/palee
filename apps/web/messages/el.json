@@ -4963,7 +4963,17 @@
     "subscriptionEndsTodayBody": "Η συνδρομή {package} λήγει σήμερα. Ανανέωσέ τη για να συνεχίσεις να κλείνεις τμήματα.",
     "subscriptionEndedRenewBody": "Η συνδρομή {package} έληξε στις {date}. Ανανέωσέ τη για να ξανακλείνεις τμήματα.",
     "subscriptionEndDayReminder": "Υπενθύμιση την ημέρα της λήξης",
-    "subscriptionDayAfterReminder": "Υπενθύμιση την επόμενη μέρα μετά τη λήξη"
+    "subscriptionDayAfterReminder": "Υπενθύμιση την επόμενη μέρα μετά τη λήξη",
+    "stoppedEarlyAt": "Σταμάτησες στο {ran} από {planned}.",
+    "stoppedEarlyQuestionLabel": "Γιατί σταμάτησε νωρίτερα ο χρόνος;",
+    "stoppedEarlyGaveUp": "Σταμάτησα νωρίτερα",
+    "stoppedEarlyChoseShorter": "Ήθελα μικρότερο WOD",
+    "historyPartOfTime": "Έτρεξε {ran} από {planned}",
+    "kpiRetirement": "Παραίτηση",
+    "kpiRetirementHelp": "Ενότητες σταθερού χρόνου (AMRAP, EMOM, Intervals) σε ολοκληρωμένες προπονήσεις, όπου ο αθλητής σταμάτησε πριν τη λήξη ή ο χρόνος έτρεξε πολύ μετά το τελευταίο του ταπ (3× ο δικός του γύρος). Το «Ήθελα μικρότερο WOD» μετράει ως «Μίκρυνε τον χρόνο», όχι ως παραίτηση.",
+    "kpiRetirementOf": "{retired} από {count, plural, one {# ενότητα σταθερού χρόνου} other {# ενότητες σταθερού χρόνου}}",
+    "kpiRetirementStopped": "Σταμάτησαν πριν τη λήξη",
+    "kpiRetirementIdle": "Έμειναν ανενεργοί"
   },
   "PrSharing": {
     "gymLabel": "Πού πέτυχες αυτό το PR;",
@@ -15788,7 +15798,8 @@
     "fitnessCoachLimitLooser": "Η δική σου επιλογή φυλάγεται και μετράει ξανά αν ο coach άρει τη δική του.",
     "fitnessSave": "Αποθήκευση",
     "fitnessSaved": "Αποθηκεύτηκε",
-    "fitnessKg": "kg"
+    "fitnessKg": "kg",
+    "lbPartOfTime": "Έτρεξε {ran} από {planned}"
   },
   "ServiceStatus": {
     "metaTitle": "Κατάσταση υπηρεσίας Palee",
@@ -19119,6 +19130,9 @@
         "structured": {
           "what": "Προπονήσεις γραμμένες βήμα βήμα, που ξεκίνησαν και ολοκληρώθηκαν.",
           "change": "Σύγκρινε με τις προπονήσεις ελεύθερου κειμένου για να δεις ποιο είδος ολοκληρώνουν."
+        },
+        "retirement": {
+          "change": "Πολλές παραιτήσεις σε μία Ροή ίσως σημαίνουν πολύ μεγάλο χρόνο για τα μέλη σου."
         }
       },
       "finance": {

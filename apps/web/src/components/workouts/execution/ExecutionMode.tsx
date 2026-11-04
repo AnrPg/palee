@@ -62,6 +62,7 @@ import {
 } from "./progress";
 import { useExecutionInteractions } from "@/hooks/useExecutionInteractions";
 import { positionMetadata } from "@/lib/execution-position";
+import { type RetirementAnswer, type StoppedEarlySection, stoppedEarlySections } from "@/lib/retirement";
 import { ReadyScreen } from "./ReadyScreen";
 import { ScoreModal } from "./ScoreModal";
 import { CastView } from "./CastView";
@@ -218,7 +219,10 @@ export function ExecutionMode() {
   const [countdownNow, setCountdownNow] = useState(() => Date.now());
   const commentWriter = useJournalCommentWriter();
   const [modifyTarget, setModifyTarget] = useState<ChecklistStep | null>(null);
-  const [pendingFinish, setPendingFinish] = useState<{ scores: SectionScore[] } | null>(null);
+  const [pendingFinish, setPendingFinish] = useState<{
+    scores: SectionScore[];
+    stoppedEarly: StoppedEarlySection[];
+  } | null>(null);
   const [undo, setUndo] = useState<UndoState | null>(null);
   const [cueMode, setCueMode] = useState<CueMode>(() => readCueMode());
   /** Rest between straight sets, counted down on the device after a set check-off. */
@@ -346,7 +350,9 @@ export function ExecutionMode() {
     track("finish_wizard_opened", { segment_index: useExecutionStore.getState().currentSegmentIndex });
     pauseNow();
     setShowScoreModal(false);
-    setPendingFinish({ scores: finalSectionScores });
+    const store = useExecutionStore.getState();
+    const stoppedEarly = stoppedEarlySections(store.segments, store.completionTotals(Date.now()).sectionElapsedMs);
+    setPendingFinish({ scores: finalSectionScores, stoppedEarly });
   }
 
   /** Ends the current segment: score prompt, finish, or the next segment. */
@@ -388,7 +394,11 @@ export function ExecutionMode() {
     }
   }
 
-  async function confirmPendingFinish(editedScores: SectionScore[], finish: FinishComments) {
+  async function confirmPendingFinish(
+    editedScores: SectionScore[],
+    finish: FinishComments,
+    retirementAnswers: Record<string, RetirementAnswer> = {},
+  ) {
     if (!tokens?.access_token || !executionId) return;
     setIsSaving(true);
     setFeedback(null);
@@ -413,6 +423,7 @@ export function ExecutionMode() {
         section_elapsed_ms: totals.sectionElapsedMs,
         segment_cycle_counts: store.segmentCycleCounts,
         kpi_counters: store.kpiCounters,
+        ...(Object.keys(retirementAnswers).length > 0 ? { retirement_answers: retirementAnswers } : {}),
       });
       hydrateFromExecution(execution);
       completeExecution();
@@ -787,7 +798,10 @@ export function ExecutionMode() {
         videoExecutionId={executionId}
         isSaving={isSaving}
         feedback={feedback}
-        onConfirm={(editedScores, modifications) => void confirmPendingFinish(editedScores, modifications)}
+        stoppedEarly={pendingFinish.stoppedEarly}
+        onConfirm={(editedScores, modifications, _text, answers) =>
+          void confirmPendingFinish(editedScores, modifications, answers)
+        }
         onCancel={() => {
           setFeedback(null);
           setPendingFinish(null);

@@ -35,6 +35,10 @@ defmodule Palee.Execution.Domain.Retirement do
     * `unknown` — ran the full length with too few taps to tell (an athlete
       who only types the score at the end).
 
+  An athlete's answer (`state.answers`, section id => `gave_up` |
+  `chose_shorter`) applies to a `stopped_early` section only: `chose_shorter`
+  makes it `shortened`, `gave_up` confirms it; both are kept as `answer`.
+
   `idle_factor` comes from the caller (`config :palee, :retirement_idle_factor`);
   nil records the facts without the `idle` verdict.
   """
@@ -136,6 +140,7 @@ defmodule Palee.Execution.Domain.Retirement do
         elapsed = stringify_keys(value(state, :section_elapsed_ms) || %{})
         activity = stringify_keys(value(state, :activity) || %{})
         shortened = shortened_ms_by_section(value(state, :duration_adjustments) || %{})
+        answers = stringify_keys(value(state, :answers) || %{})
 
         rows =
           sections
@@ -146,6 +151,7 @@ defmodule Palee.Execution.Domain.Retirement do
               shortened_ms: Map.get(shortened, id, 0),
               idle_factor: idle_factor
             })
+            |> apply_answer(answers[id])
           end)
           |> Enum.sort_by(& &1["section_id"])
 
@@ -154,6 +160,35 @@ defmodule Palee.Execution.Domain.Retirement do
   end
 
   def assess(_segments, _state, _idle_factor), do: nil
+
+  @doc """
+  ADR-549 (2B): when a result ran only part of a time-set section's clock
+  (`stopped_early` or `shortened`), `%{ran_ms, planned_ms}` of that section,
+  the one with `section_id` first; nil when every time-set section ran in
+  full or the facts are missing. A neutral fact for the athlete's own result
+  and the leaderboard's time mark, never a verdict shown to others.
+  """
+  def part_of_time(counters, section_id \\ nil)
+
+  def part_of_time(%{} = counters, section_id) do
+    sections =
+      case counters["retirement"] || counters[:retirement] do
+        %{"sections" => list} when is_list(list) -> Enum.filter(list, &is_map/1)
+        _none -> []
+      end
+
+    short = Enum.filter(sections, &(&1["verdict"] in ~w(stopped_early shortened)))
+
+    case Enum.find(short, &(&1["section_id"] == to_string(section_id))) || List.first(short) do
+      %{"ran_ms" => ran, "planned_ms" => planned} when is_integer(ran) and is_integer(planned) ->
+        %{ran_ms: ran, planned_ms: planned}
+
+      _full ->
+        nil
+    end
+  end
+
+  def part_of_time(_counters, _section_id), do: nil
 
   @verdict_rank %{
     "stopped_early" => 0,
@@ -204,6 +239,17 @@ defmodule Palee.Execution.Domain.Retirement do
       "verdict" => verdict
     }
   end
+
+  # The athlete's own answer to «Σταμάτησες πριν τελειώσει ο χρόνος;», only
+  # for a section that was stopped early: wanting a shorter WOD makes it a
+  # shortened clock, not a retirement; giving up confirms it.
+  defp apply_answer(%{"verdict" => "stopped_early"} = row, "chose_shorter"),
+    do: Map.merge(row, %{"verdict" => "shortened", "answer" => "chose_shorter"})
+
+  defp apply_answer(%{"verdict" => "stopped_early"} = row, "gave_up"),
+    do: Map.put(row, "answer", "gave_up")
+
+  defp apply_answer(row, _answer), do: row
 
   defp idle?(tail, median, factor)
        when is_integer(tail) and is_integer(median) and median > 0 and is_number(factor) and

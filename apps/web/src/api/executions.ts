@@ -132,8 +132,13 @@ export type ExecutionProgressPayload = {
   segment_cycle_counts: Record<string, number>;
   section_scores: SectionScore[];
   kpi_counters?: KpiCounters;
+  /** ADR-549: the device's own times of its round taps. */
+  round_marks?: RoundMark[];
   duration_adjustments?: Record<string, number>;
 };
+
+/** A round tap as the device timed it: active ms since the start (ADR-549). */
+export type RoundMark = { segment_key: string; round: number; elapsed_ms: number };
 
 /** A stored mid-workout clock change, with the authored length for coaches. */
 export type DurationAdjustment = {
@@ -251,6 +256,8 @@ export async function completeExecution(
     duration_adjustments?: Record<string, number>;
     /** ADR-270: prescribed vs actual per set of a structured plan workout. */
     plan_actuals?: PlanSetActual[];
+    /** ADR-549: the athlete's answer for a time-set section stopped before its clock ran out. */
+    retirement_answers?: Record<string, "gave_up" | "chose_shorter">;
   },
 ): Promise<WorkoutExecution> {
   const data = await apiRequest<{ execution: WorkoutExecution }>(

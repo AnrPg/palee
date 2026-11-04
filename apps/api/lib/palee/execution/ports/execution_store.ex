@@ -21,6 +21,7 @@ defmodule Palee.Execution.Ports.ExecutionStore do
               [map()]
   @callback list_stale_executions(DateTime.t(), DateTime.t(), pos_integer()) :: [map()]
   @callback last_progress_at(binary()) :: DateTime.t() | nil
+  @callback record_timer_closed(binary(), map()) :: :ok
   @callback list_execution_items(binary(), term(), pos_integer(), term()) :: [map()]
   @callback set_execution_visibility(binary(), binary(), String.t()) ::
               {:ok, map()} | {:error, :not_found} | {:error, Ecto.Changeset.t()}

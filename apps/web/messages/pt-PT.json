@@ -4963,7 +4963,17 @@
     "subscriptionEndsTodayBody": "{package} termina hoje. Renova-a para continuares a reservar aulas.",
     "subscriptionEndedRenewBody": "{package} terminou a {date}. Renova-a para voltares a reservar aulas.",
     "subscriptionEndDayReminder": "Lembrete no dia em que termina",
-    "subscriptionDayAfterReminder": "Lembrete no dia seguinte ao fim"
+    "subscriptionDayAfterReminder": "Lembrete no dia seguinte ao fim",
+    "stoppedEarlyAt": "Paraste aos {ran} de {planned}.",
+    "stoppedEarlyQuestionLabel": "Porque parou o relógio mais cedo?",
+    "stoppedEarlyGaveUp": "Parei mais cedo",
+    "stoppedEarlyChoseShorter": "Queria um WOD mais curto",
+    "historyPartOfTime": "Fez {ran} de {planned}",
+    "kpiRetirement": "Desistência",
+    "kpiRetirementHelp": "Secções de tempo fixo (AMRAP, EMOM, intervalos) de treinos concluídos em que o atleta parou antes de o relógio acabar, ou o relógio continuou muito depois do último toque (3× o seu próprio tempo por ronda). «Queria um WOD mais curto» conta como tempo encurtado, não como desistência.",
+    "kpiRetirementOf": "{retired} de {count, plural, one {# secção de tempo fixo} other {# secções de tempo fixo}}",
+    "kpiRetirementStopped": "Pararam antes do fim",
+    "kpiRetirementIdle": "Ficaram inativos"
   },
   "PrSharing": {
     "gymLabel": "Onde fizeste este PR?",
@@ -15788,7 +15798,8 @@
     "fitnessCoachLimitLooser": "A tua escolha fica guardada e volta a contar se o teu coach retirar a dele.",
     "fitnessSave": "Guardar",
     "fitnessSaved": "Guardado",
-    "fitnessKg": "kg"
+    "fitnessKg": "kg",
+    "lbPartOfTime": "Fez {ran} de {planned}"
   },
   "ServiceStatus": {
     "metaTitle": "Estado do serviço Palee",
@@ -19119,6 +19130,9 @@
         "structured": {
           "what": "Treinos escritos passo a passo, iniciados e terminados.",
           "change": "Compara com os de texto livre para ver que tipo terminam."
+        },
+        "retirement": {
+          "change": "Muitas desistências num Fluxo podem significar que o relógio é demasiado longo para os teus membros."
         }
       },
       "finance": {

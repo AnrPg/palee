@@ -197,6 +197,8 @@ defmodule Palee.Application.GetTrainingHistory do
       completed_at: execution.completed_at_utc,
       elapsed_ms: execution.total_elapsed_ms,
       scale_level_slug: execution.scale_level_slug,
+      # ADR-549 (2B): «Έτρεξε 6:00 από 10:00» on the athlete's own result.
+      part_of_time: Execution.part_of_time(execution),
       scores:
         Enum.map(execution.section_scores || [], fn score ->
           section_id = field(score, :section_id)

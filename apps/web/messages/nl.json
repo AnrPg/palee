@@ -4963,7 +4963,17 @@
     "subscriptionEndsTodayBody": "{package} eindigt vandaag. Verleng het om lessen te blijven boeken.",
     "subscriptionEndedRenewBody": "{package} is geëindigd op {date}. Verleng het om weer lessen te boeken.",
     "subscriptionEndDayReminder": "Herinnering op de dag dat het eindigt",
-    "subscriptionDayAfterReminder": "Herinnering de dag na het einde"
+    "subscriptionDayAfterReminder": "Herinnering de dag na het einde",
+    "stoppedEarlyAt": "Je stopte op {ran} van {planned}.",
+    "stoppedEarlyQuestionLabel": "Waarom stopte de klok eerder?",
+    "stoppedEarlyGaveUp": "Ik stopte eerder",
+    "stoppedEarlyChoseShorter": "Ik wilde een kortere WOD",
+    "historyPartOfTime": "{ran} van {planned} gedaan",
+    "kpiRetirement": "Opgave",
+    "kpiRetirementHelp": "Onderdelen met vaste tijd (AMRAP, EMOM, intervallen) van voltooide workouts waarin de atleet stopte voordat de klok afliep, of de klok lang doorliep na de laatste tik (3× de eigen rondetijd). «Ik wilde een kortere WOD» telt als ingekorte tijd, niet als opgave.",
+    "kpiRetirementOf": "{retired} van {count, plural, one {# onderdeel met vaste tijd} other {# onderdelen met vaste tijd}}",
+    "kpiRetirementStopped": "Gestopt voor het einde",
+    "kpiRetirementIdle": "Inactief geworden"
   },
   "PrSharing": {
     "gymLabel": "Waar heb je dit PR neergezet?",
@@ -15788,7 +15798,8 @@
     "fitnessCoachLimitLooser": "Je eigen keuze blijft bewaard en telt weer als je coach de zijne opheft.",
     "fitnessSave": "Opslaan",
     "fitnessSaved": "Opgeslagen",
-    "fitnessKg": "kg"
+    "fitnessKg": "kg",
+    "lbPartOfTime": "{ran} van {planned} gedaan"
   },
   "ServiceStatus": {
     "metaTitle": "Status van Palee",
@@ -19119,6 +19130,9 @@
         "structured": {
           "what": "Stap voor stap geschreven trainingen, gestart en afgemaakt.",
           "change": "Vergelijk met vrije-teksttrainingen om te zien welk soort afgemaakt wordt."
+        },
+        "retirement": {
+          "change": "Veel opgaves in één Verloop kunnen betekenen dat de klok te lang is voor je leden."
         }
       },
       "finance": {

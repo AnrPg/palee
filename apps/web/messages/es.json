@@ -4963,7 +4963,17 @@
     "subscriptionEndsTodayBody": "{package} termina hoy. Renuévala para seguir reservando clases.",
     "subscriptionEndedRenewBody": "{package} terminó el {date}. Renuévala para volver a reservar clases.",
     "subscriptionEndDayReminder": "Recordatorio el día en que termina",
-    "subscriptionDayAfterReminder": "Recordatorio el día después de terminar"
+    "subscriptionDayAfterReminder": "Recordatorio el día después de terminar",
+    "stoppedEarlyAt": "Paraste en {ran} de {planned}.",
+    "stoppedEarlyQuestionLabel": "¿Por qué se paró antes el reloj?",
+    "stoppedEarlyGaveUp": "Paré antes",
+    "stoppedEarlyChoseShorter": "Quería un WOD más corto",
+    "historyPartOfTime": "Corrió {ran} de {planned}",
+    "kpiRetirement": "Abandono",
+    "kpiRetirementHelp": "Secciones de tiempo fijo (AMRAP, EMOM, intervalos) de entrenamientos completados en las que el atleta paró antes de que acabara el reloj, o el reloj siguió mucho después de su último toque (3× su propio tiempo por ronda). «Quería un WOD más corto» cuenta como tiempo acortado, no como abandono.",
+    "kpiRetirementOf": "{retired} de {count, plural, one {# sección de tiempo fijo} other {# secciones de tiempo fijo}}",
+    "kpiRetirementStopped": "Pararon antes del final",
+    "kpiRetirementIdle": "Se quedaron inactivos"
   },
   "PrSharing": {
     "gymLabel": "¿Dónde conseguiste este PR?",
@@ -15788,7 +15798,8 @@
     "fitnessCoachLimitLooser": "Tu propia elección se guarda y vuelve a contar si tu coach retira la suya.",
     "fitnessSave": "Guardar",
     "fitnessSaved": "Guardado",
-    "fitnessKg": "kg"
+    "fitnessKg": "kg",
+    "lbPartOfTime": "Corrió {ran} de {planned}"
   },
   "ServiceStatus": {
     "metaTitle": "Estado del servicio de Palee",
@@ -19119,6 +19130,9 @@
         "structured": {
           "what": "Entrenamientos escritos paso a paso, empezados y terminados.",
           "change": "Compara con los de texto libre para ver qué tipo terminan."
+        },
+        "retirement": {
+          "change": "Muchos abandonos en un Flujo pueden indicar que su reloj es demasiado largo para tus miembros."
         }
       },
       "finance": {

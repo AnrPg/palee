@@ -173,6 +173,7 @@ defmodule Palee.Application.GetWorkoutLeaderboard do
         unit: score_unit(row.score),
         percentile: row.percentile,
         top_percent: row.top_percent,
+        part_of_time: Map.get(row, :part_of_time),
         me: row.user_id == viewer_id
       }
     end)
@@ -204,6 +205,7 @@ defmodule Palee.Application.GetWorkoutLeaderboard do
               unit: score_unit(row.score),
               percentile: nil,
               top_percent: nil,
+              part_of_time: Map.get(row, :part_of_time),
               me: true
             }
         end

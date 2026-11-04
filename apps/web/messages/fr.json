@@ -4963,7 +4963,17 @@
     "subscriptionEndsTodayBody": "{package} se termine aujourd’hui. Renouvelle-le pour continuer à réserver des cours.",
     "subscriptionEndedRenewBody": "{package} s’est terminé le {date}. Renouvelle-le pour réserver à nouveau des cours.",
     "subscriptionEndDayReminder": "Rappel le jour de la fin",
-    "subscriptionDayAfterReminder": "Rappel le lendemain de la fin"
+    "subscriptionDayAfterReminder": "Rappel le lendemain de la fin",
+    "stoppedEarlyAt": "Tu t’es arrêté à {ran} sur {planned}.",
+    "stoppedEarlyQuestionLabel": "Pourquoi le chrono s’est-il arrêté plus tôt ?",
+    "stoppedEarlyGaveUp": "J’ai arrêté plus tôt",
+    "stoppedEarlyChoseShorter": "Je voulais un WOD plus court",
+    "historyPartOfTime": "{ran} sur {planned}",
+    "kpiRetirement": "Abandon",
+    "kpiRetirementHelp": "Sections à durée fixe (AMRAP, EMOM, intervalles) d’entraînements terminés où l’athlète s’est arrêté avant la fin du chrono, ou le chrono a tourné longtemps après sa dernière touche (3× son propre temps par tour). « Je voulais un WOD plus court » compte comme un chrono raccourci, pas comme un abandon.",
+    "kpiRetirementOf": "{retired} sur {count, plural, one {# section à durée fixe} other {# sections à durée fixe}}",
+    "kpiRetirementStopped": "Arrêtés avant la fin",
+    "kpiRetirementIdle": "Restés inactifs"
   },
   "PrSharing": {
     "gymLabel": "Où as-tu réalisé ce PR ?",
@@ -15788,7 +15798,8 @@
     "fitnessCoachLimitLooser": "Ton propre choix est gardé et compte de nouveau si ton coach retire le sien.",
     "fitnessSave": "Enregistrer",
     "fitnessSaved": "Enregistré",
-    "fitnessKg": "kg"
+    "fitnessKg": "kg",
+    "lbPartOfTime": "{ran} sur {planned}"
   },
   "ServiceStatus": {
     "metaTitle": "État du service Palee",
@@ -19119,6 +19130,9 @@
         "structured": {
           "what": "Entraînements écrits étape par étape, lancés et terminés.",
           "change": "Compare avec le texte libre pour voir quel type est terminé."
+        },
+        "retirement": {
+          "change": "Beaucoup d’abandons dans un Déroulé peuvent signifier que son chrono est trop long pour tes membres."
         }
       },
       "finance": {

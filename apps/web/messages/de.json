@@ -4963,7 +4963,17 @@
     "subscriptionEndsTodayBody": "{package} endet heute. Verlängere es, um weiter Kurse zu buchen.",
     "subscriptionEndedRenewBody": "{package} ist am {date} abgelaufen. Verlängere es, um wieder Kurse zu buchen.",
     "subscriptionEndDayReminder": "Erinnerung am Tag des Ablaufs",
-    "subscriptionDayAfterReminder": "Erinnerung am Tag nach dem Ablauf"
+    "subscriptionDayAfterReminder": "Erinnerung am Tag nach dem Ablauf",
+    "stoppedEarlyAt": "Du hast bei {ran} von {planned} aufgehört.",
+    "stoppedEarlyQuestionLabel": "Warum hat die Uhr früher gestoppt?",
+    "stoppedEarlyGaveUp": "Ich habe früher aufgehört",
+    "stoppedEarlyChoseShorter": "Ich wollte ein kürzeres WOD",
+    "historyPartOfTime": "{ran} von {planned} gelaufen",
+    "kpiRetirement": "Aufgabe",
+    "kpiRetirementHelp": "Abschnitte mit fester Zeit (AMRAP, EMOM, Intervalle) abgeschlossener Workouts, in denen die Person vor Ablauf der Uhr aufgehört hat oder die Uhr lange nach dem letzten Tippen weiterlief (3× die eigene Rundenzeit). «Ich wollte ein kürzeres WOD» zählt als verkürzte Zeit, nicht als Aufgabe.",
+    "kpiRetirementOf": "{retired} von {count, plural, one {# Abschnitt mit fester Zeit} other {# Abschnitten mit fester Zeit}}",
+    "kpiRetirementStopped": "Vor dem Ende gestoppt",
+    "kpiRetirementIdle": "Untätig geworden"
   },
   "PrSharing": {
     "gymLabel": "Wo hast du diesen PR aufgestellt?",
@@ -15788,7 +15798,8 @@
     "fitnessCoachLimitLooser": "Deine eigene Wahl bleibt gespeichert und zählt wieder, wenn dein Coach seine aufhebt.",
     "fitnessSave": "Speichern",
     "fitnessSaved": "Gespeichert",
-    "fitnessKg": "kg"
+    "fitnessKg": "kg",
+    "lbPartOfTime": "{ran} von {planned} gelaufen"
   },
   "ServiceStatus": {
     "metaTitle": "Palee Dienststatus",
@@ -19119,6 +19130,9 @@
         "structured": {
           "what": "Schritt für Schritt geschriebene Workouts, gestartet und beendet.",
           "change": "Vergleiche mit Freitext-Workouts, um zu sehen, welche Art beendet wird."
+        },
+        "retirement": {
+          "change": "Viele Abbrüche in einem Ablauf können heißen, dass seine Uhr für deine Mitglieder zu lang ist."
         }
       },
       "finance": {

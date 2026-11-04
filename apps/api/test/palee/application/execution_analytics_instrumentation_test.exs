@@ -145,6 +145,57 @@ defmodule Palee.Application.ExecutionAnalyticsInstrumentationTest do
     assert length(analytics_events(organization.id, "workout_execution_abandoned")) == 2
   end
 
+  test "ADR-549: a run the athlete closed counts as abandoned once the close is old enough" do
+    {organization, owner, context} = organization_fixture()
+    {member, member_context} = member_context(organization)
+    workout = scoreable_workout(context, owner)
+
+    closed = start!(member_context, member, workout)
+    recent_close = start!(member_context, member, workout)
+    open = start!(member_context, member, workout)
+
+    close! = fn execution, minutes_ago ->
+      at = DateTime.utc_now() |> DateTime.add(-minutes_ago * 60, :second) |> DateTime.to_iso8601()
+
+      counters = %{
+        "closed" => %{
+          "at" => at,
+          "segment_index" => 0,
+          "elapsed_ms" => 90_000,
+          "remaining_ms" => 30_000
+        }
+      }
+
+      {1, _} =
+        WorkoutExecution
+        |> where([e], e.id == ^execution.id)
+        |> Repo.update_all(set: [kpi_counters: counters])
+    end
+
+    backdate!(closed.id, 2)
+    backdate!(recent_close.id, 2)
+    backdate!(open.id, 2)
+    close!.(closed, 90)
+    close!.(recent_close, 10)
+
+    assert {:ok, 1} =
+             SweepAbandonedExecutions.call(organization.id, DateTime.utc_now(),
+               after_close_minutes: 60
+             )
+
+    event = analytics_event!(organization.id, "workout_execution_abandoned")
+    assert event.context_id == closed.id
+    assert event.metadata["closed_by_athlete"] == true
+    assert event.metadata["closed_remaining_ms"] == 30_000
+    assert event.metadata["minutes_since_close"] >= 90
+
+    # Without closes counting, only the 6 h threshold applies.
+    assert {:ok, 0} =
+             SweepAbandonedExecutions.call(organization.id, DateTime.utc_now(),
+               after_close_minutes: nil
+             )
+  end
+
   test "training-log entries record logged and voided once" do
     {organization, _owner, _context} = organization_fixture()
     {member, member_context} = member_context(organization)

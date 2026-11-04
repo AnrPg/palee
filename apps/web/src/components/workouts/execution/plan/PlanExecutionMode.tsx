@@ -24,9 +24,12 @@ import { listPRs } from "@/api/gamification";
 import { fetchWorkout } from "@/api/workouts";
 import { useSession } from "@/components/session-provider";
 import { BackButton } from "@/components/ui/BackLink";
+import { useExecutionInteractions } from "@/hooks/useExecutionInteractions";
 import { useJournalCommentWriter } from "@/hooks/useJournalCommentWriter";
+import type { ExecutionInteractionMetadata } from "@/lib/execution-analytics";
 import { useScreenWakeLock } from "@/hooks/useScreenWakeLock";
 import { changeDraft, finishWrites, type FinishComments } from "@/lib/journal-comments";
+import { CLOCK_TOLERANCE_MS, type RetirementAnswer, type StoppedEarlySection } from "@/lib/retirement";
 
 import { FinishWizard } from "../FinishWizard";
 import { PlanExecution, type PlanRunLog, type PlanRunResult, type PlanRunSnapshot } from "./PlanExecution";
@@ -35,6 +38,7 @@ import { oneRepMaxLookup } from "./one-rep-max";
 import { readPlanProgress, storePlanProgress } from "./plan-progress";
 import { planSections, type RunnablePlanSection } from "./plan-workout";
 import { scoreSegment } from "./score";
+import { buildSequence, timeSetMs } from "./sequence";
 
 type Loaded = { title: string; sections: RunnablePlanSection[] };
 
@@ -70,8 +74,37 @@ export function PlanExecutionMode({ executionId }: { executionId: string }) {
     storePlanProgress(executionId, { ...baseRef.current, current: currentRef.current.snapshot });
   }, [actuals, elapsed, executionId, finishing, index, scores, workTaps]);
 
+  // ADR-123 / ADR-549: the plan runner's interaction signals, and where it stood when closed.
+  const loadedRef = useRef<Loaded | null>(null);
+  useEffect(() => {
+    loadedRef.current = loaded;
+  }, [loaded]);
+  const track = useExecutionInteractions(executionId, tokens?.access_token, (now) => planClosedMetadata(now));
+  function planPosition(sectionIndex: number): ExecutionInteractionMetadata {
+    const section = loadedRef.current?.sections[sectionIndex];
+    const metadata: ExecutionInteractionMetadata = { segment_index: Math.max(0, sectionIndex) };
+    if (section && TOKEN.test(section.id)) metadata.section_id = section.id;
+    if (section && TOKEN.test(section.plan.flow)) metadata.format = section.plan.flow;
+    return metadata;
+  }
+  function planClosedMetadata(now: number): ExecutionInteractionMetadata | null {
+    const { index: sectionIndex, snapshot } = currentRef.current;
+    const status = snapshot?.state.status;
+    if (baseRef.current.finishing || (status !== "running" && status !== "paused")) return null;
+    const elapsedMs = Math.max(0, Math.round(snapshot!.carriedMs + (snapshot!.startedAt != null ? now - snapshot!.startedAt : 0)));
+    const metadata: ExecutionInteractionMetadata = { ...planPosition(sectionIndex), elapsed_ms: elapsedMs };
+    const section = loadedRef.current?.sections[sectionIndex];
+    const planned = section ? timeSetMs(buildSequence(section.plan), section.plan.score) : null;
+    if (planned !== null) metadata.remaining_ms = Math.max(0, planned - elapsedMs);
+    return metadata;
+  }
+
   function saveSnapshot(sectionIndex: number, snapshot: PlanRunSnapshot) {
     if (sectionIndex !== baseRef.current.index) return;
+    const was = currentRef.current.index === sectionIndex ? currentRef.current.snapshot?.state.status : undefined;
+    const now = snapshot.state.status;
+    if (was === "running" && now === "paused") track("pause", { ...planPosition(sectionIndex), elapsed_ms: Math.round(snapshot.carriedMs) });
+    if (was === "paused" && now === "running") track("resume", planPosition(sectionIndex));
     currentRef.current = { index: sectionIndex, snapshot };
     storePlanProgress(executionId, { ...baseRef.current, current: snapshot });
   }
@@ -121,6 +154,21 @@ export function PlanExecutionMode({ executionId }: { executionId: string }) {
     [loaded?.sections, t],
   );
 
+  // ADR-549: the time-set sections the athlete stopped before their clock ran out.
+  const stoppedEarly = useMemo<StoppedEarlySection[]>(
+    () =>
+      finishing
+        ? (loaded?.sections ?? []).flatMap((s) => {
+            const planned = timeSetMs(buildSequence(s.plan), s.plan.score);
+            const ran = Math.max(0, Math.round(elapsed[s.id] ?? 0));
+            return planned !== null && ran < planned - CLOCK_TOLERANCE_MS
+              ? [{ section_id: s.id, section_name: s.name, ran_ms: ran, planned_ms: planned }]
+              : [];
+          })
+        : [],
+    [finishing, loaded?.sections, elapsed],
+  );
+
   async function log(section: RunnablePlanSection, entry: PlanRunLog) {
     const { step, field, actual, canonical } = entry;
     const draft = changeDraft("execution", executionId, {
@@ -151,10 +199,18 @@ export function PlanExecutionMode({ executionId }: { executionId: string }) {
     setActuals((current) => ({ ...current, [section.id]: result.actuals }));
     setWorkTaps((current) => ({ ...current, [section.id]: result.workTaps }));
     if (loaded && index + 1 < loaded.sections.length) setIndex(index + 1);
-    else setFinishing(true);
+    else {
+      track("finish_wizard_opened", { segment_index: index });
+      setFinishing(true);
+    }
   }
 
-  async function confirmFinish(edited: SectionScore[], finish: FinishComments) {
+  async function confirmFinish(
+    edited: SectionScore[],
+    finish: FinishComments,
+    _textResults: unknown,
+    retirementAnswers: Record<string, RetirementAnswer> = {},
+  ) {
     if (!accessToken) return;
     setSaving(true);
     setFeedback(null);
@@ -171,7 +227,9 @@ export function PlanExecutionMode({ executionId }: { executionId: string }) {
         segment_cycle_counts: {},
         plan_actuals: (loaded?.sections ?? []).flatMap((s) => actuals[s.id] ?? []),
         kpi_counters: planKpiCounters(workTaps),
+        ...(Object.keys(retirementAnswers).length > 0 ? { retirement_answers: retirementAnswers } : {}),
       });
+      track("finish_wizard_saved", { scored_section_count: edited.length });
       storePlanProgress(executionId, null);
       router.push("/");
     } catch {
@@ -210,6 +268,7 @@ export function PlanExecutionMode({ executionId }: { executionId: string }) {
         videoExecutionId={executionId}
         isSaving={saving}
         feedback={feedback}
+        stoppedEarly={stoppedEarly}
         onConfirm={confirmFinish}
         onCancel={() => setFinishing(false)}
       />
@@ -255,3 +314,6 @@ export function PlanExecutionMode({ executionId }: { executionId: string }) {
     </div>
   );
 }
+
+/** The interaction API's token shape (ExecutionInteraction metadata). */
+const TOKEN = /^[A-Za-z0-9_-]{1,64}$/;

@@ -44,7 +44,7 @@ describe("FinishWizard free-text comments", () => {
     expect(screen.getByText(/Used a lighter sandbag/)).toHaveClass("whitespace-pre-wrap");
 
     fireEvent.click(screen.getByRole("button", { name: "saveDone3614269" }));
-    expect(onConfirm).toHaveBeenCalledWith([], { changes: [], text: note }, []);
+    expect(onConfirm).toHaveBeenCalledWith([], { changes: [], text: note }, [], {});
   });
 
   it("offers a way back to the workout from the first step", () => {
@@ -120,6 +120,64 @@ describe("FinishWizard: ADR-180 text-section scores", () => {
       { section_id: "s1", metric_key: "top-set", value: 102.5 },
       { section_id: "s3", metric_key: "rounds", value: 7 },
       { section_id: "s3", metric_key: "time", value: 330 },
-    ]);
+    ], {});
+  });
+});
+
+describe("FinishWizard stopped-early question (ADR-549, 3B)", () => {
+  it("asks once per section stopped early, optionally, and sends the answer", () => {
+    const onConfirm = vi.fn();
+    render(
+      <FinishWizard
+        scores={[]}
+        segments={[]}
+        comments={[]}
+        pendingCommentIds={[]}
+        freeText
+        stoppedEarly={[{ section_id: "amrap", section_name: "AMRAP 10", ran_ms: 360_000, planned_ms: 600_000 }]}
+        isSaving={false}
+        feedback={null}
+        onConfirm={onConfirm}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "next2f04eb1" }));
+    fireEvent.click(screen.getByRole("button", { name: "next2f04eb1" }));
+
+    const question = screen.getByTestId("stopped-early-amrap");
+    expect(question).toHaveTextContent("AMRAP 10");
+    const shorter = screen.getByRole("button", { name: "stoppedEarlyChoseShorter" });
+    expect(shorter).toHaveAttribute("aria-pressed", "false");
+    fireEvent.click(shorter);
+    expect(shorter).toHaveAttribute("aria-pressed", "true");
+
+    fireEvent.click(screen.getByRole("button", { name: "saveDone3614269" }));
+    expect(onConfirm).toHaveBeenCalledWith([], { changes: [], text: null }, [], { amrap: "chose_shorter" });
+  });
+
+  it("an unanswered question sends no answer, and a second tap takes the answer back", () => {
+    const onConfirm = vi.fn();
+    render(
+      <FinishWizard
+        scores={[]}
+        segments={[]}
+        comments={[]}
+        pendingCommentIds={[]}
+        freeText
+        stoppedEarly={[{ section_id: "amrap", section_name: "AMRAP 10", ran_ms: 360_000, planned_ms: 600_000 }]}
+        isSaving={false}
+        feedback={null}
+        onConfirm={onConfirm}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "next2f04eb1" }));
+    fireEvent.click(screen.getByRole("button", { name: "next2f04eb1" }));
+    const gaveUp = screen.getByRole("button", { name: "stoppedEarlyGaveUp" });
+    fireEvent.click(gaveUp);
+    fireEvent.click(gaveUp);
+
+    fireEvent.click(screen.getByRole("button", { name: "saveDone3614269" }));
+    expect(onConfirm).toHaveBeenCalledWith([], { changes: [], text: null }, [], {});
   });
 });

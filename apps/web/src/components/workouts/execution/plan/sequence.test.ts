@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { PlanCell, PlanRow, PlanSection } from "@/lib/structured-plan/types";
 
-import { allSteps, AMRAP_ROUNDS, buildSequence, EMOM_OPEN_SLOTS, type RunRest, type RunStep, type RunWork } from "./sequence";
+import { allSteps, AMRAP_ROUNDS, buildSequence, EMOM_OPEN_SLOTS, type RunRest, type RunStep, type RunWork, timeSetMs } from "./sequence";
 
 let uid = 0;
 const ex = (name: string, more: Partial<PlanRow> = {}): PlanRow => ({
@@ -248,5 +248,22 @@ describe("buildSequence: rest", () => {
   it("is one countdown", () => {
     const seq = buildSequence(section("rest", { dur: "2:00" }, []));
     expect(seq.phases).toEqual([expect.objectContaining({ kind: "rest", secs: 120 })]);
+  });
+});
+
+describe("timeSetMs (ADR-549)", () => {
+  it("is the clock's full length for AMRAP windows, a set EMOM and intervals; null otherwise", () => {
+    const amrap = buildSequence(section("amrap", { dur: "3-3", rest: "1:00" }, [[ex("Burpee", { dose: "10" })]]));
+    expect(timeSetMs(amrap, "rounds_reps")).toBe(7 * 60_000);
+    expect(timeSetMs(amrap, "time")).toBeNull();
+
+    const forTime = buildSequence(section("for_time", { rounds: "1", cap: "20" }, [[ex("Burpee", { dose: "50" })]]));
+    expect(timeSetMs(forTime, "time")).toBeNull();
+
+    const emom = buildSequence(section("emom", { every: "1:00", times: "10" }, [[ex("Burpee", { dose: "10" })]]));
+    expect(timeSetMs(emom, "reps")).toBe(10 * 60_000);
+
+    const openEmom = buildSequence(section("emom", { every: "1:00", times: "" }, [[ex("Burpee", { dose: "10" })]]));
+    expect(timeSetMs(openEmom, "reps")).toBeNull();
   });
 });

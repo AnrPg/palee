@@ -52,6 +52,45 @@ but was never wired into the timer.
   time, clock left) when the athlete leaves an unfinished workout (page hide
   or screen left), sent with `keepalive` so it survives the tab closing.
 
+### Follow-up (2026-11-04, ANR picked 1Α, 2Β, 3Β from the mockups)
+- **3Β, the athlete's answer.** When a time-set section ran short of its clock
+  (as run, after «±30 s»), the «Τέλος προπόνησης» confirm step shows one quiet,
+  optional question per section: «Σταμάτησες στο 6:00 από 10:00.» with chips
+  «Σταμάτησα νωρίτερα» / «Ήθελα μικρότερο WOD» (`StoppedEarlyQuestion`, both
+  the classic timer and the plan runner; `lib/retirement.ts` and
+  `plan/sequence.ts timeSetMs/2` mirror the server's time-set rule).
+  `PATCH /executions/:id/complete` takes `retirement_answers`
+  (`{section_id: "gave_up" | "chose_shorter"}`). On a `stopped_early` section
+  only: `chose_shorter` makes it `shortened` («Μίκρυνε τον χρόνο», not
+  Παραίτηση), `gave_up` confirms it; the answer is kept as `answer`.
+  Unanswered, the verdict stays `stopped_early`.
+- **1Α, staff Στατιστικά.** One «Παραίτηση» card in the execution KPIs: the
+  rate over time-set sections of completed runs, «Σταμάτησαν πριν τη λήξη» /
+  «Έμειναν ανενεργοί», and the rate per Ροή; details in «?».
+- **2Β, a neutral fact.** `part_of_time` (`{ran_ms, planned_ms}` of the first
+  section run short, `stopped_early` or `shortened`) on the athlete's own
+  history entries (gym and account) reads «Έτρεξε 6:00 από 10:00». Leaderboard
+  rows (workout, day WOD, today card) carry it too and show only a small time
+  mark («6:00», the sentence on hover / screen reader). The word Παραίτηση is
+  never shown to anyone but staff.
+- **Closing the timer counts sooner.** `timer_closed` is stored on the
+  unfinished execution (`kpi_counters.closed`: position, segment time, clock
+  left, `at`). The abandonment sweep also records a run as unfinished once
+  `config :palee, :execution_abandonment_after_close_minutes` (60) have
+  passed since the close with no progress after it, instead of waiting for
+  the 6 h threshold. The abandonment event adds `closed_by_athlete`,
+  `closed_segment_index`, `closed_elapsed_ms`, `closed_remaining_ms`,
+  `minutes_since_close`. nil turns it off.
+- **Exact round times.** The classic timer keeps a `round_marks` list (segment
+  key, round, clock ms at the tap; last 100) and sends it with progress
+  (max 500). Split marks (ADR-374) take a round's time from its mark when one
+  exists (round ≥ 1, 0 ≤ ms ≤ the save's clock, known segment), else the
+  save's time as before.
+- **The plan runner's interactions.** `pause`, `resume`, `finish_wizard_opened`,
+  `finish_wizard_saved` and `timer_closed` (section, elapsed, clock left on a
+  time-set section) are now sent from the structured plan runner too
+  (`useExecutionInteractions` takes the runner's own close position).
+
 ## Rationale
 The time run against the length is exact and needs no guess. Idle detection
 compares the athlete with themselves, never with a fixed number of minutes,
@@ -65,14 +104,15 @@ server's own derived facts (`position`, `formats`).
 - A fixed idle threshold in minutes: wrong for a 5' and a 30' AMRAP alike.
 - Deriving taps from split marks (ADR-374): they carry the progress save's
   time, so rounds saved together share one time, and checks are not marks.
-- Asking the athlete in the finish wizard («Σταμάτησες πριν τελειώσει ο
-  χρόνος;»): the most certain answer, but a UX change; mockups first.
+- A list of reasons (fatigue, pain, time…): richer, but too many choices for
+  a tired athlete (mockup 3Γ). Not asking at all (3Α) loses the why.
+- Ranking short runs below full ones (2Γ): fairer but harsher; not chosen.
 
 ## Consequences
 - An athlete who never taps (types only the score) is `unknown`, never
   retired. EMOM windows advance on their own, so they are known only through
   checks.
-- The plan runner does not send interaction events yet (it has no store
-  progress); its work taps reach the server at completion.
-- Where Παραίτηση shows (staff Στατιστικά, the athlete's Πρόοδος,
-  leaderboards) waits for mockups (W-rule: mockups before UX builds).
+- The plan runner's work taps reach the server at completion (it has no
+  store progress); its interactions are sent live.
+- An answer from an old client is simply absent: the verdict stands as
+  measured.

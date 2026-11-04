@@ -137,6 +137,37 @@ defmodule Palee.Execution.Domain.ExecutionAnalytics do
       minutes_since_last_progress:
         last_progress_at && div(DateTime.diff(now, last_progress_at, :second), 60)
     }
+    |> Map.merge(close_facts(execution, now))
+  end
+
+  @doc """
+  ADR-549: whether an execution the athlete closed (`kpi_counters.closed`,
+  from `timer_closed`) counts as abandoned at `now`: not completed, closed
+  at least `minutes` ago, and no progress saved after the close.
+  """
+  def closed_abandoned?(execution, last_progress_at, %DateTime{} = now, minutes)
+      when is_integer(minutes) and minutes > 0 do
+    with nil <- value(execution, :completed_at_utc),
+         %DateTime{} = closed_at <- closed_at(execution) do
+      DateTime.diff(now, closed_at, :second) >= minutes * 60 and
+        not (match?(%DateTime{}, last_progress_at) and
+               DateTime.compare(last_progress_at, closed_at) == :gt)
+    else
+      _other -> false
+    end
+  end
+
+  def closed_abandoned?(_execution, _last_progress_at, _now, _minutes), do: false
+
+  @doc "When the athlete last closed the unfinished execution (ADR-549), or nil."
+  def closed_at(execution) do
+    with %{} = counters <- value(execution, :kpi_counters),
+         %{"at" => at} <- counters["closed"],
+         {:ok, closed_at, _offset} <- DateTime.from_iso8601(to_string(at)) do
+      closed_at
+    else
+      _none -> nil
+    end
   end
 
   @doc """
@@ -149,6 +180,25 @@ defmodule Palee.Execution.Domain.ExecutionAnalytics do
 
     is_nil(value(execution, :completed_at_utc)) and not is_nil(started_at) and
       DateTime.diff(now, started_at, :second) >= threshold_hours * 3_600
+  end
+
+  # ADR-549: where and when the athlete closed the timer, when they did.
+  defp close_facts(execution, now) do
+    case closed_at(execution) do
+      %DateTime{} = at ->
+        closed = (value(execution, :kpi_counters) || %{})["closed"]
+
+        %{
+          closed_by_athlete: true,
+          closed_segment_index: closed["segment_index"],
+          closed_elapsed_ms: closed["elapsed_ms"],
+          closed_remaining_ms: closed["remaining_ms"],
+          minutes_since_close: div(DateTime.diff(now, at, :second), 60)
+        }
+
+      nil ->
+        %{closed_by_athlete: false}
+    end
   end
 
   defp scoreable_section_ids(segments) do

@@ -46,7 +46,8 @@ defmodule Palee.Application.WorkoutDayLeaderboard do
           scale_level_slug: row.scale_level_slug,
           value: row.score && to_string(row.score["value"] || row.score[:value]),
           unit: row.score && (row.score["unit"] || row.score[:unit]),
-          opted_in: MapSet.member?(opted_in, row.user_id)
+          opted_in: MapSet.member?(opted_in, row.user_id),
+          part_of_time: Map.get(row, :part_of_time)
         }
       end)
 

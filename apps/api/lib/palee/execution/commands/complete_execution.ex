@@ -94,7 +94,12 @@ defmodule Palee.Execution.Commands.CompleteExecution do
           }
 
           completed_params =
-            put_retirement(completed_params, segments, Keyword.get(opts, :retirement_idle_factor))
+            put_retirement(
+              completed_params,
+              segments,
+              Keyword.get(opts, :retirement_idle_factor),
+              params[:retirement_answers] || params["retirement_answers"]
+            )
 
           persist_completion(execution_id, completed_params, opts)
         end
@@ -184,7 +189,7 @@ defmodule Palee.Execution.Commands.CompleteExecution do
 
   # ADR-549: whether the athlete gave up a time-set section, stored with the
   # execution's KPI counters so every reader takes the same verdict.
-  defp put_retirement(params, segments, idle_factor) do
+  defp put_retirement(params, segments, idle_factor, answers) do
     counters = params.kpi_counters || %{}
 
     case Retirement.assess(
@@ -192,7 +197,8 @@ defmodule Palee.Execution.Commands.CompleteExecution do
            %{
              section_elapsed_ms: params.section_elapsed_ms,
              activity: counters["activity"],
-             duration_adjustments: params.duration_adjustments
+             duration_adjustments: params.duration_adjustments,
+             answers: answers
            },
            idle_factor
          ) do

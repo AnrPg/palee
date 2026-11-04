@@ -367,6 +367,14 @@ defmodule PaleeWeb.Schemas.Community do
         value: %Schema{type: :string, nullable: true},
         unit: %Schema{type: :string, nullable: true},
         me: %Schema{type: :boolean},
+        part_of_time: %Schema{
+          type: :object,
+          nullable: true,
+          description:
+            "ADR-549: the result ran only part of its clock (stopped early or a shorter clock): ran and planned ms",
+          properties: %{ran_ms: %Schema{type: :integer}, planned_ms: %Schema{type: :integer}},
+          required: [:ran_ms, :planned_ms]
+        },
         opted_in: %Schema{
           type: :boolean,
           description: "False only on your own row before you opt in to leaderboards"

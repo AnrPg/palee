@@ -176,6 +176,18 @@ describe("conflict rebase", () => {
     expect(state.pendingSync).toBe(true);
   });
 
+  it("ADR-549: records each round's exact clock time and sends it with the next save", () => {
+    const store = useExecutionStore.getState();
+    store.incrementSegmentCycle("segment:0", 45_000);
+    store.incrementSegmentCycle("segment:0", 95_000);
+
+    expect(useExecutionStore.getState().roundMarks).toEqual([
+      { segment_key: "segment:0", round: 1, elapsed_ms: 45_000 },
+      { segment_key: "segment:0", round: 2, elapsed_ms: 95_000 },
+    ]);
+    expect(useExecutionStore.getState().buildProgressPayload()?.round_marks).toHaveLength(2);
+  });
+
   it("has nothing to resend when there were no local marks", () => {
     const store = useExecutionStore.getState();
     const serverPayload = { ...store.buildProgressPayload()!, checked_exercise_ids: ["z"] };

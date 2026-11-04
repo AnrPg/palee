@@ -19,9 +19,19 @@ import { useExecutionStore } from "@/stores/execution";
  * workout given up mid-way is known when it happens, not hours later.
  *
  * `track` is stable and never throws; analytics never interrupts a workout.
+ * `closeMetadata` says where a runner that keeps its own state (the
+ * structured plan runner) stands; the classic timer's store is the default.
  */
-export function useExecutionInteractions(executionId: string | null, accessToken: string | null | undefined) {
+export function useExecutionInteractions(
+  executionId: string | null,
+  accessToken: string | null | undefined,
+  closeMetadata?: (now: number) => ExecutionInteractionMetadata | null,
+) {
   const tokenRef = useRef(accessToken);
+  const closeRef = useRef(closeMetadata);
+  useEffect(() => {
+    closeRef.current = closeMetadata;
+  });
   const analyticsRef = useRef<ExecutionAnalytics | null>(null);
 
   useEffect(() => {
@@ -36,7 +46,8 @@ export function useExecutionInteractions(executionId: string | null, accessToken
 
     const close = () => {
       if (closed) return;
-      const metadata = timerClosedMetadata(useExecutionStore.getState(), Date.now());
+      const now = Date.now();
+      const metadata = closeRef.current ? closeRef.current(now) : timerClosedMetadata(useExecutionStore.getState(), now);
       if (metadata) {
         closed = true;
         analytics.track("timer_closed", metadata);

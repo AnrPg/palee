@@ -178,6 +178,13 @@ defmodule PaleeWeb.ExecutionController do
              additionalProperties: %Schema{type: :integer, minimum: 0}
            },
            kpi_counters: @kpi_counters_schema,
+           retirement_answers: %Schema{
+             type: :object,
+             description:
+               "ADR-549: per time-set section stopped before its clock ran out, the athlete's own " <>
+                 "answer: `gave_up` (Σταμάτησα νωρίτερα) or `chose_shorter` (Ήθελα μικρότερο WOD).",
+             additionalProperties: %Schema{type: :string, enum: ["gave_up", "chose_shorter"]}
+           },
            duration_adjustments: @duration_adjustments_schema,
            plan_actuals: %Schema{
              type: :array,
@@ -268,6 +275,22 @@ defmodule PaleeWeb.ExecutionController do
              nullable: true
            },
            kpi_counters: @kpi_counters_schema,
+           round_marks: %Schema{
+             type: :array,
+             maxItems: 500,
+             description:
+               "ADR-549: the device's own times of its round taps (active ms since the start), " <>
+                 "so rounds saved together keep their own split times.",
+             items: %Schema{
+               type: :object,
+               required: [:segment_key, :round, :elapsed_ms],
+               properties: %{
+                 segment_key: %Schema{type: :string, maxLength: 64},
+                 round: %Schema{type: :integer, minimum: 1},
+                 elapsed_ms: %Schema{type: :integer, minimum: 0}
+               }
+             }
+           },
            duration_adjustments: @duration_adjustments_schema
          }
        }},

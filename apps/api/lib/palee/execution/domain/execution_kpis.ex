@@ -31,7 +31,7 @@ defmodule Palee.Execution.Domain.ExecutionKpis do
   @max_counter 1_000_000_000
   # Kept as stored: written by the server (`put_position/4`) or merged on their
   # own rules (`Retirement.merge_activity/3`, ADR-549).
-  @server_keys ~w(position formats activity retirement)
+  @server_keys ~w(position formats activity retirement closed)
 
   @doc "Merges client counters into the stored ones, dropping unknown or invalid keys."
   def merge_counters(existing, incoming, started_at_utc \\ nil)

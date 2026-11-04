@@ -77,7 +77,8 @@ defmodule Palee.Application.GetWodTodayCard do
         value: row.value,
         unit: row.unit,
         me: row.user_id == viewer_id,
-        opted_in: row.opted_in
+        opted_in: row.opted_in,
+        part_of_time: Map.get(row, :part_of_time)
       }
     end)
   end

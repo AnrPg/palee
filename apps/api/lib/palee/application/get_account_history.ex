@@ -17,7 +17,7 @@ defmodule Palee.Application.GetAccountHistory do
 
   alias Palee.Application.AccountTraining
   alias Palee.Identity.Domain.FilterFields
-  alias Palee.{Journal, Organizations, Scheduling}
+  alias Palee.{Execution, Journal, Organizations, Scheduling}
 
   @default_limit 10
   @max_limit 50
@@ -79,6 +79,7 @@ defmodule Palee.Application.GetAccountHistory do
             completed_at: execution.completed_at_utc,
             elapsed_ms: execution.total_elapsed_ms,
             scale_level_slug: execution.scale_level_slug,
+            part_of_time: Execution.part_of_time(execution),
             scores:
               Enum.map(execution.section_scores || [], fn score ->
                 %{

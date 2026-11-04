@@ -83,6 +83,37 @@ describe("ExecutionKpiDashboard", () => {
     expect(stack.children.length).toBeGreaterThan(2);
   });
 
+  it("ADR-549: shows retirement in time-set sections, split stopped/idle and by format", () => {
+    render(
+      <ExecutionKpiDashboard
+        payload={{
+          execution: {
+            ...report,
+            retirement: {
+              time_set_sections: 20,
+              stopped_early: 3,
+              idle: 1,
+              shortened: 2,
+              unknown: 4,
+              full: 10,
+              retired_rate: 0.2,
+              median_stopped_early_ms: 120_000,
+              median_idle_tail_ms: 200_000,
+              by_format: [{ format: "amrap", time_set_sections: 12, retired: 3, retired_rate: 0.25 }],
+            },
+          },
+        }}
+      />,
+    );
+
+    const card = screen.getByTestId("kpi-retirement");
+    expect(card).toHaveTextContent("20%");
+    expect(card).toHaveTextContent('kpiRetirementOf:{"retired":4,"count":20}');
+    expect(card).toHaveTextContent("kpiRetirementStopped3");
+    expect(card).toHaveTextContent("kpiRetirementIdle1");
+    expect(card).toHaveTextContent("25%");
+  });
+
   it("shows the empty state without an execution block", () => {
     render(<ExecutionKpiDashboard payload={{}} />);
     expect(screen.getByText("noCapturedFactsInThisReportingWindowdc344c7")).toBeInTheDocument();

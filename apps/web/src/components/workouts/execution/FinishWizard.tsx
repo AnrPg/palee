@@ -23,6 +23,15 @@ import { TextSectionScoreStep, type TextSectionScoreView } from "./TextSectionSc
 import type { TextSection, TextSectionResult } from "@/lib/text-sections";
 import { BackButton } from "@/components/ui/BackLink";
 import { TechniqueVideoAction } from "./TechniqueVideoAction";
+import type { RetirementAnswer, StoppedEarlySection } from "@/lib/retirement";
+import { StoppedEarlyQuestion } from "./StoppedEarlyQuestion";
+
+/** ADR-549: the stopped-early question's state, threaded through the steps that show it. */
+type StoppedEarlyProps = {
+  stoppedEarly?: StoppedEarlySection[];
+  answers?: Record<string, RetirementAnswer>;
+  onAnswer?: (sectionId: string, answer: RetirementAnswer | undefined) => void;
+};
 
 type SectionScore = {
   section_id: string;
@@ -757,6 +766,9 @@ function ConfirmStep({
   onSave,
   clockAdjustments = [],
   videoExecutionId = null,
+  stoppedEarly = [],
+  answers = {},
+  onAnswer,
 }: {
   scores: SectionScore[];
   modifications: ExerciseModification[];
@@ -768,7 +780,7 @@ function ConfirmStep({
   onBack: () => void;
   onSave: () => void;
   videoExecutionId?: string | null;
-}) {
+} & StoppedEarlyProps) {
   const i18n = useUiTranslations();
   const exerciseMap = React.useMemo(() => {
     const map: Record<string, string> = {};
@@ -811,6 +823,16 @@ function ConfirmStep({
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-4">
+        {onAnswer
+          ? stoppedEarly.map((section) => (
+              <StoppedEarlyQuestion
+                key={section.section_id}
+                section={section}
+                answer={answers[section.section_id]}
+                onAnswer={(answer) => onAnswer(section.section_id, answer)}
+              />
+            ))
+          : null}
         {scores.length > 0 && (
           <div>
             <p
@@ -942,6 +964,7 @@ export function FinishWizard({
   clockAdjustments,
   freeText = false,
   textSections = [],
+  stoppedEarly = [],
   feltExecutionId = null,
   videoExecutionId = null,
   isSaving,
@@ -958,13 +981,20 @@ export function FinishWizard({
   freeText?: boolean;
   /** ADR-180: a workout written in text sections; the scores its coach set are asked for here. */
   textSections?: TextSection[];
+  /** ADR-549: time-set sections stopped before their clock ran out; one optional question each. */
+  stoppedEarly?: StoppedEarlySection[];
   /** Offers «Τι ένιωσες;» (WOD goals feedback) on this execution before the confirm step. */
   feltExecutionId?: string | null;
   /** ANR mockup d5 A: the run a technique video from the completion screen is about. */
   videoExecutionId?: string | null;
   isSaving: boolean;
   feedback: string | null;
-  onConfirm: (editedScores: SectionScore[], finish: FinishComments, textResults: TextSectionResult[]) => void;
+  onConfirm: (
+    editedScores: SectionScore[],
+    finish: FinishComments,
+    textResults: TextSectionResult[],
+    retirementAnswers: Record<string, RetirementAnswer>,
+  ) => void;
   /** Leaves the wizard and returns to the (paused) workout. */
   onCancel?: () => void;
 }) {
@@ -979,6 +1009,15 @@ export function FinishWizard({
   const [text, setText] = useState("");
   const [textResults, setTextResults] = useState<TextSectionResult[]>([]);
   const [textScoreViews, setTextScoreViews] = useState<TextSectionScoreView[]>([]);
+  const [retirementAnswers, setRetirementAnswers] = useState<Record<string, RetirementAnswer>>({});
+  const answerStoppedEarly = React.useCallback((sectionId: string, answer: RetirementAnswer | undefined) => {
+    setRetirementAnswers((prev) => {
+      const next = { ...prev };
+      if (answer) next[sectionId] = answer;
+      else delete next[sectionId];
+      return next;
+    });
+  }, []);
   const textScored = textSections.some((section) => section.metrics.length > 0);
 
   function handleScoresNext(edited: SectionScore[]) {
@@ -992,7 +1031,7 @@ export function FinishWizard({
   }
 
   function handleSave() {
-    onConfirm(confirmedScores, { changes: confirmedMods, text: text.trim() || null }, textResults);
+    onConfirm(confirmedScores, { changes: confirmedMods, text: text.trim() || null }, textResults, retirementAnswers);
   }
 
   if (step === 1 && textScored) {
@@ -1071,6 +1110,9 @@ export function FinishWizard({
       onBack={() => setStep(afterComments === "felt" ? "felt" : 2)}
       onSave={handleSave}
       videoExecutionId={videoExecutionId}
+      stoppedEarly={stoppedEarly}
+      answers={retirementAnswers}
+      onAnswer={answerStoppedEarly}
     />
   );
 }

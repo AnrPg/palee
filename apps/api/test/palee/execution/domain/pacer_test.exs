@@ -122,6 +122,28 @@ defmodule Palee.Execution.Domain.PacerTest do
 
       assert SplitMarks.from_progress(same, emom, []) == []
     end
+
+    test "ADR-549: the device's round marks give each round its exact time" do
+      previous = %{current_segment_index: 0, segment_cycle_counts: %{"segment:0" => 1}}
+
+      updated = %{
+        current_segment_index: 0,
+        total_elapsed_ms: 300_000,
+        segment_cycle_counts: %{"segment:0" => 3}
+      }
+
+      marks = [
+        %{"segment_key" => "segment:0", "round" => 2, "elapsed_ms" => 130_000},
+        # beyond the update's clock, an unknown segment, a bad round: ignored
+        %{"segment_key" => "segment:0", "round" => 3, "elapsed_ms" => 900_000},
+        %{"segment_key" => "forged", "round" => 3, "elapsed_ms" => 200_000},
+        %{"segment_key" => "segment:0", "round" => 0, "elapsed_ms" => 10}
+      ]
+
+      rows = SplitMarks.from_progress(previous, updated, @keyed, marks)
+
+      assert Enum.map(rows, &{&1.round, &1.elapsed_ms}) == [{2, 130_000}, {3, 300_000}]
+    end
   end
 
   describe "pick_previous/2" do

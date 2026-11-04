@@ -32,6 +32,34 @@ export type ExecutionKpiReport = {
   structured: { started: number; completed: number };
   free_text: { started: number; completed: number; completion_rate: number | null; median_abandon_elapsed_ms: number | null };
   daily: { date: string; started: number; completed: number }[];
+  /** ADR-549: time-set sections (AMRAP, EMOM, intervals) of completed runs the athlete gave up on. */
+  retirement: RetirementReport;
+};
+
+export type RetirementReport = {
+  time_set_sections: number;
+  stopped_early: number;
+  idle: number;
+  shortened: number;
+  unknown: number;
+  full: number;
+  retired_rate: number | null;
+  median_stopped_early_ms: number | null;
+  median_idle_tail_ms: number | null;
+  by_format: { format: string; time_set_sections: number; retired: number; retired_rate: number | null }[];
+};
+
+const EMPTY_RETIREMENT: RetirementReport = {
+  time_set_sections: 0,
+  stopped_early: 0,
+  idle: 0,
+  shortened: 0,
+  unknown: 0,
+  full: 0,
+  retired_rate: null,
+  median_stopped_early_ms: null,
+  median_idle_tail_ms: null,
+  by_format: [],
 };
 
 /** An ISO date ("2026-10-12") as midnight UTC. */
@@ -66,6 +94,7 @@ export function readExecutionKpis(payload: unknown): ExecutionKpiReport | null {
     structured: report.structured ?? { started: 0, completed: 0 },
     free_text: report.free_text ?? { started: 0, completed: 0, completion_rate: null, median_abandon_elapsed_ms: null },
     daily: report.daily ?? [],
+    retirement: { ...EMPTY_RETIREMENT, ...(report.retirement ?? {}) },
   };
 }
 
@@ -218,6 +247,47 @@ export function ExecutionKpiDashboard({
                     ))}
                   </tbody>
                 </table>
+              )}
+            </Panel>
+
+            <Panel title={i18n("kpiRetirement")} help={help(i18n("kpiRetirementHelp"), "retirement")}>
+              {report.retirement.time_set_sections === 0 ? (
+                <Empty />
+              ) : (
+                <div className="grid gap-4" data-testid="kpi-retirement">
+                  <div>
+                    <p className="text-2xl font-black tabular-nums">{percent(report.retirement.retired_rate)}</p>
+                    <p className="mt-1 text-xs text-[var(--muted)]">
+                      {i18n("kpiRetirementOf", {
+                        retired: report.retirement.stopped_early + report.retirement.idle,
+                        count: report.retirement.time_set_sections,
+                      })}
+                    </p>
+                  </div>
+                  <ul className="grid gap-1.5 text-sm">
+                    <li className="flex justify-between gap-3">
+                      <span className="text-[var(--text-soft)]">{i18n("kpiRetirementStopped")}</span>
+                      <span className="font-bold tabular-nums">{report.retirement.stopped_early}</span>
+                    </li>
+                    <li className="flex justify-between gap-3">
+                      <span className="text-[var(--text-soft)]">{i18n("kpiRetirementIdle")}</span>
+                      <span className="font-bold tabular-nums">{report.retirement.idle}</span>
+                    </li>
+                  </ul>
+                  {report.retirement.by_format.length > 0 ? (
+                    <ul className="space-y-3 border-t border-[color:var(--border)] pt-3">
+                      {report.retirement.by_format.map((row) => (
+                        <li key={row.format}>
+                          <div className="flex justify-between gap-3 text-sm">
+                            <span className="text-[var(--text-soft)]">{formatName(row.format)}</span>
+                            <span className="font-bold tabular-nums">{percent(row.retired_rate)}</span>
+                          </div>
+                          <Meter value={row.retired_rate ?? 0} color={COMPLETED_COLOR} label={formatName(row.format)} />
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </div>
               )}
             </Panel>
 

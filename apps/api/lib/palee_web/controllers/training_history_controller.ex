@@ -65,6 +65,14 @@ defmodule PaleeWeb.TrainingHistoryController do
       completed_at: @nullable_string,
       elapsed_ms: %Schema{type: :integer, nullable: true},
       scale_level_slug: @nullable_string,
+      part_of_time: %Schema{
+        type: :object,
+        nullable: true,
+        description:
+          "ADR-549: the run used only part of a time-set section's clock: ran and planned ms",
+        properties: %{ran_ms: %Schema{type: :integer}, planned_ms: %Schema{type: :integer}},
+        required: [:ran_ms, :planned_ms]
+      },
       scores: %Schema{
         type: :array,
         items: %Schema{

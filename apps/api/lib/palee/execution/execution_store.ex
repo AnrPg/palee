@@ -50,6 +50,10 @@ defmodule Palee.Execution.ExecutionStore do
   def last_progress_at(execution_id), do: adapter().last_progress_at(execution_id)
 
   @impl true
+  def record_timer_closed(execution_id, closed),
+    do: adapter().record_timer_closed(execution_id, closed)
+
+  @impl true
   def list_execution_items(user_id, bound, limit, scope),
     do: adapter().list_execution_items(user_id, bound, limit, scope)
 

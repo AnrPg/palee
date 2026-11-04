@@ -54,6 +54,14 @@ defmodule PaleeWeb.Schemas.TrainingFloor do
           nullable: true,
           description: "«Top X%»: share of results at this place or better, rounded up"
         },
+        part_of_time: %Schema{
+          type: :object,
+          nullable: true,
+          description:
+            "ADR-549: the result ran only part of its clock (stopped early or a shorter clock): ran and planned ms",
+          properties: %{ran_ms: %Schema{type: :integer}, planned_ms: %Schema{type: :integer}},
+          required: [:ran_ms, :planned_ms]
+        },
         me: %Schema{type: :boolean}
       },
       required: [:me, :percentile, :rank, :top_percent, :user_id]

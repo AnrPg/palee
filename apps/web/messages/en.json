@@ -4963,7 +4963,17 @@
     "subscriptionEndsTodayBody": "{package} ends today. Renew to keep booking classes.",
     "subscriptionEndedRenewBody": "{package} ended on {date}. Renew to book classes again.",
     "subscriptionEndDayReminder": "Reminder on the day it ends",
-    "subscriptionDayAfterReminder": "Reminder on the day after it ends"
+    "subscriptionDayAfterReminder": "Reminder on the day after it ends",
+    "stoppedEarlyAt": "You stopped at {ran} of {planned}.",
+    "stoppedEarlyQuestionLabel": "Why did the clock stop early?",
+    "stoppedEarlyGaveUp": "I stopped early",
+    "stoppedEarlyChoseShorter": "I wanted a shorter WOD",
+    "historyPartOfTime": "Ran {ran} of {planned}",
+    "kpiRetirement": "Retirement",
+    "kpiRetirementHelp": "Time-set sections (AMRAP, EMOM, intervals) of completed workouts where the athlete stopped before the clock ran out, or the clock ran on long after their last tap (3× their own round time). «I wanted a shorter WOD» counts as a shortened clock, not retirement.",
+    "kpiRetirementOf": "{retired} of {count, plural, one {# time-set section} other {# time-set sections}}",
+    "kpiRetirementStopped": "Stopped before the end",
+    "kpiRetirementIdle": "Went idle"
   },
   "PrSharing": {
     "gymLabel": "Where did you set this PR?",
@@ -15788,7 +15798,8 @@
     "fitnessCoachLimitLooser": "Your own choice is kept and counts again if your coach lifts theirs.",
     "fitnessSave": "Save",
     "fitnessSaved": "Saved",
-    "fitnessKg": "kg"
+    "fitnessKg": "kg",
+    "lbPartOfTime": "Ran {ran} of {planned}"
   },
   "ServiceStatus": {
     "metaTitle": "Palee service status",
@@ -19119,6 +19130,9 @@
         "structured": {
           "what": "Workouts written step by step, started and finished.",
           "change": "Compare with free text workouts to see which kind people finish."
+        },
+        "retirement": {
+          "change": "Many stops in one Flow may mean its clock is too long for your members."
         }
       },
       "finance": {

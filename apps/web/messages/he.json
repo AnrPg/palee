@@ -4963,7 +4963,17 @@
     "subscriptionEndsTodayBody": "{package} מסתיים היום. חדשו אותו כדי להמשיך להזמין שיעורים.",
     "subscriptionEndedRenewBody": "{package} הסתיים ב-{date}. חדשו אותו כדי להזמין שיעורים שוב.",
     "subscriptionEndDayReminder": "תזכורת ביום הסיום",
-    "subscriptionDayAfterReminder": "תזכורת ביום שאחרי הסיום"
+    "subscriptionDayAfterReminder": "תזכורת ביום שאחרי הסיום",
+    "stoppedEarlyAt": "עצרת ב־{ran} מתוך {planned}.",
+    "stoppedEarlyQuestionLabel": "למה השעון נעצר מוקדם?",
+    "stoppedEarlyGaveUp": "עצרתי מוקדם",
+    "stoppedEarlyChoseShorter": "רציתי WOD קצר יותר",
+    "historyPartOfTime": "{ran} מתוך {planned}",
+    "kpiRetirement": "פרישה",
+    "kpiRetirementHelp": "חלקים בזמן קבוע (AMRAP, EMOM, אינטרוולים) באימונים שהושלמו, שבהם המתאמן עצר לפני שהשעון הסתיים, או שהשעון רץ זמן רב אחרי ההקשה האחרונה שלו (פי 3 מזמן הסבב שלו). «רציתי WOD קצר יותר» נספר כזמן מקוצר, לא כפרישה.",
+    "kpiRetirementOf": "{retired} מתוך {count, plural, one {חלק אחד בזמן קבוע} other {# חלקים בזמן קבוע}}",
+    "kpiRetirementStopped": "עצרו לפני הסוף",
+    "kpiRetirementIdle": "נשארו לא פעילים"
   },
   "PrSharing": {
     "gymLabel": "איפה קבעת את השיא הזה?",
@@ -15788,7 +15798,8 @@
     "fitnessCoachLimitLooser": "הבחירה שלך נשמרת וחוזרת לתוקף אם המאמן יבטל את שלו.",
     "fitnessSave": "שמירה",
     "fitnessSaved": "נשמר",
-    "fitnessKg": "ק\"ג"
+    "fitnessKg": "ק\"ג",
+    "lbPartOfTime": "{ran} מתוך {planned}"
   },
   "ServiceStatus": {
     "metaTitle": "מצב השירות של Palee",
@@ -19119,6 +19130,9 @@
         "structured": {
           "what": "אימונים שנכתבו שלב אחר שלב, שהתחילו והסתיימו.",
           "change": "השווה לאימוני טקסט חופשי כדי לראות איזה סוג מסיימים."
+        },
+        "retirement": {
+          "change": "הרבה פרישות בזרימה אחת עשויות להעיד שהשעון שלה ארוך מדי עבור החברים שלך."
         }
       },
       "finance": {

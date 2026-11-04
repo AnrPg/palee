@@ -4963,7 +4963,17 @@
     "subscriptionEndsTodayBody": "ينتهي {package} اليوم. جدّده لتواصل حجز الحصص.",
     "subscriptionEndedRenewBody": "انتهى {package} في {date}. جدّده لتحجز الحصص من جديد.",
     "subscriptionEndDayReminder": "تذكير في يوم الانتهاء",
-    "subscriptionDayAfterReminder": "تذكير في اليوم التالي للانتهاء"
+    "subscriptionDayAfterReminder": "تذكير في اليوم التالي للانتهاء",
+    "stoppedEarlyAt": "توقفت عند {ran} من {planned}.",
+    "stoppedEarlyQuestionLabel": "لماذا توقف المؤقت مبكرًا؟",
+    "stoppedEarlyGaveUp": "توقفت مبكرًا",
+    "stoppedEarlyChoseShorter": "أردت WOD أقصر",
+    "historyPartOfTime": "أنجز {ran} من {planned}",
+    "kpiRetirement": "الانسحاب",
+    "kpiRetirementHelp": "أقسام ذات وقت ثابت (AMRAP وEMOM والفترات) في تمارين مكتملة توقف فيها الرياضي قبل انتهاء المؤقت، أو استمر المؤقت طويلًا بعد آخر نقرة له (3× زمن جولته). «أردت WOD أقصر» يُحسب وقتًا مختصرًا لا انسحابًا.",
+    "kpiRetirementOf": "{retired} من {count, plural, zero {# قسم ذي وقت ثابت} one {قسم واحد ذي وقت ثابت} two {قسمين ذوي وقت ثابت} few {# أقسام ذات وقت ثابت} many {# قسمًا ذا وقت ثابت} other {# قسم ذي وقت ثابت}}",
+    "kpiRetirementStopped": "توقفوا قبل النهاية",
+    "kpiRetirementIdle": "أصبحوا غير نشطين"
   },
   "PrSharing": {
     "gymLabel": "أين حققت هذا الرقم القياسي؟",
@@ -15788,7 +15798,8 @@
     "fitnessCoachLimitLooser": "يُحفظ اختيارك ويعود ساريًا إذا ألغى مدربك اختياره.",
     "fitnessSave": "حفظ",
     "fitnessSaved": "تم الحفظ",
-    "fitnessKg": "كغ"
+    "fitnessKg": "كغ",
+    "lbPartOfTime": "أنجز {ran} من {planned}"
   },
   "ServiceStatus": {
     "metaTitle": "حالة خدمة Palee",
@@ -19119,6 +19130,9 @@
         "structured": {
           "what": "تمارين مكتوبة خطوة بخطوة، بدأت وأُنجزت.",
           "change": "قارن بتمارين النص الحر لترى أي نوع يُنجز."
+        },
+        "retirement": {
+          "change": "كثرة الانسحاب في مسار واحد قد تعني أن مؤقته طويل جدًا على أعضائك."
         }
       },
       "finance": {

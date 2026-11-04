@@ -236,6 +236,23 @@
                       "format": "uuid",
                       "type": "string"
                     },
+                    "part_of_time": {
+                      "description": "ADR-549: the run used only part of a time-set section's clock: ran and planned ms",
+                      "nullable": true,
+                      "properties": {
+                        "planned_ms": {
+                          "type": "integer"
+                        },
+                        "ran_ms": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "ran_ms",
+                        "planned_ms"
+                      ],
+                      "type": "object"
+                    },
                     "scale_level_slug": {
                       "nullable": true,
                       "type": "string"
@@ -112228,6 +112245,23 @@
                     "execution_id": {
                       "type": "string"
                     },
+                    "part_of_time": {
+                      "description": "ADR-549: the run used only part of a time-set section's clock: ran and planned ms",
+                      "nullable": true,
+                      "properties": {
+                        "planned_ms": {
+                          "type": "integer"
+                        },
+                        "ran_ms": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "ran_ms",
+                        "planned_ms"
+                      ],
+                      "type": "object"
+                    },
                     "scale_level_slug": {
                       "nullable": true,
                       "type": "string"
@@ -117683,6 +117717,23 @@
             "description": "False only on your own row before you opt in to leaderboards",
             "type": "boolean"
           },
+          "part_of_time": {
+            "description": "ADR-549: the result ran only part of its clock (stopped early or a shorter clock): ran and planned ms",
+            "nullable": true,
+            "properties": {
+              "planned_ms": {
+                "type": "integer"
+              },
+              "ran_ms": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "ran_ms",
+              "planned_ms"
+            ],
+            "type": "object"
+          },
           "rank": {
             "type": "integer"
           },
@@ -117760,6 +117811,23 @@
                 "opted_in": {
                   "description": "False only on your own row before you opt in to leaderboards",
                   "type": "boolean"
+                },
+                "part_of_time": {
+                  "description": "ADR-549: the result ran only part of its clock (stopped early or a shorter clock): ran and planned ms",
+                  "nullable": true,
+                  "properties": {
+                    "planned_ms": {
+                      "type": "integer"
+                    },
+                    "ran_ms": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "ran_ms",
+                    "planned_ms"
+                  ],
+                  "type": "object"
                 },
                 "rank": {
                   "type": "integer"
@@ -120189,6 +120257,23 @@
                     "nullable": true,
                     "type": "string"
                   },
+                  "part_of_time": {
+                    "description": "ADR-549: the result ran only part of its clock (stopped early or a shorter clock): ran and planned ms",
+                    "nullable": true,
+                    "properties": {
+                      "planned_ms": {
+                        "type": "integer"
+                      },
+                      "ran_ms": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "ran_ms",
+                      "planned_ms"
+                    ],
+                    "type": "object"
+                  },
                   "percentile": {
                     "description": "Share of the other results of the slice this one beat (0-100)",
                     "nullable": true,
@@ -120336,6 +120421,23 @@
                   "nullable": true,
                   "type": "string"
                 },
+                "part_of_time": {
+                  "description": "ADR-549: the result ran only part of its clock (stopped early or a shorter clock): ran and planned ms",
+                  "nullable": true,
+                  "properties": {
+                    "planned_ms": {
+                      "type": "integer"
+                    },
+                    "ran_ms": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "ran_ms",
+                    "planned_ms"
+                  ],
+                  "type": "object"
+                },
                 "percentile": {
                   "description": "Share of the other results of the slice this one beat (0-100)",
                   "nullable": true,
@@ -120435,6 +120537,23 @@
           "nickname": {
             "nullable": true,
             "type": "string"
+          },
+          "part_of_time": {
+            "description": "ADR-549: the result ran only part of its clock (stopped early or a shorter clock): ran and planned ms",
+            "nullable": true,
+            "properties": {
+              "planned_ms": {
+                "type": "integer"
+              },
+              "ran_ms": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "ran_ms",
+              "planned_ms"
+            ],
+            "type": "object"
           },
           "percentile": {
             "description": "Share of the other results of the slice this one beat (0-100)",
@@ -136194,6 +136313,17 @@
                     "maxItems": 2000,
                     "type": "array"
                   },
+                  "retirement_answers": {
+                    "additionalProperties": {
+                      "enum": [
+                        "gave_up",
+                        "chose_shorter"
+                      ],
+                      "type": "string"
+                    },
+                    "description": "ADR-549: per time-set section stopped before its clock ran out, the athlete's own answer: `gave_up` (Σταμάτησα νωρίτερα) or `chose_shorter` (Ήθελα μικρότερο WOD).",
+                    "type": "object"
+                  },
                   "section_elapsed_ms": {
                     "additionalProperties": {
                       "minimum": 0,
@@ -137313,6 +137443,33 @@
                     "format": "date-time",
                     "nullable": true,
                     "type": "string"
+                  },
+                  "round_marks": {
+                    "description": "ADR-549: the device's own times of its round taps (active ms since the start), so rounds saved together keep their own split times.",
+                    "items": {
+                      "properties": {
+                        "elapsed_ms": {
+                          "minimum": 0,
+                          "type": "integer"
+                        },
+                        "round": {
+                          "minimum": 1,
+                          "type": "integer"
+                        },
+                        "segment_key": {
+                          "maxLength": 64,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "segment_key",
+                        "round",
+                        "elapsed_ms"
+                      ],
+                      "type": "object"
+                    },
+                    "maxItems": 500,
+                    "type": "array"
                   },
                   "section_elapsed_ms": {
                     "additionalProperties": {
@@ -169414,6 +169571,23 @@
                               "execution_id": {
                                 "format": "uuid",
                                 "type": "string"
+                              },
+                              "part_of_time": {
+                                "description": "ADR-549: the run used only part of a time-set section's clock: ran and planned ms",
+                                "nullable": true,
+                                "properties": {
+                                  "planned_ms": {
+                                    "type": "integer"
+                                  },
+                                  "ran_ms": {
+                                    "type": "integer"
+                                  }
+                                },
+                                "required": [
+                                  "ran_ms",
+                                  "planned_ms"
+                                ],
+                                "type": "object"
                               },
                               "scale_level_slug": {
                                 "nullable": true,
@@ -300164,6 +300338,23 @@
                               "execution_id": {
                                 "type": "string"
                               },
+                              "part_of_time": {
+                                "description": "ADR-549: the run used only part of a time-set section's clock: ran and planned ms",
+                                "nullable": true,
+                                "properties": {
+                                  "planned_ms": {
+                                    "type": "integer"
+                                  },
+                                  "ran_ms": {
+                                    "type": "integer"
+                                  }
+                                },
+                                "required": [
+                                  "ran_ms",
+                                  "planned_ms"
+                                ],
+                                "type": "object"
+                              },
                               "scale_level_slug": {
                                 "nullable": true,
                                 "type": "string"
@@ -336319,6 +336510,23 @@
                             "description": "False only on your own row before you opt in to leaderboards",
                             "type": "boolean"
                           },
+                          "part_of_time": {
+                            "description": "ADR-549: the result ran only part of its clock (stopped early or a shorter clock): ran and planned ms",
+                            "nullable": true,
+                            "properties": {
+                              "planned_ms": {
+                                "type": "integer"
+                              },
+                              "ran_ms": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "ran_ms",
+                              "planned_ms"
+                            ],
+                            "type": "object"
+                          },
                           "rank": {
                             "type": "integer"
                           },
@@ -342101,6 +342309,23 @@
                               },
                               "execution_id": {
                                 "type": "string"
+                              },
+                              "part_of_time": {
+                                "description": "ADR-549: the run used only part of a time-set section's clock: ran and planned ms",
+                                "nullable": true,
+                                "properties": {
+                                  "planned_ms": {
+                                    "type": "integer"
+                                  },
+                                  "ran_ms": {
+                                    "type": "integer"
+                                  }
+                                },
+                                "required": [
+                                  "ran_ms",
+                                  "planned_ms"
+                                ],
+                                "type": "object"
                               },
                               "scale_level_slug": {
                                 "nullable": true,
@@ -391452,6 +391677,23 @@
                               "nullable": true,
                               "type": "string"
                             },
+                            "part_of_time": {
+                              "description": "ADR-549: the result ran only part of its clock (stopped early or a shorter clock): ran and planned ms",
+                              "nullable": true,
+                              "properties": {
+                                "planned_ms": {
+                                  "type": "integer"
+                                },
+                                "ran_ms": {
+                                  "type": "integer"
+                                }
+                              },
+                              "required": [
+                                "ran_ms",
+                                "planned_ms"
+                              ],
+                              "type": "object"
+                            },
                             "percentile": {
                               "description": "Share of the other results of the slice this one beat (0-100)",
                               "nullable": true,
@@ -391598,6 +391840,23 @@
                           "nickname": {
                             "nullable": true,
                             "type": "string"
+                          },
+                          "part_of_time": {
+                            "description": "ADR-549: the result ran only part of its clock (stopped early or a shorter clock): ran and planned ms",
+                            "nullable": true,
+                            "properties": {
+                              "planned_ms": {
+                                "type": "integer"
+                              },
+                              "ran_ms": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "ran_ms",
+                              "planned_ms"
+                            ],
+                            "type": "object"
                           },
                           "percentile": {
                             "description": "Share of the other results of the slice this one beat (0-100)",

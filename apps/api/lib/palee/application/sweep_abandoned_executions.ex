@@ -12,6 +12,10 @@ defmodule Palee.Application.SweepAbandonedExecutions do
   * Idempotent: the event dedupes on the execution id, and ids that already
     have an event are filtered out before any work is done, so re-running the
     sweep never records a second event for the same execution.
+  * Closed (ADR-549): an execution the athlete closed (`timer_closed`, kept
+    in `kpi_counters.closed`) with no progress since is abandoned
+    `config :palee, :execution_abandonment_after_close_minutes` after the
+    close, before the threshold; its facts say where and when it was closed.
   * Abandon point: the execution's last persisted snapshot gives the segment
     index; the format comes from the workout's timer sequence at that index.
 
@@ -30,17 +34,21 @@ defmodule Palee.Application.SweepAbandonedExecutions do
 
   def call(organization_id, %DateTime{} = now, opts) when is_binary(organization_id) do
     threshold = Keyword.get(opts, :threshold_hours, threshold_hours())
+    close_minutes = Keyword.get(opts, :after_close_minutes, after_close_minutes())
     started_before = DateTime.add(now, -threshold * 3_600, :second)
     started_after = DateTime.add(started_before, -@window_hours * 3_600, :second)
+    # ADR-549: a closed run can be abandoned before the threshold, so the scan
+    # reaches up to now when closes count.
+    scan_before = if close_minutes, do: now, else: started_before
     tenant = %{organization_id: organization_id}
 
     candidates =
       tenant
       |> Execution.with_execution_context(fn ->
-        Execution.list_stale_executions(started_before, started_after, @batch_limit)
+        Execution.list_stale_executions(scan_before, started_after, @batch_limit)
       end)
       |> List.wrap()
-      |> Enum.filter(&Execution.execution_abandoned?(&1, now, threshold))
+      |> Enum.filter(&abandoned?(&1, now, threshold, close_minutes))
 
     recorded = already_recorded(tenant, candidates)
     pending = Enum.reject(candidates, &MapSet.member?(recorded, &1.id))
@@ -60,6 +68,25 @@ defmodule Palee.Application.SweepAbandonedExecutions do
   end
 
   def call(_organization_id, _now, _opts), do: {:error, :organization_context_required}
+
+  defp abandoned?(execution, now, threshold, close_minutes) do
+    Execution.execution_abandoned?(execution, now, threshold) or
+      (is_integer(close_minutes) and closed?(execution) and
+         Execution.execution_closed_abandoned?(
+           execution,
+           last_progress(execution),
+           now,
+           close_minutes
+         ))
+  end
+
+  defp closed?(execution), do: is_map((execution[:kpi_counters] || %{})["closed"])
+
+  defp last_progress(execution) do
+    %{organization_id: execution.organization_id, user_id: execution.user_id}
+    |> Execution.with_execution_context(fn -> Execution.last_progress_at(execution.id) end)
+    |> normalize_datetime()
+  end
 
   defp already_recorded(_tenant, []), do: MapSet.new()
 
@@ -140,6 +167,15 @@ defmodule Palee.Application.SweepAbandonedExecutions do
 
   defp normalize_datetime(%DateTime{} = at), do: at
   defp normalize_datetime(_other), do: nil
+
+  # ADR-549: minutes after a `timer_closed` with no progress since, after
+  # which the run is abandoned; nil (unset) waits for the threshold only.
+  defp after_close_minutes do
+    case Application.get_env(:palee, :execution_abandonment_after_close_minutes) do
+      minutes when is_integer(minutes) and minutes > 0 -> minutes
+      _unset -> nil
+    end
+  end
 
   defp threshold_hours do
     case Application.get_env(:palee, :execution_abandonment_hours) do

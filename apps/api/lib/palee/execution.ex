@@ -110,6 +110,14 @@ defmodule Palee.Execution do
 
   def last_progress_at(execution_id), do: ExecutionStore.last_progress_at(execution_id)
 
+  @doc "ADR-549: records that the athlete left the unfinished execution (`timer_closed`)."
+  def record_timer_closed(execution_id, closed),
+    do: ExecutionStore.record_timer_closed(execution_id, closed)
+
+  defdelegate execution_closed_abandoned?(execution, last_progress_at, now, minutes),
+    to: ExecutionAnalytics,
+    as: :closed_abandoned?
+
   defdelegate completion_analytics_facts(execution, segments),
     to: ExecutionAnalytics,
     as: :completion_facts
@@ -192,9 +200,19 @@ defmodule Palee.Execution do
       scale_level_slug: row.scale_level_slug,
       section_scores: row.section_scores || [],
       completed_at_utc: at,
-      journal_visibility: row.journal_visibility
+      journal_visibility: row.journal_visibility,
+      # ADR-549 (2B): a result that ran only part of its clock says so.
+      part_of_time: Palee.Execution.Domain.Retirement.part_of_time(Map.get(row, :kpi_counters))
     }
   end
+
+  @doc "ADR-549: `%{ran_ms, planned_ms}` when an execution ran only part of a time-set clock."
+  def part_of_time(execution, section_id \\ nil),
+    do:
+      Palee.Execution.Domain.Retirement.part_of_time(
+        Map.get(execution, :kpi_counters),
+        section_id
+      )
 
   defdelegate rank_workout_results(results, section),
     to: Palee.Execution.Domain.ScoreRanking,
@@ -263,7 +281,7 @@ defmodule Palee.Execution do
   defdelegate cast_split_marks(marks, segments), to: SplitMarks, as: :cast
   defdelegate split_section_ordinals(segments), to: SplitMarks, as: :section_ordinals
 
-  defdelegate split_marks_from_progress(previous, updated, segments),
+  defdelegate split_marks_from_progress(previous, updated, segments, device_marks \\ []),
     to: SplitMarks,
     as: :from_progress
 
