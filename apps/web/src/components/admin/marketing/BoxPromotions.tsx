@@ -1,9 +1,5 @@
 "use client";
 
-
-
-
-
 import {useUiTranslations} from "@/i18n/ui";
 import { localizeError } from "@/i18n/presentation";
 import { useState } from "react";
@@ -23,9 +19,6 @@ import { membershipLocationScope, toLocationScope, type LocationScope, type Loca
 import { BranchCoverageBadge } from "@/components/admin/BranchFilter";
 import type { FacilityLocation } from "@/api/facility";
 import { useSelectedMembershipRole } from "@/lib/membership-role";
-import { useTranslations } from "next-intl";
-import { PartnerPerksPanel } from "@/components/admin/finance/perks/PartnerPerksPanel";
-import { SegmentPicker } from "@/components/filters/SegmentPicker";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { guideAnchor } from "@/lib/guides/anchors";
 
@@ -38,45 +31,11 @@ function field(record: FinanceRecord | null | undefined, key: string, fallback =
 const BLANK = { name: "", description: "", starts_on: "", ends_on: "", active: true };
 
 /**
- * Οικονομικά › Προσφορές: «Του box» (the box's own campaigns and codes) and
- * «Συνεργατών» (partner perks, ADR-191), one full-grid segment, `?offers=`.
+ * Μάρκετινγκ › Προσφορές του box: the box's own campaigns and codes (moved
+ * from Οικονομικά › Προσφορές, ANR 2026-11-04). `locationIds`: the page
+ * branch filter (ADR-186 §7); promotions valid there or everywhere show.
  */
-export function PromotionsTab({ locationIds }: { locationIds?: string } = {}) {
-  const t = useTranslations("PerksAdmin");
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const segment = searchParams.get("offers") === "partners" ? "partners" : "box";
-
-  function setSegment(next: "box" | "partners") {
-    const params = new URLSearchParams(searchParams.toString());
-    if (next === "partners") params.set("offers", "partners");
-    else params.delete("offers");
-    params.delete("campaign");
-    params.delete("new");
-    router.replace(`?${params.toString()}`, { scroll: false });
-  }
-
-  return (
-    <div className="space-y-4">
-      <SegmentPicker
-        guide="finance.offers"
-        ariaLabel={t("segment")}
-        stretch
-        className="max-w-md"
-        value={segment}
-        onChange={setSegment}
-        options={[
-          { value: "box", label: t("segmentBox") },
-          { value: "partners", label: t("segmentPartners") },
-        ]}
-      />
-      {segment === "partners" ? <PartnerPerksPanel /> : <BoxPromotions locationIds={locationIds} />}
-    </div>
-  );
-}
-
-/** `locationIds`: the page branch filter (ADR-186 §7); promotions valid there or everywhere show. */
-function BoxPromotions({ locationIds }: { locationIds?: string }) {
+export function BoxPromotions({ locationIds }: { locationIds?: string }) {
   const i18n = useUiTranslations();
   const { tokens } = useSession();
   const token = tokens?.access_token ?? "";
@@ -156,7 +115,7 @@ function BoxPromotions({ locationIds }: { locationIds?: string }) {
           {i18n("activeCampaignCount", {count: activeCampaigns.length})}
         </p>
         <button
-          {...guideAnchor("finance.campaigns.new")}
+          {...guideAnchor("marketing.campaigns.new")}
           className="rounded-full px-4 py-2 text-sm font-semibold"
           style={SPARK_CREATE_STYLE}
           onClick={() => setParam("new", "true")}
@@ -166,7 +125,7 @@ function BoxPromotions({ locationIds }: { locationIds?: string }) {
         </button>
       </div>
 
-      <div {...guideAnchor("finance.campaigns.list")} className="rounded-[2rem] overflow-hidden" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
+      <div {...guideAnchor("marketing.campaigns.list")} className="rounded-[2rem] overflow-hidden" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
         {campaignsQuery.isLoading ? (
           <p className="px-6 py-8 text-sm" style={{ color: "var(--dim)" }}>{i18n("loading33ce417")}</p>
         ) : activeCampaigns.length === 0 ? (
@@ -193,7 +152,7 @@ function BoxPromotions({ locationIds }: { locationIds?: string }) {
 
       {showNew ? (
         <SidePanel
-          guide="finance.campaign.form"
+          guide="marketing.campaign.form"
           title={i18n("newCampaignaaf9a8a")}
           subtitle={i18n("promotions086e09b")}
           onClose={() => setParam("new", null)}

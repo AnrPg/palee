@@ -33,7 +33,7 @@ import { useUiTranslations } from "@/i18n/ui";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 
 /**
- * «Οικονομικά › Συστάσεις», the invites (ADR-156): who brought whom, how far
+ * «Μάρκετινγκ › Συστάσεις», the invites (ADR-156): who brought whom, how far
  * the friend got, and the decisions staff take: approve or reject a reward,
  * hand over one that is given by hand, apply the friend's gift on the first
  * sale, or give the invite to another member (board 11 Q4) with a note.

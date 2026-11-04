@@ -613,7 +613,7 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
           nickname: payload["person_nickname"],
           referrer: payload["referrer_nickname"]
         }),
-      url: payload["url"] || "/admin/finance?tab=referrals"
+      url: payload["url"] || "/admin/marketing/referrals"
     }
   end
 

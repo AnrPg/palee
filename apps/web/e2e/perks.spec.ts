@@ -163,7 +163,7 @@ test.describe("partner perks · console", () => {
     await signIn(page, "admin");
     await stubFinanceConsole(page);
     await page.route("**/api/org/kypseli/admin/perks", (route) => route.fulfill(json({ perks: [staff] })));
-    await page.goto("/admin/finance?tab=promotions&offers=partners");
+    await page.goto("/admin/marketing/perks");
     const row = page.getByTestId("perk-row");
     await expect(row).toContainText("12 claimed");
     await expect(row).toContainText("12/50");
@@ -173,7 +173,7 @@ test.describe("partner perks · console", () => {
     await signIn(page, "admin", "demo");
     await stubFinanceConsole(page);
     await page.route("**/api/org/kypseli/admin/perks", (route) => route.fulfill(json({ perks: [] })));
-    await page.goto("/admin/finance?tab=promotions&offers=partners");
+    await page.goto("/admin/marketing/perks");
     await page.getByTestId("perk-new").click();
     await page.getByTestId("perk-method-code_pool").click();
     await page.getByTestId("perk-codes-input").fill("A1\nA2\nA1");

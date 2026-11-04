@@ -11198,7 +11198,7 @@
       "preview": "Vorschau",
       "cardCta": "Ansehen",
       "code": "Rabattcode",
-      "codeHint": "Ein Code nur für dieses Produkt, unter Finanzen › Angebote.",
+      "codeHint": "Ein Code nur für dieses Produkt, unter Marketing › Aktionen der Box.",
       "codeValue": "Code",
       "percent": "Rabatt (%)",
       "endsOn": "Gültig bis",
@@ -11735,7 +11735,7 @@
       },
       "partners": {
         "title": "Partnervorteile",
-        "body": "Tippe auf „{label}“."
+        "body": "Sie haben ihre eigene Seite im Marketing: Rabatte und Geschenke von Partnergeschäften für deine Kunden."
       },
       "perkNew": {
         "title": "Partnerangebot hinzufügen",
@@ -17588,5 +17588,18 @@
     "errorDimensions": "Das Bild ist zu groß: höchstens {width}×{height} Pixel.",
     "errorSave": "Die Unterschrift wurde nicht gespeichert. Versuche es erneut.",
     "errorRemove": "Die Unterschrift wurde nicht entfernt. Versuche es erneut."
+  },
+  "MarketingHub": {
+    "back": "Marketing",
+    "boxPromotions": "Aktionen der Box",
+    "partnerPerks": "Partnervorteile",
+    "partnerPerksDescription": "Rabatte und Geschenke von Partnergeschäften für deine Kunden.",
+    "challengesStat": "{active, plural, one {# aktiv} other {# aktiv}} · {participants, plural, one {# Teilnehmer} other {# Teilnehmer}}",
+    "promotionsStat": "{active, plural, one {# aktiv} other {# aktiv}}",
+    "perksStat": "{active, plural, one {# aktiv} other {# aktiv}} · {uses, plural, one {# Einlösung} other {# Einlösungen}}",
+    "referralsStat": "{count, plural, one {# Empfehlung zählt} other {# Empfehlungen zählen}} in den letzten 90 Tagen",
+    "inFinance": "In Finanzen",
+    "empty": "Im Marketing gibt es noch nichts, was du öffnen kannst.",
+    "movedLine": "Aktionen sind jetzt im Marketing."
   }
 }

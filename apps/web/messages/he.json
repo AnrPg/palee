@@ -11198,7 +11198,7 @@
       "preview": "תצוגה מקדימה",
       "cardCta": "צפייה",
       "code": "קוד הנחה",
-      "codeHint": "קוד למוצר הזה בלבד, בכספים › מבצעים.",
+      "codeHint": "קוד למוצר הזה בלבד, בשיווק › מבצעי הבוקס.",
       "codeValue": "קוד",
       "percent": "הנחה (%)",
       "endsOn": "בתוקף עד",
@@ -11735,7 +11735,7 @@
       },
       "partners": {
         "title": "הטבות שותפים",
-        "body": "לחצו על «{label}»."
+        "body": "יש להן עמוד משלהן בשיווק: הנחות ומתנות מחנויות שותפות ללקוחות שלכם."
       },
       "perkNew": {
         "title": "הוספת הטבת שותף",
@@ -17588,5 +17588,18 @@
     "errorDimensions": "התמונה גדולה מדי: לכל היותר {width}×{height} פיקסלים.",
     "errorSave": "החתימה לא נשמרה. נסה שוב.",
     "errorRemove": "החתימה לא הוסרה. נסה שוב."
+  },
+  "MarketingHub": {
+    "back": "שיווק",
+    "boxPromotions": "מבצעי הבוקס",
+    "partnerPerks": "הטבות שותפים",
+    "partnerPerksDescription": "הנחות ומתנות מחנויות שותפות ללקוחות שלכם.",
+    "challengesStat": "{active, plural, one {פעיל אחד} two {# פעילים} other {# פעילים}} · {participants, plural, one {משתתף אחד} two {# משתתפים} other {# משתתפים}}",
+    "promotionsStat": "{active, plural, one {פעיל אחד} two {# פעילים} other {# פעילים}}",
+    "perksStat": "{active, plural, one {פעילה אחת} two {# פעילות} other {# פעילות}} · {uses, plural, one {מימוש אחד} two {# מימושים} other {# מימושים}}",
+    "referralsStat": "{count, plural, one {הפניה אחת נספרה} two {# הפניות נספרו} other {# הפניות נספרו}} ב־90 הימים האחרונים",
+    "inFinance": "בכספים",
+    "empty": "עדיין אין בשיווק משהו שאפשר לפתוח.",
+    "movedLine": "המבצעים נמצאים עכשיו בשיווק."
   }
 }

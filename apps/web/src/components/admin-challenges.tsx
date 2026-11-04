@@ -27,6 +27,7 @@ import { SemanticLabel } from "@/components/semantic-label";
 import { addLocalDays, formatLocalDate } from "@/lib/local-date";
 import { HelpTooltip } from "@/components/HelpTooltip";
 import { PageHeader } from "@/components/PageHeader";
+import { MarketingBackLink } from "@/components/admin/marketing/MarketingAreaPage";
 import { Select } from "@/components/ui/Select";
 import { DateInput } from "@/components/ui/DateInput";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
@@ -448,6 +449,8 @@ export function AdminChallenges() {
   return (
     <main className="min-h-screen px-6 py-10 md:px-10 md:py-14" style={{ background: "var(--bg)" }}>
       <div className="mx-auto max-w-7xl space-y-8">
+        {/* Challenges live in Μάρκετινγκ (ANR 2026-11-04). */}
+        <MarketingBackLink />
         <PageHeader
           title={i18n("adminChallenges67e0d16")}
           actions={

@@ -237,7 +237,7 @@ export function ReferralsTab({ locationIds }: { locationIds?: string } = {}) {
         count={programs.length}
         onNew={() => setParam({ new: "program" })}
         newLabel={i18n("newProgram03c5865")}
-        newGuide="finance.referrals.new"
+        newGuide="marketing.referrals.new"
       >
         {programsQuery.isLoading ? (
           <EmptyRow>{i18n("loading33ce417")}</EmptyRow>
@@ -273,7 +273,7 @@ export function ReferralsTab({ locationIds }: { locationIds?: string } = {}) {
         count={events.length}
         onNew={() => setParam({ "new-event": "true" })}
         newLabel={i18n("newEvent7d0b5a7")}
-        guide="finance.referrals"
+        guide="marketing.referrals"
       >
         {eventsQuery.isLoading ? (
           <EmptyRow>{i18n("loading33ce417")}</EmptyRow>

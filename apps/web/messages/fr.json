@@ -11198,7 +11198,7 @@
       "preview": "Aperçu",
       "cardCta": "Voir",
       "code": "Code de réduction",
-      "codeHint": "Un code pour ce produit seulement, dans Finances › Offres.",
+      "codeHint": "Un code pour ce produit seulement, dans Marketing › Promotions de la box.",
       "codeValue": "Code",
       "percent": "Réduction (%)",
       "endsOn": "Valable jusqu'au",
@@ -11735,7 +11735,7 @@
       },
       "partners": {
         "title": "Avantages partenaires",
-        "body": "Touche « {label} »."
+        "body": "Ils ont leur propre page dans Marketing : réductions et cadeaux de commerces partenaires pour tes clients."
       },
       "perkNew": {
         "title": "Ajouter une offre partenaire",
@@ -17588,5 +17588,18 @@
     "errorDimensions": "L’image est trop grande : au plus {width}×{height} pixels.",
     "errorSave": "La signature n’a pas été enregistrée. Réessaie.",
     "errorRemove": "La signature n’a pas été retirée. Réessaie."
+  },
+  "MarketingHub": {
+    "back": "Marketing",
+    "boxPromotions": "Promotions de la box",
+    "partnerPerks": "Avantages partenaires",
+    "partnerPerksDescription": "Réductions et cadeaux de commerces partenaires pour tes clients.",
+    "challengesStat": "{active, plural, one {# actif} other {# actifs}} · {participants, plural, one {# participant} other {# participants}}",
+    "promotionsStat": "{active, plural, one {# active} other {# actives}}",
+    "perksStat": "{active, plural, one {# actif} other {# actifs}} · {uses, plural, one {# utilisation} other {# utilisations}}",
+    "referralsStat": "{count, plural, one {# parrainage compté} other {# parrainages comptés}} sur les 90 derniers jours",
+    "inFinance": "Dans Finances",
+    "empty": "Rien dans Marketing que tu puisses ouvrir pour l'instant.",
+    "movedLine": "Les promotions sont désormais dans Marketing."
   }
 }

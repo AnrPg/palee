@@ -118,7 +118,7 @@ function fallbackUrl(notification: LinkableNotification) {
   if (notification.type === "package_expiring") return "/me/payments";
   // ADR-156: the member's referral notices open their invites, staff's the queue.
   if (notification.type === "referral_progress" || notification.type === "referral_reward") return "/me/referrals?tab=invites";
-  if (notification.type === "referral_review") return "/admin/finance?tab=referrals";
+  if (notification.type === "referral_review") return "/admin/marketing/referrals";
   return null;
 }
 

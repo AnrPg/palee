@@ -11198,7 +11198,7 @@
       "preview": "Vista previa",
       "cardCta": "Ver",
       "code": "Código de descuento",
-      "codeHint": "Un código solo para este producto, en Finanzas › Ofertas.",
+      "codeHint": "Un código solo para este producto, en Marketing › Promociones del box.",
       "codeValue": "Código",
       "percent": "Descuento (%)",
       "endsOn": "Válido hasta",
@@ -11735,7 +11735,7 @@
       },
       "partners": {
         "title": "Ventajas de colaboradores",
-        "body": "Toca «{label}»."
+        "body": "Tienen su propia página en Marketing: descuentos y regalos de tiendas colaboradoras para tus clientes."
       },
       "perkNew": {
         "title": "Añade una ventaja",
@@ -17588,5 +17588,18 @@
     "errorDimensions": "La imagen es demasiado grande: como máximo {width}×{height} píxeles.",
     "errorSave": "La firma no se guardó. Inténtalo de nuevo.",
     "errorRemove": "La firma no se quitó. Inténtalo de nuevo."
+  },
+  "MarketingHub": {
+    "back": "Marketing",
+    "boxPromotions": "Promociones del box",
+    "partnerPerks": "Ventajas de colaboradores",
+    "partnerPerksDescription": "Descuentos y regalos de tiendas colaboradoras para tus clientes.",
+    "challengesStat": "{active, plural, one {# activo} other {# activos}} · {participants, plural, one {# participante} other {# participantes}}",
+    "promotionsStat": "{active, plural, one {# activa} other {# activas}}",
+    "perksStat": "{active, plural, one {# activa} other {# activas}} · {uses, plural, one {# canje} other {# canjes}}",
+    "referralsStat": "{count, plural, one {# recomendación cuenta} other {# recomendaciones cuentan}} en los últimos 90 días",
+    "inFinance": "En Finanzas",
+    "empty": "Todavía no hay nada en Marketing que puedas abrir.",
+    "movedLine": "Las promociones ahora están en Marketing."
   }
 }

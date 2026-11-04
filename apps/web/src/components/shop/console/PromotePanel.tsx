@@ -21,7 +21,7 @@ import { endOfDayIso, priceRange } from "@/lib/shop/console";
 /**
  * «Προώθηση» (proposal §2, no campaign system): a post with the product card
  * attached, in the club's announcements by default, a member group or the
- * Feed, plus an optional product-scoped code in Οικονομικά › Προσφορές. The
+ * Feed, plus an optional product-scoped code in Μάρκετινγκ › Προσφορές του box. The
  * shop shows «Νέο» on its own for 14 days after publishing.
  */
 export function PromotePanel({ product, onClose }: { product: ShopProduct; onClose: () => void }) {
