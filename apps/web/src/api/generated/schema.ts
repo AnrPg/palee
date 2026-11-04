@@ -6328,7 +6328,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Add an allowance from the catalogue to a person's statement (draft periods only) */
+        /**
+         * Add an allowance or one-off overtime from the catalogue to a person's statement (draft periods only)
+         * @description Allowance: `quantity` occurrences (`per_period` is always 1), optional note. Overtime: `minutes` worked at the item's rate or at `unit_cents` an hour, with a required note (the reason).
+         */
         post: operations["PaleeWeb.AdminCoachPayController.add_pay_item_line"];
         delete?: never;
         options?: never;
@@ -80519,10 +80522,14 @@ export interface operations {
                      * @enum {string}
                      */
                     amount_basis?: "gross" | "net";
+                    /** @description One-off overtime only: the minutes worked */
+                    minutes?: number;
                     note?: string | null;
                     /** Format: uuid */
                     pay_item_id: string;
                     quantity?: number;
+                    /** @description One-off overtime only: the rate per hour for this line (default: the item's) */
+                    unit_cents?: number;
                     /** Format: uuid */
                     user_id: string;
                 };

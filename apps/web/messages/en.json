@@ -15883,7 +15883,14 @@
     "myPayEmpty": "No approved pay statement yet.",
     "myPayEyebrow": "{period} · {status}",
     "myPayNote": "An internal pay statement from the box, not payroll. For questions, ask the box.",
-    "earlierPeriods": "Earlier periods"
+    "earlierPeriods": "Earlier periods",
+    "overtimeItem": "Overtime",
+    "pickOvertime": "Pick overtime",
+    "hours": "Hours",
+    "hoursHint": "e.g. 2.5 or 2:30",
+    "lineTotal": "Total",
+    "errorOvertimeItem": "Pick overtime.",
+    "errorHours": "Enter hours, e.g. 2.5 or 2:30 (up to one week)."
   },
   "Leads": {
     "withCount": "{label} ({count})",

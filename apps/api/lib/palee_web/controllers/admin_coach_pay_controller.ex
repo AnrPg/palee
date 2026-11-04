@@ -182,7 +182,13 @@ defmodule PaleeWeb.AdminCoachPayController do
   end
 
   operation(:add_pay_item_line,
-    summary: "Add an allowance from the catalogue to a person's statement (draft periods only)",
+    summary:
+      "Add an allowance or one-off overtime from the catalogue to a person's statement " <>
+        "(draft periods only)",
+    description:
+      "Allowance: `quantity` occurrences (`per_period` is always 1), optional note. " <>
+        "Overtime: `minutes` worked at the item's rate or at `unit_cents` an hour, with a " <>
+        "required note (the reason).",
     parameters: [@id],
     request_body: S.body(S.pay_item_line_body()),
     responses: [ok: {"Period", "application/json", S.one(:period, S.period())}]

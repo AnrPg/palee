@@ -15883,7 +15883,14 @@
     "myPayEmpty": "Ancora nessun prospetto approvato.",
     "myPayEyebrow": "{period} · {status}",
     "myPayNote": "Un prospetto interno del box, non una busta paga. Per domande, chiedi al box.",
-    "earlierPeriods": "Periodi precedenti"
+    "earlierPeriods": "Periodi precedenti",
+    "overtimeItem": "Straordinari",
+    "pickOvertime": "Scegli gli straordinari",
+    "hours": "Ore",
+    "hoursHint": "es. 2,5 o 2:30",
+    "lineTotal": "Totale",
+    "errorOvertimeItem": "Scegli gli straordinari.",
+    "errorHours": "Inserisci le ore, es. 2,5 o 2:30 (fino a una settimana)."
   },
   "Leads": {
     "withCount": "{label} ({count})",

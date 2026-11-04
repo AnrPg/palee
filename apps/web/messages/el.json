@@ -15883,7 +15883,14 @@
     "myPayEmpty": "Δεν υπάρχει ακόμα εγκεκριμένη κατάσταση αμοιβής.",
     "myPayEyebrow": "{period} · {status}",
     "myPayNote": "Εσωτερική κατάσταση αμοιβής του box, όχι μισθοδοσία. Για απορίες, ρώτησε το box.",
-    "earlierPeriods": "Προηγούμενες περίοδοι"
+    "earlierPeriods": "Προηγούμενες περίοδοι",
+    "overtimeItem": "Υπερωρία",
+    "pickOvertime": "Διάλεξε υπερωρία",
+    "hours": "Ώρες",
+    "hoursHint": "π.χ. 2,5 ή 2:30",
+    "lineTotal": "Σύνολο",
+    "errorOvertimeItem": "Διάλεξε υπερωρία.",
+    "errorHours": "Γράψε ώρες, π.χ. 2,5 ή 2:30 (έως μία εβδομάδα)."
   },
   "Leads": {
     "withCount": "{label} ({count})",

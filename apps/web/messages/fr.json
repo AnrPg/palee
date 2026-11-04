@@ -15883,7 +15883,14 @@
     "myPayEmpty": "Pas encore de relevé approuvé.",
     "myPayEyebrow": "{period} · {status}",
     "myPayNote": "Un relevé interne de la box, pas une fiche de paie. Pour toute question, adressez-vous à la box.",
-    "earlierPeriods": "Périodes précédentes"
+    "earlierPeriods": "Périodes précédentes",
+    "overtimeItem": "Heures sup.",
+    "pickOvertime": "Choisir les heures sup.",
+    "hours": "Heures",
+    "hoursHint": "ex. 2,5 ou 2:30",
+    "lineTotal": "Total",
+    "errorOvertimeItem": "Choisis les heures sup.",
+    "errorHours": "Saisis des heures, ex. 2,5 ou 2:30 (une semaine au plus)."
   },
   "Leads": {
     "withCount": "{label} ({count})",

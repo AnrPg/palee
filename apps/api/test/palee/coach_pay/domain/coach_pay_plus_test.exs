@@ -397,7 +397,7 @@ defmodule Palee.CoachPay.Domain.CoachPayPlusTest do
   end
 
   describe "lines by hand" do
-    test "an allowance from the catalogue: occurrences, its basis, overtime refused" do
+    test "an allowance from the catalogue: occurrences, its basis" do
       allowance =
         item(%{
           "kind" => "allowance",
@@ -424,13 +424,67 @@ defmodule Palee.CoachPay.Domain.CoachPayPlusTest do
                  @coach
                )
 
-      assert {:error, {:invalid_fields, %{"pay_item_id" => "counted_from_classes"}}} =
-               PayItemPolicy.manual_line(item(%{}), %{}, ~D[2027-01-31], @coach)
+      assert {:error, {:invalid_fields, %{"minutes" => "invalid"}}} =
+               PayItemPolicy.manual_line(allowance, %{"minutes" => 60}, ~D[2027-01-31], @coach)
 
       assert {:error, :coach_pay_item_archived} =
                PayItemPolicy.manual_line(
                  %{allowance | archived_at: DateTime.utc_now()},
                  %{},
+                 ~D[2027-01-31],
+                 @coach
+               )
+    end
+
+    test "one-off overtime: minutes at the item's rate or a typed one, reason required" do
+      overtime = item(%{})
+
+      assert {:ok,
+              %{
+                kind: "overtime",
+                source_type: "manual",
+                pay_item_id: _,
+                quantity: 150,
+                quantity_divisor: 60,
+                unit_cents: unit,
+                amount_cents: amount,
+                note: "Αγώνας του box"
+              }} =
+               PayItemPolicy.manual_line(
+                 overtime,
+                 %{"minutes" => 150, "note" => "Αγώνας του box"},
+                 ~D[2027-01-31],
+                 @coach
+               )
+
+      assert unit == overtime.amount_cents
+      assert amount == div(overtime.amount_cents * 150, 60)
+
+      assert {:ok, %{unit_cents: 1_500, amount_cents: 3_000}} =
+               PayItemPolicy.manual_line(
+                 overtime,
+                 %{"minutes" => 120, "unit_cents" => 1_500, "note" => "Βάρδια ρεσεψιόν"},
+                 ~D[2027-01-31],
+                 @coach
+               )
+
+      assert {:error, {:invalid_fields, %{"note" => "required"}}} =
+               PayItemPolicy.manual_line(overtime, %{"minutes" => 60}, ~D[2027-01-31], @coach)
+
+      for minutes <- [nil, 0, -5, 10_081, 1.5] do
+        assert {:error, {:invalid_fields, %{"minutes" => "invalid"}}} =
+                 PayItemPolicy.manual_line(
+                   overtime,
+                   %{"minutes" => minutes, "note" => "x"},
+                   ~D[2027-01-31],
+                   @coach
+                 )
+      end
+
+      assert {:error, {:invalid_fields, %{"unit_cents" => "invalid"}}} =
+               PayItemPolicy.manual_line(
+                 overtime,
+                 %{"minutes" => 60, "unit_cents" => 0, "note" => "x"},
                  ~D[2027-01-31],
                  @coach
                )

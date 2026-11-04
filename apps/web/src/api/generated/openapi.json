@@ -183530,6 +183530,7 @@
     "/api/org/{organization_slug}/admin/coach-pay/periods/{id}/pay-items": {
       "post": {
         "callbacks": {},
+        "description": "Allowance: `quantity` occurrences (`per_period` is always 1), optional note. Overtime: `minutes` worked at the item's rate or at `unit_cents` an hour, with a required note (the reason).",
         "operationId": "PaleeWeb.AdminCoachPayController.add_pay_item_line",
         "parameters": [
           {
@@ -183556,6 +183557,12 @@
                     ],
                     "type": "string"
                   },
+                  "minutes": {
+                    "description": "One-off overtime only: the minutes worked",
+                    "maximum": 10080,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
                   "note": {
                     "maxLength": 500,
                     "nullable": true,
@@ -183567,6 +183574,12 @@
                   },
                   "quantity": {
                     "maximum": 1000,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  "unit_cents": {
+                    "description": "One-off overtime only: the rate per hour for this line (default: the item's)",
+                    "maximum": 10000000,
                     "minimum": 1,
                     "type": "integer"
                   },
@@ -183929,7 +183942,7 @@
             "bearerAuth": []
           }
         ],
-        "summary": "Add an allowance from the catalogue to a person's statement (draft periods only)",
+        "summary": "Add an allowance or one-off overtime from the catalogue to a person's statement (draft periods only)",
         "tags": [
           "Coach pay"
         ]

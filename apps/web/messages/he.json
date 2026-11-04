@@ -15883,7 +15883,14 @@
     "myPayEmpty": "אין עדיין דוח שכר מאושר.",
     "myPayEyebrow": "{period} · {status}",
     "myPayNote": "דוח שכר פנימי של המקום, לא תלוש רשמי. לשאלות פנה למקום.",
-    "earlierPeriods": "תקופות קודמות"
+    "earlierPeriods": "תקופות קודמות",
+    "overtimeItem": "שעות נוספות",
+    "pickOvertime": "בחר שעות נוספות",
+    "hours": "שעות",
+    "hoursHint": "למשל 2.5 או 2:30",
+    "lineTotal": "סה״כ",
+    "errorOvertimeItem": "בחר שעות נוספות.",
+    "errorHours": "הזן שעות, למשל 2.5 או 2:30 (עד שבוע)."
   },
   "Leads": {
     "withCount": "{label} ({count})",

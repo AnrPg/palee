@@ -15883,7 +15883,14 @@
     "myPayEmpty": "Все още няма одобрена справка.",
     "myPayEyebrow": "{period} · {status}",
     "myPayNote": "Вътрешна справка на бокса, не ведомост. За въпроси се обърнете към бокса.",
-    "earlierPeriods": "Предишни периоди"
+    "earlierPeriods": "Предишни периоди",
+    "overtimeItem": "Извънреден труд",
+    "pickOvertime": "Избери извънреден труд",
+    "hours": "Часове",
+    "hoursHint": "напр. 2,5 или 2:30",
+    "lineTotal": "Общо",
+    "errorOvertimeItem": "Избери извънреден труд.",
+    "errorHours": "Въведи часове, напр. 2,5 или 2:30 (до една седмица)."
   },
   "Leads": {
     "withCount": "{label} ({count})",

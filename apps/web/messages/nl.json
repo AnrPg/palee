@@ -15883,7 +15883,14 @@
     "myPayEmpty": "Nog geen goedgekeurd overzicht.",
     "myPayEyebrow": "{period} · {status}",
     "myPayNote": "Een intern overzicht van de box, geen loonstrook. Vragen? Vraag het de box.",
-    "earlierPeriods": "Eerdere periodes"
+    "earlierPeriods": "Eerdere periodes",
+    "overtimeItem": "Overuren",
+    "pickOvertime": "Kies overuren",
+    "hours": "Uren",
+    "hoursHint": "bijv. 2,5 of 2:30",
+    "lineTotal": "Totaal",
+    "errorOvertimeItem": "Kies overuren.",
+    "errorHours": "Vul uren in, bijv. 2,5 of 2:30 (tot een week)."
   },
   "Leads": {
     "withCount": "{label} ({count})",

@@ -16,8 +16,12 @@ import {
   itemErrors,
   lineErrors,
   nextPeriodRange,
+  overtimeItems,
+  overtimeLineBody,
+  overtimeTotal,
   parseBps,
   parseCents,
+  parseHours,
   payFileName,
   payPeople,
   payslipLanguage,
@@ -169,6 +173,33 @@ describe("lines added by hand", () => {
     expect(lineErrors({ ...draft, amount: "20" }, null)).toEqual({ note: "errorNoteRequired" });
     expect(lineErrors({ ...draft, kind: "allowance" }, null)).toEqual({ itemId: "errorItem" });
     expect(lineErrors({ ...draft, kind: "allowance", quantity: "0" }, item({ unit: "per_occurrence" }))).toEqual({ quantity: "errorWholeNumber" });
+  });
+
+  it("checks one-off overtime: an overtime item, hours, an optional rate and a reason", () => {
+    const draft = { ...emptyLineDraft(), kind: "overtime" as const };
+    const overtime = item({ id: "o1", kind: "overtime", unit: "per_hour", amount_cents: 1200 });
+    expect(lineErrors(draft, null)).toEqual({ itemId: "errorOvertimeItem", hours: "errorHours", note: "errorNoteRequired" });
+    expect(lineErrors({ ...draft, hours: "2,5", note: "Αγώνας" }, overtime)).toEqual({});
+    expect(lineErrors({ ...draft, hours: "2,5", rate: "0", note: "Αγώνας" }, overtime)).toEqual({ rate: "errorAmount" });
+  });
+
+  it("reads hours as decimals or h:mm, up to a week", () => {
+    expect(parseHours("2")).toBe(120);
+    expect(parseHours("2,5")).toBe(150);
+    expect(parseHours("2.25")).toBe(135);
+    expect(parseHours("2:30")).toBe(150);
+    expect(parseHours("168")).toBe(10080);
+    for (const bad of ["", "0", "0:00", "169", "2:75", "abc", "-1"]) expect(parseHours(bad)).toBeNull();
+  });
+
+  it("pays one-off overtime at the item's rate unless another is typed", () => {
+    const overtime = item({ id: "o1", kind: "overtime", unit: "per_hour", amount_cents: 1200 });
+    const draft = { ...emptyLineDraft(), kind: "overtime" as const, itemId: "o1", hours: "2:30", note: " Αγώνας " };
+    expect(overtimeTotal(draft, overtime)).toBe(3000);
+    expect(overtimeLineBody(draft, "u1", overtime)).toEqual({ user_id: "u1", pay_item_id: "o1", minutes: 150, note: "Αγώνας", amount_basis: "gross" });
+    expect(overtimeLineBody({ ...draft, rate: "15" }, "u1", overtime)).toMatchObject({ minutes: 150, unit_cents: 1500 });
+    expect(overtimeTotal({ ...draft, rate: "15" }, overtime)).toBe(3750);
+    expect(overtimeItems([overtime, item(), item({ id: "o2", kind: "overtime", archived_at: "2026-10-01T00:00:00Z" })])).toEqual([overtime]);
   });
 
   it("sends a correction with its sign, note and basis", () => {

@@ -5,6 +5,7 @@ import type {
   PayGroup,
   PayItem,
   PayItemBody,
+  PayItemLineBody,
   PayLine,
   PayPeriodStatus,
   PayPeriodSummary,
@@ -281,11 +282,54 @@ export function defaultBasis(kind: AdjustmentKind): AmountBasis {
   return kind === "non_taxable_reimbursement" ? "net" : "gross";
 }
 
-export type LineDraft = { kind: AdjustmentKind | "allowance"; amount: string; note: string; basis: AmountBasis; itemId: string; quantity: string };
-export type LineField = "amount" | "note" | "itemId" | "quantity";
+/**
+ * A line added by hand: an adjustment kind, an allowance from the catalogue,
+ * or one-off overtime (hours × a rate per hour, from an overtime item;
+ * ANR 2026-11-04). `hours` and `rate` are overtime only; an empty `rate`
+ * means the item's own.
+ */
+export type LineDraft = {
+  kind: AdjustmentKind | "allowance" | "overtime";
+  amount: string;
+  note: string;
+  basis: AmountBasis;
+  itemId: string;
+  quantity: string;
+  hours: string;
+  rate: string;
+};
+export type LineField = "amount" | "note" | "itemId" | "quantity" | "hours" | "rate";
 
 export function emptyLineDraft(): LineDraft {
-  return { kind: "adjustment", amount: "", note: "", basis: "gross", itemId: "", quantity: "1" };
+  return { kind: "adjustment", amount: "", note: "", basis: "gross", itemId: "", quantity: "1", hours: "", rate: "" };
+}
+
+/** At most a week of overtime on one line, as the API allows. */
+const MAX_OVERTIME_MINUTES = 7 * 24 * 60;
+
+/** «2», «2,5» or «2:30» hours → minutes; anything else, zero or over a week → null. */
+export function parseHours(text: string): number | null {
+  const clean = text.trim().replace(",", ".");
+  let minutes: number;
+  const clock = /^(\d{1,3}):([0-5]\d)$/.exec(clean);
+  if (clock) minutes = Number(clock[1]) * 60 + Number(clock[2]);
+  else if (/^\d{1,3}(\.\d{1,2})?$/.test(clean)) minutes = Math.round(Number(clean) * 60);
+  else return null;
+  return minutes > 0 && minutes <= MAX_OVERTIME_MINUTES ? minutes : null;
+}
+
+/** The rate one-off overtime is paid at: the typed one, or the item's. */
+export function overtimeRate(draft: LineDraft, item: PayItem | null): number | null {
+  if (draft.rate.trim() === "") return item?.amount_cents ?? null;
+  const cents = parseCents(draft.rate);
+  return cents !== null && cents > 0 ? cents : null;
+}
+
+/** One-off overtime's total in cents (rounded down, like the API), or null while a field is not valid. */
+export function overtimeTotal(draft: LineDraft, item: PayItem | null): number | null {
+  const minutes = parseHours(draft.hours);
+  const rate = overtimeRate(draft, item);
+  return minutes === null || rate === null ? null : Math.floor((rate * minutes) / 60);
 }
 
 /** A correction may be negative; an ad hoc payment and «Μη φορολογητέο» are positive. Every kind needs a note, except an allowance. */
@@ -296,11 +340,31 @@ export function lineErrors(draft: LineDraft, item: PayItem | null): Partial<Reco
     if (item?.unit === "per_occurrence" && !/^[1-9]\d{0,2}$/.test(draft.quantity.trim())) errors.quantity = "errorWholeNumber";
     return errors;
   }
+  if (draft.kind === "overtime") {
+    if (!item) errors.itemId = "errorOvertimeItem";
+    if (parseHours(draft.hours) === null) errors.hours = "errorHours";
+    if (draft.rate.trim() !== "" && overtimeRate(draft, item) === null) errors.rate = "errorAmount";
+    if (draft.note.trim() === "") errors.note = "errorNoteRequired";
+    return errors;
+  }
   const cents = parseCents(draft.amount, true);
   if (cents === null || cents === 0) errors.amount = "errorAmount";
   else if (draft.kind !== "adjustment" && cents < 0) errors.amount = "errorPositive";
   if (draft.note.trim() === "") errors.note = "errorNoteRequired";
   return errors;
+}
+
+/** One-off overtime for `POST …/pay-items`; the rate goes only when it differs from the item's. */
+export function overtimeLineBody(draft: LineDraft, userId: string, item: PayItem): PayItemLineBody {
+  const rate = overtimeRate(draft, item);
+  return {
+    user_id: userId,
+    pay_item_id: item.id,
+    minutes: parseHours(draft.hours) ?? 0,
+    ...(rate !== null && rate !== item.amount_cents ? { unit_cents: rate } : {}),
+    note: draft.note.trim(),
+    amount_basis: draft.basis,
+  };
 }
 
 export function adjustmentBody(draft: LineDraft, userId: string): AdjustmentBody {
@@ -370,6 +434,11 @@ export function itemBody(draft: ItemDraft): PayItemBody {
 /** The allowances a person can be given: active ones (overtime is calculated, never added by hand). */
 export function addableItems(items: PayItem[]): PayItem[] {
   return items.filter((item) => item.kind === "allowance" && !item.archived_at);
+}
+
+/** The overtime items one-off overtime can be paid by (their rate is the default). */
+export function overtimeItems(items: PayItem[]): PayItem[] {
+  return items.filter((item) => item.kind === "overtime" && !item.archived_at);
 }
 
 // ── Files and dates ─────────────────────────────────────────────────────────

@@ -15883,7 +15883,14 @@
     "myPayEmpty": "Aún no hay un estado de pago aprobado.",
     "myPayEyebrow": "{period} · {status}",
     "myPayNote": "Un estado de pago interno del box, no una nómina. Si tienes dudas, pregunta al box.",
-    "earlierPeriods": "Periodos anteriores"
+    "earlierPeriods": "Periodos anteriores",
+    "overtimeItem": "Horas extra",
+    "pickOvertime": "Elige horas extra",
+    "hours": "Horas",
+    "hoursHint": "p. ej. 2,5 o 2:30",
+    "lineTotal": "Total",
+    "errorOvertimeItem": "Elige horas extra.",
+    "errorHours": "Escribe horas, p. ej. 2,5 o 2:30 (hasta una semana)."
   },
   "Leads": {
     "withCount": "{label} ({count})",

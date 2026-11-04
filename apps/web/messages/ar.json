@@ -15883,7 +15883,14 @@
     "myPayEmpty": "لا يوجد كشف أجر معتمد بعد.",
     "myPayEyebrow": "{period} · {status}",
     "myPayNote": "كشف أجر داخلي من المكان، وليس كشف رواتب. للاستفسار، اسأل المكان.",
-    "earlierPeriods": "الفترات السابقة"
+    "earlierPeriods": "الفترات السابقة",
+    "overtimeItem": "العمل الإضافي",
+    "pickOvertime": "اختر العمل الإضافي",
+    "hours": "الساعات",
+    "hoursHint": "مثلًا 2.5 أو 2:30",
+    "lineTotal": "المجموع",
+    "errorOvertimeItem": "اختر العمل الإضافي.",
+    "errorHours": "أدخل الساعات، مثلًا 2.5 أو 2:30 (حتى أسبوع واحد)."
   },
   "Leads": {
     "withCount": "{label} ({count})",

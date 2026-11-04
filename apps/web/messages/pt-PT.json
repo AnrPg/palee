@@ -15883,7 +15883,14 @@
     "myPayEmpty": "Ainda sem extrato aprovado.",
     "myPayEyebrow": "{period} · {status}",
     "myPayNote": "Um extrato interno da box, não processamento salarial. Para dúvidas, pergunta à box.",
-    "earlierPeriods": "Períodos anteriores"
+    "earlierPeriods": "Períodos anteriores",
+    "overtimeItem": "Horas extra",
+    "pickOvertime": "Escolhe as horas extra",
+    "hours": "Horas",
+    "hoursHint": "p. ex. 2,5 ou 2:30",
+    "lineTotal": "Total",
+    "errorOvertimeItem": "Escolhe as horas extra.",
+    "errorHours": "Escreve as horas, p. ex. 2,5 ou 2:30 (até uma semana)."
   },
   "Leads": {
     "withCount": "{label} ({count})",

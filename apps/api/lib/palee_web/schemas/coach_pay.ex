@@ -304,6 +304,19 @@ defmodule PaleeWeb.Schemas.CoachPay do
         pay_item_id: @uuid,
         user_id: @uuid,
         quantity: %Schema{type: :integer, minimum: 1, maximum: 1_000},
+        minutes: %Schema{
+          type: :integer,
+          minimum: 1,
+          maximum: 10_080,
+          description: "One-off overtime only: the minutes worked"
+        },
+        unit_cents: %Schema{
+          type: :integer,
+          minimum: 1,
+          maximum: 10_000_000,
+          description:
+            "One-off overtime only: the rate per hour for this line (default: the item's)"
+        },
         note: %Schema{type: :string, maxLength: 500, nullable: true},
         amount_basis: @basis
       }

@@ -15883,7 +15883,14 @@
     "myPayEmpty": "Noch keine genehmigte Vergütungsaufstellung.",
     "myPayEyebrow": "{period} · {status}",
     "myPayNote": "Eine interne Vergütungsaufstellung der Box, keine Lohnabrechnung. Bei Fragen wende dich an die Box.",
-    "earlierPeriods": "Frühere Zeiträume"
+    "earlierPeriods": "Frühere Zeiträume",
+    "overtimeItem": "Überstunden",
+    "pickOvertime": "Überstunden wählen",
+    "hours": "Stunden",
+    "hoursHint": "z. B. 2,5 oder 2:30",
+    "lineTotal": "Summe",
+    "errorOvertimeItem": "Wähle Überstunden.",
+    "errorHours": "Gib Stunden ein, z. B. 2,5 oder 2:30 (bis zu einer Woche)."
   },
   "Leads": {
     "withCount": "{label} ({count})",

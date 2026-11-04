@@ -164,6 +164,39 @@ defmodule Palee.CoachPay.CoachPayPlusRLSTest do
     assert %{gross_cents: 15_000, net_cents: 4_000, net_line_count: 1} = coach_statement
     assert %{gross_cents: 15_000, net_cents: 5_500} = period
 
+    # One-off overtime (ANR 2026-11-04): 1,5 h outside classes at the item's
+    # rate, with its reason; it joins the computed overtime's group and
+    # survives recalculation.
+    assert {:error, {:invalid_fields, %{"note" => "required"}}} =
+             CoachPayService.add_pay_item_line(ctx, period.id, %{
+               "pay_item_id" => overtime.id,
+               "user_id" => coach.id,
+               "minutes" => 90
+             })
+
+    {:ok, _period} =
+      CoachPayService.add_pay_item_line(ctx, period.id, %{
+        "pay_item_id" => overtime.id,
+        "user_id" => coach.id,
+        "minutes" => 90,
+        "note" => "Αγώνας του box"
+      })
+
+    {:ok, period} = CoachPayService.calculate(ctx, period.id)
+    coach_statement = Enum.find(period.statements, &(&1.coach_user_id == coach.id))
+    assert %{gross_cents: 18_000} = coach_statement
+
+    assert %{quantity: 180, unit_cents: 2_000} =
+             Enum.find(coach_statement.groups, &(&1.kind == "overtime"))
+
+    assert [%{note: "Αγώνας του box", created_by_id: owner_id}] =
+             Enum.filter(
+               coach_statement.lines,
+               &(&1.kind == "overtime" and &1.source_type == "manual")
+             )
+
+    assert owner_id == owner.id
+
     # The neighbour cannot reach the period or its lines.
     assert {:error, :not_found} = CoachPay.get_period(other_ctx, period.id)
 
@@ -178,7 +211,7 @@ defmodule Palee.CoachPay.CoachPayPlusRLSTest do
     assert {:ok, %{periods: [%{statements: [_one, _two]}]}} = CoachPayService.summary(ctx, %{})
     assert {:ok, %{periods: []}} = CoachPayService.summary(other_ctx, %{})
 
-    assert %{totals: [%{currency: "EUR", gross_cents: 15_000, net_cents: 4_000}]} =
+    assert %{totals: [%{currency: "EUR", gross_cents: 18_000, net_cents: 4_000}]} =
              CoachPayService.person_statements(ctx, coach.id)
   end
 

@@ -117,7 +117,20 @@ const period = (status: string, statements: unknown[] = [STATEMENT]) => ({
   statements,
 });
 
-async function stubAccountant(page: Page, writes: Write[]) {
+const OVERTIME_ITEM = {
+  id: "item-ot",
+  kind: "overtime",
+  name: "Υπερωρία τμημάτων",
+  amount_cents: 1200,
+  unit: "per_hour",
+  roles: ["coach"],
+  weekly_threshold: 30,
+  currency: "EUR",
+  amount_basis: "gross",
+  archived_at: null,
+};
+
+async function stubAccountant(page: Page, writes: Write[], items: unknown[] = []) {
   let current = period("draft");
   await page.context().addCookies([{ name: "palee_locale", value: "el", url: "http://127.0.0.1" }]);
   await page.route("**/api/**", async (route) => {
@@ -135,7 +148,8 @@ async function stubAccountant(page: Page, writes: Write[]) {
     if (path.startsWith("/api/admin/finance/members")) return json(route, { members: [], meta: {} });
     if (path === "/api/admin/coach-pay/rules" && method === "POST") return json(route, { rule: { ...RULE, id: "rule-2", coach_user_id: "anna", ...(body as object) } }, 201);
     if (path === "/api/admin/coach-pay/rules") return json(route, { rules: [RULE] });
-    if (path === "/api/admin/coach-pay/items") return json(route, { items: [] });
+    if (path === "/api/admin/coach-pay/items") return json(route, { items });
+    if (path === "/api/admin/coach-pay/periods/per-10/pay-items") return json(route, { period: current });
     if (path === "/api/admin/coach-pay/periods") return json(route, { periods: [current] });
     if (path === "/api/admin/coach-pay/periods/per-10/approve") {
       current = period("approved");
@@ -208,6 +222,33 @@ test("a period has one primary button per status and statements open into lines"
   await detail.getByTestId("pay-export").click();
   expect((await download).suggestedFilename()).toBe("coach-pay-2026-10-01-2026-10-31.csv");
   expect(writes.map((write) => write.path)).toContain("/api/admin/coach-pay/periods/per-10/approve");
+});
+
+test("one-off overtime: hours × the overtime rate, with a reason", async ({ page }) => {
+  // ANR 2026-11-04: overtime outside classes is added by hand to one person's period.
+  await page.setViewportSize({ width: 1280, height: 800 });
+  const writes: Write[] = [];
+  await stubAccountant(page, writes, [OVERTIME_ITEM]);
+  await page.goto("/admin/finance?tab=pay");
+  await page.getByTestId("coach-pay-tab").locator('[data-segment="periods"]').click();
+  await page.getByTestId("pay-period-row").first().click();
+  const detail = page.getByTestId("pay-period");
+  await detail.getByTestId("pay-statement-toggle").click();
+  await detail.getByTestId("pay-add-line").click();
+
+  const dialog = page.getByTestId("pay-line-dialog");
+  await dialog.getByTestId("pay-line-kind").getByRole("radio", { name: "Υπερωρία" }).click();
+  await expect(dialog.getByTestId("pay-line-rate")).toHaveAttribute("placeholder", "12.00");
+  await page.getByTestId("pay-line-save").click();
+  await expect(dialog.getByTestId("pay-line-hours")).toHaveAttribute("aria-invalid", "true");
+
+  await dialog.getByTestId("pay-line-hours").fill("2:30");
+  await expect(dialog.getByTestId("pay-line-total")).toContainText("30,00");
+  await dialog.getByLabel("Αιτιολογία (υποχρεωτική)").fill("Αγώνας του box");
+  await page.getByTestId("pay-line-save").click();
+  await expect
+    .poll(() => writes.find((write) => write.path === "/api/admin/coach-pay/periods/per-10/pay-items")?.body)
+    .toEqual({ user_id: "nikos", pay_item_id: "item-ot", minutes: 150, note: "Αγώνας του box", amount_basis: "gross" });
 });
 
 test("the coach sees «Οι αμοιβές μου»: the last period with its lines, then earlier ones", async ({ page }) => {

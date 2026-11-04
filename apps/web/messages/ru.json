@@ -15883,7 +15883,14 @@
     "myPayEmpty": "Утверждённых расчётов пока нет.",
     "myPayEyebrow": "{period} · {status}",
     "myPayNote": "Внутренний расчёт бокса, не зарплатная ведомость. С вопросами — к боксу.",
-    "earlierPeriods": "Прошлые периоды"
+    "earlierPeriods": "Прошлые периоды",
+    "overtimeItem": "Сверхурочные",
+    "pickOvertime": "Выбери сверхурочные",
+    "hours": "Часы",
+    "hoursHint": "напр. 2,5 или 2:30",
+    "lineTotal": "Итого",
+    "errorOvertimeItem": "Выбери сверхурочные.",
+    "errorHours": "Укажи часы, напр. 2,5 или 2:30 (не больше недели)."
   },
   "Leads": {
     "withCount": "{label} ({count})",
