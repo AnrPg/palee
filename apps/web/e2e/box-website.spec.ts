@@ -567,6 +567,7 @@ async function asTranslatingOwner(page: Page, writes: Write[]) {
   const items = translationItems();
   await asOwner(page, writes, (path, method, body, route) => {
     if (path === "/api/admin/site" && method === "GET") return json(route, { settings: siteSettings, domains: [], languages: siteLanguages });
+    if (path === "/api/admin/site" && method === "PUT") return json(route, { settings: { ...siteSettings, ...(body as object), lock_version: 4 }, languages: siteLanguages });
     if (path === "/api/admin/site/translations" && method === "GET") return json(route, translationsPage(items));
     if (path === "/api/admin/site/translations" && method === "PUT") {
       for (const edit of (body as { entries: { kind: string; id: string; field: string; text: string }[] }).entries) {

@@ -25,9 +25,14 @@ export function matchesFilter(item: Pick<SiteTranslationItem, "status">, filter:
   return item.status === filter;
 }
 
-/** The items of a filter, grouped in the website's order; empty groups left out. */
-export function groupItems<T extends Pick<SiteTranslationItem, "group" | "status">>(items: T[], filter: TranslationFilter) {
-  const shown = items.filter((item) => matchesFilter(item, filter));
+/**
+ * The items of a filter, grouped in the website's order; empty groups left
+ * out. `kept` holds the keys already in view: a text the owner just fixed
+ * stays (with its new status) until the filter changes, so the list does not
+ * jump under the cursor.
+ */
+export function groupItems<T extends Pick<SiteTranslationItem, "key" | "group" | "status">>(items: T[], filter: TranslationFilter, kept?: ReadonlySet<string>) {
+  const shown = items.filter((item) => matchesFilter(item, filter) || Boolean(kept?.has(item.key)));
   return TRANSLATION_GROUPS.map((group) => ({ group, items: shown.filter((item) => item.group === group) })).filter((entry) => entry.items.length > 0);
 }
 
@@ -101,7 +106,7 @@ export function showLanguage(state: { translation_locales: string[]; visible_loc
 }
 
 /** The queue of the one-at-a-time view: what still needs the owner, in the website's order. */
-export function workQueue<T extends Pick<SiteTranslationItem, "group" | "status">>(items: T[]) {
+export function workQueue<T extends Pick<SiteTranslationItem, "key" | "group" | "status">>(items: T[]) {
   return groupItems(items, "todo").flatMap((entry) => entry.items);
 }
 

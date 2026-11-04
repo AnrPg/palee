@@ -24,9 +24,12 @@ function browserLocale(acceptLanguage: string | null): AppLocale | null {
   return null;
 }
 
-export default getRequestConfig(async () => {
+export default getRequestConfig(async ({ locale: explicit }) => {
   const cookieLocale = (await cookies()).get(LOCALE_COOKIE)?.value;
+  // An explicit `getTranslations({ locale })` (a box website's page titles in
+  // the language of its content) wins over the viewer's app language.
   const locale =
+    (isAppLocale(explicit) && explicit) ||
     (isAppLocale(cookieLocale) && cookieLocale) ||
     browserLocale((await headers()).get("accept-language")) ||
     DEFAULT_LOCALE;

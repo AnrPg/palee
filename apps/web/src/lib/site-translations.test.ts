@@ -45,6 +45,12 @@ describe("site translations (ADR-520)", () => {
     expect(groupItems([...items], "machine")).toEqual([{ group: "faq", items: [items[3]] }]);
   });
 
+  it("keeps a text already in view after it no longer matches the filter", () => {
+    const fixed = items.map((item) => (item.key === "b" ? { ...item, status: "ok" as const } : item));
+    expect(groupItems(fixed, "todo").flatMap((entry) => entry.items.map((item) => item.key))).toEqual(["d", "c"]);
+    expect(groupItems(fixed, "todo", new Set(["b"])).flatMap((entry) => entry.items.map((item) => item.key))).toEqual(["b", "d", "c"]);
+  });
+
   it("queues the one-by-one view in the website's order", () => {
     expect(workQueue([...items]).map((item) => item.key)).toEqual(["b", "d", "c"]);
   });

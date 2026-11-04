@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "./support/test";
+import { expect, test, type Locator, type Page } from "./support/test";
 
 // ADR-199: Εγώ › Ρυθμίσεις › Ειδοποιήσεις. One row per category with a
 // switch per channel, account and payments locked on, the staff row only for
@@ -63,6 +63,20 @@ async function stub(page: Page, { staff = false, notifications = [] as unknown[]
     return route.fulfill(json({ preferences: rows }));
   });
   return updates;
+}
+
+/** A one-finger swipe to the left across the element, as touch events (Chromium). */
+async function swipeLeft(page: Page, target: Locator) {
+  const box = (await target.boundingBox())!;
+  const y = box.y + box.height / 2;
+  const from = box.x + box.width - 24;
+  const cdp = await page.context().newCDPSession(page);
+  const touch = (type: "touchStart" | "touchMove" | "touchEnd", x: number) =>
+    cdp.send("Input.dispatchTouchEvent", { type, touchPoints: type === "touchEnd" ? [] : [{ x, y }] });
+  await touch("touchStart", from);
+  for (let step = 1; step <= 8; step += 1) await touch("touchMove", from - step * 20);
+  await touch("touchEnd", from - 160);
+  await cdp.detach();
 }
 
 test.describe("notification settings", () => {
@@ -179,9 +193,10 @@ test.describe("notification settings", () => {
     await expect(drawer.getByText("Your password was reset")).toHaveCount(25);
     expect(cursors).toEqual([null, "page-2"]);
   });
-  // ADR-460 (option B): trash and closed eye on hover or focus of a card;
-  // a delete offers «Undo» and the server restores it.
-  test("a notification is deleted from the bell and brought back with Undo", async ({ page }) => {
+  // ADR-460 (option B): trash and closed eye on hover or focus of a card
+  // (fine pointer), behind the card and revealed by a swipe to the left
+  // (touch); a delete offers «Undo» and the server restores it.
+  test("a notification is deleted from the bell and brought back with Undo", async ({ page, isMobile }) => {
     const calls: string[] = [];
     await stub(page, {
       notifications: [
@@ -209,8 +224,15 @@ test.describe("notification settings", () => {
 
     const drawer = page.getByRole("dialog", { name: "Notifications" });
     const card = drawer.getByTestId("notification-card");
-    await card.hover();
-    await card.getByRole("button", { name: "Delete this notification" }).click();
+    if (isMobile) {
+      // A real touch swipe to the left: the buttons sit behind the card until then.
+      await swipeLeft(page, card.locator("article"));
+      await expect(card).toHaveAttribute("data-revealed", "true");
+      await card.getByRole("button", { name: "Delete this notification" }).tap();
+    } else {
+      await card.hover();
+      await card.getByRole("button", { name: "Delete this notification" }).click();
+    }
     await expect(drawer.getByTestId("notification-undo-toast")).toContainText("Notification deleted");
     await drawer.getByRole("button", { name: "Undo" }).click();
     await expect.poll(() => calls).toEqual(["DELETE n-1", "restore n-1"]);

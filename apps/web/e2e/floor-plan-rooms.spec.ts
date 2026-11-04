@@ -191,12 +191,13 @@ test.describe("Settings › Spaces › floor plans in classes and room photos", 
     await page.route("**/__media/**", (route) => route.fulfill({ status: 200, contentType: "image/png", body: PNG }));
 
     await page.goto("/admin/spaces");
+    // ADR-470: one branch, so the plans are the gym's («spaces-gym-…»), not grouped by branch.
     // Off: no per-floor switches yet.
-    await expect(page.getByTestId("spaces-loc-1-floors-in-classes")).toHaveCount(0);
+    await expect(page.getByTestId("spaces-gym-floors-in-classes")).toHaveCount(0);
     await page.getByTestId("plans-in-classes").click();
     await expect.poll(() => puts).toEqual([{ floor_plans_in_classes: true }]);
 
-    const floors = page.getByTestId("spaces-loc-1-floors-in-classes");
+    const floors = page.getByTestId("spaces-gym-floors-in-classes");
     await expect(floors).toBeVisible();
     await expect(page.getByTestId("floor-in-classes-plan-1")).toBeChecked();
     await page.getByTestId("floor-in-classes-plan-2").click();

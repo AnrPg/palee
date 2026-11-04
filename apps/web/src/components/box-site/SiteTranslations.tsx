@@ -29,6 +29,7 @@ import {
   groupItems,
   languageName,
   machineDue,
+  matchesFilter,
   readyPercent,
   sourceEditPath,
   TRANSLATION_FILTERS,
@@ -179,7 +180,7 @@ export function SiteTranslations() {
                 </div>
                 {machine.isError ? <StatusText tone="error">{localizeError(machine.error, ui)}</StatusText> : null}
                 {notice && !machine.isPending ? <StatusText tone="success">{notice}</StatusText> : null}
-                <TranslationList token={token} page={data} filter={filter} onPage={store} />
+                <TranslationList key={filter} token={token} page={data} filter={filter} onPage={store} />
               </>
             )}
             <p className="text-xs" style={{ color: "var(--dim)" }}>{t("notTranslated")}</p>
@@ -201,7 +202,9 @@ function Banner({ children, testId }: { children: React.ReactNode; testId?: stri
 function TranslationList({ token, page, filter, onPage }: { token: string; page: Page; filter: TranslationFilter; onPage: (page: Page) => void }) {
   const t = useTranslations("BoxSite.translations");
   const slug = useOrganizationSlug();
-  const groups = useMemo(() => groupItems(page.items, filter), [page.items, filter]);
+  // The texts in view when the filter was chosen stay listed (the parent remounts the list per filter).
+  const [kept] = useState(() => new Set(page.items.filter((item) => matchesFilter(item, filter)).map((item) => item.key)));
+  const groups = useMemo(() => groupItems(page.items, filter, kept), [page.items, filter, kept]);
   if (groups.length === 0) {
     return (
       <p className="py-6 text-center text-sm" style={{ color: "var(--muted)" }} data-testid="site-translations-empty">
