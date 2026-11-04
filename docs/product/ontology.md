@@ -403,6 +403,7 @@ timeline and every "work time" compound; HR is heart rate («παλμοί», FC,
 | XP level | Επίπεδο XP | `Gamification.Domain.Level` | Experience points from workouts, PRs, weeks on the weekly goal and finished challenges, and the level they reach. Worked out from the stats, never stored. (ADR-285) | Scale level («Επίπεδο scale», Rx/Scaled): always say «Επίπεδο XP» for this one. |
 | Strength gain | Βελτίωση δύναμης | `Pantheon.Domain.StrengthTrend` | Mean rise of the estimated 1RM of weight PRs over the last 8 weeks against the best before them. (ADR-285) | The «Δύναμη» workout-type family. |
 | Next milestone | Επόμενο ορόσημο | `AchievementRules.next_milestone/2` | The closest workout, PR or day-streak badge not earned yet, with the steps left. (ADR-285) | Challenges (time-limited, set by the box). |
+| Challenge | Πρόκληση | `Gamification.SeasonalChallenge` | A time-limited goal a box sets for its members (e.g. 20 workouts in November, 3 new PRs): progress per member, a badge on completion, an opt-in leaderboard. Lives in «Στατιστικά & Μάρκετινγκ › Μάρκετινγκ». Greek always «Πρόκληση / Προκλήσεις» (ANR 2026-11-04). | Next milestone (personal, never set by the box); weekly goal. |
 | Perseverance | Επιμονή | `PerseveranceCalculator` | How closely the last 7 training days followed the prescription; skipped or changed exercises lower it. | Consistency («Συνέπεια», weeks on the weekly goal). |
 
 ### 4.10 Box screen (ADR-253)
