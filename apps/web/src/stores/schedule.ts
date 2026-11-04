@@ -12,6 +12,12 @@ type ScheduleStore = {
   openDay: (isoDate: string) => void;
   shiftWindow: (direction: -1 | 1) => void;
   resetWindow: () => void;
+  /**
+   * A deep link to one class: show its day with no type filter, keeping the
+   * chosen view length, so the class is in the loaded window whatever range
+   * or filter the person left the schedule on.
+   */
+  focusDay: (isoDate: string) => void;
 };
 
 function todayIso() {
@@ -42,4 +48,5 @@ export const useScheduleStore = create<ScheduleStore>((set, get) => ({
     set({ startDate: days === 30 ? addMonths(startDate, direction) : addDays(startDate, days * direction) });
   },
   resetWindow: () => set({ startDate: todayIso() }),
+  focusDay: (startDate) => set({ startDate, classTypeIds: [] }),
 }));
