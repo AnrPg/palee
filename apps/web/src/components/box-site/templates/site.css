@@ -4,7 +4,7 @@
  * (the website's root); every colour comes from the `--s-*` tokens of the
  * box's palette (white and black, `--s-white`/`--s-black`, only over photos).
  *
- * Fonts: next/font (site-fonts.ts) sets them on `.bw` as
+ * Fonts: site-fonts.css (class bw-fonts) sets them on `.bw` as
  * --bw-commissioner: Commissioner; --bw-sofia: Sofia Sans Extra Condensed;
  * --bw-manrope: Manrope; --bw-roboto-flex: Roboto Flex; --bw-didot: GFS Didot;
  * --bw-noto-serif: Noto Serif Display (italic).

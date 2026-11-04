@@ -1,0 +1,217 @@
+/*
+ * ADR-530: the templates' typefaces, self-hosted with Greek. Generated from
+ * Google Fonts (latin + greek subsets) and kept in the repo so the build never
+ * fetches fonts: next/font/google failed the CI build when Google answered a
+ * font URL it could not parse. The bundler serves the files from
+ * /_next/static/media; browsers fetch only the faces and subsets a page uses.
+ */
+
+/* Commissioner normal 100 900, greek */
+@font-face {
+  font-family: "BW Commissioner";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./fonts/commissioner-normal-100-900-greek.woff2") format("woff2");
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+
+/* Commissioner normal 100 900, latin */
+@font-face {
+  font-family: "BW Commissioner";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./fonts/commissioner-normal-100-900-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Sofia Sans Extra Condensed italic 800, greek */
+@font-face {
+  font-family: "BW Sofia Sans Extra Condensed";
+  font-style: italic;
+  font-weight: 800;
+  font-display: swap;
+  src: url("./fonts/sofia-italic-800-greek.woff2") format("woff2");
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+
+/* Sofia Sans Extra Condensed italic 800, latin */
+@font-face {
+  font-family: "BW Sofia Sans Extra Condensed";
+  font-style: italic;
+  font-weight: 800;
+  font-display: swap;
+  src: url("./fonts/sofia-italic-800-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Sofia Sans Extra Condensed italic 900, greek */
+@font-face {
+  font-family: "BW Sofia Sans Extra Condensed";
+  font-style: italic;
+  font-weight: 900;
+  font-display: swap;
+  src: url("./fonts/sofia-italic-800-greek.woff2") format("woff2");
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+
+/* Sofia Sans Extra Condensed italic 900, latin */
+@font-face {
+  font-family: "BW Sofia Sans Extra Condensed";
+  font-style: italic;
+  font-weight: 900;
+  font-display: swap;
+  src: url("./fonts/sofia-italic-800-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Sofia Sans Extra Condensed normal 800, greek */
+@font-face {
+  font-family: "BW Sofia Sans Extra Condensed";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("./fonts/sofia-normal-800-greek.woff2") format("woff2");
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+
+/* Sofia Sans Extra Condensed normal 800, latin */
+@font-face {
+  font-family: "BW Sofia Sans Extra Condensed";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("./fonts/sofia-normal-800-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Sofia Sans Extra Condensed normal 900, greek */
+@font-face {
+  font-family: "BW Sofia Sans Extra Condensed";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("./fonts/sofia-normal-800-greek.woff2") format("woff2");
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+
+/* Sofia Sans Extra Condensed normal 900, latin */
+@font-face {
+  font-family: "BW Sofia Sans Extra Condensed";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("./fonts/sofia-normal-800-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Manrope normal 200 800, greek */
+@font-face {
+  font-family: "BW Manrope";
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url("./fonts/manrope-normal-200-800-greek.woff2") format("woff2");
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+
+/* Manrope normal 200 800, latin */
+@font-face {
+  font-family: "BW Manrope";
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url("./fonts/manrope-normal-200-800-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Roboto Flex normal 100 1000, greek */
+@font-face {
+  font-family: "BW Roboto Flex";
+  font-style: normal;
+  font-weight: 100 1000;
+  font-display: swap;
+  src: url("./fonts/roboto-flex-normal-100-1000-greek.woff2") format("woff2");
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+
+/* Roboto Flex normal 100 1000, latin */
+@font-face {
+  font-family: "BW Roboto Flex";
+  font-style: normal;
+  font-weight: 100 1000;
+  font-display: swap;
+  src: url("./fonts/roboto-flex-normal-100-1000-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* GFS Didot normal 400, greek */
+@font-face {
+  font-family: "BW GFS Didot";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/didot-normal-400-greek.woff2") format("woff2");
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+
+/* GFS Didot normal 400, latin */
+@font-face {
+  font-family: "BW GFS Didot";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/didot-normal-400-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Noto Serif Display italic 300, greek */
+@font-face {
+  font-family: "BW Noto Serif Display";
+  font-style: italic;
+  font-weight: 300;
+  font-display: swap;
+  src: url("./fonts/noto-serif-italic-300-greek.woff2") format("woff2");
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+
+/* Noto Serif Display italic 300, latin */
+@font-face {
+  font-family: "BW Noto Serif Display";
+  font-style: italic;
+  font-weight: 300;
+  font-display: swap;
+  src: url("./fonts/noto-serif-italic-300-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Noto Serif Display italic 400, greek */
+@font-face {
+  font-family: "BW Noto Serif Display";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/noto-serif-italic-300-greek.woff2") format("woff2");
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+
+/* Noto Serif Display italic 400, latin */
+@font-face {
+  font-family: "BW Noto Serif Display";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/noto-serif-italic-300-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* The `--bw-*` variables site.css reads. */
+.bw-fonts {
+  --bw-commissioner: "BW Commissioner";
+  --bw-sofia: "BW Sofia Sans Extra Condensed";
+  --bw-manrope: "BW Manrope";
+  --bw-roboto-flex: "BW Roboto Flex";
+  --bw-didot: "BW GFS Didot";
+  --bw-noto-serif: "BW Noto Serif Display";
+}
