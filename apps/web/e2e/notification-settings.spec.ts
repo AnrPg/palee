@@ -241,6 +241,58 @@ test.describe("notification settings", () => {
     await expect.poll(() => calls).toEqual(["DELETE n-1", "restore n-1"]);
   });
 
+  // A laptop whose main pointer is a mouse but whose screen also takes touch:
+  // the page does not match `(pointer: coarse)`, yet a swipe must still
+  // uncover a trash that can be pressed.
+  test("on a touch-screen laptop a swipe still uncovers a trash that can be pressed", async ({ page, isMobile }) => {
+    test.skip(!isMobile, "touch swipe");
+    const calls: string[] = [];
+    await stub(page, {
+      notifications: [
+        {
+          id: "n-1",
+          user_id: user.id,
+          organization_id: null,
+          type: "password_reset_completed",
+          payload: { url: "/me/settings#security" },
+          read_at: null,
+          inserted_at: new Date().toISOString(),
+        },
+      ],
+    });
+    await page.route("**/api/notifications/n-1", (route) => {
+      calls.push(`${route.request().method()} n-1`);
+      return route.fulfill(json({ deleted: true, restorable_for_seconds: 60 }));
+    });
+    await page.goto("/me/settings");
+    await page.getByTestId("member-top-bar").getByRole("button", { name: "1 unread notification" }).click();
+    await page.evaluate(() => {
+      const walk = (rules: CSSRuleList) => {
+        for (const rule of Array.from(rules)) {
+          if (rule instanceof CSSMediaRule && rule.media.mediaText.includes("pointer: coarse")) {
+            rule.media.mediaText = rule.media.mediaText.replace("pointer: coarse", "pointer: none");
+          }
+          if ("cssRules" in rule) walk((rule as CSSGroupingRule).cssRules);
+        }
+      };
+      for (const sheet of Array.from(document.styleSheets)) {
+        try {
+          walk(sheet.cssRules);
+        } catch {
+          // A sheet from another origin cannot be read; ours can.
+        }
+      }
+    });
+
+    const drawer = page.getByRole("dialog", { name: "Notifications" });
+    const card = drawer.getByTestId("notification-card");
+    await swipeLeft(page, card.locator("article"));
+    await expect(card).toHaveAttribute("data-revealed", "true");
+    await card.getByRole("button", { name: "Delete this notification" }).click();
+    await expect(drawer.getByTestId("notification-undo-toast")).toContainText("Notification deleted");
+    await expect.poll(() => calls).toEqual(["DELETE n-1"]);
+  });
+
   test("Settings deletes every notification a filter matches, after a confirm", async ({ page }) => {
     const notes = Array.from({ length: 3 }, (_, i) => ({
       id: `n-${i}`,

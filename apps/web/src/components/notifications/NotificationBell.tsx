@@ -729,6 +729,11 @@ function useSwipeReveal(wrapperRef: RefObject<HTMLDivElement | null>) {
   const [dragging, setDragging] = useState(false);
   const drag = useRef<{ x: number; y: number; base: number; moved: boolean } | null>(null);
   const swallowClick = useRef(false);
+  // A touch on this card, even on a device whose main pointer is a mouse
+  // (a touch-screen laptop), lays the buttons out behind the card, the way
+  // `pointer-coarse:` does on phones, so a swipe always uncovers buttons
+  // that can be pressed.
+  const [touched, setTouched] = useState(false);
   const revealed = offset === -SWIPE_REVEAL_PX && !dragging;
 
   const settle = useCallback((open: boolean) => {
@@ -748,6 +753,7 @@ function useSwipeReveal(wrapperRef: RefObject<HTMLDivElement | null>) {
   const handlers = {
     onPointerDown(event: ReactPointerEvent) {
       if (event.pointerType !== "touch") return;
+      setTouched(true);
       drag.current = { x: event.clientX, y: event.clientY, base: revealed ? -SWIPE_REVEAL_PX : 0, moved: false };
     },
     onPointerMove(event: ReactPointerEvent) {
@@ -797,7 +803,7 @@ function useSwipeReveal(wrapperRef: RefObject<HTMLDivElement | null>) {
     return swallowed;
   }
 
-  return { offset, dragging, revealed, handlers, consumeClick, reveal: () => settle(true) };
+  return { offset, dragging, revealed, touched, handlers, consumeClick, reveal: () => settle(true) };
 }
 
 export function NotificationCard({
@@ -831,8 +837,9 @@ export function NotificationCard({
     // touch they sit behind the card and a swipe to the left reveals them.
     <div
       ref={wrapperRef}
-      className="group/card relative isolate rounded-[1.4rem] pointer-coarse:overflow-hidden"
+      className="group/card relative isolate rounded-[1.4rem] pointer-coarse:overflow-hidden data-[touch=true]:overflow-hidden"
       data-revealed={swipe.revealed ? "true" : "false"}
+      data-touch={swipe.touched ? "true" : undefined}
       data-testid="notification-card"
     >
     <NotificationActions
@@ -981,7 +988,7 @@ function NotificationActions({
 
   return (
     <div
-      className="absolute end-2 top-2 z-10 flex items-center gap-1 rounded-full p-0.5 shadow-md motion-safe:transition-opacity opacity-0 pointer-events-none group-hover/card:opacity-100 group-hover/card:pointer-events-auto group-focus-within/card:opacity-100 group-focus-within/card:pointer-events-auto pointer-coarse:inset-y-0 pointer-coarse:end-auto pointer-coarse:right-0 pointer-coarse:top-0 pointer-coarse:z-0 pointer-coarse:rounded-none pointer-coarse:px-2 pointer-coarse:opacity-100 pointer-coarse:pointer-events-auto pointer-coarse:shadow-none"
+      className="absolute end-2 top-2 z-10 flex items-center gap-1 rounded-full p-0.5 shadow-md motion-safe:transition-opacity opacity-0 pointer-events-none group-hover/card:opacity-100 group-hover/card:pointer-events-auto group-focus-within/card:opacity-100 group-focus-within/card:pointer-events-auto pointer-coarse:inset-y-0 pointer-coarse:end-auto pointer-coarse:right-0 pointer-coarse:top-0 pointer-coarse:z-0 pointer-coarse:rounded-none pointer-coarse:px-2 pointer-coarse:opacity-100 pointer-coarse:pointer-events-auto pointer-coarse:shadow-none group-data-[touch=true]/card:inset-y-0 group-data-[touch=true]/card:end-auto group-data-[touch=true]/card:right-0 group-data-[touch=true]/card:top-0 group-data-[touch=true]/card:z-0 group-data-[touch=true]/card:rounded-none group-data-[touch=true]/card:px-2 group-data-[touch=true]/card:opacity-100 group-data-[touch=true]/card:pointer-events-auto group-data-[touch=true]/card:shadow-none"
       style={{ background: "var(--panel-raised)", border: "1px solid var(--border)" }}
       onFocus={onFocusWithin}
       data-testid="notification-actions"
