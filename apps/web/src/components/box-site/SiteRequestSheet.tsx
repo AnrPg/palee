@@ -34,17 +34,17 @@ export function formErrors(error: unknown): Partial<Record<Field, string>> | nul
   return result;
 }
 
+export type SiteRequestField = Field;
+
 /**
- * The website's request form (ANR s5 B): a sheet from «Κλείσε δοκιμαστικό»
- * (or «Ρώτησε κάτι»). A request never books a seat: it becomes a lead
- * (ADR-353) and the box answers. Few fields; marketing only with its own,
- * unticked box; a honeypot and the time spent keep bots out.
+ * The request form's state and sending (ADR-353), shared by the app's sheet
+ * and the website templates' own sheet (ADR-530). `preferred` adds to what
+ * the visitor typed (the templates' class and day choices); `preview` checks
+ * the fields but sends nothing.
  */
-export function SiteRequestSheet({ slug, kind, privacyHref, onClose }: { slug: string; kind: Kind; privacyHref: string; onClose: () => void }) {
-  const t = useTranslations("BoxSite");
+export function useSiteRequestForm({ slug, kind, preferred = "", preview = false }: { slug: string; kind: Kind; preferred?: string; preview?: boolean }) {
   const locale = useLocale();
   const consent = useSiteConsent();
-  const ids = useId();
   const [openedAt] = useState(nowMs);
   const [eventId] = useState(() => crypto.randomUUID());
   const [form, setForm] = useState({ name: "", contact: "", preferred: "", message: "", marketing: false, privacy: false, website: "" });
@@ -63,13 +63,18 @@ export function SiteRequestSheet({ slug, kind, privacyHref, onClose }: { slug: s
     setErrors(local);
     setFailed(false);
     if (Object.keys(local).length > 0) return;
+    if (preview) {
+      setSent(true);
+      return;
+    }
     setSending(true);
+    const preferredTime = [preferred.trim(), form.preferred.trim()].filter(Boolean).join(" · ").slice(0, 200);
     try {
       await sendSiteForm(slug, kind, {
         name: form.name.trim(),
         ...contactFields(form.contact),
         message: form.message.trim() || undefined,
-        preferred_time: form.preferred.trim() || undefined,
+        preferred_time: preferredTime || undefined,
         locale,
         marketing_opt_in: form.marketing,
         privacy_ack: true,
@@ -89,6 +94,20 @@ export function SiteRequestSheet({ slug, kind, privacyHref, onClose }: { slug: s
       setSending(false);
     }
   }
+
+  return { form, set, errors, failed, sending, sent, submit };
+}
+
+/**
+ * The website's request form (ANR s5 B): a sheet from «Κλείσε δοκιμαστικό»
+ * (or «Ρώτησε κάτι»). A request never books a seat: it becomes a lead
+ * (ADR-353) and the box answers. Few fields; marketing only with its own,
+ * unticked box; a honeypot and the time spent keep bots out.
+ */
+export function SiteRequestSheet({ slug, kind, privacyHref, onClose }: { slug: string; kind: Kind; privacyHref: string; onClose: () => void }) {
+  const t = useTranslations("BoxSite");
+  const ids = useId();
+  const { form, set, errors, sending, sent, failed, submit } = useSiteRequestForm({ slug, kind });
 
   const field = (name: Field) => ({
     "aria-invalid": errors[name] ? true : undefined,
