@@ -23,6 +23,8 @@ export type ChannelConnection = {
   default_country: string;
   error_code?: string | null;
   has_secret: boolean;
+  /** ADR-396: Vonage's signature secret is saved (never read back). */
+  has_webhook_secret?: boolean;
   last_error?: string | null;
   /** ADR-390: the cap the box typed; null until it does (then nothing is sent). */
   monthly_budget_cents: number | null;
@@ -66,7 +68,13 @@ export type ChannelCheck = { ok: boolean; error_code?: string | null; details: R
 export type ChannelSettingsUpdate = {
   provider: string;
   account_mode?: "palee" | "own";
+  /** ADR-396: the vendor's account id (Twilio SID, Vonage API key, Apifon token). */
+  account_id?: string | null;
   secret?: string;
+  /** ADR-396: Vonage's signature secret, optional. */
+  webhook_secret?: string;
+  /** ADR-396: Infobip's personal base URL. */
+  base_url?: string | null;
   channels?: ChannelName[];
   sms_sender?: string | null;
   monthly_budget_cents?: number;

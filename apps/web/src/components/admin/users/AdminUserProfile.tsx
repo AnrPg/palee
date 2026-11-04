@@ -64,6 +64,7 @@ import { PAY_ROLES } from "@/components/admin/coach-pay/coach-pay";
 import { StaffPayCard } from "@/components/admin/coach-pay/StaffPayCard";
 import { MemberDocumentsPanel } from "@/components/documents/staff/MemberDocumentsPanel";
 import { CoachNotesPanel, type CoachNoteSubjectOption } from "@/components/admin/users/CoachNotesPanel";
+import { ClientRanks } from "@/components/body-devices/ClientRanks";
 import { ClientTrainingGoalPanel } from "@/components/training-goal/ClientTrainingGoalPanel";
 import { CoachBodyPanel } from "@/components/body/CoachBodyPanel";
 import { CoachWellnessPanel } from "@/components/buddy/CoachWellnessPanel";
@@ -601,6 +602,7 @@ export function AdminUserProfile({ userId }: { userId: string }) {
   const tDepth = useTranslations("Depth");
   const tFitness = useTranslations("FitnessCoach");
   const tGoal = useTranslations("TrainingGoal");
+  const tBodyDevices = useTranslations("BodyDevices");
   const tSms = useTranslations("Sms");
   const { tokens, currentUser } = useSession();
   const token = tokens?.access_token;
@@ -903,6 +905,16 @@ export function AdminUserProfile({ userId }: { userId: string }) {
 
           {inTab("prs") ? <Panel id="prs" title={i18n("personalRecords05223a0")}><div className="grid gap-3">{prs.data?.visibility === "coach_role_required" ? <Empty>{tPrSharing("dossierCoachOnly")}</Empty> : prs.data?.prs.length ? prs.data.prs.map((pr) => <PRCard key={pr.id} pr={pr} />) : <Empty>{i18n("noPersonalRecordsRecorded22a0fce")}</Empty>}</div></Panel> : null}
 
+
+          {token && organizationSlug && tab === "training" ? (
+            <ClientRanks
+              token={token}
+              slug={organizationSlug}
+              userId={userId}
+              nickname={profile.identity.nickname}
+              frame={(content) => <Panel id="ranks" title={tBodyDevices("ranks.panelTitle")}>{content}</Panel>}
+            />
+          ) : null}
 
           {token && showCoachNotes && tab === "training" ? (
             <Panel id="training_notes" title={i18n("rhCoachNotes")}>

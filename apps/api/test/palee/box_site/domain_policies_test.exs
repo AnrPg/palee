@@ -116,6 +116,16 @@ defmodule Palee.BoxSite.DomainPoliciesTest do
       assert {:error, :invalid_hostname} = Hostname.normalize(nil, @refused)
     end
 
+    test "refuses the system domains whatever the config says (ADR-398)" do
+      for host <- ~w(palee.app www.palee.app 4kq.net milos.4kq.net x.milos.4kq.net
+                     atha.gr www.atha.gr atha.io api.atha.io) do
+        assert {:error, :platform_hostname} = Hostname.normalize(host, [])
+      end
+
+      assert {:ok, "notpalee.app"} = Hostname.normalize("NotPalee.app", [])
+      assert {:ok, "atha.gr.example.com"} = Hostname.normalize("atha.gr.example.com", [])
+    end
+
     test "apex hosts" do
       assert Hostname.apex?("mybox.gr")
       assert Hostname.apex?("mybox.com.gr")
@@ -137,8 +147,8 @@ defmodule Palee.BoxSite.DomainPoliciesTest do
           attrs
         )
 
-    test "shows a TXT proof and a CNAME, or A records for an apex" do
-      records = DomainPolicy.dns_records(domain(%{}), false, "sites.palee.app", ["1.2.3.4"])
+    test "shows a TXT proof and a CNAME, or an ALIAS (flattening) for an apex" do
+      records = DomainPolicy.dns_records(domain(%{}), false, "sites.palee.app")
 
       assert [
                %{
@@ -149,28 +159,96 @@ defmodule Palee.BoxSite.DomainPoliciesTest do
                %{type: "CNAME", value: "sites.palee.app"}
              ] = records
 
-      assert [_txt, %{type: "A", value: "1.2.3.4"}] =
-               DomainPolicy.dns_records(domain(%{host: "mybox.gr"}), true, "sites.palee.app", [
-                 "1.2.3.4"
-               ])
+      assert [_txt, %{type: "ALIAS", name: "mybox.gr", value: "sites.palee.app"}] =
+               DomainPolicy.dns_records(domain(%{host: "mybox.gr"}), true, "sites.palee.app")
     end
 
-    test "DNS facts: TXT proof and routing by CNAME or our A records" do
+    defp lookups(attrs) do
+      Map.merge(
+        %{
+          txt: {:ok, []},
+          cname_chain: {:ok, []},
+          a: {:ok, []},
+          aaaa: {:ok, []},
+          target_a: {:ok, ["198.51.100.1", "198.51.100.2"]},
+          target_aaaa: {:ok, []}
+        },
+        attrs
+      )
+    end
+
+    defp facts(attrs), do: DomainPolicy.dns_facts("tok", lookups(attrs), "sites.palee.app")
+
+    test "DNS facts: TXT proof, and routing by a CNAME chain to the target" do
       assert %{txt_ok: true, routing_ok: true} =
-               DomainPolicy.dns_facts(
-                 "tok",
-                 ["palee-site-verification=tok"],
-                 ["Sites.Palee.App."],
-                 [],
-                 "sites.palee.app",
-                 []
+               facts(%{
+                 txt: {:ok, [" palee-site-verification=tok "]},
+                 cname_chain: {:ok, ["Sites.Palee.App."]}
+               })
+
+      assert %{routing_ok: true} =
+               facts(%{cname_chain: {:ok, ["edge.mybox.gr", "sites.palee.app"]}})
+
+      assert %{txt_ok: false, routing_ok: false} =
+               facts(%{cname_chain: {:ok, ["elsewhere.example.com"]}, a: {:ok, ["203.0.113.9"]}})
+    end
+
+    test "DNS facts: a flattened apex passes when every address is the target's now" do
+      assert %{routing_ok: true} = facts(%{a: {:ok, ["198.51.100.2"]}})
+      assert %{routing_ok: true} = facts(%{a: {:ok, ["198.51.100.1", "198.51.100.2"]}})
+      # One stale or foreign address fails: some visitors would land elsewhere.
+      assert %{routing_ok: false} = facts(%{a: {:ok, ["198.51.100.1", "203.0.113.9"]}})
+      # No address at all.
+      assert %{routing_ok: false} = facts(%{})
+
+      # AAAA, when present, must be the target's too.
+      assert %{routing_ok: false} =
+               facts(%{a: {:ok, ["198.51.100.1"]}, aaaa: {:ok, ["2001:db8::1"]}})
+
+      assert %{routing_ok: true} =
+               facts(%{
+                 a: {:ok, ["198.51.100.1"]},
+                 aaaa: {:ok, ["2001:DB8::1"]},
+                 target_aaaa: {:ok, ["2001:db8::1"]}
+               })
+    end
+
+    test "DNS facts: what the resolver could not tell is unknown, not a failure" do
+      assert %{txt_ok: :unknown} = facts(%{txt: {:error, :timeout}})
+
+      assert %{routing_ok: :unknown} =
+               facts(%{cname_chain: {:error, :timeout}, a: {:ok, ["203.0.113.9"]}})
+
+      assert %{routing_ok: :unknown} = facts(%{a: {:error, :servfail}})
+      assert %{routing_ok: :unknown} = facts(%{target_a: {:error, :timeout}})
+      # Palee's own name resolving to nothing is Palee's problem.
+      assert %{routing_ok: :unknown} = facts(%{a: {:ok, ["203.0.113.9"]}, target_a: {:ok, []}})
+
+      # A proof on either side still decides.
+      assert %{routing_ok: true} =
+               facts(%{cname_chain: {:error, :timeout}, a: {:ok, ["198.51.100.1"]}})
+
+      assert %{routing_ok: true} =
+               facts(%{cname_chain: {:ok, ["sites.palee.app"]}, target_a: {:error, :timeout}})
+    end
+
+    test "unknown DNS keeps every state and looks again in 5 minutes" do
+      for status <- ~w(pending_dns pending_tls active broken) do
+        unknown = %{txt_ok: true, routing_ok: :unknown, tls_ok: false}
+        changes = DomainPolicy.after_check(domain(%{status: status, attempts: 2}), unknown, @now)
+        assert Map.keys(changes) |> Enum.sort() == [:checked_at, :next_check_at]
+        assert DateTime.diff(changes.next_check_at, @now) == 300
+      end
+
+      assert %{next_check_at: _} =
+               changes =
+               DomainPolicy.after_check(
+                 domain(%{}),
+                 %{txt_ok: :unknown, routing_ok: true, tls_ok: false},
+                 @now
                )
 
-      assert %{txt_ok: false, routing_ok: true} =
-               DomainPolicy.dns_facts("tok", [], [], ["1.2.3.4"], "sites.palee.app", ["1.2.3.4"])
-
-      assert %{routing_ok: false} =
-               DomainPolicy.dns_facts("tok", [], [], ["1.2.3.4", "9.9.9.9"], "x", ["1.2.3.4"])
+      refute Map.has_key?(changes, :status)
     end
 
     test "pending_dns moves on when DNS is right, or retries with backoff" do

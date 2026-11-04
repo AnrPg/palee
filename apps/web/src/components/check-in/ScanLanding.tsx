@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 
+import { openDoor } from "@/api/doors";
 import { scanDoor, undoScan, type CheckInBooking, type CheckInClass, type CheckInPackage, type ScanResult, type UndoResult } from "@/api/check-in";
 import { useSession } from "@/components/session-provider";
 import { FollowButton } from "@/components/social/FollowButton";
@@ -13,6 +14,7 @@ import { adminHref } from "@/lib/organization-slug";
 
 import { clockOffset, nothingReasonKey, scanBody, scanView, undoSecondsLeft, type ScanSource } from "./check-in";
 import { checkInErrorKey } from "./errors";
+import { DoorAnswerCard, opensDoor } from "@/components/doors/DoorAnswerCard";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { clockFormat } from "@/lib/clock";
 
@@ -60,6 +62,19 @@ export function ScanLanding({ locationId, code, source }: { locationId: string; 
 
   const current = override ?? scan.data ?? null;
 
+  // W10 screen 5 A (ADR-381): the same scan also opens the door, one answer for both.
+  const firstResult = scan.data?.result ?? null;
+  const door = useQuery({
+    queryKey: ["access", "open", source, locationId, code],
+    enabled: Boolean(token && firstResult && opensDoor(source, firstResult)),
+    staleTime: Infinity,
+    gcTime: Infinity,
+    retry: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    queryFn: () => openDoor(token!, scanBody(source, locationId, code)),
+  });
+
   return (
     <main className="mx-auto flex min-h-[70dvh] w-full max-w-xl flex-col gap-4 px-4 pb-8 pt-6" data-testid="scan-landing">
       {!current && (scan.isPending || !token) ? (
@@ -77,6 +92,10 @@ export function ScanLanding({ locationId, code, source }: { locationId: string; 
             {t("tryAgain")}
           </button>
         </Card>
+      ) : null}
+
+      {token && firstResult && opensDoor(source, firstResult) && !door.isPending ? (
+        <DoorAnswerCard token={token} result={door.data ?? null} error={door.error} body={scanBody(source, locationId, code)} />
       ) : null}
 
       {current && token ? (

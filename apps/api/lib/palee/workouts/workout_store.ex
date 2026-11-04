@@ -129,6 +129,12 @@ defmodule Palee.Workouts.WorkoutStore do
         adapter().remove_season_athlete(season_offering_id, athlete_id, from_date)
       end)
 
+  def remove_athlete_from_assignments(context, assignment_ids, athlete_id, from_date),
+    do:
+      within_tenant(context, fn ->
+        adapter().remove_athlete_from_assignments(assignment_ids, athlete_id, from_date)
+      end)
+
   def reject_assignment_for_athlete(context, assignment_id, athlete_id),
     do: within_tenant(context, fn -> reject_assignment_for_athlete(assignment_id, athlete_id) end)
 

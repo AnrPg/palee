@@ -26,6 +26,10 @@ export type BoxReview = components["schemas"]["BoxReview"];
 export type GoogleListing = NonNullable<components["schemas"]["GoogleListing"]>;
 export type BoxReviews = components["schemas"]["BoxReviewsResponse"];
 export type MyBoxReviews = components["schemas"]["MyBoxReviewsResponse"];
+export type MyBoxReview = NonNullable<MyBoxReviews["mine"]>;
+export type BoxReviewModeration = NonNullable<MyBoxReview["moderation"]>;
+export type BoxReviewReportRequest = components["schemas"]["BoxReviewReportRequest"];
+export type BoxReviewReportReason = BoxReviewReportRequest["reason"];
 export type GooglePlaceMatch = components["schemas"]["GooglePlaceMatch"];
 export type SiteDomainStatus = components["schemas"]["SiteDomainStatusResponse"];
 export type SiteLanguages = components["schemas"]["SiteLanguages"];
@@ -144,6 +148,27 @@ export async function saveMyBoxReview(token: string, review: { rating: number; b
 
 export function deleteMyBoxReview(token: string) {
   return apiRequest<void>("/me/box-review", { method: "DELETE", token });
+}
+
+// ── Reports on reviews (ADR-397): the Palee team decides, never the box ────
+
+/** The fixed reasons, in the order the report sheet lists them. */
+export const REVIEW_REPORT_REASONS: BoxReviewReportReason[] = ["offensive", "personal_data", "not_genuine", "spam", "illegal", "other"];
+export const REVIEW_REPORT_NOTE_MAX = 500;
+
+/** «Παράνομο περιεχόμενο» and «Κάτι άλλο» need a few words; the rest do not. */
+export function reportNoteRequired(reason: BoxReviewReportReason | null) {
+  return reason === "illegal" || reason === "other";
+}
+
+/** A member reports a review of their box; it stays up until the Palee team decides. */
+export function reportBoxReview(token: string, id: string, body: BoxReviewReportRequest) {
+  return apiRequest<{ review_id: string; status: "open" }>(`/me/box-reviews/${encodeURIComponent(id)}/report`, { method: "POST", token, body });
+}
+
+/** The box (staff who reply as the box) reports a review of itself. */
+export function reportBoxReviewAsBox(token: string, id: string, body: BoxReviewReportRequest) {
+  return apiRequest<{ review_id: string; status: "open" }>(`/admin/box-reviews/${encodeURIComponent(id)}/report`, { method: "POST", token, body });
 }
 
 export function fetchStaffBoxReviews(token: string) {

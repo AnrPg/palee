@@ -6,6 +6,7 @@ import { ProfileSwitcherMenu } from "@/components/account/ProfileSwitcherMenu";
 import { CountBadge } from "@/components/buddy/BuddyBits";
 import { activeBuddies, recipientNames, unreadTotal } from "@/components/buddy/buddy-model";
 import { useBuddies } from "@/components/buddy/use-buddies";
+import { MyRanksCard } from "@/components/body-devices/MyRanksCard";
 import { HubCard, HubList, HubListRow, HubPage } from "@/components/member-app/HubParts";
 import { MeProfile } from "@/components/member-app/me/MeProfile";
 import { useOpenConsole } from "@/components/member-app/me/use-open-console";
@@ -15,6 +16,7 @@ import { CountsLine } from "@/components/social/SocialBits";
 import { useSocialSummary } from "@/components/social/use-social";
 import { useHasBillingProviders } from "@/lib/billing-providers";
 import { useSelectedMembershipRole } from "@/lib/membership-role";
+import { useFeatureAtAnyBusiness } from "@/lib/use-business-features";
 
 /**
  * Εγώ (brief §6.1, §7.11, mockup «me/meLinks»): who I am to others (the
@@ -36,7 +38,11 @@ export function MeHub() {
   const buddyNames = recipientNames(activeBuddies(buddies.data), tBuddy("someone"));
   const buddyUnread = unreadTotal(buddies.data);
   const { currentUser, signOut } = useSession();
-  const { memberships } = useSelectedMembershipRole();
+  const { membership, memberships } = useSelectedMembershipRole();
+  const referralsAnywhere = useFeatureAtAnyBusiness(
+    memberships.map((entry) => entry.organization.slug),
+    "referrals",
+  );
   const { hasBillingProviders } = useHasBillingProviders();
   const resets = usePasswordResets();
   const openConsole = useOpenConsole();
@@ -72,6 +78,9 @@ export function MeHub() {
 
       <MeProfile postsCount={summary.data?.posts_count ?? 0} mediaCount={summary.data?.media_count ?? 0} />
 
+      {/* ADR-400 (ANR 2026-11-03): one line on the profile, opening the rank page. */}
+      {membership ? <MyRanksCard slug={membership.organization.slug} /> : null}
+
       {/* ADR-187: the profile switch (also a long press on the avatar tab). */}
       {(currentUser?.profile_count ?? 1) > 1 ? (
         <section className="overflow-hidden rounded-3xl" style={{ background: "var(--panel)", border: "1px solid var(--border)" }}>
@@ -80,7 +89,8 @@ export function MeHub() {
       ) : null}
 
       <HubList>
-        <HubListRow href="/me/referrals" label={t("meReferrals")} detail={t("meReferralsHint")} />
+        {/* ADR-470: only when one of my boxes runs a referral programme. */}
+        {referralsAnywhere ? <HubListRow href="/me/referrals" label={t("meReferrals")} detail={t("meReferralsHint")} /> : null}
         <HubListRow
           href="/me/buddy"
           label={tBuddy("title")}

@@ -74,7 +74,7 @@ export async function fetchFeed(token: string, filter: FeedFilter, cursor: strin
   if (cursor) query.set("cursor", cursor);
   query.set("limit", String(limit));
   const page = await apiRequest<CommunityFeedPage>(`/me/feed?${query.toString()}`, { token });
-  return { ...page, posts: page.posts ?? [] };
+  return { ...page, pinned: page.pinned ?? [], posts: page.posts ?? [] };
 }
 
 const base = (slug: string) => `/org/${slug}/community`;

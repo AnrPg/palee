@@ -10,14 +10,14 @@ defmodule Palee.Application.AuthorizeTrainingLogSource do
       booking for, once it has started (Scheduling)
     * `assigned_workout` - an assignment that belongs to the athlete and was
       not rejected (Workouts)
-    * `library_workout` - a published workout in the tenant, for the roles
-      that may self-select workouts (mirrors ADR-029's self-selection rule)
+    * `library_workout` - a published workout in the tenant, for staff or a
+      package that includes the workout library (ADR-451, mirrors
+      self-selected executions and ADR-029)
     * `freeform` - no reference at all
   """
 
   alias Palee.{Execution, Scheduling, Workouts}
-
-  @self_selection_roles [:owner, :admin, :coach, :member]
+  alias Palee.Application.TrainingLogSourceAccess
 
   def call(context, user_id, source_type, reference_id, %DateTime{} = now) do
     case {source_type, blank_to_nil(reference_id)} do
@@ -26,7 +26,7 @@ defmodule Palee.Application.AuthorizeTrainingLogSource do
       {_type, nil} -> {:error, :invalid_training_log_source}
       {"class", id} -> authorize_class(context, user_id, id, now)
       {"assigned_workout", id} -> authorize_assignment(context, user_id, id)
-      {"library_workout", id} -> authorize_library_workout(context, id)
+      {"library_workout", id} -> authorize_library_workout(context, user_id, id)
       _unknown -> {:error, :invalid_training_log_source}
     end
   end
@@ -74,15 +74,22 @@ defmodule Palee.Application.AuthorizeTrainingLogSource do
     end
   end
 
-  defp authorize_library_workout(%{role: role} = context, workout_id)
-       when role in @self_selection_roles do
-    with {:ok, workout_id} <- uuid(workout_id) do
-      workout_source(context, "library_workout", workout_id, workout_id)
+  defp authorize_library_workout(context, user_id, workout_id) do
+    if TrainingLogSourceAccess.library_allowed?(context, user_id) do
+      with {:ok, workout_id} <- uuid(workout_id),
+           do: published_workout_source(context, workout_id)
+    else
+      {:error, :training_log_source_forbidden}
     end
   end
 
-  defp authorize_library_workout(_context, _workout_id),
-    do: {:error, :training_log_source_forbidden}
+  # A draft is not in the library yet, so it cannot be logged from it.
+  defp published_workout_source(context, workout_id) do
+    case Workouts.get_workout(context, workout_id) do
+      %{status: status} when status not in ["published", :published] -> {:error, :not_found}
+      _published_or_missing -> workout_source(context, "library_workout", workout_id, workout_id)
+    end
+  end
 
   defp workout_source(context, source_type, reference_id, workout_id) do
     case workout_id && Workouts.get_workout(context, workout_id) do

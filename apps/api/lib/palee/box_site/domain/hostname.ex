@@ -2,8 +2,14 @@ defmodule Palee.BoxSite.Domain.Hostname do
   @moduledoc """
   ADR-352 §5: a custom host a box may claim. Lower case, no trailing dot,
   at least two labels, no IP addresses and none of the platform's own
-  domains (`refused_suffixes`, from config).
+  domains: the system domains below (the cluster's tenant policy refuses or
+  reserves them, ADR-398 2026-11-03) and `refused_suffixes` from config.
   """
+
+  @system_suffixes ~w(palee.app 4kq.net atha.gr atha.io)
+
+  @doc "Domains no box may claim, nor any name under them."
+  def system_suffixes, do: @system_suffixes
 
   @label ~r/^(?!-)[a-z0-9-]{1,63}(?<!-)$/
   @ipv4 ~r/^\d{1,3}(\.\d{1,3}){3}$/
@@ -26,7 +32,7 @@ defmodule Palee.BoxSite.Domain.Hostname do
       Regex.match?(@ipv4, host) or String.contains?(host, ":") -> {:error, :invalid_hostname}
       not Enum.all?(labels, &Regex.match?(@label, &1)) -> {:error, :invalid_hostname}
       Regex.match?(~r/^[0-9]+$/, List.last(labels)) -> {:error, :invalid_hostname}
-      platform?(host, refused_suffixes) -> {:error, :platform_hostname}
+      platform?(host, @system_suffixes ++ refused_suffixes) -> {:error, :platform_hostname}
       true -> {:ok, host}
     end
   end

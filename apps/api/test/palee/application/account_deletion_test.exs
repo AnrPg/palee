@@ -227,6 +227,37 @@ defmodule Palee.Application.AccountDeletionTest do
                assert_email_enqueued(kind: :security_account_deleted, to: account.email)
     end
 
+    test "the coach's diploma signature goes with the profile (ADR-377 amendment)" do
+      account = login_with_profiles(["signer"])
+      key = Palee.Ranks.Domain.SignaturePolicy.prefix(account.id) <> "s.png"
+
+      :ok =
+        Palee.TestSupport.MemoryObjectStore.put_object(:media_private, key, "png", "image/png")
+
+      {:ok, _signature} =
+        Palee.Ranks.SignatureStore.replace(
+          :system,
+          account.id,
+          %{
+            object_key: key,
+            content_type: "image/png",
+            byte_size: 3,
+            width: 300,
+            height: 100,
+            sha256: String.duplicate("a", 64)
+          },
+          @now
+        )
+
+      {:ok, _} = AccountDeletion.request(account, %{scope: "login", password: @password}, @now)
+      {_message, token} = confirmation_token(account.email)
+      {:ok, %{scheduled_for: at}} = AccountDeletion.confirm(token, @now)
+      assert AccountDeletion.execute_due(at) == 1
+
+      assert Palee.Ranks.SignatureStore.list(:system, account.id) == []
+      assert Palee.TestSupport.MemoryObjectStore.get(:media_private, key) == :error
+    end
+
     test "a profile a business must keep in its accounts is anonymised, not deleted" do
       account = login_with_profiles(["main"])
       {organization, _owner, _context} = Palee.AnalyticsHelpers.organization_fixture()
@@ -246,15 +277,41 @@ defmodule Palee.Application.AccountDeletionTest do
         [Ecto.UUID.dump!(account.id)]
       )
 
+      # ADR-395: their body weight and birth year, and a coach's choice of
+      # what their fitness card shows.
+      Palee.Repo.query!(
+        "INSERT INTO fitness_profile_settings (user_id, body_weight_kg, birth_year, display, inserted_at, updated_at) VALUES ($1, 72.5, 1985, 'all', now(), now())",
+        [Ecto.UUID.dump!(account.id)]
+      )
+
+      Palee.Repo.query!(
+        "INSERT INTO fitness_display_overrides (id, organization_id, client_user_id, display, inserted_at, updated_at) VALUES (gen_random_uuid(), $1, $2, 'none', now(), now())",
+        [Ecto.UUID.dump!(organization.id), Ecto.UUID.dump!(account.id)]
+      )
+
       {:ok, _} = AccountDeletion.request(account, %{scope: "login", password: @password}, @now)
       {_message, token} = confirmation_token(account.email)
       {:ok, %{scheduled_for: at}} = AccountDeletion.confirm(token, @now)
-      assert AccountDeletion.execute_due(at) == 1
 
-      # The kept profile leaves every Palee-wide board.
+      # The sweep runs like the hourly job in production: no session scope,
+      # under the runtime role's row-level security.
+      assert with_clean_session(fn ->
+               with_runtime_role(fn -> AccountDeletion.execute_due(at) end)
+             end) ==
+               1
+
+      # The kept profile leaves every Palee-wide board and keeps no fitness
+      # settings or coach's choice.
+      for table <- ~w(palee_leaderboard_consents fitness_profile_settings) do
+        assert %{rows: [[0]]} =
+                 Palee.Repo.query!("SELECT count(*) FROM #{table} WHERE user_id = $1", [
+                   Ecto.UUID.dump!(account.id)
+                 ])
+      end
+
       assert %{rows: [[0]]} =
                Palee.Repo.query!(
-                 "SELECT count(*) FROM palee_leaderboard_consents WHERE user_id = $1",
+                 "SELECT count(*) FROM fitness_display_overrides WHERE client_user_id = $1",
                  [Ecto.UUID.dump!(account.id)]
                )
 

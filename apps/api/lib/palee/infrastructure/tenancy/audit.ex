@@ -63,12 +63,16 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     fiscal_network_connections fiscal_einvoice_submissions fiscal_einvoice_attempts
     fiscal_till_connections fiscal_till_signatures fiscal_till_signature_attempts
     fiscal_connection_settings
+    api_keys idempotency_records webhook_endpoints webhook_deliveries webhook_delivery_attempts
+    audience_connections integration_marketing_consents audience_members
+    door_controllers access_events
     payment_accounts payment_methods payment_intents payment_refunds payment_webhook_events
     channel_connections channel_contacts channel_consents channel_templates channel_messages
     channel_message_events channel_email_connections
 
     payment_surcharge_settings
     coach_pay_rules coach_pay_periods coach_pay_statements coach_pay_lines coach_pay_items
+    programmes programme_versions programme_purchases programme_deliveries programme_reviews
     coach_pay_item_skips
     box_screens
     document_settings document_templates document_versions document_signature_requests
@@ -81,6 +85,7 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     messaging_participants messaging_messages messaging_box_blocks seasonal_challenges
     user_challenge_progress challenge_leaderboard_opt_ins leaderboard_opt_ins
     fitness_display_overrides
+    finance_debtor_contacts
     gamification_settings attendance_records communication_threads
     communication_messages analytics_events notification_click_events
     push_dispatch_attempts
@@ -89,7 +94,10 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     ai_usage_records organization_ai_settings scaling_suggestions
     demo_records
     box_site_settings box_site_domains box_site_submissions box_site_consents
+    box_site_ingress_ops
     review_ask_settings review_asks review_ask_opt_outs box_reviews google_place_snapshots
+    rank_ladders ranks rank_awards rank_skill_checks
+    box_review_reports box_review_decisions
   )
 
   @transitional_tenant_tables []
@@ -152,7 +160,9 @@ defmodule Palee.Infrastructure.Tenancy.Audit do
     training_goals
     personal_data_exports
     palee_leaderboard_consents
+    execution_splits watch_links execution_heart_rate_batches custom_foods watch_offers
     fitness_profile_settings
+    diploma_signatures diploma_signature_events
   )
 
   def report do

@@ -28,12 +28,16 @@ defmodule Palee.Application.AccountDeletion do
   require Logger
 
   alias Palee.Application.{
+    DebtorContacts,
+    DiplomaSignatures,
     LoginUser,
     PartnerVerificationRetention,
     PasswordVerifier,
     PublicURL,
     SecurityNotices
   }
+
+  alias Palee.Application.Integrations.AudienceSync
 
   alias Palee.{Channels, Email, Identity, Organizations}
   alias Palee.Email.LinkTokens
@@ -327,12 +331,19 @@ defmodule Palee.Application.AccountDeletion do
   end
 
   defp remove_profile(profile) do
+    # ADR-450: each box the person still owes keeps their name, email and
+    # SMS number until the debt is settled (read before the number goes).
+    :ok = DebtorContacts.keep(profile)
     # ADR-280: the Partners check's selfies and rows (anonymising keeps the
     # profile row, so they are removed here rather than by the cascade).
     :ok = PartnerVerificationRetention.purge_person(profile.id)
+    # ADR-377 addendum: the coach's diploma signature, rows and images.
+    :ok = DiplomaSignatures.purge_person(profile.id)
     # ADR-348: the box's SMS number, consents and messages (tenant rows,
     # removed in each box's own session; an anonymised profile keeps none).
     :ok = forget_channel_contacts(profile.id)
+    # ADR-380: boxes' email lists drop the address while it is still known.
+    :ok = AudienceSync.forget_person(profile)
 
     if AccountDeletionStore.has_retained_records?(profile.id) do
       :ok = AccountDeletionStore.anonymize_profile(profile.id)

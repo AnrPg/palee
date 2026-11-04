@@ -10,6 +10,10 @@ import {
   consentAnswered,
   consentGranted,
   deliveryCounts,
+  isSmsVendor,
+  ownVendors,
+  VENDOR_FIELDS,
+  vendorFieldError,
   formatCents,
   monthOf,
   providerFor,
@@ -154,5 +158,50 @@ describe("sms rules", () => {
     expect(smsErrorCode("channels_demo_mode")).toBe("channels_demo_mode");
     expect(smsErrorCode("nope")).toBeNull();
     expect(smsErrorCode("channel_budget_missing")).toBe("channel_budget_missing");
+  });
+});
+
+describe("own SMS vendors (ADR-396)", () => {
+  const sid = `AC${"0a".repeat(16)}`;
+
+  it("lists the vendors the API offers for an own account, in our order", () => {
+    const offered = [
+      { provider: "yuboto", account_modes: ["own"] },
+      { provider: "sandbox", account_modes: ["own", "palee"] },
+      { provider: "brevo", account_modes: ["own", "palee"] },
+      { provider: "twilio", account_modes: ["palee"] },
+    ];
+    expect(ownVendors(offered)).toEqual(["brevo", "yuboto"]);
+    expect(isSmsVendor("apifon")).toBe(true);
+    expect(isSmsVendor("sandbox")).toBe(false);
+    expect(VENDOR_FIELDS.vonage.map((field) => field.key)).toEqual(["account_id", "secret", "webhook_secret"]);
+  });
+
+  it("checks each vendor's fields like the API does", () => {
+    expect(vendorFieldError("twilio", "account_id", "")).toBe("required");
+    expect(vendorFieldError("twilio", "account_id", "AC12")).toBe("invalid");
+    expect(vendorFieldError("twilio", "account_id", sid)).toBeNull();
+    expect(vendorFieldError("twilio", "secret", "")).toBe("required");
+    // A saved secret of the same vendor stays when the field is left empty.
+    expect(vendorFieldError("twilio", "secret", "", true)).toBeNull();
+    expect(vendorFieldError("vonage", "webhook_secret", "")).toBeNull();
+    expect(vendorFieldError("infobip", "base_url", "https://ab12.api.infobip.com")).toBeNull();
+    expect(vendorFieldError("infobip", "base_url", "https://ab12.api.infobip.com.evil.io")).toBe("invalid");
+    expect(vendorFieldError("infobip", "base_url", "http://ab12.api.infobip.com")).toBe("invalid");
+    expect(vendorFieldError("yuboto", "secret", "x".repeat(301))).toBe("invalid");
+    expect(vendorFieldError("yuboto", "account_id", "")).toBeNull();
+  });
+});
+
+describe("Twilio Messaging Service as sender (ADR-396)", () => {
+  const service = `MG${"0f".repeat(16)}`;
+
+  it("takes an MG SID only when the provider is Twilio", () => {
+    expect(senderError(service, "twilio")).toBeNull();
+    expect(senderError(service, "vonage")).toBe("tooLong");
+    expect(senderError(service)).toBe("tooLong");
+    expect(senderError(`MG${"zz".repeat(16)}`, "twilio")).toBe("twilioService");
+    expect(senderError("MGym", "twilio")).toBeNull();
+    expect(senderError("CF Athina", "twilio")).toBeNull();
   });
 });

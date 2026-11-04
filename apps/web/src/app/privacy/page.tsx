@@ -22,6 +22,7 @@ const DATA_KEYS = [
   "dataBookings",
   "dataTraining",
   "dataWellness",
+  "dataFoodShares",
   "dataHealth",
   "dataMessages",
   "dataPayments",

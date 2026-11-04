@@ -71,6 +71,11 @@ defmodule Palee.Workouts do
   def remove_season_athlete(context, season_offering_id, athlete_id, from_date),
     do: WorkoutStore.remove_season_athlete(context, season_offering_id, athlete_id, from_date)
 
+  @doc "ADR-371: drops one athlete from the given assignments from a date on."
+  def remove_athlete_from_assignments(context, assignment_ids, athlete_id, from_date),
+    do:
+      WorkoutStore.remove_athlete_from_assignments(context, assignment_ids, athlete_id, from_date)
+
   def update_draft(id, params), do: UpdateDraftWorkout.call(id, params)
   def publish_workout(id, params), do: PublishWorkout.call(id, params)
   def publish_workout(context, id, params), do: WorkoutStore.publish_workout(context, id, params)

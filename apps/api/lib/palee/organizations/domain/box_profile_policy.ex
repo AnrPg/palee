@@ -12,14 +12,19 @@ defmodule Palee.Organizations.Domain.BoxProfilePolicy do
     {"strength", ~w(strength powerlifting olympic_lifting bodybuilding strongman kettlebell)},
     {"functional",
      ~w(crossfit functional_fitness hyrox hiit bootcamp circuit_training calisthenics gymnastics)},
+    # ADR-400: the gymnastics kinds rank ladders need.
+    {"gymnastics",
+     ~w(artistic_gymnastics rhythmic_gymnastics trampoline_tumbling acrobatics parkour)},
     {"endurance", ~w(running indoor_cycling cycling rowing endurance ems_training)},
     {"mind_body",
      ~w(yoga hot_yoga pilates pilates_reformer barre mobility stretching tai_chi_qigong)},
     {"combat",
-     ~w(boxing kickboxing muay_thai mma bjj_grappling wrestling martial_arts self_defense)},
-    {"dance", ~w(dance dance_fitness pole_aerial)},
+     ~w(boxing kickboxing muay_thai mma bjj_grappling wrestling martial_arts self_defense judo
+        karate taekwondo kung_fu krav_maga)},
+    {"dance",
+     ~w(dance dance_fitness pole_aerial ballet contemporary_dance latin_dance street_dance)},
     {"aquatic", ~w(swimming aqua_fitness)},
-    {"outdoor", ~w(outdoor_training climbing_bouldering)},
+    {"outdoor", ~w(outdoor_training climbing_bouldering skateboarding)},
     {"recovery", ~w(physio_rehab sports_massage recovery)}
   ]
 

@@ -119,7 +119,8 @@ defmodule Palee.Pantheon.Domain.FitnessProfile do
   The PRs as they stood on `date`: each PR's latest value beaten on or
   before it (the PR itself or one of its history snapshots), or nothing
   when it was set later. `history` rows carry `pr_record_id`, `score`,
-  `beaten_on` and `supporting_metrics`.
+  `beaten_on` and `supporting_metrics`, oldest first (as the PR store
+  lists them); of several on one day the last one written counts.
   """
   def as_of(prs, history, %Date{} = date) do
     by_record = Enum.group_by(history, &field(&1, :pr_record_id))
@@ -143,14 +144,22 @@ defmodule Palee.Pantheon.Domain.FitnessProfile do
         metrics: field(pr, :supporting_metrics)
       }
 
-      [current | snapshots]
-      |> Enum.filter(&(match?(%Date{}, &1.beaten_on) and Date.compare(&1.beaten_on, date) != :gt))
-      |> Enum.max_by(&Date.to_gregorian_days(&1.beaten_on), fn -> nil end)
+      # Oldest first (the history in the order it was written, the PR itself
+      # last), so on a day with several updates the latest one wins.
+      (snapshots ++ [current])
+      |> Enum.with_index()
+      |> Enum.filter(fn {then, _order} ->
+        match?(%Date{}, then.beaten_on) and Date.compare(then.beaten_on, date) != :gt
+      end)
+      |> Enum.max_by(
+        fn {then, order} -> {Date.to_gregorian_days(then.beaten_on), order} end,
+        fn -> nil end
+      )
       |> case do
         nil ->
           nil
 
-        then ->
+        {then, _order} ->
           %{
             name: field(pr, :name),
             unit: field(pr, :unit),
@@ -223,7 +232,10 @@ defmodule Palee.Pantheon.Domain.FitnessProfile do
         }
       end)
 
-    %{profile | domains: domains, overall: nil}
+    # «Τι να δουλέψεις» stays, without the numbers behind a weakest domain.
+    focus = Enum.map(profile.focus, &Map.drop(&1, [:score, :others_mean, :gap]))
+
+    %{profile | domains: domains, overall: nil, focus: focus}
   end
 
   def for_display(profile, "none"), do: %{profile | domains: [], overall: nil, focus: []}
@@ -240,7 +252,12 @@ defmodule Palee.Pantheon.Domain.FitnessProfile do
   defp score(_none), do: nil
 
   @doc "Points of a value on a benchmark's anchors (0..100, one decimal)."
-  def points(value, anchors, lower_is_better) do
+  def points(value, anchors, lower_is_better),
+    do: value |> raw_points(anchors, lower_is_better) |> Float.round(1)
+
+  # Unrounded, so the next anchor is chosen from the exact reading: 74.96
+  # shows as 75.0 but has not reached the 75-point anchor yet.
+  defp raw_points(value, anchors, lower_is_better) do
     # Times: a lower value is better, so flip both sides of the scale.
     {value, anchors} =
       if lower_is_better,
@@ -257,7 +274,7 @@ defmodule Palee.Pantheon.Domain.FitnessProfile do
         true -> between(value, anchors)
       end
 
-    (raw * 1.0) |> max(0.0) |> min(100.0) |> Float.round(1)
+    (raw * 1.0) |> max(0.0) |> min(100.0)
   end
 
   # Below the first anchor: points fall linearly to 0 at the value as far
@@ -282,7 +299,8 @@ defmodule Palee.Pantheon.Domain.FitnessProfile do
          %Date{} = on <- date(field(pr, :beaten_on)) do
       age = Date.diff(today, on)
       {basis, scored, anchors} = scored(value, benchmark, scale)
-      points = points(scored, anchors, benchmark.lower_is_better)
+      exact = raw_points(scored, anchors, benchmark.lower_is_better)
+      points = Float.round(exact, 1)
 
       %{
         benchmark: benchmark.key,
@@ -300,7 +318,7 @@ defmodule Palee.Pantheon.Domain.FitnessProfile do
         age_percent: scale.age_percent,
         points: points,
         anchors: Enum.map(anchors, fn {v, p} -> %{value: v, points: p} end),
-        next: next(points, anchors, basis, scale.body_weight, benchmark),
+        next: next(exact, anchors, basis, scale.body_weight, benchmark),
         beaten_on: on,
         age_days: age,
         stale: age > @stale_days

@@ -19,6 +19,7 @@ import {
   type OpeningHoursSpan,
 } from "@/api/facility";
 import { LocationCheckIn } from "@/components/check-in/LocationCheckIn";
+import { LocationDoors } from "@/components/doors/LocationDoors";
 import { OpeningHoursEditor } from "@/components/admin/location/OpeningHoursEditor";
 import type { Pin } from "@/components/admin/location/LocationPinMap";
 import { useSession } from "@/components/session-provider";
@@ -351,6 +352,9 @@ function EditorForm({ token, location }: { token: string; location: FacilityLoca
         </section>
 
         <LocationCheckIn token={token} locationId={location.id} />
+
+        {/* W10 screen 4 A (ADR-381): the branch's doors; their forms open in dialogs, outside this form. */}
+        <LocationDoors token={token} locationId={location.id} />
 
         <div
           className="fixed inset-x-0 bottom-0 z-(--z-nav) px-6 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3"

@@ -27,6 +27,7 @@ defmodule Palee.Application.Channels.ChannelSettings do
         :account_mode,
         :account_id,
         :secret,
+        :webhook_secret,
         :base_url,
         :sms_sender,
         :viber_sender,

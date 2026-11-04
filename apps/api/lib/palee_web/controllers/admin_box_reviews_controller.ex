@@ -4,7 +4,7 @@ defmodule PaleeWeb.AdminBoxReviewsController do
   use PaleeWeb, :controller
   use PaleeWeb.ControllerSpecs
 
-  alias Palee.Application.ReviewAsks.BoxReviews
+  alias Palee.Application.ReviewAsks.{BoxReviews, ReviewReports}
   alias PaleeWeb.Schemas.BoxReviews, as: S
   alias PaleeWeb.Schemas.BoxSite
   alias OpenApiSpex.{Parameter, Schema}
@@ -14,7 +14,8 @@ defmodule PaleeWeb.AdminBoxReviewsController do
   tags(["Box reviews"])
   security([%{"bearerAuth" => []}])
 
-  plug OpenApiSpex.Plug.CastAndValidate, [json_render_error_v2: true] when action in [:reply]
+  plug OpenApiSpex.Plug.CastAndValidate,
+       [json_render_error_v2: true] when action in [:reply, :report]
 
   operation(:index,
     summary: "The box's reviews (newest first) with the average and the Google listing",
@@ -50,6 +51,33 @@ defmodule PaleeWeb.AdminBoxReviewsController do
 
   def reply(conn, %{id: id}) do
     with {:ok, result} <- BoxReviews.reply(conn.assigns.tenant_context, id, conn.body_params),
+         do: json(conn, result)
+  end
+
+  operation(:report,
+    summary:
+      "Report a review as the box to the Palee team; the box can never hide a review itself",
+    parameters: [
+      %Parameter{
+        name: :id,
+        in: :path,
+        required: true,
+        schema: %Schema{type: :string, format: :uuid}
+      }
+    ],
+    request_body: BoxSite.body(S.report_request()),
+    responses: [
+      ok: {"Reported", "application/json", S.report_response()},
+      not_found: {"No such review", "application/json", %Schema{type: :object}},
+      unprocessable_entity:
+        {"Invalid or my own review", "application/json", %Schema{type: :object}},
+      too_many_requests: {"Too many reports today", "application/json", %Schema{type: :object}}
+    ]
+  )
+
+  def report(conn, %{id: id}) do
+    with {:ok, result} <-
+           ReviewReports.report_as_box(conn.assigns.tenant_context, id, conn.body_params),
          do: json(conn, result)
   end
 end

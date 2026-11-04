@@ -20,7 +20,7 @@ defmodule Palee.Application.PersonalDataExports do
   require Logger
 
   alias Palee.{Email, Identity, PersonalData}
-  alias Palee.Application.{MediaStorage, PublicURL}
+  alias Palee.Application.{DiplomaSignatures, MediaStorage, PublicURL}
   alias Palee.Workers.PersonalDataExportJob
 
   @bucket :media_private
@@ -71,8 +71,11 @@ defmodule Palee.Application.PersonalDataExports do
     name = PersonalData.file_name(now)
     key = MediaStorage.object_key(owner, "exports/personal-data/#{export.id}/#{name}")
 
+    # ADR-377 addendum: the person's diploma signature images.
+    files = DiplomaSignatures.export_files(user_id)
+
     with {:ok, %{zip: zip, record_count: count}} <-
-           PersonalData.archive(user_id, sections, now),
+           PersonalData.archive(user_id, sections, now, files),
          :ok <- store(owner, key, zip),
          {:ok, finished} <-
            PersonalData.finish_export(export, %{

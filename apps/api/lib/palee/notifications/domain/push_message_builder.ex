@@ -629,6 +629,15 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
     }
   end
 
+  # ADR-400 follow-up: calm, grouped; the count is in the bell (ICU plural on the web).
+  def build("rank_skills_checked", payload, localize) do
+    %{
+      title: localize.("New skills", %{}),
+      body: localize.("Your coach ticked new skills for %{rank}.", %{rank: payload["rank_name"]}),
+      url: payload["url"] || "/box/ranks"
+    }
+  end
+
   # ADR-158: neutral wording, no numbers.
   def build("body_measure_reminder", payload, localize) do
     %{
@@ -945,6 +954,49 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
         ),
       body: localize.("%{name} wrote through the box's website. Answer or call them.", bindings),
       url: payload["url"] || "/admin/leads"
+    }
+  end
+
+  # ADR-397: the Palee team decided on a review the person reported.
+  def build("box_review_report_decided", payload, localize) do
+    body =
+      case payload["outcome"] do
+        "hide" ->
+          localize.("The Palee team hid the review you reported.", %{})
+
+        "remove" ->
+          localize.("The Palee team removed the review you reported.", %{})
+
+        _keep ->
+          localize.("The Palee team checked the review you reported and kept it.", %{})
+      end
+
+    %{
+      title: localize.("Your report was decided", %{}),
+      body: body,
+      url: payload["url"] || "/box"
+    }
+  end
+
+  # ADR-397: the Palee team hid, removed or restored the person's review.
+  def build("box_review_moderated", %{"outcome" => "restore"} = payload, localize) do
+    %{
+      title: localize.("The Palee team restored your review", %{}),
+      body: localize.("Your review shows again in the box's reviews.", %{}),
+      url: payload["url"] || "/box"
+    }
+  end
+
+  def build("box_review_moderated", payload, localize) do
+    title =
+      if payload["outcome"] == "remove",
+        do: localize.("The Palee team removed your review", %{}),
+        else: localize.("The Palee team hid your review", %{})
+
+    %{
+      title: title,
+      body: localize.("See why and what you can do.", %{}),
+      url: payload["url"] || "/box"
     }
   end
 
@@ -1425,6 +1477,19 @@ defmodule Palee.Notifications.Domain.PushMessageBuilder do
           %{connection: payload["connection"] || ""}
         ),
       url: payload["url"] || "/admin/settings/billing"
+    }
+  end
+
+  # ADR-379: Palee turned off a webhook; `host` is the receiver's host name.
+  def build("webhook_disabled", payload, localize) do
+    %{
+      title: localize.("A webhook was turned off", %{}),
+      body:
+        localize.(
+          "Palee stopped sending events to %{host}. Open the webhook to check it and turn it back on.",
+          %{host: payload["host"] || ""}
+        ),
+      url: payload["url"] || "/admin/settings"
     }
   end
 

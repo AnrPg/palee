@@ -13,7 +13,8 @@ defmodule Palee.Payments.Domain.IntentPolicy do
   the provider reports when asked, never from a webhook body.
   """
 
-  @purposes ~w(finance_invoice membership_package shop_order booking)
+  # ADR-371: `programme` pays a programme purchase (`programme_purchases`).
+  @purposes ~w(finance_invoice membership_package shop_order booking programme)
   @currencies ~w(EUR GBP USD CHF)
   @open ~w(scheduled awaiting_payer processing)
   @max_amount_cents 10_000_000

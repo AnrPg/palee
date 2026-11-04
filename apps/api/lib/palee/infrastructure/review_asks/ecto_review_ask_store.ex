@@ -9,6 +9,8 @@ defmodule Palee.Infrastructure.ReviewAsks.EctoReviewAskStore do
 
   alias Palee.ReviewAsks.{
     BoxReview,
+    BoxReviewDecision,
+    BoxReviewReport,
     GooglePlaceSnapshot,
     ReviewAsk,
     ReviewAskOptOut,
@@ -173,6 +175,8 @@ defmodule Palee.Infrastructure.ReviewAsks.EctoReviewAskStore do
     :reply_body,
     :replied_at,
     :replied_by_id,
+    :moderation,
+    :moderated_at,
     :inserted_at,
     :updated_at
   ]
@@ -228,7 +232,7 @@ defmodule Palee.Infrastructure.ReviewAsks.EctoReviewAskStore do
   @impl true
   def list_reviews(%{organization_id: organization_id}, %{limit: limit, offset: offset}) do
     BoxReview
-    |> where([r], r.organization_id == ^organization_id)
+    |> where([r], r.organization_id == ^organization_id and is_nil(r.moderation))
     |> order_by([r], desc: r.inserted_at, desc: r.id)
     |> limit(^limit)
     |> offset(^offset)
@@ -240,7 +244,7 @@ defmodule Palee.Infrastructure.ReviewAsks.EctoReviewAskStore do
   def review_stats(%{organization_id: organization_id}) do
     {count, sum} =
       BoxReview
-      |> where([r], r.organization_id == ^organization_id)
+      |> where([r], r.organization_id == ^organization_id and is_nil(r.moderation))
       |> select([r], {count(r.id), coalesce(sum(r.rating), 0)})
       |> Repo.one()
 
@@ -271,6 +275,225 @@ defmodule Palee.Infrastructure.ReviewAsks.EctoReviewAskStore do
 
   defp review_map(nil), do: nil
   defp review_map(review), do: Map.take(review, @review_fields)
+
+  # ── Reports and decisions (ADR-397) ─────────────────────────────────────
+
+  @report_fields [
+    :id,
+    :organization_id,
+    :review_id,
+    :review_author_id,
+    :reporter_id,
+    :reporter_role,
+    :reason,
+    :note,
+    :review_rating,
+    :review_body,
+    :status,
+    :decision_id,
+    :decided_at,
+    :inserted_at
+  ]
+
+  @decision_fields [
+    :id,
+    :organization_id,
+    :review_id,
+    :review_author_id,
+    :outcome,
+    :ground,
+    :statement,
+    :reports_count,
+    :decided_by_id,
+    :decided_at
+  ]
+
+  @impl true
+  def reported_review_ids(%{organization_id: organization_id}, reporter_id) do
+    BoxReviewReport
+    |> where(
+      [r],
+      r.organization_id == ^organization_id and r.reporter_id == ^reporter_id and
+        r.status == "open"
+    )
+    |> select([r], r.review_id)
+    |> Repo.all()
+  end
+
+  @impl true
+  def count_reports_since(%{organization_id: organization_id}, reporter_id, since) do
+    BoxReviewReport
+    |> where(
+      [r],
+      r.organization_id == ^organization_id and r.reporter_id == ^reporter_id and
+        r.inserted_at >= ^since
+    )
+    |> Repo.aggregate(:count)
+  end
+
+  @impl true
+  def insert_report(%{organization_id: organization_id}, attrs) do
+    %BoxReviewReport{organization_id: organization_id}
+    |> BoxReviewReport.changeset(attrs)
+    |> Repo.insert()
+    |> case do
+      {:ok, report} ->
+        {:ok, Map.take(report, @report_fields)}
+
+      {:error, %Ecto.Changeset{errors: errors} = changeset} ->
+        if Enum.any?(errors, fn {_field, {message, _meta}} -> message == "already_reported" end),
+          do: {:error, :already_reported},
+          else: {:error, changeset}
+    end
+  end
+
+  @impl true
+  def latest_decision(%{organization_id: organization_id}, review_id) do
+    BoxReviewDecision
+    |> where([d], d.organization_id == ^organization_id and d.review_id == ^review_id)
+    |> order_by([d], desc: d.decided_at, desc: d.id)
+    |> limit(1)
+    |> Repo.one()
+    |> decision_map()
+  end
+
+  @impl true
+  def decide_review(%{organization_id: organization_id}, review_id, changes, decision, status) do
+    Repo.transaction(fn ->
+      review =
+        Repo.one(
+          from r in BoxReview,
+            where: r.organization_id == ^organization_id and r.id == ^review_id,
+            lock: "FOR UPDATE"
+        ) || Repo.rollback(:box_review_not_found)
+
+      open =
+        Repo.all(
+          from r in BoxReviewReport,
+            where:
+              r.organization_id == ^organization_id and r.review_id == ^review_id and
+                r.status == "open",
+            lock: "FOR UPDATE"
+        )
+
+      if open == [], do: Repo.rollback(:review_report_decided)
+
+      updated = review |> Ecto.Changeset.change(changes) |> Repo.update!()
+
+      saved =
+        %BoxReviewDecision{organization_id: organization_id}
+        |> BoxReviewDecision.changeset(
+          Map.merge(decision, %{
+            review_id: review.id,
+            review_author_id: review.user_id,
+            reports_count: length(open)
+          })
+        )
+        |> Repo.insert!()
+
+      ids = Enum.map(open, & &1.id)
+
+      {_count, reports} =
+        Repo.update_all(
+          from(r in BoxReviewReport, where: r.id in ^ids, select: r),
+          set: [
+            status: status,
+            decision_id: saved.id,
+            decided_at: saved.decided_at,
+            updated_at: saved.decided_at
+          ]
+        )
+
+      %{
+        review: review_map(updated),
+        decision: decision_map(saved),
+        reports: Enum.map(reports, &Map.take(&1, @report_fields))
+      }
+    end)
+  end
+
+  @impl true
+  def restore_review(%{organization_id: organization_id}, review_id, changes, decision) do
+    Repo.transaction(fn ->
+      review =
+        Repo.one(
+          from r in BoxReview,
+            where: r.organization_id == ^organization_id and r.id == ^review_id,
+            lock: "FOR UPDATE"
+        ) || Repo.rollback(:box_review_not_found)
+
+      if review.moderation != "hidden", do: Repo.rollback(:review_not_hidden)
+
+      updated = review |> Ecto.Changeset.change(changes) |> Repo.update!()
+
+      saved =
+        %BoxReviewDecision{organization_id: organization_id}
+        |> BoxReviewDecision.changeset(
+          Map.merge(decision, %{review_id: review.id, review_author_id: review.user_id})
+        )
+        |> Repo.insert!()
+
+      %{review: review_map(updated), decision: decision_map(saved)}
+    end)
+  end
+
+  # The Palee team's reads span every box: the vendor read policy admits
+  # them, the session has no organization.
+  @impl true
+  def platform_open_reports(_context, limit) do
+    BoxReviewReport
+    |> where([r], r.status == "open")
+    |> order_by([r], asc: r.inserted_at, asc: r.id)
+    |> limit(^limit)
+    |> Repo.all()
+    |> Enum.map(&Map.take(&1, @report_fields))
+  end
+
+  @impl true
+  def platform_decisions(_context, limit) do
+    BoxReviewDecision
+    |> order_by([d], desc: d.decided_at, desc: d.id)
+    |> limit(^limit)
+    |> Repo.all()
+    |> Enum.map(&decision_map/1)
+  end
+
+  @impl true
+  def platform_review_organization(_context, review_id) do
+    case Ecto.UUID.cast(review_id) do
+      {:ok, id} ->
+        BoxReviewReport
+        |> where([r], r.review_id == ^id)
+        |> select([r], r.organization_id)
+        |> limit(1)
+        |> Repo.one() ||
+          BoxReviewDecision
+          |> where([d], d.review_id == ^id)
+          |> select([d], d.organization_id)
+          |> limit(1)
+          |> Repo.one()
+
+      :error ->
+        nil
+    end
+  end
+
+  @impl true
+  def purge_removed_texts(before) do
+    %{rows: [[count]]} = Repo.query!("SELECT palee_purge_removed_review_texts($1)", [before])
+    count
+  end
+
+  @impl true
+  def open_report_totals do
+    %{rows: [[reviews, reports, oldest]]} =
+      Repo.query!("SELECT reviews, reports, oldest FROM palee_open_box_review_reports()")
+
+    %{reviews: reviews, reports: reports, oldest: oldest}
+  end
+
+  defp decision_map(nil), do: nil
+  defp decision_map(decision), do: Map.take(decision, @decision_fields)
 
   # ── Google listing (ADR-387) ────────────────────────────────────────────
 

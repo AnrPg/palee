@@ -824,6 +824,45 @@ msgstr "%{title} changed after you did it. See it as it was in your Journal."
 msgid "A WOD you did changed. See it as it was in your Journal."
 msgstr "A WOD you did changed. See it as it was in your Journal."
 
+msgid "Your report was decided"
+msgstr "Your report was decided"
+
+msgid "The Palee team hid the review you reported."
+msgstr "The Palee team hid the review you reported."
+
+msgid "The Palee team removed the review you reported."
+msgstr "The Palee team removed the review you reported."
+
+msgid "The Palee team checked the review you reported and kept it."
+msgstr "The Palee team checked the review you reported and kept it."
+
+msgid "The Palee team removed your review"
+msgstr "The Palee team removed your review"
+
+msgid "The Palee team hid your review"
+msgstr "The Palee team hid your review"
+
+msgid "See why and what you can do."
+msgstr "See why and what you can do."
+
+msgid "The Palee team restored your review"
+msgstr "The Palee team restored your review"
+
+msgid "Your review shows again in the box's reviews."
+msgstr "Your review shows again in the box's reviews."
+
+msgid "A webhook was turned off"
+msgstr "A webhook was turned off"
+
+msgid "Palee stopped sending events to %{host}. Open the webhook to check it and turn it back on."
+msgstr "Palee stopped sending events to %{host}. Open the webhook to check it and turn it back on."
+
+msgid "New skills"
+msgstr "New skills"
+
+msgid "Your coach ticked new skills for %{rank}."
+msgstr "Your coach ticked new skills for %{rank}."
+
 msgid "Your subscription ends today"
 msgstr "Your subscription ends today"
 

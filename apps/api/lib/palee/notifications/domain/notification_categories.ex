@@ -72,7 +72,7 @@ defmodule Palee.Notifications.Domain.NotificationCategories do
         workout_assigned workout_assignment_requested workout_completed review_submitted
         form_review_submitted form_review_completed coaching_reply_overdue
         nutrition_plan_updated coach_client_assigned coach_note_viewed coach_wellness_summary
-        training_goal_updated
+        training_goal_updated rank_skills_checked
       )
     },
     %{
@@ -105,7 +105,7 @@ defmodule Palee.Notifications.Domain.NotificationCategories do
         community_group_proposed community_report_created referral_review
         inventory_repair_needed inventory_stock_low inventory_digest cleaning_point_not_cleaned
         shop_stock_low shop_order_placed payment_needs_attention fiscal_connection_failed
-        site_request
+        site_request webhook_disabled
       )
     },
     %{
@@ -121,6 +121,7 @@ defmodule Palee.Notifications.Domain.NotificationCategories do
         journal_export_ready
         shop_order_ready shop_order_reminder shop_order_cancelled shop_back_in_stock
         document_signature_requested health_certificate_expiring
+        box_review_moderated box_review_report_decided
       )
     }
   ]

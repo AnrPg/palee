@@ -25,6 +25,8 @@ describe("workout types", () => {
     expect(workoutTypeFamily("bjj_grappling")).toBe("combat");
     expect(workoutTypeFamily("dance")).toBe("dance");
     expect(workoutTypeFamily("pole_aerial")).toBe("dance");
+    expect(workoutTypeFamily("artistic_gymnastics")).toBe("gymnastics");
+    expect(workoutTypeFamily("judo")).toBe("combat");
     expect(workoutTypeFamily("unknown")).toBeNull();
     expect(isWorkoutType("unknown")).toBe(false);
   });
@@ -57,7 +59,7 @@ describe("workout types", () => {
   });
 
   it("turns a family filter into its kinds and back", () => {
-    expect(workoutTypesOfFamilies(["dance"])).toEqual(["dance", "dance_fitness", "pole_aerial"]);
+    expect(workoutTypesOfFamilies(["dance"])).toEqual(["dance", "dance_fitness", "pole_aerial", "ballet", "contemporary_dance", "latin_dance", "street_dance"]);
     expect(familiesOfWorkoutTypes(["kickboxing", "crossfit"])).toEqual(["functional", "combat"]);
   });
 });

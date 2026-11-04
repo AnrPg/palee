@@ -37,6 +37,7 @@ import { CommunitySettingsLink } from "@/components/admin/community/CommunitySet
 import { CheckInSettingsLink } from "@/components/check-in/CheckInSettings";
 import { FiscalIdentityLink } from "@/components/fiscal/FiscalIdentityLink";
 import { SmsConnectionSettings } from "@/components/channels/SmsConnectionSettings";
+import { ConnectionsTabs } from "@/components/integrations/ConnectionsTabs";
 import { SpacesSettingsLink } from "@/components/spaces/SpacesSettings";
 import { BoxScreensSettingsLink } from "@/components/box-screen/BoxScreensSettings";
 import { RoleAccessSettings } from "@/components/admin/RoleAccessSettings";
@@ -61,6 +62,8 @@ import { ErrorNotice } from "@/components/ui/ErrorNotice";
 import { OnlinePaymentsSettings } from "@/components/admin/payments/OnlinePaymentsSettings";
 import { PayItemsCatalog } from "@/components/admin/coach-pay/PayItemsCatalog";
 import { CardSurchargeSettings } from "@/components/admin/payments/CardSurchargeSettings";
+import { RankLaddersSettings } from "@/components/body-devices/RankLaddersSettings";
+import { canKeepRankLadders } from "@/lib/body-devices";
 import { useSettingLevels, type SettingLevels } from "@/components/settings/AdvancedSettings";
 import { AdvancedSettingsCard } from "@/components/settings/AdvancedSettingsCard";
 
@@ -1243,8 +1246,10 @@ export function AdminSettingsHub() {
   const i18n = useUiTranslations();
   const paymentsT = useTranslations("OnlinePayments");
   const smsT = useTranslations("Sms");
+  const connectionsT = useTranslations("Connections");
   const coachPayT = useTranslations("CoachPay");
   const adv = useTranslations("AdvancedSettings");
+  const bodyDevices = useTranslations("BodyDevices");
   const { tokens, currentUser } = useSession();
   const token = tokens?.access_token;
   const { membership, selectedOrganizationSlug } = useSelectedMembershipRole();
@@ -1343,10 +1348,10 @@ export function AdminSettingsHub() {
               </CollapsibleSection>
             ) : null}
 
-            {/* W3 screen 1 A (ADR-348/349): Ρυθμίσεις › Συνδέσεις › Μηνύματα SMS. */}
+            {/* W3 screen 1 A (ADR-348/349): Ρυθμίσεις › Συνδέσεις › Μηνύματα SMS; W10 (ADR-378..380): keys, webhooks, email list. */}
             {can(membership, "manage_settings") ? (
-              <CollapsibleSection id="connections" title={smsT("connectionsTitle")} description={smsT("connectionsDescription")} defaultOpen={false}>
-                <SmsConnectionSettings token={token} />
+              <CollapsibleSection id="connections" title={smsT("connectionsTitle")} description={connectionsT("sectionDescription")} defaultOpen={false}>
+                <ConnectionsTabs sms={<SmsConnectionSettings token={token} />} token={token} />
               </CollapsibleSection>
             ) : null}
 
@@ -1494,6 +1499,17 @@ export function AdminSettingsHub() {
                   keywords: [adv("keywords.onSite"), i18n("admOnSiteDescription")],
                   content: <BoxScreensSettingsLink />,
                 },
+                // ADR-377: belts and levels (CP-E2), only for boxes that teach them.
+                ...(canKeepRankLadders(membership) && selectedOrganizationSlug
+                  ? [
+                      {
+                        id: "ranks",
+                        title: bodyDevices("ranks.groupTitle"),
+                        keywords: [bodyDevices("ranks.keywords")],
+                        content: <RankLaddersSettings token={token} slug={selectedOrganizationSlug} />,
+                      },
+                    ]
+                  : []),
                 ...(can(membership, "grant_staff_roles")
                   ? [
                       {

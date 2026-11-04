@@ -16,7 +16,8 @@ defmodule PaleeWeb.Schemas.Wellness do
     (minutes or quality required; both ends give minutes). meal: {slot?
     (breakfast, lunch, dinner, snack or a plan slot such as pre_workout), plan_fit?
     in_plan|off_plan, note?, media_id?,
-    portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5}.
+    portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5,
+    foods? [{name, barcode?, custom_food_id?, portion?}] up to 10 (ADR-376)}.
     """,
     additionalProperties: true
   }

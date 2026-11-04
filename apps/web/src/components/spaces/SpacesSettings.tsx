@@ -28,7 +28,7 @@ import {
 import { useSession } from "@/components/session-provider";
 import { FloorPlanCanvas, type PlanArea } from "@/components/spaces/FloorPlanCanvas";
 import { RoomPhotosEditor } from "@/components/spaces/RoomPhotosEditor";
-import { groupByBranch, spacesOnPlan, upcomingWindow, windowReady, type Point } from "@/components/spaces/floor-plan";
+import { groupByBranch, spaceGroups, spacesOnPlan, upcomingWindow, windowReady, type Point } from "@/components/spaces/floor-plan";
 import {
   StaffPanel,
   StatusText,
@@ -55,6 +55,7 @@ import { preparePhoto } from "@/lib/media-files";
 import { useSelectedMembershipRole } from "@/lib/membership-role";
 import { adminHref, useOrganizationSlug, useOrganizationTimeZone } from "@/lib/organization-slug";
 import { putPresigned } from "@/lib/presigned-upload";
+import { hasSeveralBranches } from "@/lib/location-scope";
 import { can } from "@/lib/role-navigation";
 import { dateTimeLocalToIso, formatInZone } from "@/lib/zoned-time";
 
@@ -97,10 +98,18 @@ export function SpacesSettings() {
     onSuccess: refresh,
   });
 
-  const branches = locations.data ?? [];
+  const branches = (locations.data ?? []).filter((location) => !location.archived_at);
+  // ADR-470: only what this box has. One branch or none: no branch picker
+  // and no «Παράρτημα» labels. No floor plan: no plan settings, and adding a
+  // space suggests uploading one.
+  const multiBranch = hasSeveralBranches(branches);
+  const floorPlans = spaces.data?.floor_plans ?? [];
+  const hasPlan = floorPlans.length > 0;
   const branchName = (id: string | null) => (id ? branches.find((location) => location.id === id)?.name ?? t("unknownBranch") : t("wholeGym"));
   const order = branch === ALL ? [...branches.map((location) => location.id), null] : [branch === WHOLE_GYM ? null : branch];
-  const groups = groupByBranch(spaces.data?.spaces ?? [], order).filter((group) => branch === ALL || group.locationId === (branch === WHOLE_GYM ? null : branch));
+  const groups = multiBranch
+    ? groupByBranch(spaces.data?.spaces ?? [], order).filter((group) => branch === ALL || group.locationId === (branch === WHOLE_GYM ? null : branch))
+    : spaceGroups(spaces.data?.spaces ?? [], order, false);
 
   return (
     <main className="min-h-screen px-4 py-8 md:px-10 md:py-10" style={{ background: "var(--bg)" }}>
@@ -109,7 +118,7 @@ export function SpacesSettings() {
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.28em]" style={{ color: "var(--primary)" }}>{t("eyebrow")}</p>
             <h1 className="mt-2 text-3xl font-semibold tracking-tight" style={{ color: "var(--text)" }}>{t("title")}</h1>
-            <p className="mt-2 max-w-2xl text-sm" style={{ color: "var(--muted)" }}>{t("intro")}</p>
+            <p className="mt-2 max-w-2xl text-sm" style={{ color: "var(--muted)" }}>{multiBranch ? t("intro") : t("introSingle")}</p>
           </div>
           {rights.manage ? (
             <button type="button" className={primaryButtonClass} style={primaryButtonStyle} data-testid="space-add" onClick={() => setEditing("new")}>
@@ -119,16 +128,18 @@ export function SpacesSettings() {
         </header>
 
         <div className="flex flex-wrap items-end gap-3">
-          <label className="block min-w-48">
-            <span className={captionClass} style={captionStyle}>{t("branch")}</span>
-            <Select className={inputClass} style={inputStyle} value={branch} onValueChange={setBranch} data-testid="spaces-branch-filter">
-              <option value={ALL}>{t("allBranches")}</option>
-              {branches.map((location) => (
-                <option key={location.id} value={location.id}>{location.name}</option>
-              ))}
-              <option value={WHOLE_GYM}>{t("wholeGym")}</option>
-            </Select>
-          </label>
+          {multiBranch ? (
+            <label className="block min-w-48">
+              <span className={captionClass} style={captionStyle}>{t("branch")}</span>
+              <Select className={inputClass} style={inputStyle} value={branch} onValueChange={setBranch} data-testid="spaces-branch-filter">
+                <option value={ALL}>{t("allBranches")}</option>
+                {branches.map((location) => (
+                  <option key={location.id} value={location.id}>{location.name}</option>
+                ))}
+                <option value={WHOLE_GYM}>{t("wholeGym")}</option>
+              </Select>
+            </label>
+          ) : null}
           <label className="flex min-h-11 items-center gap-2 text-sm" style={{ color: "var(--text-soft)" }}>
             <input type="checkbox" checked={showArchived} onChange={(event) => setShowArchived(event.target.checked)} />
             {t("showArchived")}
@@ -139,7 +150,7 @@ export function SpacesSettings() {
         {spaces.isError ? <StatusText tone="error">{localizeError(spaces.error, ui)}</StatusText> : null}
         {archive.isError ? <StatusText tone="error">{localizeError(archive.error, ui)}</StatusText> : null}
 
-        {spaces.data && rights.manage ? (
+        {spaces.data && rights.manage && hasPlan ? (
           <ClassPlansToggle token={token} on={spaces.data.settings?.floor_plans_in_classes ?? false} onChanged={refresh} />
         ) : null}
 
@@ -149,9 +160,10 @@ export function SpacesSettings() {
                 key={group.locationId ?? WHOLE_GYM}
                 token={token}
                 locationId={group.locationId}
-                title={branchName(group.locationId)}
+                title={multiBranch ? branchName(group.locationId) : t("planAndSpaces")}
+                eyebrow={multiBranch ? t("branch") : undefined}
                 spaces={group.items}
-                plans={(spaces.data.floor_plans ?? []).filter((plan) => (plan.location_id ?? null) === group.locationId)}
+                plans={multiBranch ? floorPlans.filter((plan) => (plan.location_id ?? null) === group.locationId) : floorPlans}
                 rights={rights}
                 plansInClasses={spaces.data.settings?.floor_plans_in_classes ?? false}
                 onRefresh={refresh}
@@ -171,9 +183,11 @@ export function SpacesSettings() {
           token={token}
           space={editing === "new" ? null : editing}
           branches={branches}
+          multiBranch={multiBranch}
           defaultBranch={branch === ALL || branch === WHOLE_GYM ? null : branch}
-          plans={spaces.data?.floor_plans ?? []}
+          plans={floorPlans}
           rights={rights}
+          onPlanAdded={refresh}
           onClose={() => setEditing(null)}
           onSaved={async () => {
             setEditing(null);
@@ -190,7 +204,7 @@ export function SpacesSettings() {
         />
       ) : null}
       {detailId ? (
-        <SpaceDetailDialog token={token} spaceId={detailId} rights={rights} branchName={branchName} onClose={() => setDetailId(null)} onChanged={refresh} />
+        <SpaceDetailDialog token={token} spaceId={detailId} rights={rights} branchName={multiBranch ? branchName : () => undefined} onClose={() => setDetailId(null)} onChanged={refresh} />
       ) : null}
     </main>
   );
@@ -200,6 +214,7 @@ function BranchSpaces({
   token,
   locationId,
   title,
+  eyebrow,
   spaces,
   plans,
   rights,
@@ -213,6 +228,7 @@ function BranchSpaces({
   token: string;
   locationId: string | null;
   title: string;
+  eyebrow?: string;
   spaces: Space[];
   plans: FloorPlan[];
   rights: Rights;
@@ -263,7 +279,7 @@ function BranchSpaces({
   return (
     <StaffPanel
       labelledBy={groupId}
-      eyebrow={t("branch")}
+      eyebrow={eyebrow}
       title={title}
       actions={rights.manage ? <FloorPlanUpload token={token} locationId={locationId} sortOrder={plans.length} onDone={onRefresh} /> : null}
     >
@@ -485,18 +501,22 @@ function SpaceForm({
   token,
   space,
   branches,
+  multiBranch,
   defaultBranch,
   plans,
   rights,
+  onPlanAdded,
   onClose,
   onSaved,
 }: {
   token: string;
   space: Space | null;
   branches: FacilityLocation[];
+  multiBranch: boolean;
   defaultBranch: string | null;
   plans: FloorPlan[];
   rights: Rights;
+  onPlanAdded: () => Promise<unknown>;
   onClose: () => void;
   onSaved: () => Promise<unknown>;
 }) {
@@ -508,7 +528,8 @@ function SpaceForm({
   const [locationId, setLocationId] = useState<string>(space ? space.location_id ?? WHOLE_GYM : defaultBranch ?? WHOLE_GYM);
   const [tasks, setTasks] = useState((space?.tasks ?? []).join("\n"));
   const [planId, setPlanId] = useState<string>(space?.floor_plan_id ?? "");
-  const branchPlans = plans.filter((plan) => (plan.location_id ?? WHOLE_GYM) === locationId);
+  // Without branches every plan of the box is offered, whatever branch row it hangs on.
+  const branchPlans = multiBranch ? plans.filter((plan) => (plan.location_id ?? WHOLE_GYM) === locationId) : plans;
 
   const save = useMutation({
     mutationFn: () => {
@@ -516,7 +537,13 @@ function SpaceForm({
       const body: SpaceInput = rights.manage
         ? {
             ...details,
-            location_id: locationId === WHOLE_GYM ? null : locationId,
+            // Without branches the space follows its floor plan's branch row (a plan
+            // and its spaces share one), else keeps the one it was saved under.
+            location_id: multiBranch
+              ? locationId === WHOLE_GYM ? null : locationId
+              : planId
+                ? plans.find((plan) => plan.id === planId)?.location_id ?? null
+                : space?.location_id ?? null,
             tasks: tasks.split("\n").map((task) => task.trim()).filter(Boolean),
             floor_plan_id: planId || null,
             ...(planId ? {} : { area: null }),
@@ -583,35 +610,45 @@ function SpaceForm({
         </label>
         {rights.manage ? (
           <>
-            <label className="block">
-              <span className={captionClass} style={captionStyle}>{t("branch")}</span>
-              <Select
-                className={inputClass}
-                {...field("location_id")}
-                value={locationId}
-                data-testid="space-branch"
-                onValueChange={edited((value: string) => {
-                  setLocationId(value);
-                  setPlanId("");
-                })}
-              >
-                <option value={WHOLE_GYM}>{t("wholeGym")}</option>
-                {branches.map((location) => (
-                  <option key={location.id} value={location.id}>{location.name}</option>
-                ))}
-              </Select>
-              <FieldError id="space-error-location_id">{errors?.fields.location_id}</FieldError>
-            </label>
-            <label className="block">
-              <span className={captionClass} style={captionStyle}>{t("floorPlan")}</span>
-              <Select className={inputClass} {...field("floor_plan_id")} value={planId} onValueChange={edited(setPlanId)}>
-                <option value="">{t("noPlan")}</option>
-                {branchPlans.map((plan) => (
-                  <option key={plan.id} value={plan.id}>{plan.name}</option>
-                ))}
-              </Select>
-              <FieldError id="space-error-floor_plan_id">{errors?.fields.floor_plan_id}</FieldError>
-            </label>
+            {multiBranch ? (
+              <label className="block">
+                <span className={captionClass} style={captionStyle}>{t("branch")}</span>
+                <Select
+                  className={inputClass}
+                  {...field("location_id")}
+                  value={locationId}
+                  data-testid="space-branch"
+                  onValueChange={edited((value: string) => {
+                    setLocationId(value);
+                    setPlanId("");
+                  })}
+                >
+                  <option value={WHOLE_GYM}>{t("wholeGym")}</option>
+                  {branches.map((location) => (
+                    <option key={location.id} value={location.id}>{location.name}</option>
+                  ))}
+                </Select>
+                <FieldError id="space-error-location_id">{errors?.fields.location_id}</FieldError>
+              </label>
+            ) : null}
+            {branchPlans.length > 0 ? (
+              <label className="block">
+                <span className={captionClass} style={captionStyle}>{t("floorPlan")}</span>
+                <Select className={inputClass} {...field("floor_plan_id")} value={planId} onValueChange={edited(setPlanId)}>
+                  <option value="">{t("noPlan")}</option>
+                  {branchPlans.map((plan) => (
+                    <option key={plan.id} value={plan.id}>{plan.name}</option>
+                  ))}
+                </Select>
+                <FieldError id="space-error-floor_plan_id">{errors?.fields.floor_plan_id}</FieldError>
+              </label>
+            ) : (
+              // ADR-470: no floor plan yet, so no plan picker: offer to upload one instead.
+              <div className="flex flex-wrap items-center gap-3 sm:col-span-2" data-testid="space-form-no-plan">
+                <p className="min-w-0 flex-1 text-sm" style={{ color: "var(--muted)" }}>{t("noPlans")}</p>
+                <FloorPlanUpload token={token} locationId={multiBranch && locationId !== WHOLE_GYM ? locationId : null} sortOrder={0} onDone={onPlanAdded} />
+              </div>
+            )}
             <label className="block sm:col-span-2">
               <span className={captionClass} style={captionStyle}>{t("tasks")}</span>
               <textarea className={inputClass} {...field("tasks")} rows={3} value={tasks} onChange={(event) => edited(setTasks)(event.target.value)} />
@@ -718,7 +755,7 @@ function SpaceDetailDialog({
   token: string;
   spaceId: string;
   rights: Rights;
-  branchName: (id: string | null) => string;
+  branchName: (id: string | null) => string | undefined;
   onClose: () => void;
   onChanged: () => Promise<unknown>;
 }) {

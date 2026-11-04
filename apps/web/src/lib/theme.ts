@@ -117,6 +117,23 @@ export type ThemeTokens = {
   series8: string;
   seriesNeutral: string;
   onSeries: string;
+  // Belts and levels (ADR-377): a belt's own colour, the same meaning in both
+  // themes; the edge keeps a white belt visible on light panels and a black
+  // one on dark panels, the stripe marks progress inside a belt.
+  beltWhite: string;
+  beltGrey: string;
+  beltYellow: string;
+  beltOrange: string;
+  beltGreen: string;
+  beltBlue: string;
+  beltPurple: string;
+  beltBrown: string;
+  beltRed: string;
+  beltBlack: string;
+  beltPink: string;
+  beltEdge: string;
+  beltStripe: string;
+  beltBar: string;
   // Anatomy figure (ADR-164)
   anatomyPrimary: string;
   anatomySecondary: string;
@@ -256,6 +273,20 @@ export const APP_THEMES: Record<ThemeSlug, AppTheme> = {
       series8: "#5E7A00",
       seriesNeutral: "#8A909B",
       onSeries: WHITE,
+      beltWhite: "#F7F7F5",
+      beltGrey: "#8C9099",
+      beltYellow: "#F2C418",
+      beltOrange: "#E8761E",
+      beltGreen: "#2F9A4C",
+      beltBlue: "#2659BF",
+      beltPurple: "#7340A0",
+      beltBrown: "#73502A",
+      beltRed: "#C8202F",
+      beltBlack: "#1A1A1A",
+      beltPink: "#E86AA6",
+      beltEdge: "#A2A8B3",
+      beltStripe: WHITE,
+      beltBar: "#1A1A1A",
       anatomyPrimary: DOJO,
       anatomySecondary: "#8FA4FF",
       anatomyStabilizer: "#C9D5FF",
@@ -363,6 +394,20 @@ export const APP_THEMES: Record<ThemeSlug, AppTheme> = {
       series8: SPARK,
       seriesNeutral: "#8A909B",
       onSeries: "#0E0F12",
+      beltWhite: "#ECECEA",
+      beltGrey: "#8C9099",
+      beltYellow: "#F2C418",
+      beltOrange: "#F08A3A",
+      beltGreen: "#3DAE5C",
+      beltBlue: "#3A6FD8",
+      beltPurple: "#8A55BC",
+      beltBrown: "#8A6136",
+      beltRed: "#E0303F",
+      beltBlack: "#0B0B0D",
+      beltPink: "#F07DB5",
+      beltEdge: "#4A4F5A",
+      beltStripe: WHITE,
+      beltBar: "#0B0B0D",
       anatomyPrimary: DOJO_GLOW,
       anatomySecondary: "#8FA4FF",
       anatomyStabilizer: "#3A4A8C",

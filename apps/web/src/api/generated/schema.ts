@@ -4,6 +4,50 @@
  */
 
 export interface paths {
+    "/api/access/doors/{id}/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A door controller's own event (door opened, forced, held open); GET or POST
+         * @description The URL with its token is shown in the door's settings. An unknown door and a wrong token answer the same 404.
+         */
+        get: operations["PaleeWeb.DoorAccessController.ingest"];
+        put?: never;
+        /**
+         * A door controller's own event (door opened, forced, held open); GET or POST
+         * @description The URL with its token is shown in the door's settings. An unknown door and a wrong token answer the same 404.
+         */
+        post: operations["PaleeWeb.DoorAccessController.ingest (2)"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/access/open": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Open the door: proof of presence, then the box's entry rules
+         * @description Refused with `entry_denied` (`params.reason`: `not_a_member`, `outside_hours`, `no_booking_in_window`, `staff_only`), `choose_door` (`params.doors`) when the branch has several doors, `no_door_here`, `door_needs_door_scan` for the printed poster or the arrival reminder, or `door_offline` when the controller cannot be reached: the door stays locked and the member goes to the desk.
+         */
+        post: operations["PaleeWeb.DoorAccessController.open"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/anatomy/taxonomy": {
         parameters: {
             query?: never;
@@ -1099,6 +1143,24 @@ export interface paths {
         patch: operations["PaleeWeb.ExecutionController.complete"];
         trace?: never;
     };
+    "/api/executions/{id}/heart-rate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Heart rate of this execution: average, highest, per section and zones */
+        get: operations["PaleeWeb.WatchController.heart_rate_summary"];
+        put?: never;
+        /** Numbered heart-rate batches from the watch; a resent batch is stored once */
+        post: operations["PaleeWeb.WatchController.heart_rate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/executions/{id}/interactions": {
         parameters: {
             query?: never;
@@ -1113,6 +1175,23 @@ export interface paths {
          * @description Batched, idempotent ingestion of execution interaction signals the server cannot observe (pause sheet, manual skip, round taps, adjusts, ready screen, finish wizard, cast mode). Each event dedupes on its client_event_id; retries are accepted and counted as duplicates. Any invalid event rejects the batch.
          */
         post: operations["PaleeWeb.ExecutionController.record_interactions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/executions/{id}/pacer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The previous attempt at the same WOD or benchmark as a pace line beside this one */
+        get: operations["PaleeWeb.ExecutionPacerController.show"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1134,6 +1213,74 @@ export interface paths {
         head?: never;
         /** Persist execution progress */
         patch: operations["PaleeWeb.ExecutionController.update_progress"];
+        trace?: never;
+    };
+    "/api/executions/{id}/splits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Record split marks (segment ends and rounds); repeats are ignored */
+        post: operations["PaleeWeb.ExecutionPacerController.splits"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/executions/{id}/watch-offer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** When a WOD is opened for execution and the phone sees a connected watch: ask, start on the watch, or leave it (ANR's D8 rules) */
+        post: operations["PaleeWeb.WatchController.offer"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/executions/{id}/watch-offer/answer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** The person's answer to «Το χρονόμετρο και στο ρολόι;» for this execution */
+        put: operations["PaleeWeb.WatchController.answer_offer"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/executions/{id}/watch-plan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** What the watch runs for this execution: segments, progress and the pace line */
+        get: operations["PaleeWeb.WatchController.plan"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/gamification/goal": {
@@ -1186,6 +1333,30 @@ export interface paths {
         get: operations["PaleeWeb.HealthController.index"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/integrations/email-list/{id}/unsubscribe": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The email list's unsubscribe webhook (Mailchimp or Brevo); GET checks the address
+         * @description The address with its token is made in Settings › Connections › Email list. An unknown connection and a wrong token answer the same 404. Mailchimp posts a form (`type=unsubscribe`), Brevo posts JSON (`event: unsubscribed`); other events are ignored.
+         */
+        get: operations["PaleeWeb.EmailListHookController.unsubscribe"];
+        put?: never;
+        /**
+         * The email list's unsubscribe webhook (Mailchimp or Brevo); GET checks the address
+         * @description The address with its token is made in Settings › Connections › Email list. An unknown connection and a wrong token answer the same 404. Mailchimp posts a form (`type=unsubscribe`), Brevo posts JSON (`event: unsubscribed`); other events are ignored.
+         */
+        post: operations["PaleeWeb.EmailListHookController.unsubscribe (2)"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2591,6 +2762,77 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/me/devices/watches": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The person's paired watches and the contract version the server speaks */
+        get: operations["PaleeWeb.WatchController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/devices/watches/{platform}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Pair a watch (or refresh its app version and settings) */
+        put: operations["PaleeWeb.WatchController.pair"];
+        post?: never;
+        /** Unpair a watch; heart rate already recorded stays with its workouts */
+        delete: operations["PaleeWeb.WatchController.unpair"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/diploma-signature": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My diploma signature, whether I can keep one, and the limits */
+        get: operations["PaleeWeb.DiplomaSignatureController.show"];
+        put?: never;
+        /** Set or replace my diploma signature (PNG or JPEG, base64) */
+        post: operations["PaleeWeb.DiplomaSignatureController.create"];
+        /** Remove my diploma signature (diplomas drawn afterwards show an empty line) */
+        delete: operations["PaleeWeb.DiplomaSignatureController.delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/diploma-signature/image": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My own diploma signature image (for the preview; never anyone else's) */
+        get: operations["PaleeWeb.DiplomaSignatureController.image"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me/email-change": {
         parameters: {
             query?: never;
@@ -3027,6 +3269,79 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/api/me/foods": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The person's own foods */
+        get: operations["PaleeWeb.FoodsController.index"];
+        put?: never;
+        /** Write down a food (the manual entry after a scan, or any time) */
+        post: operations["PaleeWeb.FoodsController.create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/foods/barcode/{barcode}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Look a scanned barcode up: own foods, the cache, then Open Food Facts, USDA and licensed lists; else the manual entry */
+        get: operations["PaleeWeb.FoodsController.barcode"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/foods/label-read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Read a food label from photos into the «Δικό μου τρόφιμο» form (nothing is saved)
+         * @description One or two photos (`front`, `nutrition`), JPEG, PNG or WebP up to 4 MB each. The photos are read during the request and never stored. 503 when label reading is off.
+         */
+        post: operations["PaleeWeb.FoodsController.read_label"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me/foods/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete an own food (meals that named it keep the name) */
+        delete: operations["PaleeWeb.FoodsController.delete"];
+        options?: never;
+        head?: never;
+        /** Change an own food */
+        patch: operations["PaleeWeb.FoodsController.update"];
         trace?: never;
     };
     "/api/me/guides": {
@@ -5017,6 +5332,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/access-events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The access log, newest first (kept 180 days) */
+        get: operations["PaleeWeb.AdminDoorsController.events"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/ai-settings": {
         parameters: {
             query?: never;
@@ -5263,6 +5595,23 @@ export interface paths {
         /** Reply to a review as the box (or edit the reply) */
         put: operations["PaleeWeb.AdminBoxReviewsController.reply"];
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/box-reviews/{id}/report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Report a review as the box to the Palee team; the box can never hide a review itself */
+        post: operations["PaleeWeb.AdminBoxReviewsController.report"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5744,7 +6093,7 @@ export interface paths {
         get: operations["PaleeWeb.AdminChannelSettingsController.show"];
         /**
          * Connect the box's messaging provider, then check it
-         * @description `account_mode` `palee` (default) sends through Palee's own Brevo account, with the box's cost tracked against `monthly_budget_cents`; `own` uses the box's own Brevo API key (`secret`, kept when not sent, never returned). `quiet_start`/`quiet_end` ("HH:MM" on the box's clock, both null for none) hold non-urgent messages. `rotate_webhook` draws a new webhook URL.
+         * @description `account_mode` `palee` (default) sends through Palee's own Brevo account, with the box's cost tracked against `monthly_budget_cents`; `own` uses the box's own account with a vendor of ADR-396 (`brevo`, `twilio`, `vonage`, `infobip`, `yuboto`, `apifon`): `account_id`, `secret`, `webhook_secret` and `base_url` as that vendor needs them (secrets kept when not sent, never returned). `quiet_start`/`quiet_end` ("HH:MM" on the box's clock, both null for none) hold non-urgent messages. `rotate_webhook` draws a new webhook URL.
          */
         put: operations["PaleeWeb.AdminChannelSettingsController.save"];
         post?: never;
@@ -7324,6 +7673,96 @@ export interface paths {
         get: operations["PaleeWeb.AdminDocumentsController.version"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/doors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The doors, optionally of one branch */
+        get: operations["PaleeWeb.AdminDoorsController.index"];
+        put?: never;
+        /**
+         * Add a door with its controller; the controller is checked first
+         * @description Answers the door and, once, the event URL for the controller's own notifications.
+         */
+        post: operations["PaleeWeb.AdminDoorsController.create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/doors/catalog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Door controllers, entry rules' defaults and how long the access log is kept */
+        get: operations["PaleeWeb.AdminDoorsController.catalog"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/doors/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove a door (its access log stays until it ages out) */
+        delete: operations["PaleeWeb.AdminDoorsController.delete"];
+        options?: never;
+        head?: never;
+        /** Change a door's name, controller settings, key, rules or status */
+        patch: operations["PaleeWeb.AdminDoorsController.update"];
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/doors/{id}/event-token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** A new event URL for the controller's notifications (the old one stops) */
+        post: operations["PaleeWeb.AdminDoorsController.rotate_event_token"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/doors/{id}/unlock": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** «Άνοιγμα»: open the door from the desk; logged with who opened it */
+        post: operations["PaleeWeb.AdminDoorsController.unlock"];
         delete?: never;
         options?: never;
         head?: never;
@@ -9258,6 +9697,258 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/integrations/api-keys": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box's public API keys (never their secrets) */
+        get: operations["PaleeWeb.AdminIntegrationsController.keys"];
+        put?: never;
+        /**
+         * Make an API key that acts for you, narrowed to the chosen scopes
+         * @description The token is answered once. The key can never do more than the person who made it can do now; when they leave or lose the role, the key stops working.
+         */
+        post: operations["PaleeWeb.AdminIntegrationsController.create_key"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/integrations/api-keys/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Revoke a key at once (its webhook subscriptions go with it) */
+        delete: operations["PaleeWeb.AdminIntegrationsController.revoke_key"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/integrations/api-keys/{id}/rotate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Rotate a key's secret; the old one keeps working for 24 hours */
+        post: operations["PaleeWeb.AdminIntegrationsController.rotate_key"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/integrations/catalog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Scopes, webhook events and email list providers the settings can offer (EN, EL) */
+        get: operations["PaleeWeb.AdminIntegrationsController.catalog"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/integrations/deliveries/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One delivery with its payload and every attempt */
+        get: operations["PaleeWeb.AdminIntegrationsController.delivery"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/integrations/deliveries/{id}/replay": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Send a delivery's event again (same event id, a new delivery) */
+        post: operations["PaleeWeb.AdminIntegrationsController.replay"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/integrations/email-list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box's email list connection (never its key) */
+        get: operations["PaleeWeb.AdminIntegrationsController.audience"];
+        /**
+         * Connect Mailchimp or Brevo; only members who said yes are sent
+         * @description The provider is asked first; a refused key or unknown list is not saved. A sync follows: members with marketing consent are subscribed, others unsubscribed.
+         */
+        put: operations["PaleeWeb.AdminIntegrationsController.save_audience"];
+        post?: never;
+        /** Disconnect the email list (the list itself is left as it is) */
+        delete: operations["PaleeWeb.AdminIntegrationsController.delete_audience"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/integrations/email-list/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Sync the email list now */
+        post: operations["PaleeWeb.AdminIntegrationsController.sync_audience"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/integrations/email-list/unsubscribe-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * A new address for Mailchimp's or Brevo's unsubscribe webhook (shown once)
+         * @description Paste it into the provider's webhook settings (Mailchimp: «Unsubscribes»; Brevo: marketing event «Unsubscribed»). Someone who unsubscribes there has their switch in Palee turned off too. The old address stops working at once.
+         */
+        post: operations["PaleeWeb.AdminIntegrationsController.rotate_unsubscribe_url"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/integrations/webhooks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box's webhook endpoints */
+        get: operations["PaleeWeb.AdminIntegrationsController.webhooks"];
+        put?: never;
+        /** Add a webhook endpoint (https); its signing secret is answered once */
+        post: operations["PaleeWeb.AdminIntegrationsController.create_webhook"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/integrations/webhooks/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove an endpoint and its delivery log */
+        delete: operations["PaleeWeb.AdminIntegrationsController.delete_webhook"];
+        options?: never;
+        head?: never;
+        /** Change an endpoint's address, events or description, or turn it on or off */
+        patch: operations["PaleeWeb.AdminIntegrationsController.update_webhook"];
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/integrations/webhooks/{id}/deliveries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** An endpoint's delivery log, newest first */
+        get: operations["PaleeWeb.AdminIntegrationsController.deliveries"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/integrations/webhooks/{id}/rotate-secret": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** New signing secret; for 24 hours deliveries are signed with both */
+        post: operations["PaleeWeb.AdminIntegrationsController.rotate_webhook_secret"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/integrations/webhooks/{id}/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Send a `ping` event to the endpoint now */
+        post: operations["PaleeWeb.AdminIntegrationsController.test_webhook"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/leads": {
         parameters: {
             query?: never;
@@ -10320,6 +11011,173 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/admin/programme-purchases/{id}/refund": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Refund a buyer through the business's provider
+         * @description Up to what is left of the price. A full refund ends the purchase and removes its future WODs.
+         */
+        post: operations["PaleeWeb.AdminProgrammeController.refund"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/programme-reviews/{id}/moderate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Hide a review with a reason, or show it again
+         * @description Reviews are never edited or deleted by the business.
+         */
+        post: operations["PaleeWeb.AdminProgrammeController.moderate_review"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/programmes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The business's programmes with sales and ratings */
+        get: operations["PaleeWeb.AdminProgrammeController.index"];
+        put?: never;
+        /** Start a programme (a draft) */
+        post: operations["PaleeWeb.AdminProgrammeController.create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/programmes/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One programme with its versions, sales and ratings */
+        get: operations["PaleeWeb.AdminProgrammeController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Change a programme or its draft days
+         * @description Title, price, listing and the refund rule apply to later buyers only. The days reach buyers only when published as a new version.
+         */
+        patch: operations["PaleeWeb.AdminProgrammeController.update"];
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/programmes/{id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Stop selling a programme (buyers keep it) */
+        post: operations["PaleeWeb.AdminProgrammeController.archive"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/programmes/{id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Publish the draft days as the next version and put the programme on sale
+         * @description Each WOD is frozen as a hidden copy, so later edits never change what buyers paid for. Buyers keep the version they bought.
+         */
+        post: operations["PaleeWeb.AdminProgrammeController.publish"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/programmes/{id}/purchases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Who bought a programme, newest first */
+        get: operations["PaleeWeb.AdminProgrammeController.purchases"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/programmes/{id}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Sell an archived programme again */
+        post: operations["PaleeWeb.AdminProgrammeController.restore"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/programmes/{id}/reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Every review of a programme, hidden ones included */
+        get: operations["PaleeWeb.AdminProgrammeController.reviews"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/admin/public-profile": {
         parameters: {
             query?: never;
@@ -10418,6 +11276,42 @@ export interface paths {
         /** Hide the public page; the draft is kept */
         post: operations["PaleeWeb.AdminPublicProfileController.unpublish"];
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/rank-ladders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The box's ladders, the templates and the belt palette */
+        get: operations["PaleeWeb.AdminRankLaddersController.index"];
+        put?: never;
+        /** Create a ladder, from a template or from scratch */
+        post: operations["PaleeWeb.AdminRankLaddersController.create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/admin/rank-ladders/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Change a ladder and its ranks (a rank someone holds cannot be removed) */
+        put: operations["PaleeWeb.AdminRankLaddersController.update"];
+        post?: never;
+        /** Archive a ladder; its promotions stay in people's history */
+        delete: operations["PaleeWeb.AdminRankLaddersController.delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -13486,6 +14380,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/me/box-reviews/{id}/report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Report a review of my box to the Palee team (it stays up until they decide) */
+        post: operations["PaleeWeb.MyBoxReviewsController.report"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/me/channels": {
         parameters: {
             query?: never;
@@ -13746,6 +14657,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/me/features": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Which optional features this business has on
+         * @description ADR-470. With `location_ids` (a branch filter) a feature a branch can have on its own (promotions, a floor plan) counts only when it covers one of those branches or the whole box.
+         */
+        get: operations["PaleeWeb.MyFeaturesController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/me/finance": {
         parameters: {
             query?: never;
@@ -13918,6 +14849,27 @@ export interface paths {
         get: operations["PaleeWeb.WorkoutLeaderboardController.profile"];
         /** Set your division and birth year (only after opting in to leaderboards) */
         put: operations["PaleeWeb.WorkoutLeaderboardController.update_profile"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/marketing-consent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Whether I agreed to the box's marketing email */
+        get: operations["PaleeWeb.MarketingConsentController.show"];
+        /**
+         * Say yes or no to the box's marketing email
+         * @description Yes adds me to the box's email list (Mailchimp or Brevo) at the next sync with my email and first name only; no unsubscribes me there.
+         */
+        put: operations["PaleeWeb.MarketingConsentController.update"];
         post?: never;
         delete?: never;
         options?: never;
@@ -14210,6 +15162,111 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/me/programme-purchases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The programmes you bought here, with what giving one up returns */
+        get: operations["PaleeWeb.MyProgrammeController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/programme-purchases/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One programme you bought, with its dated WODs */
+        get: operations["PaleeWeb.MyProgrammeController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/programme-purchases/{id}/review": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Review a programme you bought (once it started); again to change it */
+        post: operations["PaleeWeb.MyProgrammeController.review"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/programme-purchases/{id}/withdraw": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Give a programme up and get back what the rules give */
+        post: operations["PaleeWeb.MyProgrammeController.withdraw"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/programmes/{id}/buy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Buy a programme: opens the business's provider checkout
+         * @description Nothing is delivered before the provider confirms the money; then the programme's WODs are scheduled from the start date.
+         */
+        post: operations["PaleeWeb.MyProgrammeController.buy"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/programmes/{id}/purchase-terms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** What buying a programme costs and the texts the buyer agrees to */
+        get: operations["PaleeWeb.MyProgrammeController.terms"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/me/progress": {
         parameters: {
             query?: never;
@@ -14219,6 +15276,40 @@ export interface paths {
         };
         /** Advanced statistics of my training in this gym */
         get: operations["PaleeWeb.MyContentController.progress"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/ranks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My rank on each of the box's ladders, progress and history */
+        get: operations["PaleeWeb.MyRanksController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/me/ranks/awards/{id}/certificate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My diploma for an award, as a PDF */
+        get: operations["PaleeWeb.MyRanksController.certificate"];
         put?: never;
         post?: never;
         delete?: never;
@@ -15555,6 +16646,41 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/org/{organization_slug}/staff/clients/{user_id}/ranks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A client's rank on each ladder, progress to the next and history */
+        get: operations["PaleeWeb.StaffRanksController.client"];
+        put?: never;
+        /** Promote a client, or add a stripe, ticking the skills shown */
+        post: operations["PaleeWeb.StaffRanksController.award"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/staff/clients/{user_id}/ranks/skills": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Tick or untick one skill of a rank for a client, between promotions (ADR-400) */
+        put: operations["PaleeWeb.StaffRanksController.check_skill"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/org/{organization_slug}/staff/clients/{user_id}/training-goal": {
         parameters: {
             query?: never;
@@ -16036,6 +17162,75 @@ export interface paths {
         /** Πελάτες μου stats for the signed-in coach (ADR-140 §7) */
         get: operations["PaleeWeb.CoachingExtrasController.my_client_stats"];
         put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/staff/rank-awards/{id}/certificate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The award's diploma as a PDF */
+        get: operations["PaleeWeb.StaffRanksController.certificate"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/staff/rank-awards/{id}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Withdraw an award with a reason; it stays in the history */
+        post: operations["PaleeWeb.StaffRanksController.revoke"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/staff/ranks/ready": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** People who meet what their ladder counts for the next rank (the coach decides) */
+        get: operations["PaleeWeb.StaffRanksController.ready"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/org/{organization_slug}/staff/ranks/skills/batch": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The ladders' skills and, for each person of a class, what they work towards and have ticked */
+        get: operations["PaleeWeb.StaffRanksController.class_skills"];
+        /** Tick or untick one skill for several people at once (a class) */
+        put: operations["PaleeWeb.StaffRanksController.batch_skills"];
         post?: never;
         delete?: never;
         options?: never;
@@ -17219,6 +18414,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/platform/food-misses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Barcodes no source had, most scanned first (vendors) */
+        get: operations["PaleeWeb.PlatformFoodMissesController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/platform/organization-purges": {
         parameters: {
             query?: never;
@@ -17862,6 +19074,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/platform/review-reports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Reported reviews (open, oldest first) or the latest decisions (vendors) */
+        get: operations["PaleeWeb.PlatformReviewReportController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/platform/review-reports/{review_id}/decision": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Keep, hide or remove a reported review, for every open report on it (vendors) */
+        post: operations["PaleeWeb.PlatformReviewReportController.decide"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/platform/review-reports/{review_id}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Show a hidden review again, with a statement for its author (vendors) */
+        post: operations["PaleeWeb.PlatformReviewReportController.restore"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/platform/site-domains": {
         parameters: {
             query?: never;
@@ -18398,6 +19661,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/public/boxes/{slug}/programmes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The programmes a box sells */
+        get: operations["PaleeWeb.PublicProgrammeController.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/boxes/{slug}/programmes/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One programme: preview days, weeks and published reviews */
+        get: operations["PaleeWeb.PublicProgrammeController.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/public/channels/unsubscribe/{token}": {
         parameters: {
             query?: never;
@@ -18459,6 +19756,23 @@ export interface paths {
         };
         /** Active public platform plans (pricing, coach onboarding) */
         get: operations["PaleeWeb.PlatformPlanController.index_public"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/public/programmes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Programmes of every business that lists them in the catalogue */
+        get: operations["PaleeWeb.PublicProgrammeController.catalogue"];
         put?: never;
         post?: never;
         delete?: never;
@@ -18918,6 +20232,61 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AccessEvent */
+        AccessEvent: {
+            /** Format: uuid */
+            actor_id?: string | null;
+            /** @description Who opened from the desk */
+            actor_name?: string | null;
+            /** Format: uuid */
+            door_controller_id?: string | null;
+            door_name?: string | null;
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            kind: "granted" | "denied" | "unlock_failed" | "staff_unlock" | "door_event";
+            /** Format: uuid */
+            location_id?: string | null;
+            /** @enum {string} */
+            method: "qr" | "nfc" | "staff" | "provider";
+            /** Format: date-time */
+            occurred_at: string;
+            /** @description Who entered or was refused */
+            person_name?: string | null;
+            provider_event?: string | null;
+            reason?: string | null;
+            /** Format: uuid */
+            user_id?: string | null;
+        };
+        /** AccessEventPage */
+        AccessEventPage: {
+            events: {
+                /** Format: uuid */
+                actor_id?: string | null;
+                /** @description Who opened from the desk */
+                actor_name?: string | null;
+                /** Format: uuid */
+                door_controller_id?: string | null;
+                door_name?: string | null;
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                kind: "granted" | "denied" | "unlock_failed" | "staff_unlock" | "door_event";
+                /** Format: uuid */
+                location_id?: string | null;
+                /** @enum {string} */
+                method: "qr" | "nfc" | "staff" | "provider";
+                /** Format: date-time */
+                occurred_at: string;
+                /** @description Who entered or was refused */
+                person_name?: string | null;
+                provider_event?: string | null;
+                reason?: string | null;
+                /** Format: uuid */
+                user_id?: string | null;
+            }[];
+            total: number;
+        };
         /** AccountHistoryPage */
         AccountHistoryPage: {
             entries: {
@@ -19259,12 +20628,22 @@ export interface components {
             domains: {
                 /** Format: date-time */
                 active_at: string | null;
+                /** @enum {string|null} */
+                certificate_error: "cluster_refused" | "cluster_unreachable" | "challenge_failed" | "rate_limited" | "issuer_not_ready" | "issuance_failed" | null;
+                /**
+                 * @description ADR-398: the host's certificate (none until DNS is proven, then pending, issuing, active or failed)
+                 * @enum {string}
+                 */
+                certificate_status: "none" | "pending" | "issuing" | "active" | "failed";
                 /** Format: date-time */
                 checked_at: string | null;
                 dns_records: {
                     name: string;
-                    /** @enum {string} */
-                    type: "TXT" | "CNAME" | "A";
+                    /**
+                     * @description ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)
+                     * @enum {string}
+                     */
+                    type: "TXT" | "CNAME" | "ALIAS";
                     value: string;
                 }[];
                 host: string;
@@ -19358,6 +20737,82 @@ export interface components {
             qualities: string[];
             roles: ("primary" | "secondary" | "stabilizer")[];
             version: number;
+        };
+        /**
+         * ApiKey
+         * @description A key's description. The secret itself is never shown again.
+         */
+        ApiKey: {
+            /** Format: date-time */
+            created_at?: string;
+            /** Format: uuid */
+            created_by_id?: string | null;
+            /** Format: date-time */
+            expires_at?: string | null;
+            /** Format: uuid */
+            id: string;
+            /** Format: date-time */
+            last_used_at?: string | null;
+            /** @description palee_live_ABCD…_•••• */
+            masked: string;
+            name: string;
+            prefix: string;
+            /**
+             * Format: date-time
+             * @description Until then the secret before the last rotation still works
+             */
+            previous_secret_expires_at?: string | null;
+            /** Format: date-time */
+            revoked_at?: string | null;
+            /** Format: date-time */
+            rotated_at?: string | null;
+            scopes: string[];
+            /** @enum {string} */
+            status: "active" | "revoked";
+        };
+        /** ApiKeyBody */
+        ApiKeyBody: {
+            /** Format: date-time */
+            expires_at?: string | null;
+            name: string;
+            scopes: string[];
+        };
+        /** ApiKeyWithToken */
+        ApiKeyWithToken: {
+            /**
+             * ApiKey
+             * @description A key's description. The secret itself is never shown again.
+             */
+            key: {
+                /** Format: date-time */
+                created_at?: string;
+                /** Format: uuid */
+                created_by_id?: string | null;
+                /** Format: date-time */
+                expires_at?: string | null;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                last_used_at?: string | null;
+                /** @description palee_live_ABCD…_•••• */
+                masked: string;
+                name: string;
+                prefix: string;
+                /**
+                 * Format: date-time
+                 * @description Until then the secret before the last rotation still works
+                 */
+                previous_secret_expires_at?: string | null;
+                /** Format: date-time */
+                revoked_at?: string | null;
+                /** Format: date-time */
+                rotated_at?: string | null;
+                scopes: string[];
+                /** @enum {string} */
+                status: "active" | "revoked";
+            };
+            /** @description Shown once: copy it now */
+            token: string;
         };
         /** AppointmentBooking */
         AppointmentBooking: {
@@ -20015,8 +21470,8 @@ export interface components {
             /** @description Default events, boxes, clubs */
             kinds?: ("events" | "boxes" | "clubs" | "posts")[];
             languages?: string[];
-            /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-            levels?: ("beginner" | "all_levels" | "advanced")[];
+            /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+            levels?: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
             max_price_cents?: number | null;
             min_price_cents?: number | null;
             /** @description Gazetteer places to search from, at most 5 */
@@ -20048,8 +21503,8 @@ export interface components {
                 /** @description Default events, boxes, clubs */
                 kinds?: ("events" | "boxes" | "clubs" | "posts")[];
                 languages?: string[];
-                /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-                levels?: ("beginner" | "all_levels" | "advanced")[];
+                /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                levels?: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                 max_price_cents?: number | null;
                 min_price_cents?: number | null;
                 /** @description Gazetteer places to search from, at most 5 */
@@ -20663,8 +22118,8 @@ export interface components {
             /** @description Default events, boxes, clubs */
             kinds: ("events" | "boxes" | "clubs" | "posts")[];
             languages: string[];
-            /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-            levels: ("beginner" | "all_levels" | "advanced")[];
+            /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+            levels: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
             max_price_cents: number | null;
             min_price_cents: number | null;
             /** @description Gazetteer places to search from, at most 5 */
@@ -20744,8 +22199,8 @@ export interface components {
                 /** @description Default events, boxes, clubs */
                 kinds?: ("events" | "boxes" | "clubs" | "posts")[];
                 languages?: string[];
-                /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-                levels?: ("beginner" | "all_levels" | "advanced")[];
+                /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                levels?: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                 max_price_cents?: number | null;
                 min_price_cents?: number | null;
                 /** @description Gazetteer places to search from, at most 5 */
@@ -21386,8 +22841,8 @@ export interface components {
                 /** @description Default events, boxes, clubs */
                 kinds?: ("events" | "boxes" | "clubs" | "posts")[];
                 languages?: string[];
-                /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-                levels?: ("beginner" | "all_levels" | "advanced")[];
+                /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                levels?: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                 max_price_cents?: number | null;
                 min_price_cents?: number | null;
                 /** @description Gazetteer places to search from, at most 5 */
@@ -21443,8 +22898,8 @@ export interface components {
                 /** @description Default events, boxes, clubs */
                 kinds: ("events" | "boxes" | "clubs" | "posts")[];
                 languages: string[];
-                /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-                levels: ("beginner" | "all_levels" | "advanced")[];
+                /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                levels: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                 max_price_cents: number | null;
                 min_price_cents: number | null;
                 /** @description Gazetteer places to search from, at most 5 */
@@ -22787,6 +24242,111 @@ export interface components {
             exercise_ref: string;
             label: string;
             sets: number;
+        };
+        /** AudienceConnection */
+        AudienceConnection: {
+            key_saved: boolean;
+            last_error?: string | null;
+            /** Format: date-time */
+            last_synced_at?: string | null;
+            list_id: string;
+            /** @enum {string} */
+            provider: "sandbox" | "mailchimp" | "brevo";
+            /** @enum {string} */
+            status: "active" | "invalid";
+            /** Format: date-time */
+            sync_requested_at?: string | null;
+            /** @description Whether the provider's unsubscribe webhook address was made */
+            unsubscribe_hook?: boolean;
+            /** Format: date-time */
+            updated_at?: string | null;
+        } | null;
+        /** AudienceConnectionBody */
+        AudienceConnectionBody: {
+            /** @description Kept encrypted, never shown again; leave out to keep the saved one */
+            api_key?: string;
+            list_id: string;
+            /** @enum {string} */
+            provider: "sandbox" | "mailchimp" | "brevo";
+        };
+        /** BarcodeLookup */
+        BarcodeLookup: {
+            /**
+             * FoodAttribution
+             * @description Shown with every product from a public source: Open Food Facts (ODbL 1.0), USDA FoodData Central (CC0), a licensed product list (its own licence) or Palee members (ODbL 1.0)
+             */
+            attribution?: {
+                images_licence?: string | null;
+                licence: string;
+                licence_url?: string | null;
+                source: string;
+                url?: string | null;
+            } | null;
+            barcode: string;
+            food?: {
+                barcode?: string | null;
+                brand?: string | null;
+                /**
+                 * Format: uuid
+                 * @description Own foods only
+                 */
+                id?: string | null;
+                image_url?: string | null;
+                name: string;
+                note?: string | null;
+                /**
+                 * FoodNutrients
+                 * @description Grams per 100 g. Only when a coach's plan sets macros and macros are not hidden; never energy
+                 */
+                nutrients: {
+                    carbohydrates?: number;
+                    fat?: number;
+                    fiber?: number;
+                    proteins?: number;
+                    salt?: number;
+                    sugars?: number;
+                } | null;
+                /** @enum {string|null} */
+                portion_hint: "protein" | "carbs" | "veg" | "fat" | null;
+                quantity?: string | null;
+                serving_size?: string | null;
+                /**
+                 * Format: date-time
+                 * @description Own foods only: when the person shared the product with everyone (ADR-421 addendum)
+                 */
+                shared_at?: string | null;
+            } | null;
+            /** @description Whether «Φωτογραφία ετικέτας» can prefill the manual entry (ADR-421) */
+            label_reading?: boolean;
+            macros_visible: boolean;
+            /**
+             * @description Why the manual entry
+             * @enum {string|null}
+             */
+            reason?: "not_found" | "failed" | "in_store_code" | null;
+            /**
+             * @description `palee_members`: a product members shared (ADR-421 addendum)
+             * @enum {string|null}
+             */
+            source?: "open_food_facts" | "usda_fdc" | "catalogue" | "palee_members" | "custom" | null;
+            /**
+             * @description `pending`: still asking, scan again in a few seconds; `manual`: write it down yourself
+             * @enum {string}
+             */
+            status: "found" | "pending" | "manual";
+        };
+        /** BarcodeMisses */
+        BarcodeMisses: {
+            misses: {
+                barcode: string;
+                /** @description ISO 3166 alpha-2; empty when unknown */
+                country: string;
+                /** Format: date */
+                first_seen_on: string;
+                /** Format: date */
+                last_seen_on: string;
+                scans: number;
+            }[];
         };
         /** BillingActions */
         BillingActions: {
@@ -24169,6 +25729,69 @@ export interface components {
                 table_count: number | null;
             }[];
         };
+        /** BoxProgrammeList */
+        BoxProgrammeList: {
+            /** @description The box's public card */
+            box: {
+                [key: string]: unknown;
+            };
+            programmes: {
+                currency: string;
+                description?: string | null;
+                equipment?: string[];
+                goal: string;
+                /** Format: uuid */
+                id: string;
+                latest_reviews?: {
+                    author?: {
+                        /** Format: uuid */
+                        id?: string;
+                        nickname?: string | null;
+                    } | null;
+                    body?: string | null;
+                    hidden_reason?: string | null;
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: date-time */
+                    inserted_at?: string;
+                    rating: number;
+                    /** @enum {string} */
+                    status: "published" | "hidden";
+                    /** Format: date-time */
+                    updated_at?: string;
+                    version_number: number;
+                }[];
+                level: string;
+                listing?: string;
+                preview?: {
+                    day: number;
+                    summary?: string | null;
+                    title?: string | null;
+                    week: number;
+                    weekday: number;
+                }[];
+                preview_days?: number;
+                price_cents: number;
+                /** Format: date-time */
+                published_at?: string | null;
+                refund_policy?: string;
+                /** ProgrammeRating */
+                reviews?: {
+                    average: number | null;
+                    count: number;
+                };
+                sessions?: number | null;
+                sessions_per_week?: number | null;
+                summary?: string | null;
+                title: string;
+                version_number?: number | null;
+                week_outline?: {
+                    sessions: number;
+                    week: number;
+                }[];
+                weeks?: number | null;
+            }[];
+        };
         /** BoxPublicProfile */
         BoxPublicProfile: {
             about: string | null;
@@ -24216,7 +25839,7 @@ export interface components {
                 video_url?: string | null;
                 width: number | null;
             } | null;
-            disciplines: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "physio_rehab" | "sports_massage" | "recovery")[];
+            disciplines: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "physio_rehab" | "sports_massage" | "recovery")[];
             languages: string[];
             lock_version: number;
             /** @description What the draft still needs before it can be published. */
@@ -24320,7 +25943,7 @@ export interface components {
                     video_url?: string | null;
                     width: number | null;
                 } | null;
-                disciplines: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "physio_rehab" | "sports_massage" | "recovery")[];
+                disciplines: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "physio_rehab" | "sports_massage" | "recovery")[];
                 languages: string[];
                 lock_version: number;
                 /** @description What the draft still needs before it can be published. */
@@ -24373,7 +25996,7 @@ export interface components {
             coach_ids?: string[];
             /** Format: uuid */
             cover_photo_id?: string | null;
-            disciplines?: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "physio_rehab" | "sports_massage" | "recovery")[];
+            disciplines?: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "physio_rehab" | "sports_massage" | "recovery")[];
             languages?: string[];
             /** @description The version the editor read. */
             lock_version?: number;
@@ -24400,6 +26023,34 @@ export interface components {
                 replied_at: string;
             } | null;
         };
+        /**
+         * BoxReviewModeration
+         * @description Null while the review is up; the statement of reasons when it is not
+         */
+        BoxReviewModeration: {
+            /** @description Decided after a report */
+            after_report: boolean;
+            /** @description Always false: a person decided */
+            automated: boolean;
+            /** @description Palee's moderation address, named for redress */
+            contact: string | null;
+            /** Format: date-time */
+            decided_at: string;
+            ground: string | null;
+            /**
+             * @description The law (illegal content) or Palee's terms
+             * @enum {string|null}
+             */
+            legal_basis: "law" | "terms" | null;
+            /** Format: date-time */
+            moderated_at: string;
+            /** @enum {string|null} */
+            outcome: "hide" | "remove" | null;
+            redress: ("contact_palee" | "court")[];
+            statement: string | null;
+            /** @enum {string} */
+            status: "hidden" | "removed";
+        } | null;
         /** BoxReviewReply */
         BoxReviewReply: {
             body: string;
@@ -24409,6 +26060,23 @@ export interface components {
         /** BoxReviewReplyRequest */
         BoxReviewReplyRequest: {
             body: string;
+        };
+        /** BoxReviewReportRequest */
+        BoxReviewReportRequest: {
+            /** @description Required for illegal and other */
+            note?: string | null;
+            /** @enum {string} */
+            reason: "offensive" | "personal_data" | "not_genuine" | "spam" | "illegal" | "other";
+        };
+        /**
+         * BoxReviewReportResponse
+         * @description The review stays up until the Palee team decides
+         */
+        BoxReviewReportResponse: {
+            /** Format: uuid */
+            review_id: string;
+            /** @enum {string} */
+            status: "open";
         };
         /** BoxReviewRequest */
         BoxReviewRequest: {
@@ -25367,7 +27035,7 @@ export interface components {
             amenities: ("showers" | "changing_rooms" | "lockers" | "towels" | "parking" | "bike_parking" | "public_transport_nearby" | "air_conditioning" | "sauna" | "cold_plunge" | "childcare" | "wheelchair_accessible" | "accessible_restroom" | "gender_neutral_restroom" | "wifi" | "water_refill" | "outdoor_area" | "drop_in_friendly")[];
             audiences: ("beginners" | "women_only" | "kids" | "teens" | "over_40" | "seniors" | "prenatal_postnatal" | "adaptive" | "athletes" | "students" | "lgbtq_friendly" | "returning_from_injury")[];
             discipline_groups: {
-                items: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "physio_rehab" | "sports_massage" | "recovery")[];
+                items: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "physio_rehab" | "sports_massage" | "recovery")[];
                 key: string;
             }[];
             services: ("personal_training" | "small_group_training" | "open_gym" | "nutrition_coaching" | "online_coaching" | "corporate")[];
@@ -25977,6 +27645,32 @@ export interface components {
                 section: string;
                 seeded: boolean;
             }[];
+        };
+        /** BusinessFeatures */
+        BusinessFeatures: {
+            /** @description ADR-470: every feature key with whether it is on */
+            features: {
+                branches: boolean;
+                card_autopay: boolean;
+                floor_plan: boolean;
+                module_corporate_clients: boolean;
+                module_digital_content: boolean;
+                module_events: boolean;
+                module_group_classes: boolean;
+                module_online_coaching: boolean;
+                module_open_gym: boolean;
+                module_personal_training: boolean;
+                online_drop_in: boolean;
+                online_packages: boolean;
+                online_payments: boolean;
+                online_personal_training: boolean;
+                online_programmes: boolean;
+                online_shop: boolean;
+                perks: boolean;
+                promotions: boolean;
+                referrals: boolean;
+                trials: boolean;
+            };
         };
         /** BusinessOrganization */
         BusinessOrganization: {
@@ -31906,6 +33600,80 @@ export interface components {
                 updated_at?: string;
             };
         };
+        /** CurrentReviewText */
+        CurrentReviewText: {
+            body: string | null;
+            /** Format: date-time */
+            edited_at: string | null;
+            rating: number;
+        } | null;
+        /** CustomFoodCreateRequest */
+        CustomFoodCreateRequest: {
+            barcode?: string | null;
+            brand?: string | null;
+            name: string;
+            note?: string | null;
+            nutrients?: {
+                [key: string]: number;
+            } | null;
+            /** @enum {string|null} */
+            portion_hint?: "protein" | "carbs" | "veg" | "fat" | null;
+            serving_label?: string | null;
+            /** @description «Μοιράσου το» (ADR-421 addendum): share the product (barcode, name, brand, portion, nutrition per 100 g; nothing about the person) with all Palee members and Open Food Facts. Only for a product barcode; never by default */
+            share?: boolean;
+        };
+        /** CustomFoodRequest */
+        CustomFoodRequest: {
+            barcode?: string | null;
+            brand?: string | null;
+            name?: string;
+            note?: string | null;
+            nutrients?: {
+                [key: string]: number;
+            } | null;
+            /** @enum {string|null} */
+            portion_hint?: "protein" | "carbs" | "veg" | "fat" | null;
+            serving_label?: string | null;
+            /** @description «Μοιράσου το» (ADR-421 addendum): share the product (barcode, name, brand, portion, nutrition per 100 g; nothing about the person) with all Palee members and Open Food Facts. Only for a product barcode; never by default */
+            share?: boolean;
+        };
+        /** CustomFoodsResponse */
+        CustomFoodsResponse: {
+            foods: {
+                barcode?: string | null;
+                brand?: string | null;
+                /**
+                 * Format: uuid
+                 * @description Own foods only
+                 */
+                id?: string | null;
+                image_url?: string | null;
+                name: string;
+                note?: string | null;
+                /**
+                 * FoodNutrients
+                 * @description Grams per 100 g. Only when a coach's plan sets macros and macros are not hidden; never energy
+                 */
+                nutrients: {
+                    carbohydrates?: number;
+                    fat?: number;
+                    fiber?: number;
+                    proteins?: number;
+                    salt?: number;
+                    sugars?: number;
+                } | null;
+                /** @enum {string|null} */
+                portion_hint: "protein" | "carbs" | "veg" | "fat" | null;
+                quantity?: string | null;
+                serving_size?: string | null;
+                /**
+                 * Format: date-time
+                 * @description Own foods only: when the person shared the product with everyone (ADR-421 addendum)
+                 */
+                shared_at?: string | null;
+            }[];
+            macros_visible: boolean;
+        };
         /** DailyStatLatest */
         DailyStatLatest: {
             /** Format: date */
@@ -32429,6 +34197,195 @@ export interface components {
             /** @description Phones only (ADR-172) */
             steps?: boolean;
             weight?: boolean;
+        };
+        /** DiplomaSignature */
+        DiplomaSignature: {
+            byte_size: number;
+            /** @enum {string} */
+            content_type: "image/png" | "image/jpeg";
+            height: number;
+            /** Format: uuid */
+            id: string;
+            /** Format: date-time */
+            updated_at: string;
+            width: number;
+        } | null;
+        /** DiplomaSignatureLimits */
+        DiplomaSignatureLimits: {
+            content_types: string[];
+            max_bytes: number;
+            max_height: number;
+            max_width: number;
+            min_height: number;
+            min_width: number;
+        };
+        /** DiplomaSignatureResponse */
+        DiplomaSignatureResponse: {
+            /** @description Whether the person awards ranks somewhere (owner, admin or coach) */
+            eligible: boolean;
+            /** DiplomaSignatureLimits */
+            limits: {
+                content_types: string[];
+                max_bytes: number;
+                max_height: number;
+                max_width: number;
+                min_height: number;
+                min_width: number;
+            };
+            /** DiplomaSignature */
+            signature: {
+                byte_size: number;
+                /** @enum {string} */
+                content_type: "image/png" | "image/jpeg";
+                height: number;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                updated_at: string;
+                width: number;
+            } | null;
+        };
+        /** DiplomaSignatureUpload */
+        DiplomaSignatureUpload: {
+            /** @description The PNG or JPEG file, base64 (a data: URL prefix is accepted) */
+            image_base64: string;
+        };
+        /** DiplomaSignatureUploadResponse */
+        DiplomaSignatureUploadResponse: {
+            /** DiplomaSignature */
+            signature: {
+                byte_size: number;
+                /** @enum {string} */
+                content_type: "image/png" | "image/jpeg";
+                height: number;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                updated_at: string;
+                width: number;
+            } | null;
+        };
+        /** Door */
+        Door: {
+            credentials_saved: boolean;
+            /** Format: uuid */
+            id: string;
+            last_error?: string | null;
+            /** Format: date-time */
+            last_seen_at?: string | null;
+            /** Format: uuid */
+            location_id: string;
+            name: string;
+            /** @enum {string} */
+            provider: "sandbox" | "shelly" | "kisi";
+            rules: {
+                [key: string]: unknown;
+            };
+            settings?: {
+                [key: string]: unknown;
+            };
+            /** @enum {string} */
+            status: "active" | "disabled" | "invalid";
+            /** Format: date-time */
+            updated_at?: string | null;
+        };
+        /** DoorBody */
+        DoorBody: {
+            /** @description Written, never read back (Shelly `auth_key`, Kisi `api_key`) */
+            credentials?: {
+                [key: string]: unknown;
+            };
+            /** Format: uuid */
+            location_id: string;
+            name: string;
+            /** @enum {string} */
+            provider: "sandbox" | "shelly" | "kisi";
+            rules?: {
+                [key: string]: unknown;
+            };
+            settings?: {
+                [key: string]: unknown;
+            };
+            /** @enum {string} */
+            status?: "active" | "disabled";
+        };
+        /** DoorCatalog */
+        DoorCatalog: {
+            defaults: {
+                [key: string]: unknown;
+            };
+            log_days: number;
+            providers: string[];
+            who: string[];
+        };
+        /**
+         * DoorOpenRequest
+         * @description Proof of presence at the door: `location_id` + `code` (the door screen's QR) or `nfc_code`; `door_id` when the branch has several doors. A `poster_code` is refused with `door_needs_door_scan`
+         */
+        DoorOpenRequest: {
+            code?: string;
+            /** Format: uuid */
+            door_id?: string;
+            /** Format: uuid */
+            location_id?: string;
+            nfc_code?: string;
+            poster_code?: string;
+        };
+        /** DoorOpenResult */
+        DoorOpenResult: {
+            door: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+            };
+            opened: boolean;
+            /** @enum {string} */
+            reason: "staff" | "member" | "booked_class" | "open_gym";
+            seconds: number;
+        };
+        /** DoorUpdate */
+        DoorUpdate: {
+            credentials?: {
+                [key: string]: unknown;
+            };
+            name?: string;
+            rules?: {
+                [key: string]: unknown;
+            };
+            settings?: {
+                [key: string]: unknown;
+            };
+            /** @enum {string} */
+            status?: "active" | "disabled";
+        };
+        /** DoorWithEventUrl */
+        DoorWithEventUrl: {
+            /** Door */
+            door: {
+                credentials_saved: boolean;
+                /** Format: uuid */
+                id: string;
+                last_error?: string | null;
+                /** Format: date-time */
+                last_seen_at?: string | null;
+                /** Format: uuid */
+                location_id: string;
+                name: string;
+                /** @enum {string} */
+                provider: "sandbox" | "shelly" | "kisi";
+                rules: {
+                    [key: string]: unknown;
+                };
+                settings?: {
+                    [key: string]: unknown;
+                };
+                /** @enum {string} */
+                status: "active" | "disabled" | "invalid";
+                /** Format: date-time */
+                updated_at?: string | null;
+            };
+            /** @description For the controller's own notifications; its token is shown once */
+            event_url: string;
         };
         /**
          * EntryAudience
@@ -33561,6 +35518,123 @@ export interface components {
             /** @enum {string} */
             status: "none" | "requested" | "active";
         };
+        /** Food */
+        Food: {
+            barcode?: string | null;
+            brand?: string | null;
+            /**
+             * Format: uuid
+             * @description Own foods only
+             */
+            id?: string | null;
+            image_url?: string | null;
+            name: string;
+            note?: string | null;
+            /**
+             * FoodNutrients
+             * @description Grams per 100 g. Only when a coach's plan sets macros and macros are not hidden; never energy
+             */
+            nutrients: {
+                carbohydrates?: number;
+                fat?: number;
+                fiber?: number;
+                proteins?: number;
+                salt?: number;
+                sugars?: number;
+            } | null;
+            /** @enum {string|null} */
+            portion_hint: "protein" | "carbs" | "veg" | "fat" | null;
+            quantity?: string | null;
+            serving_size?: string | null;
+            /**
+             * Format: date-time
+             * @description Own foods only: when the person shared the product with everyone (ADR-421 addendum)
+             */
+            shared_at?: string | null;
+        };
+        /**
+         * FoodAttribution
+         * @description Shown with every product from a public source: Open Food Facts (ODbL 1.0), USDA FoodData Central (CC0), a licensed product list (its own licence) or Palee members (ODbL 1.0)
+         */
+        FoodAttribution: {
+            images_licence?: string | null;
+            licence: string;
+            licence_url?: string | null;
+            source: string;
+            url?: string | null;
+        } | null;
+        /** FoodLabelReading */
+        FoodLabelReading: {
+            food: {
+                brand: string | null;
+                name: string | null;
+                /**
+                 * FoodNutrients
+                 * @description Grams per 100 g. Only when a coach's plan sets macros and macros are not hidden; never energy
+                 */
+                nutrients: {
+                    carbohydrates?: number;
+                    fat?: number;
+                    fiber?: number;
+                    proteins?: number;
+                    salt?: number;
+                    sugars?: number;
+                } | null;
+                /** @enum {string|null} */
+                portion_hint: "protein" | "carbs" | "veg" | "fat" | null;
+                serving_label: string | null;
+            };
+            macros_visible: boolean;
+        };
+        /**
+         * FoodNutrients
+         * @description Grams per 100 g. Only when a coach's plan sets macros and macros are not hidden; never energy
+         */
+        FoodNutrients: {
+            carbohydrates?: number;
+            fat?: number;
+            fiber?: number;
+            proteins?: number;
+            salt?: number;
+            sugars?: number;
+        } | null;
+        /** FoodResponse */
+        FoodResponse: {
+            /** Food */
+            food: {
+                barcode?: string | null;
+                brand?: string | null;
+                /**
+                 * Format: uuid
+                 * @description Own foods only
+                 */
+                id?: string | null;
+                image_url?: string | null;
+                name: string;
+                note?: string | null;
+                /**
+                 * FoodNutrients
+                 * @description Grams per 100 g. Only when a coach's plan sets macros and macros are not hidden; never energy
+                 */
+                nutrients: {
+                    carbohydrates?: number;
+                    fat?: number;
+                    fiber?: number;
+                    proteins?: number;
+                    salt?: number;
+                    sugars?: number;
+                } | null;
+                /** @enum {string|null} */
+                portion_hint: "protein" | "carbs" | "veg" | "fat" | null;
+                quantity?: string | null;
+                serving_size?: string | null;
+                /**
+                 * Format: date-time
+                 * @description Own foods only: when the person shared the product with everyone (ADR-421 addendum)
+                 */
+                shared_at?: string | null;
+            };
+        };
         /** FormReview */
         FormReview: {
             /** Format: uuid */
@@ -34124,6 +36198,61 @@ export interface components {
                 withdrawn_at?: string | null;
             }[];
         };
+        /** HeartRateBatchesRequest */
+        HeartRateBatchesRequest: {
+            batches: {
+                bpm: number[];
+                interval_ms: number;
+                sequence: number;
+                started_offset_ms: number;
+            }[];
+            /** @enum {string} */
+            platform: "apple_watch" | "wear_os";
+        };
+        /** HeartRateStoredResponse */
+        HeartRateStoredResponse: {
+            stored: number;
+            total: number;
+        };
+        /** HeartRateSummary */
+        HeartRateSummary: {
+            average_bpm?: number | null;
+            /** Format: uuid */
+            execution_id: string;
+            max_bpm?: number | null;
+            min_bpm?: number | null;
+            samples: number;
+            sections: {
+                average_bpm?: number | null;
+                max_bpm?: number | null;
+                section_ordinal: number;
+            }[];
+            zones: {
+                ms: number;
+                zone: number;
+            }[];
+        };
+        /** HeartRateSummaryResponse */
+        HeartRateSummaryResponse: {
+            /** HeartRateSummary */
+            heart_rate: {
+                average_bpm?: number | null;
+                /** Format: uuid */
+                execution_id: string;
+                max_bpm?: number | null;
+                min_bpm?: number | null;
+                samples: number;
+                sections: {
+                    average_bpm?: number | null;
+                    max_bpm?: number | null;
+                    section_ordinal: number;
+                }[];
+                zones: {
+                    ms: number;
+                    zone: number;
+                }[];
+            };
+        };
         /** InjuryAccessLog */
         InjuryAccessLog: {
             entries: {
@@ -34210,6 +36339,21 @@ export interface components {
             trigger?: "stress" | "fatigue" | "boredom" | "social" | "hunger" | null;
             trigger_count?: number | null;
             with_trigger?: number | null;
+        };
+        /** IntegrationCatalog */
+        IntegrationCatalog: {
+            audience_providers: string[];
+            events: {
+                el: string;
+                en: string;
+                scope?: string;
+                type?: string;
+            }[];
+            scopes: {
+                el: string;
+                en: string;
+                scope?: string;
+            }[];
         };
         /** InventoryLowReport */
         InventoryLowReport: {
@@ -34884,6 +37028,71 @@ export interface components {
             /** Format: uuid */
             space_id: string;
         };
+        /** MarketingConsent */
+        MarketingConsent: {
+            granted: boolean;
+            /** Format: date-time */
+            granted_at?: string | null;
+            /** @description Whether the box has an email list */
+            list_connected: boolean;
+            text_version?: string | null;
+            /** Format: date-time */
+            withdrawn_at?: string | null;
+        };
+        /** MarketingConsentBody */
+        MarketingConsentBody: {
+            granted: boolean;
+        };
+        /** MarketplaceProgramme */
+        MarketplaceProgramme: {
+            currency: string;
+            equipment?: string[];
+            goal?: string;
+            /** Format: uuid */
+            id: string;
+            level?: string;
+            /** Format: uuid */
+            organization_id?: string;
+            organization_name: string;
+            organization_slug: string;
+            price_cents: number;
+            /** Format: date-time */
+            published_at?: string | null;
+            rating_average?: number | null;
+            rating_count?: number;
+            sessions_per_week?: number | null;
+            summary?: string | null;
+            title: string;
+            version_number?: number;
+            weeks: number;
+        };
+        /** MarketplaceProgrammeList */
+        MarketplaceProgrammeList: {
+            limit: number;
+            offset: number;
+            programmes: {
+                currency: string;
+                equipment?: string[];
+                goal?: string;
+                /** Format: uuid */
+                id: string;
+                level?: string;
+                /** Format: uuid */
+                organization_id?: string;
+                organization_name: string;
+                organization_slug: string;
+                price_cents: number;
+                /** Format: date-time */
+                published_at?: string | null;
+                rating_average?: number | null;
+                rating_count?: number;
+                sessions_per_week?: number | null;
+                summary?: string | null;
+                title: string;
+                version_number?: number;
+                weeks: number;
+            }[];
+        };
         /** Media */
         Media: {
             alt_text?: string | null;
@@ -35542,6 +37751,34 @@ export interface components {
             edited_at: string | null;
             /** Format: uuid */
             id: string;
+            /**
+             * BoxReviewModeration
+             * @description Null while the review is up; the statement of reasons when it is not
+             */
+            moderation: {
+                /** @description Decided after a report */
+                after_report: boolean;
+                /** @description Always false: a person decided */
+                automated: boolean;
+                /** @description Palee's moderation address, named for redress */
+                contact: string | null;
+                /** Format: date-time */
+                decided_at: string;
+                ground: string | null;
+                /**
+                 * @description The law (illegal content) or Palee's terms
+                 * @enum {string|null}
+                 */
+                legal_basis: "law" | "terms" | null;
+                /** Format: date-time */
+                moderated_at: string;
+                /** @enum {string|null} */
+                outcome: "hide" | "remove" | null;
+                redress: ("contact_palee" | "court")[];
+                statement: string | null;
+                /** @enum {string} */
+                status: "hidden" | "removed";
+            } | null;
             rating: number;
             /** BoxReviewReply */
             reply: {
@@ -35581,6 +37818,34 @@ export interface components {
                 edited_at: string | null;
                 /** Format: uuid */
                 id: string;
+                /**
+                 * BoxReviewModeration
+                 * @description Null while the review is up; the statement of reasons when it is not
+                 */
+                moderation: {
+                    /** @description Decided after a report */
+                    after_report: boolean;
+                    /** @description Always false: a person decided */
+                    automated: boolean;
+                    /** @description Palee's moderation address, named for redress */
+                    contact: string | null;
+                    /** Format: date-time */
+                    decided_at: string;
+                    ground: string | null;
+                    /**
+                     * @description The law (illegal content) or Palee's terms
+                     * @enum {string|null}
+                     */
+                    legal_basis: "law" | "terms" | null;
+                    /** Format: date-time */
+                    moderated_at: string;
+                    /** @enum {string|null} */
+                    outcome: "hide" | "remove" | null;
+                    redress: ("contact_palee" | "court")[];
+                    statement: string | null;
+                    /** @enum {string} */
+                    status: "hidden" | "removed";
+                } | null;
                 rating: number;
                 /** BoxReviewReply */
                 reply: {
@@ -35589,6 +37854,8 @@ export interface components {
                     replied_at: string;
                 } | null;
             } | null;
+            /** @description Reviews I reported that the Palee team has not decided yet (ADR-397) */
+            reported_ids: string[];
             reviews: {
                 /** @description First name only; null for people who hide themselves */
                 author_name: string | null;
@@ -36480,6 +38747,215 @@ export interface components {
             previous_score?: number | null;
             score: number;
             unit: string;
+        };
+        /** PaceCheckpoint */
+        PaceCheckpoint: {
+            at_ms?: number | null;
+            /** @description This attempt minus the previous one: negative is ahead */
+            delta_ms: number | null;
+            ghost_at_ms: number;
+            ghost_lap_ms: number;
+            /** @description <section ordinal>:<phase>:<round>:<n> */
+            key: string;
+            lap_ms?: number | null;
+            /** @enum {string} */
+            phase: "work" | "rest" | "transition";
+            round: number;
+            section_id?: string | null;
+            section_name?: string | null;
+            section_ordinal: number;
+        };
+        /** PaceSection */
+        PaceSection: {
+            current_ms?: number | null;
+            delta_ms: number | null;
+            ghost_ms: number;
+            section_id?: string | null;
+            section_name?: string | null;
+            section_ordinal: number;
+        };
+        /** Pacer */
+        Pacer: {
+            checkpoints: {
+                at_ms?: number | null;
+                /** @description This attempt minus the previous one: negative is ahead */
+                delta_ms: number | null;
+                ghost_at_ms: number;
+                ghost_lap_ms: number;
+                /** @description <section ordinal>:<phase>:<round>:<n> */
+                key: string;
+                lap_ms?: number | null;
+                /** @enum {string} */
+                phase: "work" | "rest" | "transition";
+                round: number;
+                section_id?: string | null;
+                section_name?: string | null;
+                section_ordinal: number;
+            }[];
+            current_total_ms?: number | null;
+            /** Format: uuid */
+            execution_id: string;
+            ghost_total_ms?: number | null;
+            /** @enum {string|null} */
+            precision?: "rounds" | "segments" | "sections" | "finish" | null;
+            /** @description The attempt raced against; null when there is none */
+            previous: {
+                completed_at_tz?: string | null;
+                /** Format: date-time */
+                completed_at_utc: string;
+                /** Format: uuid */
+                execution_id: string;
+                /** @description False when it is the same benchmark from another workout */
+                same_workout: boolean;
+                scale_level_slug?: string | null;
+            } | null;
+            sections: {
+                current_ms?: number | null;
+                delta_ms: number | null;
+                ghost_ms: number;
+                section_id?: string | null;
+                section_name?: string | null;
+                section_ordinal: number;
+            }[];
+            total_delta_ms?: number | null;
+        };
+        /** PacerResponse */
+        PacerResponse: {
+            /** Pacer */
+            pacer: {
+                checkpoints: {
+                    at_ms?: number | null;
+                    /** @description This attempt minus the previous one: negative is ahead */
+                    delta_ms: number | null;
+                    ghost_at_ms: number;
+                    ghost_lap_ms: number;
+                    /** @description <section ordinal>:<phase>:<round>:<n> */
+                    key: string;
+                    lap_ms?: number | null;
+                    /** @enum {string} */
+                    phase: "work" | "rest" | "transition";
+                    round: number;
+                    section_id?: string | null;
+                    section_name?: string | null;
+                    section_ordinal: number;
+                }[];
+                current_total_ms?: number | null;
+                /** Format: uuid */
+                execution_id: string;
+                ghost_total_ms?: number | null;
+                /** @enum {string|null} */
+                precision?: "rounds" | "segments" | "sections" | "finish" | null;
+                /** @description The attempt raced against; null when there is none */
+                previous: {
+                    completed_at_tz?: string | null;
+                    /** Format: date-time */
+                    completed_at_utc: string;
+                    /** Format: uuid */
+                    execution_id: string;
+                    /** @description False when it is the same benchmark from another workout */
+                    same_workout: boolean;
+                    scale_level_slug?: string | null;
+                } | null;
+                sections: {
+                    current_ms?: number | null;
+                    delta_ms: number | null;
+                    ghost_ms: number;
+                    section_id?: string | null;
+                    section_name?: string | null;
+                    section_ordinal: number;
+                }[];
+                total_delta_ms?: number | null;
+            };
+        };
+        /** PairWatchRequest */
+        PairWatchRequest: {
+            app_version?: string;
+            contract_version: number;
+            device_name?: string;
+            /** WatchSettings */
+            settings?: {
+                haptics?: boolean;
+                /** @description Only with it the results show heart-rate zones */
+                max_hr?: number | null;
+                show_heart_rate?: boolean;
+                /** @description The previous attempt's pace line */
+                show_pace?: boolean;
+            };
+        };
+        /** PairedWatch */
+        PairedWatch: {
+            app_version?: string | null;
+            contract_version: number;
+            device_name?: string | null;
+            /** Format: date-time */
+            last_seen_at: string;
+            needs_upgrade: boolean;
+            /** Format: date-time */
+            paired_at: string;
+            /** @enum {string} */
+            platform: "apple_watch" | "wear_os";
+            /** WatchSettings */
+            settings: {
+                haptics?: boolean;
+                /** @description Only with it the results show heart-rate zones */
+                max_hr?: number | null;
+                show_heart_rate?: boolean;
+                /** @description The previous attempt's pace line */
+                show_pace?: boolean;
+            };
+        };
+        /** PairedWatchResponse */
+        PairedWatchResponse: {
+            /** PairedWatch */
+            watch: {
+                app_version?: string | null;
+                contract_version: number;
+                device_name?: string | null;
+                /** Format: date-time */
+                last_seen_at: string;
+                needs_upgrade: boolean;
+                /** Format: date-time */
+                paired_at: string;
+                /** @enum {string} */
+                platform: "apple_watch" | "wear_os";
+                /** WatchSettings */
+                settings: {
+                    haptics?: boolean;
+                    /** @description Only with it the results show heart-rate zones */
+                    max_hr?: number | null;
+                    show_heart_rate?: boolean;
+                    /** @description The previous attempt's pace line */
+                    show_pace?: boolean;
+                };
+            };
+        };
+        /** PairedWatchesResponse */
+        PairedWatchesResponse: {
+            contract: {
+                platforms: ("apple_watch" | "wear_os")[];
+                version: number;
+            };
+            watches: {
+                app_version?: string | null;
+                contract_version: number;
+                device_name?: string | null;
+                /** Format: date-time */
+                last_seen_at: string;
+                needs_upgrade: boolean;
+                /** Format: date-time */
+                paired_at: string;
+                /** @enum {string} */
+                platform: "apple_watch" | "wear_os";
+                /** WatchSettings */
+                settings: {
+                    haptics?: boolean;
+                    /** @description Only with it the results show heart-rate zones */
+                    max_hr?: number | null;
+                    show_heart_rate?: boolean;
+                    /** @description The previous attempt's pace line */
+                    show_pace?: boolean;
+                };
+            }[];
         };
         /** PaleeBenchmark */
         PaleeBenchmark: {
@@ -40246,6 +42722,173 @@ export interface components {
                 trial_days: number;
             }[];
         };
+        /** PlatformReviewDecision */
+        PlatformReviewDecision: {
+            /** Format: date-time */
+            decided_at: string;
+            decided_by: string | null;
+            ground: string;
+            /** Format: uuid */
+            id: string;
+            /** ReviewReportOrganization */
+            organization: {
+                /** Format: uuid */
+                id: string;
+                name: string | null;
+            };
+            /** @enum {string} */
+            outcome: "keep" | "hide" | "remove" | "restore";
+            reports_count: number;
+            /** Format: uuid */
+            review_id: string | null;
+            /**
+             * @description The review now; only a hidden one can be restored
+             * @enum {string}
+             */
+            review_status: "visible" | "hidden" | "removed" | "deleted";
+            statement: string | null;
+        };
+        /** PlatformReviewDecisionRequest */
+        PlatformReviewDecisionRequest: {
+            /**
+             * @description no_violation for keep; a report reason for hide and remove
+             * @enum {string|null}
+             */
+            ground?: "no_violation" | "offensive" | "personal_data" | "not_genuine" | "spam" | "illegal" | "other" | null;
+            /** @enum {string} */
+            outcome: "keep" | "hide" | "remove";
+            /** @description What the author reads; required for hide and remove */
+            statement?: string | null;
+        };
+        /** PlatformReviewDecisionResponse */
+        PlatformReviewDecisionResponse: {
+            ground: string;
+            outcome: string;
+            /** @description Open reports this decision closed */
+            resolved: number;
+            /** Format: uuid */
+            review_id: string;
+        };
+        /** PlatformReviewReportItem */
+        PlatformReviewReportItem: {
+            author_name: string | null;
+            /** @description The box itself reported it */
+            box_reported: boolean;
+            /** CurrentReviewText */
+            current: {
+                body: string | null;
+                /** Format: date-time */
+                edited_at: string | null;
+                rating: number;
+            } | null;
+            /** Format: date-time */
+            first_reported_at: string;
+            notes: {
+                /** Format: date-time */
+                at: string;
+                note: string;
+                reason: string;
+                /** @enum {string} */
+                role: "member" | "box";
+            }[];
+            /** ReviewReportOrganization */
+            organization: {
+                /** Format: uuid */
+                id: string;
+                name: string | null;
+            };
+            reasons: {
+                count: number;
+                reason: string;
+            }[];
+            /**
+             * ReportedReviewText
+             * @description The review as the latest report saw it
+             */
+            reported: {
+                body: string | null;
+                rating: number;
+            };
+            reports_count: number;
+            /** Format: uuid */
+            review_id: string;
+        };
+        /** PlatformReviewReportsResponse */
+        PlatformReviewReportsResponse: {
+            decisions: {
+                /** Format: date-time */
+                decided_at: string;
+                decided_by: string | null;
+                ground: string;
+                /** Format: uuid */
+                id: string;
+                /** ReviewReportOrganization */
+                organization: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string | null;
+                };
+                /** @enum {string} */
+                outcome: "keep" | "hide" | "remove" | "restore";
+                reports_count: number;
+                /** Format: uuid */
+                review_id: string | null;
+                /**
+                 * @description The review now; only a hidden one can be restored
+                 * @enum {string}
+                 */
+                review_status: "visible" | "hidden" | "removed" | "deleted";
+                statement: string | null;
+            }[];
+            items: {
+                author_name: string | null;
+                /** @description The box itself reported it */
+                box_reported: boolean;
+                /** CurrentReviewText */
+                current: {
+                    body: string | null;
+                    /** Format: date-time */
+                    edited_at: string | null;
+                    rating: number;
+                } | null;
+                /** Format: date-time */
+                first_reported_at: string;
+                notes: {
+                    /** Format: date-time */
+                    at: string;
+                    note: string;
+                    reason: string;
+                    /** @enum {string} */
+                    role: "member" | "box";
+                }[];
+                /** ReviewReportOrganization */
+                organization: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string | null;
+                };
+                reasons: {
+                    count: number;
+                    reason: string;
+                }[];
+                /**
+                 * ReportedReviewText
+                 * @description The review as the latest report saw it
+                 */
+                reported: {
+                    body: string | null;
+                    rating: number;
+                };
+                reports_count: number;
+                /** Format: uuid */
+                review_id: string;
+            }[];
+        };
+        /** PlatformReviewRestoreRequest */
+        PlatformReviewRestoreRequest: {
+            /** @description What the author reads */
+            statement: string;
+        };
         /** PostAttachmentPreview */
         PostAttachmentPreview: {
             attachment: {
@@ -40312,6 +42955,623 @@ export interface components {
             client_operation_id?: string;
             /** @description Your uploads (POST /api/me/media/uploads), in order: up to ten photos or one video. They may still be processing. */
             media_ids?: string[];
+        };
+        /** ProgrammeBuyInput */
+        ProgrammeBuyInput: {
+            idempotency_key: string;
+            /** @enum {string} */
+            language?: "el" | "en";
+            /** @description The express request to start, required where withdrawal applies */
+            start_now?: boolean;
+            /**
+             * Format: date
+             * @description Today up to 60 days ahead
+             */
+            starts_on?: string;
+        };
+        /** ProgrammeBuyResponse */
+        ProgrammeBuyResponse: {
+            /** @description The checkout: open its checkout_url on the provider's page */
+            payment: {
+                [key: string]: unknown;
+            };
+            /** Format: uuid */
+            purchase_id: string;
+        };
+        /** ProgrammeDayInput */
+        ProgrammeDayInput: {
+            /** @description Day 0 is the start date */
+            day: number;
+            /** Format: uuid */
+            workout_id: string;
+        };
+        /** ProgrammeError */
+        ProgrammeError: {
+            code: string;
+            error: string;
+        };
+        /** ProgrammeInput */
+        ProgrammeInput: {
+            /** @enum {string} */
+            currency?: "EUR" | "GBP" | "USD" | "CHF";
+            description?: string | null;
+            draft_days?: {
+                /** @description Day 0 is the start date */
+                day: number;
+                /** Format: uuid */
+                workout_id: string;
+            }[];
+            draft_weeks?: number;
+            equipment?: string[];
+            /** @enum {string} */
+            goal?: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
+            /** @enum {string} */
+            level?: "all" | "beginner" | "intermediate" | "advanced";
+            /**
+             * @description box: the box's own page; marketplace: also the cross-business catalogue
+             * @enum {string}
+             */
+            listing?: "box" | "marketplace";
+            preview_days?: number;
+            price_cents?: number;
+            /** @enum {string} */
+            refund_policy?: "before_start" | "withdrawal_only" | "pro_rata";
+            sessions_per_week?: number | null;
+            summary?: string | null;
+            title?: string;
+        };
+        /** ProgrammePreviewDay */
+        ProgrammePreviewDay: {
+            day: number;
+            summary?: string | null;
+            title?: string | null;
+            week: number;
+            weekday: number;
+        };
+        /** ProgrammePublishInput */
+        ProgrammePublishInput: {
+            changelog?: string | null;
+        };
+        /** ProgrammePurchase */
+        ProgrammePurchase: {
+            /** Format: date-time */
+            activated_at?: string | null;
+            buyer?: {
+                /** Format: uuid */
+                id: string;
+                nickname?: string | null;
+            } | null;
+            currency: string;
+            days?: {
+                /** Format: date */
+                date: string;
+                day: number;
+                summary?: string | null;
+                title?: string | null;
+                /** Format: uuid */
+                workout_id: string;
+            }[];
+            end_reason?: string | null;
+            /** Format: date-time */
+            ended_at?: string | null;
+            /** Format: date */
+            ends_on: string;
+            /** Format: uuid */
+            id: string;
+            /** Format: date-time */
+            inserted_at?: string;
+            /** Format: uuid */
+            payment_intent_id?: string | null;
+            price_cents: number;
+            /** Format: uuid */
+            programme_id: string;
+            /**
+             * ProgrammeRefundQuote
+             * @description What giving it up now returns, and under which rule
+             */
+            refund?: {
+                amount_cents: number;
+                /** @enum {string} */
+                rule: "withdrawal" | "before_start" | "pro_rata";
+            } | null;
+            /** @enum {string} */
+            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+            refunded_cents: number;
+            review?: {
+                author?: {
+                    /** Format: uuid */
+                    id?: string;
+                    nickname?: string | null;
+                } | null;
+                body?: string | null;
+                hidden_reason?: string | null;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                inserted_at?: string;
+                rating: number;
+                /** @enum {string} */
+                status: "published" | "hidden";
+                /** Format: date-time */
+                updated_at?: string;
+                version_number: number;
+            } | null;
+            /** Format: date */
+            starts_on: string;
+            /** @enum {string} */
+            status: "pending_payment" | "active" | "completed" | "withdrawn" | "refunded" | "cancelled";
+            title?: string | null;
+            /** Format: uuid */
+            user_id?: string | null;
+            /** Format: uuid */
+            version_id: string;
+            version_number?: number;
+            weeks?: number;
+            withdrawal_deadline?: string | null;
+        };
+        /** ProgrammePurchaseDay */
+        ProgrammePurchaseDay: {
+            /** Format: date */
+            date: string;
+            day: number;
+            summary?: string | null;
+            title?: string | null;
+            /** Format: uuid */
+            workout_id: string;
+        };
+        /** ProgrammePurchaseList */
+        ProgrammePurchaseList: {
+            purchases: {
+                /** Format: date-time */
+                activated_at?: string | null;
+                buyer?: {
+                    /** Format: uuid */
+                    id: string;
+                    nickname?: string | null;
+                } | null;
+                currency: string;
+                days?: {
+                    /** Format: date */
+                    date: string;
+                    day: number;
+                    summary?: string | null;
+                    title?: string | null;
+                    /** Format: uuid */
+                    workout_id: string;
+                }[];
+                end_reason?: string | null;
+                /** Format: date-time */
+                ended_at?: string | null;
+                /** Format: date */
+                ends_on: string;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                inserted_at?: string;
+                /** Format: uuid */
+                payment_intent_id?: string | null;
+                price_cents: number;
+                /** Format: uuid */
+                programme_id: string;
+                /**
+                 * ProgrammeRefundQuote
+                 * @description What giving it up now returns, and under which rule
+                 */
+                refund?: {
+                    amount_cents: number;
+                    /** @enum {string} */
+                    rule: "withdrawal" | "before_start" | "pro_rata";
+                } | null;
+                /** @enum {string} */
+                refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                refunded_cents: number;
+                review?: {
+                    author?: {
+                        /** Format: uuid */
+                        id?: string;
+                        nickname?: string | null;
+                    } | null;
+                    body?: string | null;
+                    hidden_reason?: string | null;
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: date-time */
+                    inserted_at?: string;
+                    rating: number;
+                    /** @enum {string} */
+                    status: "published" | "hidden";
+                    /** Format: date-time */
+                    updated_at?: string;
+                    version_number: number;
+                } | null;
+                /** Format: date */
+                starts_on: string;
+                /** @enum {string} */
+                status: "pending_payment" | "active" | "completed" | "withdrawn" | "refunded" | "cancelled";
+                title?: string | null;
+                /** Format: uuid */
+                user_id?: string | null;
+                /** Format: uuid */
+                version_id: string;
+                version_number?: number;
+                weeks?: number;
+                withdrawal_deadline?: string | null;
+            }[];
+        };
+        /** ProgrammePurchaseResponse */
+        ProgrammePurchaseResponse: {
+            /** ProgrammePurchase */
+            purchase: {
+                /** Format: date-time */
+                activated_at?: string | null;
+                buyer?: {
+                    /** Format: uuid */
+                    id: string;
+                    nickname?: string | null;
+                } | null;
+                currency: string;
+                days?: {
+                    /** Format: date */
+                    date: string;
+                    day: number;
+                    summary?: string | null;
+                    title?: string | null;
+                    /** Format: uuid */
+                    workout_id: string;
+                }[];
+                end_reason?: string | null;
+                /** Format: date-time */
+                ended_at?: string | null;
+                /** Format: date */
+                ends_on: string;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                inserted_at?: string;
+                /** Format: uuid */
+                payment_intent_id?: string | null;
+                price_cents: number;
+                /** Format: uuid */
+                programme_id: string;
+                /**
+                 * ProgrammeRefundQuote
+                 * @description What giving it up now returns, and under which rule
+                 */
+                refund?: {
+                    amount_cents: number;
+                    /** @enum {string} */
+                    rule: "withdrawal" | "before_start" | "pro_rata";
+                } | null;
+                /** @enum {string} */
+                refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                refunded_cents: number;
+                review?: {
+                    author?: {
+                        /** Format: uuid */
+                        id?: string;
+                        nickname?: string | null;
+                    } | null;
+                    body?: string | null;
+                    hidden_reason?: string | null;
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: date-time */
+                    inserted_at?: string;
+                    rating: number;
+                    /** @enum {string} */
+                    status: "published" | "hidden";
+                    /** Format: date-time */
+                    updated_at?: string;
+                    version_number: number;
+                } | null;
+                /** Format: date */
+                starts_on: string;
+                /** @enum {string} */
+                status: "pending_payment" | "active" | "completed" | "withdrawn" | "refunded" | "cancelled";
+                title?: string | null;
+                /** Format: uuid */
+                user_id?: string | null;
+                /** Format: uuid */
+                version_id: string;
+                version_number?: number;
+                weeks?: number;
+                withdrawal_deadline?: string | null;
+            };
+        };
+        /** ProgrammeRating */
+        ProgrammeRating: {
+            average: number | null;
+            count: number;
+        };
+        /** ProgrammeRefundInput */
+        ProgrammeRefundInput: {
+            amount_cents: number;
+            idempotency_key: string;
+            reason?: string;
+        };
+        /**
+         * ProgrammeRefundQuote
+         * @description What giving it up now returns, and under which rule
+         */
+        ProgrammeRefundQuote: {
+            amount_cents: number;
+            /** @enum {string} */
+            rule: "withdrawal" | "before_start" | "pro_rata";
+        } | null;
+        /** ProgrammeRefundResponse */
+        ProgrammeRefundResponse: {
+            /** ProgrammePurchase */
+            purchase: {
+                /** Format: date-time */
+                activated_at?: string | null;
+                buyer?: {
+                    /** Format: uuid */
+                    id: string;
+                    nickname?: string | null;
+                } | null;
+                currency: string;
+                days?: {
+                    /** Format: date */
+                    date: string;
+                    day: number;
+                    summary?: string | null;
+                    title?: string | null;
+                    /** Format: uuid */
+                    workout_id: string;
+                }[];
+                end_reason?: string | null;
+                /** Format: date-time */
+                ended_at?: string | null;
+                /** Format: date */
+                ends_on: string;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                inserted_at?: string;
+                /** Format: uuid */
+                payment_intent_id?: string | null;
+                price_cents: number;
+                /** Format: uuid */
+                programme_id: string;
+                /**
+                 * ProgrammeRefundQuote
+                 * @description What giving it up now returns, and under which rule
+                 */
+                refund?: {
+                    amount_cents: number;
+                    /** @enum {string} */
+                    rule: "withdrawal" | "before_start" | "pro_rata";
+                } | null;
+                /** @enum {string} */
+                refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                refunded_cents: number;
+                review?: {
+                    author?: {
+                        /** Format: uuid */
+                        id?: string;
+                        nickname?: string | null;
+                    } | null;
+                    body?: string | null;
+                    hidden_reason?: string | null;
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: date-time */
+                    inserted_at?: string;
+                    rating: number;
+                    /** @enum {string} */
+                    status: "published" | "hidden";
+                    /** Format: date-time */
+                    updated_at?: string;
+                    version_number: number;
+                } | null;
+                /** Format: date */
+                starts_on: string;
+                /** @enum {string} */
+                status: "pending_payment" | "active" | "completed" | "withdrawn" | "refunded" | "cancelled";
+                title?: string | null;
+                /** Format: uuid */
+                user_id?: string | null;
+                /** Format: uuid */
+                version_id: string;
+                version_number?: number;
+                weeks?: number;
+                withdrawal_deadline?: string | null;
+            };
+            refund: {
+                [key: string]: unknown;
+            };
+            rule?: string | null;
+        };
+        /** ProgrammeReview */
+        ProgrammeReview: {
+            author?: {
+                /** Format: uuid */
+                id?: string;
+                nickname?: string | null;
+            } | null;
+            body?: string | null;
+            hidden_reason?: string | null;
+            /** Format: uuid */
+            id: string;
+            /** Format: date-time */
+            inserted_at?: string;
+            rating: number;
+            /** @enum {string} */
+            status: "published" | "hidden";
+            /** Format: date-time */
+            updated_at?: string;
+            version_number: number;
+        };
+        /** ProgrammeReviewInput */
+        ProgrammeReviewInput: {
+            body?: string | null;
+            rating: number;
+        };
+        /** ProgrammeReviewList */
+        ProgrammeReviewList: {
+            reviews: {
+                author?: {
+                    /** Format: uuid */
+                    id?: string;
+                    nickname?: string | null;
+                } | null;
+                body?: string | null;
+                hidden_reason?: string | null;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                inserted_at?: string;
+                rating: number;
+                /** @enum {string} */
+                status: "published" | "hidden";
+                /** Format: date-time */
+                updated_at?: string;
+                version_number: number;
+            }[];
+        };
+        /** ProgrammeReviewModeration */
+        ProgrammeReviewModeration: {
+            /**
+             * @description Null shows the review again
+             * @enum {string|null}
+             */
+            hidden_reason?: "abuse" | "personal_data" | "off_topic" | "spam" | null;
+        };
+        /** ProgrammeReviewResponse */
+        ProgrammeReviewResponse: {
+            /** ProgrammeReview */
+            review: {
+                author?: {
+                    /** Format: uuid */
+                    id?: string;
+                    nickname?: string | null;
+                } | null;
+                body?: string | null;
+                hidden_reason?: string | null;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                inserted_at?: string;
+                rating: number;
+                /** @enum {string} */
+                status: "published" | "hidden";
+                /** Format: date-time */
+                updated_at?: string;
+                version_number: number;
+            };
+        };
+        /** ProgrammeTerms */
+        ProgrammeTerms: {
+            available: boolean;
+            /** Format: date */
+            earliest_start: string;
+            /** Format: date */
+            latest_start: string;
+            /**
+             * Format: uuid
+             * @description The buyer's active purchase of it, if any
+             */
+            owned?: string | null;
+            /** PublicProgramme */
+            programme: {
+                currency: string;
+                description?: string | null;
+                equipment?: string[];
+                goal: string;
+                /** Format: uuid */
+                id: string;
+                latest_reviews?: {
+                    author?: {
+                        /** Format: uuid */
+                        id?: string;
+                        nickname?: string | null;
+                    } | null;
+                    body?: string | null;
+                    hidden_reason?: string | null;
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: date-time */
+                    inserted_at?: string;
+                    rating: number;
+                    /** @enum {string} */
+                    status: "published" | "hidden";
+                    /** Format: date-time */
+                    updated_at?: string;
+                    version_number: number;
+                }[];
+                level: string;
+                listing?: string;
+                preview?: {
+                    day: number;
+                    summary?: string | null;
+                    title?: string | null;
+                    week: number;
+                    weekday: number;
+                }[];
+                preview_days?: number;
+                price_cents: number;
+                /** Format: date-time */
+                published_at?: string | null;
+                refund_policy?: string;
+                /** ProgrammeRating */
+                reviews?: {
+                    average: number | null;
+                    count: number;
+                };
+                sessions?: number | null;
+                sessions_per_week?: number | null;
+                summary?: string | null;
+                title: string;
+                version_number?: number | null;
+                week_outline?: {
+                    sessions: number;
+                    week: number;
+                }[];
+                weeks?: number | null;
+            };
+            provider?: string | null;
+            refund_rule: string;
+            refund_text: string;
+            start_now_text?: string | null;
+            terms_version: string;
+            withdrawal_days?: number | null;
+        };
+        /** ProgrammeVersion */
+        ProgrammeVersion: {
+            changelog?: string | null;
+            days: {
+                day: number;
+                /** Format: uuid */
+                source_workout_id?: string;
+                summary?: string | null;
+                title?: string | null;
+                /**
+                 * Format: uuid
+                 * @description The frozen copy
+                 */
+                workout_id: string;
+            }[];
+            /** Format: uuid */
+            id: string;
+            number: number;
+            /** Format: date-time */
+            published_at: string;
+            /** Format: uuid */
+            published_by_id?: string | null;
+            weeks: number;
+        };
+        /** ProgrammeVersionDay */
+        ProgrammeVersionDay: {
+            day: number;
+            /** Format: uuid */
+            source_workout_id?: string;
+            summary?: string | null;
+            title?: string | null;
+            /**
+             * Format: uuid
+             * @description The frozen copy
+             */
+            workout_id: string;
         };
         /** ProgressStats */
         ProgressStats: {
@@ -40694,7 +43954,8 @@ export interface components {
                 audiences: string[];
                 /** Format: uuid */
                 id: string;
-                level?: string | null;
+                /** @description Levels the class suits; empty means all levels (ADR-490) */
+                levels: ("beginner" | "intermediate" | "advanced")[];
                 name: string;
             } | null;
             coach?: {
@@ -41237,7 +44498,8 @@ export interface components {
                     audiences: string[];
                     /** Format: uuid */
                     id: string;
-                    level?: string | null;
+                    /** @description Levels the class suits; empty means all levels (ADR-490) */
+                    levels: ("beginner" | "intermediate" | "advanced")[];
                     name: string;
                 } | null;
                 coach?: {
@@ -41287,6 +44549,127 @@ export interface components {
                 } | null;
             } | null;
         };
+        /** PublicProgramme */
+        PublicProgramme: {
+            currency: string;
+            description?: string | null;
+            equipment?: string[];
+            goal: string;
+            /** Format: uuid */
+            id: string;
+            latest_reviews?: {
+                author?: {
+                    /** Format: uuid */
+                    id?: string;
+                    nickname?: string | null;
+                } | null;
+                body?: string | null;
+                hidden_reason?: string | null;
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                inserted_at?: string;
+                rating: number;
+                /** @enum {string} */
+                status: "published" | "hidden";
+                /** Format: date-time */
+                updated_at?: string;
+                version_number: number;
+            }[];
+            level: string;
+            listing?: string;
+            preview?: {
+                day: number;
+                summary?: string | null;
+                title?: string | null;
+                week: number;
+                weekday: number;
+            }[];
+            preview_days?: number;
+            price_cents: number;
+            /** Format: date-time */
+            published_at?: string | null;
+            refund_policy?: string;
+            /** ProgrammeRating */
+            reviews?: {
+                average: number | null;
+                count: number;
+            };
+            sessions?: number | null;
+            sessions_per_week?: number | null;
+            summary?: string | null;
+            title: string;
+            version_number?: number | null;
+            week_outline?: {
+                sessions: number;
+                week: number;
+            }[];
+            weeks?: number | null;
+        };
+        /** PublicProgrammeResponse */
+        PublicProgrammeResponse: {
+            /** @description The box's public card */
+            box: {
+                [key: string]: unknown;
+            };
+            /** PublicProgramme */
+            programme: {
+                currency: string;
+                description?: string | null;
+                equipment?: string[];
+                goal: string;
+                /** Format: uuid */
+                id: string;
+                latest_reviews?: {
+                    author?: {
+                        /** Format: uuid */
+                        id?: string;
+                        nickname?: string | null;
+                    } | null;
+                    body?: string | null;
+                    hidden_reason?: string | null;
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: date-time */
+                    inserted_at?: string;
+                    rating: number;
+                    /** @enum {string} */
+                    status: "published" | "hidden";
+                    /** Format: date-time */
+                    updated_at?: string;
+                    version_number: number;
+                }[];
+                level: string;
+                listing?: string;
+                preview?: {
+                    day: number;
+                    summary?: string | null;
+                    title?: string | null;
+                    week: number;
+                    weekday: number;
+                }[];
+                preview_days?: number;
+                price_cents: number;
+                /** Format: date-time */
+                published_at?: string | null;
+                refund_policy?: string;
+                /** ProgrammeRating */
+                reviews?: {
+                    average: number | null;
+                    count: number;
+                };
+                sessions?: number | null;
+                sessions_per_week?: number | null;
+                summary?: string | null;
+                title: string;
+                version_number?: number | null;
+                week_outline?: {
+                    sessions: number;
+                    week: number;
+                }[];
+                weeks?: number | null;
+            };
+        };
         /** PublicSiteResponse */
         PublicSiteResponse: {
             /** @description The translated «Σχετικά», null when there is none */
@@ -41327,6 +44710,8 @@ export interface components {
             language: string;
             /** @description The site's languages: the box's own first, then its visible translations */
             languages: string[];
+            /** @description Palee's address for reporting content on the site (ADR-397, DSA Art. 16) */
+            report_contact: string | null;
             /** SiteReviews */
             reviews: {
                 /**
@@ -41413,6 +44798,894 @@ export interface components {
                 title: string;
                 type: string | null;
             }[];
+        };
+        /** Rank */
+        Rank: {
+            /**
+             * @description Belt palette key; the screen maps it to the theme's --belt-* token
+             * @enum {string|null}
+             */
+            color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+            /** Format: uuid */
+            id: string;
+            max_stripes: number;
+            name: string;
+            position: number;
+            /** RankRequirements */
+            requirements: {
+                min_classes?: number;
+                min_days?: number;
+                /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                skill_ids?: (string | null)[];
+                /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                skill_notes?: (string | null)[];
+                /** @description A video link (https) for each skill, in the order of `skills` */
+                skill_videos?: (string | null)[];
+                skills?: string[];
+            };
+            scale_level_slug?: string | null;
+        };
+        /** RankAward */
+        RankAward: {
+            /** Format: date */
+            awarded_on: string;
+            certificate_number: string;
+            /**
+             * @description Belt palette key; the screen maps it to the theme's --belt-* token
+             * @enum {string|null}
+             */
+            color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            ladder_id: string;
+            note?: string | null;
+            /** Format: uuid */
+            rank_id: string;
+            rank_name?: string | null;
+            revoke_reason?: string | null;
+            revoked: boolean;
+            skills_checked: string[];
+            stripes: number;
+        };
+        /** RankAwardRequest */
+        RankAwardRequest: {
+            /** Format: date */
+            awarded_on?: string;
+            /** Format: uuid */
+            ladder_id: string;
+            note?: string;
+            /** Format: uuid */
+            rank_id: string;
+            skills_checked?: string[];
+            stripes?: number;
+        };
+        /** RankAwardResponse */
+        RankAwardResponse: {
+            /** RankAward */
+            award: {
+                /** Format: date */
+                awarded_on: string;
+                certificate_number: string;
+                /**
+                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                 * @enum {string|null}
+                 */
+                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                ladder_id: string;
+                note?: string | null;
+                /** Format: uuid */
+                rank_id: string;
+                rank_name?: string | null;
+                revoke_reason?: string | null;
+                revoked: boolean;
+                skills_checked: string[];
+                stripes: number;
+            };
+        };
+        /** RankAwardRevokeRequest */
+        RankAwardRevokeRequest: {
+            reason: string;
+        };
+        /** RankClassSkillsResponse */
+        RankClassSkillsResponse: {
+            ladders: {
+                class_type_ids: string[];
+                /** @description A workout type (ADR-275) */
+                discipline: string;
+                family?: string | null;
+                /** Format: uuid */
+                id: string;
+                name: string;
+                ranks: {
+                    /**
+                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                     * @enum {string|null}
+                     */
+                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                    /** Format: uuid */
+                    id: string;
+                    max_stripes: number;
+                    name: string;
+                    position: number;
+                    /** RankRequirements */
+                    requirements: {
+                        min_classes?: number;
+                        min_days?: number;
+                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                        skill_ids?: (string | null)[];
+                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                        skill_notes?: (string | null)[];
+                        /** @description A video link (https) for each skill, in the order of `skills` */
+                        skill_videos?: (string | null)[];
+                        skills?: string[];
+                    };
+                    scale_level_slug?: string | null;
+                }[];
+                /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                ready_criteria: ("days" | "classes" | "skills")[];
+                /** @enum {string} */
+                style: "belt" | "level";
+            }[];
+            people: {
+                checked: {
+                    /** Format: uuid */
+                    rank_id: string;
+                    /** Format: uuid */
+                    skill_id: string;
+                }[];
+                next_rank_ids: string[];
+                /** @description The coach may tick for them */
+                reachable: boolean;
+                /** Format: uuid */
+                user_id: string;
+            }[];
+        };
+        /** RankInput */
+        RankInput: {
+            /**
+             * @description Belt palette key; the screen maps it to the theme's --belt-* token
+             * @enum {string|null}
+             */
+            color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+            /**
+             * Format: uuid
+             * @description Keep an existing rank
+             */
+            id?: string | null;
+            max_stripes?: number;
+            name: string;
+            /** RankRequirements */
+            requirements?: {
+                min_classes?: number;
+                min_days?: number;
+                /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                skill_ids?: (string | null)[];
+                /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                skill_notes?: (string | null)[];
+                /** @description A video link (https) for each skill, in the order of `skills` */
+                skill_videos?: (string | null)[];
+                skills?: string[];
+            };
+            scale_level_slug?: string | null;
+        };
+        /** RankLadder */
+        RankLadder: {
+            class_type_ids: string[];
+            /** @description A workout type (ADR-275) */
+            discipline: string;
+            family?: string | null;
+            /** Format: uuid */
+            id: string;
+            name: string;
+            ranks: {
+                /**
+                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                 * @enum {string|null}
+                 */
+                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                /** Format: uuid */
+                id: string;
+                max_stripes: number;
+                name: string;
+                position: number;
+                /** RankRequirements */
+                requirements: {
+                    min_classes?: number;
+                    min_days?: number;
+                    /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                    skill_ids?: (string | null)[];
+                    /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                    skill_notes?: (string | null)[];
+                    /** @description A video link (https) for each skill, in the order of `skills` */
+                    skill_videos?: (string | null)[];
+                    skills?: string[];
+                };
+                scale_level_slug?: string | null;
+            }[];
+            /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+            ready_criteria: ("days" | "classes" | "skills")[];
+            /** @enum {string} */
+            style: "belt" | "level";
+        };
+        /** RankLadderRequest */
+        RankLadderRequest: {
+            class_type_ids?: string[];
+            discipline?: string;
+            /**
+             * @description The language of template names and skills; Greek when left out
+             * @enum {string}
+             */
+            locale?: "en" | "el" | "ar" | "ru" | "de" | "es" | "pt-PT" | "he" | "it" | "bg" | "nl" | "fr";
+            name?: string;
+            position?: number;
+            ranks?: {
+                /**
+                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                 * @enum {string|null}
+                 */
+                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                /**
+                 * Format: uuid
+                 * @description Keep an existing rank
+                 */
+                id?: string | null;
+                max_stripes?: number;
+                name: string;
+                /** RankRequirements */
+                requirements?: {
+                    min_classes?: number;
+                    min_days?: number;
+                    /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                    skill_ids?: (string | null)[];
+                    /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                    skill_notes?: (string | null)[];
+                    /** @description A video link (https) for each skill, in the order of `skills` */
+                    skill_videos?: (string | null)[];
+                    skills?: string[];
+                };
+                scale_level_slug?: string | null;
+            }[];
+            /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+            ready_criteria?: ("days" | "classes" | "skills")[];
+            /** @enum {string} */
+            style?: "belt" | "level";
+            /** @description Start from a template («Πρότυπα»); fields sent override it */
+            template?: string;
+        };
+        /** RankLadderResponse */
+        RankLadderResponse: {
+            /** RankLadder */
+            ladder: {
+                class_type_ids: string[];
+                /** @description A workout type (ADR-275) */
+                discipline: string;
+                family?: string | null;
+                /** Format: uuid */
+                id: string;
+                name: string;
+                ranks: {
+                    /**
+                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                     * @enum {string|null}
+                     */
+                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                    /** Format: uuid */
+                    id: string;
+                    max_stripes: number;
+                    name: string;
+                    position: number;
+                    /** RankRequirements */
+                    requirements: {
+                        min_classes?: number;
+                        min_days?: number;
+                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                        skill_ids?: (string | null)[];
+                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                        skill_notes?: (string | null)[];
+                        /** @description A video link (https) for each skill, in the order of `skills` */
+                        skill_videos?: (string | null)[];
+                        skills?: string[];
+                    };
+                    scale_level_slug?: string | null;
+                }[];
+                /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                ready_criteria: ("days" | "classes" | "skills")[];
+                /** @enum {string} */
+                style: "belt" | "level";
+            };
+        };
+        /** RankLaddersResponse */
+        RankLaddersResponse: {
+            /** @description The training kinds of the box's profile; the picker shows them first */
+            box_disciplines: string[];
+            colors: string[];
+            ladders: {
+                class_type_ids: string[];
+                /** @description A workout type (ADR-275) */
+                discipline: string;
+                family?: string | null;
+                /** Format: uuid */
+                id: string;
+                name: string;
+                ranks: {
+                    /**
+                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                     * @enum {string|null}
+                     */
+                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                    /** Format: uuid */
+                    id: string;
+                    max_stripes: number;
+                    name: string;
+                    position: number;
+                    /** RankRequirements */
+                    requirements: {
+                        min_classes?: number;
+                        min_days?: number;
+                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                        skill_ids?: (string | null)[];
+                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                        skill_notes?: (string | null)[];
+                        /** @description A video link (https) for each skill, in the order of `skills` */
+                        skill_videos?: (string | null)[];
+                        skills?: string[];
+                    };
+                    scale_level_slug?: string | null;
+                }[];
+                /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                ready_criteria: ("days" | "classes" | "skills")[];
+                /** @enum {string} */
+                style: "belt" | "level";
+            }[];
+            templates: {
+                discipline: string;
+                family?: string | null;
+                key: string;
+                name: string;
+                ranks: {
+                    /**
+                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                     * @enum {string|null}
+                     */
+                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                    max_stripes: number;
+                    name: string;
+                    /** RankRequirements */
+                    requirements: {
+                        min_classes?: number;
+                        min_days?: number;
+                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                        skill_ids?: (string | null)[];
+                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                        skill_notes?: (string | null)[];
+                        /** @description A video link (https) for each skill, in the order of `skills` */
+                        skill_videos?: (string | null)[];
+                        skills?: string[];
+                    };
+                }[];
+                /** @description What a ladder copied from it counts by default */
+                ready: ("days" | "classes" | "skills")[];
+                /**
+                 * @description A federation's or school's system, or Palee's own levels
+                 * @enum {string}
+                 */
+                source: "federation" | "palee";
+                /** @enum {string} */
+                style: "belt" | "level";
+                /** @description The system it follows, in the requested language */
+                system: string;
+            }[];
+        };
+        /**
+         * RankReadyResponse
+         * @description People who meet what their ladder counts for the next rank; the coach decides
+         */
+        RankReadyResponse: {
+            people: {
+                current: {
+                    /** Rank */
+                    rank: {
+                        /**
+                         * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                         * @enum {string|null}
+                         */
+                        color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                        /** Format: uuid */
+                        id: string;
+                        max_stripes: number;
+                        name: string;
+                        position: number;
+                        /** RankRequirements */
+                        requirements: {
+                            min_classes?: number;
+                            min_days?: number;
+                            /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                            skill_ids?: (string | null)[];
+                            /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                            skill_notes?: (string | null)[];
+                            /** @description A video link (https) for each skill, in the order of `skills` */
+                            skill_videos?: (string | null)[];
+                            skills?: string[];
+                        };
+                        scale_level_slug?: string | null;
+                    };
+                    stripes: number;
+                };
+                ladder: {
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                    style: string;
+                };
+                /** Rank */
+                next: {
+                    /**
+                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                     * @enum {string|null}
+                     */
+                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                    /** Format: uuid */
+                    id: string;
+                    max_stripes: number;
+                    name: string;
+                    position: number;
+                    /** RankRequirements */
+                    requirements: {
+                        min_classes?: number;
+                        min_days?: number;
+                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                        skill_ids?: (string | null)[];
+                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                        skill_notes?: (string | null)[];
+                        /** @description A video link (https) for each skill, in the order of `skills` */
+                        skill_videos?: (string | null)[];
+                        skills?: string[];
+                    };
+                    scale_level_slug?: string | null;
+                };
+                nickname?: string | null;
+                /** @description Towards the next rank; `ready` only says the counted requirements are met */
+                progress: {
+                    /** @description Every listed skill is ticked (true when the rank lists none) */
+                    all_skills_checked?: boolean;
+                    classes: {
+                        done: number | null;
+                        needed: number | null;
+                    };
+                    /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                    criteria?: ("days" | "classes" | "skills")[];
+                    days: {
+                        done: number | null;
+                        needed: number | null;
+                    };
+                    /** Format: uuid */
+                    rank_id: string;
+                    ready: boolean;
+                    skill_ids?: (string | null)[];
+                    skills: string[];
+                    /** @description ADR-400: the next rank's skills the coach ticked so far */
+                    skills_checked?: {
+                        /** Format: date */
+                        checked_on: string;
+                        note?: string | null;
+                        /** @description The skill's current text */
+                        skill: string;
+                        skill_id?: string | null;
+                    }[];
+                } | null;
+                /** Format: uuid */
+                user_id: string;
+            }[];
+        };
+        /** RankRequirements */
+        RankRequirements: {
+            min_classes?: number;
+            min_days?: number;
+            /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+            skill_ids?: (string | null)[];
+            /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+            skill_notes?: (string | null)[];
+            /** @description A video link (https) for each skill, in the order of `skills` */
+            skill_videos?: (string | null)[];
+            skills?: string[];
+        };
+        /**
+         * RankSkillBatchRequest
+         * @description One skill for several people at once (a class): only those who work towards its rank change
+         */
+        RankSkillBatchRequest: {
+            /** @description false unticks; true when left out */
+            checked?: boolean;
+            /** Format: date */
+            checked_on?: string;
+            /** Format: uuid */
+            rank_id: string;
+            skill?: string;
+            /** Format: uuid */
+            skill_id?: string;
+            user_ids: string[];
+        };
+        /** RankSkillBatchResponse */
+        RankSkillBatchResponse: {
+            skipped: {
+                /** @enum {string} */
+                reason: "not_your_client" | "other_rank";
+                /** Format: uuid */
+                user_id: string;
+            }[];
+            updated: string[];
+        };
+        /**
+         * RankSkillCheckRequest
+         * @description ADR-400: tick (or untick) one skill of a rank for a client, between promotions
+         */
+        RankSkillCheckRequest: {
+            /** @description false unticks; true when left out */
+            checked?: boolean;
+            /** Format: date */
+            checked_on?: string;
+            note?: string | null;
+            /** Format: uuid */
+            rank_id: string;
+            /** @description The skill's text, when no `skill_id` is sent */
+            skill?: string;
+            /**
+             * Format: uuid
+             * @description The skill's stable id
+             */
+            skill_id?: string;
+        };
+        /** RankStanding */
+        RankStanding: {
+            current: {
+                /** Format: uuid */
+                award_id: string;
+                /** Format: date */
+                awarded_on: string;
+                /** Rank */
+                rank: {
+                    /**
+                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                     * @enum {string|null}
+                     */
+                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                    /** Format: uuid */
+                    id: string;
+                    max_stripes: number;
+                    name: string;
+                    position: number;
+                    /** RankRequirements */
+                    requirements: {
+                        min_classes?: number;
+                        min_days?: number;
+                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                        skill_ids?: (string | null)[];
+                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                        skill_notes?: (string | null)[];
+                        /** @description A video link (https) for each skill, in the order of `skills` */
+                        skill_videos?: (string | null)[];
+                        skills?: string[];
+                    };
+                    scale_level_slug?: string | null;
+                };
+                stripes: number;
+            } | null;
+            history: {
+                /** Format: date */
+                awarded_on: string;
+                certificate_number: string;
+                /**
+                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                 * @enum {string|null}
+                 */
+                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                /** Format: uuid */
+                id: string;
+                /** Format: uuid */
+                ladder_id: string;
+                note?: string | null;
+                /** Format: uuid */
+                rank_id: string;
+                rank_name?: string | null;
+                revoke_reason?: string | null;
+                revoked: boolean;
+                skills_checked: string[];
+                stripes: number;
+            }[];
+            /** RankLadder */
+            ladder: {
+                class_type_ids: string[];
+                /** @description A workout type (ADR-275) */
+                discipline: string;
+                family?: string | null;
+                /** Format: uuid */
+                id: string;
+                name: string;
+                ranks: {
+                    /**
+                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                     * @enum {string|null}
+                     */
+                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                    /** Format: uuid */
+                    id: string;
+                    max_stripes: number;
+                    name: string;
+                    position: number;
+                    /** RankRequirements */
+                    requirements: {
+                        min_classes?: number;
+                        min_days?: number;
+                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                        skill_ids?: (string | null)[];
+                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                        skill_notes?: (string | null)[];
+                        /** @description A video link (https) for each skill, in the order of `skills` */
+                        skill_videos?: (string | null)[];
+                        skills?: string[];
+                    };
+                    scale_level_slug?: string | null;
+                }[];
+                /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                ready_criteria: ("days" | "classes" | "skills")[];
+                /** @enum {string} */
+                style: "belt" | "level";
+            };
+            next: {
+                /**
+                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                 * @enum {string|null}
+                 */
+                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                /** Format: uuid */
+                id: string;
+                max_stripes: number;
+                name: string;
+                position: number;
+                /** RankRequirements */
+                requirements: {
+                    min_classes?: number;
+                    min_days?: number;
+                    /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                    skill_ids?: (string | null)[];
+                    /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                    skill_notes?: (string | null)[];
+                    /** @description A video link (https) for each skill, in the order of `skills` */
+                    skill_videos?: (string | null)[];
+                    skills?: string[];
+                };
+                scale_level_slug?: string | null;
+            } | null;
+            /** @description Towards the next rank; `ready` only says the counted requirements are met */
+            progress: {
+                /** @description Every listed skill is ticked (true when the rank lists none) */
+                all_skills_checked?: boolean;
+                classes: {
+                    done: number | null;
+                    needed: number | null;
+                };
+                /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                criteria?: ("days" | "classes" | "skills")[];
+                days: {
+                    done: number | null;
+                    needed: number | null;
+                };
+                /** Format: uuid */
+                rank_id: string;
+                ready: boolean;
+                skill_ids?: (string | null)[];
+                skills: string[];
+                /** @description ADR-400: the next rank's skills the coach ticked so far */
+                skills_checked?: {
+                    /** Format: date */
+                    checked_on: string;
+                    note?: string | null;
+                    /** @description The skill's current text */
+                    skill: string;
+                    skill_id?: string | null;
+                }[];
+            } | null;
+        };
+        /** RankStandingsResponse */
+        RankStandingsResponse: {
+            ladders: {
+                current: {
+                    /** Format: uuid */
+                    award_id: string;
+                    /** Format: date */
+                    awarded_on: string;
+                    /** Rank */
+                    rank: {
+                        /**
+                         * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                         * @enum {string|null}
+                         */
+                        color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                        /** Format: uuid */
+                        id: string;
+                        max_stripes: number;
+                        name: string;
+                        position: number;
+                        /** RankRequirements */
+                        requirements: {
+                            min_classes?: number;
+                            min_days?: number;
+                            /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                            skill_ids?: (string | null)[];
+                            /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                            skill_notes?: (string | null)[];
+                            /** @description A video link (https) for each skill, in the order of `skills` */
+                            skill_videos?: (string | null)[];
+                            skills?: string[];
+                        };
+                        scale_level_slug?: string | null;
+                    };
+                    stripes: number;
+                } | null;
+                history: {
+                    /** Format: date */
+                    awarded_on: string;
+                    certificate_number: string;
+                    /**
+                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                     * @enum {string|null}
+                     */
+                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                    /** Format: uuid */
+                    id: string;
+                    /** Format: uuid */
+                    ladder_id: string;
+                    note?: string | null;
+                    /** Format: uuid */
+                    rank_id: string;
+                    rank_name?: string | null;
+                    revoke_reason?: string | null;
+                    revoked: boolean;
+                    skills_checked: string[];
+                    stripes: number;
+                }[];
+                /** RankLadder */
+                ladder: {
+                    class_type_ids: string[];
+                    /** @description A workout type (ADR-275) */
+                    discipline: string;
+                    family?: string | null;
+                    /** Format: uuid */
+                    id: string;
+                    name: string;
+                    ranks: {
+                        /**
+                         * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                         * @enum {string|null}
+                         */
+                        color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                        /** Format: uuid */
+                        id: string;
+                        max_stripes: number;
+                        name: string;
+                        position: number;
+                        /** RankRequirements */
+                        requirements: {
+                            min_classes?: number;
+                            min_days?: number;
+                            /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                            skill_ids?: (string | null)[];
+                            /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                            skill_notes?: (string | null)[];
+                            /** @description A video link (https) for each skill, in the order of `skills` */
+                            skill_videos?: (string | null)[];
+                            skills?: string[];
+                        };
+                        scale_level_slug?: string | null;
+                    }[];
+                    /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                    ready_criteria: ("days" | "classes" | "skills")[];
+                    /** @enum {string} */
+                    style: "belt" | "level";
+                };
+                next: {
+                    /**
+                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                     * @enum {string|null}
+                     */
+                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                    /** Format: uuid */
+                    id: string;
+                    max_stripes: number;
+                    name: string;
+                    position: number;
+                    /** RankRequirements */
+                    requirements: {
+                        min_classes?: number;
+                        min_days?: number;
+                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                        skill_ids?: (string | null)[];
+                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                        skill_notes?: (string | null)[];
+                        /** @description A video link (https) for each skill, in the order of `skills` */
+                        skill_videos?: (string | null)[];
+                        skills?: string[];
+                    };
+                    scale_level_slug?: string | null;
+                } | null;
+                /** @description Towards the next rank; `ready` only says the counted requirements are met */
+                progress: {
+                    /** @description Every listed skill is ticked (true when the rank lists none) */
+                    all_skills_checked?: boolean;
+                    classes: {
+                        done: number | null;
+                        needed: number | null;
+                    };
+                    /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                    criteria?: ("days" | "classes" | "skills")[];
+                    days: {
+                        done: number | null;
+                        needed: number | null;
+                    };
+                    /** Format: uuid */
+                    rank_id: string;
+                    ready: boolean;
+                    skill_ids?: (string | null)[];
+                    skills: string[];
+                    /** @description ADR-400: the next rank's skills the coach ticked so far */
+                    skills_checked?: {
+                        /** Format: date */
+                        checked_on: string;
+                        note?: string | null;
+                        /** @description The skill's current text */
+                        skill: string;
+                        skill_id?: string | null;
+                    }[];
+                } | null;
+            }[];
+            /** Format: uuid */
+            user_id?: string;
+        };
+        /**
+         * RankTemplate
+         * @description A ready-made ladder (ADR-400) in the requested language; a starting point the box edits freely
+         */
+        RankTemplate: {
+            discipline: string;
+            family?: string | null;
+            key: string;
+            name: string;
+            ranks: {
+                /**
+                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                 * @enum {string|null}
+                 */
+                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                max_stripes: number;
+                name: string;
+                /** RankRequirements */
+                requirements: {
+                    min_classes?: number;
+                    min_days?: number;
+                    /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                    skill_ids?: (string | null)[];
+                    /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                    skill_notes?: (string | null)[];
+                    /** @description A video link (https) for each skill, in the order of `skills` */
+                    skill_videos?: (string | null)[];
+                    skills?: string[];
+                };
+            }[];
+            /** @description What a ladder copied from it counts by default */
+            ready: ("days" | "classes" | "skills")[];
+            /**
+             * @description A federation's or school's system, or Palee's own levels
+             * @enum {string}
+             */
+            source: "federation" | "palee";
+            /** @enum {string} */
+            style: "belt" | "level";
+            /** @description The system it follows, in the requested language */
+            system: string;
         };
         /** ReferralClaim */
         ReferralClaim: {
@@ -42040,6 +46313,14 @@ export interface components {
                 [key: string]: unknown;
             };
         };
+        /**
+         * ReportedReviewText
+         * @description The review as the latest report saw it
+         */
+        ReportedReviewText: {
+            body: string | null;
+            rating: number;
+        };
         /** RevenueStreamTotal */
         RevenueStreamTotal: {
             currency: string;
@@ -42154,6 +46435,26 @@ export interface components {
                 unanswered: number;
             };
             days: number;
+        };
+        /** ReviewReportNote */
+        ReviewReportNote: {
+            /** Format: date-time */
+            at: string;
+            note: string;
+            reason: string;
+            /** @enum {string} */
+            role: "member" | "box";
+        };
+        /** ReviewReportOrganization */
+        ReviewReportOrganization: {
+            /** Format: uuid */
+            id: string;
+            name: string | null;
+        };
+        /** ReviewReportReasonCount */
+        ReviewReportReasonCount: {
+            count: number;
+            reason: string;
         };
         /** SaveFilterRequest */
         SaveFilterRequest: {
@@ -44327,20 +48628,33 @@ export interface components {
         /** SiteDnsRecord */
         SiteDnsRecord: {
             name: string;
-            /** @enum {string} */
-            type: "TXT" | "CNAME" | "A";
+            /**
+             * @description ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)
+             * @enum {string}
+             */
+            type: "TXT" | "CNAME" | "ALIAS";
             value: string;
         };
         /** SiteDomain */
         SiteDomain: {
             /** Format: date-time */
             active_at: string | null;
+            /** @enum {string|null} */
+            certificate_error: "cluster_refused" | "cluster_unreachable" | "challenge_failed" | "rate_limited" | "issuer_not_ready" | "issuance_failed" | null;
+            /**
+             * @description ADR-398: the host's certificate (none until DNS is proven, then pending, issuing, active or failed)
+             * @enum {string}
+             */
+            certificate_status: "none" | "pending" | "issuing" | "active" | "failed";
             /** Format: date-time */
             checked_at: string | null;
             dns_records: {
                 name: string;
-                /** @enum {string} */
-                type: "TXT" | "CNAME" | "A";
+                /**
+                 * @description ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)
+                 * @enum {string}
+                 */
+                type: "TXT" | "CNAME" | "ALIAS";
                 value: string;
             }[];
             host: string;
@@ -44375,12 +48689,22 @@ export interface components {
             domain: {
                 /** Format: date-time */
                 active_at: string | null;
+                /** @enum {string|null} */
+                certificate_error: "cluster_refused" | "cluster_unreachable" | "challenge_failed" | "rate_limited" | "issuer_not_ready" | "issuance_failed" | null;
+                /**
+                 * @description ADR-398: the host's certificate (none until DNS is proven, then pending, issuing, active or failed)
+                 * @enum {string}
+                 */
+                certificate_status: "none" | "pending" | "issuing" | "active" | "failed";
                 /** Format: date-time */
                 checked_at: string | null;
                 dns_records: {
                     name: string;
-                    /** @enum {string} */
-                    type: "TXT" | "CNAME" | "A";
+                    /**
+                     * @description ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)
+                     * @enum {string}
+                     */
+                    type: "TXT" | "CNAME" | "ALIAS";
                     value: string;
                 }[];
                 host: string;
@@ -44415,12 +48739,22 @@ export interface components {
             domains: {
                 /** Format: date-time */
                 active_at: string | null;
+                /** @enum {string|null} */
+                certificate_error: "cluster_refused" | "cluster_unreachable" | "challenge_failed" | "rate_limited" | "issuer_not_ready" | "issuance_failed" | null;
+                /**
+                 * @description ADR-398: the host's certificate (none until DNS is proven, then pending, issuing, active or failed)
+                 * @enum {string}
+                 */
+                certificate_status: "none" | "pending" | "issuing" | "active" | "failed";
                 /** Format: date-time */
                 checked_at: string | null;
                 dns_records: {
                     name: string;
-                    /** @enum {string} */
-                    type: "TXT" | "CNAME" | "A";
+                    /**
+                     * @description ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)
+                     * @enum {string}
+                     */
+                    type: "TXT" | "CNAME" | "ALIAS";
                     value: string;
                 }[];
                 host: string;
@@ -45127,6 +49461,31 @@ export interface components {
             space_id: string;
             /** Format: date-time */
             starts_at: string;
+        };
+        /** SplitMark */
+        SplitMark: {
+            /** @description Active time since the start, pauses excluded */
+            elapsed_ms: number;
+            /** @description 0 or absent: the segment ended; ≥ 1: that round was finished */
+            round?: number | null;
+            segment_index: number;
+        };
+        /** SplitMarksRequest */
+        SplitMarksRequest: {
+            marks: {
+                /** @description Active time since the start, pauses excluded */
+                elapsed_ms: number;
+                /** @description 0 or absent: the segment ended; ≥ 1: that round was finished */
+                round?: number | null;
+                segment_index: number;
+            }[];
+        };
+        /** SplitMarksResponse */
+        SplitMarksResponse: {
+            /** @description Marks that were new */
+            stored: number;
+            /** @description Marks the execution has now */
+            total: number;
         };
         /** StaffCommunityEvent */
         StaffCommunityEvent: {
@@ -46798,6 +51157,317 @@ export interface components {
         StaffPerkResponse: {
             perk: components["schemas"]["StaffPerk"];
         };
+        /** StaffProgramme */
+        StaffProgramme: {
+            /** Format: date-time */
+            archived_at?: string | null;
+            /** Format: uuid */
+            author_id?: string | null;
+            /** @enum {string} */
+            currency: "EUR" | "GBP" | "USD" | "CHF";
+            /** Format: uuid */
+            current_version_id?: string | null;
+            description?: string | null;
+            draft_days: {
+                /** @description Day 0 is the start date */
+                day: number;
+                /** Format: uuid */
+                workout_id: string;
+            }[];
+            draft_weeks: number;
+            equipment?: string[];
+            /** @enum {string} */
+            goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            level: "all" | "beginner" | "intermediate" | "advanced";
+            /**
+             * @description box: the box's own page; marketplace: also the cross-business catalogue
+             * @enum {string}
+             */
+            listing: "box" | "marketplace";
+            online_payments?: boolean;
+            preview_days: number;
+            price_cents: number;
+            /** Format: date-time */
+            published_at?: string | null;
+            /** @enum {string} */
+            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+            /** ProgrammeRating */
+            reviews?: {
+                average: number | null;
+                count: number;
+            };
+            sales?: {
+                active: number;
+                buyers: number;
+                currency?: string | null;
+                gross_cents?: number | null;
+                refunded_cents?: number | null;
+            };
+            sessions_per_week?: number | null;
+            /** @enum {string} */
+            status: "draft" | "published" | "archived";
+            summary?: string | null;
+            title: string;
+            /** ProgrammeVersion */
+            version?: {
+                changelog?: string | null;
+                days: {
+                    day: number;
+                    /** Format: uuid */
+                    source_workout_id?: string;
+                    summary?: string | null;
+                    title?: string | null;
+                    /**
+                     * Format: uuid
+                     * @description The frozen copy
+                     */
+                    workout_id: string;
+                }[];
+                /** Format: uuid */
+                id: string;
+                number: number;
+                /** Format: date-time */
+                published_at: string;
+                /** Format: uuid */
+                published_by_id?: string | null;
+                weeks: number;
+            };
+            versions?: {
+                changelog?: string | null;
+                days: {
+                    day: number;
+                    /** Format: uuid */
+                    source_workout_id?: string;
+                    summary?: string | null;
+                    title?: string | null;
+                    /**
+                     * Format: uuid
+                     * @description The frozen copy
+                     */
+                    workout_id: string;
+                }[];
+                /** Format: uuid */
+                id: string;
+                number: number;
+                /** Format: date-time */
+                published_at: string;
+                /** Format: uuid */
+                published_by_id?: string | null;
+                weeks: number;
+            }[];
+        };
+        /** StaffProgrammeList */
+        StaffProgrammeList: {
+            programmes: {
+                /** Format: date-time */
+                archived_at?: string | null;
+                /** Format: uuid */
+                author_id?: string | null;
+                /** @enum {string} */
+                currency: "EUR" | "GBP" | "USD" | "CHF";
+                /** Format: uuid */
+                current_version_id?: string | null;
+                description?: string | null;
+                draft_days: {
+                    /** @description Day 0 is the start date */
+                    day: number;
+                    /** Format: uuid */
+                    workout_id: string;
+                }[];
+                draft_weeks: number;
+                equipment?: string[];
+                /** @enum {string} */
+                goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                level: "all" | "beginner" | "intermediate" | "advanced";
+                /**
+                 * @description box: the box's own page; marketplace: also the cross-business catalogue
+                 * @enum {string}
+                 */
+                listing: "box" | "marketplace";
+                online_payments?: boolean;
+                preview_days: number;
+                price_cents: number;
+                /** Format: date-time */
+                published_at?: string | null;
+                /** @enum {string} */
+                refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                /** ProgrammeRating */
+                reviews?: {
+                    average: number | null;
+                    count: number;
+                };
+                sales?: {
+                    active: number;
+                    buyers: number;
+                    currency?: string | null;
+                    gross_cents?: number | null;
+                    refunded_cents?: number | null;
+                };
+                sessions_per_week?: number | null;
+                /** @enum {string} */
+                status: "draft" | "published" | "archived";
+                summary?: string | null;
+                title: string;
+                /** ProgrammeVersion */
+                version?: {
+                    changelog?: string | null;
+                    days: {
+                        day: number;
+                        /** Format: uuid */
+                        source_workout_id?: string;
+                        summary?: string | null;
+                        title?: string | null;
+                        /**
+                         * Format: uuid
+                         * @description The frozen copy
+                         */
+                        workout_id: string;
+                    }[];
+                    /** Format: uuid */
+                    id: string;
+                    number: number;
+                    /** Format: date-time */
+                    published_at: string;
+                    /** Format: uuid */
+                    published_by_id?: string | null;
+                    weeks: number;
+                };
+                versions?: {
+                    changelog?: string | null;
+                    days: {
+                        day: number;
+                        /** Format: uuid */
+                        source_workout_id?: string;
+                        summary?: string | null;
+                        title?: string | null;
+                        /**
+                         * Format: uuid
+                         * @description The frozen copy
+                         */
+                        workout_id: string;
+                    }[];
+                    /** Format: uuid */
+                    id: string;
+                    number: number;
+                    /** Format: date-time */
+                    published_at: string;
+                    /** Format: uuid */
+                    published_by_id?: string | null;
+                    weeks: number;
+                }[];
+            }[];
+        };
+        /** StaffProgrammeResponse */
+        StaffProgrammeResponse: {
+            /** StaffProgramme */
+            programme: {
+                /** Format: date-time */
+                archived_at?: string | null;
+                /** Format: uuid */
+                author_id?: string | null;
+                /** @enum {string} */
+                currency: "EUR" | "GBP" | "USD" | "CHF";
+                /** Format: uuid */
+                current_version_id?: string | null;
+                description?: string | null;
+                draft_days: {
+                    /** @description Day 0 is the start date */
+                    day: number;
+                    /** Format: uuid */
+                    workout_id: string;
+                }[];
+                draft_weeks: number;
+                equipment?: string[];
+                /** @enum {string} */
+                goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
+                /** Format: uuid */
+                id: string;
+                /** @enum {string} */
+                level: "all" | "beginner" | "intermediate" | "advanced";
+                /**
+                 * @description box: the box's own page; marketplace: also the cross-business catalogue
+                 * @enum {string}
+                 */
+                listing: "box" | "marketplace";
+                online_payments?: boolean;
+                preview_days: number;
+                price_cents: number;
+                /** Format: date-time */
+                published_at?: string | null;
+                /** @enum {string} */
+                refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                /** ProgrammeRating */
+                reviews?: {
+                    average: number | null;
+                    count: number;
+                };
+                sales?: {
+                    active: number;
+                    buyers: number;
+                    currency?: string | null;
+                    gross_cents?: number | null;
+                    refunded_cents?: number | null;
+                };
+                sessions_per_week?: number | null;
+                /** @enum {string} */
+                status: "draft" | "published" | "archived";
+                summary?: string | null;
+                title: string;
+                /** ProgrammeVersion */
+                version?: {
+                    changelog?: string | null;
+                    days: {
+                        day: number;
+                        /** Format: uuid */
+                        source_workout_id?: string;
+                        summary?: string | null;
+                        title?: string | null;
+                        /**
+                         * Format: uuid
+                         * @description The frozen copy
+                         */
+                        workout_id: string;
+                    }[];
+                    /** Format: uuid */
+                    id: string;
+                    number: number;
+                    /** Format: date-time */
+                    published_at: string;
+                    /** Format: uuid */
+                    published_by_id?: string | null;
+                    weeks: number;
+                };
+                versions?: {
+                    changelog?: string | null;
+                    days: {
+                        day: number;
+                        /** Format: uuid */
+                        source_workout_id?: string;
+                        summary?: string | null;
+                        title?: string | null;
+                        /**
+                         * Format: uuid
+                         * @description The frozen copy
+                         */
+                        workout_id: string;
+                    }[];
+                    /** Format: uuid */
+                    id: string;
+                    number: number;
+                    /** Format: date-time */
+                    published_at: string;
+                    /** Format: uuid */
+                    published_by_id?: string | null;
+                    weeks: number;
+                }[];
+            };
+        };
         /** StaffSeason */
         StaffSeason: {
             capacity: number;
@@ -48308,6 +52978,8 @@ export interface components {
                 workout_id?: string | null;
                 workout_title?: string | null;
             }[];
+            /** @description ADR-451: the source types this person may log here, in display order (freeform is always last). */
+            available_sources: ("class" | "assigned_workout" | "library_workout" | "freeform")[];
             classes: {
                 /** Format: uuid */
                 booking_id?: string | null;
@@ -48877,6 +53549,329 @@ export interface components {
                 revoked_at?: string | null;
             };
         };
+        /** WatchOfferAnswerRequest */
+        WatchOfferAnswerRequest: {
+            /** @enum {string} */
+            answer: "yes" | "no";
+        };
+        /** WatchOfferAnswerResponse */
+        WatchOfferAnswerResponse: {
+            /** @enum {string} */
+            answer: "yes" | "no";
+            /** @enum {string} */
+            mode: "start" | "none";
+        };
+        /**
+         * WatchOfferRequest
+         * @description Sent by the phone when a WOD is opened for execution: which watch it sees and whether it is connected now
+         */
+        WatchOfferRequest: {
+            /** @enum {string} */
+            platform: "apple_watch" | "wear_os";
+            watch_connected: boolean;
+        };
+        /** WatchOfferResponse */
+        WatchOfferResponse: {
+            /** @enum {string|null} */
+            answer: "yes" | "no" | null;
+            /** @description Box members are asked this many times; null for free athletes (always asked) */
+            ask_limit: number | null;
+            asked_count: number;
+            /**
+             * @description ask: show «Το χρονόμετρο και στο ρολόι;»; start: put the timer on the watch; none: leave it
+             * @enum {string}
+             */
+            mode: "ask" | "start" | "none";
+            /** @enum {string} */
+            reason: "execution_closed" | "watch_not_connected" | "not_checked_in" | "already_started" | "answered_yes" | "answered_no" | "not_answered" | "free_athlete" | "first_wods" | "box_member_after_first_wods";
+        };
+        /**
+         * WatchPlan
+         * @description What the phone hands the watch for one execution (contract version 1)
+         */
+        WatchPlan: {
+            commands: ("next" | "round" | "pause" | "resume" | "finish")[];
+            contract_version: number;
+            /** Format: uuid */
+            execution_id: string;
+            haptics: boolean;
+            heart_rate: {
+                enabled: boolean;
+                interval_ms: number;
+                max_hr?: number | null;
+            };
+            pace: {
+                at_ms: number;
+                key: string;
+                phase: string;
+                round: number;
+                section_ordinal: number;
+            }[];
+            progress: {
+                current_segment_index: number;
+                lock_version: number;
+                paused_elapsed_ms: number;
+                /** Format: date-time */
+                segment_started_at_utc?: string | null;
+                total_elapsed_ms: number;
+            };
+            segments: {
+                duration_seconds?: number | null;
+                index: number;
+                kind: string;
+                label?: string | null;
+                label_key?: string | null;
+                label_params: {
+                    [key: string]: unknown;
+                };
+                movements: {
+                    amount?: (number | string) | null;
+                    name: string;
+                    unit?: string | null;
+                }[];
+                phase: string;
+                round?: number | null;
+                scoreable: boolean;
+                section_name?: string | null;
+                total_rounds?: number | null;
+            }[];
+            /** @enum {string} */
+            status: "active" | "paused" | "completed";
+            title?: string | null;
+        };
+        /** WatchPlanResponse */
+        WatchPlanResponse: {
+            /**
+             * WatchPlan
+             * @description What the phone hands the watch for one execution (contract version 1)
+             */
+            plan: {
+                commands: ("next" | "round" | "pause" | "resume" | "finish")[];
+                contract_version: number;
+                /** Format: uuid */
+                execution_id: string;
+                haptics: boolean;
+                heart_rate: {
+                    enabled: boolean;
+                    interval_ms: number;
+                    max_hr?: number | null;
+                };
+                pace: {
+                    at_ms: number;
+                    key: string;
+                    phase: string;
+                    round: number;
+                    section_ordinal: number;
+                }[];
+                progress: {
+                    current_segment_index: number;
+                    lock_version: number;
+                    paused_elapsed_ms: number;
+                    /** Format: date-time */
+                    segment_started_at_utc?: string | null;
+                    total_elapsed_ms: number;
+                };
+                segments: {
+                    duration_seconds?: number | null;
+                    index: number;
+                    kind: string;
+                    label?: string | null;
+                    label_key?: string | null;
+                    label_params: {
+                        [key: string]: unknown;
+                    };
+                    movements: {
+                        amount?: (number | string) | null;
+                        name: string;
+                        unit?: string | null;
+                    }[];
+                    phase: string;
+                    round?: number | null;
+                    scoreable: boolean;
+                    section_name?: string | null;
+                    total_rounds?: number | null;
+                }[];
+                /** @enum {string} */
+                status: "active" | "paused" | "completed";
+                title?: string | null;
+            };
+        };
+        /** WatchPlanSegment */
+        WatchPlanSegment: {
+            duration_seconds?: number | null;
+            index: number;
+            kind: string;
+            label?: string | null;
+            label_key?: string | null;
+            label_params: {
+                [key: string]: unknown;
+            };
+            movements: {
+                amount?: (number | string) | null;
+                name: string;
+                unit?: string | null;
+            }[];
+            phase: string;
+            round?: number | null;
+            scoreable: boolean;
+            section_name?: string | null;
+            total_rounds?: number | null;
+        };
+        /** WatchSettings */
+        WatchSettings: {
+            haptics?: boolean;
+            /** @description Only with it the results show heart-rate zones */
+            max_hr?: number | null;
+            show_heart_rate?: boolean;
+            /** @description The previous attempt's pace line */
+            show_pace?: boolean;
+        };
+        /** WebhookDelivery */
+        WebhookDelivery: {
+            attempts: number;
+            /** @description Detail only */
+            attempts_log?: {
+                attempt: number;
+                duration_ms?: number | null;
+                error?: string | null;
+                outcome: string;
+                response_excerpt?: string | null;
+                /** Format: date-time */
+                started_at: string;
+                status_code?: number | null;
+            }[];
+            /** Format: date-time */
+            created_at?: string;
+            /** Format: date-time */
+            delivered_at?: string | null;
+            /** Format: uuid */
+            endpoint_id: string;
+            /** Format: uuid */
+            event_id: string;
+            event_type: string;
+            /** Format: uuid */
+            id: string;
+            last_error?: string | null;
+            last_status_code?: number | null;
+            /** Format: date-time */
+            next_attempt_at?: string | null;
+            /** @description Detail only */
+            payload?: {
+                [key: string]: unknown;
+            };
+            /** Format: uuid */
+            replay_of_id?: string | null;
+            /** @enum {string} */
+            status: "pending" | "succeeded" | "failed";
+        };
+        /** WebhookDeliveryPage */
+        WebhookDeliveryPage: {
+            deliveries: {
+                attempts: number;
+                /** @description Detail only */
+                attempts_log?: {
+                    attempt: number;
+                    duration_ms?: number | null;
+                    error?: string | null;
+                    outcome: string;
+                    response_excerpt?: string | null;
+                    /** Format: date-time */
+                    started_at: string;
+                    status_code?: number | null;
+                }[];
+                /** Format: date-time */
+                created_at?: string;
+                /** Format: date-time */
+                delivered_at?: string | null;
+                /** Format: uuid */
+                endpoint_id: string;
+                /** Format: uuid */
+                event_id: string;
+                event_type: string;
+                /** Format: uuid */
+                id: string;
+                last_error?: string | null;
+                last_status_code?: number | null;
+                /** Format: date-time */
+                next_attempt_at?: string | null;
+                /** @description Detail only */
+                payload?: {
+                    [key: string]: unknown;
+                };
+                /** Format: uuid */
+                replay_of_id?: string | null;
+                /** @enum {string} */
+                status: "pending" | "succeeded" | "failed";
+            }[];
+            total: number;
+        };
+        /** WebhookEndpoint */
+        WebhookEndpoint: {
+            /** Format: uuid */
+            api_key_id?: string | null;
+            consecutive_failures?: number;
+            /** Format: date-time */
+            created_at?: string;
+            description?: string | null;
+            disabled_reason?: string | null;
+            events: string[];
+            /** Format: uuid */
+            id: string;
+            /** Format: date-time */
+            last_failure_at?: string | null;
+            /** Format: date-time */
+            last_success_at?: string | null;
+            /** Format: date-time */
+            secret_rotating_until?: string | null;
+            /** @enum {string} */
+            source: "staff" | "api";
+            /** @enum {string} */
+            status: "active" | "disabled";
+            url: string;
+        };
+        /** WebhookEndpointBody */
+        WebhookEndpointBody: {
+            description?: string | null;
+            events: string[];
+            url: string;
+        };
+        /** WebhookEndpointUpdate */
+        WebhookEndpointUpdate: {
+            description?: string | null;
+            events?: string[];
+            /** @enum {string} */
+            status?: "active" | "disabled";
+            url?: string;
+        };
+        /** WebhookEndpointWithSecret */
+        WebhookEndpointWithSecret: {
+            /** WebhookEndpoint */
+            endpoint: {
+                /** Format: uuid */
+                api_key_id?: string | null;
+                consecutive_failures?: number;
+                /** Format: date-time */
+                created_at?: string;
+                description?: string | null;
+                disabled_reason?: string | null;
+                events: string[];
+                /** Format: uuid */
+                id: string;
+                /** Format: date-time */
+                last_failure_at?: string | null;
+                /** Format: date-time */
+                last_success_at?: string | null;
+                /** Format: date-time */
+                secret_rotating_until?: string | null;
+                /** @enum {string} */
+                source: "staff" | "api";
+                /** @enum {string} */
+                status: "active" | "disabled";
+                url: string;
+            };
+            /** @description The signing secret, shown once */
+            secret: string;
+        };
         /** WellnessAccessLog */
         WellnessAccessLog: {
             entries: {
@@ -48914,7 +53909,8 @@ export interface components {
              *     (minutes or quality required; both ends give minutes). meal: {slot?
              *     (breakfast, lunch, dinner, snack or a plan slot such as pre_workout), plan_fit?
              *     in_plan|off_plan, note?, media_id?,
-             *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5}.
+             *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5,
+             *     foods? [{name, barcode?, custom_food_id?, portion?}] up to 10 (ADR-376)}.
              */
             value?: {
                 [key: string]: unknown;
@@ -48938,7 +53934,8 @@ export interface components {
              *     (minutes or quality required; both ends give minutes). meal: {slot?
              *     (breakfast, lunch, dinner, snack or a plan slot such as pre_workout), plan_fit?
              *     in_plan|off_plan, note?, media_id?,
-             *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5}.
+             *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5,
+             *     foods? [{name, barcode?, custom_food_id?, portion?}] up to 10 (ADR-376)}.
              */
             value: {
                 [key: string]: unknown;
@@ -48972,7 +53969,8 @@ export interface components {
                  *     (minutes or quality required; both ends give minutes). meal: {slot?
                  *     (breakfast, lunch, dinner, snack or a plan slot such as pre_workout), plan_fit?
                  *     in_plan|off_plan, note?, media_id?,
-                 *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5}.
+                 *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5,
+                 *     foods? [{name, barcode?, custom_food_id?, portion?}] up to 10 (ADR-376)}.
                  */
                 value: {
                     [key: string]: unknown;
@@ -49060,7 +54058,8 @@ export interface components {
                          *     (minutes or quality required; both ends give minutes). meal: {slot?
                          *     (breakfast, lunch, dinner, snack or a plan slot such as pre_workout), plan_fit?
                          *     in_plan|off_plan, note?, media_id?,
-                         *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5}.
+                         *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5,
+                         *     foods? [{name, barcode?, custom_food_id?, portion?}] up to 10 (ADR-376)}.
                          */
                         value: {
                             [key: string]: unknown;
@@ -49177,7 +54176,8 @@ export interface components {
                  *     (minutes or quality required; both ends give minutes). meal: {slot?
                  *     (breakfast, lunch, dinner, snack or a plan slot such as pre_workout), plan_fit?
                  *     in_plan|off_plan, note?, media_id?,
-                 *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5}.
+                 *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5,
+                 *     foods? [{name, barcode?, custom_food_id?, portion?}] up to 10 (ADR-376)}.
                  */
                 value: {
                     [key: string]: unknown;
@@ -50142,6 +55142,145 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    "PaleeWeb.DoorAccessController.ingest": {
+        parameters: {
+            query: {
+                token: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    [key: string]: unknown;
+                };
+            };
+        };
+        responses: {
+            /** @description Recorded */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        recorded: number;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.DoorAccessController.ingest (2)": {
+        parameters: {
+            query: {
+                token: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    [key: string]: unknown;
+                };
+            };
+        };
+        responses: {
+            /** @description Recorded */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        recorded: number;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.DoorAccessController.open": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    code?: string;
+                    /** Format: uuid */
+                    door_id?: string;
+                    /** Format: uuid */
+                    location_id?: string;
+                    nfc_code?: string;
+                    poster_code?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Opened */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        door: {
+                            /** Format: uuid */
+                            id: string;
+                            name: string;
+                        };
+                        opened: boolean;
+                        /** @enum {string} */
+                        reason: "staff" | "member" | "booked_class" | "open_gym";
+                        seconds: number;
+                    };
+                };
+            };
+            /** @description Entry refused */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Choose a door */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description The door controller is offline */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AnatomyController.taxonomy": {
         parameters: {
             query?: never;
@@ -50216,8 +55355,8 @@ export interface operations {
                         /** @description Default events, boxes, clubs */
                         kinds?: ("events" | "boxes" | "clubs" | "posts")[];
                         languages?: string[];
-                        /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-                        levels?: ("beginner" | "all_levels" | "advanced")[];
+                        /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                        levels?: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                         max_price_cents?: number | null;
                         min_price_cents?: number | null;
                         /** @description Gazetteer places to search from, at most 5 */
@@ -50288,8 +55427,8 @@ export interface operations {
                         /** @description Default events, boxes, clubs */
                         kinds?: ("events" | "boxes" | "clubs" | "posts")[];
                         languages?: string[];
-                        /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-                        levels?: ("beginner" | "all_levels" | "advanced")[];
+                        /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                        levels?: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                         max_price_cents?: number | null;
                         min_price_cents?: number | null;
                         /** @description Gazetteer places to search from, at most 5 */
@@ -50353,8 +55492,8 @@ export interface operations {
                             /** @description Default events, boxes, clubs */
                             kinds: ("events" | "boxes" | "clubs" | "posts")[];
                             languages: string[];
-                            /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-                            levels: ("beginner" | "all_levels" | "advanced")[];
+                            /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                            levels: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                             max_price_cents: number | null;
                             min_price_cents: number | null;
                             /** @description Gazetteer places to search from, at most 5 */
@@ -50995,8 +56134,8 @@ export interface operations {
                         /** @description Default events, boxes, clubs */
                         kinds?: ("events" | "boxes" | "clubs" | "posts")[];
                         languages?: string[];
-                        /** @description Class levels (ADR-197): hosts running a current class type at one of them */
-                        levels?: ("beginner" | "all_levels" | "advanced")[];
+                        /** @description Class levels (ADR-197, ADR-490): hosts running a current class type that suits one of them. The retired all_levels is accepted and ignored. */
+                        levels?: ("beginner" | "intermediate" | "advanced" | "all_levels")[];
                         max_price_cents?: number | null;
                         min_price_cents?: number | null;
                         /** @description Gazetteer places to search from, at most 5 */
@@ -54141,7 +59280,7 @@ export interface operations {
                         amenities: ("showers" | "changing_rooms" | "lockers" | "towels" | "parking" | "bike_parking" | "public_transport_nearby" | "air_conditioning" | "sauna" | "cold_plunge" | "childcare" | "wheelchair_accessible" | "accessible_restroom" | "gender_neutral_restroom" | "wifi" | "water_refill" | "outdoor_area" | "drop_in_friendly")[];
                         audiences: ("beginners" | "women_only" | "kids" | "teens" | "over_40" | "seniors" | "prenatal_postnatal" | "adaptive" | "athletes" | "students" | "lgbtq_friendly" | "returning_from_injury")[];
                         discipline_groups: {
-                            items: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "physio_rehab" | "sports_massage" | "recovery")[];
+                            items: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "physio_rehab" | "sports_massage" | "recovery")[];
                             key: string;
                         }[];
                         services: ("personal_training" | "small_group_training" | "open_gym" | "nutrition_coaching" | "online_coaching" | "corporate")[];
@@ -55006,7 +60145,8 @@ export interface operations {
                                 audiences: string[];
                                 /** Format: uuid */
                                 id: string;
-                                level?: string | null;
+                                /** @description Levels the class suits; empty means all levels (ADR-490) */
+                                levels: ("beginner" | "intermediate" | "advanced")[];
                                 name: string;
                             } | null;
                             coach?: {
@@ -56132,6 +61272,129 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.WatchController.heart_rate_summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Summary */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** HeartRateSummary */
+                        heart_rate: {
+                            average_bpm?: number | null;
+                            /** Format: uuid */
+                            execution_id: string;
+                            max_bpm?: number | null;
+                            min_bpm?: number | null;
+                            samples: number;
+                            sections: {
+                                average_bpm?: number | null;
+                                max_bpm?: number | null;
+                                section_ordinal: number;
+                            }[];
+                            zones: {
+                                ms: number;
+                                zone: number;
+                            }[];
+                        };
+                    };
+                };
+            };
+            /** @description Not your execution */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.WatchController.heart_rate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    batches: {
+                        bpm: number[];
+                        interval_ms: number;
+                        sequence: number;
+                        started_offset_ms: number;
+                    }[];
+                    /** @enum {string} */
+                    platform: "apple_watch" | "wear_os";
+                };
+            };
+        };
+        responses: {
+            /** @description Stored */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        stored: number;
+                        total: number;
+                    };
+                };
+            };
+            /** @description Health-data consent needed */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Not your execution */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Invalid batch */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.ExecutionController.record_interactions": {
         parameters: {
             query?: never;
@@ -56214,6 +61477,85 @@ export interface operations {
                             index: number;
                             reason: string;
                         }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.ExecutionPacerController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Pace line */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Pacer */
+                        pacer: {
+                            checkpoints: {
+                                at_ms?: number | null;
+                                /** @description This attempt minus the previous one: negative is ahead */
+                                delta_ms: number | null;
+                                ghost_at_ms: number;
+                                ghost_lap_ms: number;
+                                /** @description <section ordinal>:<phase>:<round>:<n> */
+                                key: string;
+                                lap_ms?: number | null;
+                                /** @enum {string} */
+                                phase: "work" | "rest" | "transition";
+                                round: number;
+                                section_id?: string | null;
+                                section_name?: string | null;
+                                section_ordinal: number;
+                            }[];
+                            current_total_ms?: number | null;
+                            /** Format: uuid */
+                            execution_id: string;
+                            ghost_total_ms?: number | null;
+                            /** @enum {string|null} */
+                            precision?: "rounds" | "segments" | "sections" | "finish" | null;
+                            /** @description The attempt raced against; null when there is none */
+                            previous: {
+                                completed_at_tz?: string | null;
+                                /** Format: date-time */
+                                completed_at_utc: string;
+                                /** Format: uuid */
+                                execution_id: string;
+                                /** @description False when it is the same benchmark from another workout */
+                                same_workout: boolean;
+                                scale_level_slug?: string | null;
+                            } | null;
+                            sections: {
+                                current_ms?: number | null;
+                                delta_ms: number | null;
+                                ghost_ms: number;
+                                section_id?: string | null;
+                                section_name?: string | null;
+                                section_ordinal: number;
+                            }[];
+                            total_delta_ms?: number | null;
+                        };
+                    };
+                };
+            };
+            /** @description Not your execution */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
                     };
                 };
             };
@@ -56307,6 +61649,289 @@ export interface operations {
                 };
                 content: {
                     "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.ExecutionPacerController.splits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    marks: {
+                        /** @description Active time since the start, pauses excluded */
+                        elapsed_ms: number;
+                        /** @description 0 or absent: the segment ended; ≥ 1: that round was finished */
+                        round?: number | null;
+                        segment_index: number;
+                    }[];
+                };
+            };
+        };
+        responses: {
+            /** @description Stored */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Marks that were new */
+                        stored: number;
+                        /** @description Marks the execution has now */
+                        total: number;
+                    };
+                };
+            };
+            /** @description Not your execution */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Marks don't fit the timer */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.WatchController.offer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    platform: "apple_watch" | "wear_os";
+                    watch_connected: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description What the phone does */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string|null} */
+                        answer: "yes" | "no" | null;
+                        /** @description Box members are asked this many times; null for free athletes (always asked) */
+                        ask_limit: number | null;
+                        asked_count: number;
+                        /**
+                         * @description ask: show «Το χρονόμετρο και στο ρολόι;»; start: put the timer on the watch; none: leave it
+                         * @enum {string}
+                         */
+                        mode: "ask" | "start" | "none";
+                        /** @enum {string} */
+                        reason: "execution_closed" | "watch_not_connected" | "not_checked_in" | "already_started" | "answered_yes" | "answered_no" | "not_answered" | "free_athlete" | "first_wods" | "box_member_after_first_wods";
+                    };
+                };
+            };
+            /** @description Not your execution */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Unknown watch platform */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.WatchController.answer_offer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    answer: "yes" | "no";
+                };
+            };
+        };
+        responses: {
+            /** @description Answer saved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        answer: "yes" | "no";
+                        /** @enum {string} */
+                        mode: "start" | "none";
+                    };
+                };
+            };
+            /** @description Not your execution */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description The watch was not offered for this execution */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Answer yes or no */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.WatchController.plan": {
+        parameters: {
+            query?: {
+                platform?: "apple_watch" | "wear_os";
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Watch plan */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * WatchPlan
+                         * @description What the phone hands the watch for one execution (contract version 1)
+                         */
+                        plan: {
+                            commands: ("next" | "round" | "pause" | "resume" | "finish")[];
+                            contract_version: number;
+                            /** Format: uuid */
+                            execution_id: string;
+                            haptics: boolean;
+                            heart_rate: {
+                                enabled: boolean;
+                                interval_ms: number;
+                                max_hr?: number | null;
+                            };
+                            pace: {
+                                at_ms: number;
+                                key: string;
+                                phase: string;
+                                round: number;
+                                section_ordinal: number;
+                            }[];
+                            progress: {
+                                current_segment_index: number;
+                                lock_version: number;
+                                paused_elapsed_ms: number;
+                                /** Format: date-time */
+                                segment_started_at_utc?: string | null;
+                                total_elapsed_ms: number;
+                            };
+                            segments: {
+                                duration_seconds?: number | null;
+                                index: number;
+                                kind: string;
+                                label?: string | null;
+                                label_key?: string | null;
+                                label_params: {
+                                    [key: string]: unknown;
+                                };
+                                movements: {
+                                    amount?: (number | string) | null;
+                                    name: string;
+                                    unit?: string | null;
+                                }[];
+                                phase: string;
+                                round?: number | null;
+                                scoreable: boolean;
+                                section_name?: string | null;
+                                total_rounds?: number | null;
+                            }[];
+                            /** @enum {string} */
+                            status: "active" | "paused" | "completed";
+                            title?: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description Not your execution */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
                 };
             };
         };
@@ -56520,6 +62145,76 @@ export interface operations {
                         status: string;
                         /** @example 0.1.0 */
                         version: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.EmailListHookController.unsubscribe": {
+        parameters: {
+            query: {
+                token: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    [key: string]: unknown;
+                };
+                "application/x-www-form-urlencoded": {
+                    [key: string]: unknown;
+                };
+            };
+        };
+        responses: {
+            /** @description Handled */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        withdrawn: number;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.EmailListHookController.unsubscribe (2)": {
+        parameters: {
+            query: {
+                token: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    [key: string]: unknown;
+                };
+                "application/x-www-form-urlencoded": {
+                    [key: string]: unknown;
+                };
+            };
+        };
+        responses: {
+            /** @description Handled */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        withdrawn: number;
                     };
                 };
             };
@@ -64221,6 +69916,338 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.WatchController.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Watches */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        contract: {
+                            platforms: ("apple_watch" | "wear_os")[];
+                            version: number;
+                        };
+                        watches: {
+                            app_version?: string | null;
+                            contract_version: number;
+                            device_name?: string | null;
+                            /** Format: date-time */
+                            last_seen_at: string;
+                            needs_upgrade: boolean;
+                            /** Format: date-time */
+                            paired_at: string;
+                            /** @enum {string} */
+                            platform: "apple_watch" | "wear_os";
+                            /** WatchSettings */
+                            settings: {
+                                haptics?: boolean;
+                                /** @description Only with it the results show heart-rate zones */
+                                max_hr?: number | null;
+                                show_heart_rate?: boolean;
+                                /** @description The previous attempt's pace line */
+                                show_pace?: boolean;
+                            };
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.WatchController.pair": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                platform: "apple_watch" | "wear_os";
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    app_version?: string;
+                    contract_version: number;
+                    device_name?: string;
+                    /** WatchSettings */
+                    settings?: {
+                        haptics?: boolean;
+                        /** @description Only with it the results show heart-rate zones */
+                        max_hr?: number | null;
+                        show_heart_rate?: boolean;
+                        /** @description The previous attempt's pace line */
+                        show_pace?: boolean;
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description The watch */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** PairedWatch */
+                        watch: {
+                            app_version?: string | null;
+                            contract_version: number;
+                            device_name?: string | null;
+                            /** Format: date-time */
+                            last_seen_at: string;
+                            needs_upgrade: boolean;
+                            /** Format: date-time */
+                            paired_at: string;
+                            /** @enum {string} */
+                            platform: "apple_watch" | "wear_os";
+                            /** WatchSettings */
+                            settings: {
+                                haptics?: boolean;
+                                /** @description Only with it the results show heart-rate zones */
+                                max_hr?: number | null;
+                                show_heart_rate?: boolean;
+                                /** @description The previous attempt's pace line */
+                                show_pace?: boolean;
+                            };
+                        };
+                    };
+                };
+            };
+            /** @description Invalid settings */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description The watch app is too old */
+            426: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.WatchController.unpair": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                platform: "apple_watch" | "wear_os";
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Unpaired */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description No such watch */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.DiplomaSignatureController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Signature */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Whether the person awards ranks somewhere (owner, admin or coach) */
+                        eligible: boolean;
+                        /** DiplomaSignatureLimits */
+                        limits: {
+                            content_types: string[];
+                            max_bytes: number;
+                            max_height: number;
+                            max_width: number;
+                            min_height: number;
+                            min_width: number;
+                        };
+                        /** DiplomaSignature */
+                        signature: {
+                            byte_size: number;
+                            /** @enum {string} */
+                            content_type: "image/png" | "image/jpeg";
+                            height: number;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            updated_at: string;
+                            width: number;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.DiplomaSignatureController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Image */
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description The PNG or JPEG file, base64 (a data: URL prefix is accepted) */
+                    image_base64: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Stored */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** DiplomaSignature */
+                        signature: {
+                            byte_size: number;
+                            /** @enum {string} */
+                            content_type: "image/png" | "image/jpeg";
+                            height: number;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            updated_at: string;
+                            width: number;
+                        } | null;
+                    };
+                };
+            };
+            /** @description Not staff who award ranks */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Unusable image */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Storage unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.DiplomaSignatureController.delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.DiplomaSignatureController.image": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Image */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/png": string;
+                };
+            };
+            /** @description No signature */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.EmailChangeController.show": {
         parameters: {
             query?: never;
@@ -67202,6 +73229,449 @@ export interface operations {
                     "application/json": {
                         /** @enum {string} */
                         status: "none" | "requested" | "active";
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.FoodsController.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Own foods */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        foods: {
+                            barcode?: string | null;
+                            brand?: string | null;
+                            /**
+                             * Format: uuid
+                             * @description Own foods only
+                             */
+                            id?: string | null;
+                            image_url?: string | null;
+                            name: string;
+                            note?: string | null;
+                            /**
+                             * FoodNutrients
+                             * @description Grams per 100 g. Only when a coach's plan sets macros and macros are not hidden; never energy
+                             */
+                            nutrients: {
+                                carbohydrates?: number;
+                                fat?: number;
+                                fiber?: number;
+                                proteins?: number;
+                                salt?: number;
+                                sugars?: number;
+                            } | null;
+                            /** @enum {string|null} */
+                            portion_hint: "protein" | "carbs" | "veg" | "fat" | null;
+                            quantity?: string | null;
+                            serving_size?: string | null;
+                            /**
+                             * Format: date-time
+                             * @description Own foods only: when the person shared the product with everyone (ADR-421 addendum)
+                             */
+                            shared_at?: string | null;
+                        }[];
+                        macros_visible: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.FoodsController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    barcode?: string | null;
+                    brand?: string | null;
+                    name: string;
+                    note?: string | null;
+                    nutrients?: {
+                        [key: string]: number;
+                    } | null;
+                    /** @enum {string|null} */
+                    portion_hint?: "protein" | "carbs" | "veg" | "fat" | null;
+                    serving_label?: string | null;
+                    /** @description «Μοιράσου το» (ADR-421 addendum): share the product (barcode, name, brand, portion, nutrition per 100 g; nothing about the person) with all Palee members and Open Food Facts. Only for a product barcode; never by default */
+                    share?: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Own food */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Food */
+                        food: {
+                            barcode?: string | null;
+                            brand?: string | null;
+                            /**
+                             * Format: uuid
+                             * @description Own foods only
+                             */
+                            id?: string | null;
+                            image_url?: string | null;
+                            name: string;
+                            note?: string | null;
+                            /**
+                             * FoodNutrients
+                             * @description Grams per 100 g. Only when a coach's plan sets macros and macros are not hidden; never energy
+                             */
+                            nutrients: {
+                                carbohydrates?: number;
+                                fat?: number;
+                                fiber?: number;
+                                proteins?: number;
+                                salt?: number;
+                                sugars?: number;
+                            } | null;
+                            /** @enum {string|null} */
+                            portion_hint: "protein" | "carbs" | "veg" | "fat" | null;
+                            quantity?: string | null;
+                            serving_size?: string | null;
+                            /**
+                             * Format: date-time
+                             * @description Own foods only: when the person shared the product with everyone (ADR-421 addendum)
+                             */
+                            shared_at?: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description Invalid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.FoodsController.barcode": {
+        parameters: {
+            query?: {
+                language?: string;
+            };
+            header?: never;
+            path: {
+                barcode: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Lookup */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * FoodAttribution
+                         * @description Shown with every product from a public source: Open Food Facts (ODbL 1.0), USDA FoodData Central (CC0), a licensed product list (its own licence) or Palee members (ODbL 1.0)
+                         */
+                        attribution?: {
+                            images_licence?: string | null;
+                            licence: string;
+                            licence_url?: string | null;
+                            source: string;
+                            url?: string | null;
+                        } | null;
+                        barcode: string;
+                        food?: {
+                            barcode?: string | null;
+                            brand?: string | null;
+                            /**
+                             * Format: uuid
+                             * @description Own foods only
+                             */
+                            id?: string | null;
+                            image_url?: string | null;
+                            name: string;
+                            note?: string | null;
+                            /**
+                             * FoodNutrients
+                             * @description Grams per 100 g. Only when a coach's plan sets macros and macros are not hidden; never energy
+                             */
+                            nutrients: {
+                                carbohydrates?: number;
+                                fat?: number;
+                                fiber?: number;
+                                proteins?: number;
+                                salt?: number;
+                                sugars?: number;
+                            } | null;
+                            /** @enum {string|null} */
+                            portion_hint: "protein" | "carbs" | "veg" | "fat" | null;
+                            quantity?: string | null;
+                            serving_size?: string | null;
+                            /**
+                             * Format: date-time
+                             * @description Own foods only: when the person shared the product with everyone (ADR-421 addendum)
+                             */
+                            shared_at?: string | null;
+                        } | null;
+                        /** @description Whether «Φωτογραφία ετικέτας» can prefill the manual entry (ADR-421) */
+                        label_reading?: boolean;
+                        macros_visible: boolean;
+                        /**
+                         * @description Why the manual entry
+                         * @enum {string|null}
+                         */
+                        reason?: "not_found" | "failed" | "in_store_code" | null;
+                        /**
+                         * @description `palee_members`: a product members shared (ADR-421 addendum)
+                         * @enum {string|null}
+                         */
+                        source?: "open_food_facts" | "usda_fdc" | "catalogue" | "palee_members" | "custom" | null;
+                        /**
+                         * @description `pending`: still asking, scan again in a few seconds; `manual`: write it down yourself
+                         * @enum {string}
+                         */
+                        status: "found" | "pending" | "manual";
+                    };
+                };
+            };
+            /** @description Not a valid barcode */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.FoodsController.read_label": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /**
+                     * Format: binary
+                     * @description The front of the pack
+                     */
+                    front?: string;
+                    locale?: string;
+                    /**
+                     * Format: binary
+                     * @description The nutrition table
+                     */
+                    nutrition?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Prefill */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        food: {
+                            brand: string | null;
+                            name: string | null;
+                            /**
+                             * FoodNutrients
+                             * @description Grams per 100 g. Only when a coach's plan sets macros and macros are not hidden; never energy
+                             */
+                            nutrients: {
+                                carbohydrates?: number;
+                                fat?: number;
+                                fiber?: number;
+                                proteins?: number;
+                                salt?: number;
+                                sugars?: number;
+                            } | null;
+                            /** @enum {string|null} */
+                            portion_hint: "protein" | "carbs" | "veg" | "fat" | null;
+                            serving_label: string | null;
+                        };
+                        macros_visible: boolean;
+                    };
+                };
+            };
+            /** @description Unreadable or not a photo */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Label reading is off */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.FoodsController.delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description No such food */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.FoodsController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    barcode?: string | null;
+                    brand?: string | null;
+                    name?: string;
+                    note?: string | null;
+                    nutrients?: {
+                        [key: string]: number;
+                    } | null;
+                    /** @enum {string|null} */
+                    portion_hint?: "protein" | "carbs" | "veg" | "fat" | null;
+                    serving_label?: string | null;
+                    /** @description «Μοιράσου το» (ADR-421 addendum): share the product (barcode, name, brand, portion, nutrition per 100 g; nothing about the person) with all Palee members and Open Food Facts. Only for a product barcode; never by default */
+                    share?: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Own food */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Food */
+                        food: {
+                            barcode?: string | null;
+                            brand?: string | null;
+                            /**
+                             * Format: uuid
+                             * @description Own foods only
+                             */
+                            id?: string | null;
+                            image_url?: string | null;
+                            name: string;
+                            note?: string | null;
+                            /**
+                             * FoodNutrients
+                             * @description Grams per 100 g. Only when a coach's plan sets macros and macros are not hidden; never energy
+                             */
+                            nutrients: {
+                                carbohydrates?: number;
+                                fat?: number;
+                                fiber?: number;
+                                proteins?: number;
+                                salt?: number;
+                                sugars?: number;
+                            } | null;
+                            /** @enum {string|null} */
+                            portion_hint: "protein" | "carbs" | "veg" | "fat" | null;
+                            quantity?: string | null;
+                            serving_size?: string | null;
+                            /**
+                             * Format: date-time
+                             * @description Own foods only: when the person shared the product with everyone (ADR-421 addendum)
+                             */
+                            shared_at?: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description No such food */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Invalid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
                     };
                 };
             };
@@ -72875,7 +79345,8 @@ export interface operations {
                              *     (minutes or quality required; both ends give minutes). meal: {slot?
                              *     (breakfast, lunch, dinner, snack or a plan slot such as pre_workout), plan_fit?
                              *     in_plan|off_plan, note?, media_id?,
-                             *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5}.
+                             *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5,
+                             *     foods? [{name, barcode?, custom_food_id?, portion?}] up to 10 (ADR-376)}.
                              */
                             value: {
                                 [key: string]: unknown;
@@ -73271,7 +79742,8 @@ export interface operations {
                      *     (minutes or quality required; both ends give minutes). meal: {slot?
                      *     (breakfast, lunch, dinner, snack or a plan slot such as pre_workout), plan_fit?
                      *     in_plan|off_plan, note?, media_id?,
-                     *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5}.
+                     *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5,
+                     *     foods? [{name, barcode?, custom_food_id?, portion?}] up to 10 (ADR-376)}.
                      */
                     value: {
                         [key: string]: unknown;
@@ -73313,7 +79785,8 @@ export interface operations {
                              *     (minutes or quality required; both ends give minutes). meal: {slot?
                              *     (breakfast, lunch, dinner, snack or a plan slot such as pre_workout), plan_fit?
                              *     in_plan|off_plan, note?, media_id?,
-                             *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5}.
+                             *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5,
+                             *     foods? [{name, barcode?, custom_food_id?, portion?}] up to 10 (ADR-376)}.
                              */
                             value: {
                                 [key: string]: unknown;
@@ -73368,7 +79841,8 @@ export interface operations {
                      *     (minutes or quality required; both ends give minutes). meal: {slot?
                      *     (breakfast, lunch, dinner, snack or a plan slot such as pre_workout), plan_fit?
                      *     in_plan|off_plan, note?, media_id?,
-                     *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5}.
+                     *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5,
+                     *     foods? [{name, barcode?, custom_food_id?, portion?}] up to 10 (ADR-376)}.
                      */
                     value?: {
                         [key: string]: unknown;
@@ -73410,7 +79884,8 @@ export interface operations {
                              *     (minutes or quality required; both ends give minutes). meal: {slot?
                              *     (breakfast, lunch, dinner, snack or a plan slot such as pre_workout), plan_fit?
                              *     in_plan|off_plan, note?, media_id?,
-                             *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5}.
+                             *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5,
+                             *     foods? [{name, barcode?, custom_food_id?, portion?}] up to 10 (ADR-376)}.
                              */
                             value: {
                                 [key: string]: unknown;
@@ -73512,7 +79987,8 @@ export interface operations {
                                      *     (minutes or quality required; both ends give minutes). meal: {slot?
                                      *     (breakfast, lunch, dinner, snack or a plan slot such as pre_workout), plan_fit?
                                      *     in_plan|off_plan, note?, media_id?,
-                                     *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5}.
+                                     *     portions? {protein, carbs, veg, fat in halves}, hunger_before? 1-5, fullness_after? 1-5,
+                                     *     foods? [{name, barcode?, custom_food_id?, portion?}] up to 10 (ADR-376)}.
                                      */
                                     value: {
                                         [key: string]: unknown;
@@ -74670,6 +81146,60 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminDoorsController.events": {
+        parameters: {
+            query?: {
+                door_id?: string;
+                location_id?: string;
+                user_id?: string;
+                kind?: "granted" | "denied" | "unlock_failed" | "staff_unlock" | "door_event";
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Access log */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        events: {
+                            /** Format: uuid */
+                            actor_id?: string | null;
+                            /** @description Who opened from the desk */
+                            actor_name?: string | null;
+                            /** Format: uuid */
+                            door_controller_id?: string | null;
+                            door_name?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "granted" | "denied" | "unlock_failed" | "staff_unlock" | "door_event";
+                            /** Format: uuid */
+                            location_id?: string | null;
+                            /** @enum {string} */
+                            method: "qr" | "nfc" | "staff" | "provider";
+                            /** Format: date-time */
+                            occurred_at: string;
+                            /** @description Who entered or was refused */
+                            person_name?: string | null;
+                            provider_event?: string | null;
+                            reason?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                        }[];
+                        total: number;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminAiSettingsController.show": {
         parameters: {
             query?: never;
@@ -75541,6 +82071,69 @@ export interface operations {
             };
             /** @description Invalid */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminBoxReviewsController.report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Required for illegal and other */
+                    note?: string | null;
+                    /** @enum {string} */
+                    reason: "offensive" | "personal_data" | "not_genuine" | "spam" | "illegal" | "other";
+                };
+            };
+        };
+        responses: {
+            /** @description Reported */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        review_id: string;
+                        /** @enum {string} */
+                        status: "open";
+                    };
+                };
+            };
+            /** @description No such review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Invalid or my own review */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Too many reports today */
+            429: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -76536,7 +83129,7 @@ export interface operations {
                     } | {
                         count: number;
                         /** @enum {string} */
-                        type_filter: "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "outdoor_training" | "climbing_bouldering" | "recovery";
+                        type_filter: "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "recovery";
                     } | {
                         count: number;
                         increment_per_completion: number;
@@ -76666,7 +83259,7 @@ export interface operations {
                     } | {
                         count: number;
                         /** @enum {string} */
-                        type_filter: "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "outdoor_training" | "climbing_bouldering" | "recovery";
+                        type_filter: "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "recovery";
                     } | {
                         count: number;
                         increment_per_completion: number;
@@ -77766,6 +84359,8 @@ export interface operations {
                             default_country: string;
                             error_code?: string | null;
                             has_secret: boolean;
+                            /** @description Whether the vendor's own webhook signing key is saved (ADR-396) */
+                            has_webhook_secret: boolean;
                             last_error?: string | null;
                             /** @description The cap the box typed; null until it does, and then nothing is sent (ADR-390) */
                             monthly_budget_cents: number | null;
@@ -77840,6 +84435,7 @@ export interface operations {
                     account_id?: string | null;
                     /** @enum {string} */
                     account_mode?: "palee" | "own";
+                    /** @description Infobip's personal base URL, https://<id>.api.infobip.com */
                     base_url?: string | null;
                     channel_order?: ("sms" | "viber" | "whatsapp")[];
                     channels?: ("sms" | "viber" | "whatsapp")[];
@@ -77847,17 +84443,22 @@ export interface operations {
                     /** @description The box's own monthly cap in cents; required once a channel is on (no default, ADR-390) */
                     monthly_budget_cents?: number | null;
                     /** @enum {string} */
-                    provider: "sandbox" | "brevo";
+                    provider: "sandbox" | "brevo" | "twilio" | "vonage" | "infobip" | "yuboto" | "apifon";
                     quiet_end?: string | null;
                     quiet_start?: string | null;
                     rotate_webhook?: boolean;
                     /**
                      * Format: password
-                     * @description The box's own API key (`own`); kept when not sent
+                     * @description The box's own API key, Auth Token, API secret or secret key (`own`); kept when not sent
                      */
                     secret?: string;
                     sms_sender?: string | null;
                     viber_sender?: string | null;
+                    /**
+                     * Format: password
+                     * @description Vonage's signature secret for signed delivery receipts (ADR-396); kept when not sent
+                     */
+                    webhook_secret?: string;
                     whatsapp_sender?: string | null;
                 };
             };
@@ -77891,6 +84492,8 @@ export interface operations {
                             default_country: string;
                             error_code?: string | null;
                             has_secret: boolean;
+                            /** @description Whether the vendor's own webhook signing key is saved (ADR-396) */
+                            has_webhook_secret: boolean;
                             last_error?: string | null;
                             /** @description The cap the box typed; null until it does, and then nothing is sent (ADR-390) */
                             monthly_budget_cents: number | null;
@@ -77951,6 +84554,8 @@ export interface operations {
                             default_country: string;
                             error_code?: string | null;
                             has_secret: boolean;
+                            /** @description Whether the vendor's own webhook signing key is saved (ADR-396) */
+                            has_webhook_secret: boolean;
                             last_error?: string | null;
                             /** @description The cap the box typed; null until it does, and then nothing is sent (ADR-390) */
                             monthly_budget_cents: number | null;
@@ -79183,8 +85788,7 @@ export interface operations {
                             inserted_at?: string;
                             /** @enum {string} */
                             kind: "class" | "event";
-                            /** @enum {string} */
-                            level: "beginner" | "all_levels" | "advanced";
+                            levels: ("beginner" | "intermediate" | "advanced")[];
                             name: string;
                             slug: string;
                             sort_order: number;
@@ -79215,11 +85819,8 @@ export interface operations {
                      * @enum {string}
                      */
                     kind?: "class" | "event";
-                    /**
-                     * @description Who the class suits, for the schedule's level filter
-                     * @enum {string}
-                     */
-                    level?: "beginner" | "all_levels" | "advanced";
+                    /** @description Levels the class suits, for the schedule's level filter; empty means all levels (ADR-490) */
+                    levels?: ("beginner" | "intermediate" | "advanced")[];
                     name: string;
                     /** @default 0 */
                     sort_order?: number;
@@ -79246,8 +85847,7 @@ export interface operations {
                             inserted_at?: string;
                             /** @enum {string} */
                             kind: "class" | "event";
-                            /** @enum {string} */
-                            level: "beginner" | "all_levels" | "advanced";
+                            levels: ("beginner" | "intermediate" | "advanced")[];
                             name: string;
                             slug: string;
                             sort_order: number;
@@ -79291,8 +85891,7 @@ export interface operations {
                             inserted_at?: string;
                             /** @enum {string} */
                             kind: "class" | "event";
-                            /** @enum {string} */
-                            level: "beginner" | "all_levels" | "advanced";
+                            levels: ("beginner" | "intermediate" | "advanced")[];
                             name: string;
                             slug: string;
                             sort_order: number;
@@ -79334,11 +85933,8 @@ export interface operations {
                      * @enum {string}
                      */
                     kind?: "class" | "event";
-                    /**
-                     * @description Who the class suits, for the schedule's level filter
-                     * @enum {string}
-                     */
-                    level?: "beginner" | "all_levels" | "advanced";
+                    /** @description Levels the class suits, for the schedule's level filter; empty means all levels (ADR-490) */
+                    levels?: ("beginner" | "intermediate" | "advanced")[];
                     name: string;
                     /** @default 0 */
                     sort_order?: number;
@@ -79365,8 +85961,7 @@ export interface operations {
                             inserted_at?: string;
                             /** @enum {string} */
                             kind: "class" | "event";
-                            /** @enum {string} */
-                            level: "beginner" | "all_levels" | "advanced";
+                            levels: ("beginner" | "intermediate" | "advanced")[];
                             name: string;
                             slug: string;
                             sort_order: number;
@@ -87894,6 +94489,284 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminDoorsController.index": {
+        parameters: {
+            query?: {
+                location_id?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Doors */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        doors: {
+                            credentials_saved: boolean;
+                            /** Format: uuid */
+                            id: string;
+                            last_error?: string | null;
+                            /** Format: date-time */
+                            last_seen_at?: string | null;
+                            /** Format: uuid */
+                            location_id: string;
+                            name: string;
+                            /** @enum {string} */
+                            provider: "sandbox" | "shelly" | "kisi";
+                            rules: {
+                                [key: string]: unknown;
+                            };
+                            settings?: {
+                                [key: string]: unknown;
+                            };
+                            /** @enum {string} */
+                            status: "active" | "disabled" | "invalid";
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminDoorsController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Written, never read back (Shelly `auth_key`, Kisi `api_key`) */
+                    credentials?: {
+                        [key: string]: unknown;
+                    };
+                    /** Format: uuid */
+                    location_id: string;
+                    name: string;
+                    /** @enum {string} */
+                    provider: "sandbox" | "shelly" | "kisi";
+                    rules?: {
+                        [key: string]: unknown;
+                    };
+                    settings?: {
+                        [key: string]: unknown;
+                    };
+                    /** @enum {string} */
+                    status?: "active" | "disabled";
+                };
+            };
+        };
+        responses: {
+            /** @description Door */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Door */
+                        door: {
+                            credentials_saved: boolean;
+                            /** Format: uuid */
+                            id: string;
+                            last_error?: string | null;
+                            /** Format: date-time */
+                            last_seen_at?: string | null;
+                            /** Format: uuid */
+                            location_id: string;
+                            name: string;
+                            /** @enum {string} */
+                            provider: "sandbox" | "shelly" | "kisi";
+                            rules: {
+                                [key: string]: unknown;
+                            };
+                            settings?: {
+                                [key: string]: unknown;
+                            };
+                            /** @enum {string} */
+                            status: "active" | "disabled" | "invalid";
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                        };
+                        /** @description For the controller's own notifications; its token is shown once */
+                        event_url: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminDoorsController.catalog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Catalog */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        defaults: {
+                            [key: string]: unknown;
+                        };
+                        log_days: number;
+                        providers: string[];
+                        who: string[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminDoorsController.delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        ok: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminDoorsController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    credentials?: {
+                        [key: string]: unknown;
+                    };
+                    name?: string;
+                    rules?: {
+                        [key: string]: unknown;
+                    };
+                    settings?: {
+                        [key: string]: unknown;
+                    };
+                    /** @enum {string} */
+                    status?: "active" | "disabled";
+                };
+            };
+        };
+        responses: {
+            /** @description Door */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Door */
+                        door: {
+                            credentials_saved: boolean;
+                            /** Format: uuid */
+                            id: string;
+                            last_error?: string | null;
+                            /** Format: date-time */
+                            last_seen_at?: string | null;
+                            /** Format: uuid */
+                            location_id: string;
+                            name: string;
+                            /** @enum {string} */
+                            provider: "sandbox" | "shelly" | "kisi";
+                            rules: {
+                                [key: string]: unknown;
+                            };
+                            settings?: {
+                                [key: string]: unknown;
+                            };
+                            /** @enum {string} */
+                            status: "active" | "disabled" | "invalid";
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminDoorsController.rotate_event_token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Event URL */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        event_url: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminDoorsController.unlock": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Opened */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        opened: boolean;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminFinanceAccountingController.exports": {
         parameters: {
             query?: {
@@ -96025,6 +102898,895 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminIntegrationsController.keys": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Keys */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        keys: {
+                            /** Format: date-time */
+                            created_at?: string;
+                            /** Format: uuid */
+                            created_by_id?: string | null;
+                            /** Format: date-time */
+                            expires_at?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            last_used_at?: string | null;
+                            /** @description palee_live_ABCD…_•••• */
+                            masked: string;
+                            name: string;
+                            prefix: string;
+                            /**
+                             * Format: date-time
+                             * @description Until then the secret before the last rotation still works
+                             */
+                            previous_secret_expires_at?: string | null;
+                            /** Format: date-time */
+                            revoked_at?: string | null;
+                            /** Format: date-time */
+                            rotated_at?: string | null;
+                            scopes: string[];
+                            /** @enum {string} */
+                            status: "active" | "revoked";
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.create_key": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: date-time */
+                    expires_at?: string | null;
+                    name: string;
+                    scopes: string[];
+                };
+            };
+        };
+        responses: {
+            /** @description Key and token */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * ApiKey
+                         * @description A key's description. The secret itself is never shown again.
+                         */
+                        key: {
+                            /** Format: date-time */
+                            created_at?: string;
+                            /** Format: uuid */
+                            created_by_id?: string | null;
+                            /** Format: date-time */
+                            expires_at?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            last_used_at?: string | null;
+                            /** @description palee_live_ABCD…_•••• */
+                            masked: string;
+                            name: string;
+                            prefix: string;
+                            /**
+                             * Format: date-time
+                             * @description Until then the secret before the last rotation still works
+                             */
+                            previous_secret_expires_at?: string | null;
+                            /** Format: date-time */
+                            revoked_at?: string | null;
+                            /** Format: date-time */
+                            rotated_at?: string | null;
+                            scopes: string[];
+                            /** @enum {string} */
+                            status: "active" | "revoked";
+                        };
+                        /** @description Shown once: copy it now */
+                        token: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.revoke_key": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Key */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * ApiKey
+                         * @description A key's description. The secret itself is never shown again.
+                         */
+                        key: {
+                            /** Format: date-time */
+                            created_at?: string;
+                            /** Format: uuid */
+                            created_by_id?: string | null;
+                            /** Format: date-time */
+                            expires_at?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            last_used_at?: string | null;
+                            /** @description palee_live_ABCD…_•••• */
+                            masked: string;
+                            name: string;
+                            prefix: string;
+                            /**
+                             * Format: date-time
+                             * @description Until then the secret before the last rotation still works
+                             */
+                            previous_secret_expires_at?: string | null;
+                            /** Format: date-time */
+                            revoked_at?: string | null;
+                            /** Format: date-time */
+                            rotated_at?: string | null;
+                            scopes: string[];
+                            /** @enum {string} */
+                            status: "active" | "revoked";
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.rotate_key": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Key and new token */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * ApiKey
+                         * @description A key's description. The secret itself is never shown again.
+                         */
+                        key: {
+                            /** Format: date-time */
+                            created_at?: string;
+                            /** Format: uuid */
+                            created_by_id?: string | null;
+                            /** Format: date-time */
+                            expires_at?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            last_used_at?: string | null;
+                            /** @description palee_live_ABCD…_•••• */
+                            masked: string;
+                            name: string;
+                            prefix: string;
+                            /**
+                             * Format: date-time
+                             * @description Until then the secret before the last rotation still works
+                             */
+                            previous_secret_expires_at?: string | null;
+                            /** Format: date-time */
+                            revoked_at?: string | null;
+                            /** Format: date-time */
+                            rotated_at?: string | null;
+                            scopes: string[];
+                            /** @enum {string} */
+                            status: "active" | "revoked";
+                        };
+                        /** @description Shown once: copy it now */
+                        token: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.catalog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Catalog */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        audience_providers: string[];
+                        events: {
+                            el: string;
+                            en: string;
+                            scope?: string;
+                            type?: string;
+                        }[];
+                        scopes: {
+                            el: string;
+                            en: string;
+                            scope?: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.delivery": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Delivery */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** WebhookDelivery */
+                        delivery: {
+                            attempts: number;
+                            /** @description Detail only */
+                            attempts_log?: {
+                                attempt: number;
+                                duration_ms?: number | null;
+                                error?: string | null;
+                                outcome: string;
+                                response_excerpt?: string | null;
+                                /** Format: date-time */
+                                started_at: string;
+                                status_code?: number | null;
+                            }[];
+                            /** Format: date-time */
+                            created_at?: string;
+                            /** Format: date-time */
+                            delivered_at?: string | null;
+                            /** Format: uuid */
+                            endpoint_id: string;
+                            /** Format: uuid */
+                            event_id: string;
+                            event_type: string;
+                            /** Format: uuid */
+                            id: string;
+                            last_error?: string | null;
+                            last_status_code?: number | null;
+                            /** Format: date-time */
+                            next_attempt_at?: string | null;
+                            /** @description Detail only */
+                            payload?: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: uuid */
+                            replay_of_id?: string | null;
+                            /** @enum {string} */
+                            status: "pending" | "succeeded" | "failed";
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.replay": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Delivery */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** WebhookDelivery */
+                        delivery: {
+                            attempts: number;
+                            /** @description Detail only */
+                            attempts_log?: {
+                                attempt: number;
+                                duration_ms?: number | null;
+                                error?: string | null;
+                                outcome: string;
+                                response_excerpt?: string | null;
+                                /** Format: date-time */
+                                started_at: string;
+                                status_code?: number | null;
+                            }[];
+                            /** Format: date-time */
+                            created_at?: string;
+                            /** Format: date-time */
+                            delivered_at?: string | null;
+                            /** Format: uuid */
+                            endpoint_id: string;
+                            /** Format: uuid */
+                            event_id: string;
+                            event_type: string;
+                            /** Format: uuid */
+                            id: string;
+                            last_error?: string | null;
+                            last_status_code?: number | null;
+                            /** Format: date-time */
+                            next_attempt_at?: string | null;
+                            /** @description Detail only */
+                            payload?: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: uuid */
+                            replay_of_id?: string | null;
+                            /** @enum {string} */
+                            status: "pending" | "succeeded" | "failed";
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.audience": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Connection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** AudienceConnection */
+                        connection: {
+                            key_saved: boolean;
+                            last_error?: string | null;
+                            /** Format: date-time */
+                            last_synced_at?: string | null;
+                            list_id: string;
+                            /** @enum {string} */
+                            provider: "sandbox" | "mailchimp" | "brevo";
+                            /** @enum {string} */
+                            status: "active" | "invalid";
+                            /** Format: date-time */
+                            sync_requested_at?: string | null;
+                            /** @description Whether the provider's unsubscribe webhook address was made */
+                            unsubscribe_hook?: boolean;
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.save_audience": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Kept encrypted, never shown again; leave out to keep the saved one */
+                    api_key?: string;
+                    list_id: string;
+                    /** @enum {string} */
+                    provider: "sandbox" | "mailchimp" | "brevo";
+                };
+            };
+        };
+        responses: {
+            /** @description Connection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** AudienceConnection */
+                        connection: {
+                            key_saved: boolean;
+                            last_error?: string | null;
+                            /** Format: date-time */
+                            last_synced_at?: string | null;
+                            list_id: string;
+                            /** @enum {string} */
+                            provider: "sandbox" | "mailchimp" | "brevo";
+                            /** @enum {string} */
+                            status: "active" | "invalid";
+                            /** Format: date-time */
+                            sync_requested_at?: string | null;
+                            /** @description Whether the provider's unsubscribe webhook address was made */
+                            unsubscribe_hook?: boolean;
+                            /** Format: date-time */
+                            updated_at?: string | null;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.delete_audience": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        ok: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.sync_audience": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Requested */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        ok: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.rotate_unsubscribe_url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Address */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        url: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.webhooks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Endpoints */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        webhooks: {
+                            /** Format: uuid */
+                            api_key_id?: string | null;
+                            consecutive_failures?: number;
+                            /** Format: date-time */
+                            created_at?: string;
+                            description?: string | null;
+                            disabled_reason?: string | null;
+                            events: string[];
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            last_failure_at?: string | null;
+                            /** Format: date-time */
+                            last_success_at?: string | null;
+                            /** Format: date-time */
+                            secret_rotating_until?: string | null;
+                            /** @enum {string} */
+                            source: "staff" | "api";
+                            /** @enum {string} */
+                            status: "active" | "disabled";
+                            url: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.create_webhook": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    description?: string | null;
+                    events: string[];
+                    url: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Endpoint and secret */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** WebhookEndpoint */
+                        endpoint: {
+                            /** Format: uuid */
+                            api_key_id?: string | null;
+                            consecutive_failures?: number;
+                            /** Format: date-time */
+                            created_at?: string;
+                            description?: string | null;
+                            disabled_reason?: string | null;
+                            events: string[];
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            last_failure_at?: string | null;
+                            /** Format: date-time */
+                            last_success_at?: string | null;
+                            /** Format: date-time */
+                            secret_rotating_until?: string | null;
+                            /** @enum {string} */
+                            source: "staff" | "api";
+                            /** @enum {string} */
+                            status: "active" | "disabled";
+                            url: string;
+                        };
+                        /** @description The signing secret, shown once */
+                        secret: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.delete_webhook": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Removed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        ok: boolean;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.update_webhook": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    description?: string | null;
+                    events?: string[];
+                    /** @enum {string} */
+                    status?: "active" | "disabled";
+                    url?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Endpoint */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** WebhookEndpoint */
+                        endpoint: {
+                            /** Format: uuid */
+                            api_key_id?: string | null;
+                            consecutive_failures?: number;
+                            /** Format: date-time */
+                            created_at?: string;
+                            description?: string | null;
+                            disabled_reason?: string | null;
+                            events: string[];
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            last_failure_at?: string | null;
+                            /** Format: date-time */
+                            last_success_at?: string | null;
+                            /** Format: date-time */
+                            secret_rotating_until?: string | null;
+                            /** @enum {string} */
+                            source: "staff" | "api";
+                            /** @enum {string} */
+                            status: "active" | "disabled";
+                            url: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.deliveries": {
+        parameters: {
+            query?: {
+                status?: "pending" | "succeeded" | "failed";
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deliveries */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        deliveries: {
+                            attempts: number;
+                            /** @description Detail only */
+                            attempts_log?: {
+                                attempt: number;
+                                duration_ms?: number | null;
+                                error?: string | null;
+                                outcome: string;
+                                response_excerpt?: string | null;
+                                /** Format: date-time */
+                                started_at: string;
+                                status_code?: number | null;
+                            }[];
+                            /** Format: date-time */
+                            created_at?: string;
+                            /** Format: date-time */
+                            delivered_at?: string | null;
+                            /** Format: uuid */
+                            endpoint_id: string;
+                            /** Format: uuid */
+                            event_id: string;
+                            event_type: string;
+                            /** Format: uuid */
+                            id: string;
+                            last_error?: string | null;
+                            last_status_code?: number | null;
+                            /** Format: date-time */
+                            next_attempt_at?: string | null;
+                            /** @description Detail only */
+                            payload?: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: uuid */
+                            replay_of_id?: string | null;
+                            /** @enum {string} */
+                            status: "pending" | "succeeded" | "failed";
+                        }[];
+                        total: number;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.rotate_webhook_secret": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Endpoint and secret */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** WebhookEndpoint */
+                        endpoint: {
+                            /** Format: uuid */
+                            api_key_id?: string | null;
+                            consecutive_failures?: number;
+                            /** Format: date-time */
+                            created_at?: string;
+                            description?: string | null;
+                            disabled_reason?: string | null;
+                            events: string[];
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            last_failure_at?: string | null;
+                            /** Format: date-time */
+                            last_success_at?: string | null;
+                            /** Format: date-time */
+                            secret_rotating_until?: string | null;
+                            /** @enum {string} */
+                            source: "staff" | "api";
+                            /** @enum {string} */
+                            status: "active" | "disabled";
+                            url: string;
+                        };
+                        /** @description The signing secret, shown once */
+                        secret: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminIntegrationsController.test_webhook": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Delivery */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** WebhookDelivery */
+                        delivery: {
+                            attempts: number;
+                            /** @description Detail only */
+                            attempts_log?: {
+                                attempt: number;
+                                duration_ms?: number | null;
+                                error?: string | null;
+                                outcome: string;
+                                response_excerpt?: string | null;
+                                /** Format: date-time */
+                                started_at: string;
+                                status_code?: number | null;
+                            }[];
+                            /** Format: date-time */
+                            created_at?: string;
+                            /** Format: date-time */
+                            delivered_at?: string | null;
+                            /** Format: uuid */
+                            endpoint_id: string;
+                            /** Format: uuid */
+                            event_id: string;
+                            event_type: string;
+                            /** Format: uuid */
+                            id: string;
+                            last_error?: string | null;
+                            last_status_code?: number | null;
+                            /** Format: date-time */
+                            next_attempt_at?: string | null;
+                            /** @description Detail only */
+                            payload?: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: uuid */
+                            replay_of_id?: string | null;
+                            /** @enum {string} */
+                            status: "pending" | "succeeded" | "failed";
+                        };
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminLeadController.index": {
         parameters: {
             query?: {
@@ -101569,6 +109331,1612 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.AdminProgrammeController.refund": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    amount_cents: number;
+                    idempotency_key: string;
+                    reason?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Refund */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** ProgrammePurchase */
+                        purchase: {
+                            /** Format: date-time */
+                            activated_at?: string | null;
+                            buyer?: {
+                                /** Format: uuid */
+                                id: string;
+                                nickname?: string | null;
+                            } | null;
+                            currency: string;
+                            days?: {
+                                /** Format: date */
+                                date: string;
+                                day: number;
+                                summary?: string | null;
+                                title?: string | null;
+                                /** Format: uuid */
+                                workout_id: string;
+                            }[];
+                            end_reason?: string | null;
+                            /** Format: date-time */
+                            ended_at?: string | null;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            inserted_at?: string;
+                            /** Format: uuid */
+                            payment_intent_id?: string | null;
+                            price_cents: number;
+                            /** Format: uuid */
+                            programme_id: string;
+                            /**
+                             * ProgrammeRefundQuote
+                             * @description What giving it up now returns, and under which rule
+                             */
+                            refund?: {
+                                amount_cents: number;
+                                /** @enum {string} */
+                                rule: "withdrawal" | "before_start" | "pro_rata";
+                            } | null;
+                            /** @enum {string} */
+                            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                            refunded_cents: number;
+                            review?: {
+                                author?: {
+                                    /** Format: uuid */
+                                    id?: string;
+                                    nickname?: string | null;
+                                } | null;
+                                body?: string | null;
+                                hidden_reason?: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: date-time */
+                                inserted_at?: string;
+                                rating: number;
+                                /** @enum {string} */
+                                status: "published" | "hidden";
+                                /** Format: date-time */
+                                updated_at?: string;
+                                version_number: number;
+                            } | null;
+                            /** Format: date */
+                            starts_on: string;
+                            /** @enum {string} */
+                            status: "pending_payment" | "active" | "completed" | "withdrawn" | "refunded" | "cancelled";
+                            title?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                            /** Format: uuid */
+                            version_id: string;
+                            version_number?: number;
+                            weeks?: number;
+                            withdrawal_deadline?: string | null;
+                        };
+                        refund: {
+                            [key: string]: unknown;
+                        };
+                        rule?: string | null;
+                    };
+                };
+            };
+            /** @description No such programme, purchase or review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description The programme can't take this step now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid programme */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminProgrammeController.moderate_review": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description Null shows the review again
+                     * @enum {string|null}
+                     */
+                    hidden_reason?: "abuse" | "personal_data" | "off_topic" | "spam" | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Review */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** ProgrammeReview */
+                        review: {
+                            author?: {
+                                /** Format: uuid */
+                                id?: string;
+                                nickname?: string | null;
+                            } | null;
+                            body?: string | null;
+                            hidden_reason?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            inserted_at?: string;
+                            rating: number;
+                            /** @enum {string} */
+                            status: "published" | "hidden";
+                            /** Format: date-time */
+                            updated_at?: string;
+                            version_number: number;
+                        };
+                    };
+                };
+            };
+            /** @description No such programme, purchase or review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description The programme can't take this step now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid programme */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminProgrammeController.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Programmes */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        programmes: {
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            /** Format: uuid */
+                            author_id?: string | null;
+                            /** @enum {string} */
+                            currency: "EUR" | "GBP" | "USD" | "CHF";
+                            /** Format: uuid */
+                            current_version_id?: string | null;
+                            description?: string | null;
+                            draft_days: {
+                                /** @description Day 0 is the start date */
+                                day: number;
+                                /** Format: uuid */
+                                workout_id: string;
+                            }[];
+                            draft_weeks: number;
+                            equipment?: string[];
+                            /** @enum {string} */
+                            goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            level: "all" | "beginner" | "intermediate" | "advanced";
+                            /**
+                             * @description box: the box's own page; marketplace: also the cross-business catalogue
+                             * @enum {string}
+                             */
+                            listing: "box" | "marketplace";
+                            online_payments?: boolean;
+                            preview_days: number;
+                            price_cents: number;
+                            /** Format: date-time */
+                            published_at?: string | null;
+                            /** @enum {string} */
+                            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                            /** ProgrammeRating */
+                            reviews?: {
+                                average: number | null;
+                                count: number;
+                            };
+                            sales?: {
+                                active: number;
+                                buyers: number;
+                                currency?: string | null;
+                                gross_cents?: number | null;
+                                refunded_cents?: number | null;
+                            };
+                            sessions_per_week?: number | null;
+                            /** @enum {string} */
+                            status: "draft" | "published" | "archived";
+                            summary?: string | null;
+                            title: string;
+                            /** ProgrammeVersion */
+                            version?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            };
+                            versions?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            }[];
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminProgrammeController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    currency?: "EUR" | "GBP" | "USD" | "CHF";
+                    description?: string | null;
+                    draft_days?: {
+                        /** @description Day 0 is the start date */
+                        day: number;
+                        /** Format: uuid */
+                        workout_id: string;
+                    }[];
+                    draft_weeks?: number;
+                    equipment?: string[];
+                    /** @enum {string} */
+                    goal?: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
+                    /** @enum {string} */
+                    level?: "all" | "beginner" | "intermediate" | "advanced";
+                    /**
+                     * @description box: the box's own page; marketplace: also the cross-business catalogue
+                     * @enum {string}
+                     */
+                    listing?: "box" | "marketplace";
+                    preview_days?: number;
+                    price_cents?: number;
+                    /** @enum {string} */
+                    refund_policy?: "before_start" | "withdrawal_only" | "pro_rata";
+                    sessions_per_week?: number | null;
+                    summary?: string | null;
+                    title: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Programme */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** StaffProgramme */
+                        programme: {
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            /** Format: uuid */
+                            author_id?: string | null;
+                            /** @enum {string} */
+                            currency: "EUR" | "GBP" | "USD" | "CHF";
+                            /** Format: uuid */
+                            current_version_id?: string | null;
+                            description?: string | null;
+                            draft_days: {
+                                /** @description Day 0 is the start date */
+                                day: number;
+                                /** Format: uuid */
+                                workout_id: string;
+                            }[];
+                            draft_weeks: number;
+                            equipment?: string[];
+                            /** @enum {string} */
+                            goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            level: "all" | "beginner" | "intermediate" | "advanced";
+                            /**
+                             * @description box: the box's own page; marketplace: also the cross-business catalogue
+                             * @enum {string}
+                             */
+                            listing: "box" | "marketplace";
+                            online_payments?: boolean;
+                            preview_days: number;
+                            price_cents: number;
+                            /** Format: date-time */
+                            published_at?: string | null;
+                            /** @enum {string} */
+                            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                            /** ProgrammeRating */
+                            reviews?: {
+                                average: number | null;
+                                count: number;
+                            };
+                            sales?: {
+                                active: number;
+                                buyers: number;
+                                currency?: string | null;
+                                gross_cents?: number | null;
+                                refunded_cents?: number | null;
+                            };
+                            sessions_per_week?: number | null;
+                            /** @enum {string} */
+                            status: "draft" | "published" | "archived";
+                            summary?: string | null;
+                            title: string;
+                            /** ProgrammeVersion */
+                            version?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            };
+                            versions?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            }[];
+                        };
+                    };
+                };
+            };
+            /** @description No such programme, purchase or review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description The programme can't take this step now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid programme */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminProgrammeController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Programme */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** StaffProgramme */
+                        programme: {
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            /** Format: uuid */
+                            author_id?: string | null;
+                            /** @enum {string} */
+                            currency: "EUR" | "GBP" | "USD" | "CHF";
+                            /** Format: uuid */
+                            current_version_id?: string | null;
+                            description?: string | null;
+                            draft_days: {
+                                /** @description Day 0 is the start date */
+                                day: number;
+                                /** Format: uuid */
+                                workout_id: string;
+                            }[];
+                            draft_weeks: number;
+                            equipment?: string[];
+                            /** @enum {string} */
+                            goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            level: "all" | "beginner" | "intermediate" | "advanced";
+                            /**
+                             * @description box: the box's own page; marketplace: also the cross-business catalogue
+                             * @enum {string}
+                             */
+                            listing: "box" | "marketplace";
+                            online_payments?: boolean;
+                            preview_days: number;
+                            price_cents: number;
+                            /** Format: date-time */
+                            published_at?: string | null;
+                            /** @enum {string} */
+                            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                            /** ProgrammeRating */
+                            reviews?: {
+                                average: number | null;
+                                count: number;
+                            };
+                            sales?: {
+                                active: number;
+                                buyers: number;
+                                currency?: string | null;
+                                gross_cents?: number | null;
+                                refunded_cents?: number | null;
+                            };
+                            sessions_per_week?: number | null;
+                            /** @enum {string} */
+                            status: "draft" | "published" | "archived";
+                            summary?: string | null;
+                            title: string;
+                            /** ProgrammeVersion */
+                            version?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            };
+                            versions?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            }[];
+                        };
+                    };
+                };
+            };
+            /** @description No such programme, purchase or review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description The programme can't take this step now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid programme */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminProgrammeController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    currency?: "EUR" | "GBP" | "USD" | "CHF";
+                    description?: string | null;
+                    draft_days?: {
+                        /** @description Day 0 is the start date */
+                        day: number;
+                        /** Format: uuid */
+                        workout_id: string;
+                    }[];
+                    draft_weeks?: number;
+                    equipment?: string[];
+                    /** @enum {string} */
+                    goal?: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
+                    /** @enum {string} */
+                    level?: "all" | "beginner" | "intermediate" | "advanced";
+                    /**
+                     * @description box: the box's own page; marketplace: also the cross-business catalogue
+                     * @enum {string}
+                     */
+                    listing?: "box" | "marketplace";
+                    preview_days?: number;
+                    price_cents?: number;
+                    /** @enum {string} */
+                    refund_policy?: "before_start" | "withdrawal_only" | "pro_rata";
+                    sessions_per_week?: number | null;
+                    summary?: string | null;
+                    title?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Programme */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** StaffProgramme */
+                        programme: {
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            /** Format: uuid */
+                            author_id?: string | null;
+                            /** @enum {string} */
+                            currency: "EUR" | "GBP" | "USD" | "CHF";
+                            /** Format: uuid */
+                            current_version_id?: string | null;
+                            description?: string | null;
+                            draft_days: {
+                                /** @description Day 0 is the start date */
+                                day: number;
+                                /** Format: uuid */
+                                workout_id: string;
+                            }[];
+                            draft_weeks: number;
+                            equipment?: string[];
+                            /** @enum {string} */
+                            goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            level: "all" | "beginner" | "intermediate" | "advanced";
+                            /**
+                             * @description box: the box's own page; marketplace: also the cross-business catalogue
+                             * @enum {string}
+                             */
+                            listing: "box" | "marketplace";
+                            online_payments?: boolean;
+                            preview_days: number;
+                            price_cents: number;
+                            /** Format: date-time */
+                            published_at?: string | null;
+                            /** @enum {string} */
+                            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                            /** ProgrammeRating */
+                            reviews?: {
+                                average: number | null;
+                                count: number;
+                            };
+                            sales?: {
+                                active: number;
+                                buyers: number;
+                                currency?: string | null;
+                                gross_cents?: number | null;
+                                refunded_cents?: number | null;
+                            };
+                            sessions_per_week?: number | null;
+                            /** @enum {string} */
+                            status: "draft" | "published" | "archived";
+                            summary?: string | null;
+                            title: string;
+                            /** ProgrammeVersion */
+                            version?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            };
+                            versions?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            }[];
+                        };
+                    };
+                };
+            };
+            /** @description No such programme, purchase or review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description The programme can't take this step now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid programme */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminProgrammeController.archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Programme */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** StaffProgramme */
+                        programme: {
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            /** Format: uuid */
+                            author_id?: string | null;
+                            /** @enum {string} */
+                            currency: "EUR" | "GBP" | "USD" | "CHF";
+                            /** Format: uuid */
+                            current_version_id?: string | null;
+                            description?: string | null;
+                            draft_days: {
+                                /** @description Day 0 is the start date */
+                                day: number;
+                                /** Format: uuid */
+                                workout_id: string;
+                            }[];
+                            draft_weeks: number;
+                            equipment?: string[];
+                            /** @enum {string} */
+                            goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            level: "all" | "beginner" | "intermediate" | "advanced";
+                            /**
+                             * @description box: the box's own page; marketplace: also the cross-business catalogue
+                             * @enum {string}
+                             */
+                            listing: "box" | "marketplace";
+                            online_payments?: boolean;
+                            preview_days: number;
+                            price_cents: number;
+                            /** Format: date-time */
+                            published_at?: string | null;
+                            /** @enum {string} */
+                            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                            /** ProgrammeRating */
+                            reviews?: {
+                                average: number | null;
+                                count: number;
+                            };
+                            sales?: {
+                                active: number;
+                                buyers: number;
+                                currency?: string | null;
+                                gross_cents?: number | null;
+                                refunded_cents?: number | null;
+                            };
+                            sessions_per_week?: number | null;
+                            /** @enum {string} */
+                            status: "draft" | "published" | "archived";
+                            summary?: string | null;
+                            title: string;
+                            /** ProgrammeVersion */
+                            version?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            };
+                            versions?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            }[];
+                        };
+                    };
+                };
+            };
+            /** @description No such programme, purchase or review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description The programme can't take this step now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid programme */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminProgrammeController.publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    changelog?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Programme */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** StaffProgramme */
+                        programme: {
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            /** Format: uuid */
+                            author_id?: string | null;
+                            /** @enum {string} */
+                            currency: "EUR" | "GBP" | "USD" | "CHF";
+                            /** Format: uuid */
+                            current_version_id?: string | null;
+                            description?: string | null;
+                            draft_days: {
+                                /** @description Day 0 is the start date */
+                                day: number;
+                                /** Format: uuid */
+                                workout_id: string;
+                            }[];
+                            draft_weeks: number;
+                            equipment?: string[];
+                            /** @enum {string} */
+                            goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            level: "all" | "beginner" | "intermediate" | "advanced";
+                            /**
+                             * @description box: the box's own page; marketplace: also the cross-business catalogue
+                             * @enum {string}
+                             */
+                            listing: "box" | "marketplace";
+                            online_payments?: boolean;
+                            preview_days: number;
+                            price_cents: number;
+                            /** Format: date-time */
+                            published_at?: string | null;
+                            /** @enum {string} */
+                            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                            /** ProgrammeRating */
+                            reviews?: {
+                                average: number | null;
+                                count: number;
+                            };
+                            sales?: {
+                                active: number;
+                                buyers: number;
+                                currency?: string | null;
+                                gross_cents?: number | null;
+                                refunded_cents?: number | null;
+                            };
+                            sessions_per_week?: number | null;
+                            /** @enum {string} */
+                            status: "draft" | "published" | "archived";
+                            summary?: string | null;
+                            title: string;
+                            /** ProgrammeVersion */
+                            version?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            };
+                            versions?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            }[];
+                        };
+                    };
+                };
+            };
+            /** @description No such programme, purchase or review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description The programme can't take this step now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid programme */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminProgrammeController.purchases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Purchases */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        purchases: {
+                            /** Format: date-time */
+                            activated_at?: string | null;
+                            buyer?: {
+                                /** Format: uuid */
+                                id: string;
+                                nickname?: string | null;
+                            } | null;
+                            currency: string;
+                            days?: {
+                                /** Format: date */
+                                date: string;
+                                day: number;
+                                summary?: string | null;
+                                title?: string | null;
+                                /** Format: uuid */
+                                workout_id: string;
+                            }[];
+                            end_reason?: string | null;
+                            /** Format: date-time */
+                            ended_at?: string | null;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            inserted_at?: string;
+                            /** Format: uuid */
+                            payment_intent_id?: string | null;
+                            price_cents: number;
+                            /** Format: uuid */
+                            programme_id: string;
+                            /**
+                             * ProgrammeRefundQuote
+                             * @description What giving it up now returns, and under which rule
+                             */
+                            refund?: {
+                                amount_cents: number;
+                                /** @enum {string} */
+                                rule: "withdrawal" | "before_start" | "pro_rata";
+                            } | null;
+                            /** @enum {string} */
+                            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                            refunded_cents: number;
+                            review?: {
+                                author?: {
+                                    /** Format: uuid */
+                                    id?: string;
+                                    nickname?: string | null;
+                                } | null;
+                                body?: string | null;
+                                hidden_reason?: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: date-time */
+                                inserted_at?: string;
+                                rating: number;
+                                /** @enum {string} */
+                                status: "published" | "hidden";
+                                /** Format: date-time */
+                                updated_at?: string;
+                                version_number: number;
+                            } | null;
+                            /** Format: date */
+                            starts_on: string;
+                            /** @enum {string} */
+                            status: "pending_payment" | "active" | "completed" | "withdrawn" | "refunded" | "cancelled";
+                            title?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                            /** Format: uuid */
+                            version_id: string;
+                            version_number?: number;
+                            weeks?: number;
+                            withdrawal_deadline?: string | null;
+                        }[];
+                    };
+                };
+            };
+            /** @description No such programme, purchase or review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description The programme can't take this step now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid programme */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminProgrammeController.restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Programme */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** StaffProgramme */
+                        programme: {
+                            /** Format: date-time */
+                            archived_at?: string | null;
+                            /** Format: uuid */
+                            author_id?: string | null;
+                            /** @enum {string} */
+                            currency: "EUR" | "GBP" | "USD" | "CHF";
+                            /** Format: uuid */
+                            current_version_id?: string | null;
+                            description?: string | null;
+                            draft_days: {
+                                /** @description Day 0 is the start date */
+                                day: number;
+                                /** Format: uuid */
+                                workout_id: string;
+                            }[];
+                            draft_weeks: number;
+                            equipment?: string[];
+                            /** @enum {string} */
+                            goal: "general" | "strength" | "conditioning" | "gymnastics" | "weightlifting" | "endurance" | "competition" | "hyrox" | "mobility";
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            level: "all" | "beginner" | "intermediate" | "advanced";
+                            /**
+                             * @description box: the box's own page; marketplace: also the cross-business catalogue
+                             * @enum {string}
+                             */
+                            listing: "box" | "marketplace";
+                            online_payments?: boolean;
+                            preview_days: number;
+                            price_cents: number;
+                            /** Format: date-time */
+                            published_at?: string | null;
+                            /** @enum {string} */
+                            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                            /** ProgrammeRating */
+                            reviews?: {
+                                average: number | null;
+                                count: number;
+                            };
+                            sales?: {
+                                active: number;
+                                buyers: number;
+                                currency?: string | null;
+                                gross_cents?: number | null;
+                                refunded_cents?: number | null;
+                            };
+                            sessions_per_week?: number | null;
+                            /** @enum {string} */
+                            status: "draft" | "published" | "archived";
+                            summary?: string | null;
+                            title: string;
+                            /** ProgrammeVersion */
+                            version?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            };
+                            versions?: {
+                                changelog?: string | null;
+                                days: {
+                                    day: number;
+                                    /** Format: uuid */
+                                    source_workout_id?: string;
+                                    summary?: string | null;
+                                    title?: string | null;
+                                    /**
+                                     * Format: uuid
+                                     * @description The frozen copy
+                                     */
+                                    workout_id: string;
+                                }[];
+                                /** Format: uuid */
+                                id: string;
+                                number: number;
+                                /** Format: date-time */
+                                published_at: string;
+                                /** Format: uuid */
+                                published_by_id?: string | null;
+                                weeks: number;
+                            }[];
+                        };
+                    };
+                };
+            };
+            /** @description No such programme, purchase or review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description The programme can't take this step now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid programme */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminProgrammeController.reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reviews */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        reviews: {
+                            author?: {
+                                /** Format: uuid */
+                                id?: string;
+                                nickname?: string | null;
+                            } | null;
+                            body?: string | null;
+                            hidden_reason?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            inserted_at?: string;
+                            rating: number;
+                            /** @enum {string} */
+                            status: "published" | "hidden";
+                            /** Format: date-time */
+                            updated_at?: string;
+                            version_number: number;
+                        }[];
+                    };
+                };
+            };
+            /** @description No such programme, purchase or review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description The programme can't take this step now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid programme */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.AdminPublicProfileController.show": {
         parameters: {
             query?: never;
@@ -101632,7 +111000,7 @@ export interface operations {
                                 video_url?: string | null;
                                 width: number | null;
                             } | null;
-                            disciplines: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "physio_rehab" | "sports_massage" | "recovery")[];
+                            disciplines: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "physio_rehab" | "sports_massage" | "recovery")[];
                             languages: string[];
                             lock_version: number;
                             /** @description What the draft still needs before it can be published. */
@@ -101697,7 +111065,7 @@ export interface operations {
                     coach_ids?: string[];
                     /** Format: uuid */
                     cover_photo_id?: string | null;
-                    disciplines?: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "physio_rehab" | "sports_massage" | "recovery")[];
+                    disciplines?: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "physio_rehab" | "sports_massage" | "recovery")[];
                     languages?: string[];
                     /** @description The version the editor read. */
                     lock_version?: number;
@@ -101762,7 +111130,7 @@ export interface operations {
                                 video_url?: string | null;
                                 width: number | null;
                             } | null;
-                            disciplines: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "physio_rehab" | "sports_massage" | "recovery")[];
+                            disciplines: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "physio_rehab" | "sports_massage" | "recovery")[];
                             languages: string[];
                             lock_version: number;
                             /** @description What the draft still needs before it can be published. */
@@ -101989,7 +111357,7 @@ export interface operations {
                                 video_url?: string | null;
                                 width: number | null;
                             } | null;
-                            disciplines: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "physio_rehab" | "sports_massage" | "recovery")[];
+                            disciplines: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "physio_rehab" | "sports_massage" | "recovery")[];
                             languages: string[];
                             lock_version: number;
                             /** @description What the draft still needs before it can be published. */
@@ -102168,7 +111536,7 @@ export interface operations {
                                 video_url?: string | null;
                                 width: number | null;
                             } | null;
-                            disciplines: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "physio_rehab" | "sports_massage" | "recovery")[];
+                            disciplines: ("strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "calisthenics" | "gymnastics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "running" | "indoor_cycling" | "cycling" | "rowing" | "endurance" | "ems_training" | "yoga" | "hot_yoga" | "pilates" | "pilates_reformer" | "barre" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "swimming" | "aqua_fitness" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "physio_rehab" | "sports_massage" | "recovery")[];
                             languages: string[];
                             lock_version: number;
                             /** @description What the draft still needs before it can be published. */
@@ -102211,6 +111579,400 @@ export interface operations {
                             /** Format: date-time */
                             updated_at?: string | null;
                         };
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminRankLaddersController.index": {
+        parameters: {
+            query?: {
+                /** @description The language of the templates (ADR-400); Greek when left out */
+                locale?: "en" | "el" | "ar" | "ru" | "de" | "es" | "pt-PT" | "he" | "it" | "bg" | "nl" | "fr";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ladders */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description The training kinds of the box's profile; the picker shows them first */
+                        box_disciplines: string[];
+                        colors: string[];
+                        ladders: {
+                            class_type_ids: string[];
+                            /** @description A workout type (ADR-275) */
+                            discipline: string;
+                            family?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            name: string;
+                            ranks: {
+                                /**
+                                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                 * @enum {string|null}
+                                 */
+                                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                /** Format: uuid */
+                                id: string;
+                                max_stripes: number;
+                                name: string;
+                                position: number;
+                                /** RankRequirements */
+                                requirements: {
+                                    min_classes?: number;
+                                    min_days?: number;
+                                    /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                    skill_ids?: (string | null)[];
+                                    /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                    skill_notes?: (string | null)[];
+                                    /** @description A video link (https) for each skill, in the order of `skills` */
+                                    skill_videos?: (string | null)[];
+                                    skills?: string[];
+                                };
+                                scale_level_slug?: string | null;
+                            }[];
+                            /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                            ready_criteria: ("days" | "classes" | "skills")[];
+                            /** @enum {string} */
+                            style: "belt" | "level";
+                        }[];
+                        templates: {
+                            discipline: string;
+                            family?: string | null;
+                            key: string;
+                            name: string;
+                            ranks: {
+                                /**
+                                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                 * @enum {string|null}
+                                 */
+                                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                max_stripes: number;
+                                name: string;
+                                /** RankRequirements */
+                                requirements: {
+                                    min_classes?: number;
+                                    min_days?: number;
+                                    /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                    skill_ids?: (string | null)[];
+                                    /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                    skill_notes?: (string | null)[];
+                                    /** @description A video link (https) for each skill, in the order of `skills` */
+                                    skill_videos?: (string | null)[];
+                                    skills?: string[];
+                                };
+                            }[];
+                            /** @description What a ladder copied from it counts by default */
+                            ready: ("days" | "classes" | "skills")[];
+                            /**
+                             * @description A federation's or school's system, or Palee's own levels
+                             * @enum {string}
+                             */
+                            source: "federation" | "palee";
+                            /** @enum {string} */
+                            style: "belt" | "level";
+                            /** @description The system it follows, in the requested language */
+                            system: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminRankLaddersController.create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    class_type_ids?: string[];
+                    discipline?: string;
+                    /**
+                     * @description The language of template names and skills; Greek when left out
+                     * @enum {string}
+                     */
+                    locale?: "en" | "el" | "ar" | "ru" | "de" | "es" | "pt-PT" | "he" | "it" | "bg" | "nl" | "fr";
+                    name?: string;
+                    position?: number;
+                    ranks?: {
+                        /**
+                         * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                         * @enum {string|null}
+                         */
+                        color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                        /**
+                         * Format: uuid
+                         * @description Keep an existing rank
+                         */
+                        id?: string | null;
+                        max_stripes?: number;
+                        name: string;
+                        /** RankRequirements */
+                        requirements?: {
+                            min_classes?: number;
+                            min_days?: number;
+                            /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                            skill_ids?: (string | null)[];
+                            /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                            skill_notes?: (string | null)[];
+                            /** @description A video link (https) for each skill, in the order of `skills` */
+                            skill_videos?: (string | null)[];
+                            skills?: string[];
+                        };
+                        scale_level_slug?: string | null;
+                    }[];
+                    /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                    ready_criteria?: ("days" | "classes" | "skills")[];
+                    /** @enum {string} */
+                    style?: "belt" | "level";
+                    /** @description Start from a template («Πρότυπα»); fields sent override it */
+                    template?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Ladder */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** RankLadder */
+                        ladder: {
+                            class_type_ids: string[];
+                            /** @description A workout type (ADR-275) */
+                            discipline: string;
+                            family?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            name: string;
+                            ranks: {
+                                /**
+                                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                 * @enum {string|null}
+                                 */
+                                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                /** Format: uuid */
+                                id: string;
+                                max_stripes: number;
+                                name: string;
+                                position: number;
+                                /** RankRequirements */
+                                requirements: {
+                                    min_classes?: number;
+                                    min_days?: number;
+                                    /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                    skill_ids?: (string | null)[];
+                                    /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                    skill_notes?: (string | null)[];
+                                    /** @description A video link (https) for each skill, in the order of `skills` */
+                                    skill_videos?: (string | null)[];
+                                    skills?: string[];
+                                };
+                                scale_level_slug?: string | null;
+                            }[];
+                            /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                            ready_criteria: ("days" | "classes" | "skills")[];
+                            /** @enum {string} */
+                            style: "belt" | "level";
+                        };
+                    };
+                };
+            };
+            /** @description Invalid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminRankLaddersController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    class_type_ids?: string[];
+                    discipline?: string;
+                    /**
+                     * @description The language of template names and skills; Greek when left out
+                     * @enum {string}
+                     */
+                    locale?: "en" | "el" | "ar" | "ru" | "de" | "es" | "pt-PT" | "he" | "it" | "bg" | "nl" | "fr";
+                    name?: string;
+                    position?: number;
+                    ranks?: {
+                        /**
+                         * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                         * @enum {string|null}
+                         */
+                        color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                        /**
+                         * Format: uuid
+                         * @description Keep an existing rank
+                         */
+                        id?: string | null;
+                        max_stripes?: number;
+                        name: string;
+                        /** RankRequirements */
+                        requirements?: {
+                            min_classes?: number;
+                            min_days?: number;
+                            /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                            skill_ids?: (string | null)[];
+                            /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                            skill_notes?: (string | null)[];
+                            /** @description A video link (https) for each skill, in the order of `skills` */
+                            skill_videos?: (string | null)[];
+                            skills?: string[];
+                        };
+                        scale_level_slug?: string | null;
+                    }[];
+                    /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                    ready_criteria?: ("days" | "classes" | "skills")[];
+                    /** @enum {string} */
+                    style?: "belt" | "level";
+                    /** @description Start from a template («Πρότυπα»); fields sent override it */
+                    template?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Ladder */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** RankLadder */
+                        ladder: {
+                            class_type_ids: string[];
+                            /** @description A workout type (ADR-275) */
+                            discipline: string;
+                            family?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            name: string;
+                            ranks: {
+                                /**
+                                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                 * @enum {string|null}
+                                 */
+                                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                /** Format: uuid */
+                                id: string;
+                                max_stripes: number;
+                                name: string;
+                                position: number;
+                                /** RankRequirements */
+                                requirements: {
+                                    min_classes?: number;
+                                    min_days?: number;
+                                    /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                    skill_ids?: (string | null)[];
+                                    /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                    skill_notes?: (string | null)[];
+                                    /** @description A video link (https) for each skill, in the order of `skills` */
+                                    skill_videos?: (string | null)[];
+                                    skills?: string[];
+                                };
+                                scale_level_slug?: string | null;
+                            }[];
+                            /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                            ready_criteria: ("days" | "classes" | "skills")[];
+                            /** @enum {string} */
+                            style: "belt" | "level";
+                        };
+                    };
+                };
+            };
+            /** @description No such ladder */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description A removed rank is held */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Invalid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.AdminRankLaddersController.delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Archived */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description No such ladder */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
                     };
                 };
             };
@@ -105232,7 +114994,7 @@ export interface operations {
                             /** @description ADR-163: starting value of «Εμφάνιση στόχων στα μέλη» for a workout without goals of its own */
                             wod_goals_visible_by_default: boolean;
                             /** @description ADR-275: the workout kinds the gym's editors offer, in catalogue order; null offers every kind */
-                            workout_types: ("crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "outdoor_training" | "climbing_bouldering" | "recovery")[] | null;
+                            workout_types: ("crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "recovery")[] | null;
                         };
                     };
                 };
@@ -105290,7 +115052,7 @@ export interface operations {
                         /** @description ADR-163: starting value of «Εμφάνιση στόχων στα μέλη» for a workout without goals of its own */
                         wod_goals_visible_by_default?: boolean;
                         /** @description ADR-275: the workout kinds the gym's editors offer, in catalogue order; null offers every kind */
-                        workout_types?: ("crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "outdoor_training" | "climbing_bouldering" | "recovery")[] | null;
+                        workout_types?: ("crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "recovery")[] | null;
                     };
                 };
             };
@@ -105373,7 +115135,7 @@ export interface operations {
                             /** @description ADR-163: starting value of «Εμφάνιση στόχων στα μέλη» for a workout without goals of its own */
                             wod_goals_visible_by_default: boolean;
                             /** @description ADR-275: the workout kinds the gym's editors offer, in catalogue order; null offers every kind */
-                            workout_types: ("crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "outdoor_training" | "climbing_bouldering" | "recovery")[] | null;
+                            workout_types: ("crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "recovery")[] | null;
                         };
                     };
                 };
@@ -106603,12 +116365,22 @@ export interface operations {
                         domains: {
                             /** Format: date-time */
                             active_at: string | null;
+                            /** @enum {string|null} */
+                            certificate_error: "cluster_refused" | "cluster_unreachable" | "challenge_failed" | "rate_limited" | "issuer_not_ready" | "issuance_failed" | null;
+                            /**
+                             * @description ADR-398: the host's certificate (none until DNS is proven, then pending, issuing, active or failed)
+                             * @enum {string}
+                             */
+                            certificate_status: "none" | "pending" | "issuing" | "active" | "failed";
                             /** Format: date-time */
                             checked_at: string | null;
                             dns_records: {
                                 name: string;
-                                /** @enum {string} */
-                                type: "TXT" | "CNAME" | "A";
+                                /**
+                                 * @description ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)
+                                 * @enum {string}
+                                 */
+                                type: "TXT" | "CNAME" | "ALIAS";
                                 value: string;
                             }[];
                             host: string;
@@ -106820,12 +116592,22 @@ export interface operations {
                         domains: {
                             /** Format: date-time */
                             active_at: string | null;
+                            /** @enum {string|null} */
+                            certificate_error: "cluster_refused" | "cluster_unreachable" | "challenge_failed" | "rate_limited" | "issuer_not_ready" | "issuance_failed" | null;
+                            /**
+                             * @description ADR-398: the host's certificate (none until DNS is proven, then pending, issuing, active or failed)
+                             * @enum {string}
+                             */
+                            certificate_status: "none" | "pending" | "issuing" | "active" | "failed";
                             /** Format: date-time */
                             checked_at: string | null;
                             dns_records: {
                                 name: string;
-                                /** @enum {string} */
-                                type: "TXT" | "CNAME" | "A";
+                                /**
+                                 * @description ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)
+                                 * @enum {string}
+                                 */
+                                type: "TXT" | "CNAME" | "ALIAS";
                                 value: string;
                             }[];
                             host: string;
@@ -106872,12 +116654,22 @@ export interface operations {
                         domain: {
                             /** Format: date-time */
                             active_at: string | null;
+                            /** @enum {string|null} */
+                            certificate_error: "cluster_refused" | "cluster_unreachable" | "challenge_failed" | "rate_limited" | "issuer_not_ready" | "issuance_failed" | null;
+                            /**
+                             * @description ADR-398: the host's certificate (none until DNS is proven, then pending, issuing, active or failed)
+                             * @enum {string}
+                             */
+                            certificate_status: "none" | "pending" | "issuing" | "active" | "failed";
                             /** Format: date-time */
                             checked_at: string | null;
                             dns_records: {
                                 name: string;
-                                /** @enum {string} */
-                                type: "TXT" | "CNAME" | "A";
+                                /**
+                                 * @description ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)
+                                 * @enum {string}
+                                 */
+                                type: "TXT" | "CNAME" | "ALIAS";
                                 value: string;
                             }[];
                             host: string;
@@ -106969,12 +116761,22 @@ export interface operations {
                         domain: {
                             /** Format: date-time */
                             active_at: string | null;
+                            /** @enum {string|null} */
+                            certificate_error: "cluster_refused" | "cluster_unreachable" | "challenge_failed" | "rate_limited" | "issuer_not_ready" | "issuance_failed" | null;
+                            /**
+                             * @description ADR-398: the host's certificate (none until DNS is proven, then pending, issuing, active or failed)
+                             * @enum {string}
+                             */
+                            certificate_status: "none" | "pending" | "issuing" | "active" | "failed";
                             /** Format: date-time */
                             checked_at: string | null;
                             dns_records: {
                                 name: string;
-                                /** @enum {string} */
-                                type: "TXT" | "CNAME" | "A";
+                                /**
+                                 * @description ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)
+                                 * @enum {string}
+                                 */
+                                type: "TXT" | "CNAME" | "ALIAS";
                                 value: string;
                             }[];
                             host: string;
@@ -107075,12 +116877,22 @@ export interface operations {
                         domain: {
                             /** Format: date-time */
                             active_at: string | null;
+                            /** @enum {string|null} */
+                            certificate_error: "cluster_refused" | "cluster_unreachable" | "challenge_failed" | "rate_limited" | "issuer_not_ready" | "issuance_failed" | null;
+                            /**
+                             * @description ADR-398: the host's certificate (none until DNS is proven, then pending, issuing, active or failed)
+                             * @enum {string}
+                             */
+                            certificate_status: "none" | "pending" | "issuing" | "active" | "failed";
                             /** Format: date-time */
                             checked_at: string | null;
                             dns_records: {
                                 name: string;
-                                /** @enum {string} */
-                                type: "TXT" | "CNAME" | "A";
+                                /**
+                                 * @description ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)
+                                 * @enum {string}
+                                 */
+                                type: "TXT" | "CNAME" | "ALIAS";
                                 value: string;
                             }[];
                             host: string;
@@ -113352,7 +123164,7 @@ export interface operations {
                     tags?: string[];
                     title?: string | null;
                     /** @enum {string|null} */
-                    type?: "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "outdoor_training" | "climbing_bouldering" | "recovery" | null;
+                    type?: "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "recovery" | null;
                     workout_metadata?: {
                         [key: string]: unknown;
                     };
@@ -114874,7 +124686,7 @@ export interface operations {
                     tags?: string[];
                     title?: string | null;
                     /** @enum {string|null} */
-                    type?: "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "dance" | "dance_fitness" | "pole_aerial" | "outdoor_training" | "climbing_bouldering" | "recovery" | null;
+                    type?: "crossfit" | "functional_fitness" | "hyrox" | "hiit" | "bootcamp" | "circuit_training" | "strength" | "powerlifting" | "olympic_lifting" | "bodybuilding" | "strongman" | "kettlebell" | "gymnastics" | "calisthenics" | "artistic_gymnastics" | "rhythmic_gymnastics" | "trampoline_tumbling" | "acrobatics" | "parkour" | "aerobics" | "running" | "cycling" | "indoor_cycling" | "rowing" | "swimming" | "endurance" | "yoga" | "pilates" | "barre" | "flexibility" | "mobility" | "stretching" | "tai_chi_qigong" | "boxing" | "kickboxing" | "muay_thai" | "mma" | "bjj_grappling" | "wrestling" | "martial_arts" | "self_defense" | "judo" | "karate" | "taekwondo" | "kung_fu" | "krav_maga" | "dance" | "dance_fitness" | "pole_aerial" | "ballet" | "contemporary_dance" | "latin_dance" | "street_dance" | "outdoor_training" | "climbing_bouldering" | "skateboarding" | "recovery" | null;
                     workout_metadata?: {
                         [key: string]: unknown;
                     };
@@ -121170,6 +130982,34 @@ export interface operations {
                             edited_at: string | null;
                             /** Format: uuid */
                             id: string;
+                            /**
+                             * BoxReviewModeration
+                             * @description Null while the review is up; the statement of reasons when it is not
+                             */
+                            moderation: {
+                                /** @description Decided after a report */
+                                after_report: boolean;
+                                /** @description Always false: a person decided */
+                                automated: boolean;
+                                /** @description Palee's moderation address, named for redress */
+                                contact: string | null;
+                                /** Format: date-time */
+                                decided_at: string;
+                                ground: string | null;
+                                /**
+                                 * @description The law (illegal content) or Palee's terms
+                                 * @enum {string|null}
+                                 */
+                                legal_basis: "law" | "terms" | null;
+                                /** Format: date-time */
+                                moderated_at: string;
+                                /** @enum {string|null} */
+                                outcome: "hide" | "remove" | null;
+                                redress: ("contact_palee" | "court")[];
+                                statement: string | null;
+                                /** @enum {string} */
+                                status: "hidden" | "removed";
+                            } | null;
                             rating: number;
                             /** BoxReviewReply */
                             reply: {
@@ -121178,6 +131018,8 @@ export interface operations {
                                 replied_at: string;
                             } | null;
                         } | null;
+                        /** @description Reviews I reported that the Palee team has not decided yet (ADR-397) */
+                        reported_ids: string[];
                         reviews: {
                             /** @description First name only; null for people who hide themselves */
                             author_name: string | null;
@@ -121197,6 +131039,69 @@ export interface operations {
                             } | null;
                         }[];
                     };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyBoxReviewsController.report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Required for illegal and other */
+                    note?: string | null;
+                    /** @enum {string} */
+                    reason: "offensive" | "personal_data" | "not_genuine" | "spam" | "illegal" | "other";
+                };
+            };
+        };
+        responses: {
+            /** @description Reported */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        review_id: string;
+                        /** @enum {string} */
+                        status: "open";
+                    };
+                };
+            };
+            /** @description No such review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Invalid or my own review */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Too many reports today */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
                 };
             };
         };
@@ -122037,6 +131942,53 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.MyFeaturesController.show": {
+        parameters: {
+            query?: {
+                /** @description ADR-186: comma-separated branch ids to filter by */
+                location_ids?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Features */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description ADR-470: every feature key with whether it is on */
+                        features: {
+                            branches: boolean;
+                            card_autopay: boolean;
+                            floor_plan: boolean;
+                            module_corporate_clients: boolean;
+                            module_digital_content: boolean;
+                            module_events: boolean;
+                            module_group_classes: boolean;
+                            module_online_coaching: boolean;
+                            module_open_gym: boolean;
+                            module_personal_training: boolean;
+                            online_drop_in: boolean;
+                            online_packages: boolean;
+                            online_payments: boolean;
+                            online_personal_training: boolean;
+                            online_programmes: boolean;
+                            online_shop: boolean;
+                            perks: boolean;
+                            promotions: boolean;
+                            referrals: boolean;
+                            trials: boolean;
+                        };
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.MyFinanceController.index": {
         parameters: {
             query?: never;
@@ -122807,6 +132759,70 @@ export interface operations {
                 content: {
                     "application/json": {
                         [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MarketingConsentController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Consent */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        granted: boolean;
+                        /** Format: date-time */
+                        granted_at?: string | null;
+                        /** @description Whether the box has an email list */
+                        list_connected: boolean;
+                        text_version?: string | null;
+                        /** Format: date-time */
+                        withdrawn_at?: string | null;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MarketingConsentController.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    granted: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Consent */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        granted: boolean;
+                        /** Format: date-time */
+                        granted_at?: string | null;
+                        /** @description Whether the box has an email list */
+                        list_connected: boolean;
+                        text_version?: string | null;
+                        /** Format: date-time */
+                        withdrawn_at?: string | null;
                     };
                 };
             };
@@ -123769,6 +133785,679 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.MyProgrammeController.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Purchases */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        purchases: {
+                            /** Format: date-time */
+                            activated_at?: string | null;
+                            buyer?: {
+                                /** Format: uuid */
+                                id: string;
+                                nickname?: string | null;
+                            } | null;
+                            currency: string;
+                            days?: {
+                                /** Format: date */
+                                date: string;
+                                day: number;
+                                summary?: string | null;
+                                title?: string | null;
+                                /** Format: uuid */
+                                workout_id: string;
+                            }[];
+                            end_reason?: string | null;
+                            /** Format: date-time */
+                            ended_at?: string | null;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            inserted_at?: string;
+                            /** Format: uuid */
+                            payment_intent_id?: string | null;
+                            price_cents: number;
+                            /** Format: uuid */
+                            programme_id: string;
+                            /**
+                             * ProgrammeRefundQuote
+                             * @description What giving it up now returns, and under which rule
+                             */
+                            refund?: {
+                                amount_cents: number;
+                                /** @enum {string} */
+                                rule: "withdrawal" | "before_start" | "pro_rata";
+                            } | null;
+                            /** @enum {string} */
+                            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                            refunded_cents: number;
+                            review?: {
+                                author?: {
+                                    /** Format: uuid */
+                                    id?: string;
+                                    nickname?: string | null;
+                                } | null;
+                                body?: string | null;
+                                hidden_reason?: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: date-time */
+                                inserted_at?: string;
+                                rating: number;
+                                /** @enum {string} */
+                                status: "published" | "hidden";
+                                /** Format: date-time */
+                                updated_at?: string;
+                                version_number: number;
+                            } | null;
+                            /** Format: date */
+                            starts_on: string;
+                            /** @enum {string} */
+                            status: "pending_payment" | "active" | "completed" | "withdrawn" | "refunded" | "cancelled";
+                            title?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                            /** Format: uuid */
+                            version_id: string;
+                            version_number?: number;
+                            weeks?: number;
+                            withdrawal_deadline?: string | null;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyProgrammeController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Purchase */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** ProgrammePurchase */
+                        purchase: {
+                            /** Format: date-time */
+                            activated_at?: string | null;
+                            buyer?: {
+                                /** Format: uuid */
+                                id: string;
+                                nickname?: string | null;
+                            } | null;
+                            currency: string;
+                            days?: {
+                                /** Format: date */
+                                date: string;
+                                day: number;
+                                summary?: string | null;
+                                title?: string | null;
+                                /** Format: uuid */
+                                workout_id: string;
+                            }[];
+                            end_reason?: string | null;
+                            /** Format: date-time */
+                            ended_at?: string | null;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            inserted_at?: string;
+                            /** Format: uuid */
+                            payment_intent_id?: string | null;
+                            price_cents: number;
+                            /** Format: uuid */
+                            programme_id: string;
+                            /**
+                             * ProgrammeRefundQuote
+                             * @description What giving it up now returns, and under which rule
+                             */
+                            refund?: {
+                                amount_cents: number;
+                                /** @enum {string} */
+                                rule: "withdrawal" | "before_start" | "pro_rata";
+                            } | null;
+                            /** @enum {string} */
+                            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                            refunded_cents: number;
+                            review?: {
+                                author?: {
+                                    /** Format: uuid */
+                                    id?: string;
+                                    nickname?: string | null;
+                                } | null;
+                                body?: string | null;
+                                hidden_reason?: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: date-time */
+                                inserted_at?: string;
+                                rating: number;
+                                /** @enum {string} */
+                                status: "published" | "hidden";
+                                /** Format: date-time */
+                                updated_at?: string;
+                                version_number: number;
+                            } | null;
+                            /** Format: date */
+                            starts_on: string;
+                            /** @enum {string} */
+                            status: "pending_payment" | "active" | "completed" | "withdrawn" | "refunded" | "cancelled";
+                            title?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                            /** Format: uuid */
+                            version_id: string;
+                            version_number?: number;
+                            weeks?: number;
+                            withdrawal_deadline?: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description No such programme or purchase */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Not possible now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid request */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyProgrammeController.review": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    body?: string | null;
+                    rating: number;
+                };
+            };
+        };
+        responses: {
+            /** @description Review */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** ProgrammeReview */
+                        review: {
+                            author?: {
+                                /** Format: uuid */
+                                id?: string;
+                                nickname?: string | null;
+                            } | null;
+                            body?: string | null;
+                            hidden_reason?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            inserted_at?: string;
+                            rating: number;
+                            /** @enum {string} */
+                            status: "published" | "hidden";
+                            /** Format: date-time */
+                            updated_at?: string;
+                            version_number: number;
+                        };
+                    };
+                };
+            };
+            /** @description No such programme or purchase */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Not possible now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid request */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyProgrammeController.withdraw": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Refund */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** ProgrammePurchase */
+                        purchase: {
+                            /** Format: date-time */
+                            activated_at?: string | null;
+                            buyer?: {
+                                /** Format: uuid */
+                                id: string;
+                                nickname?: string | null;
+                            } | null;
+                            currency: string;
+                            days?: {
+                                /** Format: date */
+                                date: string;
+                                day: number;
+                                summary?: string | null;
+                                title?: string | null;
+                                /** Format: uuid */
+                                workout_id: string;
+                            }[];
+                            end_reason?: string | null;
+                            /** Format: date-time */
+                            ended_at?: string | null;
+                            /** Format: date */
+                            ends_on: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: date-time */
+                            inserted_at?: string;
+                            /** Format: uuid */
+                            payment_intent_id?: string | null;
+                            price_cents: number;
+                            /** Format: uuid */
+                            programme_id: string;
+                            /**
+                             * ProgrammeRefundQuote
+                             * @description What giving it up now returns, and under which rule
+                             */
+                            refund?: {
+                                amount_cents: number;
+                                /** @enum {string} */
+                                rule: "withdrawal" | "before_start" | "pro_rata";
+                            } | null;
+                            /** @enum {string} */
+                            refund_policy: "before_start" | "withdrawal_only" | "pro_rata";
+                            refunded_cents: number;
+                            review?: {
+                                author?: {
+                                    /** Format: uuid */
+                                    id?: string;
+                                    nickname?: string | null;
+                                } | null;
+                                body?: string | null;
+                                hidden_reason?: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: date-time */
+                                inserted_at?: string;
+                                rating: number;
+                                /** @enum {string} */
+                                status: "published" | "hidden";
+                                /** Format: date-time */
+                                updated_at?: string;
+                                version_number: number;
+                            } | null;
+                            /** Format: date */
+                            starts_on: string;
+                            /** @enum {string} */
+                            status: "pending_payment" | "active" | "completed" | "withdrawn" | "refunded" | "cancelled";
+                            title?: string | null;
+                            /** Format: uuid */
+                            user_id?: string | null;
+                            /** Format: uuid */
+                            version_id: string;
+                            version_number?: number;
+                            weeks?: number;
+                            withdrawal_deadline?: string | null;
+                        };
+                        refund: {
+                            [key: string]: unknown;
+                        };
+                        rule?: string | null;
+                    };
+                };
+            };
+            /** @description No such programme or purchase */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Not possible now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid request */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyProgrammeController.buy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    idempotency_key: string;
+                    /** @enum {string} */
+                    language?: "el" | "en";
+                    /** @description The express request to start, required where withdrawal applies */
+                    start_now?: boolean;
+                    /**
+                     * Format: date
+                     * @description Today up to 60 days ahead
+                     */
+                    starts_on?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Checkout */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description The checkout: open its checkout_url on the provider's page */
+                        payment: {
+                            [key: string]: unknown;
+                        };
+                        /** Format: uuid */
+                        purchase_id: string;
+                    };
+                };
+            };
+            /** @description No such programme or purchase */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Not possible now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid request */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyProgrammeController.terms": {
+        parameters: {
+            query?: {
+                language?: "el" | "en";
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Terms */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        available: boolean;
+                        /** Format: date */
+                        earliest_start: string;
+                        /** Format: date */
+                        latest_start: string;
+                        /**
+                         * Format: uuid
+                         * @description The buyer's active purchase of it, if any
+                         */
+                        owned?: string | null;
+                        /** PublicProgramme */
+                        programme: {
+                            currency: string;
+                            description?: string | null;
+                            equipment?: string[];
+                            goal: string;
+                            /** Format: uuid */
+                            id: string;
+                            latest_reviews?: {
+                                author?: {
+                                    /** Format: uuid */
+                                    id?: string;
+                                    nickname?: string | null;
+                                } | null;
+                                body?: string | null;
+                                hidden_reason?: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: date-time */
+                                inserted_at?: string;
+                                rating: number;
+                                /** @enum {string} */
+                                status: "published" | "hidden";
+                                /** Format: date-time */
+                                updated_at?: string;
+                                version_number: number;
+                            }[];
+                            level: string;
+                            listing?: string;
+                            preview?: {
+                                day: number;
+                                summary?: string | null;
+                                title?: string | null;
+                                week: number;
+                                weekday: number;
+                            }[];
+                            preview_days?: number;
+                            price_cents: number;
+                            /** Format: date-time */
+                            published_at?: string | null;
+                            refund_policy?: string;
+                            /** ProgrammeRating */
+                            reviews?: {
+                                average: number | null;
+                                count: number;
+                            };
+                            sessions?: number | null;
+                            sessions_per_week?: number | null;
+                            summary?: string | null;
+                            title: string;
+                            version_number?: number | null;
+                            week_outline?: {
+                                sessions: number;
+                                week: number;
+                            }[];
+                            weeks?: number | null;
+                        };
+                        provider?: string | null;
+                        refund_rule: string;
+                        refund_text: string;
+                        start_now_text?: string | null;
+                        terms_version: string;
+                        withdrawal_days?: number | null;
+                    };
+                };
+            };
+            /** @description No such programme or purchase */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Not possible now */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+            /** @description Invalid request */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.MyContentController.progress": {
         parameters: {
             query?: never;
@@ -123864,6 +134553,212 @@ export interface operations {
             };
             /** @description Not included in the package */
             403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyRanksController.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Standing */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        ladders: {
+                            current: {
+                                /** Format: uuid */
+                                award_id: string;
+                                /** Format: date */
+                                awarded_on: string;
+                                /** Rank */
+                                rank: {
+                                    /**
+                                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                     * @enum {string|null}
+                                     */
+                                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                    /** Format: uuid */
+                                    id: string;
+                                    max_stripes: number;
+                                    name: string;
+                                    position: number;
+                                    /** RankRequirements */
+                                    requirements: {
+                                        min_classes?: number;
+                                        min_days?: number;
+                                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                        skill_ids?: (string | null)[];
+                                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                        skill_notes?: (string | null)[];
+                                        /** @description A video link (https) for each skill, in the order of `skills` */
+                                        skill_videos?: (string | null)[];
+                                        skills?: string[];
+                                    };
+                                    scale_level_slug?: string | null;
+                                };
+                                stripes: number;
+                            } | null;
+                            history: {
+                                /** Format: date */
+                                awarded_on: string;
+                                certificate_number: string;
+                                /**
+                                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                 * @enum {string|null}
+                                 */
+                                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                ladder_id: string;
+                                note?: string | null;
+                                /** Format: uuid */
+                                rank_id: string;
+                                rank_name?: string | null;
+                                revoke_reason?: string | null;
+                                revoked: boolean;
+                                skills_checked: string[];
+                                stripes: number;
+                            }[];
+                            /** RankLadder */
+                            ladder: {
+                                class_type_ids: string[];
+                                /** @description A workout type (ADR-275) */
+                                discipline: string;
+                                family?: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                name: string;
+                                ranks: {
+                                    /**
+                                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                     * @enum {string|null}
+                                     */
+                                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                    /** Format: uuid */
+                                    id: string;
+                                    max_stripes: number;
+                                    name: string;
+                                    position: number;
+                                    /** RankRequirements */
+                                    requirements: {
+                                        min_classes?: number;
+                                        min_days?: number;
+                                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                        skill_ids?: (string | null)[];
+                                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                        skill_notes?: (string | null)[];
+                                        /** @description A video link (https) for each skill, in the order of `skills` */
+                                        skill_videos?: (string | null)[];
+                                        skills?: string[];
+                                    };
+                                    scale_level_slug?: string | null;
+                                }[];
+                                /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                                ready_criteria: ("days" | "classes" | "skills")[];
+                                /** @enum {string} */
+                                style: "belt" | "level";
+                            };
+                            next: {
+                                /**
+                                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                 * @enum {string|null}
+                                 */
+                                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                /** Format: uuid */
+                                id: string;
+                                max_stripes: number;
+                                name: string;
+                                position: number;
+                                /** RankRequirements */
+                                requirements: {
+                                    min_classes?: number;
+                                    min_days?: number;
+                                    /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                    skill_ids?: (string | null)[];
+                                    /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                    skill_notes?: (string | null)[];
+                                    /** @description A video link (https) for each skill, in the order of `skills` */
+                                    skill_videos?: (string | null)[];
+                                    skills?: string[];
+                                };
+                                scale_level_slug?: string | null;
+                            } | null;
+                            /** @description Towards the next rank; `ready` only says the counted requirements are met */
+                            progress: {
+                                /** @description Every listed skill is ticked (true when the rank lists none) */
+                                all_skills_checked?: boolean;
+                                classes: {
+                                    done: number | null;
+                                    needed: number | null;
+                                };
+                                /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                                criteria?: ("days" | "classes" | "skills")[];
+                                days: {
+                                    done: number | null;
+                                    needed: number | null;
+                                };
+                                /** Format: uuid */
+                                rank_id: string;
+                                ready: boolean;
+                                skill_ids?: (string | null)[];
+                                skills: string[];
+                                /** @description ADR-400: the next rank's skills the coach ticked so far */
+                                skills_checked?: {
+                                    /** Format: date */
+                                    checked_on: string;
+                                    note?: string | null;
+                                    /** @description The skill's current text */
+                                    skill: string;
+                                    skill_id?: string | null;
+                                }[];
+                            } | null;
+                        }[];
+                        /** Format: uuid */
+                        user_id?: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.MyRanksController.certificate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description PDF */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": string;
+                };
+            };
+            /** @description No such award */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -126919,6 +137814,8 @@ export interface operations {
                             workout_id?: string | null;
                             workout_title?: string | null;
                         }[];
+                        /** @description ADR-451: the source types this person may log here, in display order (freeform is always last). */
+                        available_sources: ("class" | "assigned_workout" | "library_workout" | "freeform")[];
                         classes: {
                             /** Format: uuid */
                             booking_id?: string | null;
@@ -129731,6 +140628,490 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.StaffRanksController.client": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Standing */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        ladders: {
+                            current: {
+                                /** Format: uuid */
+                                award_id: string;
+                                /** Format: date */
+                                awarded_on: string;
+                                /** Rank */
+                                rank: {
+                                    /**
+                                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                     * @enum {string|null}
+                                     */
+                                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                    /** Format: uuid */
+                                    id: string;
+                                    max_stripes: number;
+                                    name: string;
+                                    position: number;
+                                    /** RankRequirements */
+                                    requirements: {
+                                        min_classes?: number;
+                                        min_days?: number;
+                                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                        skill_ids?: (string | null)[];
+                                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                        skill_notes?: (string | null)[];
+                                        /** @description A video link (https) for each skill, in the order of `skills` */
+                                        skill_videos?: (string | null)[];
+                                        skills?: string[];
+                                    };
+                                    scale_level_slug?: string | null;
+                                };
+                                stripes: number;
+                            } | null;
+                            history: {
+                                /** Format: date */
+                                awarded_on: string;
+                                certificate_number: string;
+                                /**
+                                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                 * @enum {string|null}
+                                 */
+                                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                ladder_id: string;
+                                note?: string | null;
+                                /** Format: uuid */
+                                rank_id: string;
+                                rank_name?: string | null;
+                                revoke_reason?: string | null;
+                                revoked: boolean;
+                                skills_checked: string[];
+                                stripes: number;
+                            }[];
+                            /** RankLadder */
+                            ladder: {
+                                class_type_ids: string[];
+                                /** @description A workout type (ADR-275) */
+                                discipline: string;
+                                family?: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                name: string;
+                                ranks: {
+                                    /**
+                                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                     * @enum {string|null}
+                                     */
+                                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                    /** Format: uuid */
+                                    id: string;
+                                    max_stripes: number;
+                                    name: string;
+                                    position: number;
+                                    /** RankRequirements */
+                                    requirements: {
+                                        min_classes?: number;
+                                        min_days?: number;
+                                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                        skill_ids?: (string | null)[];
+                                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                        skill_notes?: (string | null)[];
+                                        /** @description A video link (https) for each skill, in the order of `skills` */
+                                        skill_videos?: (string | null)[];
+                                        skills?: string[];
+                                    };
+                                    scale_level_slug?: string | null;
+                                }[];
+                                /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                                ready_criteria: ("days" | "classes" | "skills")[];
+                                /** @enum {string} */
+                                style: "belt" | "level";
+                            };
+                            next: {
+                                /**
+                                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                 * @enum {string|null}
+                                 */
+                                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                /** Format: uuid */
+                                id: string;
+                                max_stripes: number;
+                                name: string;
+                                position: number;
+                                /** RankRequirements */
+                                requirements: {
+                                    min_classes?: number;
+                                    min_days?: number;
+                                    /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                    skill_ids?: (string | null)[];
+                                    /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                    skill_notes?: (string | null)[];
+                                    /** @description A video link (https) for each skill, in the order of `skills` */
+                                    skill_videos?: (string | null)[];
+                                    skills?: string[];
+                                };
+                                scale_level_slug?: string | null;
+                            } | null;
+                            /** @description Towards the next rank; `ready` only says the counted requirements are met */
+                            progress: {
+                                /** @description Every listed skill is ticked (true when the rank lists none) */
+                                all_skills_checked?: boolean;
+                                classes: {
+                                    done: number | null;
+                                    needed: number | null;
+                                };
+                                /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                                criteria?: ("days" | "classes" | "skills")[];
+                                days: {
+                                    done: number | null;
+                                    needed: number | null;
+                                };
+                                /** Format: uuid */
+                                rank_id: string;
+                                ready: boolean;
+                                skill_ids?: (string | null)[];
+                                skills: string[];
+                                /** @description ADR-400: the next rank's skills the coach ticked so far */
+                                skills_checked?: {
+                                    /** Format: date */
+                                    checked_on: string;
+                                    note?: string | null;
+                                    /** @description The skill's current text */
+                                    skill: string;
+                                    skill_id?: string | null;
+                                }[];
+                            } | null;
+                        }[];
+                        /** Format: uuid */
+                        user_id?: string;
+                    };
+                };
+            };
+            /** @description Not your client */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.StaffRanksController.award": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: date */
+                    awarded_on?: string;
+                    /** Format: uuid */
+                    ladder_id: string;
+                    note?: string;
+                    /** Format: uuid */
+                    rank_id: string;
+                    skills_checked?: string[];
+                    stripes?: number;
+                };
+            };
+        };
+        responses: {
+            /** @description Award */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** RankAward */
+                        award: {
+                            /** Format: date */
+                            awarded_on: string;
+                            certificate_number: string;
+                            /**
+                             * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                             * @enum {string|null}
+                             */
+                            color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            ladder_id: string;
+                            note?: string | null;
+                            /** Format: uuid */
+                            rank_id: string;
+                            rank_name?: string | null;
+                            revoke_reason?: string | null;
+                            revoked: boolean;
+                            skills_checked: string[];
+                            stripes: number;
+                        };
+                    };
+                };
+            };
+            /** @description Not your client */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Not a step up, or invalid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.StaffRanksController.check_skill": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description false unticks; true when left out */
+                    checked?: boolean;
+                    /** Format: date */
+                    checked_on?: string;
+                    note?: string | null;
+                    /** Format: uuid */
+                    rank_id: string;
+                    /** @description The skill's text, when no `skill_id` is sent */
+                    skill?: string;
+                    /**
+                     * Format: uuid
+                     * @description The skill's stable id
+                     */
+                    skill_id?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Standing */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        ladders: {
+                            current: {
+                                /** Format: uuid */
+                                award_id: string;
+                                /** Format: date */
+                                awarded_on: string;
+                                /** Rank */
+                                rank: {
+                                    /**
+                                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                     * @enum {string|null}
+                                     */
+                                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                    /** Format: uuid */
+                                    id: string;
+                                    max_stripes: number;
+                                    name: string;
+                                    position: number;
+                                    /** RankRequirements */
+                                    requirements: {
+                                        min_classes?: number;
+                                        min_days?: number;
+                                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                        skill_ids?: (string | null)[];
+                                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                        skill_notes?: (string | null)[];
+                                        /** @description A video link (https) for each skill, in the order of `skills` */
+                                        skill_videos?: (string | null)[];
+                                        skills?: string[];
+                                    };
+                                    scale_level_slug?: string | null;
+                                };
+                                stripes: number;
+                            } | null;
+                            history: {
+                                /** Format: date */
+                                awarded_on: string;
+                                certificate_number: string;
+                                /**
+                                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                 * @enum {string|null}
+                                 */
+                                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                ladder_id: string;
+                                note?: string | null;
+                                /** Format: uuid */
+                                rank_id: string;
+                                rank_name?: string | null;
+                                revoke_reason?: string | null;
+                                revoked: boolean;
+                                skills_checked: string[];
+                                stripes: number;
+                            }[];
+                            /** RankLadder */
+                            ladder: {
+                                class_type_ids: string[];
+                                /** @description A workout type (ADR-275) */
+                                discipline: string;
+                                family?: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                name: string;
+                                ranks: {
+                                    /**
+                                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                     * @enum {string|null}
+                                     */
+                                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                    /** Format: uuid */
+                                    id: string;
+                                    max_stripes: number;
+                                    name: string;
+                                    position: number;
+                                    /** RankRequirements */
+                                    requirements: {
+                                        min_classes?: number;
+                                        min_days?: number;
+                                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                        skill_ids?: (string | null)[];
+                                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                        skill_notes?: (string | null)[];
+                                        /** @description A video link (https) for each skill, in the order of `skills` */
+                                        skill_videos?: (string | null)[];
+                                        skills?: string[];
+                                    };
+                                    scale_level_slug?: string | null;
+                                }[];
+                                /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                                ready_criteria: ("days" | "classes" | "skills")[];
+                                /** @enum {string} */
+                                style: "belt" | "level";
+                            };
+                            next: {
+                                /**
+                                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                 * @enum {string|null}
+                                 */
+                                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                /** Format: uuid */
+                                id: string;
+                                max_stripes: number;
+                                name: string;
+                                position: number;
+                                /** RankRequirements */
+                                requirements: {
+                                    min_classes?: number;
+                                    min_days?: number;
+                                    /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                    skill_ids?: (string | null)[];
+                                    /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                    skill_notes?: (string | null)[];
+                                    /** @description A video link (https) for each skill, in the order of `skills` */
+                                    skill_videos?: (string | null)[];
+                                    skills?: string[];
+                                };
+                                scale_level_slug?: string | null;
+                            } | null;
+                            /** @description Towards the next rank; `ready` only says the counted requirements are met */
+                            progress: {
+                                /** @description Every listed skill is ticked (true when the rank lists none) */
+                                all_skills_checked?: boolean;
+                                classes: {
+                                    done: number | null;
+                                    needed: number | null;
+                                };
+                                /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                                criteria?: ("days" | "classes" | "skills")[];
+                                days: {
+                                    done: number | null;
+                                    needed: number | null;
+                                };
+                                /** Format: uuid */
+                                rank_id: string;
+                                ready: boolean;
+                                skill_ids?: (string | null)[];
+                                skills: string[];
+                                /** @description ADR-400: the next rank's skills the coach ticked so far */
+                                skills_checked?: {
+                                    /** Format: date */
+                                    checked_on: string;
+                                    note?: string | null;
+                                    /** @description The skill's current text */
+                                    skill: string;
+                                    skill_id?: string | null;
+                                }[];
+                            } | null;
+                        }[];
+                        /** Format: uuid */
+                        user_id?: string;
+                    };
+                };
+            };
+            /** @description Not your client */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Not a skill of that rank */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.TrainingGoalController.client_show": {
         parameters: {
             query?: never;
@@ -131783,6 +143164,391 @@ export interface operations {
                         awaiting_reply: number;
                         client_count: number;
                         coaching_messages_this_week: number;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.StaffRanksController.certificate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description PDF */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": string;
+                };
+            };
+            /** @description No such award */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.StaffRanksController.revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    reason: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Award */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** RankAward */
+                        award: {
+                            /** Format: date */
+                            awarded_on: string;
+                            certificate_number: string;
+                            /**
+                             * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                             * @enum {string|null}
+                             */
+                            color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            ladder_id: string;
+                            note?: string | null;
+                            /** Format: uuid */
+                            rank_id: string;
+                            rank_name?: string | null;
+                            revoke_reason?: string | null;
+                            revoked: boolean;
+                            skills_checked: string[];
+                            stripes: number;
+                        };
+                    };
+                };
+            };
+            /** @description No such award */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Already withdrawn */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.StaffRanksController.ready": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ready */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        people: {
+                            current: {
+                                /** Rank */
+                                rank: {
+                                    /**
+                                     * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                     * @enum {string|null}
+                                     */
+                                    color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                    /** Format: uuid */
+                                    id: string;
+                                    max_stripes: number;
+                                    name: string;
+                                    position: number;
+                                    /** RankRequirements */
+                                    requirements: {
+                                        min_classes?: number;
+                                        min_days?: number;
+                                        /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                        skill_ids?: (string | null)[];
+                                        /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                        skill_notes?: (string | null)[];
+                                        /** @description A video link (https) for each skill, in the order of `skills` */
+                                        skill_videos?: (string | null)[];
+                                        skills?: string[];
+                                    };
+                                    scale_level_slug?: string | null;
+                                };
+                                stripes: number;
+                            };
+                            ladder: {
+                                /** Format: uuid */
+                                id: string;
+                                name: string;
+                                style: string;
+                            };
+                            /** Rank */
+                            next: {
+                                /**
+                                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                 * @enum {string|null}
+                                 */
+                                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                /** Format: uuid */
+                                id: string;
+                                max_stripes: number;
+                                name: string;
+                                position: number;
+                                /** RankRequirements */
+                                requirements: {
+                                    min_classes?: number;
+                                    min_days?: number;
+                                    /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                    skill_ids?: (string | null)[];
+                                    /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                    skill_notes?: (string | null)[];
+                                    /** @description A video link (https) for each skill, in the order of `skills` */
+                                    skill_videos?: (string | null)[];
+                                    skills?: string[];
+                                };
+                                scale_level_slug?: string | null;
+                            };
+                            nickname?: string | null;
+                            /** @description Towards the next rank; `ready` only says the counted requirements are met */
+                            progress: {
+                                /** @description Every listed skill is ticked (true when the rank lists none) */
+                                all_skills_checked?: boolean;
+                                classes: {
+                                    done: number | null;
+                                    needed: number | null;
+                                };
+                                /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                                criteria?: ("days" | "classes" | "skills")[];
+                                days: {
+                                    done: number | null;
+                                    needed: number | null;
+                                };
+                                /** Format: uuid */
+                                rank_id: string;
+                                ready: boolean;
+                                skill_ids?: (string | null)[];
+                                skills: string[];
+                                /** @description ADR-400: the next rank's skills the coach ticked so far */
+                                skills_checked?: {
+                                    /** Format: date */
+                                    checked_on: string;
+                                    note?: string | null;
+                                    /** @description The skill's current text */
+                                    skill: string;
+                                    skill_id?: string | null;
+                                }[];
+                            } | null;
+                            /** Format: uuid */
+                            user_id: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description No coaching */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.StaffRanksController.class_skills": {
+        parameters: {
+            query: {
+                /** @description Comma-separated user ids (up to 100) */
+                user_ids: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Class skills */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        ladders: {
+                            class_type_ids: string[];
+                            /** @description A workout type (ADR-275) */
+                            discipline: string;
+                            family?: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            name: string;
+                            ranks: {
+                                /**
+                                 * @description Belt palette key; the screen maps it to the theme's --belt-* token
+                                 * @enum {string|null}
+                                 */
+                                color?: "white" | "grey" | "yellow" | "orange" | "green" | "blue" | "purple" | "brown" | "red" | "black" | "pink" | null;
+                                /** Format: uuid */
+                                id: string;
+                                max_stripes: number;
+                                name: string;
+                                position: number;
+                                /** RankRequirements */
+                                requirements: {
+                                    min_classes?: number;
+                                    min_days?: number;
+                                    /** @description Stable id of each skill, in the order of `skills` (ticks keep to it on a rename); null for a new skill */
+                                    skill_ids?: (string | null)[];
+                                    /** @description The coach's note on each skill (up to 500 characters), in the order of `skills` */
+                                    skill_notes?: (string | null)[];
+                                    /** @description A video link (https) for each skill, in the order of `skills` */
+                                    skill_videos?: (string | null)[];
+                                    skills?: string[];
+                                };
+                                scale_level_slug?: string | null;
+                            }[];
+                            /** @description What counts for «Πληροί τις προϋποθέσεις» on this ladder */
+                            ready_criteria: ("days" | "classes" | "skills")[];
+                            /** @enum {string} */
+                            style: "belt" | "level";
+                        }[];
+                        people: {
+                            checked: {
+                                /** Format: uuid */
+                                rank_id: string;
+                                /** Format: uuid */
+                                skill_id: string;
+                            }[];
+                            next_rank_ids: string[];
+                            /** @description The coach may tick for them */
+                            reachable: boolean;
+                            /** Format: uuid */
+                            user_id: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description No coaching */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.StaffRanksController.batch_skills": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description false unticks; true when left out */
+                    checked?: boolean;
+                    /** Format: date */
+                    checked_on?: string;
+                    /** Format: uuid */
+                    rank_id: string;
+                    skill?: string;
+                    /** Format: uuid */
+                    skill_id?: string;
+                    user_ids: string[];
+                };
+            };
+        };
+        responses: {
+            /** @description Who changed and who was skipped */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        skipped: {
+                            /** @enum {string} */
+                            reason: "not_your_client" | "other_rank";
+                            /** Format: uuid */
+                            user_id: string;
+                        }[];
+                        updated: string[];
+                    };
+                };
+            };
+            /** @description No coaching */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Not a skill of that rank */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
                     };
                 };
             };
@@ -141911,6 +153677,40 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.PlatformFoodMissesController.index": {
+        parameters: {
+            query?: {
+                /** @description ISO 3166 alpha-2 */
+                country?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Misses */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        misses: {
+                            barcode: string;
+                            /** @description ISO 3166 alpha-2; empty when unknown */
+                            country: string;
+                            /** Format: date */
+                            first_seen_on: string;
+                            /** Format: date */
+                            last_seen_on: string;
+                            scans: number;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.PlatformOrganizationPurgeController.index": {
         parameters: {
             query?: never;
@@ -144522,6 +156322,231 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.PlatformReviewReportController.index": {
+        parameters: {
+            query?: {
+                /** @description Default open */
+                status?: "open" | "decided";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Queue */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        decisions: {
+                            /** Format: date-time */
+                            decided_at: string;
+                            decided_by: string | null;
+                            ground: string;
+                            /** Format: uuid */
+                            id: string;
+                            /** ReviewReportOrganization */
+                            organization: {
+                                /** Format: uuid */
+                                id: string;
+                                name: string | null;
+                            };
+                            /** @enum {string} */
+                            outcome: "keep" | "hide" | "remove" | "restore";
+                            reports_count: number;
+                            /** Format: uuid */
+                            review_id: string | null;
+                            /**
+                             * @description The review now; only a hidden one can be restored
+                             * @enum {string}
+                             */
+                            review_status: "visible" | "hidden" | "removed" | "deleted";
+                            statement: string | null;
+                        }[];
+                        items: {
+                            author_name: string | null;
+                            /** @description The box itself reported it */
+                            box_reported: boolean;
+                            /** CurrentReviewText */
+                            current: {
+                                body: string | null;
+                                /** Format: date-time */
+                                edited_at: string | null;
+                                rating: number;
+                            } | null;
+                            /** Format: date-time */
+                            first_reported_at: string;
+                            notes: {
+                                /** Format: date-time */
+                                at: string;
+                                note: string;
+                                reason: string;
+                                /** @enum {string} */
+                                role: "member" | "box";
+                            }[];
+                            /** ReviewReportOrganization */
+                            organization: {
+                                /** Format: uuid */
+                                id: string;
+                                name: string | null;
+                            };
+                            reasons: {
+                                count: number;
+                                reason: string;
+                            }[];
+                            /**
+                             * ReportedReviewText
+                             * @description The review as the latest report saw it
+                             */
+                            reported: {
+                                body: string | null;
+                                rating: number;
+                            };
+                            reports_count: number;
+                            /** Format: uuid */
+                            review_id: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PlatformReviewReportController.decide": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                review_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description no_violation for keep; a report reason for hide and remove
+                     * @enum {string|null}
+                     */
+                    ground?: "no_violation" | "offensive" | "personal_data" | "not_genuine" | "spam" | "illegal" | "other" | null;
+                    /** @enum {string} */
+                    outcome: "keep" | "hide" | "remove";
+                    /** @description What the author reads; required for hide and remove */
+                    statement?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Decision */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        ground: string;
+                        outcome: string;
+                        /** @description Open reports this decision closed */
+                        resolved: number;
+                        /** Format: uuid */
+                        review_id: string;
+                    };
+                };
+            };
+            /** @description No such review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description No open reports */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Invalid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
+    "PaleeWeb.PlatformReviewReportController.restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                review_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description What the author reads */
+                    statement: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Restored */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        ground: string;
+                        outcome: string;
+                        /** @description Open reports this decision closed */
+                        resolved: number;
+                        /** Format: uuid */
+                        review_id: string;
+                    };
+                };
+            };
+            /** @description No such review */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Not hidden */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            /** @description Invalid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+        };
+    };
     "PaleeWeb.PlatformSiteDomainsController.index": {
         parameters: {
             query?: {
@@ -146769,6 +158794,198 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.PublicProgrammeController.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Programmes */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description The box's public card */
+                        box: {
+                            [key: string]: unknown;
+                        };
+                        programmes: {
+                            currency: string;
+                            description?: string | null;
+                            equipment?: string[];
+                            goal: string;
+                            /** Format: uuid */
+                            id: string;
+                            latest_reviews?: {
+                                author?: {
+                                    /** Format: uuid */
+                                    id?: string;
+                                    nickname?: string | null;
+                                } | null;
+                                body?: string | null;
+                                hidden_reason?: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: date-time */
+                                inserted_at?: string;
+                                rating: number;
+                                /** @enum {string} */
+                                status: "published" | "hidden";
+                                /** Format: date-time */
+                                updated_at?: string;
+                                version_number: number;
+                            }[];
+                            level: string;
+                            listing?: string;
+                            preview?: {
+                                day: number;
+                                summary?: string | null;
+                                title?: string | null;
+                                week: number;
+                                weekday: number;
+                            }[];
+                            preview_days?: number;
+                            price_cents: number;
+                            /** Format: date-time */
+                            published_at?: string | null;
+                            refund_policy?: string;
+                            /** ProgrammeRating */
+                            reviews?: {
+                                average: number | null;
+                                count: number;
+                            };
+                            sessions?: number | null;
+                            sessions_per_week?: number | null;
+                            summary?: string | null;
+                            title: string;
+                            version_number?: number | null;
+                            week_outline?: {
+                                sessions: number;
+                                week: number;
+                            }[];
+                            weeks?: number | null;
+                        }[];
+                    };
+                };
+            };
+            /** @description No such box or programme */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
+    "PaleeWeb.PublicProgrammeController.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Programme */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description The box's public card */
+                        box: {
+                            [key: string]: unknown;
+                        };
+                        /** PublicProgramme */
+                        programme: {
+                            currency: string;
+                            description?: string | null;
+                            equipment?: string[];
+                            goal: string;
+                            /** Format: uuid */
+                            id: string;
+                            latest_reviews?: {
+                                author?: {
+                                    /** Format: uuid */
+                                    id?: string;
+                                    nickname?: string | null;
+                                } | null;
+                                body?: string | null;
+                                hidden_reason?: string | null;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: date-time */
+                                inserted_at?: string;
+                                rating: number;
+                                /** @enum {string} */
+                                status: "published" | "hidden";
+                                /** Format: date-time */
+                                updated_at?: string;
+                                version_number: number;
+                            }[];
+                            level: string;
+                            listing?: string;
+                            preview?: {
+                                day: number;
+                                summary?: string | null;
+                                title?: string | null;
+                                week: number;
+                                weekday: number;
+                            }[];
+                            preview_days?: number;
+                            price_cents: number;
+                            /** Format: date-time */
+                            published_at?: string | null;
+                            refund_policy?: string;
+                            /** ProgrammeRating */
+                            reviews?: {
+                                average: number | null;
+                                count: number;
+                            };
+                            sessions?: number | null;
+                            sessions_per_week?: number | null;
+                            summary?: string | null;
+                            title: string;
+                            version_number?: number | null;
+                            week_outline?: {
+                                sessions: number;
+                                week: number;
+                            }[];
+                            weeks?: number | null;
+                        };
+                    };
+                };
+            };
+            /** @description No such box or programme */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        code: string;
+                        error: string;
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.PublicSmsUnsubscribeController.show": {
         parameters: {
             query?: never;
@@ -147049,6 +159266,57 @@ export interface operations {
             };
         };
     };
+    "PaleeWeb.PublicProgrammeController.catalogue": {
+        parameters: {
+            query?: {
+                query?: string;
+                goal?: string;
+                level?: string;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Programmes */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        limit: number;
+                        offset: number;
+                        programmes: {
+                            currency: string;
+                            equipment?: string[];
+                            goal?: string;
+                            /** Format: uuid */
+                            id: string;
+                            level?: string;
+                            /** Format: uuid */
+                            organization_id?: string;
+                            organization_name: string;
+                            organization_slug: string;
+                            price_cents: number;
+                            /** Format: date-time */
+                            published_at?: string | null;
+                            rating_average?: number | null;
+                            rating_count?: number;
+                            sessions_per_week?: number | null;
+                            summary?: string | null;
+                            title: string;
+                            version_number?: number;
+                            weeks: number;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
     "PaleeWeb.PublicReceiptsController.show": {
         parameters: {
             query?: never;
@@ -147305,6 +159573,8 @@ export interface operations {
                         language: string;
                         /** @description The site's languages: the box's own first, then its visible translations */
                         languages: string[];
+                        /** @description Palee's address for reporting content on the site (ADR-397, DSA Art. 16) */
+                        report_contact: string | null;
                         /** SiteReviews */
                         reviews: {
                             /**

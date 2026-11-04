@@ -29,6 +29,30 @@ defmodule Palee.Nutrition do
   def for_member(plan),
     do: plan |> Map.delete(:daily_calories) |> Map.put(:portions, PortionPolicy.effective(plan))
 
+  # ADR-376: barcode foods.
+  alias Palee.Nutrition.Domain.{
+    Barcode,
+    FoodCachePolicy,
+    FoodLabel,
+    FoodProduct,
+    NutrientDisclosure,
+    PortionHint
+  }
+
+  defdelegate parse_barcode(raw), to: Barcode, as: :parse
+  defdelegate food_cache_decision(row, now), to: FoodCachePolicy, as: :decide
+  defdelegate food_after_lookup(outcome, row, now), to: FoodCachePolicy, as: :after_lookup
+
+  defdelegate food_attribution(source, barcode, stored \\ nil),
+    to: FoodCachePolicy,
+    as: :attribution
+
+  defdelegate portion_hint(nutrients, categories), to: PortionHint, as: :hint
+  defdelegate cast_food_nutrients(nutrients), to: FoodProduct, as: :cast_nutrients
+  defdelegate food_label_prefill(reading), to: FoodLabel, as: :prefill
+  defdelegate macros_visible?(plans, hide_macros?), to: NutrientDisclosure
+  defdelegate visible_nutrients(nutrients, visible?), to: NutrientDisclosure
+
   # Tenant data lifecycle (ADR-117).
   def tenant_data_policy, do: Palee.Nutrition.Domain.TenantDataPolicy.policy()
 

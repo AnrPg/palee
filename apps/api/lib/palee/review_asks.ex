@@ -10,6 +10,7 @@ defmodule Palee.ReviewAsks do
     BoxReviewPolicy,
     GooglePlacePolicy,
     ReviewAskPolicy,
+    ReviewReportPolicy,
     TenantDataPolicy
   }
 
@@ -88,8 +89,11 @@ defmodule Palee.ReviewAsks do
 
   @doc "Writes or edits the person's own review (string-key params)."
   def save_review(context, user_id, params, locale, now) do
-    with {:ok, review} <- BoxReviewPolicy.review(params) do
-      edited = if ReviewAskStore.get_review(context, user_id), do: now, else: nil
+    current = ReviewAskStore.get_review(context, user_id)
+
+    with :ok <- ReviewReportPolicy.editable(current),
+         {:ok, review} <- BoxReviewPolicy.review(params) do
+      edited = if current, do: now, else: nil
 
       attrs =
         review
@@ -105,12 +109,107 @@ defmodule Palee.ReviewAsks do
 
   @doc "The box replies to a review (or edits its reply); it can never delete one."
   def reply_review(context, id, params, staff_id, now) do
-    with {:ok, body} <- BoxReviewPolicy.reply(params) do
+    with %{} = review <-
+           ReviewAskStore.get_review_by_id(context, id) || {:error, :box_review_not_found},
+         :ok <- ReviewReportPolicy.editable(review),
+         {:ok, body} <- BoxReviewPolicy.reply(params) do
       ReviewAskStore.reply_review(context, id, %{
         reply_body: body,
         replied_at: now,
         replied_by_id: staff_id
       })
+    end
+  end
+
+  # ── Reports and the Palee team's decisions (ADR-397) ────────────────────
+
+  defdelegate report_reasons(), to: ReviewReportPolicy, as: :reasons
+  defdelegate report_statuses(), to: ReviewReportPolicy, as: :statuses
+  defdelegate removed_text_before(now), to: ReviewReportPolicy
+  defdelegate purge_removed_texts(before), to: ReviewAskStore
+  defdelegate open_report_totals(), to: ReviewAskStore
+
+  @doc """
+  The Palee team's moderation settings (`config :palee, :review_moderation`):
+  `contact_email` (named in every statement of reasons and in the box
+  website's footer), `team_email` and `team_locale` (the daily summary).
+  """
+  def moderation_config, do: Application.get_env(:palee, :review_moderation, [])
+
+  @doc "Where anyone reports content or asks for a decision to be looked at again."
+  def moderation_contact, do: Keyword.get(moderation_config(), :contact_email)
+
+  @doc "The statement of reasons with Palee's moderation contact (DSA Art. 17(3)(f))."
+  def statement_of_reasons(decision),
+    do: ReviewReportPolicy.statement_of_reasons(decision, moderation_contact())
+
+  defdelegate reported_review_ids(context, reporter_id), to: ReviewAskStore
+  defdelegate latest_decision(context, review_id), to: ReviewAskStore
+  defdelegate platform_open_reports(context, limit), to: ReviewAskStore
+  defdelegate platform_decisions(context, limit), to: ReviewAskStore
+  defdelegate platform_review_organization(context, review_id), to: ReviewAskStore
+
+  @doc """
+  Files a report on a review (string-key params) as `role` (`member` or
+  `box`). Nothing changes for anyone until the Palee team decides; a second
+  report by the same person while one is open is `:already_reported`.
+  """
+  def report_review(%{user_id: reporter_id} = context, review_id, role, params, now)
+      when role in ["member", "box"] do
+    with %{} = review <-
+           ReviewAskStore.get_review_by_id(context, review_id) || {:error, :box_review_not_found},
+         :ok <- ReviewReportPolicy.may_report(review, reporter_id),
+         {:ok, report} <- ReviewReportPolicy.report(params),
+         :ok <-
+           ReviewReportPolicy.within_limit(
+             ReviewAskStore.count_reports_since(
+               context,
+               reporter_id,
+               ReviewReportPolicy.limit_since(now)
+             )
+           ) do
+      ReviewAskStore.insert_report(context, %{
+        review_id: review.id,
+        review_author_id: review.user_id,
+        reporter_id: reporter_id,
+        reporter_role: role,
+        reason: report.reason,
+        note: report.note,
+        review_rating: review.rating,
+        review_body: review.body
+      })
+    end
+  end
+
+  @doc """
+  The Palee team decides on a review, in the box's own session: the review
+  changes, a decision row holds the statement of reasons and every open
+  report on the review closes with the outcome.
+  """
+  def decide_review(context, review_id, params, decided_by_id, now) do
+    with {:ok, decision} <- ReviewReportPolicy.decision(params) do
+      ReviewAskStore.decide_review(
+        context,
+        review_id,
+        ReviewReportPolicy.review_changes(decision.outcome, now),
+        Map.merge(decision, %{decided_by_id: decided_by_id, decided_at: now}),
+        ReviewReportPolicy.report_status(decision.outcome)
+      )
+    end
+  end
+
+  @doc """
+  The Palee team shows a hidden review again, with a statement for the
+  author; a removed review cannot come back (its text is gone).
+  """
+  def restore_review(context, review_id, params, decided_by_id, now) do
+    with {:ok, decision} <- ReviewReportPolicy.restore(params) do
+      ReviewAskStore.restore_review(
+        context,
+        review_id,
+        ReviewReportPolicy.review_changes("restore", now),
+        Map.merge(decision, %{decided_by_id: decided_by_id, decided_at: now})
+      )
     end
   end
 

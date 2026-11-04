@@ -12,6 +12,10 @@ defmodule PaleeWeb.Schemas.BoxSite do
 
   @section_keys ~w(hero about schedule events wod packages coaches location reviews faq trial_form contact_form)
   @domain_statuses ~w(pending_dns pending_tls active broken expired)
+  # ADR-398 (`BoxSite.Domain.IngressPolicy`).
+  @certificate_statuses ~w(none pending issuing active failed)
+  @certificate_errors ~w(cluster_refused cluster_unreachable challenge_failed rate_limited
+                         issuer_not_ready issuance_failed)
   @consent_actions ~w(accept_all reject_all custom withdraw)
   @review_actions ~w(opened later dismissed)
 
@@ -144,7 +148,12 @@ defmodule PaleeWeb.Schemas.BoxSite do
       title: "SiteDnsRecord",
       type: :object,
       properties: %{
-        type: %Schema{type: :string, enum: ~w(TXT CNAME A)},
+        type: %Schema{
+          type: :string,
+          enum: ~w(TXT CNAME ALIAS),
+          description:
+            "ALIAS: an apex host's CNAME flattening / ALIAS / ANAME to the value (ADR-398)"
+        },
         name: %Schema{type: :string},
         value: %Schema{type: :string}
       },
@@ -170,10 +179,23 @@ defmodule PaleeWeb.Schemas.BoxSite do
         next_check_at: @time,
         verified_at: @time,
         active_at: @time,
+        certificate_status: %Schema{
+          type: :string,
+          enum: @certificate_statuses,
+          description:
+            "ADR-398: the host's certificate (none until DNS is proven, then pending, issuing, active or failed)"
+        },
+        certificate_error: %Schema{
+          type: :string,
+          nullable: true,
+          enum: @certificate_errors ++ [nil]
+        },
         dns_records: %Schema{type: :array, items: dns_record()}
       },
       required: [
         :active_at,
+        :certificate_error,
+        :certificate_status,
         :checked_at,
         :dns_records,
         :host,
@@ -468,6 +490,11 @@ defmodule PaleeWeb.Schemas.BoxSite do
           required: [:contact, :kinds, :trial]
         },
         reviews: BoxReviews.site_reviews(),
+        report_contact: %Schema{
+          type: :string,
+          nullable: true,
+          description: "Palee's address for reporting content on the site (ADR-397, DSA Art. 16)"
+        },
         language: %Schema{type: :string, description: "The box's language (ADR-388)"},
         languages: %Schema{
           type: :array,
@@ -539,6 +566,7 @@ defmodule PaleeWeb.Schemas.BoxSite do
         :forms,
         :language,
         :languages,
+        :report_contact,
         :reviews,
         :sections,
         :slug,

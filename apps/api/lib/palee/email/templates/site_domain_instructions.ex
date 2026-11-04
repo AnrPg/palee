@@ -78,6 +78,10 @@ defmodule Palee.Email.Templates.SiteDomainInstructions do
 
   defp records_text(records), do: Enum.map_join(records, "\n", &record_line/1)
 
+  # An apex cannot have a CNAME; providers call the same thing differently.
+  defp record_line(%{type: "ALIAS", name: name, value: value}),
+    do: "CNAME flattening / ALIAS / ANAME  #{name}  →  #{value}"
+
   defp record_line(%{type: type, name: name, value: value}), do: "#{type}  #{name}  →  #{value}"
 
   defp s(locale, message, bindings \\ %{}),

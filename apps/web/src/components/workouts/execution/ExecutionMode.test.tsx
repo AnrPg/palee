@@ -43,6 +43,9 @@ vi.mock("@/components/wellbeing/InjuryWarnings", () => ({
 
 // The goals strip reads through React Query; its own tests cover it.
 vi.mock("@/components/wod-goals/WodGoalsStrip", () => ({ WodGoalsStrip: () => null }));
+vi.mock("@/components/body-devices/PastSelfLane", () => ({ PastSelfLane: () => null }));
+vi.mock("@/components/body-devices/PastSelfResult", () => ({ PastSelfResultCard: () => null }));
+vi.mock("@/components/body-devices/WatchOfferPrompt", () => ({ WatchOfferPrompt: () => null }));
 
 vi.mock("@/api/executions", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/api/executions")>()),

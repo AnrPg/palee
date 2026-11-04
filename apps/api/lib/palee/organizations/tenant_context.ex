@@ -21,7 +21,10 @@ defmodule Palee.Organizations.TenantContext do
     coach_scope: :own,
     # ADR-186: the branches this person works at as staff, or :all.
     location_scope: :all,
-    request_metadata: %{}
+    request_metadata: %{},
+    # ADR-301/378: who acts. nil is the signed-in person; an API key (and,
+    # in v4, an agent) acts for `on_behalf_of` within its `scopes`.
+    principal: nil
   ]
 
   @type t :: %__MODULE__{
@@ -36,6 +39,7 @@ defmodule Palee.Organizations.TenantContext do
           capabilities: %{atom() => :all | :own | :status},
           coach_scope: :own | :all,
           location_scope: :all | [Ecto.UUID.t()],
-          request_metadata: map()
+          request_metadata: map(),
+          principal: nil | map()
         }
 end

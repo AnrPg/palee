@@ -2,7 +2,8 @@ defmodule Palee.Workers.BoxSiteJob do
   @moduledoc """
   ADR-352/353: the website's background work. With an `organization_id` it
   serves that box (right after a form); without one (cron, every 5 minutes)
-  it serves every box with due domain checks, outbox rows or retention.
+  it serves every box with due domain checks, outbox rows (forms and
+  ADR-398 cluster calls) or retention.
   """
 
   use Oban.Worker,
@@ -12,7 +13,7 @@ defmodule Palee.Workers.BoxSiteJob do
 
   require Logger
 
-  alias Palee.Application.BoxSite.{SiteDomainChecks, SiteOutbox}
+  alias Palee.Application.BoxSite.{SiteDomainChecks, SiteIngresses, SiteOutbox}
   alias Palee.BoxSite
 
   @impl Oban.Worker
@@ -30,6 +31,8 @@ defmodule Palee.Workers.BoxSiteJob do
   defp serve(organization_id, now) do
     context = %{organization_id: organization_id}
     SiteDomainChecks.run_due(context, now)
+    # ADR-398: the cluster calls (Ingress apply/delete) with their retries.
+    SiteIngresses.run(context, now)
     SiteOutbox.run(context, now)
     :ok
   rescue

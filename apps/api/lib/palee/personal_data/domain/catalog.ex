@@ -88,6 +88,10 @@ defmodule Palee.PersonalData.Domain.Catalog do
       account("profile", "buddy_settings", @me),
       account("profile", "media_account_objects", @me),
       account("profile", "notifications", @me),
+      # ADR-380: the yes or no to each box's marketing email, and the list
+      # the box's email list was told.
+      tenant("profile", "integration_marketing_consents", @me),
+      tenant("profile", "audience_members", @me, drop: ~w(email_hash)),
 
       # -- bookings and visits ---------------------------------------------------
       tenant("bookings", "bookings", @me, drop: ~w(timeout_job_id)),
@@ -97,6 +101,8 @@ defmodule Palee.PersonalData.Domain.Catalog do
       tenant("bookings", "season_enrollments", @me),
       tenant("bookings", "scheduling_trial_requests", @me),
       tenant("bookings", "community_event_attendees", @me),
+      # ADR-381: the doors the person opened or was refused at.
+      tenant("bookings", "access_events", @me, drop: ~w(actor_id)),
 
       # -- training and journal --------------------------------------------------
       account("training", "journal_notes", @me),
@@ -108,6 +114,12 @@ defmodule Palee.PersonalData.Domain.Catalog do
       account("training", "user_achievements", @me),
       account("training", "user_stats", @me),
       account("training", "training_goals", @me),
+      # ADR-374/375: split marks and a watch's heart rate of each workout.
+      account("training", "execution_splits", @me),
+      account("training", "execution_heart_rate_batches", @me),
+      # ADR-377: belts and levels the box awarded.
+      tenant("training", "rank_awards", @me),
+      tenant("training", "rank_skill_checks", @me),
       account("training", "injury_reports", @me),
       tenant("training", "nutrition_plans", @me),
       # ADR-356: the leaderboard opt-in with its division and birth year.
@@ -132,11 +144,17 @@ defmodule Palee.PersonalData.Domain.Catalog do
       account("wellness", "user_health_consents", @me),
       account("wellness", "wellness_summary_grants", @me),
       account("wellness", "daily_stats", @me),
+      # ADR-376: the person's own foods.
+      account("wellness", "custom_foods", @me),
 
       # -- devices ---------------------------------------------------------------
       account("devices", "device_connections", @me, drop: ~w(provider_user_id)),
       account("devices", "device_activities", @me),
       account("devices", "device_imports", @me),
+      # ADR-375: paired watches.
+      account("devices", "watch_links", @me),
+      # ADR-375 amendment: whether the watch was offered for each workout.
+      account("devices", "watch_offers", @me),
       account("devices", "native_push_tokens", @me),
       account("devices", "push_subscriptions", @me, drop: ~w(endpoint)),
 
@@ -193,6 +211,13 @@ defmodule Palee.PersonalData.Domain.Catalog do
       # ADR-386: the person's in-app reviews of a box, with the box's reply
       # (not who on staff wrote it).
       tenant("community", "box_reviews", @me, drop: ~w(replied_by_id)),
+      # ADR-397: the reviews the person reported (not whose review, nor its
+      # text), and the Palee team's decisions on their own reviews with the
+      # statement of reasons (not who decided).
+      tenant("community", "box_review_reports", {:eq, "reporter_id"},
+        drop: ~w(review_author_id review_rating review_body decision_id)
+      ),
+      tenant("community", "box_review_decisions", {:eq, "review_author_id"}),
       # ADR-280 verification: the outcome and the person's own request; the
       # phone and selfie never leave, nor who else is named.
       account("community", "partner_verifications", @me, drop: ~w(source_organization_id)),
@@ -215,12 +240,18 @@ defmodule Palee.PersonalData.Domain.Catalog do
       tenant("payments", "finance_refund_receipts", @me),
       # ADR-291: packages the person asked to pay for at the desk.
       tenant("payments", "finance_package_requests", @me),
+      # ADR-450: the contact a box keeps while a deleted profile still owes it.
+      tenant("payments", "finance_debtor_contacts", @me),
       tenant("payments", "payment_intents", @me,
         drop: ~w(redirect_url return_url provider_ref claimed_at)
       ),
       tenant("payments", "payment_methods", @me),
       tenant("payments", "shop_orders", @me),
       tenant("payments", "perk_claims", @me),
+      # ADR-371: programmes bought, the WODs they scheduled and their reviews.
+      tenant("payments", "programme_purchases", @me),
+      tenant("training", "programme_deliveries", @me),
+      tenant("training", "programme_reviews", @me),
       tenant("payments", "wallet_passes", @me, drop: ~w(serial)),
       # ADR-341: a coach's own pay rules and statements (the sources of
       # commission lines are other people's payments: left out).
@@ -248,7 +279,11 @@ defmodule Palee.PersonalData.Domain.Catalog do
       # -- documents signed, and health certificates -----------------------------
       tenant("signatures", "document_signatures", @me, drop: ~w(evidence_object_key)),
       tenant("signatures", "document_signature_requests", @me),
-      tenant("signatures", "health_certificates", @me, drop: ~w(file_key))
+      tenant("signatures", "health_certificates", @me, drop: ~w(file_key)),
+      # ADR-377 addendum: a coach's diploma signature and its trail (the
+      # images themselves go in the archive's `files/`).
+      account("signatures", "diploma_signatures", @me, drop: ~w(object_key)),
+      account("signatures", "diploma_signature_events", @me)
     ]
   end
 

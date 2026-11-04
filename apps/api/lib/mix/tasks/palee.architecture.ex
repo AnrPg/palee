@@ -128,6 +128,7 @@ defmodule Mix.Tasks.Palee.Architecture do
     fiscal/till_signature_store
     payments/payment_store
     channels/channel_store
+    programmes/programme_store
     finance/package_request_store
     leads/lead_store
     automations/automation_store
@@ -138,6 +139,8 @@ defmodule Mix.Tasks.Palee.Architecture do
     coach_pay/coach_pay_store
     box_screens/box_screen_store
     documents/document_store
+    integrations/integration_store
+    access/access_store
     setup/recipe_application_store
     imports/import_store
     personal_data/export_store
@@ -147,6 +150,10 @@ defmodule Mix.Tasks.Palee.Architecture do
     review_asks/review_ask_store
 
     box_data/export_store
+    execution/split_store
+    devices/watch_store
+    nutrition/food_store
+    ranks/rank_store
   )
 
   defp tenant_scope_violations do

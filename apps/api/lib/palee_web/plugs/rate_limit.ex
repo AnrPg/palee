@@ -20,7 +20,10 @@ defmodule PaleeWeb.Plugs.RateLimit do
     max = Keyword.fetch!(opts, :max)
     interval = Keyword.fetch!(opts, :interval)
     bucket = Keyword.get(opts, :bucket, conn.request_path)
-    key = "#{conn.method}:#{bucket}:#{actor_identifier(conn)}:#{client_identifier(conn)}"
+    # ADR-378: an API key's budget is the key's, from wherever it calls
+    # (Zapier and Make call from many addresses).
+    client = if Keyword.get(opts, :per_actor, false), do: "any", else: client_identifier(conn)
+    key = "#{conn.method}:#{bucket}:#{actor_identifier(conn)}:#{client}"
 
     case RateLimiter.check_rate(key, interval, max) do
       {:ok, _count} ->

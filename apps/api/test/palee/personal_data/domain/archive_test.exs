@@ -34,6 +34,24 @@ defmodule Palee.PersonalData.Domain.ArchiveTest do
              Enum.find(manifest["files"], &(&1["section"] == "bookings"))
   end
 
+  test "the person's stored files go under files/ and are listed in the manifest" do
+    {:ok, %{zip: zip}} =
+      Archive.build(%{
+        profile_id: "p1",
+        generated_at: @at,
+        sections: %{},
+        files: [{"diploma-signature/s1.png", <<137, 80, 78, 71>>}]
+      })
+
+    {:ok, files} = :zip.unzip(zip, [:memory])
+    files = Map.new(files, fn {name, body} -> {to_string(name), body} end)
+    assert files["files/diploma-signature/s1.png"] == <<137, 80, 78, 71>>
+
+    assert %{"file" => "files/diploma-signature/s1.png", "bytes" => 4} in Jason.decode!(
+             files["manifest.json"]
+           )["files"]
+  end
+
   test "the file is named after its day" do
     assert Archive.file_name(@at) == "palee-my-data-2027-03-10.zip"
   end

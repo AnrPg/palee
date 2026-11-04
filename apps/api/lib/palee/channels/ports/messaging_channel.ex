@@ -2,14 +2,16 @@ defmodule Palee.Channels.Ports.MessagingChannel do
   @moduledoc """
   A messaging provider that sends SMS, Viber or WhatsApp messages and
   reports their delivery (ADR-348 §3). One adapter per provider:
-  `Sandbox` (no network; dev, tests and demo boxes) and `Brevo` (SMS; the
-  product owner's choice of 2026-10-31). Viber and WhatsApp stay in the
+  `Sandbox` (no network; dev, tests and demo boxes), `Brevo` (SMS; the
+  product owner's choice of 2026-10-31, Palee's account or the box's own)
+  and, for a box's own account only (ADR-396), `Twilio`, `Vonage`,
+  `Infobip`, `Yuboto` and `Apifon` (SMS). Viber and WhatsApp stay in the
   port for adapters to come (ADR-348 §3 lists the candidates).
   The adapter of each provider comes from `config :palee,
   :channel_providers`.
 
   `account` holds the decrypted credentials (`account_id`, `secret`,
-  `base_url`) and the senders (`sms_sender`, `viber_sender`,
+  `webhook_secret`, `base_url`) and the senders (`sms_sender`, `viber_sender`,
   `whatsapp_sender`): the box's own, or the Palee-managed account's.
   Adapters never log them.
 
@@ -27,6 +29,7 @@ defmodule Palee.Channels.Ports.MessagingChannel do
           required(:provider) => String.t(),
           optional(:account_id) => String.t() | nil,
           optional(:secret) => String.t() | nil,
+          optional(:webhook_secret) => String.t() | nil,
           optional(:base_url) => String.t() | nil,
           optional(:sms_sender) => String.t() | nil,
           optional(:viber_sender) => String.t() | nil,

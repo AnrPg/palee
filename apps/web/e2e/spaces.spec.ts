@@ -68,7 +68,14 @@ async function signIn(page: Page, role: string, capabilities: Record<string, str
   await page.route("**/api/memberships", (route) => route.fulfill(json([membership])));
   await page.route("**/api/notifications?**", (route) => route.fulfill(json({ notifications: [] })));
   await page.route("**/api/org/box1/admin/locations", (route) =>
-    route.fulfill(json({ locations: [{ id: "loc-1", name: "Kifisia", address: null, archived_at: null }] })),
+    route.fulfill(
+      json({
+        locations: [
+          { id: "loc-1", name: "Kifisia", address: null, archived_at: null },
+          { id: "loc-2", name: "Marousi", address: null, archived_at: null },
+        ],
+      }),
+    ),
   );
 }
 
@@ -107,6 +114,27 @@ test.describe("Settings › Spaces", () => {
 
     await expect.poll(() => created?.name).toBe("Rig");
     expect(created).toMatchObject({ location_id: "loc-1", floor_plan_id: null });
+  });
+
+  test("a box with one branch and no floor plan sees no branch or plan controls (ADR-470)", async ({ page }) => {
+    await signIn(page, "owner", MANAGER);
+    await page.route("**/api/org/box1/admin/locations", (route) =>
+      route.fulfill(json({ locations: [{ id: "loc-1", name: "Kifisia", address: null, archived_at: null }] })),
+    );
+    await page.route("**/api/org/box1/staff/spaces", (route) => route.fulfill(json({ spaces: [mainFloor], floor_plans: [] })));
+
+    await page.goto("/admin/spaces");
+    await expect(page.getByTestId("space-space-gym")).toContainText("Main floor");
+    await expect(page.getByTestId("spaces-branch-filter")).toHaveCount(0);
+    await expect(page.getByText("Branch", { exact: true })).toHaveCount(0);
+    await expect(page.getByTestId("plans-in-classes")).toHaveCount(0);
+
+    // Adding a space offers to upload a floor plan instead of an empty plan picker.
+    await page.getByTestId("space-add").click();
+    const dialog = page.getByRole("dialog", { name: "Add space" });
+    await expect(dialog.getByTestId("space-branch")).toHaveCount(0);
+    await expect(dialog.getByTestId("space-form-no-plan")).toBeVisible();
+    await expect(dialog.getByTestId("plan-upload-gym")).toBeVisible();
   });
 
   test("makes a space unavailable from–to with a reason and lists the classes there", async ({ page }) => {

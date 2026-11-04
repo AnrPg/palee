@@ -95,6 +95,8 @@ export function PlatformOrganizationsPage() {
   const tStatus = useTranslations("PlatformStatus");
   const tBusiness = useTranslations("Business");
   const tPartners = useTranslations("PlatformPartners");
+  const tReviewReports = useTranslations("PlatformReviewReports");
+  const tFoodMisses = useTranslations("PlatformFoodMisses");
   const { tokens } = useSession();
   const [form, setForm] = useState(defaultForm);
   const [submitting, setSubmitting] = useState(false);
@@ -336,6 +338,18 @@ export function PlatformOrganizationsPage() {
             className="border border-[var(--border)] px-4 py-3 text-sm font-semibold text-[var(--text-soft)]"
           >
             {tPartners("reports.title")}
+          </Link>
+          <Link
+            href="/platform/review-reports"
+            className="border border-[var(--border)] px-4 py-3 text-sm font-semibold text-[var(--text-soft)]"
+          >
+            {tReviewReports("title")}
+          </Link>
+          <Link
+            href="/platform/food-misses"
+            className="border border-[var(--border)] px-4 py-3 text-sm font-semibold text-[var(--text-soft)]"
+          >
+            {tFoodMisses("title")}
           </Link>
           <button
             type="button"

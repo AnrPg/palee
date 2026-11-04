@@ -12,6 +12,7 @@ import { fetchTrainingLogSources } from "@/api/training-log";
 import { useWorkoutLauncher } from "@/components/client/use-workout-launcher";
 import { useClientEntitlement } from "@/components/client/use-client-entitlement";
 import { HubCard } from "@/components/member-app/HubParts";
+import { MyProgrammesCard } from "@/components/programmes/MyProgrammes";
 import { NextBookingActions } from "@/components/member-app/box/NextBookingActions";
 import {
   buildTodayTraining,
@@ -249,6 +250,9 @@ export function BoxToday({
           )}
         </HubCard>
       ) : null}
+
+      {/* ADR-371 (mockup W8 s6 A): where the member is in each programme they bought. */}
+      <MyProgrammesCard />
 
       {nextSession ?? (booking ? (
         <HubCard eyebrow={t("nextSession")}>

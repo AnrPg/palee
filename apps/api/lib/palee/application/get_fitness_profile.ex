@@ -20,12 +20,14 @@ defmodule Palee.Application.GetFitnessProfile do
   """
 
   alias Palee.{Pantheon, Wellbeing}
+  alias Palee.Analytics.Domain.ProgressFilter
   alias Palee.Application.TrainingDepth
   alias Palee.Pantheon.Domain.{FitnessBenchmarks, FitnessProfile}
   alias Palee.Pantheon.FitnessSettingsStore
 
   @divisions ~w(women men)
-  @periods %{"4w" => 28, "12w" => 84, "6m" => 182, "1y" => 365}
+  # The same periods as Πρόοδος's filter, so the change covers the page's period.
+  @periods ~w(4w 12w 6m 1y)
 
   def call(context, params, today \\ Date.utc_today())
 
@@ -64,8 +66,16 @@ defmodule Palee.Application.GetFitnessProfile do
             profile
 
           %Date{} = from ->
+            # The profile as it stood on the period's first day: the PRs of
+            # then, aged from then (a PR that went stale later still counts
+            # in full) and the age band the person was in then.
             previous =
-              Pantheon.fitness_profile(%{input | prs: FitnessProfile.as_of(prs, history, from)})
+              Pantheon.fitness_profile(%{
+                input
+                | prs: FitnessProfile.as_of(prs, history, from),
+                  today: from,
+                  age: age(settings.birth_year, from)
+              })
 
             FitnessProfile.with_change(profile, previous)
         end
@@ -112,12 +122,10 @@ defmodule Palee.Application.GetFitnessProfile do
   defp since("", _today), do: {:ok, nil}
   defp since("all", _today), do: {:ok, nil}
 
-  defp since(period, today) do
-    case Map.fetch(@periods, period) do
-      {:ok, days} -> {:ok, Date.add(today, -days)}
-      :error -> {:error, {:invalid_leaderboard_filter, :period}}
-    end
-  end
+  defp since(period, today) when period in @periods,
+    do: {:ok, ProgressFilter.since(%ProgressFilter{range: period}, today)}
+
+  defp since(_period, _today), do: {:error, {:invalid_leaderboard_filter, :period}}
 
   defp param(params, key), do: Map.get(params, key, Map.get(params, Atom.to_string(key)))
 end

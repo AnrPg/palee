@@ -824,6 +824,45 @@ msgstr "تغيّر «%{title}» بعد أن أدّيته. شاهده كما كا
 msgid "A WOD you did changed. See it as it was in your Journal."
 msgstr "تغيّر WOD أدّيته. شاهده كما كان في يومياتك."
 
+msgid "Your report was decided"
+msgstr "تم البت في بلاغك"
+
+msgid "The Palee team hid the review you reported."
+msgstr "أخفى فريق Palee المراجعة التي أبلغت عنها."
+
+msgid "The Palee team removed the review you reported."
+msgstr "أزال فريق Palee المراجعة التي أبلغت عنها."
+
+msgid "The Palee team checked the review you reported and kept it."
+msgstr "راجع فريق Palee المراجعة التي أبلغت عنها وأبقاها."
+
+msgid "The Palee team removed your review"
+msgstr "أزال فريق Palee مراجعتك"
+
+msgid "The Palee team hid your review"
+msgstr "أخفى فريق Palee مراجعتك"
+
+msgid "See why and what you can do."
+msgstr "اعرف السبب وما يمكنك فعله."
+
+msgid "The Palee team restored your review"
+msgstr "أعاد فريق Palee مراجعتك"
+
+msgid "Your review shows again in the box's reviews."
+msgstr "تظهر مراجعتك مجددًا ضمن مراجعات الصالة."
+
+msgid "A webhook was turned off"
+msgstr "تم إيقاف webhook"
+
+msgid "Palee stopped sending events to %{host}. Open the webhook to check it and turn it back on."
+msgstr "توقف Palee عن إرسال الأحداث إلى %{host}. افتح الـ webhook لفحصه وإعادة تشغيله."
+
+msgid "New skills"
+msgstr "مهارات جديدة"
+
+msgid "Your coach ticked new skills for %{rank}."
+msgstr "أشّر مدربك على مهارات جديدة لـ %{rank}."
+
 msgid "Your subscription ends today"
 msgstr "ينتهي اشتراكك اليوم"
 

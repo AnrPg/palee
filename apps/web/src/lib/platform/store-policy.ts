@@ -14,6 +14,8 @@ export type Sellable =
   | { kind: "event_ticket" }
   | { kind: "shop_order" }
   | { kind: "invoice" }
+  // ADR-371: a training programme is digital-only (WODs in the app).
+  | { kind: "programme" }
   | { kind: "palee_plan" };
 
 function on(fields: PackageFields, key: string) {
@@ -45,6 +47,7 @@ export function canBuyHere(item: Sellable, platform: NativePlatform | null): boo
   if (!platform) return true;
   switch (item.kind) {
     case "palee_plan":
+    case "programme":
       return false;
     case "subscription_package":
       return hasPhysicalService(item.fields);

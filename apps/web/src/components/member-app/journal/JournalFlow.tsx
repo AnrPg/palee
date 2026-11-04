@@ -27,6 +27,7 @@ import { formatElapsed, type HistoryEntry } from "@/components/client/vault";
 import { CommentList } from "@/components/journal/CommentList";
 import { NoteSheet } from "@/components/journal/NoteSheet";
 import { WodAsPerformed } from "@/components/journal/WodAsPerformed";
+import { PastSelfJournalLine } from "@/components/body-devices/PastSelfResult";
 import { VisibilityBadge } from "@/components/journal/VisibilityBadge";
 import { executionHistoryEntry, journalFlow, withAudience, withVisibility } from "@/components/member-app/journal/journal-flow";
 import { JournalFilters } from "@/components/member-app/journal/JournalFilters";
@@ -240,7 +241,10 @@ export function JournalFlow() {
                               ) : null}
                               <FeltLine felt={item.entry.felt} />
                               {item.entry.master_workout_id ? (
-                                <WodAsPerformed organizationId={item.organization_id} kind="execution" id={item.entry.id} />
+                                <>
+                                  <PastSelfJournalLine executionId={item.entry.id} />
+                                  <WodAsPerformed organizationId={item.organization_id} kind="execution" id={item.entry.id} />
+                                </>
                               ) : null}
                             </>
                           }

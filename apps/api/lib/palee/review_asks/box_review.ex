@@ -16,6 +16,9 @@ defmodule Palee.ReviewAsks.BoxReview do
     field :reply_body, :string
     field :replied_at, :utc_datetime_usec
     field :replied_by_id, :binary_id
+    # ADR-397: what the Palee team decided (`hidden` | `removed`), never the box.
+    field :moderation, :string
+    field :moderated_at, :utc_datetime_usec
 
     timestamps(type: :utc_datetime_usec)
   end
@@ -25,6 +28,7 @@ defmodule Palee.ReviewAsks.BoxReview do
     |> cast(attrs, ~w(user_id rating body locale edited_at reply_body replied_at replied_by_id)a)
     |> validate_required([:user_id, :rating])
     |> check_constraint(:rating, name: :box_reviews_check)
+    |> check_constraint(:moderation, name: :box_reviews_moderation_check)
     |> unique_constraint([:organization_id, :user_id],
       name: :box_reviews_organization_id_user_id_index
     )

@@ -13,13 +13,17 @@ import { StatusText } from "@/components/staff/staff-ui";
 import { localizeError } from "@/i18n/presentation";
 import { useUiTranslations } from "@/i18n/ui";
 
-import { GoogleReviews, ReviewItem, ReviewSummary } from "./ReviewParts";
+import { GoogleReviews, ModerationNotice, ReviewItem, ReviewSummary } from "./ReviewParts";
+import { ReviewReportSheet } from "./ReviewReportSheet";
 import { ReviewSheet } from "./ReviewSheet";
 
 /**
  * «Κριτικές» in Box (ADR-386): the members' reviews with the box's replies,
  * «Η κριτική μου» to write, edit or delete, and Google's rating apart.
- * Only people who checked in may write, one review each.
+ * Only people who checked in may write, one review each. Every other review
+ * has «Αναφορά» in its ⋯ (ADR-397); the Palee team decides, and when it hid
+ * or removed «Η κριτική μου» the statement of reasons shows under it, with
+ * editing closed and «Διαγραφή» still open.
  */
 export function BoxReviewsSection({ membership }: BoxExtensionProps) {
   const t = useTranslations("BoxReviews");
@@ -30,6 +34,7 @@ export function BoxReviewsSection({ membership }: BoxExtensionProps) {
   const reviews = useQuery({ queryKey: [...MY_BOX_REVIEWS_KEY, membership.organization.id], enabled: Boolean(token), queryFn: () => fetchMyBoxReviews(token) });
   const [writing, setWriting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [reporting, setReporting] = useState<string | null>(null);
   const remove = useMutation({
     mutationFn: () => deleteMyBoxReview(token),
     onSuccess: () => {
@@ -42,6 +47,8 @@ export function BoxReviewsSection({ membership }: BoxExtensionProps) {
   if (data.count === 0 && !data.can_review && !data.google) return null;
   const box = membership.organization.name;
   const others = data.reviews.filter((review) => review.id !== data.mine?.id);
+  const reported = new Set(Array.isArray(data.reported_ids) ? data.reported_ids : []);
+  const moderation = data.mine?.moderation ?? null;
 
   return (
     <section className="flex flex-col gap-3 rounded-3xl p-5" style={{ background: "var(--panel)", border: "1px solid var(--border)" }} data-testid="box-reviews">
@@ -61,7 +68,7 @@ export function BoxReviewsSection({ membership }: BoxExtensionProps) {
             <MoreMenu
               label={t("mineMenu")}
               items={[
-                { label: t("edit"), onSelect: () => setWriting(true), testId: "box-reviews-edit" },
+                ...(moderation ? [] : [{ label: t("edit"), onSelect: () => setWriting(true), testId: "box-reviews-edit" }]),
                 { label: t("delete"), tone: "danger", onSelect: () => setConfirmDelete(true), testId: "box-reviews-delete" },
               ]}
             />
@@ -69,17 +76,30 @@ export function BoxReviewsSection({ membership }: BoxExtensionProps) {
           <ul>
             <ReviewItem review={data.mine} boxName={box} />
           </ul>
+          {moderation?.status === "removed" ? <p className="text-xs" style={{ color: "var(--dim)" }}>{t("moderation.removedText")}</p> : null}
+          {moderation ? <ModerationNotice moderation={moderation} /> : null}
         </div>
       ) : null}
       {others.length > 0 ? (
         <ul className="flex flex-col gap-3">
           {others.map((review) => (
-            <ReviewItem key={review.id} review={review} boxName={box} />
+            <ReviewItem
+              key={review.id}
+              review={review}
+              boxName={box}
+              reported={reported.has(review.id)}
+              menu={
+                reported.has(review.id) ? null : (
+                  <MoreMenu label={t("report.reviewMenu")} items={[{ label: t("report.menu"), onSelect: () => setReporting(review.id), testId: "box-review-report" }]} />
+                )
+              }
+            />
           ))}
         </ul>
       ) : null}
       {data.google ? <GoogleReviews google={data.google} /> : null}
       {remove.error ? <StatusText tone="error">{localizeError(remove.error, ui)}</StatusText> : null}
+      {reporting ? <ReviewReportSheet token={token} reviewId={reporting} onClose={() => setReporting(null)} /> : null}
       {writing ? <ReviewSheet token={token} boxName={box} mine={data.mine ?? null} onClose={() => setWriting(false)} /> : null}
       {confirmDelete ? (
         <Dialog

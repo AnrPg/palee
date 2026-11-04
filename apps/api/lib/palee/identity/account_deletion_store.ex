@@ -19,6 +19,8 @@ defmodule Palee.Identity.AccountDeletionStore do
   @impl true
   def has_retained_records?(user_id), do: impl().has_retained_records?(user_id)
   @impl true
+  def deleting_profile_memberships(user_id), do: impl().deleting_profile_memberships(user_id)
+  @impl true
   def anonymize_profile(user_id), do: impl().anonymize_profile(user_id)
   @impl true
   def delete_login_if_empty(login_id), do: impl().delete_login_if_empty(login_id)

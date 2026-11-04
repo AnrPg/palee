@@ -21,6 +21,7 @@ import {
   updateFinanceMember,
   type FinanceRecord,
 } from "@/api/finance";
+import { useBusinessFeatures } from "@/lib/use-business-features";
 import { useSession } from "@/components/session-provider";
 import { InlineCell } from "@/components/admin/finance/shared/InlineCell";
 import { MemberStatusCell, SubscriptionEndCell, useStatusLabel } from "@/components/admin/finance/shared/MemberStandingCells";
@@ -181,6 +182,12 @@ export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
   const members = membersQuery.data?.members ?? [];
   const referralPrograms = referralProgramsQuery.data?.referral_programs ?? [];
   const packages = packagesQuery.data?.packages ?? [];
+  // ADR-470: referral columns while a programme runs, or while someone still has referral data.
+  const features = useBusinessFeatures();
+  const showReferrals = features.shows(
+    "referrals",
+    members.filter((member) => (member.membership as FinanceRecord | null | undefined)?.referred_by_user_id || ((member.referrals_made_user_ids as string[] | undefined) ?? []).length > 0).length,
+  );
 
   const { sort, cycleSort, filters, setFilter, clearFilters, result: filteredMembers } =
     useSortFilter(members);
@@ -497,6 +504,8 @@ export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
                   onSort={() => cycleSort("notes")}
                   filterSlot={presenceFilter("notes", i18n("hasNotesf0af50f"), i18n("empty3159fe4"))}
                 />
+                {showReferrals ? (
+                <>
                 <SortableHeader
                   column="referred_by"
                   label={i18n("referredByb47f784")}
@@ -513,12 +522,14 @@ export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
                   onSort={() => cycleSort("referrals")}
                   filterSlot={presenceFilter("referrals", i18n("madeReferralsbe27ef7"), i18n("none6eef664"))}
                 />
+                </>
+                ) : null}
               </tr>
             </thead>
             <tbody>
               {filteredMembers.length === 0 ? (
                 <tr>
-                  <td colSpan={11} className="px-6 py-8 text-sm" style={{ color: "var(--dim)" }}>
+                  <td colSpan={showReferrals ? 11 : 9} className="px-6 py-8 text-sm" style={{ color: "var(--dim)" }}>
                     {members.length === 0 ? i18n("noMembersYetea27c45") : i18n("noMembersMatchTheActiveFilters14acbb5")}
                   </td>
                 </tr>
@@ -528,6 +539,7 @@ export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
                     key={field(member, "id")}
                     member={member}
                     last={i === filteredMembers.length - 1}
+                    showReferrals={showReferrals}
                     packages={packages}
                     userOptions={userOptions()}
                     onUserSearch={setUserQuery}
@@ -592,6 +604,7 @@ export function MembersTab({ locationIds }: { locationIds?: string } = {}) {
 function MemberRow({
   member,
   last,
+  showReferrals,
   packages,
   userOptions,
   onUserSearch,
@@ -605,6 +618,8 @@ function MemberRow({
 }: {
   member: FinanceRecord;
   last: boolean;
+  /** ADR-470: the referral columns only while the box runs a referral programme. */
+  showReferrals: boolean;
   packages: FinanceRecord[];
   userOptions: ComboboxOption[];
   onUserSearch: (q: string) => void;
@@ -801,6 +816,8 @@ function MemberRow({
         />
       </td>
 
+      {showReferrals ? (
+      <>
       {/* Referred By */}
       <td className="px-4 py-3" style={{ whiteSpace: "nowrap" }}>
         <Combobox
@@ -839,6 +856,8 @@ function MemberRow({
           </button>
         </div>
       </td>
+      </>
+      ) : null}
     </tr>
   );
 }

@@ -824,6 +824,45 @@ msgstr "„%{title}“ е променен, след като го направ�
 msgid "A WOD you did changed. See it as it was in your Journal."
 msgstr "WOD, който направихте, е променен. Вижте го какъвто беше в Дневника си."
 
+msgid "Your report was decided"
+msgstr "Има решение по твоя сигнал"
+
+msgid "The Palee team hid the review you reported."
+msgstr "Екипът на Palee скри отзива, за който подаде сигнал."
+
+msgid "The Palee team removed the review you reported."
+msgstr "Екипът на Palee премахна отзива, за който подаде сигнал."
+
+msgid "The Palee team checked the review you reported and kept it."
+msgstr "Екипът на Palee провери отзива, за който подаде сигнал, и го запази."
+
+msgid "The Palee team removed your review"
+msgstr "Екипът на Palee премахна твоя отзив"
+
+msgid "The Palee team hid your review"
+msgstr "Екипът на Palee скри твоя отзив"
+
+msgid "See why and what you can do."
+msgstr "Виж защо и какво можеш да направиш."
+
+msgid "The Palee team restored your review"
+msgstr "Екипът на Palee възстанови твоя отзив"
+
+msgid "Your review shows again in the box's reviews."
+msgstr "Отзивът ти отново се вижда сред отзивите за бокса."
+
+msgid "A webhook was turned off"
+msgstr "Уебхук беше изключен"
+
+msgid "Palee stopped sending events to %{host}. Open the webhook to check it and turn it back on."
+msgstr "Palee спря да изпраща събития към %{host}. Отворете уебхука, за да го проверите и включите отново."
+
+msgid "New skills"
+msgstr "Нови умения"
+
+msgid "Your coach ticked new skills for %{rank}."
+msgstr "Треньорът ти отбеляза нови умения за %{rank}."
+
 msgid "Your subscription ends today"
 msgstr "Абонаментът ти изтича днес"
 
