@@ -17613,5 +17613,62 @@
     "inFinance": "בכספים",
     "empty": "עדיין אין בשיווק משהו שאפשר לפתוח.",
     "movedLine": "המבצעים נמצאים עכשיו בשיווק."
+  },
+  "ExerciseNameInput": {
+    "listLabel": "הצעות לתרגילים",
+    "group": {
+      "mine": "כתבת בעבר",
+      "box": "הבוקס שלך",
+      "palee": "Palee"
+    },
+    "keep": "להשאיר את «{text}» כפי שכתבתי",
+    "keepKey": "Esc",
+    "usesMine": "{count, plural, one {פעם אחת} two {פעמיים} other {# פעמים}}",
+    "usesBox": "{count, plural, one {ב-WOD אחד} other {ב-# WOD}}",
+    "category": {
+      "strength": "כוח",
+      "bodyweight": "משקל גוף",
+      "cardio": "סיבולת",
+      "mobility": "ניידות",
+      "skill": "מיומנות"
+    },
+    "textHint": "Enter או Tab כדי להכניס, Esc כדי להמשיך לכתוב"
+  },
+  "PlatformExerciseCandidates": {
+    "title": "תרגילים לבדיקה",
+    "subtitle": "שמות תרגילים שחברים ובוקסים הקלידו ושאינם תואמים אף תרגיל בקטלוג של עורכי ה-WOD, השכיחים קודם. אשר שם כתרגיל חדש או כשם נוסף לתרגיל קיים, או דחה אותו; רק שמות מאושרים מוצעים כתרגילי Palee. כל החלטה נרשמת. הרשימה אינה מכילה אף אדם.",
+    "back": "עסקים",
+    "status": "סטטוס",
+    "statuses": {
+      "pending": "ממתינים",
+      "approved": "אושרו",
+      "rejected": "נדחו"
+    },
+    "minOwners": "הוקלד על ידי לפחות",
+    "minOwnersValue": "{count, plural, one {אדם או בוקס אחד} other {# אנשים או בוקסים}}",
+    "privacyNote": "שם שרק אדם אחד הקליד עשוי להיות אישי; הוא מוסתר אלא אם תוריד את הסף.",
+    "forbidden": "רק צוות Palee רואה את הרשימה הזו.",
+    "loadError": "הרשימה לא נטענה.",
+    "loading": "טוען…",
+    "empty": "אין מה לבדוק.",
+    "counts": "{owners, plural, one {אדם או בוקס אחד} other {# אנשים או בוקסים}} · {uses, plural, one {שימוש אחד} other {# שימושים}}",
+    "lastSeen": "לאחרונה {date}",
+    "asEntry": "כתרגיל חדש",
+    "label": "שם",
+    "category": "קטגוריה",
+    "categories": {
+      "strength": "כוח",
+      "bodyweight": "משקל גוף",
+      "cardio": "סיבולת",
+      "mobility": "ניידות",
+      "skill": "מיומנות"
+    },
+    "approveEntry": "הוסף לקטלוג",
+    "asAlias": "כשם נוסף של",
+    "aliasOf": "תרגיל מהקטלוג",
+    "approveAlias": "הוסף כשם נוסף",
+    "reject": "דחה",
+    "conflict": "על השם הזה כבר הוחלט, או שהוא כבר בקטלוג.",
+    "decideError": "ההחלטה לא נשמרה. נסה שוב."
   }
 }

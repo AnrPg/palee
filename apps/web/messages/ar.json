@@ -17613,5 +17613,62 @@
     "inFinance": "في التمويل",
     "empty": "لا يوجد بعد في التسويق ما يمكنك فتحه.",
     "movedLine": "العروض أصبحت الآن في التسويق."
+  },
+  "ExerciseNameInput": {
+    "listLabel": "اقتراحات التمارين",
+    "group": {
+      "mine": "كتبته من قبل",
+      "box": "صالتك",
+      "palee": "Palee"
+    },
+    "keep": "أبقِ «{text}» كما كتبته",
+    "keepKey": "Esc",
+    "usesMine": "{count, plural, zero {# مرة} one {مرة واحدة} two {مرتان} few {# مرات} many {# مرة} other {# مرة}}",
+    "usesBox": "{count, plural, zero {في # WOD} one {في WOD واحد} two {في WOD اثنين} few {في # WOD} many {في # WOD} other {في # WOD}}",
+    "category": {
+      "strength": "قوة",
+      "bodyweight": "وزن الجسم",
+      "cardio": "تحمّل",
+      "mobility": "مرونة",
+      "skill": "مهارة"
+    },
+    "textHint": "Enter أو Tab للاستخدام، Esc لمتابعة الكتابة"
+  },
+  "PlatformExerciseCandidates": {
+    "title": "تمارين للمراجعة",
+    "subtitle": "أسماء تمارين كتبها أعضاء وصالات ولا تطابق أي تمرين في الكتالوج الذي يستخدمه محررو WOD، الأكثر كتابة أولاً. وافق على اسم كتمرين جديد أو كاسم آخر لتمرين موجود، أو ارفضه؛ لا تُقترح كتمارين Palee إلا الأسماء الموافق عليها. يُسجَّل كل قرار. لا تحتوي القائمة على أي شخص.",
+    "back": "الأعمال",
+    "status": "الحالة",
+    "statuses": {
+      "pending": "قيد الانتظار",
+      "approved": "موافق عليها",
+      "rejected": "مرفوضة"
+    },
+    "minOwners": "كتبه على الأقل",
+    "minOwnersValue": "{count, plural, zero {# شخص أو صالة} one {شخص أو صالة واحدة} two {شخصان أو صالتان} few {# أشخاص أو صالات} many {# شخصاً أو صالة} other {# شخص أو صالة}}",
+    "privacyNote": "قد يكون الاسم الذي كتبه شخص واحد فقط شخصياً؛ يبقى مخفياً ما لم تخفض الحد.",
+    "forbidden": "فريق Palee وحده يرى هذه القائمة.",
+    "loadError": "لم يتم تحميل القائمة.",
+    "loading": "جارٍ التحميل…",
+    "empty": "لا يوجد ما يُراجع.",
+    "counts": "{owners, plural, zero {# شخص أو صالة} one {شخص أو صالة واحدة} two {شخصان أو صالتان} few {# أشخاص أو صالات} many {# شخصاً أو صالة} other {# شخص أو صالة}} · {uses, plural, zero {# استخدام} one {استخدام واحد} two {استخدامان} few {# استخدامات} many {# استخداماً} other {# استخدام}}",
+    "lastSeen": "آخر مرة {date}",
+    "asEntry": "كتمرين جديد",
+    "label": "الاسم",
+    "category": "الفئة",
+    "categories": {
+      "strength": "قوة",
+      "bodyweight": "وزن الجسم",
+      "cardio": "تحمّل",
+      "mobility": "مرونة",
+      "skill": "مهارة"
+    },
+    "approveEntry": "أضِفه إلى الكتالوج",
+    "asAlias": "كاسم آخر لـ",
+    "aliasOf": "تمرين من الكتالوج",
+    "approveAlias": "أضِفه كاسم آخر",
+    "reject": "ارفض",
+    "conflict": "تم البت في هذا الاسم أو هو موجود في الكتالوج.",
+    "decideError": "لم يُحفظ القرار. حاول مرة أخرى."
   }
 }

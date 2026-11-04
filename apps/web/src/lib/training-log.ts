@@ -13,6 +13,8 @@ export type LoadUnit = "kg" | "lb";
 
 export type TrainingLogExerciseRow = {
   name: string;
+  /** ADR-461: the Palee catalog slug of a picked suggestion; the name stays as typed. */
+  exerciseRef?: string | null;
   sets: string;
   reps: string;
   load: string;
@@ -140,6 +142,7 @@ function exercisesPayload(rows: TrainingLogExerciseRow[]): PerformedExercise[] {
     .filter((row) => !isRowEmpty(row))
     .map((row) => {
       const exercise: PerformedExercise = { name: row.name.trim() };
+      if (row.exerciseRef) exercise.exercise_ref = row.exerciseRef;
       const sets = parseNonNegativeInt(row.sets);
       const reps = parseNonNegativeInt(row.reps);
       const load = parseNonNegativeNumber(row.load);
@@ -240,6 +243,7 @@ export function formFromEntry(entry: TrainingLogEntry): TrainingLogForm {
     ),
     exercises: entry.performed_exercises.map((exercise) => ({
       name: exercise.name,
+      exerciseRef: exercise.exercise_ref ?? null,
       sets: exercise.sets == null ? "" : String(exercise.sets),
       reps: exercise.reps == null ? "" : String(exercise.reps),
       load: exercise.load == null ? "" : String(exercise.load),

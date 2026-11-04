@@ -3500,6 +3500,15 @@ defmodule PaleeWeb.FallbackController do
     owner_required: {:forbidden, "Only gym owners can create gyms"},
     # ADR-170: platform plans and the solo-coach tier.
     vendor_required: {:forbidden, "Only the platform team can do this"},
+    # ADR-461: the Palee team's exercise catalog review.
+    invalid_exercise_catalog_decision:
+      {:unprocessable_entity, "Decision must be entry, alias or reject"},
+    exercise_candidate_already_decided: {:conflict, "This name was already decided"},
+    invalid_exercise_label: {:unprocessable_entity, "Give the exercise a name"},
+    invalid_exercise_category: {:unprocessable_entity, "Choose the exercise's category"},
+    exercise_catalog_slug_taken: {:conflict, "An exercise with this name already exists"},
+    exercise_already_in_catalog: {:conflict, "The catalog already has this name"},
+    unknown_exercise_catalog_slug: {:unprocessable_entity, "Choose an exercise of the catalog"},
     coach_practice_exists: {:conflict, "You already run a practice as an independent coach"},
     plan_limit_reached:
       {:conflict, "Your plan has no free staff seat; ask us about a bigger plan"},

@@ -17613,5 +17613,62 @@
     "inFinance": "In Finance",
     "empty": "There is nothing in Marketing you can open yet.",
     "movedLine": "Promotions are now in Marketing."
+  },
+  "ExerciseNameInput": {
+    "listLabel": "Exercise suggestions",
+    "group": {
+      "mine": "You wrote",
+      "box": "Your box",
+      "palee": "Palee"
+    },
+    "keep": "Keep «{text}» as I wrote it",
+    "keepKey": "Esc",
+    "usesMine": "{count, plural, one {# time} other {# times}}",
+    "usesBox": "{count, plural, one {in # WOD} other {in # WODs}}",
+    "category": {
+      "strength": "Strength",
+      "bodyweight": "Bodyweight",
+      "cardio": "Cardio",
+      "mobility": "Mobility",
+      "skill": "Skill"
+    },
+    "textHint": "Enter or Tab to use it, Esc to keep writing"
+  },
+  "PlatformExerciseCandidates": {
+    "title": "Exercises to review",
+    "subtitle": "Exercise names people and boxes typed that match no entry of the catalog the WOD editors use, most typed first. Approve one as a new entry or as another name of an existing one, or reject it; only approved names are suggested as Palee exercises. Every decision is logged. The list holds no person.",
+    "back": "Businesses",
+    "status": "Status",
+    "statuses": {
+      "pending": "Waiting",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "minOwners": "Typed by at least",
+    "minOwnersValue": "{count, plural, one {# person or box} other {# people or boxes}}",
+    "privacyNote": "A name only one person typed may be personal; it is hidden unless you lower the threshold.",
+    "forbidden": "Only the Palee team sees this list.",
+    "loadError": "The list did not load.",
+    "loading": "Loading…",
+    "empty": "Nothing to review.",
+    "counts": "{owners, plural, one {# person or box} other {# people or boxes}} · {uses, plural, one {# use} other {# uses}}",
+    "lastSeen": "last {date}",
+    "asEntry": "As a new exercise",
+    "label": "Name",
+    "category": "Category",
+    "categories": {
+      "strength": "Strength",
+      "bodyweight": "Bodyweight",
+      "cardio": "Cardio",
+      "mobility": "Mobility",
+      "skill": "Skill"
+    },
+    "approveEntry": "Add to the catalog",
+    "asAlias": "As another name of",
+    "aliasOf": "Exercise of the catalog",
+    "approveAlias": "Add as another name",
+    "reject": "Reject",
+    "conflict": "This name was already decided or is already in the catalog.",
+    "decideError": "The decision was not saved. Try again."
   }
 }

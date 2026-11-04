@@ -11,6 +11,7 @@ import type { TimerSegment } from "@/api/executions";
 import type { ExerciseModification } from "@/api/executions";
 import type { JournalComment } from "@/api/journal-comments";
 import { CommentList } from "@/components/journal/CommentList";
+import { ExerciseSuggestingTextarea } from "@/components/exercises/ExerciseSuggestingTextarea";
 import { useTranslations } from "next-intl";
 import { changeComments, type FinishComments } from "@/lib/journal-comments";
 import { SemanticLabel } from "@/components/semantic-label";
@@ -668,7 +669,7 @@ function CommentsPanel({
         pendingIds={pendingCommentIds}
         anchorLabel={(comment) => (comment.exercise_id ? (exerciseNames[comment.exercise_id] ?? null) : null)}
       />
-      <textarea
+      <ExerciseSuggestingTextarea
         aria-label={t("workoutComment")}
         placeholder={t("workoutCommentPlaceholder")}
         autoFocus={autoFocus}
@@ -676,7 +677,7 @@ function CommentsPanel({
         className="min-h-28 w-full resize-y rounded-xl p-3 text-sm leading-6 outline-none"
         style={{ background: "var(--bg)", border: "1px solid var(--border)", color: "var(--text)" }}
         value={text}
-        onChange={(event) => onTextChange(event.target.value)}
+        onValueChange={onTextChange}
       />
     </section>
   );

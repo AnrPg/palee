@@ -7,6 +7,12 @@ vi.mock("@/i18n/ui", () => ({
   useUiTranslations: () => (key: string) => key,
 }));
 
+// The note suggests exercise names (ADR-461); these tests type no names.
+vi.mock("@/hooks/useExerciseSuggestions", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/hooks/useExerciseSuggestions")>()),
+  useExerciseSuggestions: () => ({ groups: [], isFetching: false }),
+}));
+
 vi.mock("next-intl", () => ({
   useTranslations: () => (key: string) => key,
   useFormatter: () => ({ dateTime: () => "" }),

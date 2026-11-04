@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useRef, useState, type CSSProperties, type InputHTMLAttributes, type KeyboardEvent, type ReactNode } from "react";
+import { Fragment, useId, useRef, useState, type CSSProperties, type InputHTMLAttributes, type KeyboardEvent, type ReactNode } from "react";
 
 import { Popover } from "./Popover";
 
@@ -9,6 +9,10 @@ export type ComboboxOption = {
   label: string;
   /** A second line or trailing note (an alias, a format's fields). */
   hint?: ReactNode;
+  /** The label as shown (highlighted matches); `label` stays the text a pick puts in the field. */
+  display?: ReactNode;
+  /** A heading shown above the first option of each run of the same group (ADR-461). */
+  group?: string;
 };
 
 type Props = Omit<InputHTMLAttributes<HTMLInputElement>, "value" | "onChange" | "onSelect" | "role"> & {
@@ -153,9 +157,15 @@ export function Combobox({
         ) : (
           options.map((option, index) => {
             const selected = index === activeIndex;
+            const heading = option.group && option.group !== options[index - 1]?.group ? option.group : null;
             return (
+              <Fragment key={option.id}>
+              {heading ? (
+                <div role="presentation" className="px-3 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-wide" style={{ color: "var(--muted)" }}>
+                  {heading}
+                </div>
+              ) : null}
               <div
-                key={option.id}
                 id={`${listId}-${option.id}`}
                 role="option"
                 aria-selected={selected}
@@ -169,13 +179,14 @@ export function Combobox({
                   color: "var(--text)",
                 }}
               >
-                <span className="font-semibold">{option.label}</span>
+                <span className="font-semibold">{option.display ?? option.label}</span>
                 {option.hint ? (
                   <span className="truncate text-xs" style={{ color: "var(--muted)" }}>
                     {option.hint}
                   </span>
                 ) : null}
               </div>
+              </Fragment>
             );
           })
         )}

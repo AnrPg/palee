@@ -17613,5 +17613,62 @@
     "inFinance": "In Financiën",
     "empty": "Er is nog niets in Marketing dat je kunt openen.",
     "movedLine": "Promoties staan nu in Marketing."
+  },
+  "ExerciseNameInput": {
+    "listLabel": "Oefeningsuggesties",
+    "group": {
+      "mine": "Door jou geschreven",
+      "box": "Jouw box",
+      "palee": "Palee"
+    },
+    "keep": "«{text}» houden zoals ik het schreef",
+    "keepKey": "Esc",
+    "usesMine": "{count, plural, one {# keer} other {# keer}}",
+    "usesBox": "{count, plural, one {# box-WOD} other {# box-WODs}}",
+    "category": {
+      "strength": "Kracht",
+      "bodyweight": "Lichaamsgewicht",
+      "cardio": "Conditie",
+      "mobility": "Mobiliteit",
+      "skill": "Vaardigheid"
+    },
+    "textHint": "Enter of Tab om het te gebruiken, Esc om verder te schrijven"
+  },
+  "PlatformExerciseCandidates": {
+    "title": "Oefeningen om te beoordelen",
+    "subtitle": "Oefeningnamen die leden en boxen intypten en die bij geen oefening uit de catalogus van de WOD-editors passen, de vaakst getypte eerst. Keur er een goed als nieuwe oefening of als andere naam van een bestaande, of wijs hem af; alleen goedgekeurde namen worden als Palee-oefeningen voorgesteld. Elke beslissing wordt vastgelegd. De lijst bevat geen personen.",
+    "back": "Bedrijven",
+    "status": "Status",
+    "statuses": {
+      "pending": "Wachtend",
+      "approved": "Goedgekeurd",
+      "rejected": "Afgewezen"
+    },
+    "minOwners": "Getypt door minstens",
+    "minOwnersValue": "{count, plural, one {# persoon of box} other {# personen of boxen}}",
+    "privacyNote": "Een naam die maar één persoon typte, kan persoonlijk zijn; hij blijft verborgen tenzij je de drempel verlaagt.",
+    "forbidden": "Alleen het Palee-team ziet deze lijst.",
+    "loadError": "De lijst is niet geladen.",
+    "loading": "Laden…",
+    "empty": "Niets te beoordelen.",
+    "counts": "{owners, plural, one {# persoon of box} other {# personen of boxen}} · {uses, plural, one {# keer gebruikt} other {# keer gebruikt}}",
+    "lastSeen": "laatst {date}",
+    "asEntry": "Als nieuwe oefening",
+    "label": "Naam",
+    "category": "Categorie",
+    "categories": {
+      "strength": "Kracht",
+      "bodyweight": "Lichaamsgewicht",
+      "cardio": "Conditie",
+      "mobility": "Mobiliteit",
+      "skill": "Vaardigheid"
+    },
+    "approveEntry": "Aan de catalogus toevoegen",
+    "asAlias": "Als andere naam van",
+    "aliasOf": "Oefening uit de catalogus",
+    "approveAlias": "Als andere naam toevoegen",
+    "reject": "Afwijzen",
+    "conflict": "Over deze naam is al beslist of hij staat al in de catalogus.",
+    "decideError": "De beslissing is niet opgeslagen. Probeer het opnieuw."
   }
 }

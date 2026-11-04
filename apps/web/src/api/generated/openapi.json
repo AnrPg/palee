@@ -46077,6 +46077,443 @@
         "title": "ExecutionResponse",
         "type": "object"
       },
+      "ExerciseCatalogAudit": {
+        "properties": {
+          "events": {
+            "items": {
+              "properties": {
+                "action": {
+                  "enum": [
+                    "approve_entry",
+                    "approve_alias",
+                    "reject"
+                  ],
+                  "type": "string"
+                },
+                "actor_user_id": {
+                  "format": "uuid",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "candidate_id": {
+                  "format": "uuid",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "catalog_slug": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "metadata": {
+                  "type": "object"
+                }
+              },
+              "required": [
+                "id",
+                "action",
+                "at"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "events"
+        ],
+        "title": "ExerciseCatalogAudit",
+        "type": "object"
+      },
+      "ExerciseNameCandidate": {
+        "properties": {
+          "catalog_slug": {
+            "nullable": true,
+            "type": "string"
+          },
+          "decided_at": {
+            "format": "date-time",
+            "nullable": true,
+            "type": "string"
+          },
+          "first_seen_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "last_seen_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "owners_count": {
+            "type": "integer"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "approved",
+              "rejected"
+            ],
+            "type": "string"
+          },
+          "uses_count": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "uses_count",
+          "owners_count",
+          "status",
+          "catalog_slug"
+        ],
+        "title": "ExerciseNameCandidate",
+        "type": "object"
+      },
+      "ExerciseNameCandidateDecided": {
+        "properties": {
+          "candidate": {
+            "properties": {
+              "catalog_slug": {
+                "nullable": true,
+                "type": "string"
+              },
+              "decided_at": {
+                "format": "date-time",
+                "nullable": true,
+                "type": "string"
+              },
+              "first_seen_at": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "id": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "last_seen_at": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "owners_count": {
+                "type": "integer"
+              },
+              "status": {
+                "enum": [
+                  "pending",
+                  "approved",
+                  "rejected"
+                ],
+                "type": "string"
+              },
+              "uses_count": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "uses_count",
+              "owners_count",
+              "status",
+              "catalog_slug"
+            ],
+            "title": "ExerciseNameCandidate",
+            "type": "object"
+          }
+        },
+        "required": [
+          "candidate"
+        ],
+        "title": "ExerciseNameCandidateDecided",
+        "type": "object"
+      },
+      "ExerciseNameCandidateDecision": {
+        "properties": {
+          "catalog_slug": {
+            "description": "For an alias: the entry it joins",
+            "type": "string"
+          },
+          "category": {
+            "enum": [
+              "strength",
+              "bodyweight",
+              "cardio",
+              "mobility",
+              "skill"
+            ],
+            "type": "string"
+          },
+          "decision": {
+            "enum": [
+              "entry",
+              "alias",
+              "reject"
+            ],
+            "type": "string"
+          },
+          "label": {
+            "description": "Defaults to the typed name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "decision"
+        ],
+        "title": "ExerciseNameCandidateDecision",
+        "type": "object"
+      },
+      "ExerciseNameCandidateQueue": {
+        "properties": {
+          "candidates": {
+            "items": {
+              "properties": {
+                "catalog_slug": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "decided_at": {
+                  "format": "date-time",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "first_seen_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "id": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "last_seen_at": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "owners_count": {
+                  "type": "integer"
+                },
+                "status": {
+                  "enum": [
+                    "pending",
+                    "approved",
+                    "rejected"
+                  ],
+                  "type": "string"
+                },
+                "uses_count": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "uses_count",
+                "owners_count",
+                "status",
+                "catalog_slug"
+              ],
+              "title": "ExerciseNameCandidate",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "catalog": {
+            "description": "The catalog entries an alias can join",
+            "items": {
+              "properties": {
+                "catalog_slug": {
+                  "type": "string"
+                },
+                "category": {
+                  "nullable": true,
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "catalog_slug",
+                "name",
+                "category"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "candidates",
+          "catalog"
+        ],
+        "title": "ExerciseNameCandidateQueue",
+        "type": "object"
+      },
+      "ExerciseSuggestion": {
+        "properties": {
+          "catalog_slug": {
+            "description": "The Palee catalog entry the name links to, if any",
+            "nullable": true,
+            "type": "string"
+          },
+          "hint": {
+            "description": "For a palee item, the catalog category (strength, bodyweight, cardio, mobility, skill)",
+            "nullable": true,
+            "type": "string"
+          },
+          "name": {
+            "description": "The name to put in the field",
+            "type": "string"
+          },
+          "uses_count": {
+            "description": "How often the person (mine) or the box (box) used the name; 0 for palee",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "catalog_slug",
+          "hint",
+          "uses_count"
+        ],
+        "title": "ExerciseSuggestion",
+        "type": "object"
+      },
+      "ExerciseSuggestionGroup": {
+        "properties": {
+          "items": {
+            "items": {
+              "properties": {
+                "catalog_slug": {
+                  "description": "The Palee catalog entry the name links to, if any",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "hint": {
+                  "description": "For a palee item, the catalog category (strength, bodyweight, cardio, mobility, skill)",
+                  "nullable": true,
+                  "type": "string"
+                },
+                "name": {
+                  "description": "The name to put in the field",
+                  "type": "string"
+                },
+                "uses_count": {
+                  "description": "How often the person (mine) or the box (box) used the name; 0 for palee",
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "name",
+                "catalog_slug",
+                "hint",
+                "uses_count"
+              ],
+              "title": "ExerciseSuggestion",
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "source": {
+            "enum": [
+              "mine",
+              "box",
+              "palee"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "source",
+          "items"
+        ],
+        "title": "ExerciseSuggestionGroup",
+        "type": "object"
+      },
+      "ExerciseSuggestionsResponse": {
+        "description": "Groups in order mine, box, palee; a name appears once; empty groups are left out",
+        "properties": {
+          "groups": {
+            "items": {
+              "properties": {
+                "items": {
+                  "items": {
+                    "properties": {
+                      "catalog_slug": {
+                        "description": "The Palee catalog entry the name links to, if any",
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "hint": {
+                        "description": "For a palee item, the catalog category (strength, bodyweight, cardio, mobility, skill)",
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "name": {
+                        "description": "The name to put in the field",
+                        "type": "string"
+                      },
+                      "uses_count": {
+                        "description": "How often the person (mine) or the box (box) used the name; 0 for palee",
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "catalog_slug",
+                      "hint",
+                      "uses_count"
+                    ],
+                    "title": "ExerciseSuggestion",
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "source": {
+                  "enum": [
+                    "mine",
+                    "box",
+                    "palee"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "source",
+                "items"
+              ],
+              "title": "ExerciseSuggestionGroup",
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "groups"
+        ],
+        "title": "ExerciseSuggestionsResponse",
+        "type": "object"
+      },
       "FacilityCheckIn": {
         "properties": {
           "already_checked_in": {
@@ -158174,6 +158611,126 @@
         "summary": "Counts an open of the event page (once per person and day, without keeping who; hosts are not counted)",
         "tags": [
           "Community events"
+        ]
+      }
+    },
+    "/api/me/exercise-suggestions": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.ExerciseSuggestionsController.index",
+        "parameters": [
+          {
+            "description": "What the person typed so far (up to 80 characters are used)",
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The box whose WOD names to include; ignored unless the person belongs to it",
+            "in": "query",
+            "name": "organization_id",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Suggestions per group, 1 to 10 (default 5)",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "maximum": 10,
+              "minimum": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Groups in order mine, box, palee; a name appears once; empty groups are left out",
+                  "properties": {
+                    "groups": {
+                      "items": {
+                        "properties": {
+                          "items": {
+                            "items": {
+                              "properties": {
+                                "catalog_slug": {
+                                  "description": "The Palee catalog entry the name links to, if any",
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "hint": {
+                                  "description": "For a palee item, the catalog category (strength, bodyweight, cardio, mobility, skill)",
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "name": {
+                                  "description": "The name to put in the field",
+                                  "type": "string"
+                                },
+                                "uses_count": {
+                                  "description": "How often the person (mine) or the box (box) used the name; 0 for palee",
+                                  "type": "integer"
+                                }
+                              },
+                              "required": [
+                                "name",
+                                "catalog_slug",
+                                "hint",
+                                "uses_count"
+                              ],
+                              "title": "ExerciseSuggestion",
+                              "type": "object"
+                            },
+                            "type": "array"
+                          },
+                          "source": {
+                            "enum": [
+                              "mine",
+                              "box",
+                              "palee"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "source",
+                          "items"
+                        ],
+                        "title": "ExerciseSuggestionGroup",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "groups"
+                  ],
+                  "title": "ExerciseSuggestionsResponse",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Exercise suggestions"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Exercise-name suggestions: your own, your box's, Palee's",
+        "tags": [
+          "Exercises"
         ]
       }
     },
@@ -389872,6 +390429,392 @@
         ]
       }
     },
+    "/api/platform/exercise-candidates": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformExerciseCatalogController.index",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "enum": [
+                "pending",
+                "approved",
+                "rejected"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "Only names at least this many people or boxes typed (default 2)",
+            "in": "query",
+            "name": "min_owners",
+            "required": false,
+            "schema": {
+              "minimum": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "candidates": {
+                      "items": {
+                        "properties": {
+                          "catalog_slug": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "decided_at": {
+                            "format": "date-time",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "first_seen_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "last_seen_at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "owners_count": {
+                            "type": "integer"
+                          },
+                          "status": {
+                            "enum": [
+                              "pending",
+                              "approved",
+                              "rejected"
+                            ],
+                            "type": "string"
+                          },
+                          "uses_count": {
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "uses_count",
+                          "owners_count",
+                          "status",
+                          "catalog_slug"
+                        ],
+                        "title": "ExerciseNameCandidate",
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "catalog": {
+                      "description": "The catalog entries an alias can join",
+                      "items": {
+                        "properties": {
+                          "catalog_slug": {
+                            "type": "string"
+                          },
+                          "category": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "catalog_slug",
+                          "name",
+                          "category"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "candidates",
+                    "catalog"
+                  ],
+                  "title": "ExerciseNameCandidateQueue",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Candidates"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Exercise names waiting for the catalog (vendors)",
+        "tags": [
+          "Platform exercise catalog"
+        ]
+      }
+    },
+    "/api/platform/exercise-candidates/{id}/decision": {
+      "post": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformExerciseCatalogController.decide",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "catalog_slug": {
+                    "description": "For an alias: the entry it joins",
+                    "type": "string"
+                  },
+                  "category": {
+                    "enum": [
+                      "strength",
+                      "bodyweight",
+                      "cardio",
+                      "mobility",
+                      "skill"
+                    ],
+                    "type": "string"
+                  },
+                  "decision": {
+                    "enum": [
+                      "entry",
+                      "alias",
+                      "reject"
+                    ],
+                    "type": "string"
+                  },
+                  "label": {
+                    "description": "Defaults to the typed name",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "decision"
+                ],
+                "title": "ExerciseNameCandidateDecision",
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "candidate": {
+                      "properties": {
+                        "catalog_slug": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "decided_at": {
+                          "format": "date-time",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "first_seen_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "id": {
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "last_seen_at": {
+                          "format": "date-time",
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "owners_count": {
+                          "type": "integer"
+                        },
+                        "status": {
+                          "enum": [
+                            "pending",
+                            "approved",
+                            "rejected"
+                          ],
+                          "type": "string"
+                        },
+                        "uses_count": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "uses_count",
+                        "owners_count",
+                        "status",
+                        "catalog_slug"
+                      ],
+                      "title": "ExerciseNameCandidate",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "candidate"
+                  ],
+                  "title": "ExerciseNameCandidateDecided",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Decided"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Error"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Error"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Approve a name as a new entry or an alias, or reject it (vendors)",
+        "tags": [
+          "Platform exercise catalog"
+        ]
+      }
+    },
+    "/api/platform/exercise-catalog-audit": {
+      "get": {
+        "callbacks": {},
+        "operationId": "PaleeWeb.PlatformExerciseCatalogController.audit",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "events": {
+                      "items": {
+                        "properties": {
+                          "action": {
+                            "enum": [
+                              "approve_entry",
+                              "approve_alias",
+                              "reject"
+                            ],
+                            "type": "string"
+                          },
+                          "actor_user_id": {
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "at": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "candidate_id": {
+                            "format": "uuid",
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "catalog_slug": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "id": {
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "metadata": {
+                            "type": "object"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "action",
+                          "at"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "events"
+                  ],
+                  "title": "ExerciseCatalogAudit",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Audit"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "The latest exercise catalog decisions (vendors)",
+        "tags": [
+          "Platform exercise catalog"
+        ]
+      }
+    },
     "/api/platform/food-misses": {
       "get": {
         "callbacks": {},
@@ -401954,6 +402897,12 @@
                   "current_score": {
                     "type": "number"
                   },
+                  "exercise_ref": {
+                    "description": "Palee catalog slug of a picked suggestion (ADR-461); the name stays as typed",
+                    "maxLength": 120,
+                    "nullable": true,
+                    "type": "string"
+                  },
                   "higher_is_better": {
                     "type": "boolean"
                   },
@@ -402276,6 +403225,12 @@
                   "current_score": {
                     "type": "number"
                   },
+                  "exercise_ref": {
+                    "description": "Palee catalog slug of a picked suggestion (ADR-461); the name stays as typed",
+                    "maxLength": 120,
+                    "nullable": true,
+                    "type": "string"
+                  },
                   "higher_is_better": {
                     "type": "boolean"
                   },
@@ -402382,6 +403337,12 @@
                   },
                   "current_score": {
                     "type": "number"
+                  },
+                  "exercise_ref": {
+                    "description": "Palee catalog slug of a picked suggestion (ADR-461); the name stays as typed",
+                    "maxLength": 120,
+                    "nullable": true,
+                    "type": "string"
                   },
                   "higher_is_better": {
                     "type": "boolean"

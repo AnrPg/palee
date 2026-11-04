@@ -17613,5 +17613,62 @@
     "inFinance": "Dans Finances",
     "empty": "Rien dans Marketing que tu puisses ouvrir pour l'instant.",
     "movedLine": "Les promotions sont désormais dans Marketing."
+  },
+  "ExerciseNameInput": {
+    "listLabel": "Suggestions d'exercices",
+    "group": {
+      "mine": "Déjà écrit par toi",
+      "box": "Ta box",
+      "palee": "Palee"
+    },
+    "keep": "Garder «{text}» tel que je l’ai écrit",
+    "keepKey": "Esc",
+    "usesMine": "{count, plural, one {# fois} other {# fois}}",
+    "usesBox": "{count, plural, one {dans # WOD} other {dans # WOD}}",
+    "category": {
+      "strength": "Force",
+      "bodyweight": "Poids du corps",
+      "cardio": "Cardio",
+      "mobility": "Mobilité",
+      "skill": "Technique"
+    },
+    "textHint": "Entrée ou Tab pour l’utiliser, Échap pour continuer à écrire"
+  },
+  "PlatformExerciseCandidates": {
+    "title": "Exercices à vérifier",
+    "subtitle": "Noms d’exercices tapés par des membres et des box qui ne correspondent à aucun exercice du catalogue des éditeurs de WOD, les plus fréquents d’abord. Approuve-en un comme nouvel exercice ou comme autre nom d’un exercice existant, ou refuse-le ; seuls les noms approuvés sont proposés comme exercices Palee. Chaque décision est enregistrée. La liste ne contient aucune personne.",
+    "back": "Entreprises",
+    "status": "Statut",
+    "statuses": {
+      "pending": "En attente",
+      "approved": "Approuvés",
+      "rejected": "Refusés"
+    },
+    "minOwners": "Tapé par au moins",
+    "minOwnersValue": "{count, plural, one {# personne ou box} other {# personnes ou box}}",
+    "privacyNote": "Un nom tapé par une seule personne peut être personnel ; il reste masqué sauf si tu baisses le seuil.",
+    "forbidden": "Seule l’équipe Palee voit cette liste.",
+    "loadError": "La liste n’a pas pu être chargée.",
+    "loading": "Chargement…",
+    "empty": "Rien à vérifier.",
+    "counts": "{owners, plural, one {# personne ou box} other {# personnes ou box}} · {uses, plural, one {# utilisation} other {# utilisations}}",
+    "lastSeen": "dernière fois {date}",
+    "asEntry": "Comme nouvel exercice",
+    "label": "Nom",
+    "category": "Catégorie",
+    "categories": {
+      "strength": "Force",
+      "bodyweight": "Poids du corps",
+      "cardio": "Cardio",
+      "mobility": "Mobilité",
+      "skill": "Technique"
+    },
+    "approveEntry": "Ajouter au catalogue",
+    "asAlias": "Comme autre nom de",
+    "aliasOf": "Exercice du catalogue",
+    "approveAlias": "Ajouter comme autre nom",
+    "reject": "Refuser",
+    "conflict": "Ce nom a déjà été décidé ou figure déjà dans le catalogue.",
+    "decideError": "La décision n’a pas été enregistrée. Réessaie."
   }
 }
