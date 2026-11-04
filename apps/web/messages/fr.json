@@ -9871,8 +9871,9 @@
       "title": "Assistant IA",
       "description": "L'assistant WOD, ainsi que les suggestions de scale et la saisie vocale avec ta propre clé. Un coach approuve chaque suggestion.",
       "enable": "Suggestions de scale",
-      "enableHint": "Désactivées par défaut. Nécessitent une clé API.",
-      "key": "Clé API (Anthropic)",
+      "enableHint": "Pour un athlète avec une blessure enregistrée par la box, l'IA propose comment adapter l'entraînement : moins de charge, moins de répétitions ou un autre mouvement. Un coach valide chaque suggestion avant que l'athlète la voie. L'IA est nécessaire car chaque combinaison d'entraînement et de blessure est différente et des règles fixes ne peuvent pas toutes les couvrir.",
+      "key": "Clé Claude (Anthropic)",
+      "keyHint": "Les suggestions de scale et la saisie vocale en ont besoin. L'usage est facturé sur ton propre compte Anthropic.",
       "keySet": "Une clé se terminant par {last4} est définie.",
       "keyRejected": "Le fournisseur a refusé la clé se terminant par {last4}. Ajoute une nouvelle clé.",
       "keyMissing": "Aucune clé définie.",
@@ -9881,8 +9882,8 @@
       "removeKey": "Supprimer la clé",
       "model": "Modèle (facultatif)",
       "saveModel": "Enregistrer le modèle",
-      "usage": "Ce mois-ci · suggestions : {count} · coût : ${cost}",
-      "privacy": "Seuls l'entraînement et les blessures enregistrées par la box sont envoyés, sans noms. La clé n'est plus jamais affichée."
+      "usage": "Ce mois-ci · {count, plural, one {# suggestion} other {# suggestions}} · {voice, plural, one {# brouillon vocal} other {# brouillons vocaux}} · coût : ${cost}",
+      "privacy": "Aucun nom n'est envoyé. Les suggestions envoient l'entraînement et les blessures enregistrées par la box. La saisie vocale envoie seulement le texte de ce que le membre a dit. La clé n'est plus jamais affichée."
     },
     "queue": {
       "eyebrow": "Mes clients",
@@ -9946,7 +9947,7 @@
     },
     "settings": {
       "enable": "Saisie vocale",
-      "enableHint": "Les membres de la box enregistrent leur entraînement et vérifient un brouillon avant de l'enregistrer. L'audio n'est pas conservé."
+      "enableHint": "Les membres disent avec leurs mots ce qu'ils ont fait et l'IA le transforme en exercices, séries, répétitions et charges. Le membre vérifie le brouillon avant d'enregistrer. L'IA est nécessaire pour comprendre la parole libre, comme « trois séries de dix à 60 ». L'audio n'est pas conservé."
     }
   },
   "Pickers": {

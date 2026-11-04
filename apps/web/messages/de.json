@@ -9871,8 +9871,9 @@
       "title": "KI-Assistent",
       "description": "Der WOD-Assistent sowie Skalierungsvorschläge und Spracheingabe mit deinem eigenen Schlüssel. Jeden Vorschlag gibt ein Coach frei.",
       "enable": "Skalierungsvorschläge",
-      "enableHint": "Standardmäßig aus. Braucht einen API-Schlüssel.",
-      "key": "API-Schlüssel (Anthropic)",
+      "enableHint": "Für Athleten mit einer von der Box erfassten Verletzung schlägt die KI vor, wie das Workout angepasst wird: weniger Gewicht, weniger Wiederholungen oder eine andere Übung. Ein Coach gibt jeden Vorschlag frei, bevor der Athlet ihn sieht. Dafür braucht es KI, weil jede Kombination aus Workout und Verletzung anders ist und feste Regeln sie nicht abdecken.",
+      "key": "Claude-Schlüssel (Anthropic)",
+      "keyHint": "Skalierungsvorschläge und Spracherfassung brauchen ihn. Die Kosten gehen an dein eigenes Anthropic-Konto.",
       "keySet": "Ein Schlüssel mit Endung {last4} ist gesetzt.",
       "keyRejected": "Der Anbieter hat den Schlüssel mit Endung {last4} abgelehnt. Neuen Schlüssel eingeben.",
       "keyMissing": "Kein Schlüssel gesetzt.",
@@ -9881,8 +9882,8 @@
       "removeKey": "Schlüssel entfernen",
       "model": "Modell (optional)",
       "saveModel": "Modell speichern",
-      "usage": "Diesen Monat · Vorschläge: {count} · Kosten: ${cost}",
-      "privacy": "Gesendet werden nur das Workout und die von der Box erfassten Verletzungen, ohne Namen. Der Schlüssel wird nie wieder angezeigt."
+      "usage": "Diesen Monat · {count, plural, one {# Vorschlag} other {# Vorschläge}} · {voice, plural, one {# Sprachentwurf} other {# Sprachentwürfe}} · Kosten: ${cost}",
+      "privacy": "Es werden keine Namen gesendet. Vorschläge senden das Workout und die von der Box erfassten Verletzungen. Die Spracherfassung sendet nur den Text dessen, was das Mitglied gesagt hat. Der Schlüssel wird nie wieder angezeigt."
     },
     "queue": {
       "eyebrow": "Meine Kunden",
@@ -9946,7 +9947,7 @@
     },
     "settings": {
       "enable": "Spracherfassung",
-      "enableHint": "Mitglieder sprechen ihr Workout ein und prüfen einen Entwurf vor dem Speichern. Audio wird nicht gespeichert."
+      "enableHint": "Mitglieder sagen in eigenen Worten, was sie gemacht haben, und die KI macht daraus Übungen, Sätze, Wiederholungen und Gewichte. Das Mitglied prüft den Entwurf vor dem Speichern. Dafür braucht es KI, um freie Sprache wie „drei Sätze à zehn mit 60“ zu verstehen. Audio wird nicht gespeichert."
     }
   },
   "Pickers": {

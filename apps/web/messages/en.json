@@ -9871,8 +9871,9 @@
       "title": "AI assistant",
       "description": "The WOD assistant, plus scaling suggestions and voice logging with your own key. A coach approves every suggestion.",
       "enable": "Scaling suggestions",
-      "enableHint": "Off by default. Needs an API key.",
-      "key": "API key (Anthropic)",
+      "enableHint": "For an athlete with an injury the box recorded, AI suggests how to adapt the workout: a lighter load, fewer reps or another movement. A coach approves every suggestion before the athlete sees it. It needs AI because every workout and injury combination is different and fixed rules can't cover them.",
+      "key": "Claude key (Anthropic)",
+      "keyHint": "Scaling suggestions and voice logging need it. Usage is billed to your own Anthropic account.",
       "keySet": "A key ending in {last4} is set.",
       "keyRejected": "The provider rejected the key ending in {last4}. Add a new key.",
       "keyMissing": "No key set.",
@@ -9881,8 +9882,8 @@
       "removeKey": "Remove key",
       "model": "Model (optional)",
       "saveModel": "Save model",
-      "usage": "This month · suggestions: {count} · cost: ${cost}",
-      "privacy": "Only the workout and the injuries the box recorded are sent, without names. The key is never shown again."
+      "usage": "This month · {count, plural, one {# suggestion} other {# suggestions}} · {voice, plural, one {# voice draft} other {# voice drafts}} · cost: ${cost}",
+      "privacy": "No names are sent. Suggestions send the workout and the injuries the box recorded. Voice logging sends only the text of what the member said. The key is never shown again."
     },
     "queue": {
       "eyebrow": "My clients",
@@ -9946,7 +9947,7 @@
     },
     "settings": {
       "enable": "Voice logging",
-      "enableHint": "Box members record their workout and review a draft before saving. Audio is not kept."
+      "enableHint": "Members say in their own words what they did, and AI turns it into exercises, sets, reps and loads. The member checks the draft before saving. It needs AI to understand free speech like “three sets of ten at 60”. Audio is not kept."
     }
   },
   "Pickers": {
