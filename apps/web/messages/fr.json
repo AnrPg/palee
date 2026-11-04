@@ -16818,7 +16818,7 @@
       "events": "Événements",
       "wod": "WOD du jour",
       "packages": "Formules",
-      "programmes": "Programmes d’entraînement",
+      "programmes": "Programmes",
       "coaches": "Coachs",
       "location": "Adresse",
       "reviews": "Avis",
@@ -16826,8 +16826,7 @@
       "trial_form": "Demande d'essai",
       "contact_form": "Formulaire de contact",
       "photos": "Photos",
-      "stats": "La communauté en chiffres",
-      "programmes": "Programmes"
+      "stats": "La communauté en chiffres"
     },
     "form": {
       "trial": {
@@ -19229,5 +19228,11 @@
     "audience_what": "Choisis les groupes pour lesquels le cours est conçu, par exemple «Ados». Sans choix, il est pour tout le monde. Cela informe aussi ; cela ne bloque jamais une réservation.",
     "audience_members": "Les groupes s’affichent dans les détails du cours, et les membres filtrent le planning et la page du box avec eux.",
     "audience_when": "Quand le cours est conçu pour certaines personnes : femmes uniquement, enfants, 40 ans et plus. Les cours ouverts restent sans choix, pour que personne ne pense qu’ils ne sont pas pour lui."
+  },
+  "LanguageMenu": {
+    "title": "Langue",
+    "current": "Actuelle",
+    "others": "Autres langues",
+    "button": "Langue : {language}"
   }
 }

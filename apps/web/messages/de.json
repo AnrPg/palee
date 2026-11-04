@@ -16818,7 +16818,7 @@
       "events": "Events",
       "wod": "WOD des Tages",
       "packages": "Pakete",
-      "programmes": "Trainingsprogramme",
+      "programmes": "Programme",
       "coaches": "Coaches",
       "location": "Standort",
       "reviews": "Bewertungen",
@@ -16826,8 +16826,7 @@
       "trial_form": "Anfrage Probetraining",
       "contact_form": "Kontaktformular",
       "photos": "Fotos",
-      "stats": "Community in Zahlen",
-      "programmes": "Programme"
+      "stats": "Community in Zahlen"
     },
     "form": {
       "trial": {
@@ -19229,5 +19228,11 @@
     "audience_what": "Wähle die Gruppen, für die der Kurs gemacht ist, etwa «Jugendliche». Ohne Auswahl ist er für alle. Auch das informiert nur und sperrt keine Buchung.",
     "audience_members": "Die Gruppen stehen in den Kursdetails, und Mitglieder filtern Stundenplan und Box-Seite danach.",
     "audience_when": "Wenn der Kurs für bestimmte Menschen gedacht ist: nur Frauen, Kinder, 40+. Offene Kurse bleiben ohne Auswahl, damit sich niemand ausgeschlossen fühlt."
+  },
+  "LanguageMenu": {
+    "title": "Sprache",
+    "current": "Aktuell",
+    "others": "Weitere Sprachen",
+    "button": "Sprache: {language}"
   }
 }

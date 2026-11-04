@@ -5,6 +5,7 @@ import { useRef, useState, type CSSProperties } from "react";
 import { aboutText, classTypes, firstSentence, mainLocation } from "./site-data";
 import { CtaButton, Lines, PageLink, Photo, useSite, useSiteText } from "./site-context";
 import { SiteFrame } from "./SiteFrame";
+import { SiteLanguageButton } from "./widgets/languages";
 import { HeroMedia } from "./widgets/hero-media";
 import { InnerPage } from "./widgets/inner-page";
 import { MapCard } from "./widgets/place";
@@ -46,11 +47,14 @@ export function ArenaTemplate() {
           ))}
         </nav>
       ) : null}
-      {pages.length > 1 ? (
-        <button type="button" className="burger" aria-label={t("menu")} aria-haspopup="dialog" onClick={() => open({ kind: "menu" })} data-testid="site-menu-open">
-          ☰
-        </button>
-      ) : null}
+      <span className="topEnd">
+        <SiteLanguageButton />
+        {pages.length > 1 ? (
+          <button type="button" className="burger" aria-label={t("menu")} aria-haspopup="dialog" onClick={() => open({ kind: "menu" })} data-testid="site-menu-open">
+            ☰
+          </button>
+        ) : null}
+      </span>
     </header>
   );
 

@@ -16818,7 +16818,7 @@
       "events": "Eventos",
       "wod": "WOD del día",
       "packages": "Bonos",
-      "programmes": "Programas de entrenamiento",
+      "programmes": "Programas",
       "coaches": "Coaches",
       "location": "Ubicación",
       "reviews": "Reseñas",
@@ -16826,8 +16826,7 @@
       "trial_form": "Solicitud de prueba",
       "contact_form": "Formulario de contacto",
       "photos": "Fotos",
-      "stats": "La comunidad en cifras",
-      "programmes": "Programas"
+      "stats": "La comunidad en cifras"
     },
     "form": {
       "trial": {
@@ -19229,5 +19228,11 @@
     "audience_what": "Elige los grupos para los que está hecha la clase, por ejemplo «Adolescentes». Sin selección es para todos. También informa; nunca impide una reserva.",
     "audience_members": "Los grupos aparecen en los detalles de la clase, y los socios filtran con ellos el horario y la página del box.",
     "audience_when": "Cuando la clase está diseñada para personas concretas: solo mujeres, niños, mayores de 40. Las clases abiertas se quedan sin selección, para que nadie piense que no son para él."
+  },
+  "LanguageMenu": {
+    "title": "Idioma",
+    "current": "Actual",
+    "others": "Otros idiomas",
+    "button": "Idioma: {language}"
   }
 }

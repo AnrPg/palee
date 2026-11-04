@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
+import { AppLanguageMenu } from "@/components/account/AppLanguageMenu";
 import { ProfileSwitcherMenu } from "@/components/account/ProfileSwitcherMenu";
 import { CountBadge } from "@/components/buddy/BuddyBits";
 import { activeBuddies, recipientNames, unreadTotal } from "@/components/buddy/buddy-model";
@@ -51,7 +52,7 @@ export function MeHub() {
   const clubs = memberships.map((entry) => entry.settings?.brand_name?.trim() || entry.organization.name);
 
   return (
-    <HubPage title={t("meTitle")}>
+    <HubPage title={t("meTitle")} actions={<AppLanguageMenu />}>
       <HubCard>
         <div className="flex items-center gap-4">
           {currentUser?.avatar_url ? (

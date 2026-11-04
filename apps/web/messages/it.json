@@ -16818,7 +16818,7 @@
       "events": "Eventi",
       "wod": "WOD del giorno",
       "packages": "Pacchetti",
-      "programmes": "Programmi di allenamento",
+      "programmes": "Programmi",
       "coaches": "Coach",
       "location": "Dove siamo",
       "reviews": "Recensioni",
@@ -16826,8 +16826,7 @@
       "trial_form": "Richiesta di prova",
       "contact_form": "Modulo di contatto",
       "photos": "Foto",
-      "stats": "La community in numeri",
-      "programmes": "Programmi"
+      "stats": "La community in numeri"
     },
     "form": {
       "trial": {
@@ -19229,5 +19228,11 @@
     "audience_what": "Scegli i gruppi per cui è fatto il corso, per esempio «Adolescenti». Senza scelta è per tutti. Anche questo informa; non blocca mai una prenotazione.",
     "audience_members": "I gruppi compaiono nei dettagli del corso, e i membri filtrano con essi il calendario e la pagina del box.",
     "audience_when": "Quando il corso è pensato per persone precise: solo donne, bambini, over 40. I corsi aperti restano senza scelta, perché nessuno pensi che non siano per lui."
+  },
+  "LanguageMenu": {
+    "title": "Lingua",
+    "current": "Attuale",
+    "others": "Altre lingue",
+    "button": "Lingua: {language}"
   }
 }
