@@ -1,15 +1,15 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import Link from "next/link";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-import { fetchProgrammeCatalogue, type CatalogueFilters, type MarketplaceProgramme, type ProgrammeGoal, type ProgrammeLevel } from "@/api/programmes";
+import { fetchProgrammeCatalogue, type CatalogueFilters, type ProgrammeGoal, type ProgrammeLevel } from "@/api/programmes";
 import { SegmentPicker } from "@/components/filters/SegmentPicker";
 import { ErrorNotice } from "@/components/ui/ErrorNotice";
+import { FRESHNESS } from "@/lib/query-policy";
 
-import { programmeMoney, ratingLabel, useProgrammeLabels } from "./programme-ui";
+import { ProgrammeTile } from "./ProgrammeTile";
 
 type Chip = "all" | "strength" | "endurance" | "beginner";
 
@@ -34,9 +34,9 @@ export function ProgrammeCatalogue() {
   const catalogue = useQuery({
     queryKey: ["public", "programmes", chip, query.trim()],
     queryFn: () => fetchProgrammeCatalogue(filters),
-    staleTime: 60_000,
+    staleTime: FRESHNESS.reference,
   });
-  const list = catalogue.data ?? [];
+  const list = Array.isArray(catalogue.data) ? catalogue.data.filter((entry) => entry && typeof entry.id === "string") : [];
   const chips: { value: Chip; label: string }[] = [
     { value: "all", label: t("chip.all") },
     { value: "strength", label: t("goal.strength") },
@@ -83,34 +83,15 @@ export function ProgrammeCatalogue() {
       {!catalogue.isLoading && !catalogue.isError && list.length === 0 ? <p className="text-sm" style={{ color: "var(--dim)" }}>{t("storeEmpty")}</p> : null}
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {list.map((programme) => <ProgrammeCard key={programme.id} programme={programme} />)}
+        {list.map((programme) => (
+          <ProgrammeTile
+            key={programme.id}
+            programme={programme}
+            href={`/b/${encodeURIComponent(programme.organization_slug)}/programmes/${encodeURIComponent(programme.id)}`}
+            testId={`programme-card-${programme.id}`}
+          />
+        ))}
       </div>
     </main>
-  );
-}
-
-function ProgrammeCard({ programme }: { programme: MarketplaceProgramme }) {
-  const t = useTranslations("Programmes");
-  const locale = useLocale();
-  const labels = useProgrammeLabels();
-  const rating = ratingLabel(locale, programme.rating_average, programme.rating_count);
-  return (
-    <article className="flex min-w-0 flex-col gap-2 rounded-3xl p-4" style={{ background: "var(--panel)", border: "1px solid var(--border)" }} data-testid={`programme-card-${programme.id}`}>
-      <p className="text-xs" style={{ color: "var(--dim)" }}>{[labels.goal(programme.goal), labels.level(programme.level)].filter(Boolean).join(" · ")}</p>
-      <h2 className="break-words text-base font-bold" style={{ color: "var(--text)" }}>{programme.title}</h2>
-      <p className="text-xs" style={{ color: "var(--text-soft)" }}>{programme.organization_name}</p>
-      <p className="flex flex-wrap items-baseline gap-x-2 text-sm" style={{ color: "var(--text)" }}>
-        <b className="tabular-nums">{programmeMoney(locale, programme.price_cents, programme.currency)}</b>
-        <span style={{ color: "var(--muted)" }}>{t("weeksShort", { count: programme.weeks })}</span>
-        <span style={{ color: "var(--muted)" }}>{rating ?? t("newBadge")}</span>
-      </p>
-      <Link
-        href={`/b/${encodeURIComponent(programme.organization_slug)}/programmes/${encodeURIComponent(programme.id)}`}
-        className="mt-auto flex min-h-11 items-center justify-center rounded-2xl px-4 text-sm font-bold"
-        style={{ background: "var(--panel-raised)", color: "var(--text)", border: "1px solid var(--border)" }}
-      >
-        {t("seeProgramme")}
-      </Link>
-    </article>
   );
 }

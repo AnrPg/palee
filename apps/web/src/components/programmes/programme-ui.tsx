@@ -98,7 +98,12 @@ export const LEVELS = ["all", "beginner", "intermediate", "advanced"] as const;
 
 /** «★ 4,8 (23)», or nothing without reviews. */
 export function ratingLabel(locale: string, average: number | null | undefined, count: number | null | undefined) {
-  if (!count || average == null) return null;
-  const value = new Intl.NumberFormat(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(average);
-  return `★ ${value} (${count})`;
+  const stars = ratingStars(locale, average, count);
+  return stars ? `${stars} (${count})` : null;
+}
+
+/** «★ 4,8», or nothing without reviews. */
+export function ratingStars(locale: string, average: number | null | undefined, count: number | null | undefined) {
+  if (!count || typeof average !== "number" || !Number.isFinite(average)) return null;
+  return `★ ${new Intl.NumberFormat(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(average)}`;
 }
